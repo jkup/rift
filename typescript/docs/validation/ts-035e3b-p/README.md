@@ -130,3 +130,42 @@ per lane/71 native gates and all old failure evidence remain intact.
 
 Stop for coordinator actual audit and independent second review. No publication
 or successor work. An accepted design is not a claim that implementation passed.
+
+## Bounded review correction after f873278 (not yet accepted)
+
+The original future negative-driver test could pass via ENOENT if validation
+were skipped: it supplied nonexistent files for every malformed case. Retain
+the original candidate commit and `correction/original/` (complete test, new-file
+manifest and artifact manifest); all prior outputs are unchanged.
+
+Only the proposed new test changes. It now consumes complete frozen
+`correction/driver-negative-cases.json`: 52 ordinary existing-file controls,
+four malformed-layout controls and one explicit missing-path compound per host.
+Every ordinary source contains exactly `"use strict";\n0;`, including cases whose
+variant itself is invalid. All supplied SOURCE paths in layout cases exist too.
+The late-role compound alone declares the two MISSING paths absent. The test
+asserts source bytes, declarations, exact argv mapping and result absence before
+spawn. The three source proposals retain their original hashes.
+
+Generic exit70/nochild cannot prove zero reads, zero Realm creation, or exact
+precedence: producer validation may reject after IO. Pure parser errors and
+source inspection are separate evidence. Malformed-layout cases can still fail
+through IO if validation is omitted; this limitation is explicit. The retained
+argv seeds' zero-read/Realm fields are requirements, never measured claims.
+
+Reproduce the new bounded offline audit:
+
+```text
+node typescript/docs/validation/ts-035e3b-p/correction/probe.mjs
+```
+
+`correction/run-7ki2Nd` retains exact extracted helper bytes, all 114 concrete
+setups/args/files, 416 successful mutation rejections (removed file retained by
+rename, wrong argv path, unauthorized absence, removed strict-prefix fixture),
+52 exact-helper omit-write mutant rejections and one removed-assertion mutation.
+Its 51 original artifact identities pass. No producer/driver imported, no child
+launched, no guest/native build or production seam. The new cases are future
+requirements; lane labels on offline setup checks are not engine runs.
+
+Original f873278 remains unaccepted until actual/second re-review and root
+affected audit. Earlier measured decoder/parser results are retained, not rerun.

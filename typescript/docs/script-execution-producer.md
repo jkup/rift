@@ -315,3 +315,39 @@ compilation or authentic future conformance transport.
 Stop after this coherent design/evidence commit for coordinator actual audit and
 independent second review. No publication, successor work, parent API, registry
 activation, or implementation is authorized by the writer's completion claim.
+
+## Review correction: malformed-driver oracle (2026-11-06)
+
+Candidate `f873278` was not accepted. Its future malformed-driver test supplied
+nonexistent source paths for every case, so skipped argument validation could
+still appear to pass through ENOENT. The original test/manifests and all evidence
+are retained. The correction changes only the new-test proposal and its fixtures,
+manifests and documentation; both old-file source proposals and the new request
+module remain byte-identical.
+
+The corrected 57 cases per host are frozen in
+`validation/ts-035e3b-p/correction/driver-negative-cases.json`: 52 ordinary controls
+have existing files containing exactly `"use strict";\n0;`; four malformed-layout
+cases (`short`, `extra`, `source-path`, `result-path`) are explicitly separate;
+one `late-role-before-read` compound retains two deliberately missing paths.
+All supplied SOURCE tokens in layout cases also get valid files; an absent/empty
+argument is still intentionally malformed. No ordinary case can silently mark
+its source missing. The proposed test checks exact bytes, token/path mapping,
+approved missing-file declarations and result absence before each invocation.
+
+Generic native/Node exit70 and no child **do not prove zero source reads, zero
+Realm creation, or exact error precedence**. Even with existing files, producer
+validation could reject after reads. Layout and explicit missing-path cases
+have still weaker diagnostic discrimination. Exact pure-parser errors, checked
+filesystem setup, static source ordering, and future generic driver rejection
+are distinct evidence. Original `expectedReads:[]`/`expectedRealmCreations:0`
+fields in the retained argv seeds are design requirements, not measured facts.
+No production instrumentation, new error exposure, or test seam is proposed.
+
+The correction's offline probe extracts the exact proposed test setup functions
+into an isolated module, without importing or launching any engine. All 114
+setups pass; 416 ordinary setup mutations reject; omission of source creation
+rejects for all 52 ordinary cases; removal of the setup assertion is detected.
+It verifies 51 unchanged original artifact identities, including every source
+proposal. These checks establish fixture/harness behavior only. Actual and
+independent second re-review plus root affected audit remain required.

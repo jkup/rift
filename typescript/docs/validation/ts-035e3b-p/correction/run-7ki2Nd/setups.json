@@ -1,0 +1,4342 @@
+[
+  {
+    "lane": "node",
+    "id": "short",
+    "setupClass": "malformed-layout",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-4CgZCi\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test"
+    ],
+    "files": [],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "extra",
+    "setupClass": "malformed-layout",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-wYUz8K\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-wYUz8K\\SOURCE-u0",
+      "extra"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-wYUz8K\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "mode",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "observation",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zVGGKA\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zVGGKA\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zVGGKA\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "variant",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "module",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BfCmek\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BfCmek\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BfCmek\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "action",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "control",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-oIisv7\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-oIisv7\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-oIisv7\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "nonce",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-YF3cS2\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-YF3cS2\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-YF3cS2\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "hash",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0EM5hi\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0EM5hi\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0EM5hi\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "preflight-ascii",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "a b",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-1ArlFW\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-1ArlFW\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-1ArlFW\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "result-path",
+    "setupClass": "malformed-layout",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-IVInhg\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-IVInhg\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-7-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-PhZxXk\\child.json",
+      "",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-PhZxXk\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-PhZxXk\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-7--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sGB1i4\\child.json",
+      "-1",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sGB1i4\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sGB1i4\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-7-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-989nyN\\child.json",
+      "1.5",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-989nyN\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-989nyN\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-7-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-UaCALv\\child.json",
+      "NaN",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-UaCALv\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-UaCALv\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-7-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Wa1mK2\\child.json",
+      "9007199254740992",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Wa1mK2\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Wa1mK2\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-8-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-svtGSD\\child.json",
+      "100000",
+      "",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-svtGSD\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-svtGSD\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-8--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LQvwZV\\child.json",
+      "100000",
+      "-1",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LQvwZV\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LQvwZV\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-8-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-VM6xAa\\child.json",
+      "100000",
+      "1.5",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-VM6xAa\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-VM6xAa\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-8-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-o3DxNR\\child.json",
+      "100000",
+      "NaN",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-o3DxNR\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-o3DxNR\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-8-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-XT75Uo\\child.json",
+      "100000",
+      "9007199254740992",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-XT75Uo\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-XT75Uo\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-9-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ffjHfk\\child.json",
+      "100000",
+      "128",
+      "",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ffjHfk\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ffjHfk\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-9--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-z6z3LJ\\child.json",
+      "100000",
+      "128",
+      "-1",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-z6z3LJ\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-z6z3LJ\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-9-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-9SOzKk\\child.json",
+      "100000",
+      "128",
+      "1.5",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-9SOzKk\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-9SOzKk\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-9-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-br7FQU\\child.json",
+      "100000",
+      "128",
+      "NaN",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-br7FQU\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-br7FQU\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-9-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-1n5Wbo\\child.json",
+      "100000",
+      "128",
+      "9007199254740992",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-1n5Wbo\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-1n5Wbo\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-10-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xa4p6G\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xa4p6G\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xa4p6G\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-10--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ppEUYj\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "-1",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ppEUYj\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ppEUYj\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-10-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-kHzyaR\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "1.5",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-kHzyaR\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-kHzyaR\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-10-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0F9cnh\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "NaN",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0F9cnh\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0F9cnh\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-10-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Zn69cr\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "9007199254740992",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Zn69cr\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Zn69cr\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-11-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-s9OjRg\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-s9OjRg\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-s9OjRg\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-11--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-SBaU93\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "-1",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-SBaU93\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-SBaU93\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-11-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LPy2JP\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "1.5",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LPy2JP\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LPy2JP\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-11-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-rDFkh6\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "NaN",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-rDFkh6\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-rDFkh6\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-11-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ZFD51j\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "9007199254740992",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ZFD51j\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ZFD51j\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-12-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-QV6ZHN\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-QV6ZHN\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-QV6ZHN\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-12--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-PHh4a1\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "-1",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-PHh4a1\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-PHh4a1\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-12-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-f45vCT\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "1.5",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-f45vCT\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-f45vCT\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-12-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BIQ6rB\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "NaN",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BIQ6rB\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BIQ6rB\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-12-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EuomT7\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "9007199254740992",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EuomT7\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EuomT7\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-13-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3Qeaz6\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3Qeaz6\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3Qeaz6\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-13--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-K40McQ\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "-1",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-K40McQ\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-K40McQ\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-13-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zBBPup\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1.5",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zBBPup\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zBBPup\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-13-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xQ932C\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "NaN",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xQ932C\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xQ932C\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "number-13-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-izTaBd\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "9007199254740992",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-izTaBd\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-izTaBd\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "fixed-7",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-fCToHX\\child.json",
+      "0",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-fCToHX\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-fCToHX\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "fixed-8",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-mbyVKK\\child.json",
+      "100000",
+      "0",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-mbyVKK\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-mbyVKK\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "fixed-11",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-w9fXl6\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "0",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-w9fXl6\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-w9fXl6\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "wall-overflow",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-10wuMN\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "2147483648",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-10wuMN\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-10wuMN\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "ordinal",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-7dYBXt\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u1",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-7dYBXt\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-7dYBXt\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "role",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zwPLcq\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zwPLcq\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-zwPLcq\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "source-path",
+    "setupClass": "malformed-layout",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-a2YNyl\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      ""
+    ],
+    "files": [],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "raw-preflight",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fake",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CCclpa\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CCclpa\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CCclpa\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "nonraw-no-preflight",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "non-strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3sF0Tr\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3sF0Tr\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3sF0Tr\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "raw-extra-harness",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-lXhCdp\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-lXhCdp\\SOURCE-u0",
+      "u1",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-lXhCdp\\SOURCE-u1"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-lXhCdp\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      },
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-lXhCdp\\SOURCE-u1",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "late-role-before-read",
+    "setupClass": "explicit-missing-compound",
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflight",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-rRC3ab\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-rRC3ab\\MISSING-u0",
+      "u1",
+      "bad",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-rRC3ab\\MISSING-u1"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-rRC3ab\\MISSING-u0",
+        "present": false,
+        "bytes": null
+      },
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-rRC3ab\\MISSING-u1",
+        "present": false,
+        "bytes": null
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "late-role-beats-fixed",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-r1Cvbf\\child.json",
+      "0",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "bad",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-r1Cvbf\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-r1Cvbf\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "node",
+    "id": "numeric-before-late-role",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-eus1tP\\child.json",
+      "-1",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "bad",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-eus1tP\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-eus1tP\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "short",
+    "setupClass": "malformed-layout",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-e46MrY\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test"
+    ],
+    "files": [],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "extra",
+    "setupClass": "malformed-layout",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-QLC9TM\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-QLC9TM\\SOURCE-u0",
+      "extra"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-QLC9TM\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "mode",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "observation",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-dXZTXl\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-dXZTXl\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-dXZTXl\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "variant",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "module",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-2yr0C1\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-2yr0C1\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-2yr0C1\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "action",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "control",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sNnKzo\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sNnKzo\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sNnKzo\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "nonce",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-eChiMW\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-eChiMW\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-eChiMW\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "hash",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sdkfyQ\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sdkfyQ\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sdkfyQ\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "preflight-ascii",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "a b",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-pcFujf\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-pcFujf\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-pcFujf\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "result-path",
+    "setupClass": "malformed-layout",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3qi2lk\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3qi2lk\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-7-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Ho5inC\\child.json",
+      "",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Ho5inC\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Ho5inC\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-7--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-N7vREk\\child.json",
+      "-1",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-N7vREk\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-N7vREk\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-7-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-JvZxyK\\child.json",
+      "1.5",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-JvZxyK\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-JvZxyK\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-7-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-e0H0HQ\\child.json",
+      "NaN",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-e0H0HQ\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-e0H0HQ\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-7-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-DOlji4\\child.json",
+      "9007199254740992",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-DOlji4\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-DOlji4\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-8-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-yznRXV\\child.json",
+      "100000",
+      "",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-yznRXV\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-yznRXV\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-8--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0BeDep\\child.json",
+      "100000",
+      "-1",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0BeDep\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-0BeDep\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-8-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-OAsnoK\\child.json",
+      "100000",
+      "1.5",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-OAsnoK\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-OAsnoK\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-8-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-dhuADr\\child.json",
+      "100000",
+      "NaN",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-dhuADr\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-dhuADr\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-8-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-RllDJv\\child.json",
+      "100000",
+      "9007199254740992",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-RllDJv\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-RllDJv\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-9-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-anArAf\\child.json",
+      "100000",
+      "128",
+      "",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-anArAf\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-anArAf\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-9--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xnmjVD\\child.json",
+      "100000",
+      "128",
+      "-1",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xnmjVD\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-xnmjVD\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-9-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CPuUYR\\child.json",
+      "100000",
+      "128",
+      "1.5",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CPuUYR\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CPuUYR\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-9-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-AgpH5h\\child.json",
+      "100000",
+      "128",
+      "NaN",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-AgpH5h\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-AgpH5h\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-9-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CERxau\\child.json",
+      "100000",
+      "128",
+      "9007199254740992",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CERxau\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-CERxau\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-10-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Buc3bV\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Buc3bV\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Buc3bV\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-10--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-XCwP2f\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "-1",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-XCwP2f\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-XCwP2f\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-10-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-pnqPbA\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "1.5",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-pnqPbA\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-pnqPbA\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-10-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BKRuWF\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "NaN",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BKRuWF\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-BKRuWF\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-10-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3mvjbs\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "9007199254740992",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3mvjbs\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-3mvjbs\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-11-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-IoD1Nt\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-IoD1Nt\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-IoD1Nt\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-11--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-8FU6q4\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "-1",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-8FU6q4\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-8FU6q4\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-11-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-WpeHFk\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "1.5",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-WpeHFk\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-WpeHFk\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-11-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-TmPtqE\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "NaN",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-TmPtqE\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-TmPtqE\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-11-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Zpt2fi\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "9007199254740992",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Zpt2fi\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Zpt2fi\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-12-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-lSxfNJ\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-lSxfNJ\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-lSxfNJ\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-12--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EOxHlQ\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "-1",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EOxHlQ\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EOxHlQ\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-12-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Vogfvb\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "1.5",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Vogfvb\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Vogfvb\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-12-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EjfkwS\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "NaN",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EjfkwS\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-EjfkwS\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-12-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Xt2i8q\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "9007199254740992",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Xt2i8q\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Xt2i8q\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-13-",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ZlS7E1\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ZlS7E1\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-ZlS7E1\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-13--1",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-vDanvd\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "-1",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-vDanvd\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-vDanvd\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-13-1.5",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Sbxf2m\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1.5",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Sbxf2m\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-Sbxf2m\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-13-NaN",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-p6Bkcq\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "NaN",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-p6Bkcq\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-p6Bkcq\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "number-13-9007199254740992",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sfjbPC\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "9007199254740992",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sfjbPC\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sfjbPC\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "fixed-7",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-X0dlRo\\child.json",
+      "0",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-X0dlRo\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-X0dlRo\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "fixed-8",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sZekWt\\child.json",
+      "100000",
+      "0",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sZekWt\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-sZekWt\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "fixed-11",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-WSpzzC\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "0",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-WSpzzC\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-WSpzzC\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "wall-overflow",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-SdfzOb\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "2147483648",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-SdfzOb\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-SdfzOb\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "ordinal",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-uxoxGg\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u1",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-uxoxGg\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-uxoxGg\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "role",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-HgW2c7\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-HgW2c7\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-HgW2c7\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "source-path",
+    "setupClass": "malformed-layout",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-fIiagR\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      ""
+    ],
+    "files": [],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "raw-preflight",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fake",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-5wsOsB\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-5wsOsB\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-5wsOsB\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "nonraw-no-preflight",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "non-strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-iyC6Ve\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-iyC6Ve\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-iyC6Ve\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "raw-extra-harness",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-GjIlPx\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-GjIlPx\\SOURCE-u0",
+      "u1",
+      "test",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-GjIlPx\\SOURCE-u1"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-GjIlPx\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      },
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-GjIlPx\\SOURCE-u1",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "late-role-before-read",
+    "setupClass": "explicit-missing-compound",
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflight",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-U40i5U\\child.json",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-U40i5U\\MISSING-u0",
+      "u1",
+      "bad",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-U40i5U\\MISSING-u1"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-U40i5U\\MISSING-u0",
+        "present": false,
+        "bytes": null
+      },
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-U40i5U\\MISSING-u1",
+        "present": false,
+        "bytes": null
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "late-role-beats-fixed",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-DAIbYF\\child.json",
+      "0",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "bad",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-DAIbYF\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-DAIbYF\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  },
+  {
+    "lane": "native",
+    "id": "numeric-before-late-role",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LilCdS\\child.json",
+      "-1",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "bad",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LilCdS\\SOURCE-u0"
+    ],
+    "files": [
+      {
+        "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b-p\\correction\\run-7ki2Nd\\case-LilCdS\\SOURCE-u0",
+        "present": true,
+        "bytes": "\"use strict\";\n0;"
+      }
+    ],
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "driverLaunched": false
+  }
+]

@@ -7,6 +7,6 @@
   {
     "path": "typescript/tools/test262/script-producer.test.mjs",
     "proposal": "proposals/script-producer.test.mjs",
-    "sha256": "9d8d1ac9c1e96591ba70a8e5d3bf54c8accb9922c8bfb15e8908ad5fee24befd"
+    "sha256": "74ff6e66e02ca8ec741b677c631c5f9dda146c54f4d571c5e670940938770863"
   }
 ]

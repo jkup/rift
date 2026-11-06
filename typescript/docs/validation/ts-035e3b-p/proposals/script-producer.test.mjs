@@ -7,6 +7,32 @@ import {spawnSync} from 'node:child_process';
 import {parseScriptProducerArguments,validateScriptProducerRequest} from '../../build/node/src/script-producer-request.js';
 const evidence='docs/validation/ts-035e3b-p';
 const read=n=>JSON.parse(readFileSync(join(evidence,n)));
+// BEGIN offline-audited negative setup (no producer or process invocation).
+function assertNegativeSetup(row,setup){
+ const tokens=[...new Set(row.argv.filter(a=>a.startsWith('SOURCE-')||a.startsWith('MISSING-')))];
+ assert.deepEqual(row.files.map(f=>f.token),tokens);
+ const missing=row.files.filter(f=>!f.present);
+ if(row.setupClass==='explicit-missing-compound'){
+  assert.equal(row.id,'late-role-before-read');assert.deepEqual(missing.map(f=>f.token),['MISSING-u0','MISSING-u1']);
+ }else{
+  assert(['ordinary-controls','malformed-layout'].includes(row.setupClass));assert.equal(missing.length,0);
+  assert(tokens.every(t=>t.startsWith('SOURCE-')));
+ }
+ for(const f of row.files){
+  const path=join(setup.dir,f.token);
+  if(f.present){assert.equal(f.text,'"use strict";\n0;');assert.equal(readFileSync(path,'utf8'),f.text);}
+  else{assert.equal(f.text,null);assert.equal(existsSync(path),false);}
+ }
+ assert.deepEqual(setup.args,row.argv.map(a=>a==='RESULT'?setup.result:tokens.includes(a)?join(setup.dir,a):a));
+ assert.equal(existsSync(setup.result),false);
+}
+function setupNegative(row,dir){
+ const result=join(dir,'child.json');
+ for(const f of row.files)if(f.present)writeFileSync(join(dir,f.token),f.text,{flag:'wx'});
+ const setup={dir,result,args:row.argv.map(a=>a==='RESULT'?result:row.files.some(f=>f.token===a)?join(dir,a):a)};
+ assertNegativeSetup(row,setup);return setup;
+}
+// END offline-audited negative setup.
 function launch(row){
  const dir=mkdtempSync(resolve('build','producer-')),result=join(dir,'child.json'),args=row.argv.slice();
  const start=row.request.mode==='conformance'?14:8;
@@ -29,14 +55,16 @@ test('complete literal children in both hosts, observation unchanged',()=>{
   assert.deepEqual(JSON.parse(readFileSync(result)),row.expected,row.id);
  }
 });
-test('all argv controls before source IO, exact pure parser priority',()=>{
+test('pure parser errors separately from generic driver rejection with checked sources',()=>{
  for(const row of read('argv-negatives.json'))assert.throws(()=>parseScriptProducerArguments(row.argv),{message:row.error});
- for(const lane of ['node','native'])for(const row of read('argv-negatives.json')){
-  const dir=mkdtempSync(resolve('build','producer-negative-')),result=join(dir,'child.json');
-  const args=row.argv.map(a=>a==='RESULT'?result:a.startsWith('SOURCE-')||a.startsWith('MISSING-')?join(dir,a):a);
+ for(const lane of ['node','native'])for(const row of read('correction/driver-negative-cases.json')){
+  const {args,result}=setupNegative(row,mkdtempSync(resolve('build','producer-negative-')));
   const node=lane==='node',entry=resolve(node?'build/node/src/script-observation-driver.js':'build/native/script-observation-driver.exe');
   const p=spawnSync(node?process.execPath:entry,node?[entry,...args]:args,{encoding:'utf8',timeout:10000,windowsHide:true});
-  assert.equal(p.error,undefined);assert.equal(p.signal,null);assert.equal(p.status,70,row.id);assert.equal(p.stdout,'');assert.equal(p.stderr.replaceAll('\r\n','\n'),'Script observation driver fault\n');assert.equal(existsSync(result),false);
+  // Generic70 cannot prove zero reads/Realm creation or exact error priority:
+  // producer validation could still reject after IO. Pure parser checks above
+  // and source inspection provide different evidence; no production seam.
+  assert.equal(p.error,undefined);assert.equal(p.signal,null);assert.equal(p.status,row.expectedDriver.exitCode,row.id);assert.equal(p.stdout,row.expectedDriver.stdout);assert.equal(p.stderr.replaceAll('\r\n','\n'),row.expectedDriver.stderr);assert.equal(existsSync(result),row.expectedDriver.childPresent);
  }
  const positives=read('future-producer-literals.json').filter(r=>r.request.mode==='conformance');
  for(const row of positives)validateScriptProducerRequest(row.request);

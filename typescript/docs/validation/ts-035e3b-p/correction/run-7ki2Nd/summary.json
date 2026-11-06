@@ -1,0 +1,14 @@
+{
+  "setupCases": 114,
+  "ordinaryPerLane": 52,
+  "malformedLayoutPerLane": 4,
+  "explicitMissingCompoundPerLane": 1,
+  "ordinaryMutationChecks": 416,
+  "missingCreationMutantsRejected": 52,
+  "removedSetupAssertionMutantRejected": 1,
+  "originalArtifactIdentitiesUnchanged": 51,
+  "sourceProposalsChanged": 0,
+  "driverLaunches": 0,
+  "guestExecutions": 0,
+  "nativeBuilds": 0
+}
