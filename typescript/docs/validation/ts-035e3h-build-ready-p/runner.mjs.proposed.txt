@@ -1,0 +1,101 @@
+// INERT PROPOSAL. Materialization or gate removal requires separate review.
+import assert from 'node:assert/strict';
+import * as fs from 'node:fs';
+import {openSync,writeSync,closeSync,fsyncSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {spawn} from 'node:child_process';
+import {hash,ordinary,readIdentity,reserve,stage,snapshot} from './files.mjs';
+import {validateAliases,classify,validateExecution} from './policy.mjs';
+import {openAttributes,observeNamed,observeAliases} from './runtime-support.mjs';
+const RUN_ENABLED=true;
+const here=import.meta.dirname,repo=resolve(here,'../../../..');
+const json=p=>JSON.parse(fs.readFileSync(p));
+const save=(root,name,value)=>{const b=Buffer.from(JSON.stringify(value,null,2)+'\n');assert(b.length<=4194304,'JSON retention cap');fs.writeFileSync(join(root,name),b,{flag:'wx'});};
+export async function run(){
+ assert(RUN_ENABLED,'DESIGN_ONLY_RUN_GATE'); // Before source reads, native loads, root writes or process creation.
+ const bindingBytes=fs.readFileSync(join(here,'integration-bindings.json'));assert.equal(hash(bindingBytes),'ab41a62de6fc2a6ceecfc8d9100d37ae016cab184aa5320fae3f6b87f889db44');const bindings=JSON.parse(bindingBytes);
+ for(const r of bindings.files){const b=fs.readFileSync(join(repo,r.path));assert.equal(b.length,r.bytes);assert.equal(hash(b),r.sha256,r.path);}
+ const plan=json(join(here,'../ts-035e3h-build-p/proposal.json')),config=json(join(here,'execution-config.json')),policy=json(join(here,'alias-policy.json')),outputPolicy=json(join(here,'output-policy.json')),staging=json(join(here,'staging-policy.json'));
+ assert.equal(config.root,plan.root);assert.equal(config.executable,plan.executable);assert.deepEqual(config.argv,plan.argv);assert.deepEqual(config.childEnvironment,plan.childEnvironment);
+ let native,owner,inputs,preAlias,toolsBefore;const report={kind:'helper-build-observation',stages:[],failures:[],helperBudgetReserved:0,compilerInvocations:null,supervisorAddTypeBudget:1,output:null,authority:'none'};
+ const note=(name,fn)=>{try{const value=fn();report.stages.push({name,status:'complete'});return value;}catch(e){report.failures.push({stage:name,name:e.name,code:e.code??null,message:e.message,stack:e.stack});throw e;}};
+ const toolRows=()=>[plan.supervisorIdentity,plan.supervisor.powershellRuntimeConfig,plan.supervisor.roslynCSharp].map(r=>{
+  ordinary(r.path,false,native.get);const actual=readIdentity(r.path,r,native.get).identity;for(const k of ['dev','ino','nlink','bytes','sha256'])assert.equal(actual[k],r[k]);return actual;
+ }).concat([readIdentity(plan.node.path,{bytes:staging.nodeBytes,sha256:plan.node.sha256},native.get,134217728).identity]);
+ try{
+  native=openAttributes();owner=note('reserve-exclusive-root',()=>reserve(plan.root,native.get));
+  save(owner.root,'started.json',{maxHelperInvocations:1,maxSupervisorAddType:1,generatedLaunches:0});
+  preAlias=note('named-alias-preflight',()=>{const a=observeAliases(policy,native.get,owner.root,config.childEnvironment);save(owner.root,'alias-pre.json',a);assert.equal(a.error,null);validateAliases(a.snapshot,policy);return a.snapshot;});
+  const before=note('single-link-tools-before',toolRows);toolsBefore=before;save(owner.root,'before.json',before);
+  const reference=policy.groups.find(g=>g.named===plan.reference.path);assert(reference);
+  const refBefore=observeNamed(reference.named,native.get);assert.deepEqual(refBefore,reference.records.find(r=>r.path===reference.named));
+  const refBytes=fs.readFileSync(reference.named);assert.equal(hash(refBytes),plan.reference.sha256);assert.deepEqual(observeNamed(reference.named,native.get),refBefore);
+  const sourcePath=join(repo,plan.source.path);readIdentity(sourcePath,plan.source,native.get);
+  const copies=[{from:sourcePath,to:'source/recorder.cs',bytes:plan.source.bytes,sha256:plan.source.sha256},{from:reference.named,to:'refs/mscorlib.dll',bytes:plan.reference.bytes,sha256:plan.reference.sha256,data:refBytes},...['supervise.ps1','supervisor.cs'].map(name=>{const from=join(here,name==='supervise.ps1'?'supervise.ps1.proposed.txt':'supervisor.cs.unchanged.txt'),b=fs.readFileSync(from);return {from,to:name,bytes:b.length,sha256:hash(b)};})];
+  const texts=[{to:'contract.json',utf8:fs.readFileSync(join(here,'execution-config.json'),'utf8')},{to:'out/link-command-recorder.exe.config',utf8:plan.generatedFiles[0].utf8}];
+  inputs=note('stage-inputs',()=>stage(owner,staging.privateDirectories,copies,texts,native.get));save(owner.root,'inputs.json',inputs);
+  note('final-staging-preflight',()=>{
+   for(const r of inputs){const now=readIdentity(r.path,r,native.get).identity;assert.deepEqual(now,r);}
+   assert(!fs.existsSync(plan.expectedOutput.path));assert.deepEqual(toolRows(),before);
+   for(const g of policy.groups)for(const r of g.records)assert.deepEqual(observeNamed(r.path,native.get),r);
+   const tree=snapshot(owner.root,outputPolicy,native.get);assert(tree.complete);assert.equal(classify(tree.rows,outputPolicy,staging.privateDirectories).kind,'bounded-output-set');
+  });
+  report.helperBudgetReserved=1; // One protocol attempt; actual child creation remains unknown until status is parsed.
+  report.supervisor=await supervise({supervisor:plan.supervisor.path,supervisorArgv:plan.supervisor.argv,environment:config.childEnvironment,supervisorWatchdogMs:90000},owner.root);
+  note('compiler-and-cleanup-status',()=>{
+   const statusPath=ordinary(join(owner.root,'supervisor-status.json'),false,native.get);assert(fs.lstatSync(statusPath).size<=1048576);const b=fs.readFileSync(statusPath),status=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(b));report.statusRaw={bytes:b.length,sha256:hash(b)};report.compilerStatus=status;report.compilerInvocations=status.CreatedSuspended===true?1:status.CreatedSuspended===false?0:null;
+   const streams={};for(const name of ['stdout','stderr']){const path=ordinary(join(owner.root,'compiler.'+name+'.bin'),false,native.get);assert(fs.lstatSync(path).size<=8388608);streams[name]=fs.readFileSync(path);}
+   report.execution=validateExecution(report.supervisor,status,streams,{exe:plan.supervisor.path,argv:plan.supervisor.argv,cwd:owner.root,environment:config.childEnvironment});
+  });
+  note('output-bytes-only',()=>{ordinary(plan.expectedOutput.path,false,native.get);const s=fs.lstatSync(plan.expectedOutput.path);assert(s.size>0&&s.size<=16777216);const b=fs.readFileSync(plan.expectedOutput.path);assert.equal(b.length,s.size);report.output={path:plan.expectedOutput.path,bytes:b.length,sha256:hash(b),loaded:false,launched:false,assemblyMetadata:'uninspected'};});
+ }catch(e){if(!report.failures.some(f=>f.message===e.message))report.failures.push({stage:'orchestration',name:e.name,code:e.code??null,message:e.message,stack:e.stack});}
+ finally{
+  if(owner){
+   const retain=(name,fn)=>{try{note(name,fn);}catch{}};
+   retain('named-alias-postflight',()=>{const a=observeAliases(policy,native.get,owner.root,config.childEnvironment);save(owner.root,'alias-post.json',a);assert.equal(a.error,null);validateAliases(a.snapshot,policy);if(preAlias)assert.deepEqual(a.snapshot,preAlias);});
+   retain('single-link-tools-after',()=>{const after=toolRows();save(owner.root,'after.json',after);if(toolsBefore)assert.deepEqual(after,toolsBefore);});
+   retain('source-and-private-copies-after',()=>{readIdentity(join(repo,plan.source.path),plan.source,native.get);for(const r of inputs??[])assert.deepEqual(readIdentity(r.path,r,native.get).identity,r);});
+   retain('bounded-final-snapshot',()=>{const tree=snapshot(owner.root,outputPolicy,native.get),decision=classify(tree.rows,outputPolicy,staging.privateDirectories);save(owner.root,'snapshot.json',{...tree,decision});assert(tree.complete);assert.equal(decision.kind,'bounded-output-set');const rows=new Map(tree.rows.map(r=>[r.path,r]));for(const input of inputs??[]){const relative=input.path.slice(owner.root.length+1).replaceAll('\\','/');assert.equal(rows.get(relative)?.sha256,input.sha256);}if(report.output){assert.equal(rows.get('out/link-command-recorder.exe')?.sha256,report.output.sha256);assert.equal(rows.get('out/link-command-recorder.exe')?.bytes,report.output.bytes);}if(report.statusRaw)assert.equal(rows.get('supervisor-status.json')?.sha256,report.statusRaw.sha256);if(report.execution)for(const [key,file] of [['Stdout','compiler.stdout.bin'],['Stderr','compiler.stderr.bin']])assert.equal(rows.get(file)?.sha256,report.compilerStatus[key].ObservedSha256);});
+  }
+  if(native){try{native.close();}catch(e){report.failures.push({stage:'close-metadata-library',name:e.name,message:e.message});}}
+  report.outcome=report.failures.length?'failed-stop-review':'bytes-collected-stop-review';
+  if(owner){try{save(owner.root,'result.json',report);}catch(e){report.failures.push({stage:'publish-result',name:e.name,message:e.message});}} // No deletion or generated launch.
+ }
+ console.log(JSON.stringify(report));if(report.failures.length)process.exitCode=1;
+ return report;
+}
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))await run();
+
+function supervise(p,root) {
+ return new Promise(resolveResult=>{
+  const record={exe:p.supervisor,argv:p.supervisorArgv,cwd:root,environment:p.environment,spawned:false,pid:null,error:null,exit:null,signal:null,watchdog:false,killRequested:false,killReturned:null,closeObserved:false,streams:{stdout:{bytes:0,overflow:false},stderr:{bytes:0,overflow:false}}};
+  const descriptors={},errors=[];let child,ended=false,watchdog,closeDeadline;
+  const finish=()=>{if(ended)return;ended=true;clearTimeout(watchdog);clearTimeout(closeDeadline);
+   for(const fd of Object.values(descriptors)){try{fsyncSync(fd);}catch(e){errors.push(String(e));}finally{try{closeSync(fd);}catch(e){errors.push(String(e));}}}
+   record.ioErrors=errors;resolveResult(record);
+  };
+  const stop=()=>{if(record.killRequested||ended)return;record.killRequested=true;
+   try{record.killReturned=child.kill();}catch(e){errors.push(String(e));}
+   closeDeadline=setTimeout(()=>{errors.push('supervisor close unconfirmed; stop for manual inspection, no retry');finish();},10000);
+  };
+  try{for(const key of ['stdout','stderr'])descriptors[key]=openSync(join(root,'supervisor.'+key+'.bin'),'wx');}
+  catch(e){record.error={code:e.code??null,message:e.message};finish();return;}
+  try{child=spawn(p.supervisor,p.supervisorArgv,{cwd:root,env:p.environment,windowsHide:true,stdio:['ignore','pipe','pipe']});}
+  catch(e){record.error={code:e.code??null,message:e.message};finish();return;}
+  child.on('spawn',()=>{record.spawned=true;record.pid=child.pid;});
+  child.on('error',e=>{if(ended)return;record.error={code:e.code??null,message:e.message};if(record.spawned)stop();});
+  for(const key of ['stdout','stderr']){
+   child[key].on('error',e=>{if(ended)return;errors.push(key+': '+String(e));stop();});
+   child[key].on('data',chunk=>{
+    if(ended)return;const s=record.streams[key],previous=s.bytes;s.bytes+=chunk.length;
+    try{const limit=Math.max(0,Math.min(chunk.length,1048577-previous));let offset=0;while(offset<limit){const n=writeSync(descriptors[key],chunk,offset,limit-offset);if(n<=0)throw Error('supervisor-stream-zero-write');offset+=n;}}
+    catch(e){errors.push(String(e));stop();}
+    if(s.bytes>1048576){s.overflow=true;stop();}
+   });
+  }
+  child.on('exit',(code,signal)=>{if(ended)return;record.exit=code;record.signal=signal;});
+  child.on('close',(code,signal)=>{if(ended)return;record.exit=code;record.signal=signal;record.closeObserved=true;finish();});
+  watchdog=setTimeout(()=>{record.watchdog=true;stop();},p.supervisorWatchdogMs);
+ });
+}

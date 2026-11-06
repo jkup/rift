@@ -1,0 +1,26 @@
+{
+  "privateDirectories": [
+    "source",
+    "refs",
+    "out",
+    "tmp",
+    "home",
+    "home/AppData",
+    "home/AppData/Roaming",
+    "home/AppData/Local",
+    "program-data"
+  ],
+  "decision": "coordinator-authorized cooperative named Framework/PowerShell/OS trust; one helper csc plus one supervisor Add-Type budget; not execution authorization",
+  "runEnabled": false,
+  "aliasUtilityCalls": {
+    "pre": 6,
+    "post": 6,
+    "totalMaximum": 12,
+    "secondsPerCall": 5,
+    "bytesPerStream": 65536
+  },
+  "compilerInvocationsMaximum": 1,
+  "supervisorAddTypeMaximum": 1,
+  "nodeBytes": 100097864,
+  "nodeSizeSource": "typescript/docs/validation/ts-035e3f-p/host.json"
+}

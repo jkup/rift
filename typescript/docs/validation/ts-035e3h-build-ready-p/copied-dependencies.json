@@ -1,0 +1,56 @@
+[
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/files.mjs",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/files.mjs",
+    "bytes": 4818,
+    "sha256": "9e60e9d9a0d2583751c67f714a2f0c173355978141d3085a465ae4e364b7b3ce"
+  },
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/policy.mjs",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/policy.mjs",
+    "bytes": 5450,
+    "sha256": "9ee0a2e370100878dba17932a3922a4ba8006213be251296f301019742f84e8e"
+  },
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/runtime-support.mjs",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/runtime-support.mjs",
+    "bytes": 3484,
+    "sha256": "7c47f8850abf00788b3de41a4068678e465702d9d6b988a4d54d9d0109b4287a"
+  },
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/alias-policy.json",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/alias-policy.json",
+    "bytes": 35797,
+    "sha256": "bfab8dfb6968e755146d40d477b1aae282ac7961f2d7a4cdca6432e85f6be9c4"
+  },
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/output-policy.json",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/output-policy.json",
+    "bytes": 1639,
+    "sha256": "2259201d087f882e69a0b5772eb893db15b9b1ecb6274b06ada2712199c784cc"
+  },
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/staging-policy.json",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/staging-policy.json",
+    "bytes": 681,
+    "sha256": "e0309d58f115579f44fb6e24c8645c3c05893ed07c9aafdd501a1689c6aaf5fc"
+  },
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/execution-config.json",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/execution-config.json",
+    "bytes": 1997,
+    "sha256": "c3b00705ae91fd9e376f6f8f40c54424f9ca82409d1495efcc3715856c294246"
+  },
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/supervise.ps1.proposed.txt",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/supervise.ps1.proposed.txt",
+    "bytes": 2038,
+    "sha256": "cf5e946e4d7f14c5f46094c02bf593987afe0ab07578dbe68c0f81f7565c8ddf"
+  },
+  {
+    "from": "typescript/docs/validation/ts-035e3h-build-integration-p/supervisor.cs.unchanged.txt",
+    "to": "typescript/docs/validation/ts-035e3h-build-ready-p/supervisor.cs.unchanged.txt",
+    "bytes": 15997,
+    "sha256": "ff72647da35de4bae3ba2fdfac9486c37a0c16ce8e401fa004eeec0664b63fef"
+  }
+]

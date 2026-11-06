@@ -1,0 +1,20 @@
+{
+  "source": "typescript/docs/validation/ts-035e3h-build-integration-p/runner.mjs.proposed.txt",
+  "sourceBytes": 11638,
+  "sourceSha256": "116b304f1a476a4416ad955e90cc5cdeae31eb11b280cf12bed1bcf245cc787d",
+  "replacements": [
+    {
+      "old": "const RUN_ENABLED=false;",
+      "next": "const RUN_ENABLED=true;",
+      "count": 1
+    },
+    {
+      "old": "8f2d9a147678aeb9b57652c2535085dc4968fc42cedb07a5a455b66903dba1aa",
+      "next": "ab41a62de6fc2a6ceecfc8d9100d37ae016cab184aa5320fae3f6b87f889db44",
+      "count": 1
+    }
+  ],
+  "target": "runner.mjs.proposed.txt",
+  "bytes": 11637,
+  "sha256": "61931ed545a538dab5cbc95c9cf66e89254498ed6810837361a100c840062d11"
+}

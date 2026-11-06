@@ -1,0 +1,57 @@
+[
+  {
+    "path": "runner.mjs.proposed.txt",
+    "bytes": 11637,
+    "sha256": "61931ed545a538dab5cbc95c9cf66e89254498ed6810837361a100c840062d11"
+  },
+  {
+    "path": "integration-bindings.json",
+    "bytes": 2436,
+    "sha256": "ab41a62de6fc2a6ceecfc8d9100d37ae016cab184aa5320fae3f6b87f889db44"
+  },
+  {
+    "path": "files.mjs",
+    "bytes": 4818,
+    "sha256": "9e60e9d9a0d2583751c67f714a2f0c173355978141d3085a465ae4e364b7b3ce"
+  },
+  {
+    "path": "policy.mjs",
+    "bytes": 5450,
+    "sha256": "9ee0a2e370100878dba17932a3922a4ba8006213be251296f301019742f84e8e"
+  },
+  {
+    "path": "runtime-support.mjs",
+    "bytes": 3484,
+    "sha256": "7c47f8850abf00788b3de41a4068678e465702d9d6b988a4d54d9d0109b4287a"
+  },
+  {
+    "path": "alias-policy.json",
+    "bytes": 35797,
+    "sha256": "bfab8dfb6968e755146d40d477b1aae282ac7961f2d7a4cdca6432e85f6be9c4"
+  },
+  {
+    "path": "output-policy.json",
+    "bytes": 1639,
+    "sha256": "2259201d087f882e69a0b5772eb893db15b9b1ecb6274b06ada2712199c784cc"
+  },
+  {
+    "path": "staging-policy.json",
+    "bytes": 681,
+    "sha256": "e0309d58f115579f44fb6e24c8645c3c05893ed07c9aafdd501a1689c6aaf5fc"
+  },
+  {
+    "path": "execution-config.json",
+    "bytes": 1997,
+    "sha256": "c3b00705ae91fd9e376f6f8f40c54424f9ca82409d1495efcc3715856c294246"
+  },
+  {
+    "path": "supervise.ps1.proposed.txt",
+    "bytes": 2038,
+    "sha256": "cf5e946e4d7f14c5f46094c02bf593987afe0ab07578dbe68c0f81f7565c8ddf"
+  },
+  {
+    "path": "supervisor.cs.unchanged.txt",
+    "bytes": 15997,
+    "sha256": "ff72647da35de4bae3ba2fdfac9486c37a0c16ce8e401fa004eeec0664b63fef"
+  }
+]
