@@ -8,7 +8,7 @@
     },
     {
       "path": "tests.proposed.mjs.txt",
-      "sha256": "dca5ed1f605e79c92b931d9ab8c9af47cdc844f01570699b762b51074aa586f5",
+      "sha256": "453571321aecf43dcd5e17b88a259f9c30842dc9a66f02295804088b71455a6e",
       "command": "node --check --input-type=module (source on stdin)",
       "exitCode": 0
     }

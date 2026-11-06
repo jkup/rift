@@ -93,7 +93,7 @@ function run(){
  // Extended relocations are rejected without reading a plausible sentinel.
  test('boundary/relocation-count-product',()=>{const b=Buffer.from(fullBytes);b.writeUInt16LE(65535,52);assert.equal(inspectCoff(b).error.code,'TRUNCATED_RELOCATIONS');});
  test('boundary/unsigned-pointer',()=>{const b=Buffer.from(fullBytes);b.writeUInt32LE(4294967295,8);assert.deepEqual(inspectCoff(b).error,{code:'TRUNCATED_SYMBOLS',offset:8});});
- 
+
  for(const id of ['empty-pointer-60','empty-directive-512-60'])test('empty/no-payload-touch/'+id,()=>{
   const f=fixtures.find(x=>x.id===id),bytes=Buffer.from(f.bytesHex,'hex');
   const savedSubarray=Buffer.prototype.subarray,savedHash=crypto.createHash;let emptySlices=0,hashCalls=0;const updates=[];

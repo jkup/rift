@@ -12,11 +12,11 @@
       "next": "const json=p=>JSON.parse(fs.readFileSync(p)),emptyDesign=resolve(here,'../ts-035e3g-empty-p'),fixtures=[...json(join(emptyDesign,'fixtures.v2.json')).cases,...json(join(emptyDesign,'empty-fixtures.json')).cases];"
     },
     {
-      "old": "return {observations,actualFixtureComparisons:83,",
+      "old": " return {observations,actualFixtureComparisons:83,",
       "next": "\n for(const id of ['empty-pointer-60','empty-directive-512-60'])test('empty/no-payload-touch/'+id,()=>{\n  const f=fixtures.find(x=>x.id===id),bytes=Buffer.from(f.bytesHex,'hex');\n  const savedSubarray=Buffer.prototype.subarray,savedHash=crypto.createHash;let emptySlices=0,hashCalls=0;const updates=[];\n  try{\n   Buffer.prototype.subarray=function(start,end){if(this.length===60&&start===60&&end===60)emptySlices++;return savedSubarray.call(this,start,end)};\n   crypto.createHash=(...args)=>{hashCalls++;const h=savedHash(...args),update=h.update;h.update=function(data,...rest){updates.push(data.length);return update.call(this,data,...rest)};return h};syncBuiltinESMExports();\n   assert.deepEqual(inspectCoff(bytes),f.expected);\n  }finally{Buffer.prototype.subarray=savedSubarray;crypto.createHash=savedHash;syncBuiltinESMExports();}\n  assert.equal(emptySlices,0);assert.equal(hashCalls,1);assert.deepEqual(updates,[60]);\n });\n return {observations,actualFixtureComparisons:115,"
     }
   ],
   "output": "tests.proposed.mjs.txt",
-  "bytes": 12090,
-  "sha256": "dca5ed1f605e79c92b931d9ab8c9af47cdc844f01570699b762b51074aa586f5"
+  "bytes": 12089,
+  "sha256": "453571321aecf43dcd5e17b88a259f9c30842dc9a66f02295804088b71455a6e"
 }

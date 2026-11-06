@@ -102,7 +102,7 @@
   {
     "path": "typescript/docs/validation/ts-035e3g-empty-p/syntax-results.json",
     "bytes": 544,
-    "sha256": "2ce69522d541b07e342fa793f9d85c6e4949fb8088f3b84c4dfcbc2dd6c7cbba"
+    "sha256": "8de13cdd407d2cbf5ea282b55c1bf436961be004399eed543d2f301ef65d55cc"
   },
   {
     "path": "typescript/docs/validation/ts-035e3g-empty-p/task-entry.txt",
@@ -111,13 +111,13 @@
   },
   {
     "path": "typescript/docs/validation/ts-035e3g-empty-p/tests-transformation.json",
-    "bytes": 2024,
-    "sha256": "8906d4902c9ac925f504845c3d8bc0b2286bbb101c3fee164e1f502bdeb25537"
+    "bytes": 2025,
+    "sha256": "aa25eb27e72e97d71d75ca83deed063150cfae1d454752106b1830499cb8cec3"
   },
   {
     "path": "typescript/docs/validation/ts-035e3g-empty-p/tests.proposed.mjs.txt",
-    "bytes": 12090,
-    "sha256": "dca5ed1f605e79c92b931d9ab8c9af47cdc844f01570699b762b51074aa586f5"
+    "bytes": 12089,
+    "sha256": "453571321aecf43dcd5e17b88a259f9c30842dc9a66f02295804088b71455a6e"
   },
   {
     "path": "typescript/docs/validation/ts-035e3g-empty-p/verify.mjs",
