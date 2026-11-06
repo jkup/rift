@@ -1,0 +1,176 @@
+{
+  "sourceCommit": "6b19f68513f3882cbe67f239f90d19bf59d8506b",
+  "authorizedMainInvocations": 1,
+  "totalAuthorizedLifecycleInvocations": 4,
+  "harnessExitCode": 0,
+  "planned": 5,
+  "attempted": 5,
+  "matched": 5,
+  "failed": 0,
+  "unrun": 0,
+  "diagnosticInvocations": 0,
+  "scriptcInvocations": 0,
+  "outerEmptyBeforeFallback": 4,
+  "legacySurvivorsBeforeFallback": [
+    18700
+  ],
+  "safetyCleanupReturnedSuccessfully": 1,
+  "rows": [
+    {
+      "id": "death-with-live-descendant",
+      "kind": "unmeasured-until-run",
+      "status": "matched-future-literal",
+      "errors": [],
+      "membersBeforeKill": [
+        15592,
+        30708,
+        29724,
+        33076,
+        8412
+      ],
+      "membersBeforeSafety": [],
+      "emptyBeforeSafety": true,
+      "safetyCleanup": false,
+      "statusData": null,
+      "expectation": {
+        "id": "death-with-live-descendant",
+        "source": "corrected",
+        "mode": "descendant-live",
+        "pauseAt": "after-resume",
+        "fault": "",
+        "action": "kill-descendant",
+        "expect": "empty-after-kill",
+        "resumed": null,
+        "stop": null
+      },
+      "supervisorPid": 15592,
+      "childMarker": "33076\n",
+      "processIdentities": [
+        {
+          "Pid": 33076,
+          "Created": "134384346221203132",
+          "Image": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        {
+          "Pid": 8412,
+          "Created": "134384346221790296",
+          "Image": "C:\\Program Files\\nodejs\\node.exe"
+        }
+      ]
+    },
+    {
+      "id": "creation-race-0ms",
+      "kind": "unmeasured-until-run",
+      "status": "matched-future-literal",
+      "errors": [],
+      "membersBeforeKill": [
+        31632,
+        5896
+      ],
+      "membersBeforeSafety": [],
+      "emptyBeforeSafety": true,
+      "safetyCleanup": false,
+      "statusData": null,
+      "expectation": {
+        "id": "creation-race-0ms",
+        "source": "corrected",
+        "mode": "idle",
+        "pauseAt": "before-create",
+        "fault": "",
+        "action": "race-kill",
+        "delayMs": 0,
+        "expect": "empty-after-kill",
+        "resumed": null,
+        "stop": null
+      },
+      "supervisorPid": 31632,
+      "childMarker": "0\n"
+    },
+    {
+      "id": "creation-race-1ms",
+      "kind": "unmeasured-until-run",
+      "status": "matched-future-literal",
+      "errors": [],
+      "membersBeforeKill": [
+        28152,
+        7744
+      ],
+      "membersBeforeSafety": [],
+      "emptyBeforeSafety": true,
+      "safetyCleanup": false,
+      "statusData": null,
+      "expectation": {
+        "id": "creation-race-1ms",
+        "source": "corrected",
+        "mode": "idle",
+        "pauseAt": "before-create",
+        "fault": "",
+        "action": "race-kill",
+        "delayMs": 1,
+        "expect": "empty-after-kill",
+        "resumed": null,
+        "stop": null
+      },
+      "supervisorPid": 28152,
+      "childMarker": "0\n"
+    },
+    {
+      "id": "creation-race-5ms",
+      "kind": "unmeasured-until-run",
+      "status": "matched-future-literal",
+      "errors": [],
+      "membersBeforeKill": [
+        33404,
+        16808
+      ],
+      "membersBeforeSafety": [],
+      "emptyBeforeSafety": true,
+      "safetyCleanup": false,
+      "statusData": null,
+      "expectation": {
+        "id": "creation-race-5ms",
+        "source": "corrected",
+        "mode": "idle",
+        "pauseAt": "before-create",
+        "fault": "",
+        "action": "race-kill",
+        "delayMs": 5,
+        "expect": "empty-after-kill",
+        "resumed": null,
+        "stop": null
+      },
+      "supervisorPid": 33404,
+      "childMarker": "0\n"
+    },
+    {
+      "id": "legacy-gap-control",
+      "kind": "unmeasured-until-run",
+      "status": "matched-future-literal",
+      "errors": [],
+      "membersBeforeKill": [
+        2468,
+        3752,
+        18700
+      ],
+      "membersBeforeSafety": [
+        18700
+      ],
+      "emptyBeforeSafety": false,
+      "safetyCleanup": true,
+      "statusData": null,
+      "expectation": {
+        "id": "legacy-gap-control",
+        "source": "legacy",
+        "mode": "idle",
+        "pauseAt": "after-create",
+        "fault": "",
+        "action": "kill",
+        "expect": "survivor-detected-before-safety-cleanup",
+        "resumed": null,
+        "stop": null
+      },
+      "supervisorPid": 2468,
+      "childMarker": "18700\n"
+    }
+  ]
+}

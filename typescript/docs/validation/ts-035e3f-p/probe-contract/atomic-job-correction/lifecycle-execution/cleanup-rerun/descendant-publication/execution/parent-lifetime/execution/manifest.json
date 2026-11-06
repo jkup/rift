@@ -1,0 +1,62 @@
+[
+  {
+    "path": "typescript/docs/script-build-provenance.md",
+    "bytes": 36751,
+    "sha256": "93b4855ec956099a4e070ec5e1c84a69a0af930ded3c9609ef7d393b55a4babf"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/README.md",
+    "bytes": 4766,
+    "sha256": "277bb801a00488bd7aa9e37d3bf852e57c232074d70437a7b2cd84dc5316be87"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/attempt-files.json.gz",
+    "bytes": 79024,
+    "sha256": "febc376d3154a3ae0e1e8bcc848093d3635d9502f6688cfaf35101c55cbbb381"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/attempt.log",
+    "bytes": 1115,
+    "sha256": "bff744569a9f564ea15b68cec34216f55e2b0b9df36ba262913f6181e23bed18"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/hardlink-pairs.json",
+    "bytes": 2113,
+    "sha256": "c470fbb399b27f236a9286e3483753200cb082cc55dcacf891a0991c056c69a8"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/inventory.json",
+    "bytes": 20751,
+    "sha256": "18f68da8c2897494c5ac7bf8ede1281bad0b7d8fe548239ab700625350f2d8fb"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/outcomes.json",
+    "bytes": 4401,
+    "sha256": "c93a2e740e641e4b4cb5dc7e3b5e13882d9540b5ab891a7faf146ff1dfe6523b"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/preserve.mjs",
+    "bytes": 3473,
+    "sha256": "174b56b635f0a460667c7f47ddf8ab215516e152098f6943bde77c1aa09b7c28"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/prior-design.md",
+    "bytes": 35528,
+    "sha256": "9f9750d3475cb7840169e77bc5c8a8533590a1f6aef256b8036038818ca4a821"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/prior-manifest.json",
+    "bytes": 286,
+    "sha256": "b81a96a7def00af61dd42334870c191fad3082ba93232955830dedf820307063"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/results.json",
+    "bytes": 3803,
+    "sha256": "d7a3bf2bd6947fc882782701a0ab99acd3851ca880e0e4a8017bd1a7cf605e25"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/verify.mjs",
+    "bytes": 29229,
+    "sha256": "d89285bae93bd6c3bd7fc19eac8c673b905dc286d9884f70d325764ffddbaaa3"
+  }
+]

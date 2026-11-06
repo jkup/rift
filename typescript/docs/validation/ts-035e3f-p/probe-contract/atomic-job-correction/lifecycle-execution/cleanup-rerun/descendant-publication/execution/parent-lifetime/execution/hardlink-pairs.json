@@ -1,0 +1,74 @@
+[
+  [
+    {
+      "path": "death-with-live-descendant/descendant-pid.txt",
+      "bytes": 5,
+      "sha256": "0ecb231296ca16397dcd3ff696cceb7f9edc9a6da9910fd63b2870a549f4f403",
+      "dev": "1045235170",
+      "ino": "281474978332656",
+      "nlink": "2"
+    },
+    {
+      "path": "death-with-live-descendant/descendant-pid.txt.pending",
+      "bytes": 5,
+      "sha256": "0ecb231296ca16397dcd3ff696cceb7f9edc9a6da9910fd63b2870a549f4f403",
+      "dev": "1045235170",
+      "ino": "281474978332656",
+      "nlink": "2"
+    }
+  ],
+  [
+    {
+      "path": "death-with-live-descendant/leaf-ready.json",
+      "bytes": 181,
+      "sha256": "d4a26d3279344076efe6eccd9164f99d928e0eae6d2502d160bfcfa25c8ee771",
+      "dev": "1045235170",
+      "ino": "281474978332654",
+      "nlink": "2"
+    },
+    {
+      "path": "death-with-live-descendant/leaf-ready.json.pending",
+      "bytes": 181,
+      "sha256": "d4a26d3279344076efe6eccd9164f99d928e0eae6d2502d160bfcfa25c8ee771",
+      "dev": "1045235170",
+      "ino": "281474978332654",
+      "nlink": "2"
+    }
+  ],
+  [
+    {
+      "path": "death-with-live-descendant/leaf-spawn.json",
+      "bytes": 577,
+      "sha256": "a03c168280a45dae9a1ea0e01ca875f67fa1a8880c5446c43f8b076afceb7831",
+      "dev": "1045235170",
+      "ino": "281474978332652",
+      "nlink": "2"
+    },
+    {
+      "path": "death-with-live-descendant/leaf-spawn.json.pending",
+      "bytes": 577,
+      "sha256": "a03c168280a45dae9a1ea0e01ca875f67fa1a8880c5446c43f8b076afceb7831",
+      "dev": "1045235170",
+      "ino": "281474978332652",
+      "nlink": "2"
+    }
+  ],
+  [
+    {
+      "path": "death-with-live-descendant/parent-ready.json",
+      "bytes": 386,
+      "sha256": "9eb374022603ccb1a97a0ed9f8349c6444477446609a57fe4cc99f3d1efc5b14",
+      "dev": "1045235170",
+      "ino": "281474978332655",
+      "nlink": "2"
+    },
+    {
+      "path": "death-with-live-descendant/parent-ready.json.pending",
+      "bytes": 386,
+      "sha256": "9eb374022603ccb1a97a0ed9f8349c6444477446609a57fe4cc99f3d1efc5b14",
+      "dev": "1045235170",
+      "ino": "281474978332655",
+      "nlink": "2"
+    }
+  ]
+]
