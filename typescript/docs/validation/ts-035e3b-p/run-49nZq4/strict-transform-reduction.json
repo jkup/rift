@@ -1,0 +1,29 @@
+{
+  "claim": "pure validation, no guest executed",
+  "request": {
+    "mode": "conformance",
+    "variant": "strict",
+    "action": "execute",
+    "nonce": "future",
+    "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "preflightId": "future-preflight-data",
+    "limits": {
+      "sourceUnits": 100000,
+      "parseDepth": 128,
+      "steps": 100000,
+      "calls": 64,
+      "evaluationDepth": 256,
+      "wallMs": 10000,
+      "outputBytes": 1048576
+    },
+    "units": [
+      {
+        "id": "u0",
+        "role": "test",
+        "text": "0;"
+      }
+    ]
+  },
+  "initial": "accepted mislabeled strict source",
+  "corrected": "script-producer/strict-transform"
+}

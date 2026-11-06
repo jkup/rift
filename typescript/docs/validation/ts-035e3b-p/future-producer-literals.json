@@ -1,0 +1,2802 @@
+[
+  {
+    "id": "node/script-observation/raw/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": false,
+      "preflightId": null,
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/raw/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "raw",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": false,
+      "preflightId": null,
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/non-strict/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "non-strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/non-strict/execute/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "non-strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/non-strict/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "non-strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/non-strict/parse-only/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "non-strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/strict/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/strict/execute/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/strict/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/script-observation/strict/parse-only/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "script-observation",
+      "variant": "strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/raw/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": false,
+      "preflightId": null,
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/raw/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "raw",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": false,
+      "preflightId": null,
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/non-strict/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "non-strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "non-strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/non-strict/execute/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "non-strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "non-strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/non-strict/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "non-strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "non-strict",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/non-strict/parse-only/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "non-strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "non-strict",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/strict/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/strict/execute/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/strict/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "node/conformance/strict/parse-only/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/raw/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": false,
+      "preflightId": null,
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/raw/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "raw",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": false,
+      "preflightId": null,
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/non-strict/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "non-strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/non-strict/execute/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "non-strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/non-strict/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "non-strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/non-strict/parse-only/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "non-strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/strict/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/strict/execute/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/strict/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/script-observation/strict/parse-only/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "script-observation",
+      "variant": "strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "script-observation",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "64",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "script-observation",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/raw/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": false,
+      "preflightId": null,
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/raw/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "raw",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": false,
+      "preflightId": null,
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/non-strict/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "non-strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "non-strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/non-strict/execute/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "non-strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "non-strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/non-strict/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "non-strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "non-strict",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/non-strict/parse-only/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "non-strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "non-strict",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/strict/execute/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/strict/execute/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "body",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": true,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/strict/parse-only/test",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u0",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "id": "native/conformance/strict/parse-only/harness",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "parse-only",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "parse-only",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "driverVersion": 2,
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "conformance",
+      "operation": {
+        "stage": "test",
+        "phase": "parse",
+        "unitId": "u1",
+        "realmId": "test"
+      },
+      "source": null,
+      "testBodyEvaluated": false,
+      "harnessValidated": true,
+      "preflightId": "future-preflight-data",
+      "completedUnits": [
+        "u0"
+      ],
+      "inspection": null,
+      "result": {
+        "kind": "normal"
+      }
+    }
+  }
+]

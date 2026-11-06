@@ -1,0 +1,532 @@
+[
+  {
+    "id": "node/late-source-missing",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "child": null,
+      "processStarted": true,
+      "testBodyEvaluated": null
+    },
+    "scenario": "late-source-missing",
+    "claim": "future driver failure requirement; no parent terminal/receipt; body unknown for write failure"
+  },
+  {
+    "id": "node/strict-transform-late",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "child": null,
+      "processStarted": true,
+      "testBodyEvaluated": null
+    },
+    "scenario": "strict-transform-late",
+    "claim": "future driver failure requirement; no parent terminal/receipt; body unknown for write failure"
+  },
+  {
+    "id": "node/result-write-failure",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "child": null,
+      "processStarted": true,
+      "testBodyEvaluated": null
+    },
+    "scenario": "result-write-failure",
+    "claim": "future driver failure requirement; no parent terminal/receipt; body unknown for write failure"
+  },
+  {
+    "id": "native/late-source-missing",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "child": null,
+      "processStarted": true,
+      "testBodyEvaluated": null
+    },
+    "scenario": "late-source-missing",
+    "claim": "future driver failure requirement; no parent terminal/receipt; body unknown for write failure"
+  },
+  {
+    "id": "native/strict-transform-late",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "child": null,
+      "processStarted": true,
+      "testBodyEvaluated": null
+    },
+    "scenario": "strict-transform-late",
+    "claim": "future driver failure requirement; no parent terminal/receipt; body unknown for write failure"
+  },
+  {
+    "id": "native/result-write-failure",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "child": null,
+      "processStarted": true,
+      "testBodyEvaluated": null
+    },
+    "scenario": "result-write-failure",
+    "claim": "future driver failure requirement; no parent terminal/receipt; body unknown for write failure"
+  },
+  {
+    "id": "node/result-exists",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "node",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "child": null,
+      "processStarted": true,
+      "testBodyEvaluated": null,
+      "existingResult": "original"
+    },
+    "scenario": "result-exists",
+    "claim": "future driver failure requirement; no parent terminal/receipt; body unknown for write failure"
+  },
+  {
+    "id": "native/result-exists",
+    "provenance": "unexecuted future synthetic producer requirement; not admitted",
+    "lane": "native",
+    "request": {
+      "mode": "conformance",
+      "variant": "strict",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": "future-preflight-data",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "harness",
+          "text": "0;"
+        },
+        {
+          "id": "u1",
+          "role": "test",
+          "text": "\"use strict\";\n0;"
+        }
+      ]
+    },
+    "argv": [
+      "conformance",
+      "strict",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "future-preflight-data",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "harness",
+      "SOURCE-u0",
+      "u1",
+      "test",
+      "SOURCE-u1"
+    ],
+    "expected": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "child": null,
+      "processStarted": true,
+      "testBodyEvaluated": null,
+      "existingResult": "original"
+    },
+    "scenario": "result-exists",
+    "claim": "future driver failure requirement; no parent terminal/receipt; body unknown for write failure"
+  }
+]

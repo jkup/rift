@@ -1,0 +1,603 @@
+[
+  {
+    "section": "",
+    "operation": "delete",
+    "key": "mode",
+    "candidate": {
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "",
+    "operation": "delete",
+    "key": "variant",
+    "candidate": {
+      "mode": "conformance",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "",
+    "operation": "delete",
+    "key": "action",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "",
+    "operation": "delete",
+    "key": "nonce",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "",
+    "operation": "delete",
+    "key": "requestSha256",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "",
+    "operation": "delete",
+    "key": "preflightId",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "",
+    "operation": "delete",
+    "key": "limits",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "",
+    "operation": "delete",
+    "key": "units",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      }
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "",
+    "operation": "extra",
+    "key": "unknown",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ],
+      "unknown": true
+    },
+    "error": "script-producer/fields"
+  },
+  {
+    "section": "limits",
+    "operation": "delete",
+    "key": "sourceUnits",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/limit-fields"
+  },
+  {
+    "section": "limits",
+    "operation": "delete",
+    "key": "parseDepth",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/limit-fields"
+  },
+  {
+    "section": "limits",
+    "operation": "delete",
+    "key": "steps",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/limit-fields"
+  },
+  {
+    "section": "limits",
+    "operation": "delete",
+    "key": "calls",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/limit-fields"
+  },
+  {
+    "section": "limits",
+    "operation": "delete",
+    "key": "evaluationDepth",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/limit-fields"
+  },
+  {
+    "section": "limits",
+    "operation": "delete",
+    "key": "wallMs",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/limit-fields"
+  },
+  {
+    "section": "limits",
+    "operation": "delete",
+    "key": "outputBytes",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/limit-fields"
+  },
+  {
+    "section": "limits",
+    "operation": "extra",
+    "key": "unknown",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576,
+        "unknown": true
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/limit-fields"
+  },
+  {
+    "section": "units.0",
+    "operation": "delete",
+    "key": "id",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "role": "test",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/unit-fields"
+  },
+  {
+    "section": "units.0",
+    "operation": "delete",
+    "key": "role",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "text": "0;"
+        }
+      ]
+    },
+    "error": "script-producer/unit-fields"
+  },
+  {
+    "section": "units.0",
+    "operation": "delete",
+    "key": "text",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test"
+        }
+      ]
+    },
+    "error": "script-producer/unit-fields"
+  },
+  {
+    "section": "units.0",
+    "operation": "extra",
+    "key": "unknown",
+    "candidate": {
+      "mode": "conformance",
+      "variant": "raw",
+      "action": "execute",
+      "nonce": "future",
+      "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "preflightId": null,
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "steps": 100000,
+        "calls": 64,
+        "evaluationDepth": 256,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      },
+      "units": [
+        {
+          "id": "u0",
+          "role": "test",
+          "text": "0;",
+          "unknown": true
+        }
+      ]
+    },
+    "error": "script-producer/unit-fields"
+  }
+]

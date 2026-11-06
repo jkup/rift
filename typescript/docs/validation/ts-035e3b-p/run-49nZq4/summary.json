@@ -1,0 +1,12 @@
+{
+  "pureRequestPositives": 20,
+  "argvNegatives": 57,
+  "shapeNegatives": 21,
+  "retainedCodec": 154,
+  "malformed": 5976,
+  "parentPriority": 4,
+  "actualLanes": 2,
+  "conformanceExecutions": 0,
+  "nativeBuilds": 0,
+  "guestLaunches": 0
+}

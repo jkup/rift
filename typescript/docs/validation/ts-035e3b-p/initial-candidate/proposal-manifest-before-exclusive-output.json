@@ -1,0 +1,14 @@
+[
+  {
+    "path": "typescript/src/script-observation.ts",
+    "proposal": "proposals/script-observation.ts",
+    "before": "8efa3781452ca03a4a612b46be98428b62edbb1db41ee8c48e9d861d3d4d5f6d",
+    "after": "a1ce39a846b7955d34ab5ff9488b262b99c0177f95607889ea8d0534291f78c9"
+  },
+  {
+    "path": "typescript/src/script-observation-driver.ts",
+    "proposal": "proposals/script-observation-driver.ts",
+    "before": "1fec2abb26da595c9cffa05b125ed3a81cee583d7690410ad0246d888e3697a3",
+    "after": "0c861ac73bbc714a05064cea39d6d9c98f1a92c3189afd764f52b043f10cebeb"
+  }
+]
