@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "status": "substantive-ambiguity-review-stop",
+  "implementationAuthorized": false,
+  "base": "bf02056238bce71d46505a6f92640305d640a5eb",
+  "additions": [],
+  "replacements": [],
+  "evidence": [
+    {
+      "path": "audit.mjs",
+      "sha256": "61876ac21896133925cb144c604d3ae669e2b552d2354af0359362271adf3b55"
+    },
+    {
+      "path": "baseline.json",
+      "sha256": "9eff476dd952c572b8ef733db15cbb34f9ba47a9b1f2f767bf797c7feae88bf8"
+    },
+    {
+      "path": "closure-audit.json",
+      "sha256": "47f1e4c971b3704385bf46fa1915cf190c3d06cd7e8a43367edf6754e780a757"
+    },
+    {
+      "path": "mutations.json",
+      "sha256": "cada6466075b5d1fdb1880034643c42084ade65086bc7f2e99a662d510fbd5db"
+    },
+    {
+      "path": "mutations.mjs",
+      "sha256": "f1c183a3cc5a7eec3dbd476b41f1bc036ef064c1896fb947c31a495229dc79cd"
+    },
+    {
+      "path": "producer-boundary.mts",
+      "sha256": "bca0c86158dd37eebb644066ce117c17917ad2375061eee394c2dd32d4fd40c1"
+    },
+    {
+      "path": "proposal-manifest-initial.json",
+      "sha256": "faf204b11cad0b3ec88ef28dd0fc3519eec833eb51b3c27757d8a36b02d64807"
+    },
+    {
+      "path": "README.md",
+      "sha256": "38aadceed8ee25ac4a74320866d4a649e1a2237a5ecd09b4430c3330a0f2ebc0"
+    },
+    {
+      "path": "reduce.mjs",
+      "sha256": "ebe3c0daad5e4f64377b286ee8b38ab4c4c86b2b92a48f0b3c8f4ab4c970832e"
+    },
+    {
+      "path": "reduction-codecs-only.json",
+      "sha256": "f5d2c9d35d7828ffc1ac6b8f9574038662315112baa2e962ad7aac94c20d827f"
+    },
+    {
+      "path": "reduction.json",
+      "sha256": "dd4262e2244cd8af95a7246beffed20700fdbc6944043307ba71e0fd04b69b33"
+    },
+    {
+      "path": "verification-note.json",
+      "sha256": "7b62a82e9a2b811b9e4a70f1442f74b86980bddfac8c3f79b918dfbbf174bf59"
+    },
+    {
+      "path": "verify-initial.mjs",
+      "sha256": "51b40cecc443b20a5563ad9476786946079421194434f9a7032316b27ab8cbd7"
+    },
+    {
+      "path": "verify.mjs",
+      "sha256": "c34551c00d4ad9943d8052d7ec59db96e59fa17b6b2c492a08cd6976ac305a59"
+    },
+    {
+      "path": "../../script-conformance-preflight.md",
+      "sha256": "fa2a63e5eb235259737e841179670cce4703028056d16543da2c910e72dfdc5c"
+    }
+  ]
+}

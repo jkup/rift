@@ -1,0 +1,9 @@
+{
+  "initialVerifier": "verify-initial.mjs",
+  "result": "failed at other task sections after all8498 raw-byte baseline checks passed",
+  "cause": "Working TASKS contains33 pre-existing CRLFs before E3d-P, but git show base returns normalized LF",
+  "firstDifferenceOffset": 546713,
+  "firstDifferenceContext": "uccessor. Coordinator owns COORDINATION.\r\n\nCoordinator D8-P acceptance",
+  "resolution": "Normalize CRLF only for TASKS prefix comparison against git; no source/history/baseline hash or working TASKS prefix changed",
+  "productionFailure": false
+}
