@@ -1,0 +1,50 @@
+[
+  {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\source\\recorder.cs",
+    "dev": "1045235170",
+    "ino": "844424930908852",
+    "nlink": "1",
+    "bytes": 5797,
+    "sha256": "25e285690c80c9b5d9e7a18136338394cbc9b55d9d6f8c6b82f3342cffd23877"
+  },
+  {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\refs\\mscorlib.dll",
+    "dev": "1045235170",
+    "ino": "844424930908853",
+    "nlink": "1",
+    "bytes": 5445432,
+    "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c"
+  },
+  {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\supervise.ps1",
+    "dev": "1045235170",
+    "ino": "844424930908854",
+    "nlink": "1",
+    "bytes": 2038,
+    "sha256": "ddddbe944d785fdfdf65f64b63ba489d90e507b22053552f4ececb1ecc0cf0eb"
+  },
+  {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\supervisor.cs",
+    "dev": "1045235170",
+    "ino": "844424930908855",
+    "nlink": "1",
+    "bytes": 15997,
+    "sha256": "ff72647da35de4bae3ba2fdfac9486c37a0c16ce8e401fa004eeec0664b63fef"
+  },
+  {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\contract.json",
+    "dev": "1045235170",
+    "ino": "844424930908856",
+    "nlink": "1",
+    "bytes": 1989,
+    "sha256": "6bb85fc45c6a1922321a1e851fe0fa9c8a3e552002d0bd7d783b108ee36661ad"
+  },
+  {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\out\\link-command-recorder.exe.config",
+    "dev": "1045235170",
+    "ino": "844424930908857",
+    "nlink": "1",
+    "bytes": 125,
+    "sha256": "32d81e039bb59b460cce427dbe27181dc36b06bb9e0fe172334f6b1cfd2eed46"
+  }
+]

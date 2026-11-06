@@ -1,0 +1,292 @@
+{
+  "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build",
+  "rows": [
+    {
+      "relative": "after.json",
+      "dev": "1045235170",
+      "ino": "1688849861040849",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 1206,
+      "sha256": "ebf20e31ced64dac57c28f83e55625b75ad283a956d1b8e47a0a8e3c2afbf335",
+      "archive": "archive/after.json.bin"
+    },
+    {
+      "relative": "alias-post.json",
+      "dev": "1045235170",
+      "ino": "1407374884330194",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 41967,
+      "sha256": "2cafe1a8cf302655cf168212f444ffb9aa48dcf79ec0ddc8d42eb92fb65c97e4",
+      "archive": "archive/alias-post.json.bin"
+    },
+    {
+      "relative": "alias-pre.json",
+      "dev": "1045235170",
+      "ino": "2814749767883367",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 41967,
+      "sha256": "2cafe1a8cf302655cf168212f444ffb9aa48dcf79ec0ddc8d42eb92fb65c97e4",
+      "archive": "archive/alias-pre.json.bin"
+    },
+    {
+      "relative": "before.json",
+      "dev": "1045235170",
+      "ino": "2533274791172712",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 1206,
+      "sha256": "ebf20e31ced64dac57c28f83e55625b75ad283a956d1b8e47a0a8e3c2afbf335",
+      "archive": "archive/before.json.bin"
+    },
+    {
+      "relative": "compiler.stderr.bin",
+      "dev": "1045235170",
+      "ino": "844424930908864",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archive": "archive/compiler.stderr.bin.bin"
+    },
+    {
+      "relative": "compiler.stdout.bin",
+      "dev": "1045235170",
+      "ino": "844424930908863",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archive": "archive/compiler.stdout.bin.bin"
+    },
+    {
+      "relative": "contract.json",
+      "dev": "1045235170",
+      "ino": "844424930908856",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 1989,
+      "sha256": "6bb85fc45c6a1922321a1e851fe0fa9c8a3e552002d0bd7d783b108ee36661ad",
+      "archive": "archive/contract.json.bin"
+    },
+    {
+      "relative": "home",
+      "dev": "1045235170",
+      "ino": "1970324837751471",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "home/AppData",
+      "dev": "1045235170",
+      "ino": "1125899907619504",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "home/AppData/Local",
+      "dev": "1045235170",
+      "ino": "844424930908850",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "home/AppData/Local/Microsoft",
+      "dev": "1045235170",
+      "ino": "1125899907619517",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "home/AppData/Local/Microsoft/PowerShell",
+      "dev": "1045235170",
+      "ino": "1125899907619518",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "dev": "1045235170",
+      "ino": "1970324837751504",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 191792,
+      "sha256": "c97bf313de711861cae039629b23076bd465b93c4f124f7377a446dd52a7a020",
+      "archive": "archive/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive.bin"
+    },
+    {
+      "relative": "home/AppData/Roaming",
+      "dev": "1045235170",
+      "ino": "844424930908849",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "inputs.json",
+      "dev": "1045235170",
+      "ino": "844424930908858",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 1751,
+      "sha256": "b78c8aa1018da512466dfe0145bc8f5d6b6210ba06ff21620b4e66da62656861",
+      "archive": "archive/inputs.json.bin"
+    },
+    {
+      "relative": "out",
+      "dev": "1045235170",
+      "ino": "5348024558279322",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "out/link-command-recorder.exe",
+      "dev": "1045235170",
+      "ino": "1407374884330188",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 8192,
+      "sha256": "093296da037614d1f177de5c4773edd6f1b50fb174ebd762798a88d60a686b2b",
+      "archive": "archive/out/link-command-recorder.exe.bin"
+    },
+    {
+      "relative": "out/link-command-recorder.exe.config",
+      "dev": "1045235170",
+      "ino": "844424930908857",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 125,
+      "sha256": "32d81e039bb59b460cce427dbe27181dc36b06bb9e0fe172334f6b1cfd2eed46",
+      "archive": "archive/out/link-command-recorder.exe.config.bin"
+    },
+    {
+      "relative": "program-data",
+      "dev": "1045235170",
+      "ino": "844424930908851",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "refs",
+      "dev": "1045235170",
+      "ino": "1125899907619478",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "refs/mscorlib.dll",
+      "dev": "1045235170",
+      "ino": "844424930908853",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 5445432,
+      "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c",
+      "archive": "archive/refs/mscorlib.dll.bin"
+    },
+    {
+      "relative": "result.json",
+      "dev": "1045235170",
+      "ino": "1407374884330196",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 5057,
+      "sha256": "feaefe32349444e6b9f25248b105fc654c88550bbaa0515dbf43b36148f8e0aa",
+      "archive": "archive/result.json.bin"
+    },
+    {
+      "relative": "snapshot.json",
+      "dev": "1045235170",
+      "ino": "1407374884330195",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 4721,
+      "sha256": "6e5ba324c936d3ceff79aa3ea99123747fb99eff9c0ab6399938db6b5918cfca",
+      "archive": "archive/snapshot.json.bin"
+    },
+    {
+      "relative": "source",
+      "dev": "1045235170",
+      "ino": "1407374884330111",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "relative": "source/recorder.cs",
+      "dev": "1045235170",
+      "ino": "844424930908852",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 5797,
+      "sha256": "25e285690c80c9b5d9e7a18136338394cbc9b55d9d6f8c6b82f3342cffd23877",
+      "archive": "archive/source/recorder.cs.bin"
+    },
+    {
+      "relative": "started.json",
+      "dev": "1045235170",
+      "ino": "3096224744594022",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 87,
+      "sha256": "d1ea33175213328ca9bc8fb37035ed1cc96ece4d2b51dd06cae1ba02bc7a403e",
+      "archive": "archive/started.json.bin"
+    },
+    {
+      "relative": "supervise.ps1",
+      "dev": "1045235170",
+      "ino": "844424930908854",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 2038,
+      "sha256": "ddddbe944d785fdfdf65f64b63ba489d90e507b22053552f4ececb1ecc0cf0eb",
+      "archive": "archive/supervise.ps1.bin"
+    },
+    {
+      "relative": "supervisor-status.json",
+      "dev": "1045235170",
+      "ino": "1688849861040846",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 1145,
+      "sha256": "178088e653952595c394a5680f8dd9877d940b9bd0bb2a43d20c9758f21bba1f",
+      "archive": "archive/supervisor-status.json.bin"
+    },
+    {
+      "relative": "supervisor.cs",
+      "dev": "1045235170",
+      "ino": "844424930908855",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 15997,
+      "sha256": "ff72647da35de4bae3ba2fdfac9486c37a0c16ce8e401fa004eeec0664b63fef",
+      "archive": "archive/supervisor.cs.bin"
+    },
+    {
+      "relative": "supervisor.stderr.bin",
+      "dev": "1045235170",
+      "ino": "844424930908860",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archive": "archive/supervisor.stderr.bin.bin"
+    },
+    {
+      "relative": "supervisor.stdout.bin",
+      "dev": "1045235170",
+      "ino": "844424930908859",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archive": "archive/supervisor.stdout.bin.bin"
+    },
+    {
+      "relative": "tmp",
+      "dev": "1045235170",
+      "ino": "21110623254076078",
+      "nlink": "1",
+      "kind": "directory"
+    }
+  ]
+}

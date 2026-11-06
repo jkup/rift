@@ -1,0 +1,16 @@
+{
+  "source": "coordinator 01a196aa-fd06-7dc0-91d3-cfee750bcd19 relayed explicit owner approval",
+  "ownerReply": "Approved, proceed",
+  "scope": "one exact helper compilation and one supervisor bootstrap; no generated program and no retries",
+  "runnerSha256": "bdb01ef2860779eb33d1e137ee249b01b30c7798e74111e87f94f469eb03d651",
+  "runnerBytes": 11616,
+  "priorReview": "actual/root/final-second; root8379 exit0; 66 controls/48 home literals/13367 preserved",
+  "invocationSource": "typescript/docs/validation/ts-035e3h-build-home-p/invocation.proposed.json",
+  "limits": {
+    "helper": 1,
+    "supervisorAddType": 1,
+    "retries": 0,
+    "generatedLaunches": 0
+  },
+  "note": "Historical proposal authorized:false is preserved; this explicit approval supplies execution authority."
+}

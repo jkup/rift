@@ -1,0 +1,16 @@
+{
+  "source": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-home-p\\runner.mjs.proposed.txt",
+  "destination": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-home-p\\runner.mjs",
+  "mode": "exclusive-byte-copy-after-review",
+  "sha256": "bdb01ef2860779eb33d1e137ee249b01b30c7798e74111e87f94f469eb03d651",
+  "bytes": 11616,
+  "identity": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-home-p\\runner.mjs",
+    "dev": "1045235170",
+    "ino": "7036874418080905",
+    "nlink": "1",
+    "bytes": 11616,
+    "sha256": "bdb01ef2860779eb33d1e137ee249b01b30c7798e74111e87f94f469eb03d651"
+  },
+  "exactCopy": true
+}

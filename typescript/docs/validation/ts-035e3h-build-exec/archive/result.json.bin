@@ -1,0 +1,169 @@
+{
+  "kind": "helper-build-observation",
+  "stages": [
+    {
+      "name": "reserve-exclusive-root",
+      "status": "complete"
+    },
+    {
+      "name": "named-alias-preflight",
+      "status": "complete"
+    },
+    {
+      "name": "single-link-tools-before",
+      "status": "complete"
+    },
+    {
+      "name": "stage-inputs",
+      "status": "complete"
+    },
+    {
+      "name": "final-staging-preflight",
+      "status": "complete"
+    },
+    {
+      "name": "compiler-and-cleanup-status",
+      "status": "complete"
+    },
+    {
+      "name": "output-bytes-only",
+      "status": "complete"
+    },
+    {
+      "name": "named-alias-postflight",
+      "status": "complete"
+    },
+    {
+      "name": "single-link-tools-after",
+      "status": "complete"
+    },
+    {
+      "name": "source-and-private-copies-after",
+      "status": "complete"
+    },
+    {
+      "name": "bounded-final-snapshot",
+      "status": "complete"
+    }
+  ],
+  "failures": [],
+  "helperBudgetReserved": 1,
+  "compilerInvocations": 1,
+  "supervisorAddTypeBudget": 1,
+  "output": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\out\\link-command-recorder.exe",
+    "bytes": 8192,
+    "sha256": "093296da037614d1f177de5c4773edd6f1b50fb174ebd762798a88d60a686b2b",
+    "loaded": false,
+    "launched": false,
+    "assemblyMetadata": "uninspected"
+  },
+  "authority": "none",
+  "supervisor": {
+    "exe": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+    "argv": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\supervise.ps1",
+      "-ConfigPath",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\contract.json"
+    ],
+    "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build",
+    "environment": {
+      "APPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\home\\AppData\\Roaming",
+      "COMSPEC": "C:\\WINDOWS\\system32\\cmd.exe",
+      "HOMEDRIVE": "C:",
+      "HOMEPATH": "\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\home",
+      "LOCALAPPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\home\\AppData\\Local",
+      "NO_COLOR": "1",
+      "PATH": "C:\\WINDOWS\\system32;C:\\WINDOWS",
+      "PATHEXT": ".EXE",
+      "PROGRAMDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\program-data",
+      "PSModulePath": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\Modules",
+      "SystemDrive": "C:",
+      "SystemRoot": "C:\\WINDOWS",
+      "TEMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\tmp",
+      "TMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\tmp",
+      "USERPROFILE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-recorder-build\\home",
+      "WINDIR": "C:\\WINDOWS"
+    },
+    "spawned": true,
+    "pid": 3900,
+    "error": null,
+    "exit": 0,
+    "signal": null,
+    "watchdog": false,
+    "killRequested": false,
+    "killReturned": null,
+    "closeObserved": true,
+    "streams": {
+      "stdout": {
+        "bytes": 0,
+        "overflow": false
+      },
+      "stderr": {
+        "bytes": 0,
+        "overflow": false
+      }
+    },
+    "ioErrors": []
+  },
+  "statusRaw": {
+    "bytes": 1145,
+    "sha256": "178088e653952595c394a5680f8dd9877d940b9bd0bb2a43d20c9758f21bba1f"
+  },
+  "compilerStatus": {
+    "Outcome": "completed-observation",
+    "StopReason": "root-exit",
+    "Errors": [],
+    "Events": [
+      "job-kill-on-close",
+      "creation-time-job-list-configured",
+      "created-suspended-in-job",
+      "membership-verified",
+      "resumed",
+      "terminate-job"
+    ],
+    "Pid": 32508,
+    "NativeExitCode": 0,
+    "Signal": null,
+    "CreatedSuspended": true,
+    "Assigned": true,
+    "Resumed": true,
+    "JobListConfigured": true,
+    "MembershipVerified": true,
+    "CleanupConfirmed": true,
+    "FinalActiveProcesses": 0,
+    "ElapsedMs": 251,
+    "Stdout": {
+      "ObservedBytes": 0,
+      "RetainedBytes": 0,
+      "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Error": null,
+      "Eof": true,
+      "Complete": true,
+      "Overflow": false
+    },
+    "Stderr": {
+      "ObservedBytes": 0,
+      "RetainedBytes": 0,
+      "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Error": null,
+      "Eof": true,
+      "Complete": true,
+      "Overflow": false
+    },
+    "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+  },
+  "execution": {
+    "kind": "compiler-exited-zero",
+    "cleanup": "reported-not-independent",
+    "compilerInvocations": 1,
+    "authority": "none"
+  },
+  "outcome": "bytes-collected-stop-review"
+}

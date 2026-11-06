@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-11-06T21:48:26.6518568Z",
+  "method": "Get-Process for three reported PIDs only",
+  "processes": [
+    {
+      "pid": 17368,
+      "present": false,
+      "name": null
+    },
+    {
+      "pid": 3900,
+      "present": false,
+      "name": null
+    },
+    {
+      "pid": 32508,
+      "present": false,
+      "name": null
+    }
+  ],
+  "limitation": "Point-in-time known-PID absence; not an independent complete descendant census or job-membership proof",
+  "terminationActions": 0
+}
