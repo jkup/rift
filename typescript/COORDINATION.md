@@ -1566,3 +1566,7 @@ Accepted synthetic milestoneca7c74ed published main/feature/localmain verified. 
 Rejected observation milestone7c0b3b80 publishedverified. Sole designer active afterexplicitwait,cursor95aebccb-aa1b-4352-8fb4-a5637844af37:44;new ts-035e3g-empty-p/design-TASKS only. Review spec/empty rawpointer rule,independent fullfixtures/exact proposals/versionedoldexpectations;NO parseramendment/repeatinventory until actual/root/second review. Mainhistory unchanged.
 
 2026-11-06 empty-section DESIGN33ea7176 accepted actual/finalsecond/root17869complete0/build/ts035e3g-empty-root-verify.log:13039preserved32newliterals83originals1versionedcorrection2proposals42windows. Three exact source replacements preserve nonempty checks;no empty payload hashing/slicing/spans. Publish then exact separate synthetic implementation,realinventory remains unauthorized.
+
+Empty-section design milestone4b5bfa4d publishedverified. Sole synthetic writer active after explicitwait,cursor95aebccb-aa1b-4352-8fb4-a5637844af37:46. Own NEW ts-035e3g-empty/newTASKS only,exact readerb86ec337/test45357132 plus hashcheckedunchangeddeps. Require115fullbyte260synthetic/8boundaries96publiczero-I/O/meaningfulmutants. No real42inventory until actual/root/second syntheticacceptance;oldhistory immutable.
+
+2026-11-06 empty synthetic58b4dfa4 accepted actual/finalsecond/root30728complete0:260/115/8/96/5mutants13065preserved/nineexacthashes. Root build/ts035e3g-empty-root-* logs. Publish before separate bounded one-shot archive observation,not automatic parserexpansion.
