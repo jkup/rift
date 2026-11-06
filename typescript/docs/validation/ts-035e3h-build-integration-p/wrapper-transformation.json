@@ -1,0 +1,18 @@
+{
+  "source": "typescript/docs/validation/ts-035e3h-build-p/supervise.ps1.proposed.txt",
+  "sourceSha256": "f6ea5bd646aece160e8f11f05de42776ae8791d43e880fcd18892ceb05f66f35",
+  "replacements": [
+    {
+      "old": "throw 'DESIGN_ONLY_HELPER_BUILD_GATE: bootstrap/policy/staging review required'\n",
+      "next": "",
+      "count": 1
+    },
+    {
+      "old": "$config = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json",
+      "next": "$expectedConfigSha256 = 'c3b00705ae91fd9e376f6f8f40c54424f9ca82409d1495efcc3715856c294246'\n$configBytes = [IO.File]::ReadAllBytes($ConfigPath)\nif ($configBytes.Length -gt 65536) { throw 'config cap' }\n$configHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($configBytes)).ToLowerInvariant()\nif ($configHash -ne $expectedConfigSha256) { throw 'config identity' }\n$config = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json",
+      "count": 1
+    }
+  ],
+  "target": "supervise.ps1.proposed.txt",
+  "sha256": "cf5e946e4d7f14c5f46094c02bf593987afe0ab07578dbe68c0f81f7565c8ddf"
+}

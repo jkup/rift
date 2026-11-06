@@ -1,0 +1,234 @@
+[
+  {
+    "name": "build-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/verify.mjs",
+    "sourceBytes": 3454,
+    "sourceSha256": "be056c2521bb4725fcb897bbf1305aa2e6893c3ed899afccb1f97679c8fc17d5",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p')",
+        "count": 1,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      },
+      {
+        "old": "join(repo,'typescript/TASKS.md')",
+        "next": "join(import.meta.dirname,'../guard-tasks.md')",
+        "count": 1,
+        "all": false
+      },
+      {
+        "old": "'./_preserve/capture-correction-guard.mjs'",
+        "next": "'./capture-correction-guard.mjs'",
+        "count": 1,
+        "all": false
+      },
+      {
+        "old": "'./check-design.mjs'",
+        "next": "'../../ts-035e3h-build-p/check-design.mjs'",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 3589,
+    "sha256": "6d8759dfb8f112ecd17b662e4f6cec3b4a81e9b0cc69dbae5b761f3e2febe839"
+  },
+  {
+    "name": "capture-correction-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/capture-correction-guard.mjs",
+    "sourceBytes": 3603,
+    "sourceSha256": "19f31a4870f7f52804685454c3ec6d0ede2b3a1187c4297ab764a5e99c9033af",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 3768,
+    "sha256": "957cacb21b98a4208bfa888dc56d2e49cd52bb4963fc87665de89007a2110087"
+  },
+  {
+    "name": "design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/design-guard.mjs",
+    "sourceBytes": 8834,
+    "sourceSha256": "27930061f4dc158897a8f56bb983da029fc77e3c1023a0e62e7bc10293f077b5",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 6,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 9179,
+    "sha256": "f7c1cb53d49b1bf7164aa382a98bdc2e7b6708456ef5b46625182ac4907a9b5d"
+  },
+  {
+    "name": "direction-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/direction-guard.mjs",
+    "sourceBytes": 3937,
+    "sourceSha256": "125efd5f7fbd286595fcf992345b7a93df2c01b7393f073a230fc6a1db643ce4",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4102,
+    "sha256": "04fbf5219db6de604b438b191dcf9546a93de095f0848c18d991ae61a04e1675"
+  },
+  {
+    "name": "empty-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/empty-design-guard.mjs",
+    "sourceBytes": 4402,
+    "sourceSha256": "e4a805f489d942d986deab397cca76b981d7d4698820961af09fd00339cd5c3f",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4567,
+    "sha256": "b9064243b3f0b9412fdc622746b8de10d2994def9918034c5611dffc9e2986ae"
+  },
+  {
+    "name": "observation-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/observation-guard.mjs",
+    "sourceBytes": 4064,
+    "sourceSha256": "ad9d32332c5233f42ca36b8d5f09e0f5bdc83783fd6b117a12b8213017c6f384",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4229,
+    "sha256": "a6dc6d37927a8024a6c8eb40eb20ae417722ae9d4390e773546810f11a208036"
+  },
+  {
+    "name": "original-observation-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/original-observation-guard.mjs",
+    "sourceBytes": 4506,
+    "sourceSha256": "d1f4c1ed2dcf2d5f9fa6234deb9d5d306e6315e661001f666cf2cf6b4ee734b4",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4671,
+    "sha256": "eb5d47f7d888298fe68908d5e104f567c33ddb722e1e0d46d0ab73a9ed5c65ee"
+  },
+  {
+    "name": "prior-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/prior-guard.mjs",
+    "sourceBytes": 65647,
+    "sourceSha256": "af848afcdc2987d5f314c94effd5475de3e78fd16bb58a0eec341ef5584f2f93",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 32,
+        "all": true
+      }
+    ],
+    "bytes": 67087,
+    "sha256": "474ad919ec12a0695f7d56cdc09f171eeaf184607fe591025b023a3075b04236"
+  },
+  {
+    "name": "rejected-capture-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/rejected-capture-guard.mjs",
+    "sourceBytes": 3705,
+    "sourceSha256": "86421adeb5e1d972f695d806d9c6b6806b29c3b26101dfa8734992fc45cf90e5",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 3870,
+    "sha256": "05a9d25c28f20f34b691d508d40c01af4c84a10948ad5ab2a333f2930c1b1552"
+  },
+  {
+    "name": "synthetic-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-build-p/_preserve/synthetic-guard.mjs",
+    "sourceBytes": 5716,
+    "sourceSha256": "27b3ce325f3b9a755eeb015f28654f877edbacecfab910d73e7f31ac7a886a69",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-build-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-build-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-build-integration-p/');",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 5881,
+    "sha256": "cd2ea6020210a3f61330c9bf656924f2cfa5f2868d03b3d33986da9a568d2030"
+  }
+]

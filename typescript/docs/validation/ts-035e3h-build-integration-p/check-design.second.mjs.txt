@@ -1,0 +1,29 @@
+import assert from 'node:assert/strict';
+import * as fs from 'node:fs';
+import {join,resolve} from 'node:path';
+import {createHash} from 'node:crypto';
+import {validateAliases} from './policy.mjs';
+import {parseAliasList} from './runtime-support.mjs';
+const here=import.meta.dirname,repo=resolve(here,'../../../..'),old=join(here,'../ts-035e3h-build-p');
+const hash=b=>createHash('sha256').update(b).digest('hex'),read=n=>fs.readFileSync(join(here,n)),json=n=>JSON.parse(read(n));
+for(const r of json('source-identities.json')){const b=read(r.path);assert.equal(b.length,r.bytes);assert.equal(hash(b),r.sha256);}
+for(const r of json('integration-bindings.json').files){const b=fs.readFileSync(join(repo,r.path));assert.equal(b.length,r.bytes);assert.equal(hash(b),r.sha256);}
+const runner=read('runner.mjs.proposed.txt').toString();assert(runner.includes('const RUN_ENABLED=false;'));assert(runner.includes("assert(RUN_ENABLED,'DESIGN_ONLY_RUN_GATE')"));assert(runner.includes(hash(read('integration-bindings.json'))));
+assert(runner.includes(fs.readFileSync(join(old,'parent-supervise.extracted.mjs.txt'),'utf8')));
+const plan=JSON.parse(fs.readFileSync(join(old,'proposal.json'))),config=json('execution-config.json'),staging=json('staging-policy.json');
+for(const k of ['root','executable','argv','childEnvironment'])assert.deepEqual(config[k],plan[k]);assert.equal(Object.keys(config.childEnvironment).length,16);
+assert.equal(config.timeoutMs,60000);assert.equal(config.streamCapBytes,8388608);assert.equal(config.cleanupMs,10000);
+assert.equal(staging.runEnabled,false);assert.equal(staging.compilerInvocationsMaximum,1);assert.equal(staging.supervisorAddTypeMaximum,1);assert.equal(staging.nodeBytes,100097864);
+assert.equal(plan.source.sha256,'25e285690c80c9b5d9e7a18136338394cbc9b55d9d6f8c6b82f3342cffd23877');
+const t=json('wrapper-transformation.json'),source=fs.readFileSync(join(repo,t.source));assert.equal(hash(source),t.sourceSha256);let transformed=source.toString();for(const r of t.replacements){assert.equal(transformed.split(r.old).length-1,r.count);transformed=transformed.replace(r.old,r.next);}assert.equal(transformed,read(t.target).toString());assert.equal(hash(read(t.target)),t.sha256);
+assert.deepEqual(read('supervisor.cs.unchanged.txt'),fs.readFileSync(join(old,'supervisor.cs.unchanged.txt')));
+const audit=json('alias-audit.json'),policy=json('alias-policy.json');assert.equal(audit.status,'passed');assert.deepEqual(audit.errors,[]);assert.equal(audit.calls.length,12);assert.equal(audit.files.length,6);assert.deepEqual(audit.utilityBefore,audit.utilityAfter);assert.deepEqual(policy.utility,audit.utilityBefore);
+assert.deepEqual(policy.groups,audit.files.map(f=>({named:f.named,names:f.names,records:f.aliases})));assert.equal(policy.groups.reduce((n,g)=>n+g.names.length,0),15);validateAliases(policy,policy);
+for(const f of audit.files){assert.deepEqual(f.before,f.after.find(r=>r.path===f.named));assert.deepEqual(f.aliases,f.after);assert.deepEqual(f.names,f.afterNames);}
+for(const c of audit.calls){assert.equal(c.exit,0);assert.equal(c.error,null);assert.deepEqual(c.argv,['hardlink','list',audit.files[c.index].named]);const b=read(`aliases-${c.index}-${c.phase}.stdout.bin`);assert.equal(b.length,c.bytes);assert.equal(hash(b),c.sha256);assert.deepEqual(parseAliasList(b),audit.files[c.index].names);}
+const fixtures=json('filesystem-results.json');assert.equal(fixtures.status,'passed');assert.equal(fixtures.results.length,12);assert(fixtures.results.every(r=>r.status==='passed'));assert.equal(fixtures.processInvocations,0);
+for(const r of fixtures.inventory){const s=fs.lstatSync(r.path,{bigint:true});for(const k of ['dev','ino','nlink'])assert.equal(String(s[k]),r[k]);if(r.kind==='alias'){assert(s.isSymbolicLink());assert.equal(fs.readlinkSync(r.path),r.target);}else if(r.kind==='file'){assert(s.isFile());const b=fs.readFileSync(r.path);assert.equal(b.length,r.bytes);assert.equal(hash(b),r.sha256);}else assert(s.isDirectory());}
+const tests=json('test-results-3.json');assert.equal(tests.status,'passed');assert.equal(tests.observations.length,104);assert(tests.observations.every(r=>r.status==='passed'));assert.equal(tests.mutantsKilled,2);assert.equal(tests.newUtilityInvocations,0);assert.equal(json('test-results.json').error.actual,2);assert.equal(json('test-results-2.json').status,'passed');
+for(const r of json('syntax-results.json')){assert.equal(r.exit,0);assert.equal(r.sourceExecuted,false);}
+for(const r of [audit,fixtures,tests]){assert.equal(r.compilerInvocations,0);assert.equal(r.addTypeInvocations,0);}
+console.log(JSON.stringify({inertIntegration:true,aliasGroups:6,aliasNames:15,metadataUtilityCalls:12,syntheticControls:104,filesystemControls:12,runGateClosed:true,compilerInvocations:0,addTypeInvocations:0,passed:true}));

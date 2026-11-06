@@ -1,0 +1,1831 @@
+[
+  {
+    "id": "reported-success-only",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "compiler-exited-zero",
+      "cleanup": "reported-not-independent",
+      "compilerInvocations": 1,
+      "authority": "none"
+    }
+  },
+  {
+    "id": "outer-argv-drift",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1",
+          "extra"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "outer-env-drift",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp",
+          "EXTRA": "1"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "outer-nonzero",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 70,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "outer-not-closed",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": false,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "outer-watchdog",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": true,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "outer-cap",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": true
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "compiler-failure",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 1,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "cleanup-unconfirmed",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": false,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "active-child",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 1,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "wrong-event-sequence",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "membership-unknown",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": false,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "pipe-open",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": false,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": false,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "truncated-pipe",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 1,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 1,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "wrong-pipe-hash",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "unexpected-status-field",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust",
+        "extra": 1
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "missing-status-field",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "unexpected-pipe-field",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "root-exit",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false,
+          "extra": 1
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false,
+          "extra": 1
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  },
+  {
+    "id": "native-root-timeout",
+    "input": {
+      "outer": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        },
+        "spawned": true,
+        "pid": 9,
+        "error": null,
+        "exit": 0,
+        "signal": null,
+        "watchdog": false,
+        "killRequested": false,
+        "killReturned": null,
+        "closeObserved": true,
+        "streams": {
+          "stdout": {
+            "bytes": 0,
+            "overflow": false
+          },
+          "stderr": {
+            "bytes": 0,
+            "overflow": false
+          }
+        },
+        "ioErrors": []
+      },
+      "status": {
+        "Outcome": "completed-observation",
+        "StopReason": "timeout",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 7,
+        "NativeExitCode": 0,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 2,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      },
+      "stdoutHex": "",
+      "stderrHex": "",
+      "context": {
+        "exe": "PWSH",
+        "argv": [
+          "-File",
+          "supervise.ps1"
+        ],
+        "cwd": "ROOT",
+        "environment": {
+          "TEMP": "ROOT/tmp"
+        }
+      }
+    },
+    "expected": {
+      "kind": "rejected",
+      "code": "ERR_ASSERTION"
+    }
+  }
+]

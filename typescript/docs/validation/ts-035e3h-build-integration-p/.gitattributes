@@ -1,0 +1,3 @@
+* -text
+*.bin -diff
+supervisor.cs.unchanged.txt whitespace=cr-at-eol

@@ -1,0 +1,2352 @@
+{
+  "status": "passed",
+  "calls": [
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "before",
+      "index": 0,
+      "exit": 0,
+      "error": null,
+      "bytes": 154,
+      "sha256": "e284085719bf53b1a4d8db026cce9eea52f429a2951abe7c9c2b7dcb40d38c60"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "after",
+      "index": 0,
+      "exit": 0,
+      "error": null,
+      "bytes": 154,
+      "sha256": "e284085719bf53b1a4d8db026cce9eea52f429a2951abe7c9c2b7dcb40d38c60"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "before",
+      "index": 1,
+      "exit": 0,
+      "error": null,
+      "bytes": 272,
+      "sha256": "9d75b0d2c268d6966d9702979862dd309caf9d0ad6a41d81e9224f08023d03ab"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "after",
+      "index": 1,
+      "exit": 0,
+      "error": null,
+      "bytes": 272,
+      "sha256": "9d75b0d2c268d6966d9702979862dd309caf9d0ad6a41d81e9224f08023d03ab"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "before",
+      "index": 2,
+      "exit": 0,
+      "error": null,
+      "bytes": 251,
+      "sha256": "43704007fb13700d04e30fc4ad428f49e9e69190ffce71f4a749a487f96493b5"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "after",
+      "index": 2,
+      "exit": 0,
+      "error": null,
+      "bytes": 251,
+      "sha256": "43704007fb13700d04e30fc4ad428f49e9e69190ffce71f4a749a487f96493b5"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "before",
+      "index": 3,
+      "exit": 0,
+      "error": null,
+      "bytes": 251,
+      "sha256": "01fa2086192c6c0d2ebfc954a0f365c6032c7e99f9f4b0d57039270d515c756d"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "after",
+      "index": 3,
+      "exit": 0,
+      "error": null,
+      "bytes": 251,
+      "sha256": "01fa2086192c6c0d2ebfc954a0f365c6032c7e99f9f4b0d57039270d515c756d"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "before",
+      "index": 4,
+      "exit": 0,
+      "error": null,
+      "bytes": 154,
+      "sha256": "471302181a5d730e2e2b864a83116ebb6abc4c0072b3c31cd43d6354e964a6c0"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "after",
+      "index": 4,
+      "exit": 0,
+      "error": null,
+      "bytes": 154,
+      "sha256": "471302181a5d730e2e2b864a83116ebb6abc4c0072b3c31cd43d6354e964a6c0"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\System32\\mscoree.dll"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "before",
+      "index": 5,
+      "exit": 0,
+      "error": null,
+      "bytes": 139,
+      "sha256": "7f7b5753c46db1be304607592f7b2280b299f65b4488f8c3099706ba4e7dd076"
+    },
+    {
+      "executable": "C:\\WINDOWS\\system32\\fsutil.exe",
+      "argv": [
+        "hardlink",
+        "list",
+        "C:\\Windows\\System32\\mscoree.dll"
+      ],
+      "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-build-integration-p",
+      "phase": "after",
+      "index": 5,
+      "exit": 0,
+      "error": null,
+      "bytes": 139,
+      "sha256": "7f7b5753c46db1be304607592f7b2280b299f65b4488f8c3099706ba4e7dd076"
+    }
+  ],
+  "files": [
+    {
+      "named": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+      "before": {
+        "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+        "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+        "dev": "1045235170",
+        "ino": "9570149208395779",
+        "nlink": "2",
+        "bytes": 2569832,
+        "sha256": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+        "chain": [
+          {
+            "path": "C:\\",
+            "canonical": "C:\\",
+            "dev": "1045235170",
+            "ino": "1407374883553285",
+            "kind": "directory",
+            "attributes": 22
+          },
+          {
+            "path": "C:\\Windows",
+            "canonical": "C:\\Windows",
+            "dev": "1045235170",
+            "ino": "562949954472039",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET",
+            "canonical": "C:\\Windows\\Microsoft.NET",
+            "dev": "1045235170",
+            "ino": "1125899907894020",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "dev": "1045235170",
+            "ino": "562949954473537",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "dev": "1045235170",
+            "ino": "562949954473538",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+            "dev": "1045235170",
+            "ino": "9570149208395779",
+            "kind": "file",
+            "attributes": 32
+          }
+        ]
+      },
+      "names": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe"
+      ],
+      "aliases": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+          "dev": "1045235170",
+          "ino": "9570149208395779",
+          "nlink": "2",
+          "bytes": 2569832,
+          "sha256": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+              "dev": "1045235170",
+              "ino": "9570149208395779",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe",
+          "dev": "1045235170",
+          "ino": "9570149208395779",
+          "nlink": "2",
+          "bytes": 2569832,
+          "sha256": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa",
+              "dev": "1045235170",
+              "ino": "5066549581050820",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe",
+              "dev": "1045235170",
+              "ino": "9570149208395779",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ],
+      "afterNames": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe"
+      ],
+      "after": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+          "dev": "1045235170",
+          "ino": "9570149208395779",
+          "nlink": "2",
+          "bytes": 2569832,
+          "sha256": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+              "dev": "1045235170",
+              "ino": "9570149208395779",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe",
+          "dev": "1045235170",
+          "ino": "9570149208395779",
+          "nlink": "2",
+          "bytes": 2569832,
+          "sha256": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa",
+              "dev": "1045235170",
+              "ino": "5066549581050820",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe",
+              "dev": "1045235170",
+              "ino": "9570149208395779",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "named": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+      "before": {
+        "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+        "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+        "dev": "1045235170",
+        "ino": "562949954525098",
+        "nlink": "3",
+        "bytes": 182,
+        "sha256": "2d4610ade011e530d817dd3ba4fc787e5dc0c2297cc520c30a643b8fb13f9093",
+        "chain": [
+          {
+            "path": "C:\\",
+            "canonical": "C:\\",
+            "dev": "1045235170",
+            "ino": "1407374883553285",
+            "kind": "directory",
+            "attributes": 22
+          },
+          {
+            "path": "C:\\Windows",
+            "canonical": "C:\\Windows",
+            "dev": "1045235170",
+            "ino": "562949954472039",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET",
+            "canonical": "C:\\Windows\\Microsoft.NET",
+            "dev": "1045235170",
+            "ino": "1125899907894020",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "dev": "1045235170",
+            "ino": "562949954473537",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "dev": "1045235170",
+            "ino": "562949954473538",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+            "dev": "1045235170",
+            "ino": "562949954525098",
+            "kind": "file",
+            "attributes": 32
+          }
+        ]
+      },
+      "names": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config"
+      ],
+      "aliases": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+          "dev": "1045235170",
+          "ino": "562949954525098",
+          "nlink": "3",
+          "bytes": 182,
+          "sha256": "2d4610ade011e530d817dd3ba4fc787e5dc0c2297cc520c30a643b8fb13f9093",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+              "dev": "1045235170",
+              "ino": "562949954525098",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+          "dev": "1045235170",
+          "ino": "562949954525098",
+          "nlink": "3",
+          "bytes": 182,
+          "sha256": "2d4610ade011e530d817dd3ba4fc787e5dc0c2297cc520c30a643b8fb13f9093",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2",
+              "dev": "1045235170",
+              "ino": "562949954485132",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+              "dev": "1045235170",
+              "ino": "562949954525098",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config",
+          "dev": "1045235170",
+          "ino": "562949954525098",
+          "nlink": "3",
+          "bytes": 182,
+          "sha256": "2d4610ade011e530d817dd3ba4fc787e5dc0c2297cc520c30a643b8fb13f9093",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa",
+              "dev": "1045235170",
+              "ino": "5066549581050820",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config",
+              "dev": "1045235170",
+              "ino": "562949954525098",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ],
+      "afterNames": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config"
+      ],
+      "after": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+          "dev": "1045235170",
+          "ino": "562949954525098",
+          "nlink": "3",
+          "bytes": 182,
+          "sha256": "2d4610ade011e530d817dd3ba4fc787e5dc0c2297cc520c30a643b8fb13f9093",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+              "dev": "1045235170",
+              "ino": "562949954525098",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+          "dev": "1045235170",
+          "ino": "562949954525098",
+          "nlink": "3",
+          "bytes": 182,
+          "sha256": "2d4610ade011e530d817dd3ba4fc787e5dc0c2297cc520c30a643b8fb13f9093",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2",
+              "dev": "1045235170",
+              "ino": "562949954485132",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15912.0_none_78ce8a6e35a89ad2\\csc.exe.config",
+              "dev": "1045235170",
+              "ino": "562949954525098",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config",
+          "dev": "1045235170",
+          "ino": "562949954525098",
+          "nlink": "3",
+          "bytes": 182,
+          "sha256": "2d4610ade011e530d817dd3ba4fc787e5dc0c2297cc520c30a643b8fb13f9093",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa",
+              "dev": "1045235170",
+              "ino": "5066549581050820",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc_exe_b03f5f7f11d50a3a_4.0.15920.100_none_6da7ea4673b761aa\\csc.exe.config",
+              "dev": "1045235170",
+              "ino": "562949954525098",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "named": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+      "before": {
+        "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+        "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+        "dev": "1045235170",
+        "ino": "562949954525575",
+        "nlink": "3",
+        "bytes": 1329,
+        "sha256": "e2021640c1f8ad500549fc89cd53bc4c2f0fa13fee9034714142d93c5d554042",
+        "chain": [
+          {
+            "path": "C:\\",
+            "canonical": "C:\\",
+            "dev": "1045235170",
+            "ino": "1407374883553285",
+            "kind": "directory",
+            "attributes": 22
+          },
+          {
+            "path": "C:\\Windows",
+            "canonical": "C:\\Windows",
+            "dev": "1045235170",
+            "ino": "562949954472039",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET",
+            "canonical": "C:\\Windows\\Microsoft.NET",
+            "dev": "1045235170",
+            "ino": "1125899907894020",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "dev": "1045235170",
+            "ino": "562949954473537",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "dev": "1045235170",
+            "ino": "562949954473538",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+            "dev": "1045235170",
+            "ino": "562949954525575",
+            "kind": "file",
+            "attributes": 32
+          }
+        ]
+      },
+      "names": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp"
+      ],
+      "aliases": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+          "dev": "1045235170",
+          "ino": "562949954525575",
+          "nlink": "3",
+          "bytes": 1329,
+          "sha256": "e2021640c1f8ad500549fc89cd53bc4c2f0fa13fee9034714142d93c5d554042",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+              "dev": "1045235170",
+              "ino": "562949954525575",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+          "dev": "1045235170",
+          "ino": "562949954525575",
+          "nlink": "3",
+          "bytes": 1329,
+          "sha256": "e2021640c1f8ad500549fc89cd53bc4c2f0fa13fee9034714142d93c5d554042",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904",
+              "dev": "1045235170",
+              "ino": "562949954485130",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+              "dev": "1045235170",
+              "ino": "562949954525575",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp",
+          "dev": "1045235170",
+          "ino": "562949954525575",
+          "nlink": "3",
+          "bytes": 1329,
+          "sha256": "e2021640c1f8ad500549fc89cd53bc4c2f0fa13fee9034714142d93c5d554042",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc",
+              "dev": "1045235170",
+              "ino": "6192449487891929",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp",
+              "dev": "1045235170",
+              "ino": "562949954525575",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ],
+      "afterNames": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp"
+      ],
+      "after": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+          "dev": "1045235170",
+          "ino": "562949954525575",
+          "nlink": "3",
+          "bytes": 1329,
+          "sha256": "e2021640c1f8ad500549fc89cd53bc4c2f0fa13fee9034714142d93c5d554042",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+              "dev": "1045235170",
+              "ino": "562949954525575",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+          "dev": "1045235170",
+          "ino": "562949954525575",
+          "nlink": "3",
+          "bytes": 1329,
+          "sha256": "e2021640c1f8ad500549fc89cd53bc4c2f0fa13fee9034714142d93c5d554042",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904",
+              "dev": "1045235170",
+              "ino": "562949954485130",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15912.0_none_7914122e35711904\\csc.rsp",
+              "dev": "1045235170",
+              "ino": "562949954525575",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp",
+          "dev": "1045235170",
+          "ino": "562949954525575",
+          "nlink": "3",
+          "bytes": 1329,
+          "sha256": "e2021640c1f8ad500549fc89cd53bc4c2f0fa13fee9034714142d93c5d554042",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc",
+              "dev": "1045235170",
+              "ino": "6192449487891929",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-csc.rsp_b03f5f7f11d50a3a_4.0.15920.100_none_6ded7206737fdfdc\\csc.rsp",
+              "dev": "1045235170",
+              "ino": "562949954525575",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "named": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+      "before": {
+        "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+        "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+        "dev": "1045235170",
+        "ino": "1970324837345602",
+        "nlink": "3",
+        "bytes": 5445432,
+        "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c",
+        "chain": [
+          {
+            "path": "C:\\",
+            "canonical": "C:\\",
+            "dev": "1045235170",
+            "ino": "1407374883553285",
+            "kind": "directory",
+            "attributes": 22
+          },
+          {
+            "path": "C:\\Windows",
+            "canonical": "C:\\Windows",
+            "dev": "1045235170",
+            "ino": "562949954472039",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET",
+            "canonical": "C:\\Windows\\Microsoft.NET",
+            "dev": "1045235170",
+            "ino": "1125899907894020",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "dev": "1045235170",
+            "ino": "562949954473537",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "dev": "1045235170",
+            "ino": "562949954473538",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+            "dev": "1045235170",
+            "ino": "1970324837345602",
+            "kind": "file",
+            "attributes": 32
+          }
+        ]
+      },
+      "names": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+        "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+        "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll"
+      ],
+      "aliases": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+          "dev": "1045235170",
+          "ino": "1970324837345602",
+          "nlink": "3",
+          "bytes": 5445432,
+          "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+              "dev": "1045235170",
+              "ino": "1970324837345602",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+          "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+          "dev": "1045235170",
+          "ino": "1970324837345602",
+          "nlink": "3",
+          "bytes": 5445432,
+          "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly",
+              "dev": "1045235170",
+              "ino": "1125899907894021",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64",
+              "dev": "1045235170",
+              "ino": "562949954472761",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib",
+              "dev": "1045235170",
+              "ino": "562949954472790",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089",
+              "dev": "1045235170",
+              "ino": "562949954472791",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+              "dev": "1045235170",
+              "ino": "1970324837345602",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll",
+          "dev": "1045235170",
+          "ino": "1970324837345602",
+          "nlink": "3",
+          "bytes": 5445432,
+          "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c",
+              "dev": "1045235170",
+              "ino": "1688849860859791",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll",
+              "dev": "1045235170",
+              "ino": "1970324837345602",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ],
+      "afterNames": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+        "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+        "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll"
+      ],
+      "after": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+          "dev": "1045235170",
+          "ino": "1970324837345602",
+          "nlink": "3",
+          "bytes": 5445432,
+          "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+              "dev": "1045235170",
+              "ino": "1970324837345602",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+          "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+          "dev": "1045235170",
+          "ino": "1970324837345602",
+          "nlink": "3",
+          "bytes": 5445432,
+          "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly",
+              "dev": "1045235170",
+              "ino": "1125899907894021",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64",
+              "dev": "1045235170",
+              "ino": "562949954472761",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib",
+              "dev": "1045235170",
+              "ino": "562949954472790",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089",
+              "dev": "1045235170",
+              "ino": "562949954472791",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+              "canonical": "C:\\Windows\\Microsoft.NET\\assembly\\GAC_64\\mscorlib\\v4.0_4.0.0.0__b77a5c561934e089\\mscorlib.dll",
+              "dev": "1045235170",
+              "ino": "1970324837345602",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll",
+          "dev": "1045235170",
+          "ino": "1970324837345602",
+          "nlink": "3",
+          "bytes": 5445432,
+          "sha256": "11ac114c43ecf6996bef58ba3c99fba3693a4560a84eeadde54d193060dc626c",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c",
+              "dev": "1045235170",
+              "ino": "1688849860859791",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_mscorlib_b77a5c561934e089_4.0.15920.125_none_197dca94e7b7f92c\\mscorlib.dll",
+              "dev": "1045235170",
+              "ino": "1970324837345602",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "named": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+      "before": {
+        "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+        "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+        "dev": "1045235170",
+        "ino": "4222124651030253",
+        "nlink": "2",
+        "bytes": 10000696,
+        "sha256": "0db5bf856173a818323196fefdd62822c3cddda6f92b2b378f1c6d6ea3b99ead",
+        "chain": [
+          {
+            "path": "C:\\",
+            "canonical": "C:\\",
+            "dev": "1045235170",
+            "ino": "1407374883553285",
+            "kind": "directory",
+            "attributes": 22
+          },
+          {
+            "path": "C:\\Windows",
+            "canonical": "C:\\Windows",
+            "dev": "1045235170",
+            "ino": "562949954472039",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET",
+            "canonical": "C:\\Windows\\Microsoft.NET",
+            "dev": "1045235170",
+            "ino": "1125899907894020",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+            "dev": "1045235170",
+            "ino": "562949954473537",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+            "dev": "1045235170",
+            "ino": "562949954473538",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+            "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+            "dev": "1045235170",
+            "ino": "4222124651030253",
+            "kind": "file",
+            "attributes": 32
+          }
+        ]
+      },
+      "names": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll"
+      ],
+      "aliases": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+          "dev": "1045235170",
+          "ino": "4222124651030253",
+          "nlink": "2",
+          "bytes": 10000696,
+          "sha256": "0db5bf856173a818323196fefdd62822c3cddda6f92b2b378f1c6d6ea3b99ead",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+              "dev": "1045235170",
+              "ino": "4222124651030253",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll",
+          "dev": "1045235170",
+          "ino": "4222124651030253",
+          "nlink": "2",
+          "bytes": 10000696,
+          "sha256": "0db5bf856173a818323196fefdd62822c3cddda6f92b2b378f1c6d6ea3b99ead",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb",
+              "dev": "1045235170",
+              "ino": "1688849860862801",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll",
+              "dev": "1045235170",
+              "ino": "4222124651030253",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ],
+      "afterNames": [
+        "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+        "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll"
+      ],
+      "after": [
+        {
+          "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+          "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+          "dev": "1045235170",
+          "ino": "4222124651030253",
+          "nlink": "2",
+          "bytes": 10000696,
+          "sha256": "0db5bf856173a818323196fefdd62822c3cddda6f92b2b378f1c6d6ea3b99ead",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET",
+              "canonical": "C:\\Windows\\Microsoft.NET",
+              "dev": "1045235170",
+              "ino": "1125899907894020",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64",
+              "dev": "1045235170",
+              "ino": "562949954473537",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319",
+              "dev": "1045235170",
+              "ino": "562949954473538",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+              "canonical": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+              "dev": "1045235170",
+              "ino": "4222124651030253",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll",
+          "dev": "1045235170",
+          "ino": "4222124651030253",
+          "nlink": "2",
+          "bytes": 10000696,
+          "sha256": "0db5bf856173a818323196fefdd62822c3cddda6f92b2b378f1c6d6ea3b99ead",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb",
+              "dev": "1045235170",
+              "ino": "1688849860862801",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx4-clr_dll_b03f5f7f11d50a3a_4.0.15920.125_none_3851e9101a81adeb\\clr.dll",
+              "dev": "1045235170",
+              "ino": "4222124651030253",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "named": "C:\\Windows\\System32\\mscoree.dll",
+      "before": {
+        "path": "C:\\Windows\\System32\\mscoree.dll",
+        "canonical": "C:\\Windows\\System32\\mscoree.dll",
+        "dev": "1045235170",
+        "ino": "2814749767427734",
+        "nlink": "2",
+        "bytes": 430080,
+        "sha256": "07f1ea065c452d37da2ad56ce505184e41947c42a560d8235276e0fb8b758701",
+        "chain": [
+          {
+            "path": "C:\\",
+            "canonical": "C:\\",
+            "dev": "1045235170",
+            "ino": "1407374883553285",
+            "kind": "directory",
+            "attributes": 22
+          },
+          {
+            "path": "C:\\Windows",
+            "canonical": "C:\\Windows",
+            "dev": "1045235170",
+            "ino": "562949954472039",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\System32",
+            "canonical": "C:\\Windows\\System32",
+            "dev": "1045235170",
+            "ino": "562949954473670",
+            "kind": "directory",
+            "attributes": 16
+          },
+          {
+            "path": "C:\\Windows\\System32\\mscoree.dll",
+            "canonical": "C:\\Windows\\System32\\mscoree.dll",
+            "dev": "1045235170",
+            "ino": "2814749767427734",
+            "kind": "file",
+            "attributes": 32
+          }
+        ]
+      },
+      "names": [
+        "C:\\Windows\\System32\\mscoree.dll",
+        "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll"
+      ],
+      "aliases": [
+        {
+          "path": "C:\\Windows\\System32\\mscoree.dll",
+          "canonical": "C:\\Windows\\System32\\mscoree.dll",
+          "dev": "1045235170",
+          "ino": "2814749767427734",
+          "nlink": "2",
+          "bytes": 430080,
+          "sha256": "07f1ea065c452d37da2ad56ce505184e41947c42a560d8235276e0fb8b758701",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\System32",
+              "canonical": "C:\\Windows\\System32",
+              "dev": "1045235170",
+              "ino": "562949954473670",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\System32\\mscoree.dll",
+              "canonical": "C:\\Windows\\System32\\mscoree.dll",
+              "dev": "1045235170",
+              "ino": "2814749767427734",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll",
+          "dev": "1045235170",
+          "ino": "2814749767427734",
+          "nlink": "2",
+          "bytes": 430080,
+          "sha256": "07f1ea065c452d37da2ad56ce505184e41947c42a560d8235276e0fb8b758701",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109",
+              "dev": "1045235170",
+              "ino": "3377699720886118",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll",
+              "dev": "1045235170",
+              "ino": "2814749767427734",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ],
+      "afterNames": [
+        "C:\\Windows\\System32\\mscoree.dll",
+        "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll"
+      ],
+      "after": [
+        {
+          "path": "C:\\Windows\\System32\\mscoree.dll",
+          "canonical": "C:\\Windows\\System32\\mscoree.dll",
+          "dev": "1045235170",
+          "ino": "2814749767427734",
+          "nlink": "2",
+          "bytes": 430080,
+          "sha256": "07f1ea065c452d37da2ad56ce505184e41947c42a560d8235276e0fb8b758701",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\System32",
+              "canonical": "C:\\Windows\\System32",
+              "dev": "1045235170",
+              "ino": "562949954473670",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\System32\\mscoree.dll",
+              "canonical": "C:\\Windows\\System32\\mscoree.dll",
+              "dev": "1045235170",
+              "ino": "2814749767427734",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        },
+        {
+          "path": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll",
+          "canonical": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll",
+          "dev": "1045235170",
+          "ino": "2814749767427734",
+          "nlink": "2",
+          "bytes": 430080,
+          "sha256": "07f1ea065c452d37da2ad56ce505184e41947c42a560d8235276e0fb8b758701",
+          "chain": [
+            {
+              "path": "C:\\",
+              "canonical": "C:\\",
+              "dev": "1045235170",
+              "ino": "1407374883553285",
+              "kind": "directory",
+              "attributes": 22
+            },
+            {
+              "path": "C:\\Windows",
+              "canonical": "C:\\Windows",
+              "dev": "1045235170",
+              "ino": "562949954472039",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS",
+              "canonical": "C:\\Windows\\WinSxS",
+              "dev": "1045235170",
+              "ino": "562949954476231",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109",
+              "dev": "1045235170",
+              "ino": "3377699720886118",
+              "kind": "directory",
+              "attributes": 16
+            },
+            {
+              "path": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll",
+              "canonical": "C:\\Windows\\WinSxS\\amd64_netfx-mscoree_dll_31bf3856ad364e35_10.0.26100.3624_none_510de4ce063f3109\\mscoree.dll",
+              "dev": "1045235170",
+              "ino": "2814749767427734",
+              "kind": "file",
+              "attributes": 32
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "compilerInvocations": 0,
+  "addTypeInvocations": 0,
+  "utilityBefore": {
+    "path": "C:\\WINDOWS\\system32\\fsutil.exe",
+    "canonical": "C:\\WINDOWS\\system32\\fsutil.exe",
+    "dev": "1045235170",
+    "ino": "1688849860779112",
+    "nlink": "2",
+    "bytes": 280040,
+    "sha256": "3fca44b7ce971031c08296647821e04dc7aa62c0f5846a3a0dc7015d5a4bc501",
+    "chain": [
+      {
+        "path": "C:\\",
+        "canonical": "C:\\",
+        "dev": "1045235170",
+        "ino": "1407374883553285",
+        "kind": "directory",
+        "attributes": 22
+      },
+      {
+        "path": "C:\\WINDOWS",
+        "canonical": "C:\\WINDOWS",
+        "dev": "1045235170",
+        "ino": "562949954472039",
+        "kind": "directory",
+        "attributes": 16
+      },
+      {
+        "path": "C:\\WINDOWS\\system32",
+        "canonical": "C:\\WINDOWS\\system32",
+        "dev": "1045235170",
+        "ino": "562949954473670",
+        "kind": "directory",
+        "attributes": 16
+      },
+      {
+        "path": "C:\\WINDOWS\\system32\\fsutil.exe",
+        "canonical": "C:\\WINDOWS\\system32\\fsutil.exe",
+        "dev": "1045235170",
+        "ino": "1688849860779112",
+        "kind": "file",
+        "attributes": 32
+      }
+    ]
+  },
+  "utilityAfter": {
+    "path": "C:\\WINDOWS\\system32\\fsutil.exe",
+    "canonical": "C:\\WINDOWS\\system32\\fsutil.exe",
+    "dev": "1045235170",
+    "ino": "1688849860779112",
+    "nlink": "2",
+    "bytes": 280040,
+    "sha256": "3fca44b7ce971031c08296647821e04dc7aa62c0f5846a3a0dc7015d5a4bc501",
+    "chain": [
+      {
+        "path": "C:\\",
+        "canonical": "C:\\",
+        "dev": "1045235170",
+        "ino": "1407374883553285",
+        "kind": "directory",
+        "attributes": 22
+      },
+      {
+        "path": "C:\\WINDOWS",
+        "canonical": "C:\\WINDOWS",
+        "dev": "1045235170",
+        "ino": "562949954472039",
+        "kind": "directory",
+        "attributes": 16
+      },
+      {
+        "path": "C:\\WINDOWS\\system32",
+        "canonical": "C:\\WINDOWS\\system32",
+        "dev": "1045235170",
+        "ino": "562949954473670",
+        "kind": "directory",
+        "attributes": 16
+      },
+      {
+        "path": "C:\\WINDOWS\\system32\\fsutil.exe",
+        "canonical": "C:\\WINDOWS\\system32\\fsutil.exe",
+        "dev": "1045235170",
+        "ino": "1688849860779112",
+        "kind": "file",
+        "attributes": 32
+      }
+    ]
+  }
+}
