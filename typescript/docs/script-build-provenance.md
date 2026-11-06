@@ -360,3 +360,48 @@ checked without execution. No C# compilation, Job Object test, compiler process,
 metadata success or process-cleanup feasibility is claimed. See the new README
 for exact command boundary and retained limitations. The original six filesystem
 controls/66data mutations remain historical evidence unchanged.
+
+## Review correction: creation-time job membership and partial pump startup
+
+Root actual/second review did **not** approve629b0e0for execution. Two concrete
+defects remained: supervisor death between suspended creation and separate job
+assignment could orphan the child; partial pump-thread startup could double-close
+a running reader's handle or leave an unstarted pump undisposed. The original
+proposal and all evidence remain intact, including the statements above as
+historical design. The exact correction is now in
+`validation/ts-035e3f-p/probe-contract/atomic-job-correction/`.
+
+The corrected full supervisor requires Windows10+ JOB_LIST assignment as part of
+CreateProcessW, verifies membership in the exact job before resume, and has no
+separate assignment or unsupported-platform fallback. Attribute memory/handles
+remain owned through process creation and attribute-list teardown. This follows
+the documented creation-time mechanism, replacing the identified user-mode gap;
+it does not claim measured local feasibility or perfect behavior under OS failure.
+The correction README compares it with an explicit two-process parent-handle/
+ready-event inheritance protocol and explains why polling/finally is insufficient.
+
+Each pump now owns its read handle immediately after successful construction,
+separately records whether its worker started, and releases resources through a
+once-only path. A thrown Start with an unstarted Thread closes only that pump;
+an uncertain/running thread retains ownership until its read loop finishes.
+The outer code cannot close a handle already transferred to a pump. First- and
+second-start failures have complete independent stream-state literals.
+
+The exact proposed benign lifecycle harness uses a separate outer safety job,
+also assigned at process creation. While it kills only the supervisor under test,
+it observes outer-job survivors before safety cleanup, avoiding a test that
+accidentally hides the inner-job defect. A retained legacy control must expose
+the original suspended survivor inside that safety job. Twenty-five future cases
+cover deterministic creation/membership/resume death boundaries, descendant death,
+timing samples, timeout, both caps, spawn/job/membership/pipe faults and both
+partial thread-start failures. Test hooks exist only in separately retained full
+instrumented sources; they never enter the compiler supervisor proposal.
+
+The full corrected runner preserves the exact21-key environment, original source
+strings/argv, one scriptc invocation60s/8MiB each, cooperative installed-tool/OS
+trust, unknown external effects and stop/no-retry policy. No C#, supervisor,
+benign child or scriptc execution has occurred. Syntax, pure planning, instrumented
+source reproduction and preservation checks are offline evidence only. Root
+actual/second review must precede even supervisor compilation or benign lifecycle
+execution; those results then require review before the metadata probe. No
+production/public API/authority/publication/successor work is authorized here.

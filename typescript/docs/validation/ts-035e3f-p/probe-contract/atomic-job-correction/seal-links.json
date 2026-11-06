@@ -1,0 +1,8 @@
+{
+  "base": "629b0e0195e17a1a14a3b90dfa4790ea5f98ef4b",
+  "parentGuard": {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/guard-manifest.json",
+    "bytes": 8972,
+    "sha256": "d23f0d73155906912147ae198028676510acf7ee3f5a532bba478f1c9fb892cc"
+  }
+}

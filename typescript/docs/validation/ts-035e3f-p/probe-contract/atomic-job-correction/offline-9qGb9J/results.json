@@ -1,0 +1,14 @@
+{
+  "kind": "offline-only-not-win32-validation",
+  "wholePlanLiterals": 1,
+  "exactUnchangedFiles": 3,
+  "wholeRunnerBoundary": true,
+  "sourceChecks": true,
+  "fullInstrumentedSources": 2,
+  "lifecyclePlanCases": 25,
+  "executedLifecycleCases": 0,
+  "csharpCompilations": 0,
+  "scriptcCompilations": 0,
+  "supervisorInvocations": 0,
+  "benignChildInvocations": 0
+}

@@ -1,0 +1,45 @@
+{
+  "csharp": "uncompiled and unexecuted",
+  "node": [
+    {
+      "exitCode": 0,
+      "file": "runner.mjs",
+      "output": ""
+    },
+    {
+      "exitCode": 0,
+      "file": "benign-child.mjs",
+      "output": ""
+    },
+    {
+      "exitCode": 0,
+      "file": "instrument.mjs",
+      "output": ""
+    },
+    {
+      "exitCode": 0,
+      "file": "offline.test.mjs",
+      "output": ""
+    }
+  ],
+  "kind": "syntax-only-no-execution",
+  "benignChildren": 0,
+  "powershell": [
+    {
+      "errors": [],
+      "tokens": 313,
+      "file": "supervise.ps1"
+    },
+    {
+      "errors": [],
+      "tokens": 298,
+      "file": "lifecycle-supervise.ps1"
+    },
+    {
+      "errors": [],
+      "tokens": 2105,
+      "file": "lifecycle-runner.ps1"
+    }
+  ],
+  "compilerInvocations": 0
+}
