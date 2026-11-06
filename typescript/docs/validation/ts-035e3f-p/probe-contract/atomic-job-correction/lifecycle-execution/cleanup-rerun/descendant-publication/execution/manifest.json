@@ -1,0 +1,62 @@
+[
+  {
+    "path": "typescript/docs/script-build-provenance.md",
+    "bytes": 34019,
+    "sha256": "c8325cd86156a46b47a381f025868c9bc628536aba89806df2dd56966dd461c7"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/README.md",
+    "bytes": 4362,
+    "sha256": "0bf01355f284b7f0f100e2d18fbf4433f4a31ab58ad2b8e48a16eabef5bc768a"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/attempt-files.json.gz",
+    "bytes": 258140,
+    "sha256": "fabc252f88adc0b8148dcf38795305b95124178623732d7b5639d898f4a1f9dc"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/attempt.log",
+    "bytes": 1087,
+    "sha256": "c492167913bef023ef52928dfd5442db64a30a9bcb311be68a1d1db5af925ce5"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/failed-result.json",
+    "bytes": 669,
+    "sha256": "d98e518c955446d7fc7a0fa81a2fe906c3189da70fa88a2af5f34a1ca24be552"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/hardlink-pair.json",
+    "bytes": 531,
+    "sha256": "395ca69acfc7e72845183a57986ad0cc682b3e871ac30f7e6f85b9d5c71d8b19"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/inventory.json",
+    "bytes": 31611,
+    "sha256": "61ab70eab0061a6f1cae0aa10e45a95385cd68d9d3b27d246f3b0fb38a696192"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/outcomes.json",
+    "bytes": 6561,
+    "sha256": "4030006f60e5bdbd4866246c7a1fe11904475146b332c24b709e8487c59a751d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/preserve.mjs",
+    "bytes": 3446,
+    "sha256": "86fb76d632da92bee17e3dee472f67cad3e38810a42796c506473978552afada"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/prior-design.md",
+    "bytes": 32828,
+    "sha256": "45f654c757e4e4acf8efe532ce9dbdee9bf3d6d0adbce512c8142f1e4fe1caf8"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/prior-manifest.json",
+    "bytes": 260,
+    "sha256": "44a7c7ba008f81268a1ad18e287b06ff629615c307940976fc295f2c9c9447ef"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/verify.mjs",
+    "bytes": 18820,
+    "sha256": "708ec3b7981fa4b9e30dea54b5a744765f04ee2eca11d3a75f0f18fdbdece337"
+  }
+]

@@ -1,0 +1,204 @@
+{
+  "authorizedInvocationsThisStage": 1,
+  "totalAuthorizedInvocations": 3,
+  "harnessExitCode": 1,
+  "plannedRemaining": 12,
+  "attempted": 8,
+  "matched": 7,
+  "failed": 1,
+  "unrun": 4,
+  "scriptcInvocations": 0,
+  "rows": [
+    {
+      "id": "stdout-read-error",
+      "status": "matched-future-literal",
+      "errors": [],
+      "supervisorPid": 13852,
+      "childMarker": "22032\n",
+      "membersBeforeKill": [
+        13852,
+        20828,
+        22032
+      ],
+      "emptyBeforeSafety": true,
+      "membersBeforeSafety": [],
+      "safetyCleanup": false,
+      "statusData": {
+        "Outcome": "failed-observation-stop-review",
+        "StopReason": "pipe-fault",
+        "Errors": [],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured",
+          "created-suspended-in-job",
+          "membership-verified",
+          "resumed",
+          "terminate-job"
+        ],
+        "Pid": 22032,
+        "NativeExitCode": 3761569793,
+        "Signal": null,
+        "CreatedSuspended": true,
+        "Assigned": true,
+        "Resumed": true,
+        "JobListConfigured": true,
+        "MembershipVerified": true,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 105,
+        "Stdout": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": null,
+          "Error": "System.ComponentModel.Win32Exception (6): read-pipe\r\n   at ProbeSupervisor.Pump.Run()",
+          "Eof": false,
+          "Complete": false,
+          "Overflow": false
+        },
+        "Stderr": {
+          "ObservedBytes": 0,
+          "RetainedBytes": 0,
+          "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "Error": null,
+          "Eof": true,
+          "Complete": true,
+          "Overflow": false
+        },
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      }
+    },
+    {
+      "id": "output-file-exists",
+      "status": "matched-future-literal",
+      "errors": [],
+      "supervisorPid": 24124,
+      "childMarker": null,
+      "membersBeforeKill": null,
+      "emptyBeforeSafety": true,
+      "membersBeforeSafety": [],
+      "safetyCleanup": false,
+      "statusData": {
+        "Outcome": "failed-observation-stop-review",
+        "StopReason": "supervisor-fault",
+        "Errors": [
+          "System.IO.IOException: The file 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-atomic-job-lifecycle-publication\\output-file-exists\\compiler.stdout.bin' already exists.\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\r\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\r\n   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\r\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)\r\n   at ProbeSupervisor.Pump..ctor(IntPtr h, String path, Int32 limit)\r\n   at ProbeSupervisor.Run(String exe, String[] args, String[] environment, String cwd, Int32 timeout, Int32 cap, Int32 cleanup)"
+        ],
+        "Events": [
+          "job-kill-on-close",
+          "creation-time-job-list-configured"
+        ],
+        "Pid": null,
+        "NativeExitCode": null,
+        "Signal": null,
+        "CreatedSuspended": false,
+        "Assigned": false,
+        "Resumed": false,
+        "JobListConfigured": true,
+        "MembershipVerified": false,
+        "CleanupConfirmed": true,
+        "FinalActiveProcesses": 0,
+        "ElapsedMs": 0,
+        "Stdout": null,
+        "Stderr": null,
+        "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+      }
+    },
+    {
+      "id": "death-before-create",
+      "status": "matched-future-literal",
+      "errors": [],
+      "supervisorPid": 31976,
+      "childMarker": "0\n",
+      "membersBeforeKill": [
+        31976,
+        20420
+      ],
+      "emptyBeforeSafety": true,
+      "membersBeforeSafety": [],
+      "safetyCleanup": false,
+      "statusData": null
+    },
+    {
+      "id": "death-after-create",
+      "status": "matched-future-literal",
+      "errors": [],
+      "supervisorPid": 30992,
+      "childMarker": "1964\n",
+      "membersBeforeKill": [
+        30992,
+        33248,
+        1964
+      ],
+      "emptyBeforeSafety": true,
+      "membersBeforeSafety": [],
+      "safetyCleanup": false,
+      "statusData": null
+    },
+    {
+      "id": "death-membership",
+      "status": "matched-future-literal",
+      "errors": [],
+      "supervisorPid": 19252,
+      "childMarker": "5608\n",
+      "membersBeforeKill": [
+        19252,
+        13932,
+        5608
+      ],
+      "emptyBeforeSafety": true,
+      "membersBeforeSafety": [],
+      "safetyCleanup": false,
+      "statusData": null
+    },
+    {
+      "id": "death-before-resume",
+      "status": "matched-future-literal",
+      "errors": [],
+      "supervisorPid": 5756,
+      "childMarker": "28848\n",
+      "membersBeforeKill": [
+        5756,
+        6328,
+        28848
+      ],
+      "emptyBeforeSafety": true,
+      "membersBeforeSafety": [],
+      "safetyCleanup": false,
+      "statusData": null
+    },
+    {
+      "id": "death-after-resume",
+      "status": "matched-future-literal",
+      "errors": [],
+      "supervisorPid": 11412,
+      "childMarker": "29312\n",
+      "membersBeforeKill": [
+        11412,
+        30948,
+        29312,
+        9048
+      ],
+      "emptyBeforeSafety": true,
+      "membersBeforeSafety": [],
+      "safetyCleanup": false,
+      "statusData": null
+    },
+    {
+      "id": "death-with-descendant",
+      "status": "failed-stop-review",
+      "errors": [
+        "descendant not independently present"
+      ],
+      "supervisorPid": 28800,
+      "childMarker": "33336\n",
+      "membersBeforeKill": [
+        28800,
+        568
+      ],
+      "emptyBeforeSafety": null,
+      "membersBeforeSafety": null,
+      "safetyCleanup": true,
+      "statusData": null
+    }
+  ]
+}

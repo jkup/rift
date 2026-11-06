@@ -1,0 +1,20 @@
+[
+  {
+    "path": "death-with-descendant/descendant-pid.txt",
+    "bytes": 5,
+    "sha256": "f2b4f0b72f3a52b862ae976ceae97387b6867e84526244913b8b3259f62b8670",
+    "dev": "1045235170",
+    "ino": "281474978332486",
+    "nlink": "2",
+    "hex": "333237320a"
+  },
+  {
+    "path": "death-with-descendant/descendant-pid.txt.pending",
+    "bytes": 5,
+    "sha256": "f2b4f0b72f3a52b862ae976ceae97387b6867e84526244913b8b3259f62b8670",
+    "dev": "1045235170",
+    "ino": "281474978332486",
+    "nlink": "2",
+    "hex": "333237320a"
+  }
+]

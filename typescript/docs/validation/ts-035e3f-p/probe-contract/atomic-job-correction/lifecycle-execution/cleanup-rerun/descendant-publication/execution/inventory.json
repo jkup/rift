@@ -1,0 +1,975 @@
+{
+  "root": "typescript/build/ts035e3fp-atomic-job-lifecycle-publication",
+  "directories": [
+    "death-after-create",
+    "death-after-create/cache",
+    "death-after-create/cache/scriptc",
+    "death-after-create/cache/zig-global",
+    "death-after-create/cache/zig-local",
+    "death-after-create/home",
+    "death-after-create/home/AppData",
+    "death-after-create/home/AppData/Local",
+    "death-after-create/home/AppData/Local/Microsoft",
+    "death-after-create/home/AppData/Local/Microsoft/PowerShell",
+    "death-after-create/home/AppData/Roaming",
+    "death-after-create/program-data",
+    "death-after-create/tmp",
+    "death-after-resume",
+    "death-after-resume/cache",
+    "death-after-resume/cache/scriptc",
+    "death-after-resume/cache/zig-global",
+    "death-after-resume/cache/zig-local",
+    "death-after-resume/home",
+    "death-after-resume/home/AppData",
+    "death-after-resume/home/AppData/Local",
+    "death-after-resume/home/AppData/Local/Microsoft",
+    "death-after-resume/home/AppData/Local/Microsoft/PowerShell",
+    "death-after-resume/home/AppData/Roaming",
+    "death-after-resume/program-data",
+    "death-after-resume/tmp",
+    "death-before-create",
+    "death-before-create/cache",
+    "death-before-create/cache/scriptc",
+    "death-before-create/cache/zig-global",
+    "death-before-create/cache/zig-local",
+    "death-before-create/home",
+    "death-before-create/home/AppData",
+    "death-before-create/home/AppData/Local",
+    "death-before-create/home/AppData/Local/Microsoft",
+    "death-before-create/home/AppData/Local/Microsoft/PowerShell",
+    "death-before-create/home/AppData/Roaming",
+    "death-before-create/program-data",
+    "death-before-create/tmp",
+    "death-before-resume",
+    "death-before-resume/cache",
+    "death-before-resume/cache/scriptc",
+    "death-before-resume/cache/zig-global",
+    "death-before-resume/cache/zig-local",
+    "death-before-resume/home",
+    "death-before-resume/home/AppData",
+    "death-before-resume/home/AppData/Local",
+    "death-before-resume/home/AppData/Local/Microsoft",
+    "death-before-resume/home/AppData/Local/Microsoft/PowerShell",
+    "death-before-resume/home/AppData/Roaming",
+    "death-before-resume/program-data",
+    "death-before-resume/tmp",
+    "death-membership",
+    "death-membership/cache",
+    "death-membership/cache/scriptc",
+    "death-membership/cache/zig-global",
+    "death-membership/cache/zig-local",
+    "death-membership/home",
+    "death-membership/home/AppData",
+    "death-membership/home/AppData/Local",
+    "death-membership/home/AppData/Local/Microsoft",
+    "death-membership/home/AppData/Local/Microsoft/PowerShell",
+    "death-membership/home/AppData/Roaming",
+    "death-membership/program-data",
+    "death-membership/tmp",
+    "death-with-descendant",
+    "death-with-descendant/cache",
+    "death-with-descendant/cache/scriptc",
+    "death-with-descendant/cache/zig-global",
+    "death-with-descendant/cache/zig-local",
+    "death-with-descendant/home",
+    "death-with-descendant/home/AppData",
+    "death-with-descendant/home/AppData/Local",
+    "death-with-descendant/home/AppData/Local/Microsoft",
+    "death-with-descendant/home/AppData/Local/Microsoft/PowerShell",
+    "death-with-descendant/home/AppData/Roaming",
+    "death-with-descendant/program-data",
+    "death-with-descendant/tmp",
+    "output-file-exists",
+    "output-file-exists/cache",
+    "output-file-exists/cache/scriptc",
+    "output-file-exists/cache/zig-global",
+    "output-file-exists/cache/zig-local",
+    "output-file-exists/home",
+    "output-file-exists/home/AppData",
+    "output-file-exists/home/AppData/Local",
+    "output-file-exists/home/AppData/Local/Microsoft",
+    "output-file-exists/home/AppData/Local/Microsoft/PowerShell",
+    "output-file-exists/home/AppData/Roaming",
+    "output-file-exists/program-data",
+    "output-file-exists/tmp",
+    "stdout-read-error",
+    "stdout-read-error/cache",
+    "stdout-read-error/cache/scriptc",
+    "stdout-read-error/cache/zig-global",
+    "stdout-read-error/cache/zig-local",
+    "stdout-read-error/home",
+    "stdout-read-error/home/AppData",
+    "stdout-read-error/home/AppData/Local",
+    "stdout-read-error/home/AppData/Local/Microsoft",
+    "stdout-read-error/home/AppData/Local/Microsoft/PowerShell",
+    "stdout-read-error/home/AppData/Roaming",
+    "stdout-read-error/program-data",
+    "stdout-read-error/tmp"
+  ],
+  "files": [
+    {
+      "path": "death-after-create/benign-child.mjs",
+      "bytes": 1681,
+      "sha256": "ce2a91ba1d35620e31327b62326376e40905db5d3b4729d8a4c7c1d130eb4e73",
+      "dev": "1045235170",
+      "ino": "281474978332369",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/case.json",
+      "bytes": 2378,
+      "sha256": "844617271dedb3af171e39754bf6bba8495c94caa3330cfe532fdefaa467e66b",
+      "dev": "1045235170",
+      "ino": "281474978332368",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332377",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332376",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "478decef7515f75d16f34bb9d93bf5e9be91188a5099b3411f715e2e4dbc3d1e",
+      "dev": "1045235170",
+      "ino": "281474978332372",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/invocation.json",
+      "bytes": 2824,
+      "sha256": "18a684c047f7ca28e2273a3f4200b17ea849106a6825e263be2584235c9bd601",
+      "dev": "1045235170",
+      "ino": "281474978332373",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972",
+      "dev": "1045235170",
+      "ino": "281474978332371",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/point-after-create.txt",
+      "bytes": 5,
+      "sha256": "48bd8ae1e5579082cfd8b1c95b13850e2a7af93020c488d71d273ba10e44ab24",
+      "dev": "1045235170",
+      "ino": "281474978332379",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "dev": "1045235170",
+      "ino": "281474978332378",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/result.json",
+      "bytes": 613,
+      "sha256": "989dfe673d4d092e2cbcfd5a1a686a9ccc337e47bb106c1d295f22d331c216b6",
+      "dev": "1045235170",
+      "ino": "281474978332380",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-create/supervisor-under-test.cs",
+      "bytes": 17685,
+      "sha256": "ee14bb73d6fbdbaefb702a895ea839f208f1dbafb0fd65c45e947a04a6848245",
+      "dev": "1045235170",
+      "ino": "281474978332370",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/benign-child.mjs",
+      "bytes": 1681,
+      "sha256": "ce2a91ba1d35620e31327b62326376e40905db5d3b4729d8a4c7c1d130eb4e73",
+      "dev": "1045235170",
+      "ino": "281474978332444",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/case.json",
+      "bytes": 2378,
+      "sha256": "1d4fa9aecb621f27409453f97c82113b3cc4298bf8ed31760ffc289558870790",
+      "dev": "1045235170",
+      "ino": "281474978332443",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332452",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332451",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "478decef7515f75d16f34bb9d93bf5e9be91188a5099b3411f715e2e4dbc3d1e",
+      "dev": "1045235170",
+      "ino": "281474978332447",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/invocation.json",
+      "bytes": 2824,
+      "sha256": "a11f2b7d39414ec7b9065adad6c58a090afa1f518d09206eb36ef4ce50229311",
+      "dev": "1045235170",
+      "ino": "281474978332448",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972",
+      "dev": "1045235170",
+      "ino": "281474978332446",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/point-after-create.txt",
+      "bytes": 6,
+      "sha256": "018cd846c24ec77880ca153003fdc2bf905860688ccfc6ff151b9dcbfdb8c76a",
+      "dev": "1045235170",
+      "ino": "281474978332454",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/point-after-resume.txt",
+      "bytes": 6,
+      "sha256": "018cd846c24ec77880ca153003fdc2bf905860688ccfc6ff151b9dcbfdb8c76a",
+      "dev": "1045235170",
+      "ino": "281474978332457",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "dev": "1045235170",
+      "ino": "281474978332453",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/point-before-resume.txt",
+      "bytes": 6,
+      "sha256": "018cd846c24ec77880ca153003fdc2bf905860688ccfc6ff151b9dcbfdb8c76a",
+      "dev": "1045235170",
+      "ino": "281474978332456",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/point-membership-verified.txt",
+      "bytes": 6,
+      "sha256": "018cd846c24ec77880ca153003fdc2bf905860688ccfc6ff151b9dcbfdb8c76a",
+      "dev": "1045235170",
+      "ino": "281474978332455",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/result.json",
+      "bytes": 626,
+      "sha256": "b5afb3df17f0fe2bed292dfc1aee899ec6f21354597cd832ae0a08e3987828a4",
+      "dev": "1045235170",
+      "ino": "281474978332458",
+      "nlink": "1"
+    },
+    {
+      "path": "death-after-resume/supervisor-under-test.cs",
+      "bytes": 17685,
+      "sha256": "ee14bb73d6fbdbaefb702a895ea839f208f1dbafb0fd65c45e947a04a6848245",
+      "dev": "1045235170",
+      "ino": "281474978332445",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/benign-child.mjs",
+      "bytes": 1681,
+      "sha256": "ce2a91ba1d35620e31327b62326376e40905db5d3b4729d8a4c7c1d130eb4e73",
+      "dev": "1045235170",
+      "ino": "281474978332346",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/case.json",
+      "bytes": 2388,
+      "sha256": "5cfa026777c300826908eeb79cda26aff9f5c3814af15142225568e0a38640a3",
+      "dev": "1045235170",
+      "ino": "281474978332345",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332354",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "562949955043009",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "478decef7515f75d16f34bb9d93bf5e9be91188a5099b3411f715e2e4dbc3d1e",
+      "dev": "1045235170",
+      "ino": "281474978332349",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/invocation.json",
+      "bytes": 2836,
+      "sha256": "c62c58b7d698f9c7af015f7b1a89ced6d4b641f875ccf76274ddabf4d000c987",
+      "dev": "1045235170",
+      "ino": "281474978332350",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972",
+      "dev": "1045235170",
+      "ino": "281474978332348",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "dev": "1045235170",
+      "ino": "281474978332355",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/result.json",
+      "bytes": 602,
+      "sha256": "8e02670f891f578e4b0332aa55199daa2fc8010cf57b9d3dba755270a2251416",
+      "dev": "1045235170",
+      "ino": "281474978332356",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-create/supervisor-under-test.cs",
+      "bytes": 17685,
+      "sha256": "ee14bb73d6fbdbaefb702a895ea839f208f1dbafb0fd65c45e947a04a6848245",
+      "dev": "1045235170",
+      "ino": "281474978332347",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/benign-child.mjs",
+      "bytes": 1681,
+      "sha256": "ce2a91ba1d35620e31327b62326376e40905db5d3b4729d8a4c7c1d130eb4e73",
+      "dev": "1045235170",
+      "ino": "281474978332418",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/case.json",
+      "bytes": 2388,
+      "sha256": "23ad656c012887019bd5c636ce3a0620cb4189b791a95519226606589163ef46",
+      "dev": "1045235170",
+      "ino": "281474978332417",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332426",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332425",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "478decef7515f75d16f34bb9d93bf5e9be91188a5099b3411f715e2e4dbc3d1e",
+      "dev": "1045235170",
+      "ino": "281474978332421",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/invocation.json",
+      "bytes": 2836,
+      "sha256": "08f1cfcb4b4e4ba4dbe0e01ccbb2dcabef46595bb2a60ef6e811deac7236edb0",
+      "dev": "1045235170",
+      "ino": "281474978332422",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972",
+      "dev": "1045235170",
+      "ino": "281474978332420",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/point-after-create.txt",
+      "bytes": 6,
+      "sha256": "69b6cbf3c4a6b1eb0fbfa6b7687e54d7923a94cd243b295e54fa0906f6a79c18",
+      "dev": "1045235170",
+      "ino": "281474978332428",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "dev": "1045235170",
+      "ino": "281474978332427",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/point-before-resume.txt",
+      "bytes": 6,
+      "sha256": "69b6cbf3c4a6b1eb0fbfa6b7687e54d7923a94cd243b295e54fa0906f6a79c18",
+      "dev": "1045235170",
+      "ino": "281474978332430",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/point-membership-verified.txt",
+      "bytes": 6,
+      "sha256": "69b6cbf3c4a6b1eb0fbfa6b7687e54d7923a94cd243b295e54fa0906f6a79c18",
+      "dev": "1045235170",
+      "ino": "281474978332429",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/result.json",
+      "bytes": 615,
+      "sha256": "ee3fb177b5cd6f358ea0762cc67ef21a8ed71ab95d06984d69529f47de10b7a4",
+      "dev": "1045235170",
+      "ino": "281474978332431",
+      "nlink": "1"
+    },
+    {
+      "path": "death-before-resume/supervisor-under-test.cs",
+      "bytes": 17685,
+      "sha256": "ee14bb73d6fbdbaefb702a895ea839f208f1dbafb0fd65c45e947a04a6848245",
+      "dev": "1045235170",
+      "ino": "281474978332419",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/benign-child.mjs",
+      "bytes": 1681,
+      "sha256": "ce2a91ba1d35620e31327b62326376e40905db5d3b4729d8a4c7c1d130eb4e73",
+      "dev": "1045235170",
+      "ino": "281474978332393",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/case.json",
+      "bytes": 2367,
+      "sha256": "b623d4226a2bc914ba8604fcc1382c5552c9fd94834510141fcce5000ab937a1",
+      "dev": "1045235170",
+      "ino": "281474978332392",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332401",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332400",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "478decef7515f75d16f34bb9d93bf5e9be91188a5099b3411f715e2e4dbc3d1e",
+      "dev": "1045235170",
+      "ino": "281474978332396",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/invocation.json",
+      "bytes": 2800,
+      "sha256": "91b9f5ad7422a3ee554c4d24ecd07eab2f305f2840376ac989c7a7ceab25fdb0",
+      "dev": "1045235170",
+      "ino": "281474978332397",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972",
+      "dev": "1045235170",
+      "ino": "281474978332395",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/point-after-create.txt",
+      "bytes": 5,
+      "sha256": "2f42fa2cb9bfa91488391977b3de15379d5040dcef165eb34969450fd3e6ea54",
+      "dev": "1045235170",
+      "ino": "281474978332403",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "dev": "1045235170",
+      "ino": "281474978332402",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/point-membership-verified.txt",
+      "bytes": 5,
+      "sha256": "2f42fa2cb9bfa91488391977b3de15379d5040dcef165eb34969450fd3e6ea54",
+      "dev": "1045235170",
+      "ino": "281474978332404",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/result.json",
+      "bytes": 616,
+      "sha256": "747ef68854047e85797f7b3be60a98040d40b2a522e4bdd8ff32a34c4c21fd9b",
+      "dev": "1045235170",
+      "ino": "281474978332405",
+      "nlink": "1"
+    },
+    {
+      "path": "death-membership/supervisor-under-test.cs",
+      "bytes": 17685,
+      "sha256": "ee14bb73d6fbdbaefb702a895ea839f208f1dbafb0fd65c45e947a04a6848245",
+      "dev": "1045235170",
+      "ino": "281474978332394",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/benign-child.mjs",
+      "bytes": 1681,
+      "sha256": "ce2a91ba1d35620e31327b62326376e40905db5d3b4729d8a4c7c1d130eb4e73",
+      "dev": "1045235170",
+      "ino": "281474978332471",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/case.json",
+      "bytes": 2411,
+      "sha256": "0950bfbc4b055a615b02e29535205d80f4d414949e43b7e150404145cf4c330e",
+      "dev": "1045235170",
+      "ino": "281474978332470",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/child-started.json",
+      "bytes": 88,
+      "sha256": "9bf6b3d5e5685316d5692dad4073f063c81ad6f4c304740d69698dbd61a6579b",
+      "dev": "1045235170",
+      "ino": "281474978332485",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332479",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332478",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "478decef7515f75d16f34bb9d93bf5e9be91188a5099b3411f715e2e4dbc3d1e",
+      "dev": "1045235170",
+      "ino": "281474978332474",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/descendant-pid.txt",
+      "bytes": 5,
+      "sha256": "f2b4f0b72f3a52b862ae976ceae97387b6867e84526244913b8b3259f62b8670",
+      "dev": "1045235170",
+      "ino": "281474978332486",
+      "nlink": "2"
+    },
+    {
+      "path": "death-with-descendant/descendant-pid.txt.pending",
+      "bytes": 5,
+      "sha256": "f2b4f0b72f3a52b862ae976ceae97387b6867e84526244913b8b3259f62b8670",
+      "dev": "1045235170",
+      "ino": "281474978332486",
+      "nlink": "2"
+    },
+    {
+      "path": "death-with-descendant/invocation.json",
+      "bytes": 2860,
+      "sha256": "35422f2c852bda751b8e95163ad544d995e7ab3786df876a3ba043c3bb6054d4",
+      "dev": "1045235170",
+      "ino": "281474978332475",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972",
+      "dev": "1045235170",
+      "ino": "281474978332473",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/point-after-create.txt",
+      "bytes": 6,
+      "sha256": "a5457fe01e7bfc1f98a182b568eda44eb0bb376811dc0742e2a87831ae3ddc3d",
+      "dev": "1045235170",
+      "ino": "281474978332481",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/point-after-resume.txt",
+      "bytes": 6,
+      "sha256": "a5457fe01e7bfc1f98a182b568eda44eb0bb376811dc0742e2a87831ae3ddc3d",
+      "dev": "1045235170",
+      "ino": "281474978332484",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "dev": "1045235170",
+      "ino": "281474978332480",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/point-before-resume.txt",
+      "bytes": 6,
+      "sha256": "a5457fe01e7bfc1f98a182b568eda44eb0bb376811dc0742e2a87831ae3ddc3d",
+      "dev": "1045235170",
+      "ino": "281474978332483",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/point-membership-verified.txt",
+      "bytes": 6,
+      "sha256": "a5457fe01e7bfc1f98a182b568eda44eb0bb376811dc0742e2a87831ae3ddc3d",
+      "dev": "1045235170",
+      "ino": "281474978332482",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/result.json",
+      "bytes": 669,
+      "sha256": "d98e518c955446d7fc7a0fa81a2fe906c3189da70fa88a2af5f34a1ca24be552",
+      "dev": "1045235170",
+      "ino": "281474978332487",
+      "nlink": "1"
+    },
+    {
+      "path": "death-with-descendant/supervisor-under-test.cs",
+      "bytes": 17685,
+      "sha256": "ee14bb73d6fbdbaefb702a895ea839f208f1dbafb0fd65c45e947a04a6848245",
+      "dev": "1045235170",
+      "ino": "281474978332472",
+      "nlink": "1"
+    },
+    {
+      "path": "failed-results.json",
+      "bytes": 8723,
+      "sha256": "0593fe44e0f08318e0296beba151cb3942768d77f3ac58d9951894bef7272451",
+      "dev": "1045235170",
+      "ino": "281474978332488",
+      "nlink": "1"
+    },
+    {
+      "path": "observer.cs",
+      "bytes": 6513,
+      "sha256": "3e8882a5bd5b10e8cff9d4d5d2fd642bbcbb0a2ef17b00e0db77152331078f01",
+      "dev": "1045235170",
+      "ino": "4503599628992120",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/benign-child.mjs",
+      "bytes": 1681,
+      "sha256": "ce2a91ba1d35620e31327b62326376e40905db5d3b4729d8a4c7c1d130eb4e73",
+      "dev": "1045235170",
+      "ino": "281474978332323",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/case.json",
+      "bytes": 2381,
+      "sha256": "4a465205172f29f83c85d07db53336f7a7144023c566ac9f8ab4f926b198065f",
+      "dev": "1045235170",
+      "ino": "281474978332322",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/compiler.stdout.bin",
+      "bytes": 15,
+      "sha256": "91fb267f9f403e4c6700f9cbeda85c22823fb5bbc10d94abe136538689159ae1",
+      "dev": "1045235170",
+      "ino": "281474978332327",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "478decef7515f75d16f34bb9d93bf5e9be91188a5099b3411f715e2e4dbc3d1e",
+      "dev": "1045235170",
+      "ino": "281474978332326",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193124,
+      "sha256": "158a2706854ecd8ee196f6c32e4ee2e9778c6a5372132e7bf43eceec14602f2f",
+      "dev": "1045235170",
+      "ino": "281474978332332",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/invocation.json",
+      "bytes": 2824,
+      "sha256": "5ee80d4645a8d73e1f22ef91560b579c4973dc76c20b01e4faf86406736e477f",
+      "dev": "1045235170",
+      "ino": "281474978332328",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972",
+      "dev": "1045235170",
+      "ino": "281474978332325",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/result.json",
+      "bytes": 2495,
+      "sha256": "ab262ec95ecee47070ba4c0172941441ebf1d78866e9e484f1dd0c18436cacca",
+      "dev": "1045235170",
+      "ino": "281474978332333",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/status.json",
+      "bytes": 1857,
+      "sha256": "5aaeceba17a5b9bccd370cb24b5110a444d27dcb7990959f642fb8a30a439ab6",
+      "dev": "1045235170",
+      "ino": "281474978332331",
+      "nlink": "1"
+    },
+    {
+      "path": "output-file-exists/supervisor-under-test.cs",
+      "bytes": 17685,
+      "sha256": "ee14bb73d6fbdbaefb702a895ea839f208f1dbafb0fd65c45e947a04a6848245",
+      "dev": "1045235170",
+      "ino": "281474978332324",
+      "nlink": "1"
+    },
+    {
+      "path": "owner.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "5066549582413430",
+      "nlink": "1"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 3050,
+      "sha256": "ae67a107428838773edcc9c3df6e326c4af10dfbba627def0b11af25243bf77b",
+      "dev": "1045235170",
+      "ino": "4785074605702775",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/benign-child.mjs",
+      "bytes": 1681,
+      "sha256": "ce2a91ba1d35620e31327b62326376e40905db5d3b4729d8a4c7c1d130eb4e73",
+      "dev": "1045235170",
+      "ino": "281474978332293",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/case.json",
+      "bytes": 2380,
+      "sha256": "4649c498bc8b321c49054d0f388bdf0b93793e2b8d8586d7c22f042d16ac2388",
+      "dev": "1045235170",
+      "ino": "281474978332292",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332301",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dev": "1045235170",
+      "ino": "281474978332300",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "478decef7515f75d16f34bb9d93bf5e9be91188a5099b3411f715e2e4dbc3d1e",
+      "dev": "1045235170",
+      "ino": "281474978332296",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193160,
+      "sha256": "0802254cd5cb3fe88871746cfac342b87492dba1e55f3b9b06d8be2e5ca7da12",
+      "dev": "1045235170",
+      "ino": "281474978332309",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/invocation.json",
+      "bytes": 2812,
+      "sha256": "d0f0f1aaf40e48cc5431daa09bd4c54f71bbc23480219e35b97d1f33f71cfc50",
+      "dev": "1045235170",
+      "ino": "281474978332297",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972",
+      "dev": "1045235170",
+      "ino": "281474978332295",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/point-after-create.txt",
+      "bytes": 6,
+      "sha256": "cd1d6ab7bfcb33a09ff879125865fcb03de21d0f7ec53e1a3aa317ef2e4e2757",
+      "dev": "1045235170",
+      "ino": "281474978332303",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/point-after-resume.txt",
+      "bytes": 6,
+      "sha256": "cd1d6ab7bfcb33a09ff879125865fcb03de21d0f7ec53e1a3aa317ef2e4e2757",
+      "dev": "1045235170",
+      "ino": "281474978332306",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "dev": "1045235170",
+      "ino": "281474978332302",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/point-before-resume.txt",
+      "bytes": 6,
+      "sha256": "cd1d6ab7bfcb33a09ff879125865fcb03de21d0f7ec53e1a3aa317ef2e4e2757",
+      "dev": "1045235170",
+      "ino": "281474978332305",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/point-membership-verified.txt",
+      "bytes": 6,
+      "sha256": "cd1d6ab7bfcb33a09ff879125865fcb03de21d0f7ec53e1a3aa317ef2e4e2757",
+      "dev": "1045235170",
+      "ino": "281474978332304",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/release-after-resume.txt",
+      "bytes": 7,
+      "sha256": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829",
+      "dev": "1045235170",
+      "ino": "281474978332307",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/result.json",
+      "bytes": 1893,
+      "sha256": "faa669f9f5f22543b2ec9ede62bb4d4721ac264b6d4cbbe23ed5ce54290f3068",
+      "dev": "1045235170",
+      "ino": "281474978332310",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/status.json",
+      "bytes": 1189,
+      "sha256": "f499cb3de3347ac8473c715c7457749f26a1d064ef361fadd0669aa9bfe50484",
+      "dev": "1045235170",
+      "ino": "281474978332308",
+      "nlink": "1"
+    },
+    {
+      "path": "stdout-read-error/supervisor-under-test.cs",
+      "bytes": 17685,
+      "sha256": "ee14bb73d6fbdbaefb702a895ea839f208f1dbafb0fd65c45e947a04a6848245",
+      "dev": "1045235170",
+      "ino": "281474978332294",
+      "nlink": "1"
+    }
+  ]
+}
