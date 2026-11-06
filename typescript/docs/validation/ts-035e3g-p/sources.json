@@ -1,0 +1,28 @@
+{
+  "accessed": "2026-11-06",
+  "official": [
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format",
+      "sections": [
+        "COFF File Header",
+        "Section Table",
+        "COFF Relocations",
+        "COFF Symbol Table",
+        "Symbol Name Representation",
+        "Section Number Values",
+        "Auxiliary Symbol Records",
+        "COFF String Table",
+        "The .drectve Section",
+        "Archive File Signature",
+        "Import Header"
+      ]
+    }
+  ],
+  "retained": [
+    "typescript/docs/validation/ts-035e3f-p/link-info-analysis/ordered-input-literal.json",
+    "typescript/docs/validation/ts-035e3f-p/link-info-analysis/README.md",
+    "typescript/docs/validation/ts-035e3f-p/link-info-analysis/scr-win-source.txt"
+  ],
+  "specificationLimit": "Standard COFF only. Reject anonymous family without classifying bigobj subtype. No external source or host headers used.",
+  "quotes": []
+}
