@@ -1,0 +1,22 @@
+{
+  "empty": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "ok": {
+    "bytes": 3,
+    "sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22"
+  },
+  "stdoutCap": {
+    "retainedBytes": 8388608,
+    "retainedSha256": "ad97f87076920684e2ca66fc44e5d322797dc9d64706b174e51b5d0828937043",
+    "observedBytes": 8388609,
+    "observedSha256": "c92697f4cc3b569dff3d484285d22487e523d4b439ae7c9a6747dc258e35b275"
+  },
+  "stderrCap": {
+    "retainedBytes": 8388608,
+    "retainedSha256": "042e995365a46153f8d3a1327d986e2fec93554ed9d6b8126cecc7965ecf3be6",
+    "observedBytes": 8388609,
+    "observedSha256": "7b9164ec75c3b6f6b0269143da189012fd3f238a10ff5e04c3e0748674d6af15"
+  }
+}
