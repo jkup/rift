@@ -1,0 +1,102 @@
+[
+  {
+    "path": "typescript/docs/script-build-provenance.md",
+    "bytes": 40292,
+    "sha256": "9aee07db6b5d3bc3a857dbf706bc214a4038ac21fad8995a0f5cb409c1ea203f"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/README.md",
+    "bytes": 5889,
+    "sha256": "e85ac6571aa4777c4b827e0b86c9d83f837137f5f106d36d3d64eb46e16d526c"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/cmd-identity.mjs",
+    "bytes": 4126,
+    "sha256": "c2b4f5030245a2a976ced43d70c87350d812c5a63d1e8540a620add9b4a392ac"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/contract.json",
+    "bytes": 3599,
+    "sha256": "3b1117d286db81a3911bd0f4677b437985c84174e43111315facd73dbfb32798"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/expected-plan.json",
+    "bytes": 2780,
+    "sha256": "059fba12fe9528076d859ada3617b6e917c6b7c8614ea85828ab08c35a84056b"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/ffi-audit.json",
+    "bytes": 928,
+    "sha256": "93c117863ebb50139b8cf6cd6ab018dbc0b88abad657bdb4423420707fb2ff16"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/identity-literal.json",
+    "bytes": 3078,
+    "sha256": "0fb3a7c0c45db5885c542e970da199746a33569f8a49cb8a72857752512e4a96"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/literal-author.ps1",
+    "bytes": 1437,
+    "sha256": "e73a833009551691451422bc39522f715bef97b3a64bf30f5ae94969c7000aa9"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/offline-results.json",
+    "bytes": 1941,
+    "sha256": "fef8efe15f19b9c21110753cda68864ffdafb5a4342c65edbd0020f5b77a3796"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/offline.test.mjs",
+    "bytes": 2836,
+    "sha256": "fee0d7a0ebf9d3df2fd2906f10daf8311e883904f9d7057b956c1c449a691012"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/preflight-observation.json",
+    "bytes": 3557,
+    "sha256": "ea05e941e6d7b347157a3bc408372228f8a99693384895e45293f3d0ec7c7761"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/prepare.mjs",
+    "bytes": 3106,
+    "sha256": "717dd570ca87f33abe93ea769a9315b4586a2252526f621843efb8599b389c72"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/prior-design.md",
+    "bytes": 38827,
+    "sha256": "9f1922599d46f21a97c8c67b2d0fd142ee0a3cf55c28e025be4d5c4cd4ba1c5d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/prior-manifest.json",
+    "bytes": 319,
+    "sha256": "04debacabf12e585a391402e3ba639d15a50d37992703058a7f94ade4f6743ed"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/runner.mjs",
+    "bytes": 18819,
+    "sha256": "df3269286169c451f9f411ded855e592b535312a3ec3cc0f1ca61106a5338b03"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/supervise.ps1",
+    "bytes": 1689,
+    "sha256": "4e17fcd8adf0a00c979b06b8e8d9dd0d73bd6e6308ae21247509e6d124abf274"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/supervisor.cs",
+    "bytes": 15997,
+    "sha256": "ff72647da35de4bae3ba2fdfac9486c37a0c16ce8e401fa004eeec0664b63fef"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/syntax-results.json",
+    "bytes": 313,
+    "sha256": "b09937eaec951fabe8e5916a404de9ba735675f1d178a4ee263024fcfa5f1137"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/transformations.json",
+    "bytes": 4323,
+    "sha256": "4eb9a5e2d2a40e6d88ef37daa4ea96582034d5d3d65fec5dd836660e548b0c1a"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/verify.mjs",
+    "bytes": 38964,
+    "sha256": "e2f4ba6d8f1a86028c13eb18b8c6d63cd97040fcc74e4484153ca42e70205c9d"
+  }
+]

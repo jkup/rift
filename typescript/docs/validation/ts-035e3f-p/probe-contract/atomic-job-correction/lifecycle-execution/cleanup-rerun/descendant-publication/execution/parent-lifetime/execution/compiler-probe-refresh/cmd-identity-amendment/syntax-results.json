@@ -1,0 +1,19 @@
+{
+  "csharpCompilations": 0,
+  "runnerInvocations": 0,
+  "wrapperBytesUnchanged": true,
+  "node": [
+    {
+      "exitCode": 0,
+      "name": "cmd-identity.mjs"
+    },
+    {
+      "exitCode": 0,
+      "name": "runner.mjs"
+    },
+    {
+      "exitCode": 0,
+      "name": "verify.mjs"
+    }
+  ]
+}

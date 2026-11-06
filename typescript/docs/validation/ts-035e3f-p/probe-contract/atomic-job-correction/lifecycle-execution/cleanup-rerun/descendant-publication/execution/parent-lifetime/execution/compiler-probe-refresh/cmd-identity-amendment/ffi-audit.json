@@ -1,0 +1,24 @@
+{
+  "kind": "read-only-binding-availability",
+  "node": "v26.13.0",
+  "DynamicLibrary": "function",
+  "availabilityExitCode": 0,
+  "availabilityStderr": "(node:17584) ExperimentalWarning: FFI is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n",
+  "library": "C:\\WINDOWS\\system32\\kernel32.dll",
+  "symbol": "GetFileAttributesW",
+  "signature": {
+    "return": "uint32",
+    "arguments": [
+      "buffer"
+    ]
+  },
+  "argumentEncoding": "null-terminated UTF-16LE Buffer kept live for synchronous call",
+  "readOnly": true,
+  "newChildProcesses": 0,
+  "csharpCompilations": 0,
+  "trust": "pinned Node built-in FFI plus installed Windows system DLL; no third-party addon or installation",
+  "references": [
+    "https://nodejs.org/api/ffi.html",
+    "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileattributesw"
+  ]
+}
