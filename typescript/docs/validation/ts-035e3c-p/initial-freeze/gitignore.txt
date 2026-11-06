@@ -1,0 +1,4 @@
+# Full literal JSON is retained losslessly as gzip; raw authoring copies stay local.
+run-*/results/*.json
+context-*/results.json
+context-*/isolated/node_modules/

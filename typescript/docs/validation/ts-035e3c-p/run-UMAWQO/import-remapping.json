@@ -1,0 +1,32 @@
+[
+  {
+    "name": "script-execution-inputs.mjs",
+    "from": "./script-plan.mjs",
+    "to": "file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-plan.mjs"
+  },
+  {
+    "name": "script-execution-inputs.mjs",
+    "from": "./input.mjs",
+    "to": "file:///C:/Users/jonku/code/rift/typescript/tools/test262/input.mjs"
+  },
+  {
+    "name": "script-execution-inputs.test.mjs",
+    "from": "./script-execution-inputs.mjs",
+    "to": "file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3c-p/run-UMAWQO/script-execution-inputs.mjs"
+  },
+  {
+    "name": "script-execution-inputs.test.mjs",
+    "from": "./script-plan.mjs",
+    "to": "file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-plan.mjs"
+  },
+  {
+    "name": "script-execution-inputs.test.mjs",
+    "from": "./script-ledger.mjs",
+    "to": "file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-ledger.mjs"
+  },
+  {
+    "name": "script-execution-inputs.test.mjs",
+    "from": "./input.mjs",
+    "to": "file:///C:/Users/jonku/code/rift/typescript/tools/test262/input.mjs"
+  }
+]

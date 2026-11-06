@@ -1,0 +1,829 @@
+{
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 162,
+      "sha256": "976752e37fbdebfc98d9d184aaf469a8db2b33ba222eab37d9d9d9c8471f2226"
+    },
+    {
+      "path": "archive-evidence.mjs",
+      "bytes": 1408,
+      "sha256": "0a986b10446eea0ba018b9ea54cf043ac34f8853c61b482eb0b99b486626ce7d"
+    },
+    {
+      "path": "audit.mjs",
+      "bytes": 3261,
+      "sha256": "ddd0dec22115c4735fa197b3d102bc0793dcd6f8ed7a067fa303f8276be77f08"
+    },
+    {
+      "path": "closure-audit.json",
+      "bytes": 682784,
+      "sha256": "de8aba438c15a504ca1cecf0a73e6b74cbcc979da26d8f2b946cbf9e175c15dd"
+    },
+    {
+      "path": "compressed-evidence.json",
+      "bytes": 1746,
+      "sha256": "449b02846b142dfc3820ab8d628064336b4e0d3008799aa1a73d92074d38b10a"
+    },
+    {
+      "path": "consumer-addendum.json",
+      "bytes": 77184,
+      "sha256": "1e0a42886997332ae406a2a1f516a8ac748c91f36750dab29b27f0cea620f76e"
+    },
+    {
+      "path": "context-Loyegv/isolated/fixtures/assistance/test262-starter-corpus/manifest.json",
+      "bytes": 52720,
+      "sha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89"
+    },
+    {
+      "path": "context-Loyegv/isolated/package-lock.json",
+      "bytes": 25476,
+      "sha256": "3fb5f2eeb2b11e7a121f42f70983a0d8c265e0c3f418ed1d8aafff6e5ff86c9d"
+    },
+    {
+      "path": "context-Loyegv/isolated/package.json",
+      "bytes": 794,
+      "sha256": "3e42e66c76cf561b584e435f723d0489a30fca37c69f47b74e7cb1ca47174f9f"
+    },
+    {
+      "path": "context-Loyegv/isolated/tools/test262/input.mjs",
+      "bytes": 10817,
+      "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c"
+    },
+    {
+      "path": "context-Loyegv/isolated/tools/test262/script-capabilities.json",
+      "bytes": 72,
+      "sha256": "2e375a6833861d322a268481b0bd1d3d3f5435173e583fa6b4ea04240610120b"
+    },
+    {
+      "path": "context-Loyegv/isolated/tools/test262/script-capabilities.mjs",
+      "bytes": 4774,
+      "sha256": "aaee5e8af10cbc6f198e8315418bd47e2466070bd909313fff9fe4b133c52280"
+    },
+    {
+      "path": "context-Loyegv/isolated/tools/test262/script-execution-inputs.mjs",
+      "bytes": 6956,
+      "sha256": "4fc40ed011acacc56f217d06949c9b9790f9cd1ffb2412294a0d6258e67d0547"
+    },
+    {
+      "path": "context-Loyegv/isolated/tools/test262/script-ledger.mjs",
+      "bytes": 23889,
+      "sha256": "fae6321287e971662257621a06336dd1a52fda29b4becb0513749160010f3440"
+    },
+    {
+      "path": "context-Loyegv/isolated/tools/test262/script-plan.mjs",
+      "bytes": 8309,
+      "sha256": "ab20c1f78b31377ebb18f13741e1077a3f9a4bd772790f13bd0b20facae8210f"
+    },
+    {
+      "path": "context-Loyegv/results.json.gz",
+      "bytes": 1899541,
+      "sha256": "d57e5ab0e33c20b40d265af78c6732f0065e85cbae9c0501063b52c11ab0a5e6"
+    },
+    {
+      "path": "context-probe.mjs",
+      "bytes": 4403,
+      "sha256": "a030bfd8685fed349ff416de7c15033d364e41f87919316245764fc8eecf39be"
+    },
+    {
+      "path": "dependencies.mjs",
+      "bytes": 2817,
+      "sha256": "25eb471a005bc0d5a9fae007bd4f6104adcd5d4626c23082783ff82f47afb579"
+    },
+    {
+      "path": "dependency-members.json",
+      "bytes": 233489,
+      "sha256": "6bd2e386aeba6c3b2e514f0363461fb35f18bb01c7dc6d201764f24af90663bb"
+    },
+    {
+      "path": "freeze.mjs",
+      "bytes": 1721,
+      "sha256": "668642f2928af515461abe72674ae3c892c2b79d677ca4e96f06bbf5fb3d8934"
+    },
+    {
+      "path": "native-entrypoints.json",
+      "bytes": 6226,
+      "sha256": "65f16f3af43b2cd0c92003517915aae905032bc85102b3bba1c7d11923a30075"
+    },
+    {
+      "path": "preservation.json",
+      "bytes": 1336254,
+      "sha256": "4468c87276076cef8e57e83e03c75ca2892312e8ad41123fe79689b4978488da"
+    },
+    {
+      "path": "probe.mjs",
+      "bytes": 1707,
+      "sha256": "c8667dd17d79e61c5b740e2f573fa835aee6f8c3b1fcd6f6e5d1d954b67cb4d6"
+    },
+    {
+      "path": "proposal-manifest.json",
+      "bytes": 737,
+      "sha256": "71d9200860e23d173aebcce128a25fa959e23c4b9ea9627f9993ffcd6741d122"
+    },
+    {
+      "path": "proposals/script-execution-inputs.mjs",
+      "bytes": 6956,
+      "sha256": "4fc40ed011acacc56f217d06949c9b9790f9cd1ffb2412294a0d6258e67d0547"
+    },
+    {
+      "path": "proposals/script-execution-inputs.test.mjs",
+      "bytes": 12191,
+      "sha256": "e80377fe6177ef1ea43c002ad9e3a8458d0e6904ea07656afd4714bf419ca836"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7024,
+      "sha256": "72ace8ed02e523043495e0b1c70dd177b86f10156222899d71fa94bd2ca50c87"
+    },
+    {
+      "path": "requirements-results.json",
+      "bytes": 5051,
+      "sha256": "f8cff7afac481dff01eebb4b1e12b9f641701ba9a6ef870908447194a9f450d4"
+    },
+    {
+      "path": "requirements.mjs",
+      "bytes": 4185,
+      "sha256": "9fcde7f4e5a34bca3686271011eb2dd6de7d127a3601a461503d34843dd16680"
+    },
+    {
+      "path": "retained-report-literals.json",
+      "bytes": 798228,
+      "sha256": "eee6fe05924f12637621417d41da6591053a372dcc2c350058893698544bdcf8"
+    },
+    {
+      "path": "run-10mCaM/import-remapping.json",
+      "bytes": 1078,
+      "sha256": "5b1f6bba6f7bbed916672ecb7e41be4c6ba3049bc208672649e640e9c8609941"
+    },
+    {
+      "path": "run-10mCaM/original-script-execution-inputs.mjs",
+      "bytes": 6956,
+      "sha256": "4fc40ed011acacc56f217d06949c9b9790f9cd1ffb2412294a0d6258e67d0547"
+    },
+    {
+      "path": "run-10mCaM/original-script-execution-inputs.test.mjs",
+      "bytes": 12191,
+      "sha256": "e80377fe6177ef1ea43c002ad9e3a8458d0e6904ea07656afd4714bf419ca836"
+    },
+    {
+      "path": "run-10mCaM/process.json",
+      "bytes": 178,
+      "sha256": "622d5950806fdc0ff45670346674991970680519a4de65108c9820cf09d05206"
+    },
+    {
+      "path": "run-10mCaM/results/actual.json.gz",
+      "bytes": 585031,
+      "sha256": "80b864fcbe50b9ed060c57d7a7b2578d1d368484ebabde59183bcae9066cf8f9"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/block-scope/return-from/block-let.js",
+      "bytes": 299,
+      "sha256": "94c4cfdca0c03e248fec343d7a06738fbb6bf7a879051d74c240a17af46a9c13"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/block-scope/syntax/redeclaration/function-name-redeclaration-attempt-with-function.js",
+      "bytes": 646,
+      "sha256": "84bdc0294cf54ec63d473962f2c41411677b1888b71f8095d60941f9f399cd30"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/block-scope/syntax/redeclaration/let-name-redeclaration-attempt-with-let.js",
+      "bytes": 591,
+      "sha256": "5ea96370981eed6312096533c6ef50e5874f700d216ac7015ba888dfbc6b72a6"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/directive-prologue/10.1.1-2gs.js",
+      "bytes": 431,
+      "sha256": "943bb323d03b863dee56d1ef51617a10cd3d32895009b713e25c1d4de3fc5069"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/addition/S11.6.1_A4_T3.js",
+      "bytes": 782,
+      "sha256": "987b1c3cf66b6bbb2f6d8aaf6d1435cb1238b19132fa861a91aa2c35085d229d"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/assignment/target-number.js",
+      "bytes": 656,
+      "sha256": "891e96b9bc7e14fe5546973e8c07a7ce0d8a24edfbb0f32c01b364a5503f6a23"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/conditional/S11.12_A3_T4.js",
+      "bytes": 525,
+      "sha256": "cdf1a36a5a7940fadd7463b1dd67da9222cea57a46c5540db6a71bd1c996efac"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/logical-and/S11.11.1_A3_T4.js",
+      "bytes": 501,
+      "sha256": "90acc73f392df9bfdd6546d52d973e96dff13e0b6368ef2797a8f5b18d441e43"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/object/prop-dup-data-data.js",
+      "bytes": 676,
+      "sha256": "cc7de7be6c0b773de9d83ed6094ebdc0372d7be6eda7b6931f2d37e8220925b4"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/object/property-name-yield.js",
+      "bytes": 270,
+      "sha256": "930ada0c729b65875b13e68d9c2719fbfe37bbdc5bc4dd0e68726c2237c4d1f2"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/strict-equals/S11.9.4_A3.js",
+      "bytes": 673,
+      "sha256": "5c18a4dcbe6f4b69ccf735ff4cf55d83b81a2549b8a66d885a0d641fcfb8d30a"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/subtraction/order-of-evaluation.js",
+      "bytes": 3021,
+      "sha256": "cd7da6d6b5a97bd25816d9ae7125401dd51910ce1ab25da2d5a488a3808505cc"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/typeof/null.js",
+      "bytes": 602,
+      "sha256": "2bb094c32dc547b82f3d04822738eff0605949f11938328d6a1e94ccf881660b"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/typeof/undefined.js",
+      "bytes": 576,
+      "sha256": "59342d4a6ebaecff6cbe8ac7d36d135bba9bf2c11ce27ee99db5fa017d378834"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/unary-minus/11.4.7-4-1.js",
+      "bytes": 233,
+      "sha256": "4da9c15edd61d6d90a55301c5fad93ee5ef5fc690c04a38383d2998938e9b44e"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/expressions/unary-plus/11.4.6-2-1.js",
+      "bytes": 232,
+      "sha256": "d982389acc55bdd907a0d78b10c0c75bd798345e0e5e64ff6d7ac44f045ae28b"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/function-code/10.4.3-1-1-s.js",
+      "bytes": 471,
+      "sha256": "5d07b268f9e741332bccae193c24d54d2f51fe07f27648743645c38d59393dda"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/function-code/10.4.3-1-62-s.js",
+      "bytes": 401,
+      "sha256": "667153e5e32acb7e4067c4d751e258ca18cfc16dc72c790d953263507890ff98"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/function-code/10.4.3-1-62gs.js",
+      "bytes": 442,
+      "sha256": "5efebd7d1b620393f993048bf3e6f2791ea0b32e6cefc330e38969981494b4a6"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/function-code/10.4.3-1-71-s.js",
+      "bytes": 371,
+      "sha256": "d8a00f2e1523ea695f6f769f7506e67ff02f165769cb99bc77543b732e2235bd"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/identifier-resolution/assign-to-global-undefined.js",
+      "bytes": 558,
+      "sha256": "89458e800feb89edae813dc0fa21eaa592b2f850344c4916a19888acdeab1f2d"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/module-code/eval-this.js",
+      "bytes": 1170,
+      "sha256": "044874d01e501861c9c1d451ddd67e1c224a768045be75c5c49e0eb182d998c2"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/async-function/evaluation-body-that-returns.js",
+      "bytes": 412,
+      "sha256": "02d16a9f1e4894790564046cd8f8a90f97436e9355047f9bc2218a0d9f5fa25b"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/function/param-duplicated-strict-1.js",
+      "bytes": 655,
+      "sha256": "3a4a4b5e3d70da582993165ab4592c7616abb528c864e022f4fd82ac26ee56aa"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/function/S13.2.1_A1_T1.js",
+      "bytes": 4692,
+      "sha256": "92538a981853d536d0a90d3db608f7a8f0ff8a0b526a6b354504076d49c3b447"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/let/block-local-closure-get-before-initialization.js",
+      "bytes": 375,
+      "sha256": "5cf850a15f38a8cdcba2008cb0d52b55c0ad80a7379c145a3a2fc40c1c37b8c1"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/let/function-local-closure-set-before-initialization.js",
+      "bytes": 387,
+      "sha256": "eb87df61a995bba285fae52e424b7b4e838fe6663773697cbfbab218280bc73a"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/let/global-use-before-initialization-in-declaration-statement.js",
+      "bytes": 340,
+      "sha256": "841de5082a955cbaf965ecf81c9b52e46ee5ff8d82a598938b2cb8e98846d703"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+      "bytes": 329,
+      "sha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/return/line-terminators.js",
+      "bytes": 997,
+      "sha256": "fdef09dcd8ad13a7ae6b1c179594b89988e0481b627166400e5344e875a4eb52"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/return/S12.9_A1_T4.js",
+      "bytes": 551,
+      "sha256": "fd1138f446a9cbfc5a8c384446c202c12b13f7373254620eec2323c9c66f94d0"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/while/decl-async-fun.js",
+      "bytes": 552,
+      "sha256": "a29d80147ece925bb78d5ae65d41e67830172a6f31a5b3eee7329340d140f1fb"
+    },
+    {
+      "path": "run-10mCaM/results/corpus/test/language/statements/while/decl-let.js",
+      "bytes": 349,
+      "sha256": "ea12bdecc6ead9f1166d0156ef75173e8ea72fd6d2d8bc696e22906189ff423f"
+    },
+    {
+      "path": "run-10mCaM/results/errors.json.gz",
+      "bytes": 5989379,
+      "sha256": "48e9d1efdf97c04917a47c2dbdfc9ed01371d5fe965bbe7751f1ee95ded571d5"
+    },
+    {
+      "path": "run-10mCaM/results/input-faults.json.gz",
+      "bytes": 83073,
+      "sha256": "adc1639643e0c5c0944e03eb390d7fd1a3151109af28de6e7d66fa2a8c35b2d1"
+    },
+    {
+      "path": "run-10mCaM/results/synthetic-inputs.json.gz",
+      "bytes": 298,
+      "sha256": "7d7d6fb395252e20eab5f83a400f92d2bce97ebc1b91f921b8d2da58d32f61b0"
+    },
+    {
+      "path": "run-10mCaM/script-execution-inputs.mjs",
+      "bytes": 7068,
+      "sha256": "b80db7e57448af6735244741af7c4fbb9609daa577d711ef8f78ad1a060a5c7d"
+    },
+    {
+      "path": "run-10mCaM/script-execution-inputs.test.mjs",
+      "bytes": 12440,
+      "sha256": "3804fa5a194bc1434f19684209dc3657b321d5ccd2f552b516f5d91b502d5bec"
+    },
+    {
+      "path": "run-daH3CG/import-remapping.json",
+      "bytes": 1078,
+      "sha256": "12e5fbb096ddffdc4223a9846752e1fe965146017cf4576672f8b47d85fc0f8f"
+    },
+    {
+      "path": "run-daH3CG/original-script-execution-inputs.mjs",
+      "bytes": 6921,
+      "sha256": "99e35f74005a425001571ae4d19e47fd34bcbdf7f2b1a8869bbb9e400ea5709e"
+    },
+    {
+      "path": "run-daH3CG/original-script-execution-inputs.test.mjs",
+      "bytes": 11740,
+      "sha256": "26b8bbad3ea22b3fd54252f1f569c7ae0c8f174d2cc0ca54c35973c9f86b3b2b"
+    },
+    {
+      "path": "run-daH3CG/process.json",
+      "bytes": 1126,
+      "sha256": "a5a8df76a113119619bec4e6411827dd1fdc1461d5b1ec62d62518ce590bb461"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/block-scope/return-from/block-let.js",
+      "bytes": 299,
+      "sha256": "94c4cfdca0c03e248fec343d7a06738fbb6bf7a879051d74c240a17af46a9c13"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/block-scope/syntax/redeclaration/function-name-redeclaration-attempt-with-function.js",
+      "bytes": 646,
+      "sha256": "84bdc0294cf54ec63d473962f2c41411677b1888b71f8095d60941f9f399cd30"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/block-scope/syntax/redeclaration/let-name-redeclaration-attempt-with-let.js",
+      "bytes": 591,
+      "sha256": "5ea96370981eed6312096533c6ef50e5874f700d216ac7015ba888dfbc6b72a6"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/directive-prologue/10.1.1-2gs.js",
+      "bytes": 431,
+      "sha256": "943bb323d03b863dee56d1ef51617a10cd3d32895009b713e25c1d4de3fc5069"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/addition/S11.6.1_A4_T3.js",
+      "bytes": 782,
+      "sha256": "987b1c3cf66b6bbb2f6d8aaf6d1435cb1238b19132fa861a91aa2c35085d229d"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/assignment/target-number.js",
+      "bytes": 656,
+      "sha256": "891e96b9bc7e14fe5546973e8c07a7ce0d8a24edfbb0f32c01b364a5503f6a23"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/conditional/S11.12_A3_T4.js",
+      "bytes": 525,
+      "sha256": "cdf1a36a5a7940fadd7463b1dd67da9222cea57a46c5540db6a71bd1c996efac"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/logical-and/S11.11.1_A3_T4.js",
+      "bytes": 501,
+      "sha256": "90acc73f392df9bfdd6546d52d973e96dff13e0b6368ef2797a8f5b18d441e43"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/object/prop-dup-data-data.js",
+      "bytes": 676,
+      "sha256": "cc7de7be6c0b773de9d83ed6094ebdc0372d7be6eda7b6931f2d37e8220925b4"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/object/property-name-yield.js",
+      "bytes": 270,
+      "sha256": "930ada0c729b65875b13e68d9c2719fbfe37bbdc5bc4dd0e68726c2237c4d1f2"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/strict-equals/S11.9.4_A3.js",
+      "bytes": 673,
+      "sha256": "5c18a4dcbe6f4b69ccf735ff4cf55d83b81a2549b8a66d885a0d641fcfb8d30a"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/subtraction/order-of-evaluation.js",
+      "bytes": 3021,
+      "sha256": "cd7da6d6b5a97bd25816d9ae7125401dd51910ce1ab25da2d5a488a3808505cc"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/typeof/null.js",
+      "bytes": 602,
+      "sha256": "2bb094c32dc547b82f3d04822738eff0605949f11938328d6a1e94ccf881660b"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/typeof/undefined.js",
+      "bytes": 576,
+      "sha256": "59342d4a6ebaecff6cbe8ac7d36d135bba9bf2c11ce27ee99db5fa017d378834"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/unary-minus/11.4.7-4-1.js",
+      "bytes": 233,
+      "sha256": "4da9c15edd61d6d90a55301c5fad93ee5ef5fc690c04a38383d2998938e9b44e"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/expressions/unary-plus/11.4.6-2-1.js",
+      "bytes": 232,
+      "sha256": "d982389acc55bdd907a0d78b10c0c75bd798345e0e5e64ff6d7ac44f045ae28b"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/function-code/10.4.3-1-1-s.js",
+      "bytes": 471,
+      "sha256": "5d07b268f9e741332bccae193c24d54d2f51fe07f27648743645c38d59393dda"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/function-code/10.4.3-1-62-s.js",
+      "bytes": 401,
+      "sha256": "667153e5e32acb7e4067c4d751e258ca18cfc16dc72c790d953263507890ff98"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/function-code/10.4.3-1-62gs.js",
+      "bytes": 442,
+      "sha256": "5efebd7d1b620393f993048bf3e6f2791ea0b32e6cefc330e38969981494b4a6"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/function-code/10.4.3-1-71-s.js",
+      "bytes": 371,
+      "sha256": "d8a00f2e1523ea695f6f769f7506e67ff02f165769cb99bc77543b732e2235bd"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/identifier-resolution/assign-to-global-undefined.js",
+      "bytes": 558,
+      "sha256": "89458e800feb89edae813dc0fa21eaa592b2f850344c4916a19888acdeab1f2d"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/module-code/eval-this.js",
+      "bytes": 1170,
+      "sha256": "044874d01e501861c9c1d451ddd67e1c224a768045be75c5c49e0eb182d998c2"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/async-function/evaluation-body-that-returns.js",
+      "bytes": 412,
+      "sha256": "02d16a9f1e4894790564046cd8f8a90f97436e9355047f9bc2218a0d9f5fa25b"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/function/param-duplicated-strict-1.js",
+      "bytes": 655,
+      "sha256": "3a4a4b5e3d70da582993165ab4592c7616abb528c864e022f4fd82ac26ee56aa"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/function/S13.2.1_A1_T1.js",
+      "bytes": 4692,
+      "sha256": "92538a981853d536d0a90d3db608f7a8f0ff8a0b526a6b354504076d49c3b447"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/let/block-local-closure-get-before-initialization.js",
+      "bytes": 375,
+      "sha256": "5cf850a15f38a8cdcba2008cb0d52b55c0ad80a7379c145a3a2fc40c1c37b8c1"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/let/function-local-closure-set-before-initialization.js",
+      "bytes": 387,
+      "sha256": "eb87df61a995bba285fae52e424b7b4e838fe6663773697cbfbab218280bc73a"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/let/global-use-before-initialization-in-declaration-statement.js",
+      "bytes": 340,
+      "sha256": "841de5082a955cbaf965ecf81c9b52e46ee5ff8d82a598938b2cb8e98846d703"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+      "bytes": 329,
+      "sha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/return/line-terminators.js",
+      "bytes": 997,
+      "sha256": "fdef09dcd8ad13a7ae6b1c179594b89988e0481b627166400e5344e875a4eb52"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/return/S12.9_A1_T4.js",
+      "bytes": 551,
+      "sha256": "fd1138f446a9cbfc5a8c384446c202c12b13f7373254620eec2323c9c66f94d0"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/while/decl-async-fun.js",
+      "bytes": 552,
+      "sha256": "a29d80147ece925bb78d5ae65d41e67830172a6f31a5b3eee7329340d140f1fb"
+    },
+    {
+      "path": "run-daH3CG/results/corpus/test/language/statements/while/decl-let.js",
+      "bytes": 349,
+      "sha256": "ea12bdecc6ead9f1166d0156ef75173e8ea72fd6d2d8bc696e22906189ff423f"
+    },
+    {
+      "path": "run-daH3CG/script-execution-inputs.mjs",
+      "bytes": 7033,
+      "sha256": "57d3759d6f0f1a0c210f41e7b19368a168c48699e1ef9ac20fedb06c638aafed"
+    },
+    {
+      "path": "run-daH3CG/script-execution-inputs.test.mjs",
+      "bytes": 11989,
+      "sha256": "6a91931d0d95f0d51e1008a308463b714f8ff4479a9ec1c61fbf7ae205c7fedc"
+    },
+    {
+      "path": "run-UMAWQO/import-remapping.json",
+      "bytes": 1078,
+      "sha256": "ebb6582435d3ebbb1a159c726c50fcdc817f9cb98602fac4d3e854dda161c181"
+    },
+    {
+      "path": "run-UMAWQO/original-script-execution-inputs.mjs",
+      "bytes": 6956,
+      "sha256": "4fc40ed011acacc56f217d06949c9b9790f9cd1ffb2412294a0d6258e67d0547"
+    },
+    {
+      "path": "run-UMAWQO/original-script-execution-inputs.test.mjs",
+      "bytes": 11855,
+      "sha256": "02596c2762c29b427107083d4c6ea402aa840ccf5b8fa4ef0b449f869f5db00a"
+    },
+    {
+      "path": "run-UMAWQO/process.json",
+      "bytes": 178,
+      "sha256": "622d5950806fdc0ff45670346674991970680519a4de65108c9820cf09d05206"
+    },
+    {
+      "path": "run-UMAWQO/results/actual.json.gz",
+      "bytes": 585028,
+      "sha256": "1332a22407c9b5282021b3be5f112076583577339d38d851967526b11a6b7b0d"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/block-scope/return-from/block-let.js",
+      "bytes": 299,
+      "sha256": "94c4cfdca0c03e248fec343d7a06738fbb6bf7a879051d74c240a17af46a9c13"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/block-scope/syntax/redeclaration/function-name-redeclaration-attempt-with-function.js",
+      "bytes": 646,
+      "sha256": "84bdc0294cf54ec63d473962f2c41411677b1888b71f8095d60941f9f399cd30"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/block-scope/syntax/redeclaration/let-name-redeclaration-attempt-with-let.js",
+      "bytes": 591,
+      "sha256": "5ea96370981eed6312096533c6ef50e5874f700d216ac7015ba888dfbc6b72a6"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/directive-prologue/10.1.1-2gs.js",
+      "bytes": 431,
+      "sha256": "943bb323d03b863dee56d1ef51617a10cd3d32895009b713e25c1d4de3fc5069"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/addition/S11.6.1_A4_T3.js",
+      "bytes": 782,
+      "sha256": "987b1c3cf66b6bbb2f6d8aaf6d1435cb1238b19132fa861a91aa2c35085d229d"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/assignment/target-number.js",
+      "bytes": 656,
+      "sha256": "891e96b9bc7e14fe5546973e8c07a7ce0d8a24edfbb0f32c01b364a5503f6a23"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/conditional/S11.12_A3_T4.js",
+      "bytes": 525,
+      "sha256": "cdf1a36a5a7940fadd7463b1dd67da9222cea57a46c5540db6a71bd1c996efac"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/logical-and/S11.11.1_A3_T4.js",
+      "bytes": 501,
+      "sha256": "90acc73f392df9bfdd6546d52d973e96dff13e0b6368ef2797a8f5b18d441e43"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/object/prop-dup-data-data.js",
+      "bytes": 676,
+      "sha256": "cc7de7be6c0b773de9d83ed6094ebdc0372d7be6eda7b6931f2d37e8220925b4"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/object/property-name-yield.js",
+      "bytes": 270,
+      "sha256": "930ada0c729b65875b13e68d9c2719fbfe37bbdc5bc4dd0e68726c2237c4d1f2"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/strict-equals/S11.9.4_A3.js",
+      "bytes": 673,
+      "sha256": "5c18a4dcbe6f4b69ccf735ff4cf55d83b81a2549b8a66d885a0d641fcfb8d30a"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/subtraction/order-of-evaluation.js",
+      "bytes": 3021,
+      "sha256": "cd7da6d6b5a97bd25816d9ae7125401dd51910ce1ab25da2d5a488a3808505cc"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/typeof/null.js",
+      "bytes": 602,
+      "sha256": "2bb094c32dc547b82f3d04822738eff0605949f11938328d6a1e94ccf881660b"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/typeof/undefined.js",
+      "bytes": 576,
+      "sha256": "59342d4a6ebaecff6cbe8ac7d36d135bba9bf2c11ce27ee99db5fa017d378834"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/unary-minus/11.4.7-4-1.js",
+      "bytes": 233,
+      "sha256": "4da9c15edd61d6d90a55301c5fad93ee5ef5fc690c04a38383d2998938e9b44e"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/expressions/unary-plus/11.4.6-2-1.js",
+      "bytes": 232,
+      "sha256": "d982389acc55bdd907a0d78b10c0c75bd798345e0e5e64ff6d7ac44f045ae28b"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/function-code/10.4.3-1-1-s.js",
+      "bytes": 471,
+      "sha256": "5d07b268f9e741332bccae193c24d54d2f51fe07f27648743645c38d59393dda"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/function-code/10.4.3-1-62-s.js",
+      "bytes": 401,
+      "sha256": "667153e5e32acb7e4067c4d751e258ca18cfc16dc72c790d953263507890ff98"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/function-code/10.4.3-1-62gs.js",
+      "bytes": 442,
+      "sha256": "5efebd7d1b620393f993048bf3e6f2791ea0b32e6cefc330e38969981494b4a6"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/function-code/10.4.3-1-71-s.js",
+      "bytes": 371,
+      "sha256": "d8a00f2e1523ea695f6f769f7506e67ff02f165769cb99bc77543b732e2235bd"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/identifier-resolution/assign-to-global-undefined.js",
+      "bytes": 558,
+      "sha256": "89458e800feb89edae813dc0fa21eaa592b2f850344c4916a19888acdeab1f2d"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/module-code/eval-this.js",
+      "bytes": 1170,
+      "sha256": "044874d01e501861c9c1d451ddd67e1c224a768045be75c5c49e0eb182d998c2"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/async-function/evaluation-body-that-returns.js",
+      "bytes": 412,
+      "sha256": "02d16a9f1e4894790564046cd8f8a90f97436e9355047f9bc2218a0d9f5fa25b"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/function/param-duplicated-strict-1.js",
+      "bytes": 655,
+      "sha256": "3a4a4b5e3d70da582993165ab4592c7616abb528c864e022f4fd82ac26ee56aa"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/function/S13.2.1_A1_T1.js",
+      "bytes": 4692,
+      "sha256": "92538a981853d536d0a90d3db608f7a8f0ff8a0b526a6b354504076d49c3b447"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/let/block-local-closure-get-before-initialization.js",
+      "bytes": 375,
+      "sha256": "5cf850a15f38a8cdcba2008cb0d52b55c0ad80a7379c145a3a2fc40c1c37b8c1"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/let/function-local-closure-set-before-initialization.js",
+      "bytes": 387,
+      "sha256": "eb87df61a995bba285fae52e424b7b4e838fe6663773697cbfbab218280bc73a"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/let/global-use-before-initialization-in-declaration-statement.js",
+      "bytes": 340,
+      "sha256": "841de5082a955cbaf965ecf81c9b52e46ee5ff8d82a598938b2cb8e98846d703"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+      "bytes": 329,
+      "sha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/return/line-terminators.js",
+      "bytes": 997,
+      "sha256": "fdef09dcd8ad13a7ae6b1c179594b89988e0481b627166400e5344e875a4eb52"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/return/S12.9_A1_T4.js",
+      "bytes": 551,
+      "sha256": "fd1138f446a9cbfc5a8c384446c202c12b13f7373254620eec2323c9c66f94d0"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/while/decl-async-fun.js",
+      "bytes": 552,
+      "sha256": "a29d80147ece925bb78d5ae65d41e67830172a6f31a5b3eee7329340d140f1fb"
+    },
+    {
+      "path": "run-UMAWQO/results/corpus/test/language/statements/while/decl-let.js",
+      "bytes": 349,
+      "sha256": "ea12bdecc6ead9f1166d0156ef75173e8ea72fd6d2d8bc696e22906189ff423f"
+    },
+    {
+      "path": "run-UMAWQO/results/errors.json.gz",
+      "bytes": 5989322,
+      "sha256": "41488ac7d32c74eaa6ecbf7345ca4e2d37a2c6567b9a60b4c3f0e90ebb65a1c4"
+    },
+    {
+      "path": "run-UMAWQO/results/input-faults.json.gz",
+      "bytes": 83068,
+      "sha256": "6f7089af36aa13ed32be782077168d10219e23aac9296d3eb126756ca9202dc8"
+    },
+    {
+      "path": "run-UMAWQO/results/synthetic-inputs.json.gz",
+      "bytes": 298,
+      "sha256": "7d7d6fb395252e20eab5f83a400f92d2bce97ebc1b91f921b8d2da58d32f61b0"
+    },
+    {
+      "path": "run-UMAWQO/script-execution-inputs.mjs",
+      "bytes": 7068,
+      "sha256": "b80db7e57448af6735244741af7c4fbb9609daa577d711ef8f78ad1a060a5c7d"
+    },
+    {
+      "path": "run-UMAWQO/script-execution-inputs.test.mjs",
+      "bytes": 12104,
+      "sha256": "2ae3821b6ba32e8f36744e855e81de82af5e54003cf1818593b179f9012faeb2"
+    },
+    {
+      "path": "verify.mjs",
+      "bytes": 4036,
+      "sha256": "5471b143c28ef252519e6e0f2ff3f7d0146dd18cc0855a21d359eed837097f47"
+    }
+  ]
+}

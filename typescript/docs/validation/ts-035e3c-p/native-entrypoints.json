@@ -1,0 +1,286 @@
+[
+  {
+    "entry": "src/cli.ts",
+    "binary": "rift"
+  },
+  {
+    "entry": "test/realms.ts",
+    "binary": "realms"
+  },
+  {
+    "entry": "test/object-descriptors.ts",
+    "binary": "object-descriptors"
+  },
+  {
+    "entry": "test/object-prototypes.ts",
+    "binary": "object-prototypes"
+  },
+  {
+    "entry": "test/object-keys.ts",
+    "binary": "object-keys"
+  },
+  {
+    "entry": "test/conversion.ts",
+    "binary": "conversion"
+  },
+  {
+    "entry": "test/definition-dispatch.ts",
+    "binary": "definition-dispatch"
+  },
+  {
+    "entry": "test/array-storage.ts",
+    "binary": "array-storage"
+  },
+  {
+    "entry": "test/array-like.ts",
+    "binary": "array-like"
+  },
+  {
+    "entry": "test/operation-context.ts",
+    "binary": "operation-context"
+  },
+  {
+    "entry": "test/array-map.ts",
+    "binary": "array-map"
+  },
+  {
+    "entry": "test/array-literals.ts",
+    "binary": "array-literals"
+  },
+  {
+    "entry": "test/property-key-conversion.ts",
+    "binary": "property-key-conversion"
+  },
+  {
+    "entry": "test/numeric-operators.ts",
+    "binary": "numeric-operators"
+  },
+  {
+    "entry": "test/addition.ts",
+    "binary": "addition"
+  },
+  {
+    "entry": "test/relational.ts",
+    "binary": "relational"
+  },
+  {
+    "entry": "test/primitive-conversion.ts",
+    "binary": "primitive-conversion"
+  },
+  {
+    "entry": "test/operator-coercion.ts",
+    "binary": "operator-coercion"
+  },
+  {
+    "entry": "test/key-coercion.ts",
+    "binary": "key-coercion"
+  },
+  {
+    "entry": "test/length-coercion.ts",
+    "binary": "length-coercion"
+  },
+  {
+    "entry": "test/array-length-coercion.ts",
+    "binary": "array-length-coercion"
+  },
+  {
+    "entry": "test/function-call.ts",
+    "binary": "function-call"
+  },
+  {
+    "entry": "test/object-valueof.ts",
+    "binary": "object-valueof"
+  },
+  {
+    "entry": "test/array-string-conversion.ts",
+    "binary": "array-string-conversion"
+  },
+  {
+    "entry": "test/function-string-conversion.ts",
+    "binary": "function-string-conversion"
+  },
+  {
+    "entry": "test/abstract-equality.ts",
+    "binary": "abstract-equality"
+  },
+  {
+    "entry": "test/delete-operator.ts",
+    "binary": "delete-operator"
+  },
+  {
+    "entry": "test/typeof-void.ts",
+    "binary": "typeof-void"
+  },
+  {
+    "entry": "test/in-operator.ts",
+    "binary": "in-operator"
+  },
+  {
+    "entry": "test/primitive-reads.ts",
+    "binary": "primitive-reads"
+  },
+  {
+    "entry": "test/property-assignment.ts",
+    "binary": "property-assignment"
+  },
+  {
+    "entry": "test/compound-assignment.ts",
+    "binary": "compound-assignment"
+  },
+  {
+    "entry": "test/structured-outcomes.ts",
+    "binary": "structured-outcomes"
+  },
+  {
+    "entry": "src/observation-driver.ts",
+    "binary": "observation-driver"
+  },
+  {
+    "entry": "test/observation-serialization.ts",
+    "binary": "observation-serialization"
+  },
+  {
+    "entry": "test/return-audit.ts",
+    "binary": "return-audit"
+  },
+  {
+    "entry": "test/number-radix.ts",
+    "binary": "number-radix"
+  },
+  {
+    "entry": "test/script-metadata.ts",
+    "binary": "script-metadata"
+  },
+  {
+    "entry": "test/global-environment.ts",
+    "binary": "global-environment"
+  },
+  {
+    "entry": "test/script-realm-bootstrap.ts",
+    "binary": "script-realm-bootstrap"
+  },
+  {
+    "entry": "test/script-declarations.ts",
+    "binary": "script-declarations"
+  },
+  {
+    "entry": "test/script-global-declarations.ts",
+    "binary": "script-global-declarations"
+  },
+  {
+    "entry": "test/script-record.ts",
+    "binary": "script-record"
+  },
+  {
+    "entry": "test/script-environment.ts",
+    "binary": "script-environment"
+  },
+  {
+    "entry": "test/script-function-materialization.ts",
+    "binary": "script-function-materialization"
+  },
+  {
+    "entry": "test/script-function-setup.ts",
+    "binary": "script-function-setup"
+  },
+  {
+    "entry": "test/property-accessors.ts",
+    "binary": "property-accessors"
+  },
+  {
+    "entry": "test/script-restricted-properties.ts",
+    "binary": "script-restricted-properties"
+  },
+  {
+    "entry": "test/script-execution.ts",
+    "binary": "script-execution"
+  },
+  {
+    "entry": "test/harness-catch.ts",
+    "binary": "harness-catch"
+  },
+  {
+    "entry": "test/harness-switch.ts",
+    "binary": "harness-switch"
+  },
+  {
+    "entry": "test/harness-for-update.ts",
+    "binary": "harness-for-update"
+  },
+  {
+    "entry": "test/harness-nonstrict.ts",
+    "binary": "harness-nonstrict"
+  },
+  {
+    "entry": "test/harness-construct.ts",
+    "binary": "harness-construct"
+  },
+  {
+    "entry": "test/harness-errors-a.ts",
+    "binary": "harness-errors-a"
+  },
+  {
+    "entry": "test/harness-errors-b.ts",
+    "binary": "harness-errors-b"
+  },
+  {
+    "entry": "test/harness-map-default.ts",
+    "binary": "harness-map-default"
+  },
+  {
+    "entry": "test/harness-formatting.ts",
+    "binary": "harness-formatting"
+  },
+  {
+    "entry": "test/harness-bundle.ts",
+    "binary": "harness-bundle"
+  },
+  {
+    "entry": "test/script-observation-serialization.ts",
+    "binary": "script-observation-serialization"
+  },
+  {
+    "entry": "test/script-throw-inspection.ts",
+    "binary": "script-throw-inspection"
+  },
+  {
+    "entry": "src/script-observation-driver.ts",
+    "binary": "script-observation-driver"
+  },
+  {
+    "entry": "test/script-observation.ts",
+    "binary": "script-observation"
+  },
+  {
+    "entry": "test/script-strict-rule-audit.ts",
+    "binary": "script-strict-rule-audit"
+  },
+  {
+    "entry": "test/script-strict-rule-dispatch.ts",
+    "binary": "script-strict-rule-dispatch"
+  },
+  {
+    "entry": "test/script-strict-parameter-audit.ts",
+    "binary": "script-strict-parameter-audit"
+  },
+  {
+    "entry": "test/script-strict-parameter-dispatch.ts",
+    "binary": "script-strict-parameter-dispatch"
+  },
+  {
+    "entry": "test/script-assignment-target-audit.ts",
+    "binary": "script-assignment-target-audit"
+  },
+  {
+    "entry": "test/script-assignment-target-dispatch.ts",
+    "binary": "script-assignment-target-dispatch"
+  },
+  {
+    "entry": "test/script-lexical-statement-audit.ts",
+    "binary": "script-lexical-statement-audit"
+  },
+  {
+    "entry": "test/script-lexical-statement-dispatch.ts",
+    "binary": "script-lexical-statement-dispatch"
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "status": 1,
+  "signal": null,
+  "error": null,
+  "stdout": "",
+  "stderr": "node:fs:2406\r\n  binding.link(\r\n          ^\r\n\r\nError: EPERM: operation not permitted, link 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3c-p\\run-daH3CG\\results\\corpus\\test\\language\\statements\\let\\global-use-before-initialization-in-prior-statement.js' -> 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3c-p\\run-daH3CG\\results\\alias-node'\r\n    at linkSync (node:fs:2406:11)\r\n    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3c-p/run-daH3CG/script-execution-inputs.test.mjs:110:41 {\r\n  errno: -4048,\r\n  code: 'EPERM',\r\n  syscall: 'link',\r\n  path: 'C:\\\\Users\\\\jonku\\\\code\\\\rift\\\\typescript\\\\docs\\\\validation\\\\ts-035e3c-p\\\\run-daH3CG\\\\results\\\\corpus\\\\test\\\\language\\\\statements\\\\let\\\\global-use-before-initialization-in-prior-statement.js',\r\n  dest: 'C:\\\\Users\\\\jonku\\\\code\\\\rift\\\\typescript\\\\docs\\\\validation\\\\ts-035e3c-p\\\\run-daH3CG\\\\results\\\\alias-node'\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+}
