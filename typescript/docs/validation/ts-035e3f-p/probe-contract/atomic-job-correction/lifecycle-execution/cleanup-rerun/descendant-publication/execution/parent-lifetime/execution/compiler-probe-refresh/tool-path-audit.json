@@ -1,0 +1,62 @@
+{
+  "kind": "read-only-after-preflight-failure-no-retry",
+  "rows": [
+    {
+      "tool": "node",
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "realpath": "C:\\Program Files\\nodejs\\node.exe",
+      "regularFile": true,
+      "symbolicLink": false,
+      "dev": "1045235170",
+      "ino": "11821949022024633",
+      "nlink": "1",
+      "bytes": "100097864",
+      "sha256": "14319838b3f355e0398c13569a90270bce4fc68f25189f58c59b03dadae0e6d5",
+      "pinnedSha256": "14319838b3f355e0398c13569a90270bce4fc68f25189f58c59b03dadae0e6d5",
+      "pinMatches": true
+    },
+    {
+      "tool": "supervisor",
+      "path": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+      "realpath": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+      "regularFile": true,
+      "symbolicLink": false,
+      "dev": "1045235170",
+      "ino": "1407374884208949",
+      "nlink": "1",
+      "bytes": "301368",
+      "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139",
+      "pinnedSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139",
+      "pinMatches": true
+    },
+    {
+      "tool": "cmd",
+      "path": "C:\\WINDOWS\\system32\\cmd.exe",
+      "realpath": "C:\\WINDOWS\\system32\\cmd.exe",
+      "regularFile": true,
+      "symbolicLink": false,
+      "dev": "1045235170",
+      "ino": "562949954062573",
+      "nlink": "2",
+      "bytes": "339968",
+      "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+      "pinnedSha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+      "pinMatches": true
+    },
+    {
+      "tool": "zig",
+      "path": "C:\\Users\\jonku\\AppData\\Local\\Microsoft\\WinGet\\Packages\\zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe\\zig-x86_64-windows-0.17.0\\zig.exe",
+      "realpath": "C:\\Users\\jonku\\AppData\\Local\\Microsoft\\WinGet\\Packages\\zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe\\zig-x86_64-windows-0.17.0\\zig.exe",
+      "regularFile": true,
+      "symbolicLink": false,
+      "dev": "1045235170",
+      "ino": "1407374884278551",
+      "nlink": "1",
+      "bytes": "190064128",
+      "sha256": "f54b14f02a4d7d8ac62a94a0663486eb166bba3745d85b466238c1b93e723d46",
+      "pinnedSha256": "f54b14f02a4d7d8ac62a94a0663486eb166bba3745d85b466238c1b93e723d46",
+      "pinMatches": true
+    }
+  ],
+  "outputRootExists": false
+}

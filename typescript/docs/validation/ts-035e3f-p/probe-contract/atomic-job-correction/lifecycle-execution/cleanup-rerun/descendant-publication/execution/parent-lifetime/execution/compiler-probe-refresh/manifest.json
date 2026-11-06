@@ -1,0 +1,112 @@
+[
+  {
+    "path": "typescript/docs/script-build-provenance.md",
+    "bytes": 38827,
+    "sha256": "9f1922599d46f21a97c8c67b2d0fd142ee0a3cf55c28e025be4d5c4cd4ba1c5d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/README.md",
+    "bytes": 9333,
+    "sha256": "70bdf5d8f9614d896ddab9ad1a98a0b46d89d8521e675c2630788259d432c339"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-alias-review.json",
+    "bytes": 1293,
+    "sha256": "abbe160a37b2931f685424314069189975738dfe664a0ba4bd7b82b7681558ea"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/contract.json",
+    "bytes": 3599,
+    "sha256": "3b1117d286db81a3911bd0f4677b437985c84174e43111315facd73dbfb32798"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/expected-plan.json",
+    "bytes": 2780,
+    "sha256": "059fba12fe9528076d859ada3617b6e917c6b7c8614ea85828ab08c35a84056b"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/input-links.json",
+    "bytes": 741,
+    "sha256": "310e888d5fc43ae870c4294d5c7f961c64fcfa74711dc1d0a5628cbb169e9c7d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/offline-results.json",
+    "bytes": 2045,
+    "sha256": "d1743c3d818f7ba25f337eea727d22d2094a18a0c585cb4c374ea4e8db318628"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/offline.test.mjs",
+    "bytes": 4154,
+    "sha256": "101eecb7cb6668cb7717471973be609116e3e5e3d4e95b6f2878d04ee488b7a6"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/preflight-failure.json",
+    "bytes": 780,
+    "sha256": "cc18b0e5e3311af1606481c4b29cbfa539bf2982b27b829ac7f0d24d0a2ae9a5"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/prepare.mjs",
+    "bytes": 5062,
+    "sha256": "b2537367fabf9958ee65a86a92f37333f5bc73c8b21708ddc9520ef5a46c61f7"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/prior-design.md",
+    "bytes": 36751,
+    "sha256": "93b4855ec956099a4e070ec5e1c84a69a0af930ded3c9609ef7d393b55a4babf"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/prior-manifest.json",
+    "bytes": 296,
+    "sha256": "1146497922ebd563f27ae4a91eb344ef6286a06161c1dc4c2c3800877c984abc"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/runner.mjs",
+    "bytes": 18437,
+    "sha256": "ee133b15de3b1e3acce3dc959381097cc781dc840207a4f8b75dc9ac5675a71b"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/status-checks.txt",
+    "bytes": 4373,
+    "sha256": "4b28fe607fee9d73c2324373f9d3ae3f3e12e9ce43743fc158fc58a00df789ab"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/status-literals.json",
+    "bytes": 2479,
+    "sha256": "ec60c9be6b72781140029db95c27cfd4ebd3e32703a4c51b27e813a7a4e7d56e"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/supervise-function.txt",
+    "bytes": 2537,
+    "sha256": "6bad6cf49fa3556d14f95563c7957ec79a9dcc0a43bca37746857d91fee35ae6"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/supervise.ps1",
+    "bytes": 1689,
+    "sha256": "4e17fcd8adf0a00c979b06b8e8d9dd0d73bd6e6308ae21247509e6d124abf274"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/supervisor.cs",
+    "bytes": 15997,
+    "sha256": "ff72647da35de4bae3ba2fdfac9486c37a0c16ce8e401fa004eeec0664b63fef"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/syntax-results.json",
+    "bytes": 266,
+    "sha256": "159c4acecd6bfc79089659c7f8935e994feec39ea5ac0922ae95b878a10b2679"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/tool-path-audit.json",
+    "bytes": 2486,
+    "sha256": "a0d12b4a37d5171d78ce39bbfd8a6cfaa5bd3cf58911dea49b51ee324f1a6b47"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/transformations.json",
+    "bytes": 17702,
+    "sha256": "a7945fd48766fadc62b71b7cb6af80ece36a5e9f25cb3e239345ffd11188be10"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/verify.mjs",
+    "bytes": 34644,
+    "sha256": "a15a64249c6bee492be2945cb7d494af099743bac3d05ed0bb432fcb1daac57a"
+  }
+]

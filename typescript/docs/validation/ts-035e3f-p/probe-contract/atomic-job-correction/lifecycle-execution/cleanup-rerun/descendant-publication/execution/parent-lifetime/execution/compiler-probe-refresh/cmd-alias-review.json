@@ -1,0 +1,33 @@
+{
+  "kind": "read-only-audit-not-an-exemption",
+  "command": [
+    "C:\\WINDOWS\\system32\\fsutil.exe",
+    "hardlink",
+    "list",
+    "C:\\WINDOWS\\system32\\cmd.exe"
+  ],
+  "exitCode": 0,
+  "stdout": "\\Windows\\WinSxS\\amd64_microsoft-windows-commandprompt_31bf3856ad364e35_10.0.26100.9549_none_26c71961ca689840\\cmd.exe\r\n\\Windows\\System32\\cmd.exe\r\n",
+  "rows": [
+    {
+      "path": "C:\\Windows\\WinSxS\\amd64_microsoft-windows-commandprompt_31bf3856ad364e35_10.0.26100.9549_none_26c71961ca689840\\cmd.exe",
+      "dev": "1045235170",
+      "ino": "562949954062573",
+      "nlink": "2",
+      "bytes": "339968",
+      "regularFile": true,
+      "symbolicLink": false
+    },
+    {
+      "path": "C:\\Windows\\System32\\cmd.exe",
+      "dev": "1045235170",
+      "ino": "562949954062573",
+      "nlink": "2",
+      "bytes": "339968",
+      "regularFile": true,
+      "symbolicLink": false
+    }
+  ],
+  "proposedReviewDecision": "If explicitly approved, design a cmd-only OS-tool identity check for these two names, same file identity/linkcount2/pinned bytes before and after. Keep single-link checks for every other tool, all copied inputs and project/package inventories. Current runner/preflight remains unchanged and blocked; no alias exemption implemented.",
+  "retry": false
+}

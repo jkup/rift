@@ -1,0 +1,16 @@
+{
+  "node": [
+    {
+      "exitCode": 0,
+      "name": "runner.mjs"
+    },
+    {
+      "exitCode": 0,
+      "name": "verify.mjs"
+    }
+  ],
+  "scriptcInvocations": 0,
+  "csharpCompilations": 0,
+  "powershellErrors": [],
+  "lifecycleInvocations": 0
+}
