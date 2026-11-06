@@ -1,0 +1,450 @@
+{
+  "stages": 40,
+  "originalInputsUnchanged": 15207,
+  "additionalProtectedFixture": "c1255926abb84da9666cb0ac9c1258ef27e60465785c3c4822d170471df4a1cc",
+  "producerLiterals": 66,
+  "driverNegatives": 114,
+  "lateFailures": 8,
+  "recordSpoofs": 8,
+  "sourceModuleAbsent": true,
+  "generatedModuleAbsent": true,
+  "cacheInodeRefresh": {
+    "path": "node_modules/@scriptc/runtime-win32-x64-msvc/runtime-pack.verified.json",
+    "beforeSha256": "3fa20d9e671fea5b484bb41c88aed00e9c8535290b6b2117122e522ce3cfc0c0",
+    "afterSha256": "b8a87812d7a334be3a0e45eaffc230cd59a5ed633eb6da564af836f5b2e3ef6b",
+    "artifacts": 98,
+    "changed": [
+      {
+        "path": "artifacts/release/runtime/default/scr_context.o",
+        "oldIno": 844424930854914,
+        "newIno": 281474978139584
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_shared.o",
+        "oldIno": 844424930856866,
+        "newIno": 281474978139665
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_number.o",
+        "oldIno": 844424930856746,
+        "newIno": 281474978139650
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_bigint.o",
+        "oldIno": 844424930854661,
+        "newIno": 281474978139568
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_string.o",
+        "oldIno": 844424930856927,
+        "newIno": 281474978139672
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_grapheme.o",
+        "oldIno": 844424930855438,
+        "newIno": 281474978139623
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_array.o",
+        "oldIno": 844424930854326,
+        "newIno": 281474978139564
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_bytes.o",
+        "oldIno": 844424930854732,
+        "newIno": 281474978139573
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_bytes_io.o",
+        "oldIno": 844424930854698,
+        "newIno": 281474978139575
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_fs_cp.o",
+        "oldIno": 844424930855389,
+        "newIno": 281474978139617
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_map.o",
+        "oldIno": 844424930856662,
+        "newIno": 281474978139639
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_closure.o",
+        "oldIno": 844424930854884,
+        "newIno": 281474978139581
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_ffi.o",
+        "oldIno": 844424930855361,
+        "newIno": 281474978139614
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_object.o",
+        "oldIno": 844424930856755,
+        "newIno": 281474978139651
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_union.o",
+        "oldIno": 844424930856987,
+        "newIno": 281474978139681
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_exception.o",
+        "oldIno": 844424930855333,
+        "newIno": 281474978139612
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_unwind.o",
+        "oldIno": 844424930856997,
+        "newIno": 281474978139682
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_error.o",
+        "oldIno": 844424930855111,
+        "newIno": 281474978139607
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_console.o",
+        "oldIno": 844424930854904,
+        "newIno": 281474978139582
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_lib.o",
+        "oldIno": 844424930856607,
+        "newIno": 281474978139635
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_hash.o",
+        "oldIno": 844424930855447,
+        "newIno": 281474978139624
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_path.o",
+        "oldIno": 844424930856784,
+        "newIno": 281474978139653
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_os.o",
+        "oldIno": 844424930856765,
+        "newIno": 281474978139652
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_url.o",
+        "oldIno": 844424930857021,
+        "newIno": 281474978139683
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_url_params.o",
+        "oldIno": 844424930857012,
+        "newIno": 281474978139685
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_json.o",
+        "oldIno": 844424930855716,
+        "newIno": 281474978139631
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_node_builtin.o",
+        "oldIno": 844424930856711,
+        "newIno": 281474978139644
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_async.o",
+        "oldIno": 844424930854541,
+        "newIno": 281474978139566
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_crypto_async.o",
+        "oldIno": 844424930854930,
+        "newIno": 281474978139586
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_child.o",
+        "oldIno": 844424930854859,
+        "newIno": 281474978139577
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_cycle.o",
+        "oldIno": 844424930854944,
+        "newIno": 281474978139587
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_publish.o",
+        "oldIno": 844424930856812,
+        "newIno": 281474978139658
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_region.o",
+        "oldIno": 844424930856851,
+        "newIno": 281474978139663
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_arena.o",
+        "oldIno": 844424930854256,
+        "newIno": 281474978139563
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_itable.o",
+        "oldIno": 844424930855503,
+        "newIno": 281474978139630
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_slots.o",
+        "oldIno": 844424930856876,
+        "newIno": 281474978139666
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_alloc.o",
+        "oldIno": 844424930854239,
+        "newIno": 281474978139562
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_cipher_info.o",
+        "oldIno": 844424930854869,
+        "newIno": 281474978139580
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_ieee754.o",
+        "oldIno": 844424930855474,
+        "newIno": 281474978139628
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_glibc_math.o",
+        "oldIno": 844424930855419,
+        "newIno": 281474978139621
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_win.o",
+        "oldIno": 844424930857114,
+        "newIno": 281474978139700
+      },
+      {
+        "path": "artifacts/release/runtime/dyn-tier/scr_json.o",
+        "oldIno": 844424930855732,
+        "newIno": 281474978139854
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_js_value.o",
+        "oldIno": 844424930855523,
+        "newIno": 281474978139633
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_js_object.o",
+        "oldIno": 844424930855513,
+        "newIno": 281474978139632
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_inspect.o",
+        "oldIno": 844424930855489,
+        "newIno": 281474978139629
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_console_native.o",
+        "oldIno": 844424930854894,
+        "newIno": 281474978139583
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_regex.o",
+        "oldIno": 844424930856841,
+        "newIno": 281474978139662
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_path_win32_relative.o",
+        "oldIno": 844424930856775,
+        "newIno": 281474978139654
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_glob.o",
+        "oldIno": 844424930855428,
+        "newIno": 281474978139622
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_idna.o",
+        "oldIno": 844424930855464,
+        "newIno": 281474978139627
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_assert.o",
+        "oldIno": 844424930854371,
+        "newIno": 281474978139565
+      },
+      {
+        "path": "artifacts/vendor/libregexp/libscriptc-libregexp.a",
+        "oldIno": 844424930853885,
+        "newIno": 281474978140478
+      },
+      {
+        "path": "artifacts/release/runtime/flags/scr_fs_cp.o",
+        "oldIno": 844424930855393,
+        "newIno": 281474978139870
+      },
+      {
+        "path": "artifacts/release/runtime/default/scr_fs_flags.o",
+        "oldIno": 844424930855399,
+        "newIno": 281474978139618
+      }
+    ],
+    "onlyFieldChanged": "ino",
+    "allOriginalAndCopiedObjectBytesMatchRecordedSha256": true,
+    "explanation": "scriptc refreshed cached inode identities for 54 artifacts in the ordinary-file copy; no code, content hash, size, timestamp, schema, or pin changed"
+  },
+  "all71FreshNativeBinaryHashesUnchanged": true,
+  "inherited": [
+    {
+      "path": "docs\\validation\\ts-034h7\\bundle-results.json",
+      "sha256": "a56e60ba55ba9cbf742b700ae49b679c6eb2f99b50ddd2a85704568c6f458f9a",
+      "originalSha256": "a56e60ba55ba9cbf742b700ae49b679c6eb2f99b50ddd2a85704568c6f458f9a"
+    },
+    {
+      "path": "docs\\validation\\ts-034h7\\gate.json",
+      "sha256": "7cf27eb277a0c156daeb1a83c759babfeb6361257f20b891fb1c18a335f74684",
+      "originalSha256": "93d6dd6774232d2af1fe3ddf7cb72f3dfec53a869602d33cf9cb6a476b5a7f7f"
+    },
+    {
+      "path": "docs\\validation\\ts-035a\\native-alpha.jsonl",
+      "sha256": "eb5e9c573fb79d07ebf08955e16d70cc3eb2f0a6d42d1905939f74e0572d5be0",
+      "originalSha256": "eb5e9c573fb79d07ebf08955e16d70cc3eb2f0a6d42d1905939f74e0572d5be0"
+    },
+    {
+      "path": "docs\\validation\\ts-035a\\native-beta.jsonl",
+      "sha256": "8da4664254cc3d37e42ea3a492de280d24611ddb2156f137443e7bd16620a8f1",
+      "originalSha256": "8da4664254cc3d37e42ea3a492de280d24611ddb2156f137443e7bd16620a8f1"
+    },
+    {
+      "path": "docs\\validation\\ts-035a\\node-alpha.jsonl",
+      "sha256": "eb5e9c573fb79d07ebf08955e16d70cc3eb2f0a6d42d1905939f74e0572d5be0",
+      "originalSha256": "eb5e9c573fb79d07ebf08955e16d70cc3eb2f0a6d42d1905939f74e0572d5be0"
+    },
+    {
+      "path": "docs\\validation\\ts-035a\\node-beta.jsonl",
+      "sha256": "8da4664254cc3d37e42ea3a492de280d24611ddb2156f137443e7bd16620a8f1",
+      "originalSha256": "8da4664254cc3d37e42ea3a492de280d24611ddb2156f137443e7bd16620a8f1"
+    },
+    {
+      "path": "docs\\validation\\ts-035a\\serializer-results.json",
+      "sha256": "47c3c2a99a79a0245d76d77ca1862ce80a2a57545027f24418f59691b84c0227",
+      "originalSha256": "47c3c2a99a79a0245d76d77ca1862ce80a2a57545027f24418f59691b84c0227"
+    },
+    {
+      "path": "docs\\validation\\ts-035b\\boundary-results.json",
+      "sha256": "d5037f77c0b6c8f6996d42a3115e20acc151df5c3fe937d7ca282fd1a45ddea8",
+      "originalSha256": "d5037f77c0b6c8f6996d42a3115e20acc151df5c3fe937d7ca282fd1a45ddea8"
+    },
+    {
+      "path": "docs\\validation\\ts-035b\\gate.json",
+      "sha256": "fc6b5f4b43413f29f007a0aea6c6dafa8d9ef72c0de3fc42a70e54fb56c5834c",
+      "originalSha256": "e753a49cea90a3c425bf5c3203dc4a8a31f680e0e68b6d23a3e4618aa0d516fa"
+    },
+    {
+      "path": "docs\\validation\\ts-035b\\inspection-results.json",
+      "sha256": "e6a5d73f32e4ff675cb3dab0cb69cd87183ad4a8b518c44ae4bccec580809ec5",
+      "originalSha256": "e6a5d73f32e4ff675cb3dab0cb69cd87183ad4a8b518c44ae4bccec580809ec5"
+    },
+    {
+      "path": "docs\\validation\\ts-035c\\integration-latest.json",
+      "sha256": "6715be0d5006f76e669e00c07d6a49d2bb2c8799c89f912c536f15cf5597364c",
+      "originalSha256": "046ec6e9097f8243c70074e4dab3d3e9a5fa95b7157ed384af0c64c2925a5dc6"
+    },
+    {
+      "path": "docs\\validation\\ts-035c\\lifecycle-latest.json",
+      "sha256": "3a3ab41233c5e029c8be930d4875bb9d027b1596eb9f6cc3dd562c54e04bb339",
+      "originalSha256": "d9d6bfc579cee23b1482f22499e1e6b616d4de7de2489f7823ed4b9b2505315a"
+    },
+    {
+      "path": "docs\\validation\\ts-035c\\pinned-results.json",
+      "sha256": "bc4a90a39f26817d11a114a9608fc26e1f47c8a2d661e4b903499bf2367784c0",
+      "originalSha256": "3eb18edc45c62478144661d21e9f222d1af28620f3393086dd969d5a98cf3b02"
+    },
+    {
+      "path": "docs\\validation\\ts-035c\\preflight-negative-results.json",
+      "sha256": "31c8dacfcb01c5fe664212a55e819ae66b7812a7596f6a967baaad508c61b242",
+      "originalSha256": "cf46479d1dbf1e84e00780be0385ce9e0eeda4ab8704e0b329c733e3a1dc36fc"
+    },
+    {
+      "path": "docs\\validation\\ts-035d1\\extra-results.json",
+      "sha256": "07fb08c66a3f1b181dbfbba9bb05bd409420d26e4c3b357a0cbe0a01234e5136",
+      "originalSha256": "07fb08c66a3f1b181dbfbba9bb05bd409420d26e4c3b357a0cbe0a01234e5136"
+    },
+    {
+      "path": "docs\\validation\\ts-035d1\\matrix-results.json",
+      "sha256": "850ebb7e93a87a95f2502b4bc414c206202457d0220ef59b2976d31847ad04ca",
+      "originalSha256": "850ebb7e93a87a95f2502b4bc414c206202457d0220ef59b2976d31847ad04ca"
+    },
+    {
+      "path": "docs\\validation\\ts-035d2\\extra-results.json",
+      "sha256": "9c71964762c8b5303e506536e9767cc33c1ce1e4e3e61ea6f080104d9ea903f7",
+      "originalSha256": "9c71964762c8b5303e506536e9767cc33c1ce1e4e3e61ea6f080104d9ea903f7"
+    },
+    {
+      "path": "docs\\validation\\ts-035d2\\matrix-results.json",
+      "sha256": "92b0c0dc9ddfbda6f6dfc39ba891cb30de60405ffb902a55e3903678cd849d5a",
+      "originalSha256": "3057ffa7169540e4cb5885b0cb1cce3380760515545f7e243dc76eff48d2317f"
+    },
+    {
+      "path": "docs\\validation\\ts-035d2\\wire-results.json",
+      "sha256": "e9b4f7ebdce9cd84ba61d0c73da52fee2d92c3182d923dc1013e4362540b38a2",
+      "originalSha256": "e9b4f7ebdce9cd84ba61d0c73da52fee2d92c3182d923dc1013e4362540b38a2"
+    },
+    {
+      "path": "docs\\validation\\ts-035d3\\matrix-results.json",
+      "sha256": "b10b2272297590d807879e1ec217fa9cf158f594e57383436b3a1a7e6a14e03a",
+      "originalSha256": "d0b43a47998c5aa941250b81424367ea438a8b7867b49fc326b2d8f1c7e98d27"
+    },
+    {
+      "path": "docs\\validation\\ts-035d4\\controls-results.json",
+      "sha256": "d01f431faddd430da2c41d8f3c2344a4b6d00853bf1078f7b9a589acbc0eae85",
+      "originalSha256": "d01f431faddd430da2c41d8f3c2344a4b6d00853bf1078f7b9a589acbc0eae85"
+    },
+    {
+      "path": "docs\\validation\\ts-035d4\\matrix-results.json",
+      "sha256": "81bbc1a827089b015ab15a8f86001485e5bd3092ab6a118cf820c4f1a9133641",
+      "originalSha256": "81bbc1a827089b015ab15a8f86001485e5bd3092ab6a118cf820c4f1a9133641"
+    },
+    {
+      "path": "docs\\validation\\ts-035d4\\metadata-results.json",
+      "sha256": "5d451b8edbf5db0613836b6fbeb9db033b1cc2f7d968433d35a8f7d8864f5d2f",
+      "originalSha256": "5d451b8edbf5db0613836b6fbeb9db033b1cc2f7d968433d35a8f7d8864f5d2f"
+    },
+    {
+      "path": "docs\\validation\\ts-035d4\\wire-results.json",
+      "sha256": "2103093fc77b9523b1d0847aafb2f320e80d0e9746d4ca66bff62354d559c381",
+      "originalSha256": "2103093fc77b9523b1d0847aafb2f320e80d0e9746d4ca66bff62354d559c381"
+    },
+    {
+      "path": "docs\\validation\\ts-035d5\\matrix-results.json",
+      "sha256": "45fefc020fe571b235dc9379ed924bc8cc8d56d2780c58474fcc8a86d3e4d07d",
+      "originalSha256": "813a004abb9c44f6666c7f6a05178ef26d70d13229a27107a5b7f44cacee866b"
+    },
+    {
+      "path": "docs\\validation\\ts-035d5-p\\oracle-controls.json",
+      "sha256": "1aec74d65be7a48652d0add82d134895a6b71b9f627fb49720fe596986dd9d92",
+      "originalSha256": "1aec74d65be7a48652d0add82d134895a6b71b9f627fb49720fe596986dd9d92"
+    },
+    {
+      "path": "docs\\validation\\ts-035d6\\source-results.json",
+      "sha256": "863e44182bf01cf16acf8fd6dcd2f313feb6a4603abcb1bed84eff899e3cd38d",
+      "originalSha256": "863e44182bf01cf16acf8fd6dcd2f313feb6a4603abcb1bed84eff899e3cd38d"
+    },
+    {
+      "path": "docs\\validation\\ts-035d6\\wire-results.json",
+      "sha256": "73809326298b5962fbe0251901f1f107bee54666a28ef02de17e02af0a6f14d3",
+      "originalSha256": "73809326298b5962fbe0251901f1f107bee54666a28ef02de17e02af0a6f14d3"
+    },
+    {
+      "path": "docs\\validation\\ts-035d7\\matrix-results.json.gz",
+      "sha256": "a3d755b8e3bcc7793306302d1ca5cf801ddaba9dd788518b0dd7e74049dfb125",
+      "originalSha256": "f6de8d4173b53a06ca553ba6f0104ffa9ea8a4bef43de67f630bbe8c0c52b0ff"
+    },
+    {
+      "path": "docs\\validation\\ts-035d8\\source-results.json",
+      "sha256": "469957afdccfd90e4e6ae4cb70b9e983ecff6df9e2255489fc05ce9afa786dbb",
+      "originalSha256": "469957afdccfd90e4e6ae4cb70b9e983ecff6df9e2255489fc05ce9afa786dbb"
+    },
+    {
+      "path": "docs\\validation\\ts-035d8\\wire-results.json",
+      "sha256": "64c270098508803b942c84e85388679df28c6fcf88df75b54056f7c4e2c495cd",
+      "originalSha256": "64c270098508803b942c84e85388679df28c6fcf88df75b54056f7c4e2c495cd"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "stage": "post-suite collection",
+  "error": "AssertionError: sandbox input node_modules/@scriptc/runtime-win32-x64-msvc/runtime-pack.verified.json",
+  "expected": "3fa20d9e671fea5b484bb41c88aed00e9c8535290b6b2117122e522ce3cfc0c0",
+  "actual": "b8a87812d7a334be3a0e45eaffc230cd59a5ed633eb6da564af836f5b2e3ef6b",
+  "completedSuitesStillPass": true,
+  "resolution": "bounded cache inspection validates only inode changes; all runtime object bytes checked independently"
+}

@@ -1,0 +1,155 @@
+[
+  {
+    "id": "record-as-variant",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "{\"mode\":\"conformance\",\"variant\":\"raw\",\"action\":\"execute\",\"nonce\":\"future\",\"requestSha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"preflightId\":null,\"limits\":{\"sourceUnits\":100000,\"parseDepth\":128,\"steps\":100000,\"calls\":64,\"evaluationDepth\":256,\"wallMs\":10000,\"outputBytes\":1048576},\"units\":[{\"id\":\"u0\",\"role\":\"test\",\"text\":\"0;\"}]}",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "files": [
+      {
+        "token": "SOURCE-u0",
+        "present": true,
+        "text": "\"use strict\";\n0;"
+      }
+    ],
+    "error": "script-producer/variant",
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "provenance": "future OS string-vector spoof control; neither native execution nor exact error priority measured"
+  },
+  {
+    "id": "record-as-limit",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "{\"mode\":\"conformance\",\"variant\":\"raw\",\"action\":\"execute\",\"nonce\":\"future\",\"requestSha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"preflightId\":null,\"limits\":{\"sourceUnits\":100000,\"parseDepth\":128,\"steps\":100000,\"calls\":64,\"evaluationDepth\":256,\"wallMs\":10000,\"outputBytes\":1048576},\"units\":[{\"id\":\"u0\",\"role\":\"test\",\"text\":\"0;\"}]}",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0"
+    ],
+    "files": [
+      {
+        "token": "SOURCE-u0",
+        "present": true,
+        "text": "\"use strict\";\n0;"
+      }
+    ],
+    "error": "script-producer/limit",
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "provenance": "future OS string-vector spoof control; neither native execution nor exact error priority measured"
+  },
+  {
+    "id": "record-as-role",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "{\"mode\":\"conformance\",\"variant\":\"raw\",\"action\":\"execute\",\"nonce\":\"future\",\"requestSha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"preflightId\":null,\"limits\":{\"sourceUnits\":100000,\"parseDepth\":128,\"steps\":100000,\"calls\":64,\"evaluationDepth\":256,\"wallMs\":10000,\"outputBytes\":1048576},\"units\":[{\"id\":\"u0\",\"role\":\"test\",\"text\":\"0;\"}]}",
+      "SOURCE-u0"
+    ],
+    "files": [
+      {
+        "token": "SOURCE-u0",
+        "present": true,
+        "text": "\"use strict\";\n0;"
+      }
+    ],
+    "error": "script-producer/unit",
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "provenance": "future OS string-vector spoof control; neither native execution nor exact error priority measured"
+  },
+  {
+    "id": "extra-record-argument",
+    "setupClass": "ordinary-controls",
+    "argv": [
+      "conformance",
+      "raw",
+      "execute",
+      "future",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "-",
+      "RESULT",
+      "100000",
+      "128",
+      "100000",
+      "64",
+      "256",
+      "10000",
+      "1048576",
+      "u0",
+      "test",
+      "SOURCE-u0",
+      "{\"mode\":\"conformance\",\"variant\":\"raw\",\"action\":\"execute\",\"nonce\":\"future\",\"requestSha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"preflightId\":null,\"limits\":{\"sourceUnits\":100000,\"parseDepth\":128,\"steps\":100000,\"calls\":64,\"evaluationDepth\":256,\"wallMs\":10000,\"outputBytes\":1048576},\"units\":[{\"id\":\"u0\",\"role\":\"test\",\"text\":\"0;\"}]}"
+    ],
+    "files": [
+      {
+        "token": "SOURCE-u0",
+        "present": true,
+        "text": "\"use strict\";\n0;"
+      }
+    ],
+    "error": "script-producer/argc",
+    "expectedDriver": {
+      "exitCode": 70,
+      "stdout": "",
+      "stderr": "Script observation driver fault\n",
+      "childPresent": false
+    },
+    "provenance": "future OS string-vector spoof control; neither native execution nor exact error priority measured"
+  }
+]

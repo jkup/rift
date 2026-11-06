@@ -1,0 +1,27 @@
+{
+  "out": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3b-decimal-qV7656",
+  "records": [
+    {
+      "stage": "tsc",
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--target",
+        "es2024",
+        "--module",
+        "nodenext",
+        "--strict",
+        "--types",
+        "node",
+        "--outDir",
+        "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3b-decimal-qV7656\\node",
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\decimal-proposal\\driver.ts"
+      ],
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "error TS5112: tsconfig.json is present but will not be loaded if files are specified on commandline. Use '--ignoreConfig' to skip this error.\n",
+      "stderr": ""
+    }
+  ]
+}

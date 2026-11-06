@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,copyFileSync,mkdirSync,existsSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {resolve,join,dirname} from 'node:path';
+const here=import.meta.dirname,root=resolve(here,'../../../..'),{sandbox}=JSON.parse(readFileSync(join(here,'run-location.json'))),hash=b=>createHash('sha256').update(b).digest('hex');
+const original=JSON.parse(readFileSync(join(sandbox,'build/guest-node-results.json'))),failures=original.filter(r=>r.verdict!=='PASS');
+assert.equal(original.length,212);assert.equal(failures.length,1);assert.equal(failures[0].name,'examples/counter.js');assert.equal(failures[0].status,66);assert.equal(failures[0].stderr,'cannot read source: examples/counter.js\n');
+copyFileSync(join(sandbox,'build/guest-node-results.json'),join(here,'initial-guest-node-results.json'));
+const source=join(root,'examples/counter.js'),target=join(sandbox,'examples/counter.js'),baseline=JSON.parse(readFileSync(join(root,'docs/validation/ts-035e3b-p/preservation.json'))).find(r=>r.path==='typescript/examples/counter.js');
+assert(baseline);assert.equal(hash(readFileSync(source)),baseline.sha256);assert(!existsSync(target));mkdirSync(dirname(target),{recursive:true});copyFileSync(source,target);assert.equal(hash(readFileSync(target)),baseline.sha256);
+const expected=JSON.parse(readFileSync(join(sandbox,'test/cases.json'))).find(r=>r.file==='examples/counter.js');assert.deepEqual(expected,failures[0].expected);
+const args=['build/node/src/cli.js','examples/counter.js'],p=spawnSync(process.execPath,args,{cwd:sandbox,encoding:'utf8',timeout:30000});
+const record={reason:'Fresh sandbox omitted unchanged examples/counter.js; no semantic or fixture-expectation change',source,target,sha256:baseline.sha256,initialFailure:failures[0],args,status:p.status,signal:p.signal,error:p.error?.message??null,stdout:p.stdout,stderr:p.stderr};
+writeFileSync(join(here,'sandbox-input-repair.json'),JSON.stringify(record,null,2)+'\n',{flag:'wx'});
+assert.equal(p.status,0);assert.equal(p.signal,null);assert.equal(p.error,undefined);assert.equal(p.stdout.replaceAll('\r\n','\n'),expected.stdout);assert.equal(p.stderr,'');
+console.log('PASS reduced counter case after copying the exact protected fixture; initial 211/212 failure retained.');

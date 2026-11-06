@@ -1,0 +1,80 @@
+[
+  {
+    "name": "decimal-original",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-original.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-original.ts\n\n  statements analyzed   10\n  compile statically    10  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  {
+    "name": "decimal-inline",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-inline.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-inline.ts\n\n  statements analyzed   10\n  compile statically    10  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  {
+    "name": "decimal-accumulate",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-accumulate.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-accumulate.ts\n\n  statements analyzed   11\n  compile statically    11  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  {
+    "name": "keys-forin-own",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-forin-own.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-forin-own.ts\n\n  statements analyzed   8\n  compile statically    8  (100%)\n    in dynamic tier     2  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    4 functions already operate on dynamic values (2 statements)\n      keys  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-own.ts:1:1: dyn.forInStable at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-own.ts:3:5\n      %dyn.class.forInBagHas  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-own.ts:3:5: dyn.hasKey at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-own.ts:3:5\n      %dyn.class.forInHasKey  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-own.ts:3:5: %dyn.class.forInBagHas at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-own.ts:3:5\n      %dyn.class.forInKeyStrings  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-own.ts:3:5: dyn.forInKeyStrings at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-own.ts:3:5\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  {
+    "name": "keys-forin-descriptor",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-forin-descriptor.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-forin-descriptor.ts\n\n  statements analyzed   8\n  compile statically    8  (100%)\n    in dynamic tier     2  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    4 functions already operate on dynamic values (2 statements)\n      keys  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-descriptor.ts:1:1: dyn.forInStable at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-descriptor.ts:3:5\n      %dyn.class.forInBagHas  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-descriptor.ts:3:5: dyn.hasKey at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-descriptor.ts:3:5\n      %dyn.class.forInHasKey  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-descriptor.ts:3:5: %dyn.class.forInBagHas at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-descriptor.ts:3:5\n      %dyn.class.forInKeyStrings  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-descriptor.ts:3:5: dyn.forInKeyStrings at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-forin-descriptor.ts:3:5\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  {
+    "name": "keys-ownnames",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-ownnames.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-ownnames.ts\n\n  statements analyzed   9\n  compile statically    9  (100%)\n    in dynamic tier     3  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    12 functions already operate on dynamic values (3 statements)\n      keys  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1: dyn.iteratorResult at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5\n      %dyn.class.property.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5: %dyn.class.staticProperties at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5\n      %dyn.class.property.1  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5: %dyn.class.staticProperties at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5\n      %dyn.class.property.2  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:5:41: %dyn.class.staticProperties at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:5:41\n      %dyn.class.property.3  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5: %dyn.class.staticProperties at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5\n      %dyn.class.property.4  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5: %dyn.class.staticProperties at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5\n      %dyn.generator.call.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1: dynInvoke at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1\n      %dyn.generator.call.1  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1: dynInvoke at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1\n      %dyn.generator.get.next  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5: %dyn.class.property at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5\n      %dyn.generator.get.return  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5: %dyn.class.property at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:3:5\n      %dyn.generator.method.next  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1: %dyn.generator.call at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1\n      %dyn.generator.method.return  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1: %dyn.generator.call at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames.ts:1:1\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  }
+]

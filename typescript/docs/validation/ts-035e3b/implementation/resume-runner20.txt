@@ -1,0 +1,28 @@
+✔ accepts expected successful execution and the intentional host exit (0.7752ms)
+✔ matching unexpected exits cannot pass (0.0812ms)
+✔ rejects build exit, even with matching stdout (0.0604ms)
+✔ rejects build signal, even with matching stdout (0.0408ms)
+✔ rejects build timeout, even with matching stdout (0.0542ms)
+✔ rejects build spawn, even with matching stdout (0.0653ms)
+✔ rejects coverage exit, even with matching stdout (0.0501ms)
+✔ rejects coverage signal, even with matching stdout (0.0389ms)
+✔ rejects coverage timeout, even with matching stdout (0.0494ms)
+✔ rejects coverage spawn, even with matching stdout (0.0777ms)
+✔ rejects node exit, even with matching stdout (0.055ms)
+✔ rejects node signal, even with matching stdout (0.0416ms)
+✔ rejects node timeout, even with matching stdout (0.0252ms)
+✔ rejects node spawn, even with matching stdout (0.0232ms)
+✔ rejects native exit, even with matching stdout (0.0285ms)
+✔ rejects native signal, even with matching stdout (0.0255ms)
+✔ rejects native timeout, even with matching stdout (0.4096ms)
+✔ rejects native spawn, even with matching stdout (0.0383ms)
+✔ fails closed on missing, changed or incomplete coverage reports (0.2048ms)
+✔ rejects dynamic coverage and output differences (0.0422ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.3056

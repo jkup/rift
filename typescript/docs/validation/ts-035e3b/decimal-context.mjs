@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {cpSync,copyFileSync,mkdtempSync,readFileSync,writeFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {resolve,join} from 'node:path';
+const root=resolve(import.meta.dirname,'../../..'),here=resolve(import.meta.dirname,'decimal-proposal'),out=mkdtempSync(join(root,'build/ts035e3b-decimal-context-'));
+cpSync(join(root,'src'),join(out,'src'),{recursive:true,force:false,errorOnExist:true});
+copyFileSync(join(here,'script-producer-request.ts'),join(out,'src/script-producer-request.ts'));
+const args=['coverage',join(out,'src/script-observation-driver.ts'),'--explain-dynamic'];
+const p=spawnSync(join(root,'node_modules/scriptc/bin/scriptc.exe'),args,{cwd:root,encoding:'utf8',timeout:120000,maxBuffer:8e6});
+writeFileSync(join(here,'driver-context.json'),JSON.stringify({out,args,status:p.status,signal:p.signal,error:p.error?.message??null,stdout:p.stdout,stderr:p.stderr},null,2)+'\n',{flag:'wx'});
+console.log(p.stdout,p.stderr);assert.equal(p.status,0);assert.match(p.stdout,/in dynamic tier\s+1\s/);assert.match(p.stdout,/dyn\.objKeyStrings/);assert(!p.stdout.includes('dyn.numberConstructor'));
+assert(readFileSync(join(root,'src/script-producer-request.ts')).equals(readFileSync(resolve(import.meta.dirname,'../ts-035e3b-p/proposals/script-producer-request.ts'))));

@@ -1,0 +1,13 @@
+✔ complete literal children in both hosts, observation unchanged (4268.0252ms)
+✔ pure parser errors separately from generic driver rejection with checked sources (5190.8134ms)
+✔ late source/transform/output failure remains driver fault without child (382.8889ms)
+✔ revised positional API rejects records and has no public request constructor or validator (1.4053ms)
+✔ record JSON cannot replace positional controls in either OS entrypoint (333.4354ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10259.7417

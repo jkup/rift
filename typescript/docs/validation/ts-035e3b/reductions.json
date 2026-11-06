@@ -1,0 +1,317 @@
+{
+  "rows": [
+    {
+      "name": "keys",
+      "args": [
+        "coverage",
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\reduction-keys.ts",
+        "--explain-dynamic"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\reduction-keys.ts\n\n  statements analyzed   3\n  compile statically    3  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    1 function already operates on dynamic values (1 statement)\n      keys  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/reduction-keys.ts:1:1: dyn.objKeyStrings at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/reduction-keys.ts:2:20\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    },
+    {
+      "name": "decimal",
+      "args": [
+        "coverage",
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\reduction-decimal.ts",
+        "--explain-dynamic"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\reduction-decimal.ts\n\n  statements analyzed   9\n  compile statically    9  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    1 function already operates on dynamic values (1 statement)\n      decimal  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/reduction-decimal.ts:2:1: dyn.numberConstructor at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/reduction-decimal.ts:5:19\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    }
+  ],
+  "coverageOnly": [
+    {
+      "entry": "src/cli.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/realms.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/object-descriptors.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/object-prototypes.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/object-keys.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/conversion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/definition-dispatch.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/array-storage.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/array-like.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/operation-context.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/array-map.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/array-literals.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/property-key-conversion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/numeric-operators.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/addition.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/relational.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/primitive-conversion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/operator-coercion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/key-coercion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/length-coercion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/array-length-coercion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/function-call.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/object-valueof.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/array-string-conversion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/function-string-conversion.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/abstract-equality.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/delete-operator.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/typeof-void.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/in-operator.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/primitive-reads.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/property-assignment.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/compound-assignment.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/structured-outcomes.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "src/observation-driver.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/observation-serialization.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/return-audit.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/number-radix.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-metadata.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/global-environment.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-realm-bootstrap.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-declarations.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-global-declarations.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-record.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-environment.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-function-materialization.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-function-setup.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/property-accessors.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-restricted-properties.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-execution.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-catch.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-switch.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-for-update.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-nonstrict.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-construct.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-errors-a.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-errors-b.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-map-default.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-formatting.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/harness-bundle.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-observation-serialization.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-throw-inspection.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "src/script-observation-driver.ts",
+      "verdict": "DYNAMIC"
+    },
+    {
+      "entry": "test/script-observation.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-strict-rule-audit.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-strict-rule-dispatch.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-strict-parameter-audit.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-strict-parameter-dispatch.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-assignment-target-audit.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-assignment-target-dispatch.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-lexical-statement-audit.ts",
+      "verdict": "PASS"
+    },
+    {
+      "entry": "test/script-lexical-statement-dispatch.ts",
+      "verdict": "PASS"
+    }
+  ],
+  "syntheticBuildAndExecution": true
+}

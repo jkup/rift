@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {join} from 'node:path';
+const here=import.meta.dirname,initial=JSON.parse(readFileSync(join(here,'stages.json')));
+assert.deepEqual(initial.map(r=>[r.name,r.status]),[['node-build',0],['native-build',0],['producer',0],['guest-node',1]]);
+let source=readFileSync(join(here,'run.mjs'),'utf8');
+const begin=source.indexOf("await run('node-build'"),end=source.indexOf("for(const lane of ['node','native'])",begin);assert(begin>0&&end>begin);
+source=source.slice(0,begin)+"const gates=JSON.parse(readFileSync(join(here,'native-build-results.json')));\n"+source.slice(end);
+source=source.replace("join(here,name+'.txt')","join(here,'resume-'+name+'.txt')").replaceAll("join(here,'stages.json')","join(here,'resume-stages.json')");
+source=source.replace('PASS all stages; original copied inputs unchanged','PASS resumed stages; original copied inputs unchanged');
+assert(!source.includes("await run('native-build'"));assert(!source.includes("await run('producer'"));
+writeFileSync(join(here,'resume.mjs'),source,{flag:'wx'});
+console.log('Prepared resume from guest-node; successful builds and producer suite will not repeat.');

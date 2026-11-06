@@ -1,0 +1,24 @@
+✔ node actual pinned S01/S02 original metadata, strict bytes and uncached preflight (6707.2725ms)
+✔ native actual pinned S01/S02 original metadata, strict bytes and uncached preflight (3961.3745ms)
+✔ pinned selection, corrupted source/metadata/UTF8 and parse-negative execute reject before test launch (23.4183ms)
+✔ all 33 original files and 60 variants remain blocked in each lane (125.3732ms)
+✔ node pinned positive harness assertions run after complete discard and reload (6833.7765ms)
+✔ native pinned positive harness assertions run after complete discard and reload (3705.991ms)
+✔ node real process transport priorities and authenticated cap archive (7287.3919ms)
+✔ native real process transport priorities and authenticated cap archive (5424.6296ms)
+✔ node immutable single-use plans and deterministic cancellation lifecycle (2543.5998ms)
+✔ native immutable single-use plans and deterministic cancellation lifecycle (2004.5578ms)
+✔ source artifacts, nested closure, build and adapter drift reject before spawn (2925.1255ms)
+✔ all seven limits, mode, variant and frozen control source policy are enforced (3.6234ms)
+✔ node failed positive/negative preflight cannot mint ID (7523.1275ms)
+✔ native failed positive/negative preflight cannot mint ID (5486.0576ms)
+✔ no preflight cache and immutable reload occurrence hashes/order (7217.1872ms)
+✔ stale compiled control-set digest cannot authorize preflight (502.5172ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62523.5316

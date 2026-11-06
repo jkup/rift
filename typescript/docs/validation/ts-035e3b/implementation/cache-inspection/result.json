@@ -1,0 +1,281 @@
+{
+  "path": "node_modules/@scriptc/runtime-win32-x64-msvc/runtime-pack.verified.json",
+  "beforeSha256": "3fa20d9e671fea5b484bb41c88aed00e9c8535290b6b2117122e522ce3cfc0c0",
+  "afterSha256": "b8a87812d7a334be3a0e45eaffc230cd59a5ed633eb6da564af836f5b2e3ef6b",
+  "artifacts": 98,
+  "changed": [
+    {
+      "path": "artifacts/release/runtime/default/scr_context.o",
+      "oldIno": 844424930854914,
+      "newIno": 281474978139584
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_shared.o",
+      "oldIno": 844424930856866,
+      "newIno": 281474978139665
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_number.o",
+      "oldIno": 844424930856746,
+      "newIno": 281474978139650
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_bigint.o",
+      "oldIno": 844424930854661,
+      "newIno": 281474978139568
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_string.o",
+      "oldIno": 844424930856927,
+      "newIno": 281474978139672
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_grapheme.o",
+      "oldIno": 844424930855438,
+      "newIno": 281474978139623
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_array.o",
+      "oldIno": 844424930854326,
+      "newIno": 281474978139564
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_bytes.o",
+      "oldIno": 844424930854732,
+      "newIno": 281474978139573
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_bytes_io.o",
+      "oldIno": 844424930854698,
+      "newIno": 281474978139575
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_fs_cp.o",
+      "oldIno": 844424930855389,
+      "newIno": 281474978139617
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_map.o",
+      "oldIno": 844424930856662,
+      "newIno": 281474978139639
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_closure.o",
+      "oldIno": 844424930854884,
+      "newIno": 281474978139581
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_ffi.o",
+      "oldIno": 844424930855361,
+      "newIno": 281474978139614
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_object.o",
+      "oldIno": 844424930856755,
+      "newIno": 281474978139651
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_union.o",
+      "oldIno": 844424930856987,
+      "newIno": 281474978139681
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_exception.o",
+      "oldIno": 844424930855333,
+      "newIno": 281474978139612
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_unwind.o",
+      "oldIno": 844424930856997,
+      "newIno": 281474978139682
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_error.o",
+      "oldIno": 844424930855111,
+      "newIno": 281474978139607
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_console.o",
+      "oldIno": 844424930854904,
+      "newIno": 281474978139582
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_lib.o",
+      "oldIno": 844424930856607,
+      "newIno": 281474978139635
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_hash.o",
+      "oldIno": 844424930855447,
+      "newIno": 281474978139624
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_path.o",
+      "oldIno": 844424930856784,
+      "newIno": 281474978139653
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_os.o",
+      "oldIno": 844424930856765,
+      "newIno": 281474978139652
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_url.o",
+      "oldIno": 844424930857021,
+      "newIno": 281474978139683
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_url_params.o",
+      "oldIno": 844424930857012,
+      "newIno": 281474978139685
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_json.o",
+      "oldIno": 844424930855716,
+      "newIno": 281474978139631
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_node_builtin.o",
+      "oldIno": 844424930856711,
+      "newIno": 281474978139644
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_async.o",
+      "oldIno": 844424930854541,
+      "newIno": 281474978139566
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_crypto_async.o",
+      "oldIno": 844424930854930,
+      "newIno": 281474978139586
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_child.o",
+      "oldIno": 844424930854859,
+      "newIno": 281474978139577
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_cycle.o",
+      "oldIno": 844424930854944,
+      "newIno": 281474978139587
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_publish.o",
+      "oldIno": 844424930856812,
+      "newIno": 281474978139658
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_region.o",
+      "oldIno": 844424930856851,
+      "newIno": 281474978139663
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_arena.o",
+      "oldIno": 844424930854256,
+      "newIno": 281474978139563
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_itable.o",
+      "oldIno": 844424930855503,
+      "newIno": 281474978139630
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_slots.o",
+      "oldIno": 844424930856876,
+      "newIno": 281474978139666
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_alloc.o",
+      "oldIno": 844424930854239,
+      "newIno": 281474978139562
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_cipher_info.o",
+      "oldIno": 844424930854869,
+      "newIno": 281474978139580
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_ieee754.o",
+      "oldIno": 844424930855474,
+      "newIno": 281474978139628
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_glibc_math.o",
+      "oldIno": 844424930855419,
+      "newIno": 281474978139621
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_win.o",
+      "oldIno": 844424930857114,
+      "newIno": 281474978139700
+    },
+    {
+      "path": "artifacts/release/runtime/dyn-tier/scr_json.o",
+      "oldIno": 844424930855732,
+      "newIno": 281474978139854
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_js_value.o",
+      "oldIno": 844424930855523,
+      "newIno": 281474978139633
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_js_object.o",
+      "oldIno": 844424930855513,
+      "newIno": 281474978139632
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_inspect.o",
+      "oldIno": 844424930855489,
+      "newIno": 281474978139629
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_console_native.o",
+      "oldIno": 844424930854894,
+      "newIno": 281474978139583
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_regex.o",
+      "oldIno": 844424930856841,
+      "newIno": 281474978139662
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_path_win32_relative.o",
+      "oldIno": 844424930856775,
+      "newIno": 281474978139654
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_glob.o",
+      "oldIno": 844424930855428,
+      "newIno": 281474978139622
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_idna.o",
+      "oldIno": 844424930855464,
+      "newIno": 281474978139627
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_assert.o",
+      "oldIno": 844424930854371,
+      "newIno": 281474978139565
+    },
+    {
+      "path": "artifacts/vendor/libregexp/libscriptc-libregexp.a",
+      "oldIno": 844424930853885,
+      "newIno": 281474978140478
+    },
+    {
+      "path": "artifacts/release/runtime/flags/scr_fs_cp.o",
+      "oldIno": 844424930855393,
+      "newIno": 281474978139870
+    },
+    {
+      "path": "artifacts/release/runtime/default/scr_fs_flags.o",
+      "oldIno": 844424930855399,
+      "newIno": 281474978139618
+    }
+  ],
+  "onlyFieldChanged": "ino",
+  "allOriginalAndCopiedObjectBytesMatchRecordedSha256": true,
+  "explanation": "scriptc refreshed cached inode identities for 54 artifacts in the ordinary-file copy; no code, content hash, size, timestamp, schema, or pin changed"
+}

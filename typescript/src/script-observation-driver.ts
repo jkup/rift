@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import { observeScripts, type ObservationUnit } from "./script-observation.js";
+import { observeScripts, validateConformanceScriptArguments, produceConformanceScripts, type ObservationUnit } from "./script-observation.js";
 import { scriptObservationJSONRecord } from "./script-observation-json.js";
 
 function decimal(text: string): number {
@@ -15,6 +15,15 @@ function identifier(text: string): void {
 }
 function main(): void {
     const args = process.argv.slice(2);
+    if (args[0] === "conformance") {
+        validateConformanceScriptArguments(args);
+        // All controls and occurrence roles are checked before any source read.
+        const sourceTexts: string[] = [];
+        for (let n = 14; n < args.length; n += 3) sourceTexts.push(readFileSync(args[n + 2], "utf8"));
+        const result = produceConformanceScripts(args, sourceTexts);
+        writeFileSync(args[6], scriptObservationJSONRecord(result), { encoding: "utf8", flag: "wx" });
+        return;
+    }
     if (args.length < 11 || (args.length - 8) % 3 !== 0) throw new Error("invalid Script argument count");
     if (args[0] !== "script-observation") throw new Error("invalid Script mode");
     const action = args[1];

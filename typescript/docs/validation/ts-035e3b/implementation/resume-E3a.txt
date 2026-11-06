@@ -1,0 +1,12 @@
+✔ final complete envelope bound is inclusive; adding classification cannot bypass it (11.6239ms)
+✔ compose exact retained literals; no child, native process or authority is created (202.4926ms)
+✔ compose rejects classification injection, unknown/missing keys, malformed wire and stale context (368.4897ms)
+✔ compose all eight statuses and authenticated parent priority; synthetic data only (6.5739ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 694.3483

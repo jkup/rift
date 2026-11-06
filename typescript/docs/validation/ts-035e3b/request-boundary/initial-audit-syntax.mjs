@@ -1,0 +1,45 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,readdirSync,mkdtempSync,mkdirSync,existsSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {stripTypeScriptTypes} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import {resolve,join} from 'node:path';
+const here=import.meta.dirname,root=resolve(here,'../../../..'),prior=resolve(here,'../../ts-035e3b-p'),out=mkdtempSync(join(here,'audit-'));
+const hash=b=>createHash('sha256').update(b).digest('hex'),read=p=>readFileSync(p,'utf8'),lf=s=>s.replaceAll('\r\n','\n');
+function files(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(join(dir,e.name)):/\.(ts|mjs)$/.test(e.name)?[join(dir,e.name)]:[]);}
+const inventory=files(join(root,'src')).concat(files(join(root,'test')),files(join(root,'tools'))).map(path=>{
+ const source=read(path),refs=source.split(/\r?\n/).flatMap((text,n)=>/ScriptProducerRequest|ScriptProducerArguments|ProducerLimits|ProducerUnit|parseScriptProducerArguments|validateScriptProducerRequest|produceConformanceScripts|script-producer-request/.test(text)?[{line:n+1,text}]:[]);
+ return {path:path.slice(root.length+1).replaceAll('\\','/'),sha256:hash(source),references:refs};
+});
+const currentConsumers=inventory.filter(r=>r.references.length);
+assert.deepEqual(currentConsumers.map(r=>r.path).sort(),['src/script-observation-driver.ts','src/script-observation.ts','src/script-producer-request.ts','tools/test262/script-producer.test.mjs'].sort());
+const observation=read(join(here,'proposals/script-observation.ts')),driver=read(join(here,'proposals/script-observation-driver.ts')),test=read(join(here,'proposals/script-producer.test.mjs'));
+const oldObservation=read(join(prior,'proposals/script-observation.ts')).replace(/^import \{ validateScriptProducerRequest[^\n]+\n/,'');
+assert.equal(observation.slice(0,observation.indexOf('// BEGIN private positional')),oldObservation.slice(0,oldObservation.indexOf('// Mode selects wire data')));
+const oldDriver=read(join(prior,'proposals/script-observation-driver.ts'));
+assert.equal(driver.slice(driver.indexOf('    if (args.length < 11')),oldDriver.slice(oldDriver.indexOf('    if (args.length < 11')));
+assert.equal(driver.slice(driver.indexOf('function decimal'),driver.indexOf('function main')),oldDriver.slice(oldDriver.indexOf('function decimal'),oldDriver.indexOf('function main')));
+const exportedFunctions=[...observation.matchAll(/^export function (\w+)\(([^\n]*)\)/gm)].map(m=>({name:m[1],signature:m[0]}));
+assert.deepEqual(exportedFunctions.map(f=>f.name),['observeScripts','observeScriptControl','validateConformanceScriptArguments','produceConformanceScripts']);
+assert(!/^export\s+(?:\{|default|const|class)/m.test(observation));
+const exportedTypes=[...observation.matchAll(/^export type (\w+)/gm)].map(m=>m[1]);assert.deepEqual(exportedTypes,['ObservationUnit','ScriptObservationRequest','ScriptControlReport']);
+for(const name of ['parseProducerArguments','prepareProducerRequest','ScriptProducerRequest','ProducerLimits','ProducerUnit'])assert(!new RegExp('export (?:function|type) '+name+'\\b').test(observation));
+assert(!driver.includes('request.'));assert(!observation.includes('Object.keys'));assert(!observation.includes('script-producer-request'));
+assert(driver.indexOf('validateConformanceScriptArguments(args)')<driver.indexOf('sourceTexts.push(readFileSync')));
+assert(driver.indexOf('sourceTexts.push(readFileSync')<driver.indexOf('produceConformanceScripts(args, sourceTexts)'));
+assert(driver.includes('flag: "wx"'));
+const originalTest=lf(read(join(prior,'proposals/script-producer.test.mjs')));
+const setupBegin='// BEGIN offline-audited negative setup (no producer or process invocation).',setupEnd='// END offline-audited negative setup.';
+const section=s=>s.slice(s.indexOf(setupBegin),s.indexOf(setupEnd)+setupEnd.length);
+assert.equal(section(lf(test)),section(originalTest));
+const helpers=`import assert from 'node:assert/strict';\nimport {readFileSync,writeFileSync,existsSync} from 'node:fs';\nimport {join} from 'node:path';\n${section(lf(test))}\nexport {setupNegative};\n`;
+writeFileSync(join(out,'negative-setup.mjs'),helpers,{flag:'wx'});
+const {setupNegative}=await import(pathToFileURL(join(out,'negative-setup.mjs')));
+const fragment=read(join(here,'private-parser-fragment.ts'));
+writeFileSync(join(out,'parser.mjs'),stripTypeScriptTypes(fragment),{flag:'wx'});
+const {validateConformanceScriptArguments}=await import(pathToFileURL(join(out,'parser.mjs')));
+const spoofRows=JSON.parse(read(join(here,'positional-record-spoofs.json'))),setups=[];
+for(const lane of ['node','native'])for(const row of spoofRows){const dir=join(out,lane+'-'+row.id);mkdirSync(dir);const setup=setupNegative(row,dir);assert.throws(()=>validateConformanceScriptArguments(setup.args),{message:row.error});assert(!existsSync(setup.result));setups.push({lane,id:row.id,args:setup.args,error:row.error});}
+const gates=[...read(join(root,'tools/build-native.mjs')).matchAll(/\["((?:src|test)\/[^"\n]+\.ts)", "([^"\n]+)"\]/g)].map(m=>({entry:m[1],binary:m[2]}));assert.equal(gates.length,71);assert(gates.some(g=>g.entry==='src/script-observation-driver.ts'));assert(!gates.some(g=>g.entry.includes('script-producer-request')));
+writeFileSync(join(out,'audit.json'),JSON.stringify({inventory,currentConsumers,exportedFunctions,exportedTypes,gates,oldObservationPrefixByteIdentical:true,oldDriverHelpersAndObservationTailByteIdentical:true,originalNegativeSetupByteIdenticalAfterNewlineNormalization:true,spoofSetups:setups,childLaunches:0,nativeBuilds:0},null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({out,files:inventory.length,consumerFiles:currentConsumers.length,exportedFunctions:exportedFunctions.map(f=>f.name),nativeEntries:gates.length,spoofSetups:setups.length}));

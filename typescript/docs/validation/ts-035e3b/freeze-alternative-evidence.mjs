@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,readdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {resolve,join} from 'node:path';
+const here=import.meta.dirname,root=resolve(here,'../../../..'),hash=b=>createHash('sha256').update(b).digest('hex');
+const files=['.gitattributes','ALTERNATIVES.md','alternatives.mjs','refine.mjs','decimal-isolate.mjs','freeze-decimal.mjs','decimal-native.mjs','decimal-contracts.mjs','decimal-context.mjs','freeze-alternative-evidence.mjs'];
+for(const dir of ['alternatives','decimal-proposal'])for(const f of readdirSync(join(here,dir)))files.push(dir+'/'+f);
+const rows=files.map(path=>({path,sha256:hash(readFileSync(join(here,path)))}));
+const p=spawnSync(process.execPath,['typescript/docs/validation/ts-035e3b-p/verify.mjs','--implemented'],{cwd:root,encoding:'utf8',timeout:120000});
+assert.equal(p.status,0,p.stderr);
+writeFileSync(join(here,'alternative-evidence.json'),JSON.stringify({status:'partial decimal proposal; key enumeration unresolved; no production amendment applied',preservation:{status:p.status,stdout:p.stdout,stderr:p.stderr},files:rows},null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({artifacts:rows.length,preservation:JSON.parse(p.stdout)}));

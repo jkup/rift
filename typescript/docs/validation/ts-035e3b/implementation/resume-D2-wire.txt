@@ -1,0 +1,10 @@
+✔ D2 real serializer bytes: both hosts, two runtime inputs, both closed codes (2608.8573ms)
+✔ D2 frozen mutations, closed schema, v1 exclusion and independent transport priority (5208.0585ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7926.2242

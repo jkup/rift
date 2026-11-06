@@ -1,0 +1,11 @@
+✔ approved closure: parse-only harness secondary steps/calls/unsupported retain original (12.0295ms)
+✔ approved closure: every forbidden neighbor remains rejected in both boundaries (10.4394ms)
+✔ approved closure: exactly the reviewed C predicates and D2/D4 closed rule additions changed from accepted base (109.333ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 240.2784

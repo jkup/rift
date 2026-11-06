@@ -1,0 +1,7070 @@
+{
+  "claim": "Negative oracle tests, not future engine execution",
+  "blockedRows": 56,
+  "controls": [
+    {
+      "id": "U0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U2/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U2/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U2/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U2/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U2/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U2/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U3/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U3/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U3/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U3/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U3/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U3/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U4/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U4/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U4/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U4/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U4/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U4/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U5/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U5/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U5/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U5/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U5/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U5/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U6/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U6/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U6/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U6/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U6/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U6/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U7/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U7/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U7/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U7/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U7/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U7/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U8/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U8/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U8/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U8/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U8/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U8/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U9/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U9/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U9/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U9/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U9/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U9/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U10/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U10/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U10/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U10/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U10/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U10/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U11/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U11/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U11/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U11/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U11/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U11/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U12/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid increment target",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U12/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid increment target",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U12/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid increment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U12/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid increment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U12/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid increment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U12/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid increment target",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U13/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "newline before postfix increment is unsupported",
+          "loc": {
+            "line": 3,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.line-terminator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U13/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "newline before postfix increment is unsupported",
+          "loc": {
+            "line": 2,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.line-terminator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U13/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "newline before postfix increment is unsupported wrong",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.line-terminator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U13/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "newline before postfix increment is unsupported",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.line-terminator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U13/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "newline before postfix increment is unsupported",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.line-terminator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U13/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "newline before postfix increment is unsupported",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U14/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ++",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U14/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ++",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U14/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ++ wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U14/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ++",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U14/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported or unexpected syntax: ++",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U14/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ++",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U15/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U15/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U15/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U15/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U15/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U15/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U16/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 2,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U16/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U16/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target wrong",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U16/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U16/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "U16/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "invalid assignment target",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.numeric-literal"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported numeric literal",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G2/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "leading-zero numbers are unsupported",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.leading-zero"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G2/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "leading-zero numbers are unsupported",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.leading-zero"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G2/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "leading-zero numbers are unsupported wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.leading-zero"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G2/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "leading-zero numbers are unsupported",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.leading-zero"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G2/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "leading-zero numbers are unsupported",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.leading-zero"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G2/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "leading-zero numbers are unsupported",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G3/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: .",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G3/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: .",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G3/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: . wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G3/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: .",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G3/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported or unexpected syntax: .",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G3/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: .",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G4/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported operator: **",
+          "loc": {
+            "line": 2,
+            "column": 3
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.operator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G4/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported operator: **",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.operator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G4/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported operator: ** wrong",
+          "loc": {
+            "line": 1,
+            "column": 3
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.operator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G4/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported operator: **",
+          "loc": {
+            "line": 1,
+            "column": 3
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.operator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G4/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported operator: **",
+          "loc": {
+            "line": 1,
+            "column": 3
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.operator"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G4/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported operator: **",
+          "loc": {
+            "line": 1,
+            "column": 3
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G5/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: =",
+          "loc": {
+            "line": 2,
+            "column": 5
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G5/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: =",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G5/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: = wrong",
+          "loc": {
+            "line": 1,
+            "column": 5
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G5/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: =",
+          "loc": {
+            "line": 1,
+            "column": 5
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G5/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported or unexpected syntax: =",
+          "loc": {
+            "line": 1,
+            "column": 5
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G5/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: =",
+          "loc": {
+            "line": 1,
+            "column": 5
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G6/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported character: `",
+          "loc": {
+            "line": 2,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.character"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G6/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported character: `",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.character"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G6/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported character: ` wrong",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.character"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G6/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported character: `",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.character"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G6/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported character: `",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.character"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G6/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported character: `",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G7/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unterminated string",
+          "loc": {
+            "line": 2,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.indeterminate-string-end"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G7/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unterminated string",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.indeterminate-string-end"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G7/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unterminated string wrong",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.indeterminate-string-end"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G7/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unterminated string",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.indeterminate-string-end"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G7/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unterminated string",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "lex.indeterminate-string-end"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G7/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unterminated string",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G8/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 2,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G8/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G8/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class wrong",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G8/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G8/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G8/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G9/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 2,
+            "column": 12
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G9/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 1,
+            "column": 13
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G9/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ; wrong",
+          "loc": {
+            "line": 1,
+            "column": 12
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G9/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 1,
+            "column": 12
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G9/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 1,
+            "column": 12
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G9/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 1,
+            "column": 12
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G10/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 2,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G10/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 1,
+            "column": 20
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G10/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class wrong",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G10/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G10/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G10/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: class",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G11/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "declarations require a block",
+          "loc": {
+            "line": 2,
+            "column": 18
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G11/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "declarations require a block",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G11/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "declarations require a block wrong",
+          "loc": {
+            "line": 1,
+            "column": 18
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G11/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "declarations require a block",
+          "loc": {
+            "line": 1,
+            "column": 18
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G11/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "declarations require a block",
+          "loc": {
+            "line": 1,
+            "column": 18
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G11/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "declarations require a block",
+          "loc": {
+            "line": 1,
+            "column": 18
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G12/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "expected ')', found ';'",
+          "loc": {
+            "line": 2,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G12/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "expected ')', found ';'",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G12/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "expected ')', found ';' wrong",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G12/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "expected ')', found ';'",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G12/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "expected ')', found ';'",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G12/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "expected ')', found ';'",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G13/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 2,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G13/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 1,
+            "column": 5
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G13/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ; wrong",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G13/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G13/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G13/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: ;",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G14/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: }",
+          "loc": {
+            "line": 2,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G14/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: }",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G14/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: } wrong",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G14/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: }",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G14/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported or unexpected syntax: }",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G14/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported or unexpected syntax: }",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G15/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "expected ')', found ','",
+          "loc": {
+            "line": 2,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G15/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "expected ')', found ','",
+          "loc": {
+            "line": 1,
+            "column": 5
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G15/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "expected ')', found ',' wrong",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G15/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "expected ')', found ','",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G15/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "expected ')', found ','",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.expected-token"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "G15/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "expected ')', found ','",
+          "loc": {
+            "line": 1,
+            "column": 4
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 2,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 1,
+            "column": 30
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x wrong",
+          "loc": {
+            "line": 1,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 1,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 1,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 1,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 2,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 1,
+            "column": 25
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x wrong",
+          "loc": {
+            "line": 1,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 1,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 1,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M0-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: x",
+          "loc": {
+            "line": 1,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 2,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 1,
+            "column": 30
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "lexical-var: x wrong",
+          "loc": {
+            "line": 1,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 1,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 1,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 1,
+            "column": 29
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 2,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 1,
+            "column": 25
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "lexical-var: x wrong",
+          "loc": {
+            "line": 1,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 1,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 1,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M1-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "lexical-var: x",
+          "loc": {
+            "line": 1,
+            "column": 24
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 2,
+            "column": 37
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 1,
+            "column": 38
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a wrong",
+          "loc": {
+            "line": 1,
+            "column": 37
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 1,
+            "column": 37
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 1,
+            "column": 37
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 1,
+            "column": 37
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 2,
+            "column": 32
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 1,
+            "column": 33
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a wrong",
+          "loc": {
+            "line": 1,
+            "column": 32
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 1,
+            "column": 32
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 1,
+            "column": 32
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M2-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "formal-lexical: a",
+          "loc": {
+            "line": 1,
+            "column": 32
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 2,
+            "column": 30
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 1,
+            "column": 31
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch wrong",
+          "loc": {
+            "line": 1,
+            "column": 30
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 1,
+            "column": 30
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 1,
+            "column": 30
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 1,
+            "column": 30
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 2,
+            "column": 25
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 1,
+            "column": 26
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch wrong",
+          "loc": {
+            "line": 1,
+            "column": 25
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 1,
+            "column": 25
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 1,
+            "column": 25
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M3-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "unsupported catch binding conflict or non-strict catch",
+          "loc": {
+            "line": 1,
+            "column": 25
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 2,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 1,
+            "column": 20
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed wrong",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 2,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 1,
+            "column": 15
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed wrong",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.delete-identifier"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M4-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "delete of an identifier is not allowed",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 2,
+            "column": 43
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 44
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f wrong",
+          "loc": {
+            "line": 1,
+            "column": 43
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 43
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 43
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 43
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 2,
+            "column": 38
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 39
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f wrong",
+          "loc": {
+            "line": 1,
+            "column": 38
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 38
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 38
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M5-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 38
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 2,
+            "column": 59
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 60
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f wrong",
+          "loc": {
+            "line": 1,
+            "column": 59
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 59
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 59
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 59
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 2,
+            "column": 54
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 55
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f wrong",
+          "loc": {
+            "line": 1,
+            "column": 54
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 54
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": null,
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 54
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M6-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "other-conflict",
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        },
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate-lexical: f",
+          "loc": {
+            "line": 1,
+            "column": 54
+          }
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 2,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 20
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a wrong",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 2,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 15
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a wrong",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M7-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "return outside function",
+          "loc": {
+            "line": 2,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "return outside function",
+          "loc": {
+            "line": 1,
+            "column": 20
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "return outside function wrong",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "return outside function",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "return outside function",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "return outside function",
+          "loc": {
+            "line": 1,
+            "column": 19
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "return outside function",
+          "loc": {
+            "line": 2,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "return outside function",
+          "loc": {
+            "line": 1,
+            "column": 15
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "return outside function wrong",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "return outside function",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "return outside function",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.return-context"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "M8-1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "return outside function",
+          "loc": {
+            "line": 1,
+            "column": 14
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL0/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 2,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL0/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL0/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a wrong",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL0/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL0/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL0/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 6
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL1/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL1/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL1/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL1/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL1/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.duplicate-parameter"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL1/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "duplicate parameter: a",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL2/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "non-strict block function planning is unsupported",
+          "loc": {
+            "line": 2,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL2/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "non-strict block function planning is unsupported",
+          "loc": {
+            "line": 1,
+            "column": 8
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL2/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "non-strict block function planning is unsupported wrong",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL2/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "non-strict block function planning is unsupported",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL2/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "non-strict block function planning is unsupported",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.declaration-statement"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SL2/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "scope-restriction",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "non-strict block function planning is unsupported",
+          "loc": {
+            "line": 1,
+            "column": 7
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "syntax nesting limit exceeded",
+          "loc": {
+            "line": 2,
+            "column": 134
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "parse-depth",
+          "count": 129,
+          "limit": 128
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "syntax nesting limit exceeded",
+          "loc": {
+            "line": 1,
+            "column": 135
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "parse-depth",
+          "count": 129,
+          "limit": 128
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "syntax nesting limit exceeded wrong",
+          "loc": {
+            "line": 1,
+            "column": 134
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "parse-depth",
+          "count": 129,
+          "limit": 128
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "syntax nesting limit exceeded",
+          "loc": {
+            "line": 1,
+            "column": 134
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "parse-depth",
+          "count": 129,
+          "limit": 128
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "syntax nesting limit exceeded",
+          "loc": {
+            "line": 1,
+            "column": 134
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "parse-depth",
+          "count": 129,
+          "limit": 128
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "syntax nesting limit exceeded",
+          "loc": {
+            "line": 1,
+            "column": 134
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/resource-count",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "syntax nesting limit exceeded",
+          "loc": {
+            "line": 1,
+            "column": 134
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "parse-depth",
+          "count": 130,
+          "limit": 128
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/resource-limit",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "syntax nesting limit exceeded",
+          "loc": {
+            "line": 1,
+            "column": 134
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "parse-depth",
+          "count": 129,
+          "limit": 129
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "DEPTH128/resource-guard",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "syntax nesting limit exceeded",
+          "loc": {
+            "line": 1,
+            "column": 134
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "calls",
+          "count": 129,
+          "limit": 128
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/location-line",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "source exceeds 100000 UTF-16 units",
+          "loc": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "source-units",
+          "count": 100001,
+          "limit": 100000
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/location-column",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "source exceeds 100000 UTF-16 units",
+          "loc": {
+            "line": 1,
+            "column": 2
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "source-units",
+          "count": 100001,
+          "limit": 100000
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/message",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "source exceeds 100000 UTF-16 units wrong",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "source-units",
+          "count": 100001,
+          "limit": 100000
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/phase",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "runtime",
+          "name": "SyntaxError",
+          "message": "source exceeds 100000 UTF-16 units",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "source-units",
+          "count": 100001,
+          "limit": 100000
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/name",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "TypeError",
+          "message": "source exceeds 100000 UTF-16 units",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "source-units",
+          "count": 100001,
+          "limit": 100000
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/rejection",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "source exceeds 100000 UTF-16 units",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.unexpected"
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/resource-count",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "source exceeds 100000 UTF-16 units",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "source-units",
+          "count": 100002,
+          "limit": 100000
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/resource-limit",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "source exceeds 100000 UTF-16 units",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "source-units",
+          "count": 100001,
+          "limit": 100001
+        }
+      },
+      "expected": "full-object oracle rejects"
+    },
+    {
+      "id": "SIZE100001/resource-guard",
+      "actual": {
+        "kind": "blocked",
+        "reason": "grammar-or-resource",
+        "diagnostic": {
+          "phase": "parse",
+          "name": "SyntaxError",
+          "message": "source exceeds 100000 UTF-16 units",
+          "loc": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "rejection": {
+          "kind": "resource-limit",
+          "guardCode": "calls",
+          "count": 100001,
+          "limit": 100000
+        }
+      },
+      "expected": "full-object oracle rejects"
+    }
+  ]
+}

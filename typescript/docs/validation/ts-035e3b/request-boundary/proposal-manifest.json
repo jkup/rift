@@ -1,0 +1,30 @@
+[
+  {
+    "operation": "replace",
+    "path": "typescript/src/script-observation.ts",
+    "proposal": "proposals/script-observation.ts",
+    "before": "a1ce39a846b7955d34ab5ff9488b262b99c0177f95607889ea8d0534291f78c9",
+    "after": "f9a9cc55fac1b6ae406b783afc8179614e5492e842f528fbea98aba2b70606bb"
+  },
+  {
+    "operation": "replace",
+    "path": "typescript/src/script-observation-driver.ts",
+    "proposal": "proposals/script-observation-driver.ts",
+    "before": "b3e416061ebe5099c57679c73a1891241ec352bdeb31f7bbe3323874ec75316c",
+    "after": "2b9b6f567522daeaafef7152ca55d8bc1edea14522a8cf55733c5f38b0fc8ef2"
+  },
+  {
+    "operation": "replace",
+    "path": "typescript/tools/test262/script-producer.test.mjs",
+    "proposal": "proposals/script-producer.test.mjs",
+    "before": "74ff6e66e02ca8ec741b677c631c5f9dda146c54f4d571c5e670940938770863",
+    "after": "10482f36a728c3c4e01f4cd20869e6742c9d36d6dfc37bbd2413d2b362bb6c08"
+  },
+  {
+    "operation": "remove-unshipped-file",
+    "path": "typescript/src/script-producer-request.ts",
+    "before": "2aca03870611819f6873566267843925c722d97460b5831e0c693e3dd39271be",
+    "after": null,
+    "reason": "All request types/construction are lexical in script-observation.ts; no public record APIs remain."
+  }
+]

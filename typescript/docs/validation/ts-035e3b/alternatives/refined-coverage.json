@@ -1,0 +1,54 @@
+[
+  {
+    "name": "decimal-inline-final",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-inline-final.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-inline-final.ts\n\n  statements analyzed   10\n  compile statically    10  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    1 function already operates on dynamic values (1 statement)\n      decimal  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/decimal-inline-final.ts:2:1: dyn.numberConstructor at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/decimal-inline-final.ts:5:19\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  {
+    "name": "decimal-inline-prior",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-inline-prior.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\decimal-inline-prior.ts\n\n  statements analyzed   11\n  compile statically    11  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  {
+    "name": "keys-ownnames-typed",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-ownnames-typed.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-ownnames-typed.ts\n\n  statements analyzed   10\n  compile statically    10  (100%)\n    in dynamic tier     3  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    2 functions already operate on dynamic values (3 statements)\n      keys  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames-typed.ts:1:1: dyn.getOwnPropertyNames at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames-typed.ts:2:30\n      %dyn.class.property.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames-typed.ts:6:41: %dyn.class.staticProperties at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-ownnames-typed.ts:6:41\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  {
+    "name": "keys-reflect",
+    "args": [
+      "coverage",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-reflect.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3b\\alternatives\\keys-reflect.ts\n\n  statements analyzed   11\n  compile statically    11  (100%)\n    in dynamic tier     3  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    2 functions already operate on dynamic values (3 statements)\n      keys  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-reflect.ts:1:1: dyn.ownKeys at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-reflect.ts:2:41\n      %dyn.class.property.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-reflect.ts:6:41: %dyn.class.staticProperties at C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3b/alternatives/keys-reflect.ts:6:41\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  }
+]
