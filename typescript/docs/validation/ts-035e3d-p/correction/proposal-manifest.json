@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "status": "revised-design-candidate-awaiting-review",
+  "implementationAuthorized": false,
+  "base": "56fd9920bdff0ff62cf0a0e6a272c98b214981d2",
+  "replacements": [
+    {
+      "target": "src/script-observation.ts",
+      "proposal": "proposals/script-observation.ts",
+      "beforeSha256": "f9a9cc55fac1b6ae406b783afc8179614e5492e842f528fbea98aba2b70606bb",
+      "sha256": "1eb33b1c568bef2409b47176bca42f78613987539efb717de8b60d27046ac0b5"
+    },
+    {
+      "target": "test/script-observation.ts",
+      "proposal": "proposals/script-observation-driver-test.ts",
+      "beforeSha256": "647d3d7bc4ffce42d60c45b3c5a6ce7a2d30e1b390de40c0085a95b25d44d757",
+      "sha256": "b723b84ea07f770bd6410c18bd1e9c8dd68e9932481a68a2f7b54c3f319bc888"
+    },
+    {
+      "target": "tools/test262/script-producer.test.mjs",
+      "proposal": "proposals/script-producer.test.mjs",
+      "beforeSha256": "10482f36a728c3c4e01f4cd20869e6742c9d36d6dfc37bbd2413d2b362bb6c08",
+      "sha256": "12d13f97943813d5ac93ec7b1bca318803bb870a9dfb24661950635196b0857a"
+    }
+  ],
+  "additions": [
+    {
+      "target": "tools/test262/script-preflight-producer.test.mjs",
+      "proposal": "proposals/script-preflight-producer.test.mjs",
+      "sha256": "92d43ce11ac5d913acfd85072babeaa13414e89ba0c6d90c29f4a9ab0b6488b3"
+    }
+  ],
+  "sourceDescriptorSha256": "1c7a44e6abe826d6e88050f4300a6c1539a51dfc6f99c0becc1073bc2f4dee67"
+}

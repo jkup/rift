@@ -1,0 +1,59 @@
+{
+  "baselineRecords": 160,
+  "results": [
+    {
+      "id": "omitted-first-control",
+      "rejected": true
+    },
+    {
+      "id": "omitted-last-control",
+      "rejected": true
+    },
+    {
+      "id": "duplicate-control",
+      "rejected": true
+    },
+    {
+      "id": "reordered-controls",
+      "rejected": true
+    },
+    {
+      "id": "changed-role",
+      "rejected": true
+    },
+    {
+      "id": "changed-realm",
+      "rejected": true
+    },
+    {
+      "id": "false-positive-report",
+      "rejected": true
+    },
+    {
+      "id": "summary-only",
+      "rejected": true
+    },
+    {
+      "id": "omitted-original-harness",
+      "rejected": true
+    },
+    {
+      "id": "collapsed-occurrences",
+      "rejected": true
+    },
+    {
+      "id": "constant-unit-ID",
+      "rejected": true
+    },
+    {
+      "id": "relabeled-input",
+      "rejected": true
+    },
+    {
+      "id": "self-consistent-nonce-request-child-report-argv",
+      "codecAccepted": true,
+      "literalOracleRejected": true
+    }
+  ],
+  "engineExecutions": 0
+}
