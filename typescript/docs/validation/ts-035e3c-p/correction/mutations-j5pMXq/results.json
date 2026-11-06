@@ -1,0 +1,1012 @@
+{
+  "claim": "Isolated actual capture code mutants rejected by complete independent literals; no public token/grant",
+  "baseline": [
+    "node/success",
+    "node/wrong-revision",
+    "node/include-failure",
+    "node/first-file-unavailable",
+    "native/success",
+    "native/wrong-revision",
+    "native/include-failure",
+    "native/first-file-unavailable",
+    "synthetic/duplicate-sta",
+    "synthetic/reordered-harness",
+    "synthetic/raw-same-source",
+    "synthetic/nonstrict-same-source",
+    "synthetic/strict-same-source"
+  ],
+  "mutants": 55,
+  "rejections": 110,
+  "results": [
+    {
+      "id": "root-constant-unit-id",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "e7085bf70111c35a2d9d7a64aad3e7fdc9b684bd64ae2c6d15d0445ff2693f9e",
+      "output": "root-constant-unit-id-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "root-constant-unit-id",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "e7085bf70111c35a2d9d7a64aad3e7fdc9b684bd64ae2c6d15d0445ff2693f9e",
+      "output": "root-constant-unit-id-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-id-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "b04788daa23d4bd7798c3177f6522c58f3ace978f0f16aa5ccdc90bcc6ff4d83",
+      "output": "unit-id-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-id-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "b04788daa23d4bd7798c3177f6522c58f3ace978f0f16aa5ccdc90bcc6ff4d83",
+      "output": "unit-id-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-id-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "4e66cc63a2efc5fa9cd78ef08a67e435525f5b5300c9b63aff13697439883435",
+      "output": "unit-id-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-id-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "4e66cc63a2efc5fa9cd78ef08a67e435525f5b5300c9b63aff13697439883435",
+      "output": "unit-id-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-ordinal-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "407cefae491cf5ef62530183f52aec3047a4358f34a85e8cd87a9c7a4012ba05",
+      "output": "unit-ordinal-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-ordinal-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "407cefae491cf5ef62530183f52aec3047a4358f34a85e8cd87a9c7a4012ba05",
+      "output": "unit-ordinal-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-ordinal-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "4409c4acb0f634b8f584e4451089934904afe20ec19ec6089b2cb155153f46d7",
+      "output": "unit-ordinal-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-ordinal-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "4409c4acb0f634b8f584e4451089934904afe20ec19ec6089b2cb155153f46d7",
+      "output": "unit-ordinal-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-role-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "cc20acb05b2df7b49f4abb76f4f0d2928d2920390891635c820f8d4cc6e08c92",
+      "output": "unit-role-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-role-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "cc20acb05b2df7b49f4abb76f4f0d2928d2920390891635c820f8d4cc6e08c92",
+      "output": "unit-role-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-role-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "3917e0746c5bf5434e8d359ecf8bb2c30f2af1db0c8e605165cab425e1f0f336",
+      "output": "unit-role-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-role-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "3917e0746c5bf5434e8d359ecf8bb2c30f2af1db0c8e605165cab425e1f0f336",
+      "output": "unit-role-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-path-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "2e5947b3243c16610b07a1b3018c9eccf758635046c69cd08a736915b1205a66",
+      "output": "unit-path-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-path-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "2e5947b3243c16610b07a1b3018c9eccf758635046c69cd08a736915b1205a66",
+      "output": "unit-path-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-path-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "19f585b8951572e48ed1a728bb3b1df4088902059fc4d5c78619c0d1c8b76b1f",
+      "output": "unit-path-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-path-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "19f585b8951572e48ed1a728bb3b1df4088902059fc4d5c78619c0d1c8b76b1f",
+      "output": "unit-path-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-blob-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "84198f9dd57c4bd21953a8fda82f22e0ee6ff1c8ad175ebb984f567facca822e",
+      "output": "unit-blob-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-blob-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "84198f9dd57c4bd21953a8fda82f22e0ee6ff1c8ad175ebb984f567facca822e",
+      "output": "unit-blob-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-blob-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "73dc9a70faac7ff858d9e2c16a58f6dc0763a570562253ede69192c9633442cf",
+      "output": "unit-blob-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-blob-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "73dc9a70faac7ff858d9e2c16a58f6dc0763a570562253ede69192c9633442cf",
+      "output": "unit-blob-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-sourceSha256-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "176643694cd33ecea5001236956d211f2d1fbc42d69adc78c2a602e99e8bd842",
+      "output": "unit-sourceSha256-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-sourceSha256-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "176643694cd33ecea5001236956d211f2d1fbc42d69adc78c2a602e99e8bd842",
+      "output": "unit-sourceSha256-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-sourceSha256-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "fdc94ca7b7c4279b6e149e23dda4bc997be73dee571f9d827abcd5b93f68f585",
+      "output": "unit-sourceSha256-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-sourceSha256-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "fdc94ca7b7c4279b6e149e23dda4bc997be73dee571f9d827abcd5b93f68f585",
+      "output": "unit-sourceSha256-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedSha256-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "2f6684c6002cfcb9b82bbe7e679a7eba8f37f14db065de97b9e280b633f84e0b",
+      "output": "unit-transformedSha256-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedSha256-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "2f6684c6002cfcb9b82bbe7e679a7eba8f37f14db065de97b9e280b633f84e0b",
+      "output": "unit-transformedSha256-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedSha256-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "e653715e634d70436aa3f9d5b9178620e3ae7b334abcd683a0055532f0f89395",
+      "output": "unit-transformedSha256-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedSha256-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "e653715e634d70436aa3f9d5b9178620e3ae7b334abcd683a0055532f0f89395",
+      "output": "unit-transformedSha256-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-byteLength-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "dd4ff72d6331a6bad942bcdb13dbdbfea6dbb1b647abc42befbd3305a575137d",
+      "output": "unit-byteLength-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-byteLength-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "dd4ff72d6331a6bad942bcdb13dbdbfea6dbb1b647abc42befbd3305a575137d",
+      "output": "unit-byteLength-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-byteLength-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "5f461cb2a9a03f0f3485e0d9fd12e2e60138ad4830578a6bc7fe712f489c0008",
+      "output": "unit-byteLength-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-byteLength-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "5f461cb2a9a03f0f3485e0d9fd12e2e60138ad4830578a6bc7fe712f489c0008",
+      "output": "unit-byteLength-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedByteLength-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "a47509d04f8e1f9b5b9a2e23db4843de24e67ed601a2e79fb6573cdb21384c6f",
+      "output": "unit-transformedByteLength-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedByteLength-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "a47509d04f8e1f9b5b9a2e23db4843de24e67ed601a2e79fb6573cdb21384c6f",
+      "output": "unit-transformedByteLength-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedByteLength-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "4bd7c9d5d4a3fc6fd65b40b29574f167a6cd6a280646e1f12b59bec04e2d523b",
+      "output": "unit-transformedByteLength-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedByteLength-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "4bd7c9d5d4a3fc6fd65b40b29574f167a6cd6a280646e1f12b59bec04e2d523b",
+      "output": "unit-transformedByteLength-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-sourceUnits-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "d4ccf5c0f7a6881ed50143fc4cf91b04a7e3347a84b4cd48edbd6cc4765b9c10",
+      "output": "unit-sourceUnits-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-sourceUnits-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "d4ccf5c0f7a6881ed50143fc4cf91b04a7e3347a84b4cd48edbd6cc4765b9c10",
+      "output": "unit-sourceUnits-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-sourceUnits-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "a44dba885ccb40bac053989a0a8179a995fd93f218f64693d117b01a5237b351",
+      "output": "unit-sourceUnits-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-sourceUnits-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "a44dba885ccb40bac053989a0a8179a995fd93f218f64693d117b01a5237b351",
+      "output": "unit-sourceUnits-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-originalBase64-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "21a24b1e6aaa5e95622e167d9e4fe027ac945152450d9380bb31d5fbdbc0fea8",
+      "output": "unit-originalBase64-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-originalBase64-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "21a24b1e6aaa5e95622e167d9e4fe027ac945152450d9380bb31d5fbdbc0fea8",
+      "output": "unit-originalBase64-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-originalBase64-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "85f833b40c6f8e5d1f4b6b12ffd1b68ef2978dfc36292d2cdc2034e3aebf32c8",
+      "output": "unit-originalBase64-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-originalBase64-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "85f833b40c6f8e5d1f4b6b12ffd1b68ef2978dfc36292d2cdc2034e3aebf32c8",
+      "output": "unit-originalBase64-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedBase64-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "b4e6ac0b3d5ac292f950206ba547e966d188de3bf05dfdee2ae435e2aa86187e",
+      "output": "unit-transformedBase64-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedBase64-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "b4e6ac0b3d5ac292f950206ba547e966d188de3bf05dfdee2ae435e2aa86187e",
+      "output": "unit-transformedBase64-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedBase64-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "e7d1216bdf3c5825245ab40d9704fdba22f116bfd83755005ad1f5f350efb8db",
+      "output": "unit-transformedBase64-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedBase64-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "e7d1216bdf3c5825245ab40d9704fdba22f116bfd83755005ad1f5f350efb8db",
+      "output": "unit-transformedBase64-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedText-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "722750c0db7d979e77c19a2d675aeb88ea71fe2fb916a68331d5b95c944e73c7",
+      "output": "unit-transformedText-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedText-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "722750c0db7d979e77c19a2d675aeb88ea71fe2fb916a68331d5b95c944e73c7",
+      "output": "unit-transformedText-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedText-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "d30c68ca606552e9d6f6608551a47ffc82889fd4b468802ba622e791da692446",
+      "output": "unit-transformedText-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-transformedText-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "d30c68ca606552e9d6f6608551a47ffc82889fd4b468802ba622e791da692446",
+      "output": "unit-transformedText-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-slotId-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "3fddf788be9cf8657587a91620c6165af183698d54e7fe7ce5525ad83aecc520",
+      "output": "slot-slotId-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-slotId-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "3fddf788be9cf8657587a91620c6165af183698d54e7fe7ce5525ad83aecc520",
+      "output": "slot-slotId-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-slotId-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "44ea3c962bb12a0151b7d93ed00f0ab436c883e4aebcf40ab233ecf9e3add62e",
+      "output": "slot-slotId-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-slotId-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "44ea3c962bb12a0151b7d93ed00f0ab436c883e4aebcf40ab233ecf9e3add62e",
+      "output": "slot-slotId-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-variant-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "abc164b57e84eba1b7515d0a5b8cf9e03047ce70500789763bedb40da0493501",
+      "output": "slot-variant-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-variant-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "abc164b57e84eba1b7515d0a5b8cf9e03047ce70500789763bedb40da0493501",
+      "output": "slot-variant-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-variant-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "3721cd4f057fa3a0cdd8dbae10e44d20722b254b6d09302055ee117b087ed30e",
+      "output": "slot-variant-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-variant-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "3721cd4f057fa3a0cdd8dbae10e44d20722b254b6d09302055ee117b087ed30e",
+      "output": "slot-variant-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-goal-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "8b4cecabb00e96f687a3153f0a7766193aa42a9c320038e4d9e7f047afcb3368",
+      "output": "slot-goal-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-goal-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "8b4cecabb00e96f687a3153f0a7766193aa42a9c320038e4d9e7f047afcb3368",
+      "output": "slot-goal-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-goal-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "4d2e124957d0d0be0e2f9d8119dda4503a0a23b93dca6e363449d31699cd35a4",
+      "output": "slot-goal-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-goal-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "4d2e124957d0d0be0e2f9d8119dda4503a0a23b93dca6e363449d31699cd35a4",
+      "output": "slot-goal-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-units-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "3c61b7075eba9dfddc45e6180b268a7fa2bff6a64644b1838daf85192dd90ac0",
+      "output": "slot-units-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-units-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "3c61b7075eba9dfddc45e6180b268a7fa2bff6a64644b1838daf85192dd90ac0",
+      "output": "slot-units-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-units-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "923501dadf49aa617a8911afba7a67ee3bfa17f25aa095b6c9eefe01f1e2f49f",
+      "output": "slot-units-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-units-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "923501dadf49aa617a8911afba7a67ee3bfa17f25aa095b6c9eefe01f1e2f49f",
+      "output": "slot-units-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-ordinal-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "39ab8bd0ca7699c470b0b0e19cc8521f6038c7d06e2db4bbd71f9cedbf2a5f99",
+      "output": "file-ordinal-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-ordinal-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "39ab8bd0ca7699c470b0b0e19cc8521f6038c7d06e2db4bbd71f9cedbf2a5f99",
+      "output": "file-ordinal-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-ordinal-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "933af6a4e504127dc0acc0204babdddd12ea50e965b151780d28ee3cd2573950",
+      "output": "file-ordinal-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-ordinal-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "933af6a4e504127dc0acc0204babdddd12ea50e965b151780d28ee3cd2573950",
+      "output": "file-ordinal-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-path-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "1e07001c50f393bf3673646fd12306b7ffb1f812074de83bff067dff64d205c3",
+      "output": "file-path-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-path-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "1e07001c50f393bf3673646fd12306b7ffb1f812074de83bff067dff64d205c3",
+      "output": "file-path-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-path-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "578fb1dc5223f404b0d619e118c551727570534e9248c6a34dbeafd96d313d58",
+      "output": "file-path-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-path-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "578fb1dc5223f404b0d619e118c551727570534e9248c6a34dbeafd96d313d58",
+      "output": "file-path-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-state-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "34965936510bc16f2ac532d9818a5a3b368eaf972f0c6f9f2a9bfc2c897644fb",
+      "output": "file-state-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-state-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "34965936510bc16f2ac532d9818a5a3b368eaf972f0c6f9f2a9bfc2c897644fb",
+      "output": "file-state-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-state-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "26dabfe1db5a4984718a8751afc1cff14a14d3aa067d6011e10a2967994e2ad3",
+      "output": "file-state-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-state-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "26dabfe1db5a4984718a8751afc1cff14a14d3aa067d6011e10a2967994e2ad3",
+      "output": "file-state-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-slots-corrupt",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "b9c735d47c60230fa81faa765d837f2087fe41ac1353897b237891e4bd8484c9",
+      "output": "file-slots-corrupt-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-slots-corrupt",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "b9c735d47c60230fa81faa765d837f2087fe41ac1353897b237891e4bd8484c9",
+      "output": "file-slots-corrupt-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-slots-omit",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "4a5b8b5f905d16120368387d1db960a6831ab63176e3dfb183896f26fd42726a",
+      "output": "file-slots-omit-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-slots-omit",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "4a5b8b5f905d16120368387d1db960a6831ab63176e3dfb183896f26fd42726a",
+      "output": "file-slots-omit-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-order",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "9eb1c771dfbf5bbbf2638c5b34f391d87fed8133b1ebc1808bb0fefa76c95d38",
+      "output": "unit-order-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-order",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "9eb1c771dfbf5bbbf2638c5b34f391d87fed8133b1ebc1808bb0fefa76c95d38",
+      "output": "unit-order-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-omission",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "cf42a8b58f99e6d96c1001291bec79979d456eb1389712254ea71a645fd435a6",
+      "output": "unit-omission-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-omission",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "cf42a8b58f99e6d96c1001291bec79979d456eb1389712254ea71a645fd435a6",
+      "output": "unit-omission-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-duplication",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "49437dd7d7acaa11515270d04a14c29c11983c324794d3ca6256a173a17d03e0",
+      "output": "unit-duplication-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unit-duplication",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "49437dd7d7acaa11515270d04a14c29c11983c324794d3ca6256a173a17d03e0",
+      "output": "unit-duplication-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-order",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "d7b372a663d31a426d8d6de879e8d481742402bf00087dafe1018c6f90b1eba6",
+      "output": "slot-order-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-order",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "d7b372a663d31a426d8d6de879e8d481742402bf00087dafe1018c6f90b1eba6",
+      "output": "slot-order-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-omission",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "5cea75c837e117d6d63bda776756160854be92537d188969aa8057b2b2326070",
+      "output": "slot-omission-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "slot-omission",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "5cea75c837e117d6d63bda776756160854be92537d188969aa8057b2b2326070",
+      "output": "slot-omission-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-order",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "87c64948e470318bcd0706833adddd7cd5f4972bf4444608859c07822be72132",
+      "output": "file-order-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-order",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "87c64948e470318bcd0706833adddd7cd5f4972bf4444608859c07822be72132",
+      "output": "file-order-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-omission",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "1cfa1c03a757aadeb885a372c7b253c950d454b35a101210ee809d5b3acf9245",
+      "output": "file-omission-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "file-omission",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "1cfa1c03a757aadeb885a372c7b253c950d454b35a101210ee809d5b3acf9245",
+      "output": "file-omission-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "module-to-script",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "643b9ce9b88bb6f2e6233d1abcbf26947ebf658056003f11394571f708924a4d",
+      "output": "module-to-script-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "module-to-script",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "643b9ce9b88bb6f2e6233d1abcbf26947ebf658056003f11394571f708924a4d",
+      "output": "module-to-script-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "strict-prefix-self-consistent",
+      "lane": "node",
+      "scenario": "success",
+      "sourceSha256": "40240f4cd1f7fd495d5ed552c4a0582d882d468f65c909a4f0865f7c43c0feae",
+      "output": "strict-prefix-self-consistent-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "strict-prefix-self-consistent",
+      "lane": "native",
+      "scenario": "success",
+      "sourceSha256": "40240f4cd1f7fd495d5ed552c4a0582d882d468f65c909a4f0865f7c43c0feae",
+      "output": "strict-prefix-self-consistent-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unknown-null-to-empty",
+      "lane": "node",
+      "scenario": "wrong-revision",
+      "sourceSha256": "664198ba583cd65aefd9ed0f427fc40c56b70cb99df03094ca05939b081f164a",
+      "output": "unknown-null-to-empty-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "unknown-null-to-empty",
+      "lane": "native",
+      "scenario": "wrong-revision",
+      "sourceSha256": "664198ba583cd65aefd9ed0f427fc40c56b70cb99df03094ca05939b081f164a",
+      "output": "unknown-null-to-empty-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "include-error-state",
+      "lane": "node",
+      "scenario": "include-failure",
+      "sourceSha256": "a4294b58125f11ccfc3b35366bde213cefe76d0e4cd8980354c8f29992afaaac",
+      "output": "include-error-state-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "include-error-state",
+      "lane": "native",
+      "scenario": "include-failure",
+      "sourceSha256": "a4294b58125f11ccfc3b35366bde213cefe76d0e4cd8980354c8f29992afaaac",
+      "output": "include-error-state-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "partial-input-omission",
+      "lane": "node",
+      "scenario": "first-file-unavailable",
+      "sourceSha256": "847eddf89f99f28aaa8e0ee49e207cf42f047297cb7aa1e75032a4878328b93a",
+      "output": "partial-input-omission-node.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    },
+    {
+      "id": "partial-input-omission",
+      "lane": "native",
+      "scenario": "first-file-unavailable",
+      "sourceSha256": "847eddf89f99f28aaa8e0ee49e207cf42f047297cb7aa1e75032a4878328b93a",
+      "output": "partial-input-omission-native.json.gz",
+      "error": "ERR_ASSERTION",
+      "fullLiteralRejected": true
+    }
+  ]
+}

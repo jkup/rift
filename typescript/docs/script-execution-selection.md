@@ -7,12 +7,23 @@ slot stays blocked, and no guest, control, conformance child or native build is
 launched here. The retained 212 guest records in each lane and 71 static gates
 are preservation evidence, not results of this task.
 
+**Review correction after `55ffc90`:** that candidate was not accepted. Its
+capture tests checked returned bytes against returned hashes but lacked an
+independent full capture oracle. The root changed only unit IDs to constant u0
+and all 94 controls still passed. The corrected candidate changes the proposed
+test only; the implementation proposal is byte-identical. The authoritative
+mapping is now `validation/ts-035e3c-p/correction/proposal-manifest.json` and its
+verifier. Original proposals, manifests, outputs, failed sandbox run and the
+original version of this document are retained. See the correction acceptance
+requirements at the end of this document.
+
 ## Decision: freeze input capture first; defer execution certification
 
 The smallest independently implementable slice is **an authenticated, immutable
-execution-input snapshot**. Two complete new-file proposals are frozen under
-`validation/ts-035e3c-p/proposals/`. No existing-file or old-test replacement is
-needed or authorized; `proposal-manifest.json` has an explicitly empty replacement
+execution-input snapshot**. The original complete implementation proposal stays
+under `validation/ts-035e3c-p/proposals/`; the corrected complete new-test proposal
+is under `validation/ts-035e3c-p/correction/`. No existing-file or old-test replacement is
+needed or authorized; the correction's `proposal-manifest.json` has an explicitly empty replacement
 list and whole-file hashes for the two additions. The preservation verifier
 checks every pre-existing tracked file other than the two coordination files.
 
@@ -281,3 +292,47 @@ remain unfrozen; synthetic tests cannot stand in for actual parent ownership.
 Stop after this design/evidence commit for coordinator actual audit and independent
 second review. No publication, implementation, later design or successor task is
 authorized by this handoff.
+
+## Corrected capture oracle and mutation requirements
+
+The complete `stable.files` output must equal frozen independent literals, not
+only agree with its own hashes, a second call or an E2 report. The correction's
+`capture-occurrence-tables.json` records every file/slot and ordered unit ID,
+ordinal, role, path, blob and prefix explicitly. Tables use the pinned manifest's
+declared variants/defaultIncludes/includes, without calling `planCorpus`,
+`harnessPaths`, `transform`, the proposed capture helper or reading its outputs.
+`pinned-byte-identities.json` retains original bytes and independently verified
+git blob/SHA256 identities. `expected-captures.json.gz` freezes complete arrays
+from those inputs, including all thirteen unit fields, four slot fields and
+four file fields. Strict bytes use the literal UTF8 prefix; original and
+transformed bytes/text/lengths are compared together with order and identity.
+
+Eight full public-case literals cover each lane's complete 33-file/60-slot
+capture, all-unknown revision failure, mixed include failure and a single unknown
+first file. They preserve Module as Module, null captures as null, and original
+E2 input-error/known-slot distinctions. The corrected test compares every normal,
+repeat, zero-limit, wrong-revision, first-file-unavailable and include-failure
+capture to these literals (twelve complete comparisons). Five additional explicit
+synthetic cases exercise repeated/reordered harness occurrences and identical
+source bytes under raw/non-strict/strict. Since the pinned public corpus has no
+repeated include, these five cases invoke the actual private capture function
+only in an isolated test copy. Its test-only export is never installed, never
+creates a public selection token and grants no authority.
+
+All original test assertions remain, apart from the gzip import and summary-line
+additions. `run-8ompSu` passes 94 existing controls, six original actual records,
+four input-fault records and all seventeen new complete capture comparisons.
+`root-mutant-frAC7u` runs the complete corrected test against the exact root u0
+mutant and rejects at `capture-literal/node/success`. No setup failure counts as
+that result. `mutations-j5pMXq` independently exercises 55 isolated source mutants
+in both lanes: each field corrupted and omitted, unit/slot/file reorder or
+omission, duplicate units, Module relabeling, self-consistent removal of the
+strict prefix, null-to-empty and input-error changes. All 110 captures complete
+and are then rejected by whole-literal comparison. Thirteen unmutated private
+capture cases pass first. Full mutated capture outputs are retained losslessly.
+
+The production/input implementation hash remains
+`4fc40ed011acacc56f217d06949c9b9790f9cd1ffb2412294a0d6258e67d0547`.
+These are host-only capture/oracle checks; a native lane label is not native guest
+execution. Complete execution certification remains deferred exactly as above.
+The corrected design still requires root actual and independent second review.
