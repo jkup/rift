@@ -1,0 +1,22 @@
+{
+  "source": "typescript/docs/validation/ts-035e3g/reader.mjs",
+  "sourceBytes": 8747,
+  "sourceSha256": "550e3d84954089599aee77cc047fe815f349f3b93a7f204a0e5c0202d81d9327",
+  "replacements": [
+    {
+      "old": "if(!s.rawSize&&s.rawOffset)reject('RAW_POINTER',p+20);",
+      "next": "if(!s.rawSize&&s.rawOffset>b.length)reject('RAW_POINTER',p+20);"
+    },
+    {
+      "old": "if(s.rawOffset){span(s.rawOffset,s.rawSize,'TRUNCATED_RAW',p+20);occupy(s.rawOffset,s.rawSize,1);}",
+      "next": "if(s.rawSize&&s.rawOffset){span(s.rawOffset,s.rawSize,'TRUNCATED_RAW',p+20);occupy(s.rawOffset,s.rawSize,1);}"
+    },
+    {
+      "old": "if(s.rawOffset)s.rawSha256=sha256(b.subarray(s.rawOffset,s.rawOffset+s.rawSize));",
+      "next": "if(s.rawSize&&s.rawOffset)s.rawSha256=sha256(b.subarray(s.rawOffset,s.rawOffset+s.rawSize));"
+    }
+  ],
+  "output": "reader.proposed.mjs.txt",
+  "bytes": 8778,
+  "sha256": "b86ec337a171f2c2ffa7987199ffa09c432b5fb4522429d8141398a394236a2c"
+}

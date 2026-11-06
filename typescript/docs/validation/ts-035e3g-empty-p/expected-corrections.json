@@ -1,0 +1,29 @@
+[
+  {
+    "id": "empty-raw-pointer",
+    "originalIndex": 44,
+    "originalExpected": {
+      "kind": "rejected",
+      "input": {
+        "bytes": 319,
+        "sha256": "8c2e322e78303ddc75015fbf30601532878e92016efd2f22cd8d9bf6b476025c"
+      },
+      "error": {
+        "code": "RAW_POINTER",
+        "offset": 40
+      }
+    },
+    "proposedExpected": {
+      "kind": "rejected",
+      "input": {
+        "bytes": 319,
+        "sha256": "8c2e322e78303ddc75015fbf30601532878e92016efd2f22cd8d9bf6b476025c"
+      },
+      "error": {
+        "code": "RELOCATION_ADDRESS",
+        "offset": 108
+      }
+    },
+    "reason": "Empty in-bounds numeric pointer no longer fails raw-pointer policy. Unchanged nonignored relocation targets zero stored bytes and still fails later at offset108."
+  }
+]

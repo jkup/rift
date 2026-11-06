@@ -1,0 +1,18 @@
+{
+  "checks": [
+    {
+      "path": "reader.proposed.mjs.txt",
+      "sha256": "b86ec337a171f2c2ffa7987199ffa09c432b5fb4522429d8141398a394236a2c",
+      "command": "node --check --input-type=module (source on stdin)",
+      "exitCode": 0
+    },
+    {
+      "path": "tests.proposed.mjs.txt",
+      "sha256": "dca5ed1f605e79c92b931d9ab8c9af47cdc844f01570699b762b51074aa586f5",
+      "command": "node --check --input-type=module (source on stdin)",
+      "exitCode": 0
+    }
+  ],
+  "proposedReaderInvocations": 0,
+  "proposedTestInvocations": 0
+}

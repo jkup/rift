@@ -1,0 +1,14 @@
+{
+  "accessed": "2026-11-06",
+  "official": [
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format",
+      "sections": [
+        "Section Table: SizeOfRawData and PointerToRawData",
+        "Section Data"
+      ]
+    }
+  ],
+  "interpretation": "Size determines the addressed payload. The official text does not explicitly mandate a zero pointer for every zero-size section. Boundschecking empty numeric pointers is a conservative inventory policy, not a claim of universal COFF validity or linker compatibility.",
+  "quotes": []
+}
