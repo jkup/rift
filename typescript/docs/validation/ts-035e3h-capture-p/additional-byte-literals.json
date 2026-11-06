@@ -1,0 +1,20 @@
+[
+  {
+    "id": "high-bit-magic-not-ascii-alias",
+    "hex": "d243415030303031",
+    "expected": {
+      "kind": "rejected",
+      "code": "MAGIC",
+      "offset": 0
+    }
+  },
+  {
+    "id": "odd-final-code-unit",
+    "hex": "5243415030303031070000000000000009000000000000000100000061",
+    "expected": {
+      "kind": "rejected",
+      "code": "TRUNCATED",
+      "offset": 28
+    }
+  }
+]

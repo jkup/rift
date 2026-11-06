@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "kind": "inert-capture-design",
+  "binaryIdentity": null,
+  "sourceLanguage": "C#; not compiled or syntax-proven",
+  "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\capture",
+  "endianness": "little",
+  "utf16": "raw 16-bit units; no encoding fallback, normalization, BOM handling or surrogate validation",
+  "capture": {
+    "magic": "RCAP0001",
+    "headerBytes": 24,
+    "fields": [
+      {
+        "offset": 8,
+        "name": "pid",
+        "type": "u32",
+        "minimum": 1
+      },
+      {
+        "offset": 12,
+        "name": "reserved",
+        "type": "u32",
+        "const": 0
+      },
+      {
+        "offset": 16,
+        "name": "creationTime",
+        "type": "u64",
+        "minimum": 1
+      }
+    ],
+    "tail": "raw command line, cwd, image path, environment block: each u32 code-unit length then that many u16; then u32 argc followed by argc length-prefixed u16 strings",
+    "fieldRules": {
+      "raw": "0..32767 units, no embedded NUL",
+      "cwd": "1..32767 units, no embedded NUL",
+      "image": "1..32767 units, no embedded NUL; path only, not byte identity",
+      "environment": "2..131072 units inclusive of final double NUL; no earlier double NUL; order/duplicates/empty values/drive pseudoentries preserved",
+      "argv": "0..4096 strings, each0..32767 non-NUL units, explicitly CommandLineToArgvW interpretation; raw command remains authoritative received text"
+    },
+    "maxBytes": 1048576
+  },
+  "identityRecord": {
+    "bytes": 32,
+    "fields": [
+      {
+        "offset": 0,
+        "type": "8-byte ASCII magic"
+      },
+      {
+        "offset": 8,
+        "type": "u32 pid"
+      },
+      {
+        "offset": 12,
+        "type": "u32 detail"
+      },
+      {
+        "offset": 16,
+        "type": "u64 creation time"
+      },
+      {
+        "offset": 24,
+        "type": "u64 tail"
+      }
+    ],
+    "magic": {
+      "RENT0001": {
+        "kind": "entry",
+        "detail": 0,
+        "tail": 0
+      },
+      "RWIN0001": {
+        "kind": "winner",
+        "detail": 0,
+        "tail": 0
+      },
+      "RDON0001": {
+        "kind": "complete",
+        "detail": 0,
+        "tail": "record length48..1048576"
+      },
+      "RERR0001": {
+        "kind": "failure",
+        "detail": "error enum",
+        "tail": "source stage1..7"
+      }
+    }
+  },
+  "errors": {
+    "1": "process identity",
+    "2": "fixed output configuration",
+    "3": "winner already exists; visible loser",
+    "10": "null text pointer",
+    "11": "text bound",
+    "12": "environment acquisition",
+    "13": "environment bound",
+    "14": "environment free failure",
+    "15": "cwd retrieval",
+    "16": "image path retrieval",
+    "17": "record bound",
+    "18": "argv acquisition",
+    "19": "argc bound",
+    "20": "argv free failure",
+    "255": "managed/API I/O exception; no invented native error detail"
+  },
+  "sourceStages": {
+    "1": "pid and process creation time",
+    "2": "fixed output configuration",
+    "3": "entry create/write/flush/close",
+    "4": "winner create/write/flush/close",
+    "5": "capture fields and argv",
+    "6": "record create/write/flush/close",
+    "7": "completion create/write/flush/close"
+  },
+  "errorPrecedence": {
+    "source": "first thrown operation in execution order; failure in environment/argv finally cleanup supersedes prior capture exception; failure-marker errors do not overwrite retained partial files and lead to hold/watchdog; unhandled startup/OS termination remains unobservable",
+    "binary": [
+      "TYPE",
+      "SIZE_LIMIT",
+      "header truncation/magic",
+      "header fields/truncation then identity then reserved",
+      "in serialized field order: length truncation, unit bound, empty required field, payload truncation, NUL/terminator checks",
+      "argc bound",
+      "each argv string",
+      "trailing bytes"
+    ],
+    "snapshot": [
+      "closed state schema",
+      "cleanup unconfirmed",
+      "file count",
+      "per-input file schema/duplicate names/unknown names/size",
+      "sorted files: decode/kind/filename identity",
+      "attempt limit",
+      "multiple registered entries",
+      "failure records",
+      "no entry",
+      "missing publication",
+      "publication identity",
+      "publication length",
+      "response token",
+      "captured with total attempts unproven"
+    ]
+  },
+  "arbitration": "durable exclusively created entry-PID-CREATION.bin before fixed winner.bin CREATE_NEW. Only successful durable winner proceeds. Every existing-winner loser publishes its own failure marker and holds. Same identity entry collision publishes a failure marker. Never elect a new winner after partial/stale lock.",
+  "observability": "registeredAttempts counts valid entry files; totalAttempts always null. Pre-entry faults, termination during entry publication and failure-marker errors prevent exact process-attempt completeness. No receipt upgrades one visible entry to one attempt.",
+  "bounds": {
+    "files": 132,
+    "registeredAttempts": 64,
+    "recordBytes": 1048576,
+    "compilerMs": 60000,
+    "cleanupMs": 10000,
+    "outerWatchdogMs": 90000
+  },
+  "publication": "completion marker only after record Write/Flush(true)/Dispose success. Supervisor must acquire marker with FileShare.None after recorder closes, then terminate whole job. Validate all final raw files only after bounded cleanup; live marker is only a stop hint.",
+  "terminal": "winner, loser and every caught failure hold without returning to producer; whole-job termination required. No output launch, forwarding, subprocess or response-file expansion.",
+  "runtimeGates": [
+    "source and independent review",
+    "exact helper build proposal and separate approval",
+    "compiled binary hash and compiler/API verification",
+    "separate benign lifecycle/race/fault tests with independent child census",
+    "complete fresh-root staging and controller integration plus source hashes",
+    "separate one compiler invocation approval"
+  ],
+  "unresolved": [
+    "C# compilation, platform APIs and quoting behavior untested",
+    "no independent complete process census; exact attempts cannot be established",
+    "FileStream flush/Dispose and concurrent Windows semantics not runtime-tested",
+    "proposed controller has an unconditional source gate and still needs recorder staging/pinned binary/full contract integration",
+    "no prevention of alternate producer subprocesses, outside writers or external reads"
+  ],
+  "authority": "none"
+}

@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pid",
+        "creationTime",
+        "rawHex",
+        "cwdHex",
+        "imageHex",
+        "environmentHex",
+        "argvApi",
+        "argvHex"
+      ],
+      "properties": {
+        "kind": {
+          "const": "capture"
+        },
+        "pid": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "creationTime": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "rawHex": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{4})*$",
+          "maxLength": 131068
+        },
+        "cwdHex": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{4})*$",
+          "minLength": 4,
+          "maxLength": 131068
+        },
+        "imageHex": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{4})*$",
+          "minLength": 4,
+          "maxLength": 131068
+        },
+        "environmentHex": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{4})*$",
+          "minLength": 8,
+          "maxLength": 524288
+        },
+        "argvApi": {
+          "const": "CommandLineToArgvW"
+        },
+        "argvHex": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "type": "string",
+            "pattern": "^(?:[0-9a-f]{4})*$",
+            "maxLength": 131068
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "code",
+        "offset"
+      ],
+      "properties": {
+        "kind": {
+          "const": "rejected"
+        },
+        "code": {
+          "enum": [
+            "TYPE",
+            "SIZE_LIMIT",
+            "TRUNCATED",
+            "MAGIC",
+            "IDENTITY",
+            "RESERVED",
+            "TRAILING",
+            "RECORD_LENGTH",
+            "ERROR_FIELDS",
+            "UNIT_LIMIT",
+            "EMPTY_FIELD",
+            "ENV_TERMINATOR",
+            "ENV_EARLY_END",
+            "EMBEDDED_NUL",
+            "ARGUMENT_LIMIT"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048577
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pid",
+        "creationTime",
+        "detail",
+        "tail"
+      ],
+      "properties": {
+        "kind": {
+          "const": "entry"
+        },
+        "pid": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "creationTime": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "detail": {
+          "const": 0
+        },
+        "tail": {
+          "type": "string",
+          "pattern": "^(?:0|[1-9][0-9]{0,19})$"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pid",
+        "creationTime",
+        "detail",
+        "tail"
+      ],
+      "properties": {
+        "kind": {
+          "const": "winner"
+        },
+        "pid": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "creationTime": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "detail": {
+          "const": 0
+        },
+        "tail": {
+          "type": "string",
+          "pattern": "^(?:0|[1-9][0-9]{0,19})$"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pid",
+        "creationTime",
+        "detail",
+        "tail"
+      ],
+      "properties": {
+        "kind": {
+          "const": "complete"
+        },
+        "pid": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "creationTime": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "detail": {
+          "const": 0
+        },
+        "tail": {
+          "type": "string",
+          "pattern": "^(?:0|[1-9][0-9]{0,19})$"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pid",
+        "creationTime",
+        "detail",
+        "tail"
+      ],
+      "properties": {
+        "kind": {
+          "const": "failure"
+        },
+        "pid": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "creationTime": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "detail": {
+          "enum": [
+            1,
+            2,
+            3,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            255
+          ]
+        },
+        "tail": {
+          "type": "string",
+          "pattern": "^(?:0|[1-9][0-9]{0,19})$"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "registeredAttempts",
+        "totalAttempts",
+        "attemptCoverage",
+        "authority"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "state-schema",
+            "cleanup-unconfirmed",
+            "file-limit",
+            "file-schema",
+            "duplicate-file",
+            "unknown-file",
+            "file-size-limit",
+            "invalid-file",
+            "file-kind",
+            "filename-identity",
+            "attempt-limit",
+            "duplicate-attempts",
+            "capture-failure",
+            "no-registered-attempt",
+            "publication-incomplete",
+            "publication-identity",
+            "publication-length",
+            "response-file-unexpanded",
+            "captured-attempt-count-unproven"
+          ]
+        },
+        "registeredAttempts": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 64
+            }
+          ]
+        },
+        "totalAttempts": {
+          "type": "null"
+        },
+        "attemptCoverage": {
+          "const": "unproven"
+        },
+        "authority": {
+          "const": "none"
+        }
+      }
+    }
+  ]
+}
