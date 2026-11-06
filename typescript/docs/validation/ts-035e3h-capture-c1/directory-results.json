@@ -1,0 +1,151 @@
+{
+  "status": "passed",
+  "observations": [
+    {
+      "name": "original-directory-defect-reproduced",
+      "status": "passed"
+    },
+    {
+      "name": "corrected-directory-extracts-exact-files",
+      "status": "passed"
+    },
+    {
+      "name": "regular-file-root-rejected",
+      "status": "passed"
+    },
+    {
+      "name": "junction-root-rejected",
+      "status": "passed"
+    },
+    {
+      "name": "hardlinked-snapshot-file-rejected",
+      "status": "passed"
+    }
+  ],
+  "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc",
+  "inventory": [
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc",
+      "dev": "1045235170",
+      "ino": "19140298416463609",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\alias",
+      "dev": "1045235170",
+      "ino": "13792273859347180",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\alias\\capture",
+      "dev": "1045235170",
+      "ino": "8444249301845141",
+      "nlink": "1",
+      "kind": "alias",
+      "target": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\good\\capture"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\good",
+      "dev": "1045235170",
+      "ino": "10696049115144595",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\good\\capture",
+      "dev": "1045235170",
+      "ino": "28147497671507425",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\good\\capture\\entry-00000007-0000000000000009.bin",
+      "dev": "1045235170",
+      "ino": "19703248370251068",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 32,
+      "sha256": "3a32734f77c74ebf666d18b0ad53bbeee7010025d80d02c6a766f9c13f8c3baa"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\good\\capture\\first-command.bin",
+      "dev": "1045235170",
+      "ino": "17732923533276612",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 54,
+      "sha256": "c0491d40b92d2c2c457a798fc2073e06f4782d44843ddddfcae0da9f467c58f4"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\good\\capture\\record-complete",
+      "dev": "1045235170",
+      "ino": "11821949022372562",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 32,
+      "sha256": "3ff07d9922754fd75a0ad94d7620b3d7dc87d6a8eb082619786712ab3d5e1c3d"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\good\\capture\\winner.bin",
+      "dev": "1045235170",
+      "ino": "16607023626433855",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 32,
+      "sha256": "d2c59e87f5c518ccc2d8488399f624dfab35dee7bdddab4179c2f2174daa3deb"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\hard",
+      "dev": "1045235170",
+      "ino": "8444249301845146",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\hard\\capture",
+      "dev": "1045235170",
+      "ino": "6192449488159909",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\hard\\capture\\one.bin",
+      "dev": "1045235170",
+      "ino": "6755399441581225",
+      "nlink": "2",
+      "kind": "file",
+      "bytes": 3,
+      "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\hard\\capture\\two.bin",
+      "dev": "1045235170",
+      "ino": "6755399441581225",
+      "nlink": "2",
+      "kind": "file",
+      "bytes": 3,
+      "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\regular",
+      "dev": "1045235170",
+      "ino": "11821949022372569",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-capture-c1-czJmuc\\regular\\capture",
+      "dev": "1045235170",
+      "ino": "15762598696321763",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 15,
+      "sha256": "3b2a43e3a5b13459006960eac2534b6a71bf7170ea998dc49b1990f23508a6d6"
+    }
+  ],
+  "controllerInvocations": 0,
+  "recorderExecutions": 0,
+  "compilerInvocations": 0
+}

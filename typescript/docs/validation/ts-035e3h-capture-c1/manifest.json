@@ -1,0 +1,137 @@
+[
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/.gitattributes",
+    "bytes": 8,
+    "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/check-correction.mjs",
+    "bytes": 2703,
+    "sha256": "2272b1c90908f2131ec1d4ca7b55788d118d60815b0eab563ecd44b0fc2d26e3"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/corrected-extracted.mjs.txt",
+    "bytes": 1048,
+    "sha256": "be2e192479c18c0e5e79440b3755c09f1f19e84d64574bc3eec46d0b9939442a"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/directory-results.json",
+    "bytes": 4946,
+    "sha256": "44610ffd2c91a612a2a3a16362b4d3246afc9d76cb76be8aa775f779c2ad48fd"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/directory-tests.mjs",
+    "bytes": 3202,
+    "sha256": "16d2307e8a114c156613da7973075b283f26c27989165f1570ff84342f057b09"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/extraction.mjs",
+    "bytes": 728,
+    "sha256": "87112881cc1e378f96669169d52234abdfcf1705fff0354d234a9d230e391a44"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/guard-tasks.md",
+    "bytes": 668289,
+    "sha256": "c352215fc12aa8c878cb39887cbc5fcad369cce9469bb9aea1c8f070e7a8de57"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/guard-transformations.json",
+    "bytes": 7115,
+    "sha256": "991d86ba9330880ec01cd3813d3ffa5a1f4adc9c7d0d2745e59a31d5b2c680ae"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/inherited-results.json",
+    "bytes": 6767,
+    "sha256": "7a9f20eb5093b6bb985e6f0821509f18449883fe265d4d4cad1a0f5e98609ba3"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/original-extracted.mjs.txt",
+    "bytes": 1043,
+    "sha256": "fb0c91b80a5f31533e89b1bd661fe65f9a9f0eca0877e0510af8c69cbc647f16"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/preservation.json",
+    "bytes": 4561990,
+    "sha256": "35dd2b6a7c477995309cb46963b5983785dbec6aaf8918f7c1f33438f51d0cbc"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/prior-tasks.md",
+    "bytes": 668289,
+    "sha256": "c352215fc12aa8c878cb39887cbc5fcad369cce9469bb9aea1c8f070e7a8de57"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/README.md",
+    "bytes": 2841,
+    "sha256": "db5e27769ee7c8021951b2570e0725483ce3ced774c8668f98b0dd61d3d6e281"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/root-witness-ts035e3h-capture-root-directory.json",
+    "bytes": 311,
+    "sha256": "ec4aee283f18cfc0c00bc9c4c48d51a70b1d766eb170e4db7948f0663773d99d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/root-witness-ts035e3h-capture-root-directory.mjs",
+    "bytes": 1325,
+    "sha256": "c9cae01f57b5c885deebeca2e6bad77c6cc56d352fc693cbcde143497f6516f9"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/runner.mjs.proposed.txt",
+    "bytes": 18645,
+    "sha256": "9b1c9ee8b1119065962f09d7d7ee268a9951c5e1e3ad4eeec5dbe8ddd949f501"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/source-transformation.json",
+    "bytes": 536,
+    "sha256": "f5476fc4c58bef7935711b202d45be19af833c149275c9f46737e7ba8bb9d0dc"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/task-entry.txt",
+    "bytes": 1504,
+    "sha256": "4c485a221f0667402085b03eb06d40a9f3e161700be19337a93f11ae61abc623"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/verify.mjs",
+    "bytes": 3474,
+    "sha256": "9b380dac2973f1f2bbf3c5cc1d6048a1be7754eae19c5a8f7f27ec49619d05bd"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/_preserve/design-guard.mjs",
+    "bytes": 8483,
+    "sha256": "e102cf3cb54f90bc08125332fe98a094418618d4a44ced99b8a4620423592b51"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/_preserve/direction-guard.mjs",
+    "bytes": 3778,
+    "sha256": "7133c369d0e775f8bd6acce81dffb2e9cf62b50b8315b53a4026c87276868a4f"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/_preserve/empty-design-guard.mjs",
+    "bytes": 4243,
+    "sha256": "6e655b4248b8da297ed919de137945c87abf293af2820f99833dd139dbb7f389"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/_preserve/observation-guard.mjs",
+    "bytes": 3905,
+    "sha256": "e37f75442546852182916146526976e3ed95c0780d1e1974d2ff03edd59d47bd"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/_preserve/original-observation-guard.mjs",
+    "bytes": 4347,
+    "sha256": "f250cb2e39767976442ddadc054aefaba5dec5692149a3bc31ac980add15110a"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/_preserve/prior-guard.mjs",
+    "bytes": 64111,
+    "sha256": "47c0ebd1d90a48f69064c97a0093e5ed2c2c1670b12021d53388d36e6dfdcc21"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/_preserve/rejected-capture-guard.mjs",
+    "bytes": 3546,
+    "sha256": "7296c6fb52a6208d92238bb8f9914cc2652c66569ce1809214a9d61f13e820a1"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-capture-c1/_preserve/synthetic-guard.mjs",
+    "bytes": 5557,
+    "sha256": "6c68e557981effc03b7ef92cfc63a3276084cd769b3bcd515198e1e2f821559b"
+  }
+]
