@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import * as fs from 'node:fs';
+import {join,resolve,relative} from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const here=resolve(resolve(resolve(import.meta.dirname,'../../ts-035e3g-empty-observation/_preserve'),'../../ts-035e3g-empty/_preserve'),'../../ts-035e3g-empty-p'),repo=resolve(here,'../../../..'),json=p=>JSON.parse(fs.readFileSync(p)),hash=b=>createHash('sha256').update(b).digest('hex');
+const git=(...a)=>execFileSync('git',['-c','core.longpaths=true',...a],{cwd:repo,maxBuffer:20000000}).toString();
+const preservation=json(join(here,'preservation.json'));assert.equal(preservation.base,'7c0b3b8056d4c7329bddb70ff7f404a88387a5d3');
+const baseline=git('ls-tree','-rz',preservation.base).split('\0').filter(Boolean).map(r=>{const [head,path]=r.split('\t'),[mode,type,gitOid]=head.split(' ');assert.equal(type,'blob');return {path,mode,gitOid};}).filter(r=>!['typescript/TASKS.md','typescript/COORDINATION.md'].includes(r.path));
+assert.deepEqual(baseline,preservation.rows.map(({bytes,sha256,...r})=>r));
+function check(r){const b=fs.readFileSync(join(repo,r.path));assert.equal(b.length,r.bytes,r.path);assert.equal(hash(b),r.sha256,r.path);}
+preservation.rows.forEach(check);
+const prefix=fs.readFileSync(join(here,'prior-tasks.md'),'utf8');assert.equal(prefix,git('show',preservation.base+':typescript/TASKS.md'));
+assert.equal(fs.readFileSync(join(resolve(resolve(import.meta.dirname,'../../ts-035e3g-empty-observation/_preserve'),'../../ts-035e3g-empty/_preserve'),'../guard-tasks.md'),'utf8').replaceAll('\r\n','\n'),prefix+fs.readFileSync(join(here,'task-entry.txt'),'utf8'));
+const allowed=p=>p==='typescript/TASKS.md'||p==='typescript/COORDINATION.md'||p.startsWith('typescript/docs/validation/ts-035e3g-empty-p/')||p.startsWith('typescript/docs/validation/ts-035e3g-empty/')||p.startsWith('typescript/docs/validation/ts-035e3g-empty-observation/')||p.startsWith('typescript/docs/validation/ts-035e3h-p/')||p==='typescript/docs/script-link-observation.md';
+for(const p of git('diff','--name-only',preservation.base).trim().split('\n').filter(Boolean))assert(allowed(p),p);
+const known=new Set(baseline.map(r=>r.path));for(const p of git('ls-files','-z').split('\0').filter(Boolean))assert(known.has(p)||allowed(p),p);
+for(const t of json(join(here,'guard-transformations.json'))){const source=fs.readFileSync(join(repo,t.source));assert.equal(source.length,t.sourceBytes);assert.equal(hash(source),t.sourceSha256);let expected=source.toString();for(const r of t.replacements){assert.equal(expected.split(r.old).length-1,r.count);expected=r.all?expected.replaceAll(r.old,r.next):expected.replace(r.old,r.next);}const actual=fs.readFileSync(join(here,'_preserve',t.name));assert.equal(actual.length,t.bytes);assert.equal(hash(actual),t.sha256);assert.equal(actual.toString(),expected);}
+await import('./original-observation-guard.mjs');
+for(const r of json(join(here,'../ts-035e3g/filesystem-fixtures.json'))){check(r);const s=fs.lstatSync(join(repo,r.path),{bigint:true});for(const k of ['dev','ino','nlink'])assert.equal(String(s[k]),r[k]);}
+await import('../../ts-035e3g-empty-p/check-design.mjs');
+const seal=json(join(here,'manifest.json'));seal.forEach(check);const names=[];function walk(dir){for(const n of fs.readdirSync(dir)){const p=join(dir,n),s=fs.lstatSync(p);assert(!s.isSymbolicLink());if(s.isDirectory())walk(p);else{assert(s.isFile()&&s.nlink===1);if(p!==join(here,'manifest.json'))names.push(relative(repo,p).replaceAll('\\','/'));}}}walk(here);assert.deepEqual(names.sort(),seal.map(r=>r.path).sort());
+console.log(JSON.stringify({acceptedBaseFiles:preservation.rows.length,acceptedBaseBytes:preservation.rows.reduce((n,r)=>n+r.bytes,0),sourceProposals:2,newIndependentLiterals:32,expectedCorrections:1,proposedReaderInvocations:0,additionalAdapterInvocations:0,oldSealsUnchanged:true,passed:true}));
