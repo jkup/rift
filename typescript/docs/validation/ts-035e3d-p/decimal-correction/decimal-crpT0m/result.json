@@ -1,0 +1,368 @@
+{
+  "kind": "offline-decimal-equivalence",
+  "literalCases": 24,
+  "checks": [
+    {
+      "helper": "prior",
+      "text": "",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "0",
+      "value": 0
+    },
+    {
+      "helper": "prior",
+      "text": "00",
+      "value": 0
+    },
+    {
+      "helper": "prior",
+      "text": "0001",
+      "value": 1
+    },
+    {
+      "helper": "prior",
+      "text": "42",
+      "value": 42
+    },
+    {
+      "helper": "prior",
+      "text": "00042",
+      "value": 42
+    },
+    {
+      "helper": "prior",
+      "text": "9007199254740991",
+      "value": 9007199254740991
+    },
+    {
+      "helper": "prior",
+      "text": "0009007199254740991",
+      "value": 9007199254740991
+    },
+    {
+      "helper": "prior",
+      "text": "9007199254740992",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "-0",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "-1",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "+1",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "1.0",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "1e2",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": " 1",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "1 ",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "1\n",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "0x10",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "1_000",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "NaN",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "Infinity",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "１２",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "prior",
+      "text": "1\u0000",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "0",
+      "value": 0
+    },
+    {
+      "helper": "corrected",
+      "text": "00",
+      "value": 0
+    },
+    {
+      "helper": "corrected",
+      "text": "0001",
+      "value": 1
+    },
+    {
+      "helper": "corrected",
+      "text": "42",
+      "value": 42
+    },
+    {
+      "helper": "corrected",
+      "text": "00042",
+      "value": 42
+    },
+    {
+      "helper": "corrected",
+      "text": "9007199254740991",
+      "value": 9007199254740991
+    },
+    {
+      "helper": "corrected",
+      "text": "0009007199254740991",
+      "value": 9007199254740991
+    },
+    {
+      "helper": "corrected",
+      "text": "9007199254740992",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "-0",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "-1",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "+1",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "1.0",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "1e2",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": " 1",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "1 ",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "1\n",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "0x10",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "1_000",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "NaN",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "Infinity",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "１２",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "corrected",
+      "text": "1\u0000",
+      "error": "script-preflight/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "0",
+      "value": 0
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "00",
+      "value": 0
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "0001",
+      "value": 1
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "42",
+      "value": 42
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "00042",
+      "value": 42
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "9007199254740991",
+      "value": 9007199254740991
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "0009007199254740991",
+      "value": 9007199254740991
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "9007199254740992",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "-0",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "-1",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "+1",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "1.0",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "1e2",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": " 1",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "1 ",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "1\n",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "0x10",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "1_000",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "NaN",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "Infinity",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "１２",
+      "error": "script-producer/limit"
+    },
+    {
+      "helper": "accepted-E3b",
+      "text": "1\u0000",
+      "error": "script-producer/limit"
+    }
+  ],
+  "engineExecutions": 0,
+  "compilerExecutions": 0
+}

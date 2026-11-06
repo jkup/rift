@@ -1,0 +1,25 @@
+{
+  "pureBoundary": true,
+  "engineExecutions": 0,
+  "preparedLiterals": 160,
+  "argvNegatives": 64,
+  "sourceNegatives": 7,
+  "boundaryMutantsRejected": [
+    "omit-harness-check",
+    "omit-sta-check",
+    "omit-control-check",
+    "omit-dummy-check",
+    "variant",
+    "action",
+    "purpose",
+    "mode",
+    "preflight",
+    "input",
+    "limits",
+    "wall",
+    "ID"
+  ],
+  "childCodecFullLiterals": 160,
+  "literalMutationComparisons": 1280,
+  "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d-p\\decimal-correction\\boundary-tMLWLA"
+}

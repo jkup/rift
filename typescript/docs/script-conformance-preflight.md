@@ -1,5 +1,16 @@
 # TS-035E3d-P: closed conformance preflight control prerequisite
 
+**Decimal-guard correction after unaccepted ecaf687:** root actual/final second
+review requested the proven E3b direct empty-string throw in preflightDecimal.
+The latest authoritative mapping is now
+`validation/ts-035e3d-p/decimal-correction/proposal-manifest.json`; only that
+one proposal line and its source-member/digest identities change. All ecaf687
+proposals, manifests, descriptors and evidence are preserved. The prior main
+document is saved under decimal-correction/original/. Twenty-four independent
+decimal literals pass against prior/corrected/accepted-E3b helpers (72 checks),
+and the affected pure boundary checks pass unchanged. No compiler/build/guest
+execution occurred. This remains a design candidate awaiting affected review.
+
 Revised design after checkpoint `56fd992`, accepted base producer/input snapshot
 unchanged. Root actual and independent second review approved design continuation
 along alternative 5: stop at the actual designated harness. This document and
@@ -42,7 +53,7 @@ receipts and F admission remain separate designs. E3c stays input-only.
 ## Exact whole-file implementation proposal
 
 The sole authoritative mapping is
-`validation/ts-035e3d-p/correction/proposal-manifest.json`.
+`validation/ts-035e3d-p/decimal-correction/proposal-manifest.json`.
 
 | Target | Complete proposed change |
 |---|---|
