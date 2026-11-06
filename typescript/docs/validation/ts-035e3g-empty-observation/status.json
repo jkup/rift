@@ -1,0 +1,12 @@
+{
+  "invocations": 1,
+  "failures": [],
+  "outcome": "collected-review",
+  "raw": {
+    "bytes": 17866336,
+    "sha256": "62b5c7483ccd5001bb8274cde751a408612d0b573731f3a96b8b5a2ddac67039"
+  },
+  "kind": "batch",
+  "entries": 42,
+  "rejections": []
+}

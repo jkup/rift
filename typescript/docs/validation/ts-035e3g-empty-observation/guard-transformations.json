@@ -1,0 +1,118 @@
+[
+  {
+    "name": "synthetic-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3g-empty/verify.mjs",
+    "sourceBytes": 4928,
+    "sourceSha256": "3d4680b5630cc5918a2f30eafeb45b24f2fab7118f894ee173f451afbe8135d8",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3g-empty')",
+        "all": true,
+        "count": 1
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3g-empty/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3g-empty/')||p.startsWith('typescript/docs/validation/ts-035e3g-empty-observation/');",
+        "all": false,
+        "count": 1
+      },
+      {
+        "old": "fs.readFileSync(join(repo,'typescript/TASKS.md'),'utf8')",
+        "next": "fs.readFileSync(join(import.meta.dirname,'../guard-tasks.md'),'utf8')",
+        "all": false,
+        "count": 1
+      },
+      {
+        "old": "await import('./_preserve/empty-design-guard.mjs');",
+        "next": "await import('./empty-design-guard.mjs');",
+        "all": false,
+        "count": 1
+      }
+    ],
+    "bytes": 5037,
+    "sha256": "321185ef9b7217792d831af4f25d45b52bc8f7f98e83da0f41c66b7f7adf35cb"
+  },
+  {
+    "name": "design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3g-empty/_preserve/design-guard.mjs",
+    "sourceBytes": 7068,
+    "sourceSha256": "d66776c92fcf40b803d7384d885957d45e4096a6dc50b9da88b5ffe727e56373",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3g-empty/_preserve')",
+        "all": true,
+        "count": 6
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3g-empty/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3g-empty/')||p.startsWith('typescript/docs/validation/ts-035e3g-empty-observation/');",
+        "all": false,
+        "count": 1
+      }
+    ],
+    "bytes": 7399,
+    "sha256": "5a9d2f824baa9dd8fc5ec61795587381cc2aca5fb60063d617a61f682a04b391"
+  },
+  {
+    "name": "empty-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3g-empty/_preserve/empty-design-guard.mjs",
+    "sourceBytes": 3555,
+    "sourceSha256": "936014119c037b2524ebf586ab4ff4c7cfe1e9a0707af4edfa8330b7789e75d4",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3g-empty/_preserve')",
+        "all": true,
+        "count": 2
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3g-empty/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3g-empty/')||p.startsWith('typescript/docs/validation/ts-035e3g-empty-observation/');",
+        "all": false,
+        "count": 1
+      }
+    ],
+    "bytes": 3714,
+    "sha256": "248e8deb9abc33686e433215c7fa6a29af56a5112d54cfbfd2f79a6f83201ce1"
+  },
+  {
+    "name": "observation-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3g-empty/_preserve/observation-guard.mjs",
+    "sourceBytes": 3668,
+    "sourceSha256": "1f92e1f66cec69c2c7af4d5e25a57d5bbda360b23550a5ac291c2c0de20d3a65",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3g-empty/_preserve')",
+        "all": true,
+        "count": 2
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3g-empty/');",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3g-empty/')||p.startsWith('typescript/docs/validation/ts-035e3g-empty-observation/');",
+        "all": false,
+        "count": 1
+      }
+    ],
+    "bytes": 3827,
+    "sha256": "8e9a0eb2b5363bda238d7109df0e935f43af8f8e0523840c8f7bf251a463466f"
+  },
+  {
+    "name": "prior-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3g-empty/_preserve/prior-guard.mjs",
+    "sourceBytes": 58223,
+    "sourceSha256": "2956a8c4c6b9152dbfd306c247cc6e409bc73f37a720fa1c34e2e22542d60a59",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3g-empty/_preserve')",
+        "all": true,
+        "count": 32
+      }
+    ],
+    "bytes": 59599,
+    "sha256": "e6b08e39c28bff841d219466f6c6faf0e115d5502a2d0e87cf75236c97cf49b1"
+  }
+]
