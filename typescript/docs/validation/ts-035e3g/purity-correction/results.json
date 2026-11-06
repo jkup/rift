@@ -1,0 +1,870 @@
+{
+  "status": "passed",
+  "embeddedExactBytes": true,
+  "frozenArrayAndRows": true,
+  "stubbedFilesystemFunctions": 128,
+  "controls": [
+    {
+      "id": "null-before-any-io",
+      "actual": {
+        "kind": "binding-error",
+        "index": null,
+        "code": "ORDER"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "positive",
+      "actual": null,
+      "filesystemCalls": 0
+    },
+    {
+      "id": "missing-last",
+      "actual": {
+        "kind": "binding-error",
+        "index": null,
+        "code": "ORDER"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "extra-last",
+      "actual": {
+        "kind": "binding-error",
+        "index": null,
+        "code": "ORDER"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "reordered-first-pair",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "ORDER"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "duplicate-row",
+      "actual": {
+        "kind": "binding-error",
+        "index": 1,
+        "code": "ORDER"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-0",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-0",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-1",
+      "actual": {
+        "kind": "binding-error",
+        "index": 1,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-1",
+      "actual": {
+        "kind": "binding-error",
+        "index": 1,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-2",
+      "actual": {
+        "kind": "binding-error",
+        "index": 2,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-2",
+      "actual": {
+        "kind": "binding-error",
+        "index": 2,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-3",
+      "actual": {
+        "kind": "binding-error",
+        "index": 3,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-3",
+      "actual": {
+        "kind": "binding-error",
+        "index": 3,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-4",
+      "actual": {
+        "kind": "binding-error",
+        "index": 4,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-4",
+      "actual": {
+        "kind": "binding-error",
+        "index": 4,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-5",
+      "actual": {
+        "kind": "binding-error",
+        "index": 5,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-5",
+      "actual": {
+        "kind": "binding-error",
+        "index": 5,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-6",
+      "actual": {
+        "kind": "binding-error",
+        "index": 6,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-6",
+      "actual": {
+        "kind": "binding-error",
+        "index": 6,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-7",
+      "actual": {
+        "kind": "binding-error",
+        "index": 7,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-7",
+      "actual": {
+        "kind": "binding-error",
+        "index": 7,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-8",
+      "actual": {
+        "kind": "binding-error",
+        "index": 8,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-8",
+      "actual": {
+        "kind": "binding-error",
+        "index": 8,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-9",
+      "actual": {
+        "kind": "binding-error",
+        "index": 9,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-9",
+      "actual": {
+        "kind": "binding-error",
+        "index": 9,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-10",
+      "actual": {
+        "kind": "binding-error",
+        "index": 10,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-10",
+      "actual": {
+        "kind": "binding-error",
+        "index": 10,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-11",
+      "actual": {
+        "kind": "binding-error",
+        "index": 11,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-11",
+      "actual": {
+        "kind": "binding-error",
+        "index": 11,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-12",
+      "actual": {
+        "kind": "binding-error",
+        "index": 12,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-12",
+      "actual": {
+        "kind": "binding-error",
+        "index": 12,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-13",
+      "actual": {
+        "kind": "binding-error",
+        "index": 13,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-13",
+      "actual": {
+        "kind": "binding-error",
+        "index": 13,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-14",
+      "actual": {
+        "kind": "binding-error",
+        "index": 14,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-14",
+      "actual": {
+        "kind": "binding-error",
+        "index": 14,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-15",
+      "actual": {
+        "kind": "binding-error",
+        "index": 15,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-15",
+      "actual": {
+        "kind": "binding-error",
+        "index": 15,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-16",
+      "actual": {
+        "kind": "binding-error",
+        "index": 16,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-16",
+      "actual": {
+        "kind": "binding-error",
+        "index": 16,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-17",
+      "actual": {
+        "kind": "binding-error",
+        "index": 17,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-17",
+      "actual": {
+        "kind": "binding-error",
+        "index": 17,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-18",
+      "actual": {
+        "kind": "binding-error",
+        "index": 18,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-18",
+      "actual": {
+        "kind": "binding-error",
+        "index": 18,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-19",
+      "actual": {
+        "kind": "binding-error",
+        "index": 19,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-19",
+      "actual": {
+        "kind": "binding-error",
+        "index": 19,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-20",
+      "actual": {
+        "kind": "binding-error",
+        "index": 20,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-20",
+      "actual": {
+        "kind": "binding-error",
+        "index": 20,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-21",
+      "actual": {
+        "kind": "binding-error",
+        "index": 21,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-21",
+      "actual": {
+        "kind": "binding-error",
+        "index": 21,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-22",
+      "actual": {
+        "kind": "binding-error",
+        "index": 22,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-22",
+      "actual": {
+        "kind": "binding-error",
+        "index": 22,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-23",
+      "actual": {
+        "kind": "binding-error",
+        "index": 23,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-23",
+      "actual": {
+        "kind": "binding-error",
+        "index": 23,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-24",
+      "actual": {
+        "kind": "binding-error",
+        "index": 24,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-24",
+      "actual": {
+        "kind": "binding-error",
+        "index": 24,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-25",
+      "actual": {
+        "kind": "binding-error",
+        "index": 25,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-25",
+      "actual": {
+        "kind": "binding-error",
+        "index": 25,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-26",
+      "actual": {
+        "kind": "binding-error",
+        "index": 26,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-26",
+      "actual": {
+        "kind": "binding-error",
+        "index": 26,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-27",
+      "actual": {
+        "kind": "binding-error",
+        "index": 27,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-27",
+      "actual": {
+        "kind": "binding-error",
+        "index": 27,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-28",
+      "actual": {
+        "kind": "binding-error",
+        "index": 28,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-28",
+      "actual": {
+        "kind": "binding-error",
+        "index": 28,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-29",
+      "actual": {
+        "kind": "binding-error",
+        "index": 29,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-29",
+      "actual": {
+        "kind": "binding-error",
+        "index": 29,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-30",
+      "actual": {
+        "kind": "binding-error",
+        "index": 30,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-30",
+      "actual": {
+        "kind": "binding-error",
+        "index": 30,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-31",
+      "actual": {
+        "kind": "binding-error",
+        "index": 31,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-31",
+      "actual": {
+        "kind": "binding-error",
+        "index": 31,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-32",
+      "actual": {
+        "kind": "binding-error",
+        "index": 32,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-32",
+      "actual": {
+        "kind": "binding-error",
+        "index": 32,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-33",
+      "actual": {
+        "kind": "binding-error",
+        "index": 33,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-33",
+      "actual": {
+        "kind": "binding-error",
+        "index": 33,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-34",
+      "actual": {
+        "kind": "binding-error",
+        "index": 34,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-34",
+      "actual": {
+        "kind": "binding-error",
+        "index": 34,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-35",
+      "actual": {
+        "kind": "binding-error",
+        "index": 35,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-35",
+      "actual": {
+        "kind": "binding-error",
+        "index": 35,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-36",
+      "actual": {
+        "kind": "binding-error",
+        "index": 36,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-36",
+      "actual": {
+        "kind": "binding-error",
+        "index": 36,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-37",
+      "actual": {
+        "kind": "binding-error",
+        "index": 37,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-37",
+      "actual": {
+        "kind": "binding-error",
+        "index": 37,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-38",
+      "actual": {
+        "kind": "binding-error",
+        "index": 38,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-38",
+      "actual": {
+        "kind": "binding-error",
+        "index": 38,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-39",
+      "actual": {
+        "kind": "binding-error",
+        "index": 39,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-39",
+      "actual": {
+        "kind": "binding-error",
+        "index": 39,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-40",
+      "actual": {
+        "kind": "binding-error",
+        "index": 40,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-40",
+      "actual": {
+        "kind": "binding-error",
+        "index": 40,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "hash-41",
+      "actual": {
+        "kind": "binding-error",
+        "index": 41,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "size-41",
+      "actual": {
+        "kind": "binding-error",
+        "index": 41,
+        "code": "IDENTITY"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "traversal",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "PATH"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "case-alias",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "PATH"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "slash-alias",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "PATH"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "relative-path-backslash",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "PATH"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "role",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "ORDER"
+      },
+      "filesystemCalls": 0
+    },
+    {
+      "id": "extra-field",
+      "actual": {
+        "kind": "binding-error",
+        "index": 0,
+        "code": "ORDER"
+      },
+      "filesystemCalls": 0
+    }
+  ],
+  "filesystemCalls": [],
+  "realArchiveAdapterInvocations": 0
+}

@@ -1,0 +1,16 @@
+{
+  "expected": {
+    "returned": {
+      "kind": "binding-error",
+      "index": null,
+      "code": "ORDER"
+    },
+    "filesystemCalls": 0
+  },
+  "actual": {
+    "thrown": "ArchiveFault",
+    "message": "ARCHIVE",
+    "filesystemCalls": 1
+  },
+  "realArchiveInvocations": 0
+}

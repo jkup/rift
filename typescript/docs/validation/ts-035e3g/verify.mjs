@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import {join,resolve,relative} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {inspectCoff,sha256} from './reader.mjs';
+import {BINDINGS,BINDING_LITERAL_TEXT} from './bindings.mjs';
 const here=import.meta.dirname,repo=resolve(here,'../../../..');
 const json=p=>JSON.parse(fs.readFileSync(p));
 const git=(...a)=>execFileSync('git',['-c','core.longpaths=true',...a],{cwd:repo,maxBuffer:20000000}).toString();
@@ -27,6 +28,12 @@ assert.equal(json(join(here,'test-attempt-1.json')).status,'failed');assert(json
 assert.equal(json(join(here,'boundary-results.json')).boundaries.length,8);
 for(const f of json(join(p,'correction-1/fixtures.json')).cases)assert.deepEqual(inspectCoff(Buffer.from(f.bytesHex,'hex')),f.expected);
 for(const r of json(join(here,'filesystem-fixtures.json'))){check(r);const s=fs.lstatSync(join(repo,r.path),{bigint:true});for(const key of ['dev','ino','nlink'])assert.equal(String(s[key]),r[key]);}
+const correction=join(here,'purity-correction');
+const originals=new Set(['adapter.mjs','source-identities.json','manifest.json','README.md','verify.mjs','task-entry.txt']);
+const originalManifest=fs.readFileSync(join(correction,'original-manifest.json'));assert(originalManifest.equals(execFileSync('git',['cat-file','blob','32e721c1:typescript/docs/validation/ts-035e3g/manifest.json'],{cwd:repo})));
+for(const r of JSON.parse(originalManifest)){const name=relative(here,join(repo,r.path)).replaceAll('\\','/');const file=originals.has(name)?join(correction,'original-'+name):join(repo,r.path);const bytes=fs.readFileSync(file);assert.equal(bytes.length,r.bytes);assert.equal(sha256(bytes),r.sha256);}
+assert(Buffer.from(BINDING_LITERAL_TEXT).equals(fs.readFileSync(join(p,'ordered-inputs.json'))));assert.deepEqual(BINDINGS,json(join(p,'ordered-inputs.json')));assert(Object.isFrozen(BINDINGS)&&BINDINGS.every(Object.isFrozen));
+const purity=json(join(correction,'results.json'));assert.equal(purity.status,'passed');assert.equal(purity.controls.length,96);assert.deepEqual(purity.filesystemCalls,[]);assert.equal(purity.realArchiveAdapterInvocations,0);assert(purity.stubbedFilesystemFunctions>100);
 const seal=json(join(here,'manifest.json'));seal.forEach(check);const paths=[];
 function walk(dir){for(const n of fs.readdirSync(dir)){const file=join(dir,n),s=fs.lstatSync(file);assert(!s.isSymbolicLink());if(s.isDirectory())walk(file);else{assert(s.isFile()&&s.nlink===1);if(file!==join(here,'manifest.json'))paths.push(relative(repo,file).replaceAll('\\','/'));}}}walk(here);assert.deepEqual(paths.sort(),seal.map(r=>r.path).sort());
 console.log(JSON.stringify({acceptedBaseFiles:baseline.rows.length,syntheticTests:226,additionalBoundaries:8,actualFrozenLiteralComparisons:83,realArchiveAdapterInvocations:0,realObjectsInterpreted:0,passed:true}));

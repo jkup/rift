@@ -3,9 +3,10 @@ import {resolve,join} from 'node:path';
 import {collect,checkBindings,error,ArchiveFault} from './_internal/archive-core.mjs';
 import {readPinned,readOrdinary} from './_internal/files.mjs';
 import {PINS} from './pins.mjs';
+import {BINDINGS} from './bindings.mjs';
 const repo=resolve(import.meta.dirname,'../../../..');
 const load=p=>JSON.parse(readPinned(join(repo,p.path),p));
-export function validateBindings(candidate){return checkBindings(candidate,load(PINS.bindings));}
+export function validateBindings(candidate){return checkBindings(candidate,BINDINGS);}
 export function inventoryBoundArchive(){
  try{
   const expected=load(PINS.bindings);
