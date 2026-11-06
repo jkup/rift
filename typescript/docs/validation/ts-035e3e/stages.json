@@ -1,0 +1,76 @@
+[
+  {
+    "name": "verify-before",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3e-p\\verify.mjs",
+      "--implemented"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\"protected\":9198,\"evidence\":98,\"additions\":2,\"replacements\":0,\"mode\":\"implemented\",\"guestLaunches\":0,\"builds\":0}\n",
+    "stderr": ""
+  },
+  {
+    "name": "installed-test",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\tools\\test262\\script-host-services.test.mjs"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "20 whole descriptor literals; source snapshot identity; frozen detached data; 10 exact boundary errors\n",
+    "stderr": ""
+  },
+  {
+    "name": "installed-mutants",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3e\\installed-mutants.mjs"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "12 actual descriptor mutants; 16 complete self-consistent witness mutants rejected (data oracle only)\n",
+    "stderr": ""
+  },
+  {
+    "name": "installed-construction",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3e\\construction-probe.mjs"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "20 actual extracted constructor/controlSetup traces; 20 fresh allocations; 100 source/Realm map controls; six completed mutants rejected\n",
+    "stderr": "(node:8464) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  {
+    "name": "additional-controls",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3e\\additional-controls.mjs"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\"variants\":20,\"calls\":40,\"freshObjects\":2994,\"boundaryErrors\":8,\"coercionGetterReads\":0,\"coercionHookCalls\":0}\n",
+    "stderr": ""
+  },
+  {
+    "name": "verify-after",
+    "command": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3e-p\\verify.mjs",
+      "--implemented"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\"protected\":9198,\"evidence\":98,\"additions\":2,\"replacements\":0,\"mode\":\"implemented\",\"guestLaunches\":0,\"builds\":0}\n",
+    "stderr": ""
+  }
+]

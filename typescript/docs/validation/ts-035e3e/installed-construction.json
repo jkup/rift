@@ -1,0 +1,12 @@
+{
+  "name": "installed-construction",
+  "command": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3e\\construction-probe.mjs"
+  ],
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "20 actual extracted constructor/controlSetup traces; 20 fresh allocations; 100 source/Realm map controls; six completed mutants rejected\n",
+  "stderr": "(node:8464) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+}

@@ -1,0 +1,745 @@
+{
+  "claim": "Inert host construction only; no Realm implementation, parser, evaluator, or guest execution",
+  "results": [
+    {
+      "id": null,
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": false,
+        "control": "none",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": false,
+        "control": "none",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B01",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B01",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B01",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B02",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B02",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B02",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B03",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B03",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B03",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B04",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B04",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B04",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B05",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B05",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B05",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B06",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B06",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B06",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B07",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B07",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B07",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B08",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B08",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B08",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B09",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B09",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": [
+              {
+                "name": "Other",
+                "writable": true,
+                "enumerable": false,
+                "configurable": true,
+                "owner": 1
+              }
+            ]
+          },
+          {
+            "profile": "script",
+            "registered": "other",
+            "outputFault": "control output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B09",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": [
+              {
+                "name": "Other",
+                "writable": true,
+                "enumerable": false,
+                "configurable": true,
+                "owner": 1
+              }
+            ]
+          },
+          {
+            "profile": "script",
+            "registered": "other",
+            "outputFault": "control output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B10",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B10",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B10",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B11",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B11",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B11",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B12",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B12",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B12",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B13",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B13",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B13",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B14",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B14",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B14",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B15",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B15",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B15",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "B16",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B16",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B16",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "N01",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "N01",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "N01",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "N02",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "N02",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "N02",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "I01",
+      "expected": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "I01",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      },
+      "actual": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "I01",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "name": "main-profile",
+      "output": {
+        "mode": "conformance",
+        "preflightControl": false,
+        "control": "none",
+        "realms": [
+          {
+            "profile": "legacy",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "main-sink",
+      "output": {
+        "mode": "conformance",
+        "preflightControl": false,
+        "control": "none",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "control output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "main-registration",
+      "output": {
+        "mode": "conformance",
+        "preflightControl": false,
+        "control": "none",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "other",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "other-profile",
+      "output": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B09",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": [
+              {
+                "name": "Other",
+                "writable": true,
+                "enumerable": false,
+                "configurable": true,
+                "owner": 1
+              }
+            ]
+          },
+          {
+            "profile": "legacy",
+            "registered": "other",
+            "outputFault": "control output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "other-registration",
+      "output": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B09",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": [
+              {
+                "name": "Other",
+                "writable": true,
+                "enumerable": false,
+                "configurable": true,
+                "owner": 1
+              }
+            ]
+          },
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "control output",
+            "extensions": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "other-transfer",
+      "output": {
+        "mode": "conformance",
+        "preflightControl": true,
+        "control": "B09",
+        "realms": [
+          {
+            "profile": "script",
+            "registered": "test",
+            "outputFault": "unexpected Script output",
+            "extensions": []
+          },
+          {
+            "profile": "script",
+            "registered": "other",
+            "outputFault": "control output",
+            "extensions": []
+          }
+        ]
+      }
+    }
+  ]
+}
