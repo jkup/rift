@@ -1,0 +1,396 @@
+{
+  "status": "passed",
+  "mutants": [
+    {
+      "id": "old-restriction",
+      "fixture": "empty-pointer-60",
+      "old": "if(!s.rawSize&&s.rawOffset>b.length)",
+      "next": "if(!s.rawSize&&s.rawOffset)",
+      "actual": {
+        "kind": "rejected",
+        "input": {
+          "bytes": 60,
+          "sha256": "e4fa72241f6449ef9c228b73b0785b0657dcfa7701b2b42c66feaf00e782931e"
+        },
+        "error": {
+          "code": "RAW_POINTER",
+          "offset": 40
+        }
+      },
+      "expected": {
+        "kind": "inventory",
+        "format": "coff-amd64-standard",
+        "input": {
+          "bytes": 60,
+          "sha256": "e4fa72241f6449ef9c228b73b0785b0657dcfa7701b2b42c66feaf00e782931e"
+        },
+        "header": {
+          "machine": 34404,
+          "sectionCount": 1,
+          "timestamp": 0,
+          "symbolTableOffset": 0,
+          "symbolSlotCount": 0,
+          "optionalHeaderBytes": 0,
+          "characteristics": 0
+        },
+        "sections": [
+          {
+            "index": 1,
+            "name": {
+              "fieldHex": "2e656d7074790000",
+              "bytesHex": "2e656d707479",
+              "encoding": "inline",
+              "stringOffset": null
+            },
+            "virtualSize": 0,
+            "virtualAddress": 0,
+            "rawSize": 0,
+            "rawOffset": 60,
+            "relocationOffset": 0,
+            "lineOffset": 0,
+            "relocationCount": 0,
+            "lineCount": 0,
+            "characteristics": 0,
+            "rawSha256": null,
+            "relocations": []
+          }
+        ],
+        "symbols": [],
+        "stringTable": null,
+        "directives": [],
+        "fltused": {
+          "symbolSlots": [],
+          "relocationSites": []
+        }
+      },
+      "intendedAssertionFailed": true
+    },
+    {
+      "id": "empty-slice-hash",
+      "fixture": "empty-pointer-60",
+      "old": "if(s.rawSize&&s.rawOffset)s.rawSha256=",
+      "next": "if(s.rawOffset)s.rawSha256=",
+      "actual": {
+        "kind": "inventory",
+        "format": "coff-amd64-standard",
+        "input": {
+          "bytes": 60,
+          "sha256": "e4fa72241f6449ef9c228b73b0785b0657dcfa7701b2b42c66feaf00e782931e"
+        },
+        "header": {
+          "machine": 34404,
+          "sectionCount": 1,
+          "timestamp": 0,
+          "symbolTableOffset": 0,
+          "symbolSlotCount": 0,
+          "optionalHeaderBytes": 0,
+          "characteristics": 0
+        },
+        "sections": [
+          {
+            "index": 1,
+            "name": {
+              "fieldHex": "2e656d7074790000",
+              "bytesHex": "2e656d707479",
+              "encoding": "inline",
+              "stringOffset": null
+            },
+            "virtualSize": 0,
+            "virtualAddress": 0,
+            "rawSize": 0,
+            "rawOffset": 60,
+            "relocationOffset": 0,
+            "lineOffset": 0,
+            "relocationCount": 0,
+            "lineCount": 0,
+            "characteristics": 0,
+            "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "relocations": []
+          }
+        ],
+        "symbols": [],
+        "stringTable": null,
+        "directives": [],
+        "fltused": {
+          "symbolSlots": [],
+          "relocationSites": []
+        }
+      },
+      "expected": {
+        "kind": "inventory",
+        "format": "coff-amd64-standard",
+        "input": {
+          "bytes": 60,
+          "sha256": "e4fa72241f6449ef9c228b73b0785b0657dcfa7701b2b42c66feaf00e782931e"
+        },
+        "header": {
+          "machine": 34404,
+          "sectionCount": 1,
+          "timestamp": 0,
+          "symbolTableOffset": 0,
+          "symbolSlotCount": 0,
+          "optionalHeaderBytes": 0,
+          "characteristics": 0
+        },
+        "sections": [
+          {
+            "index": 1,
+            "name": {
+              "fieldHex": "2e656d7074790000",
+              "bytesHex": "2e656d707479",
+              "encoding": "inline",
+              "stringOffset": null
+            },
+            "virtualSize": 0,
+            "virtualAddress": 0,
+            "rawSize": 0,
+            "rawOffset": 60,
+            "relocationOffset": 0,
+            "lineOffset": 0,
+            "relocationCount": 0,
+            "lineCount": 0,
+            "characteristics": 0,
+            "rawSha256": null,
+            "relocations": []
+          }
+        ],
+        "symbols": [],
+        "stringTable": null,
+        "directives": [],
+        "fltused": {
+          "symbolSlots": [],
+          "relocationSites": []
+        }
+      },
+      "intendedAssertionFailed": true
+    },
+    {
+      "id": "normalize-pointer",
+      "fixture": "empty-pointer-60",
+      "old": "if(!s.rawSize&&s.rawOffset>b.length)",
+      "next": "if(!s.rawSize)s.rawOffset=0;\n  if(!s.rawSize&&s.rawOffset>b.length)",
+      "actual": {
+        "kind": "inventory",
+        "format": "coff-amd64-standard",
+        "input": {
+          "bytes": 60,
+          "sha256": "e4fa72241f6449ef9c228b73b0785b0657dcfa7701b2b42c66feaf00e782931e"
+        },
+        "header": {
+          "machine": 34404,
+          "sectionCount": 1,
+          "timestamp": 0,
+          "symbolTableOffset": 0,
+          "symbolSlotCount": 0,
+          "optionalHeaderBytes": 0,
+          "characteristics": 0
+        },
+        "sections": [
+          {
+            "index": 1,
+            "name": {
+              "fieldHex": "2e656d7074790000",
+              "bytesHex": "2e656d707479",
+              "encoding": "inline",
+              "stringOffset": null
+            },
+            "virtualSize": 0,
+            "virtualAddress": 0,
+            "rawSize": 0,
+            "rawOffset": 0,
+            "relocationOffset": 0,
+            "lineOffset": 0,
+            "relocationCount": 0,
+            "lineCount": 0,
+            "characteristics": 0,
+            "rawSha256": null,
+            "relocations": []
+          }
+        ],
+        "symbols": [],
+        "stringTable": null,
+        "directives": [],
+        "fltused": {
+          "symbolSlots": [],
+          "relocationSites": []
+        }
+      },
+      "expected": {
+        "kind": "inventory",
+        "format": "coff-amd64-standard",
+        "input": {
+          "bytes": 60,
+          "sha256": "e4fa72241f6449ef9c228b73b0785b0657dcfa7701b2b42c66feaf00e782931e"
+        },
+        "header": {
+          "machine": 34404,
+          "sectionCount": 1,
+          "timestamp": 0,
+          "symbolTableOffset": 0,
+          "symbolSlotCount": 0,
+          "optionalHeaderBytes": 0,
+          "characteristics": 0
+        },
+        "sections": [
+          {
+            "index": 1,
+            "name": {
+              "fieldHex": "2e656d7074790000",
+              "bytesHex": "2e656d707479",
+              "encoding": "inline",
+              "stringOffset": null
+            },
+            "virtualSize": 0,
+            "virtualAddress": 0,
+            "rawSize": 0,
+            "rawOffset": 60,
+            "relocationOffset": 0,
+            "lineOffset": 0,
+            "relocationCount": 0,
+            "lineCount": 0,
+            "characteristics": 0,
+            "rawSha256": null,
+            "relocations": []
+          }
+        ],
+        "symbols": [],
+        "stringTable": null,
+        "directives": [],
+        "fltused": {
+          "symbolSlots": [],
+          "relocationSites": []
+        }
+      },
+      "intendedAssertionFailed": true
+    },
+    {
+      "id": "out-of-range-accepted",
+      "fixture": "empty-past-eof",
+      "old": "if(!s.rawSize&&s.rawOffset>b.length)reject('RAW_POINTER',p+20);",
+      "next": "",
+      "actual": {
+        "kind": "inventory",
+        "format": "coff-amd64-standard",
+        "input": {
+          "bytes": 60,
+          "sha256": "31b07956c252596c4b5ca5209c5fb148f0e6f9dad0e230745d2850b372b8b495"
+        },
+        "header": {
+          "machine": 34404,
+          "sectionCount": 1,
+          "timestamp": 0,
+          "symbolTableOffset": 0,
+          "symbolSlotCount": 0,
+          "optionalHeaderBytes": 0,
+          "characteristics": 0
+        },
+        "sections": [
+          {
+            "index": 1,
+            "name": {
+              "fieldHex": "2e656d7074790000",
+              "bytesHex": "2e656d707479",
+              "encoding": "inline",
+              "stringOffset": null
+            },
+            "virtualSize": 0,
+            "virtualAddress": 0,
+            "rawSize": 0,
+            "rawOffset": 61,
+            "relocationOffset": 0,
+            "lineOffset": 0,
+            "relocationCount": 0,
+            "lineCount": 0,
+            "characteristics": 0,
+            "rawSha256": null,
+            "relocations": []
+          }
+        ],
+        "symbols": [],
+        "stringTable": null,
+        "directives": [],
+        "fltused": {
+          "symbolSlots": [],
+          "relocationSites": []
+        }
+      },
+      "expected": {
+        "kind": "rejected",
+        "input": {
+          "bytes": 60,
+          "sha256": "31b07956c252596c4b5ca5209c5fb148f0e6f9dad0e230745d2850b372b8b495"
+        },
+        "error": {
+          "code": "RAW_POINTER",
+          "offset": 40
+        }
+      },
+      "intendedAssertionFailed": true
+    },
+    {
+      "id": "nonempty-pointer-unchecked",
+      "fixture": "nonempty-missing-pointer",
+      "old": "if(s.rawSize&&!s.rawOffset&&!(s.characteristics&128))reject('RAW_POINTER',p+20);",
+      "next": "",
+      "actual": {
+        "kind": "inventory",
+        "format": "coff-amd64-standard",
+        "input": {
+          "bytes": 60,
+          "sha256": "2b3077ad9647e55bd08384b15aefdc4458af1103f77ad42e370442fe7549810b"
+        },
+        "header": {
+          "machine": 34404,
+          "sectionCount": 1,
+          "timestamp": 0,
+          "symbolTableOffset": 0,
+          "symbolSlotCount": 0,
+          "optionalHeaderBytes": 0,
+          "characteristics": 0
+        },
+        "sections": [
+          {
+            "index": 1,
+            "name": {
+              "fieldHex": "2e656d7074790000",
+              "bytesHex": "2e656d707479",
+              "encoding": "inline",
+              "stringOffset": null
+            },
+            "virtualSize": 0,
+            "virtualAddress": 0,
+            "rawSize": 4,
+            "rawOffset": 0,
+            "relocationOffset": 0,
+            "lineOffset": 0,
+            "relocationCount": 0,
+            "lineCount": 0,
+            "characteristics": 0,
+            "rawSha256": null,
+            "relocations": []
+          }
+        ],
+        "symbols": [],
+        "stringTable": null,
+        "directives": [],
+        "fltused": {
+          "symbolSlots": [],
+          "relocationSites": []
+        }
+      },
+      "expected": {
+        "kind": "rejected",
+        "input": {
+          "bytes": 60,
+          "sha256": "2b3077ad9647e55bd08384b15aefdc4458af1103f77ad42e370442fe7549810b"
+        },
+        "error": {
+          "code": "RAW_POINTER",
+          "offset": 40
+        }
+      },
+      "intendedAssertionFailed": true
+    }
+  ],
+  "realObjectsInterpreted": 0
+}

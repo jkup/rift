@@ -1,0 +1,63 @@
+// Internal composition seam for synthetic tests, not a public lookup/authority API.
+import {gunzipSync} from 'node:zlib';
+import {inspectCoff,sha256,LIMITS} from '../reader.mjs';
+export const BASE='903a7e56ef9c081d57662d5bcabb9221d6555389';
+export const BATCH_LIMIT=134217728;
+export const EMPTY_BYTES=Buffer.byteLength(JSON.stringify({kind:'batch',base:BASE,entries:[]}));
+export const error=(index,code)=>({kind:'binding-error',index,code});
+const keys=['index','role','path','absolute','bytes','sha256'];
+export function checkBindings(candidate,expected){
+ if(!Array.isArray(candidate)||candidate.length!==42)return error(null,'ORDER');
+ for(let i=0;i<42;i++){
+  const r=candidate[i],e=expected[i];
+  if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).length!==6||!keys.every(k=>Object.hasOwn(r,k))||!Number.isInteger(r.index)||!['runtime','program'].includes(r.role)||typeof r.path!=='string'||typeof r.absolute!=='string'||!Number.isSafeInteger(r.bytes)||r.bytes<0||typeof r.sha256!=='string'||!/^[0-9a-f]{64}$/.test(r.sha256)||r.index!==i||r.role!==e.role)return error(i,'ORDER');
+  if(r.path!==e.path||r.absolute!==e.absolute)return error(i,'PATH');
+  if(r.bytes!==e.bytes||r.sha256!==e.sha256)return error(i,'IDENTITY');
+ }
+ return null;
+}
+export function nextBudget(current,index,entryBytes){
+ const total=current+entryBytes+(index?1:0);
+ return !Number.isSafeInteger(total)||entryBytes<0||total>BATCH_LIMIT?error(index,'BATCH_LIMIT'):{accepted:true,totalBytes:total};
+}
+export class ArchiveFault extends Error {constructor(code){super(code);this.code=code;}}
+export function collect(candidate,expected,source,parse=inspectCoff){
+ const invalid=checkBindings(candidate,expected);if(invalid)return invalid;
+ const entries=[];let total=EMPTY_BYTES,map,seal;
+ for(let i=0;i<42;i++){
+  const r=candidate[i];let bytes;
+  try{
+   if(!map){
+    const inventory=source.inventory();map=new Map();
+    if(!Array.isArray(inventory))throw new ArchiveFault('ARCHIVE');
+    for(const row of inventory){if(!row||typeof row.path!=='string'||map.has(row.path))throw new ArchiveFault('ARCHIVE');map.set(row.path,row);}
+    seal=source.seal();if(!(seal instanceof Map))throw new ArchiveFault('ARCHIVE');
+   }
+   const row=map.get(r.path);if(!row)throw new ArchiveFault('ARCHIVE');
+   if(row.bytes!==r.bytes||row.sha256!==r.sha256)throw new ArchiveFault('IDENTITY');
+   if(r.bytes>LIMITS.inputBytes)throw new ArchiveFault('ARCHIVE_LIMIT');
+   if(!Array.isArray(row.chunks))throw new ArchiveFault('ARCHIVE');
+   // Retained format uses chunks of at most8MiB; exact assembly size remains binding.
+   const chunks=[];let length=0;
+   for(const digest of row.chunks){
+    if(typeof digest!=='string'||!/^[0-9a-f]{64}$/.test(digest))throw new ArchiveFault('ARCHIVE');
+    const pinned=seal.get(digest);if(!pinned||!Number.isSafeInteger(pinned.bytes)||pinned.bytes<0)throw new ArchiveFault('ARCHIVE');
+    const compressed=source.readChunk(digest,pinned.bytes);
+    if(!Buffer.isBuffer(compressed)||compressed.length!==pinned.bytes||sha256(compressed)!==pinned.sha256)throw new ArchiveFault('ARCHIVE');
+    let chunk;try{chunk=gunzipSync(compressed,{maxOutputLength:8388608});}catch(e){throw new ArchiveFault(e.code==='ERR_BUFFER_TOO_LARGE'?'ARCHIVE_LIMIT':'ARCHIVE');}
+    if(sha256(chunk)!==digest)throw new ArchiveFault('IDENTITY');
+    length+=chunk.length;if(length>r.bytes)throw new ArchiveFault('IDENTITY');
+    if(length>LIMITS.inputBytes)throw new ArchiveFault('ARCHIVE_LIMIT');chunks.push(chunk);
+   }
+   bytes=Buffer.concat(chunks,length);if(bytes.length!==r.bytes||sha256(bytes)!==r.sha256)throw new ArchiveFault('IDENTITY');
+  }catch(e){if(e instanceof ArchiveFault)return error(i,e.code);throw e;}
+  const result=parse(bytes);
+  const {index,role,path,absolute,sha256:hash}=r;
+  const entry={binding:{index,role,path,absolute,bytes:r.bytes,sha256:hash},result};
+  const decision=nextBudget(total,i,Buffer.byteLength(JSON.stringify(entry)));if(!decision.accepted)return decision;
+  total=decision.totalBytes;entries.push(entry);
+ }
+ const batch={kind:'batch',base:BASE,entries};
+ if(Buffer.byteLength(JSON.stringify(batch))!==total||total>BATCH_LIMIT)throw new Error('batch accounting invariant');
+ return batch;
+}
