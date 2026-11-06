@@ -1,0 +1,24 @@
+{
+  "node": [
+    {
+      "file": "runner.mjs",
+      "exitCode": 0,
+      "command": "node --check",
+      "output": ""
+    },
+    {
+      "file": "offline.test.mjs",
+      "exitCode": 0,
+      "command": "node --check",
+      "output": ""
+    }
+  ],
+  "kind": "syntax-only-no-execution",
+  "powershell": {
+    "file": "supervise.ps1",
+    "method": "Parser.ParseFile",
+    "tokens": 313,
+    "errors": []
+  },
+  "csharp": "not compiled or executed"
+}

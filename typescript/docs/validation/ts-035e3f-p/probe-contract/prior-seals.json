@@ -1,0 +1,15 @@
+{
+  "base": "0e7337989c7683202b70259599f26c562ec0662b",
+  "rows": [
+    {
+      "path": "typescript/docs/validation/ts-035e3f-p/artifact-manifest.json",
+      "bytes": 7269,
+      "sha256": "189a27b63388feb22e99340d8912b335d4d38f6639db34a5d45ed52c21c3d2ef"
+    },
+    {
+      "path": "typescript/docs/validation/ts-035e3f-p/preservation.json",
+      "bytes": 1806862,
+      "sha256": "1bf8b0591dee0dadb7e505069c16cc49568d0f1e931b62cc03f09c5825843ee5"
+    }
+  ]
+}

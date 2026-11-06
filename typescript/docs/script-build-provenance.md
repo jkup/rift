@@ -283,3 +283,80 @@ the metadata schema is observed and independently reviewed.
 Target preflight authority, execution selection, archive/receipts and F remain
 explicitly deferred. Stop at the coherent design/evidence commit for actual,
 root and independent second review; no publication or successor assignment.
+
+## Root-authorized continuation: exact observational probe contract
+
+After review of `0e733798`, root authorized DESIGN ONLY continuation in
+`validation/ts-035e3f-p/probe-contract/`. The original text above and every
+original sealed evidence file remain preserved. The new guarded verifier checks
+the original document as an exact prefix and verifies the old hashes without
+regenerating them. This appendix supersedes only the unresolved experiment
+environment choice above, not the blocked production-provenance disposition.
+
+Root chose **cooperative installed-tool and Windows OS trust**, explicitly not
+hermeticity, external-write prevention or build authority. The complete proposed
+runner is runner.mjs, supervise.ps1 and supervisor.cs, with contract.json.
+PowerShell7.6.5 and its .NET/Add-Type C# compilation are additional trusted
+supervision dependencies; they have not been exercised here. No native or C#
+compiler was invoked. Root actual and independent second review remain required
+before running this proposal. It is not a production API or successor assignment.
+
+The fixed fresh root is
+`C:\Users\jonku\code\rift\typescript\build\ts035e3fp-link-info-observation`.
+Exclusive mkdir reserves it; an existing root is an unconditional stop with no
+cleanup/reuse. contract.json contains every child environment entry, exact PATH,
+absolute Windows locators, Zig lib path and isolated home-like/temp/cache paths.
+There is no inherited environment spread or fallback. Windows/System32/cmd.exe
+realpaths and the absolute PowerShell executable were measured read-only; their
+observed identities are frozen. Compiler invocation, original two-module source
+bytes and package manifest, one-invocation limit, 60-second timeout and 8MiB
+per-stream threshold remain exactly the original proposal. There is no output
+launch, package installation or network-dependent setup.
+
+The proposed Windows supervisor creates the compiler suspended, associates it
+with a Job Object before resuming, and enables kill-on-last-handle-close without
+breakaway. It supplies an explicit Unicode environment and an inherited-handle
+allowlist containing only stdin NUL and the two output pipes. These choices
+follow [Microsoft's process-creation contract](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw)
+and [Job Object lifecycle documentation](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects).
+They are source-level design choices, not demonstrated local feasibility.
+
+Two pipe readers retain at most8MiB each, record all bytes actually read and
+their separate observed hash, and request termination at the first observed cap
+crossing. Raw retained-byte identities are recorded in the final inventory;
+they may differ from observed stream hashes. Timeout, pipe fault, overflow,
+root exit with surviving descendants, assignment/resume failure and supervisor
+fault all stop the experiment. Cleanup calls TerminateJobObject (or terminates
+an unresumed root if assignment failed), then checks root termination, zero
+active job processes and closed pipe readers within10seconds. No optimistic
+taskkill/PID-tree fallback or retry exists. A90second outer watchdog can terminate
+the supervisor, closing its noninherited job handle; without explicit confirmed
+cleanup this remains failure requiring inspection, never a no-orphan claim.
+
+The OS may reject job assignment/termination or fail to report clean shutdown.
+The supervisor itself may fail to compile or start. **This design cannot promise
+successful cleanup before that behavior is tested.** Any inability to confirm
+cleanup, missing status or unknown child state stops for root review, leaves
+the reservation and partial evidence intact, and forbids retry. Job Objects do
+not isolate file/network/registry access; unknown external effects remain
+unknown. PowerShell/.NET/OS dependencies outside the frozen executables are
+trusted installations, not a claimed closed hashed image.
+
+The runner records source-package and Zig inventories before/after, exact copy
+and verification-sidecar exclusion records, generated file identities/differences,
+full environment/argv/cwd, original failure objects, status and partial raw files.
+It compares copied inputs immediately before invocation and after completion.
+Post-collection stages continue independently after a failure and retain each
+error; they do not turn failed or concurrent reads into an atomic snapshot.
+Metadata is retained raw first and parsed only as unreviewed JSON. Unknown schema,
+implicit paths/defaults or missing dependency facts require review; JSON syntax,
+zero status and exact hashes never mint success authority.
+
+Offline validation checks one independently authored complete plan/environment
+literal and eight actual plan-source mutants, each completing its plan call
+before whole-literal rejection. Eight lifecycle records are prospective design
+requirements, not executed Win32 traces. Node syntax and PowerShell parsing are
+checked without execution. No C# compilation, Job Object test, compiler process,
+metadata success or process-cleanup feasibility is claimed. See the new README
+for exact command boundary and retained limitations. The original six filesystem
+controls/66data mutations remain historical evidence unchanged.
