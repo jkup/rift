@@ -1,0 +1,274 @@
+{
+  "status": "passed",
+  "results": [
+    {
+      "id": "exact-full-environment",
+      "passed": true
+    },
+    {
+      "id": "changed-APPDATA",
+      "passed": true
+    },
+    {
+      "id": "missing-APPDATA",
+      "passed": true
+    },
+    {
+      "id": "changed-COMSPEC",
+      "passed": true
+    },
+    {
+      "id": "missing-COMSPEC",
+      "passed": true
+    },
+    {
+      "id": "changed-HOMEDRIVE",
+      "passed": true
+    },
+    {
+      "id": "missing-HOMEDRIVE",
+      "passed": true
+    },
+    {
+      "id": "changed-HOMEPATH",
+      "passed": true
+    },
+    {
+      "id": "missing-HOMEPATH",
+      "passed": true
+    },
+    {
+      "id": "changed-LOCALAPPDATA",
+      "passed": true
+    },
+    {
+      "id": "missing-LOCALAPPDATA",
+      "passed": true
+    },
+    {
+      "id": "changed-NO_COLOR",
+      "passed": true
+    },
+    {
+      "id": "missing-NO_COLOR",
+      "passed": true
+    },
+    {
+      "id": "changed-PATH",
+      "passed": true
+    },
+    {
+      "id": "missing-PATH",
+      "passed": true
+    },
+    {
+      "id": "changed-PATHEXT",
+      "passed": true
+    },
+    {
+      "id": "missing-PATHEXT",
+      "passed": true
+    },
+    {
+      "id": "changed-PROGRAMDATA",
+      "passed": true
+    },
+    {
+      "id": "missing-PROGRAMDATA",
+      "passed": true
+    },
+    {
+      "id": "changed-PSModulePath",
+      "passed": true
+    },
+    {
+      "id": "missing-PSModulePath",
+      "passed": true
+    },
+    {
+      "id": "changed-SystemDrive",
+      "passed": true
+    },
+    {
+      "id": "missing-SystemDrive",
+      "passed": true
+    },
+    {
+      "id": "changed-SystemRoot",
+      "passed": true
+    },
+    {
+      "id": "missing-SystemRoot",
+      "passed": true
+    },
+    {
+      "id": "changed-TEMP",
+      "passed": true
+    },
+    {
+      "id": "missing-TEMP",
+      "passed": true
+    },
+    {
+      "id": "changed-TMP",
+      "passed": true
+    },
+    {
+      "id": "missing-TMP",
+      "passed": true
+    },
+    {
+      "id": "changed-USERPROFILE",
+      "passed": true
+    },
+    {
+      "id": "missing-USERPROFILE",
+      "passed": true
+    },
+    {
+      "id": "changed-WINDIR",
+      "passed": true
+    },
+    {
+      "id": "missing-WINDIR",
+      "passed": true
+    },
+    {
+      "id": "extra-environment",
+      "passed": true
+    },
+    {
+      "id": "semantic-positive",
+      "passed": true
+    },
+    {
+      "id": "old-observation-home",
+      "passed": true
+    },
+    {
+      "id": "drive-mismatch",
+      "passed": true
+    },
+    {
+      "id": "both-homes-oldroot",
+      "passed": true
+    },
+    {
+      "id": "both-homes-wrongdrive",
+      "passed": true
+    },
+    {
+      "id": "relative-home",
+      "passed": true
+    },
+    {
+      "id": "unc-home",
+      "passed": true
+    },
+    {
+      "id": "dotdot-home",
+      "passed": true
+    },
+    {
+      "id": "profile-prefix-collision",
+      "passed": true
+    },
+    {
+      "id": "appdata-outside",
+      "passed": true
+    },
+    {
+      "id": "localappdata-prefix-collision",
+      "passed": true
+    },
+    {
+      "id": "temp-outside",
+      "passed": true
+    },
+    {
+      "id": "tmp-outside",
+      "passed": true
+    },
+    {
+      "id": "programdata-prefix-collision",
+      "passed": true
+    },
+    {
+      "id": "exact-corrected-package",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-proposal.json",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-execution-config.json",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-supervise.ps1.proposed.txt",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-files.mjs",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-policy.mjs",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-runtime-support.mjs",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-alias-policy.json",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-output-policy.json",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-staging-policy.json",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-supervisor.cs.unchanged.txt",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-.gitattributes",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-integration-bindings.json",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-runner.mjs.proposed.txt",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-invocation.proposed.json",
+      "passed": true
+    },
+    {
+      "id": "extra-byte-preflight.mjs",
+      "passed": true
+    },
+    {
+      "id": "missing-source",
+      "passed": true
+    },
+    {
+      "id": "extra-source",
+      "passed": true
+    }
+  ],
+  "environmentLiterals": 48,
+  "sourceControls": 18,
+  "proposedSourceExecuted": false,
+  "compilerInvocations": 0,
+  "addTypeInvocations": 0
+}

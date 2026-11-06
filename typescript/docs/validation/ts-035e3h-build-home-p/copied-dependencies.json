@@ -1,0 +1,50 @@
+[
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-ready-p/files.mjs",
+    "target": "files.mjs",
+    "bytes": 4818,
+    "sha256": "9e60e9d9a0d2583751c67f714a2f0c173355978141d3085a465ae4e364b7b3ce"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-ready-p/policy.mjs",
+    "target": "policy.mjs",
+    "bytes": 5450,
+    "sha256": "9ee0a2e370100878dba17932a3922a4ba8006213be251296f301019742f84e8e"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-ready-p/runtime-support.mjs",
+    "target": "runtime-support.mjs",
+    "bytes": 3484,
+    "sha256": "7c47f8850abf00788b3de41a4068678e465702d9d6b988a4d54d9d0109b4287a"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-ready-p/alias-policy.json",
+    "target": "alias-policy.json",
+    "bytes": 35797,
+    "sha256": "bfab8dfb6968e755146d40d477b1aae282ac7961f2d7a4cdca6432e85f6be9c4"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-ready-p/output-policy.json",
+    "target": "output-policy.json",
+    "bytes": 1639,
+    "sha256": "2259201d087f882e69a0b5772eb893db15b9b1ecb6274b06ada2712199c784cc"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-ready-p/staging-policy.json",
+    "target": "staging-policy.json",
+    "bytes": 681,
+    "sha256": "e0309d58f115579f44fb6e24c8645c3c05893ed07c9aafdd501a1689c6aaf5fc"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-ready-p/supervisor.cs.unchanged.txt",
+    "target": "supervisor.cs.unchanged.txt",
+    "bytes": 15997,
+    "sha256": "ff72647da35de4bae3ba2fdfac9486c37a0c16ce8e401fa004eeec0664b63fef"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-ready-p/.gitattributes",
+    "target": ".gitattributes",
+    "bytes": 69,
+    "sha256": "e36ad835cd6e0f5822a10df2681d0580775f863caac081f4b132d7c47609e10a"
+  }
+]
