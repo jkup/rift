@@ -1,0 +1,156 @@
+{
+  "kind": "observation-attempt",
+  "state": "complete",
+  "plan": {
+    "context": {
+      "identity": {
+        "schemaVersion": 1,
+        "runId": "d7709df9-c531-4076-a29f-7e783e9d972d",
+        "mode": "body-observation",
+        "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "path": "test/synthetic.js",
+        "blob": "e041adf7a7ae969534599bd49fb6aea2543e8bd1",
+        "sourceSha256": "fe5498cc801d4cb18697c4cf4e3aee24031af32d2b1b12485450ad283ff5e22c",
+        "variant": "non-strict",
+        "goal": "Script",
+        "lane": "node",
+        "engineCommit": "8ad91c34d667e5be75007523f1838b27868baf3b",
+        "engineBuildSha256": "9fae5872b8ad2417337fa16185ace5f7f51d26cb2ea029da484a80e0f53ce1b5",
+        "adapterSha256": "cbe348354035382e13e5814b0925684886faffe9db46d86b970bddc50a40bfb3",
+        "policySha256": "4e4fcb8af880a9beb2018852436d159c2794132ee258818b66da6bd4851961c2",
+        "dirtySourceSha256": null
+      },
+      "inputs": {
+        "harness": [],
+        "transformedSourceSha256": "fe5498cc801d4cb18697c4cf4e3aee24031af32d2b1b12485450ad283ff5e22c",
+        "profileId": "rift-subset-observation-v1",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "evaluationDepth": 256,
+          "steps": 9007199254740991,
+          "calls": 64,
+          "wallMs": 10000,
+          "outputBytes": 100
+        }
+      },
+      "expectedNegative": null,
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "synthetic-profile"
+        }
+      ]
+    },
+    "binding": {
+      "nonce": "ef4a38ab-b580-4e0c-b3de-eb68546f78fd",
+      "mode": "body-observation",
+      "unit": "test/synthetic.js"
+    },
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\observations\\2c726142-2265-477f-ad0d-6eb1428f4853",
+    "sourcePath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\observations\\2c726142-2265-477f-ad0d-6eb1428f4853\\source.js",
+    "resultPath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\observations\\2c726142-2265-477f-ad0d-6eb1428f4853\\child.json",
+    "build": {
+      "entry": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node\\src\\observation-driver.js",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node\\src\\observation-driver.js"
+      ],
+      "hash": "9fae5872b8ad2417337fa16185ace5f7f51d26cb2ea029da484a80e0f53ce1b5"
+    },
+    "selection": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "variant": {
+        "id": "synthetic-node",
+        "path": "test/synthetic.js",
+        "lane": "node",
+        "variant": "non-strict",
+        "goal": "Script",
+        "blob": "e041adf7a7ae969534599bd49fb6aea2543e8bd1",
+        "sourceSha256": "fe5498cc801d4cb18697c4cf4e3aee24031af32d2b1b12485450ad283ff5e22c",
+        "transformedSourceSha256": "fe5498cc801d4cb18697c4cf4e3aee24031af32d2b1b12485450ad283ff5e22c",
+        "metadata": {
+          "negative": null
+        },
+        "harness": [
+          {
+            "path": "harness/assert.js",
+            "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "synthetic-profile"
+          }
+        ]
+      }
+    }
+  },
+  "record": {
+    "identity": {
+      "schemaVersion": 1,
+      "runId": "d7709df9-c531-4076-a29f-7e783e9d972d",
+      "mode": "body-observation",
+      "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "path": "test/synthetic.js",
+      "blob": "e041adf7a7ae969534599bd49fb6aea2543e8bd1",
+      "sourceSha256": "fe5498cc801d4cb18697c4cf4e3aee24031af32d2b1b12485450ad283ff5e22c",
+      "variant": "non-strict",
+      "goal": "Script",
+      "lane": "node",
+      "engineCommit": "8ad91c34d667e5be75007523f1838b27868baf3b",
+      "engineBuildSha256": "9fae5872b8ad2417337fa16185ace5f7f51d26cb2ea029da484a80e0f53ce1b5",
+      "adapterSha256": "cbe348354035382e13e5814b0925684886faffe9db46d86b970bddc50a40bfb3",
+      "policySha256": "4e4fcb8af880a9beb2018852436d159c2794132ee258818b66da6bd4851961c2",
+      "dirtySourceSha256": null
+    },
+    "inputs": {
+      "harness": [],
+      "transformedSourceSha256": "fe5498cc801d4cb18697c4cf4e3aee24031af32d2b1b12485450ad283ff5e22c",
+      "profileId": "rift-subset-observation-v1",
+      "capabilityLedgerSha256": null,
+      "host": "v26.13.0",
+      "platform": "win32/x64",
+      "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "evaluationDepth": 256,
+        "steps": 9007199254740991,
+        "calls": 64,
+        "wallMs": 10000,
+        "outputBytes": 100
+      }
+    },
+    "evidence": {
+      "stage": "driver",
+      "harnessValidated": false,
+      "bodyEvaluated": false,
+      "unit": "test/synthetic.js",
+      "location": null,
+      "process": {
+        "exitCode": null,
+        "signal": "SIGTERM",
+        "deadlineExpired": false
+      },
+      "stdoutSha256": "48f699af8eb590673a313f7e3c163e9c8c9c836954cb87b08ab8d31efb52e96b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 71.58489999999983
+    },
+    "observation": {
+      "kind": "resource-limit",
+      "guardCode": "output",
+      "count": 110,
+      "limit": 100
+    }
+  }
+}

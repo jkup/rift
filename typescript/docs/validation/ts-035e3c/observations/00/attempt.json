@@ -1,0 +1,166 @@
+{
+  "kind": "observation-attempt",
+  "state": "complete",
+  "plan": {
+    "context": {
+      "identity": {
+        "schemaVersion": 1,
+        "runId": "d4ac78b0-9c46-4976-96a8-96cb1273c1a6",
+        "mode": "parser-observation",
+        "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "path": "test/synthetic.js",
+        "blob": "eb224e0951e68d0a2a227db556041c655c0e17ed",
+        "sourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+        "variant": "non-strict",
+        "goal": "Script",
+        "lane": "node",
+        "engineCommit": "8ad91c34d667e5be75007523f1838b27868baf3b",
+        "engineBuildSha256": "9fae5872b8ad2417337fa16185ace5f7f51d26cb2ea029da484a80e0f53ce1b5",
+        "adapterSha256": "cbe348354035382e13e5814b0925684886faffe9db46d86b970bddc50a40bfb3",
+        "policySha256": "57a6cdf8c569f8e75072f4cd89d32fa9a42b5bec0762e52a2943489609fc2827",
+        "dirtySourceSha256": null
+      },
+      "inputs": {
+        "harness": [],
+        "transformedSourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+        "profileId": "rift-subset-observation-v1",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "evaluationDepth": 256,
+          "steps": 1234,
+          "calls": 64,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        }
+      },
+      "expectedNegative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "synthetic-profile"
+        }
+      ]
+    },
+    "binding": {
+      "nonce": "a88a7f47-e60b-4f72-b7da-06b73b710803",
+      "mode": "parser-observation",
+      "unit": "test/synthetic.js"
+    },
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\observations\\29438423-cc57-44c5-99a7-ca0d86101ba4",
+    "sourcePath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\observations\\29438423-cc57-44c5-99a7-ca0d86101ba4\\source.js",
+    "resultPath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\observations\\29438423-cc57-44c5-99a7-ca0d86101ba4\\child.json",
+    "build": {
+      "entry": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node\\src\\observation-driver.js",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node\\src\\observation-driver.js"
+      ],
+      "hash": "9fae5872b8ad2417337fa16185ace5f7f51d26cb2ea029da484a80e0f53ce1b5"
+    },
+    "selection": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "variant": {
+        "id": "synthetic-node",
+        "path": "test/synthetic.js",
+        "lane": "node",
+        "variant": "non-strict",
+        "goal": "Script",
+        "blob": "eb224e0951e68d0a2a227db556041c655c0e17ed",
+        "sourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+        "transformedSourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+        "metadata": {
+          "negative": {
+            "phase": "parse",
+            "type": "SyntaxError"
+          }
+        },
+        "harness": [
+          {
+            "path": "harness/assert.js",
+            "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "synthetic-profile"
+          }
+        ]
+      }
+    }
+  },
+  "record": {
+    "identity": {
+      "schemaVersion": 1,
+      "runId": "d4ac78b0-9c46-4976-96a8-96cb1273c1a6",
+      "mode": "parser-observation",
+      "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "path": "test/synthetic.js",
+      "blob": "eb224e0951e68d0a2a227db556041c655c0e17ed",
+      "sourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+      "variant": "non-strict",
+      "goal": "Script",
+      "lane": "node",
+      "engineCommit": "8ad91c34d667e5be75007523f1838b27868baf3b",
+      "engineBuildSha256": "9fae5872b8ad2417337fa16185ace5f7f51d26cb2ea029da484a80e0f53ce1b5",
+      "adapterSha256": "cbe348354035382e13e5814b0925684886faffe9db46d86b970bddc50a40bfb3",
+      "policySha256": "57a6cdf8c569f8e75072f4cd89d32fa9a42b5bec0762e52a2943489609fc2827",
+      "dirtySourceSha256": null
+    },
+    "inputs": {
+      "harness": [],
+      "transformedSourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+      "profileId": "rift-subset-observation-v1",
+      "capabilityLedgerSha256": null,
+      "host": "v26.13.0",
+      "platform": "win32/x64",
+      "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "evaluationDepth": 256,
+        "steps": 1234,
+        "calls": 64,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      }
+    },
+    "evidence": {
+      "stage": "test",
+      "harnessValidated": false,
+      "bodyEvaluated": false,
+      "unit": "test/synthetic.js",
+      "location": {
+        "line": 1,
+        "column": 1
+      },
+      "process": {
+        "exitCode": 0,
+        "signal": null,
+        "deadlineExpired": false
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 85.82100000000003
+    },
+    "observation": {
+      "kind": "syntax-error",
+      "phase": "parse",
+      "constructorName": "SyntaxError",
+      "ruleCode": "return-outside-function",
+      "diagnostic": "return outside function"
+    }
+  }
+}

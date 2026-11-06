@@ -1,0 +1,1 @@
+{"exactAdditions":2,"captures":17,"controls":94,"contexts":10,"baselines":13,"mutants":55,"rejections":110,"successfulStages":21,"inheritedArtifacts":457,"admission":"blocked"}

@@ -1,0 +1,2683 @@
+{
+  "sandbox": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU",
+  "retained": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3b-implementation-jB4vTS",
+  "binary": {
+    "entry": "src/observation-driver.ts",
+    "binary": "observation-driver.exe",
+    "sha256": "52abf5994abf71dc75067098ffcf369b880531674e1a27eb91266f040a26eb6c"
+  },
+  "rows": [
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "abstract-equality.ts",
+      "sha256": "8f45db12de1248c7b1bfdfe086d145e7b4a6e44dce1bcfde177b0ca34f125d3c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "array-like.ts",
+      "sha256": "4bed58ecbff750f939d1417f69d58c9a0168776bd7250ea2e2984615ca3d2a00"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "array-map.ts",
+      "sha256": "215118f00949a4d51ce8b331972385fa43ec9a1753e1841ae5349c9d5d1be2fc"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "array-object.ts",
+      "sha256": "d0bda5432db7b764d824207a61ae2a63af031b1fa3eb94d650c638a1af29de98"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\array.ts",
+      "sha256": "7d1dc6977abb64030a134649eced912c7ee7e9fdceef952cba144874b1bf0042"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\boolean.ts",
+      "sha256": "a99b83300c148bd0e56a1be35f6a694348659a5419cb7a9249cecd80f16efc46"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\error.ts",
+      "sha256": "63cc8748ad82ad834d42d69fe6a476e699ba8325fb06530fec4b6092edd2b71d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\function.ts",
+      "sha256": "5ddd73411be86471ed1415a4f9f898f3bc5d8f9a3bca52479a03910c407e0d92"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\number.ts",
+      "sha256": "e246505dc2e165fbf91603982dabd3233aecf6b3a3c5d2319763f2be2aef8bb1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\object.ts",
+      "sha256": "bbbeb2fbed6eea9ec0f41a693f0f484bcaca945046b2520dd50a0d2cb0c05350"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\restricted-function.ts",
+      "sha256": "cb38bcaef25ede4e188ff97a4231b70fdea64df415aaf2180fb503217d9fe678"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\string.ts",
+      "sha256": "ef824693420de9fd6e674ea49684483e888bce3e64ad271758279d727d925c35"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "builtins\\symbol.ts",
+      "sha256": "101864d34fe7bdc211d523f3655d9b5ad5dd8089f17c76f1c9cfa8307d17ac19"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "cli.ts",
+      "sha256": "d7188e812ed578b413450b638e1819a256f3e3acabd93be9b9c6fbbca14234e5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "conversion.ts",
+      "sha256": "e1d5a4679d52ff8c83b9665aacb6092f25e25c626a7e6b8fe76bfc4d3899cb67"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "delete-reference.ts",
+      "sha256": "be571ffef848247784a502486138788b5fe1668f7a8b4da8d1c518bfe6a95173"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "evaluator.ts",
+      "sha256": "8f0070acae33c0477267142eb09eab294dbc6e1fb93e19677729505ae3500d3a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "global-environment.ts",
+      "sha256": "8bcf83030ffd569fcb5e37c16017d6628159f9603feefee04ae7556f52cef592"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "interpreter.ts",
+      "sha256": "848f45a406e54bf5f419a8a30eb034ee48d376df04720e5b344b6422b8ec2994"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "lexer.ts",
+      "sha256": "11cde9da665575a6e2fda84b9b8329e5100a7acaa3beaee7fc86db281e5c1b07"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "number-radix-internal.ts",
+      "sha256": "bf9416a10c8b281cea2d36569341d3e6ddad495db90d6bddc2fc5ed10f42c0c4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "number-radix.ts",
+      "sha256": "9986c273c456174a7c8e1b312134aeb2a125b2e472b4bac93be53134d7934edd"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "object-conversion.ts",
+      "sha256": "7af59477a64131120d0b1ffdb4d21703ed510b7b57c4539d330dd6cab4c5569f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "observation-driver.ts",
+      "sha256": "12e75a4efc158f6373828c9dca52e17ad9d694fd7ebc079faccfcea0359b444d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "observation-json.ts",
+      "sha256": "3d0561b635419eaf3f55639876b6eca6c0742c6a8c55d4a4104bd4e595d396e3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "observation.ts",
+      "sha256": "96b63888a74133f5538a28dd86515919b0be8d513219db9f9ad2a0d7387c75c0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "outcomes.ts",
+      "sha256": "ac0e100ac4de91ee224e101b0c104d94b961759e8fd1d411b41218c83dc68582"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "parser.ts",
+      "sha256": "c9703926138c6ec11f6f8d8bca3d12332706ec89e05e24322416c80373cfa504"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "primitive-conversion.ts",
+      "sha256": "b3a856d1e767dabf9617ab621ddc0621b1dc5a9cab9b32c150efb2df19b2981d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "primitive-objects.ts",
+      "sha256": "db95099e1613dbafd48e66e8512d777a4d917e9e654861657948ccaf590119c3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "property-keys.ts",
+      "sha256": "2e415f1a442a73b028b0bc8c6bc10f2ce9c7455ab047f42e2f424fac840a67d8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "realm.ts",
+      "sha256": "1416f625e0a3b3ac017551af12f8311e10d943676acf127da55a3ae6ae9d7f95"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "runtime.ts",
+      "sha256": "82a7b0686859f196a5c50faac9e6b7171135858983c3f6b160c058c62022dcdf"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-completion.ts",
+      "sha256": "520fb159ae850e0d9eeedcde8d2767f7f572af642d7814891c0be54665138753"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-declarations.ts",
+      "sha256": "9327c100723323a9af0b7f98b81daf2b0eb8679034a948439549b6f974ed1f77"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-environment.ts",
+      "sha256": "617b84d9611555dcd5f09dbcfcc8087af4834c41bd9ce74cf97296a55d4aa6bd"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-execution-internal.ts",
+      "sha256": "e855c74cba73ef87c5d8d6ef49a0337f947d94c8247ca5c9e47e901af692f4fc"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-execution.ts",
+      "sha256": "4fbc047c7284ccf5bf512278a3d48aa38c38bf9b9018dd34459c60bf0872e10b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-global-declarations.ts",
+      "sha256": "eec1f681f1d8fbd47fdf25e1af318800a504cc7013f03c6552b50fb0293550c6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-metadata.ts",
+      "sha256": "575749e6513a060d32b02539c489697ed82e01400e0019d85fdcc6bacf46e677"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-observation-driver.ts",
+      "sha256": "2b9b6f567522daeaafef7152ca55d8bc1edea14522a8cf55733c5f38b0fc8ef2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-observation-json.ts",
+      "sha256": "2f2718bc39dabab0ee430244ca59f7332173d4b2bc5318a07056a85c46ed8212"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-observation-types.ts",
+      "sha256": "c6e06c4df1d0ba5ac970347a134e615fe6a9690a4b65e295f76a03de57b076d1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-observation.ts",
+      "sha256": "f9a9cc55fac1b6ae406b783afc8179614e5492e842f528fbea98aba2b70606bb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-prologue.ts",
+      "sha256": "9b0a4c443c2f50ad38aa48b3e66f6809c08bae0ffc494be485daae878cb499cd"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-record.ts",
+      "sha256": "cd96a00aea9d0c82938902bbcffd9c197f69cc8a5e4b0acf4c578823f709571e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "script-throw-inspection.ts",
+      "sha256": "366883481bc10c27d847f8d1c69e6a85d2cba8b46776489c5aa6db5fa06ded31"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "strings.ts",
+      "sha256": "eb6d5210faec12d6afa4fab570988beac1d98d2ec00ec6b97a3ebb9eed3aa6cb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "symbols.ts",
+      "sha256": "6150c63cdac32307226438b3fcdb178ca5cd79ee377745f32ff172e0ff351e85"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "syntax.ts",
+      "sha256": "9df324c84b784431874d8c840416f1d0cbf7729733a2d14923a1dcd784f331d4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\src",
+      "path": "typeof.ts",
+      "sha256": "351562610b28a9460d50d11fa8fffce5bc989f0438d1a18d553cc2731546e849"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "assistance\\custom-test-audit\\inventory.mjs",
+      "sha256": "e97ca63f8ab919287b507f54533e69444b3cf5e98aa5cb7410f1903a9d480c6b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "audit-number-radix.mjs",
+      "sha256": "8892dc0e70ca7b7aa66620294a8fe406aa73a560253a920a9605b223b12b529a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "build-native.mjs",
+      "sha256": "c80f2d1deb6a097508877a21b1d8afb175c4edcec37462e97ff2be16ad286a7e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "probe-verdict.mjs",
+      "sha256": "793a4ebdd287675cf6f6fb6e6f5be4b94da5a2d3b852c696ec1c98e78e1d339a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "probe-verdict.test.mjs",
+      "sha256": "bebd77fc4e1c01843f5d3ce48e1fa9af779343001fdd7875f27096c3d442a9e5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "run-guests.mjs",
+      "sha256": "b630601afba35991f281a3383005c192beae9e6dee584f3a74dd1bff53f6bf87"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "run-probes.mjs",
+      "sha256": "e93f3bff02cdb850932ffe455245b43405eec04d9092e59859e1d14233c76391"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test-number-radix.mjs",
+      "sha256": "16c6c9d6bc90dc748d8914bfcab216f98147963f165a12b6b6080d5304cfa443"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\boundary.test.mjs",
+      "sha256": "aefb8b390aa58c7a9a469015d407a98d9137360a21586212053dda7c4cccc741"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\corpus.integration.mjs",
+      "sha256": "bf647feb6680a481e3cdfc0ac10e37cc332466b655c8413c5b56fe5a05ccf4f1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\driver-result.mjs",
+      "sha256": "9595a6d38e8d3fdbad9e23b71ba4eb0a480cfe7fbc6caf2a6b7522cf3d3071c1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\driver-result.test.mjs",
+      "sha256": "ad1546bb9f930d08ef7e1a763b5713737c80147f28cd905bd247cb4bd16a3dce"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\fixtures.mjs",
+      "sha256": "e38d75d66cae85f18f429a5dd0560234a153c1fc2d46e685ebb7d5e3fca7f18c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\input.mjs",
+      "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\input.test.mjs",
+      "sha256": "36f8b53fb2844086a3420b10424a657d3407fda22227a6132d35148fbafeb987"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\ledger.mjs",
+      "sha256": "cce9faef47eb74242020364ccb7839ed0ffe7d177228d6197beb5c60b056d62c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\ledger.test.mjs",
+      "sha256": "1a562e2fcb9554290a0fb6fd7bd543b541955dee02ab29d3092ba81f8115cb2d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\observation.integration.mjs",
+      "sha256": "448012ed86634fb72dd37b23039ed0218602ddbc3c0c171208e2d69dfd52e903"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\observe.mjs",
+      "sha256": "f666190aed948c5a042d8b8f2f673cf5221f6dc3a7b9a9cb280cf500238738be"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\plan.mjs",
+      "sha256": "c9d99a1cfd2c56f00507f15175bafb8bf738a328dcf855c2de432063dab5b561"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\README.md",
+      "sha256": "562c22514bbf32f5e7454f19c45587b5e876ad2712fb82e0442a903fbedf03fd"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\result.mjs",
+      "sha256": "5b8ff78e1f25ae723c0a6ad4992c4973923b19a1e4c0c9fab5644c5ccbe145e4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\result.test.mjs",
+      "sha256": "c4a16774605d9da1f49dfe5ee7faa767035616af58c9fff5a5a6c9f20cb4e281"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-assignment-target-dispatch.test.mjs",
+      "sha256": "21097f41c8296a7a5ad9dcc66ff32abcfe18dcec9953ac6eb945a6afd39f8a43"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-capabilities.json",
+      "sha256": "2e375a6833861d322a268481b0bd1d3d3f5435173e583fa6b4ea04240610120b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-capabilities.mjs",
+      "sha256": "aaee5e8af10cbc6f198e8315418bd47e2466070bd909313fff9fe4b133c52280"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-capabilities.test.mjs",
+      "sha256": "1d868d3c69bbcc2e2259953c27a7edad2cc28d9b90a9775b41ebc90eb65498e3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-compose.test.mjs",
+      "sha256": "cce7d801e95dfeea730c4cdc70c27607d1916f6353afd3061e1366def3a19575"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-driver-result.mjs",
+      "sha256": "6d89f1f7d9b2bfdec19f930ae8019775f0cc7625bbd8787903d1df29417ac5f6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-driver-result.test.mjs",
+      "sha256": "31249becd268a44b5727cc568dfbb5155694cdadf563ef657d7feb9ded24573b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-execution-inputs.mjs",
+      "sha256": "4fc40ed011acacc56f217d06949c9b9790f9cd1ffb2412294a0d6258e67d0547"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-execution-inputs.test.mjs",
+      "sha256": "9a425e499463dba2beeb79fa8a1ddbd90143891454646e7e69b3f706836a85a1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-ledger-checkpoint.test.mjs",
+      "sha256": "2659cc8ce624b30f3477d99e77a6a2ddf791c544642f889cf4fb62dba4bc2a5b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-ledger.mjs",
+      "sha256": "fae6321287e971662257621a06336dd1a52fda29b4becb0513749160010f3440"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-ledger.test.mjs",
+      "sha256": "07916e3109b4cb104a88eb2f8ffc8c190d97d4ab9bb6efb8f9dad0eb96179524"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-lexical-statement-dispatch.test.mjs",
+      "sha256": "192eae80dd0e2e2b82f2c96f3b912f206face3cec04af9800ed4c0737b1ea7ac"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-observation.integration.mjs",
+      "sha256": "9b52882880c7b60bc8ead81836a62d1877feb7341bb61c5b3ac7016255ccc6b3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-observe-codec.test.mjs",
+      "sha256": "cda6e896a0757c574f3a2e187f27013b597c0f9787e84f433da4a09d9046d017"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-observe-input.test.mjs",
+      "sha256": "1d28141031e13980885586bb3af17e8f48a84c9ae4d0d7a609304826369f76ef"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-observe-launch.test.mjs",
+      "sha256": "163d40e8833fdaa5721f190d4ec6af9657e446117ffd9c95f66cbd12d960c91d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-observe-live-codec.test.mjs",
+      "sha256": "b8988c81bae0c49185682417bddc6ecad9ce2a26cba44f9fc86986e4fad52e32"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-observe-preflight.test.mjs",
+      "sha256": "67d003f4241c63533722192c8d7ec7aac73e4fdfcccc6e660252a69783736107"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-observe.mjs",
+      "sha256": "9625452ddbfb8e11f4d86b931a500618e77d12dce9670c047a23eeed3711e182"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-plan.mjs",
+      "sha256": "ab20c1f78b31377ebb18f13741e1077a3f9a4bd772790f13bd0b20facae8210f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-plan.test.mjs",
+      "sha256": "d8da436d7606666527b0eca41fa024ceff9368e05ca900e1aeb0b62987f3b496"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-producer.test.mjs",
+      "sha256": "10482f36a728c3c4e01f4cd20869e6742c9d36d6dfc37bbd2413d2b362bb6c08"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-result.mjs",
+      "sha256": "a5b6de2a0211f31e7e9c48a981bd51a77cd936a040b05757978555a848070d80"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-result.test.mjs",
+      "sha256": "7346cf22ad9ff83860fa4fc394a7c78ed0023dcb4d09545d99f6d00c90b7df3e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-strict-parameter-dispatch.test.mjs",
+      "sha256": "353ea9c68b82a810a0e57aba72db27b80c8969ebe2e26795eceed9baac4daea0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\tools",
+      "path": "test262\\script-strict-rule-dispatch.test.mjs",
+      "sha256": "4be4aacc3464d429e0af4d9d80632293acb83d3ccaf855d2672318a930ab930c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\radix-formatter-options\\bigint-probe.ts",
+      "sha256": "6349edbd7480aabcccc9b25c53dc9ca4378173fc13c2e767920e4c336fa68062"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\radix-formatter-options\\free-format.mjs",
+      "sha256": "228c6d4854dbedba44b42fed9f1fa99eff5036d79fc49ff5b14162b08fbc164c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\radix-formatter-options\\oracle.mjs",
+      "sha256": "3062ebd8a5eef30d9bfb49367aaafcb5eda784e660c5e277e54504ba9dbc8248"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\radix-formatter-options\\probe-results.json",
+      "sha256": "e97d7d2c83314756e313f8d2aae36b8ac0642a6ff62107e201ff57d857a995d8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\radix-formatter-options\\probe-run.mjs",
+      "sha256": "815a252953183da9f5e1ca7ae38f8b8e84b0461119cdb7ec73831dd2cd8a1aeb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\radix-formatter-options\\results.json",
+      "sha256": "b0a53509b53c2bac4357e69622d41a012617beeff43f37934f3cd887d6324a57"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\radix-formatter-options\\run.mjs",
+      "sha256": "092ca1759d5ca8fed7219fc089699b81310c77561ca641fdb582af791b1210a8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\01-retained-mutable-closure.js",
+      "sha256": "14e74334ade9b2c6cec34be47bcfd6133021216776b25b5cea4fd9ac535ee860"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\02-closure-independence.js",
+      "sha256": "fe084de1edcc9b9009c8a28291e05ce29a2e49942065c2e6c5acefc7c7f4d2e0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\03-object-aliasing.js",
+      "sha256": "d8729a31b597d8a9846ace7f2231c30475bfc5aa1b3e72504cf501abcbc25923"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\04-method-receivers.js",
+      "sha256": "349eeb2d1b8029451695f5d17abf7c606e21e53b006ae08c2f8f6adb52a35cc1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\05-evaluation-order.js",
+      "sha256": "ee087c3c5c6ffa27bbcab79e5b2a97ae7f616f361369fab84e5a83f40a832049"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\06-shadowing.js",
+      "sha256": "74493e690de36a69528304cab46a0b3d1b24291ba8f2e894848ad510ca647050"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\07-loop-side-effects.js",
+      "sha256": "929856e398be91fc4374187c6dc4daac0f84bc3028bc35c6fa3bff6bf652f2ed"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\08-return-propagation.js",
+      "sha256": "81a24dd58ca3a285ff1f85cb02681f1f6449aab20952efc9430b4ff5829c159f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\current\\09-function-declaration-hoisting.js",
+      "sha256": "55642913e3f4f94e647fe87b33c29ea759359c58de7417d87037c0f5ea74eedd"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\deferred\\d1-for-let-per-iteration.js",
+      "sha256": "264c6a640635835dd109be21f26b2d091f0466a30ff001f5a52357ac1c7b0c9b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\deferred\\d2-finally-completion.js",
+      "sha256": "f1a40c613f4e7daaddf860f04f4feff113dc1751eca9911cea8ce1d110448b39"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\deferred\\d3-arrow-lexical-this.js",
+      "sha256": "99dd168de728c56a7b0203c6e320c593c9ee12cab0466cf26f0bd5458509e332"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\manifest.json",
+      "sha256": "4d23fb56afb37ebbaec684a07c6d2cd43f3c63afc1a6680d153f139f3269d3d3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\README.md",
+      "sha256": "358a248a4d4557517f5b5782d36090da117d6a319904fdc215317d60dd07213a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\semantic-examples\\verify-node.mjs",
+      "sha256": "35591d127ba6b9634d0a9980ed7301c56f7bd99b642553eee12d4281f4319c33"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "assistance\\test262-starter-corpus\\manifest.json",
+      "sha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-catch\\other.txt",
+      "sha256": "ba73d4508d9667ac354241ada640e601c1ae6a55d717609035a2ed4f6ca3d7ac"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-catch\\seed.txt",
+      "sha256": "c3404bca8f179b838ca3c7961be7e308250646bcc88a7037a3c89a321e4dda3d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-construct\\input-eleven.js",
+      "sha256": "48510e84944f4ad25ea2466753c5a9741edff15f7a9885ff5a5b969547ccfb3e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-construct\\input-seven.js",
+      "sha256": "19c1e1177980530599804314f1208df793a1ae33ea1735c1c40fddd1cf4f41c1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-errors-a\\input-eleven.js",
+      "sha256": "559a7d0b76bd9c1cd4f54b7e7a7c6e760d8dbf55f97a0bcc4a4daab78559838f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-errors-a\\input-seven.js",
+      "sha256": "b64f49a1e79d91924bcbb7021e9abba130189d62565b0606619bd1dbbfb5b010"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-errors-b\\input-a.js",
+      "sha256": "bf5168d61053f61f9f201a3fe5116abbafeee3782af30a5f14ea58b172111f1b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-errors-b\\input-b.js",
+      "sha256": "f7c8bbe12f9b91c7f999dbb8700c44dbb415bce3d81cf5c4a7d92c9c6d8d8441"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-for-update\\input-eleven.js",
+      "sha256": "53e337abc3a969ba1add955ea3a6b2281f3ee4b3b5ccbcac1a4941ed4d400743"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-for-update\\input-seven.js",
+      "sha256": "85b2d563fc985c4f837d152e621f1af6df650cd9dfe74a8fd01d8fbefcc5b3bc"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-nonstrict\\input-eleven.js",
+      "sha256": "64f261e074dc0e5ef23c9aec4f3fe8b3a5ae63673dec482f4228dffcf6cf03f3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-nonstrict\\input-seven.js",
+      "sha256": "35bb43e6051c555de1e55796d38740671144d571381aa56694db32c235bda828"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-switch\\input-eleven.js",
+      "sha256": "d15fb42f58f7ecdcb94003cf001576dc379031a1eef0f0afcdb7be8bb1eab00c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "harness-switch\\input-seven.js",
+      "sha256": "0116115b1cf71c182426c6f4c961421cf08a12c4b431be249a3d1e9e8a3d8b4a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "property-accessors\\a.txt",
+      "sha256": "5505e0d216ae3bd4cc3d0f7f0ce852831d6d7f7cffe8eb1f6ffc91ca1d20d9f1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "property-accessors\\b.txt",
+      "sha256": "828a6f4007d7a3e5c2fe7e13221b52f415c5f2bc22d20ceaa914a0fb22b9f629"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-assignment-target-dispatch\\.gitattributes",
+      "sha256": "03aeae658ab16421d46d794c30f931bedb7cfc2405ff4876059646eb1191eb17"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-assignment-target-dispatch\\alpha.js",
+      "sha256": "a2b4bbab57d74d57250083e91dcb857292eeaee9c749ab8887ebf940e08a6b65"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-assignment-target-dispatch\\beta.js",
+      "sha256": "4f2352b69af385ad7c694507ee3d6dbcdb4f9d896a94234b2df5d7ca33346ee2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-declarations\\literal.json",
+      "sha256": "6b41b630dd875aedd386c5671651d1fab25e25cb08611fb6ba37330f8202339c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-environment\\other.txt",
+      "sha256": "828a6f4007d7a3e5c2fe7e13221b52f415c5f2bc22d20ceaa914a0fb22b9f629"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-environment\\seed.txt",
+      "sha256": "5505e0d216ae3bd4cc3d0f7f0ce852831d6d7f7cffe8eb1f6ffc91ca1d20d9f1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-execution\\other.txt",
+      "sha256": "68aaeea43aa409f8a602064266bc9d828ce52d9e6f422a93d432e8a85b589c8c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-execution\\seed.txt",
+      "sha256": "715bd7264f047c413895c02447af4d3f46e449f041ff45400cf5f5f21e08d6db"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-function-materialization\\a.txt",
+      "sha256": "715bd7264f047c413895c02447af4d3f46e449f041ff45400cf5f5f21e08d6db"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-function-materialization\\b.txt",
+      "sha256": "68aaeea43aa409f8a602064266bc9d828ce52d9e6f422a93d432e8a85b589c8c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-function-setup\\a.txt",
+      "sha256": "5505e0d216ae3bd4cc3d0f7f0ce852831d6d7f7cffe8eb1f6ffc91ca1d20d9f1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-function-setup\\b.txt",
+      "sha256": "828a6f4007d7a3e5c2fe7e13221b52f415c5f2bc22d20ceaa914a0fb22b9f629"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-global-declarations\\other.txt",
+      "sha256": "828a6f4007d7a3e5c2fe7e13221b52f415c5f2bc22d20ceaa914a0fb22b9f629"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-global-declarations\\seed.txt",
+      "sha256": "5505e0d216ae3bd4cc3d0f7f0ce852831d6d7f7cffe8eb1f6ffc91ca1d20d9f1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-realm-bootstrap\\rows.txt",
+      "sha256": "f1628f9ccbb7a55d2080574e9647f94b1bc24ff8ff8150fadf33dc127f8d2a70"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-record\\other.txt",
+      "sha256": "828a6f4007d7a3e5c2fe7e13221b52f415c5f2bc22d20ceaa914a0fb22b9f629"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-record\\seed.txt",
+      "sha256": "5505e0d216ae3bd4cc3d0f7f0ce852831d6d7f7cffe8eb1f6ffc91ca1d20d9f1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-restricted-properties\\a.txt",
+      "sha256": "d889ad8058c015193472738885081236922ca6add788cf2d3fae046baca29559"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-restricted-properties\\b.txt",
+      "sha256": "20ee742ad66707a7f4c2b2625bab04267f12e351be7511c5f781ce21933ab6bc"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-strict-parameter-dispatch\\.gitattributes",
+      "sha256": "03aeae658ab16421d46d794c30f931bedb7cfc2405ff4876059646eb1191eb17"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-strict-parameter-dispatch\\alpha.js",
+      "sha256": "972e6a6f8b2f7dcaf090f0a4d9ee19d58f1cbd8f444dda1293771b6c17dee4e0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-strict-parameter-dispatch\\beta.js",
+      "sha256": "d639828e78419a5d80e8730eb02a13504e56b056d9ea5647aa349cf488f0d026"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-strict-rule-dispatch\\alpha.js",
+      "sha256": "fb0211cb611ba069321342c9d3cdbc460a0515da7335961af5c77bcde7df0079"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\fixtures",
+      "path": "script-strict-rule-dispatch\\beta.js",
+      "sha256": "89df341972282167332fb3b5c8910a3a8f2f777889e1d1c2b6b8c0022b8ee641"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "bin.mjs",
+      "sha256": "faebbf70669988b5be13130907adf7b788145960448eab08e92e66189e72f448"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\compose-collection.js",
+      "sha256": "7fa2b7a37902d99bf924c3e4db7b003202837597a7815d9917736dbd1861b7f6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\compose-doc.js",
+      "sha256": "0ec9140185c6d965783c4d3e9ae427fb4a377935dd20d8872eb35b56ec461579"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\compose-node.js",
+      "sha256": "c6ddd844d89a2086cc1c4cc643cae6361e7fae0728dc0f71066ded02bb7b5d12"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\compose-scalar.js",
+      "sha256": "3b7d0f5876dd7c33b8f2bf896178008283be8e4a82495070dc638a922e202e07"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\composer.js",
+      "sha256": "c4de206eba103c62eb36063be964a1c3de527433c656b112b139066bf853d822"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\resolve-block-map.js",
+      "sha256": "ffa61d87f9f0e58a5e05c54073f67c34c4575234f357bcaba6fb164e36996b97"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\resolve-block-scalar.js",
+      "sha256": "2a89c2b128e143a98f61751b9ab7dd08d140105c185ece6a687015ea8e0be036"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\resolve-block-seq.js",
+      "sha256": "7905b607f90dc9078463fd40e3fbb22537e45e0ef2514fc6c662526b4cdc2ec6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\resolve-end.js",
+      "sha256": "e0a32e1b8c5649ea14152b0c0d45fbd64d46dbfa299a7328b71421e49ee48db2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\resolve-flow-collection.js",
+      "sha256": "957722ee22cb72b48e9d78ed6dabdca97fcbff188cad1f362864a959b184925f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\resolve-flow-scalar.js",
+      "sha256": "7c6dc446c9ff5b5fcaeb937fbf05554907dc0a2a1be1dfc4836b1379542c343d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\resolve-props.js",
+      "sha256": "4b6c34fe620ddaf31e06c44a1acbbbe8e49a617ae805bb8dca70a278812c16cb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\util-contains-newline.js",
+      "sha256": "4810ffba0d74ebb913731e1369ea17f6fef20df2feb2ef0bd8553e439f4a6b78"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\util-empty-scalar-position.js",
+      "sha256": "571d615e24fd379998df23e29df09f127349f4757fc4cbad176aecbfe77b7d82"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\util-flow-indent-check.js",
+      "sha256": "ebab50fc461c9eaffe07c807dde4aff4f8c5976f5aa4e8f02608ed57ef52a690"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\compose\\util-map-includes.js",
+      "sha256": "584a79bdaf93b530fee951c888daf844a6a329f672ffb57450b39f72b0bdfb95"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\doc\\anchors.js",
+      "sha256": "0d5c8fd9bf01e2f4eb0cf08771705e0c0efbd05d9835714fc94850d943003cc6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\doc\\applyReviver.js",
+      "sha256": "b653aa07fcd8619637c1dbf6151d9de5e22efcb3becfd4dff86cdcf4bb2f1a97"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\doc\\createNode.js",
+      "sha256": "80a8212199fa1591e0836c0b19e05f9734dd5e6a7dcd54d6da1e4f2a20f2450c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\doc\\directives.js",
+      "sha256": "688805b988a34cf7c2f6e5b6c3f1e6a798b22b4eaa450286df095d6b741fedf0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\doc\\Document.js",
+      "sha256": "6b9c9187a04d13331c07d7193baf29b0547fd20de042e1fd57289f13d61ad196"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\errors.js",
+      "sha256": "410bb3397beb0d3a8c649d048b6e087bddf1f7114832eaf94be0fcbb4a8af29b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\index.js",
+      "sha256": "c7d10350202ee8cb14febfce6b559c93760405cc4738a89c10abcb3c44fd6990"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\log.js",
+      "sha256": "2e7d7edee783c901f36a8f986d126f15f33ac504fe17d4655e6846869d07b9e4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\addPairToJSMap.js",
+      "sha256": "67cc22455591363a78723876f73640c5712161bb840423e705820666cb0d3ada"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\Alias.js",
+      "sha256": "9e677d25bd0789a10be5d00d8b8d0ba4b778a850a3b2318f0513a5e548da9096"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\Collection.js",
+      "sha256": "f18de1edc4f5a3ae163a6ca894e2b4debd3a8c480338f580ac6cdffebbfc4bc9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\identity.js",
+      "sha256": "da71af70da393500ab6e3cdbceba9c66965bc89c3401388c9ad422c91abf467f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\Node.js",
+      "sha256": "aaf0e1042d4b11f4760f7de032ec99ac49dda1742e55911f5a4df182cbd5471f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\Pair.js",
+      "sha256": "a9f0acf0f06eab7852a99418a07628fd0e26476895c90af3ae66bab8704e9b11"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\Scalar.js",
+      "sha256": "80a4961d380ec00c5eb9a47f29dfb378437d055910e163a9ebd9accf032b6e03"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\toJS.js",
+      "sha256": "80f2431eaef0c531ab93b1a8883206394ae3fac75732cc683cdabfdcc00dd724"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\YAMLMap.js",
+      "sha256": "42b884f36dfb23248e9f2200bce5e7a6007f90e0adfd228de8079346e9627737"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\nodes\\YAMLSeq.js",
+      "sha256": "75d12e1a5edbf1e3d04d6310ffdaf553a3a1ff7d12643cfa428330ca7189604d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\parse\\cst-scalar.js",
+      "sha256": "e30a85b8b613badfb50039938fbb5bbbafbd5f9f95f3a630300ad3dec5fb3dc8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\parse\\cst-stringify.js",
+      "sha256": "275b500e3f1a0067d5d8671af5c536963a46d4921e49cf156547f796067b8810"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\parse\\cst-visit.js",
+      "sha256": "0baadd57686b26163ba71e7323a9208fcba81978e9ecebbad80afaa8baa61788"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\parse\\cst.js",
+      "sha256": "8bf6c87dc02b9375750d550a9099cb1cd1cd71ca9da68f1a0798844a0f76bf8f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\parse\\lexer.js",
+      "sha256": "6b22cb8703264a7ef83792aa36af15b2449a4c8ee7b40744b53695c5cce08ee3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\parse\\line-counter.js",
+      "sha256": "2428d1b9a18ad7d8dabc7e12276e0fd90446c9e3433f1501e6bb43e111ad63c0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\parse\\parser.js",
+      "sha256": "a78cc4ab219d05d5efbfc892a426403e58d30279495c9a0358920b7d2a227173"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\public-api.js",
+      "sha256": "1635da91bae6389b88d38bc99c57fa6ed71c017b026cb80be9cead10bbafa499"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\common\\map.js",
+      "sha256": "6094c4919ff0051a663866cf75df489be51987d808f0862b9b9e36d4090182a7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\common\\null.js",
+      "sha256": "6666e819b0dd4c9eac1498e8520e23943abf2c9d92cee72b9c5607557800eb14"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\common\\seq.js",
+      "sha256": "446dc09d297b2b9823d981f3c44e595f8d87c2ce97e2435e1ecc01bc6c31f4b9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\common\\string.js",
+      "sha256": "830740273a4f0a39b94549377cb12183ab8ce558dfb12818f7b295fe261fc08e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\core\\bool.js",
+      "sha256": "9d4b1fe540d36d8e09cf5799b8abed53e4ee620425d3d6712e8a50c927752615"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\core\\float.js",
+      "sha256": "b24b968b6b714be9650480e07f10d039f145e88e4299ce2268eed57de02673a8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\core\\int.js",
+      "sha256": "dc7ae60f465273fd7e5dfd6b7f686ac47887fa02db3fe9ec603290003cc9baff"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\core\\schema.js",
+      "sha256": "92e75125989595b02d9b9f8d6788076d4c1ec173bfa4b0f04eabaaff86153dd9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\json\\schema.js",
+      "sha256": "a33036dc6f8916682f9494431ad7ffb1116af7616aa83439b1a956b628e44068"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\Schema.js",
+      "sha256": "515d6576e94a5cc96c999cd9da230f7ef79d8fbea1f4c6c6939631ef122fb50e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\tags.js",
+      "sha256": "c8085f537d22c3f7f17ea2906ddc11fc69b0106d5447aac2953eec19c025f136"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\binary.js",
+      "sha256": "ad5b0407d199dda7bc4fbacaee90d2a2a99540c8ced44c13bdf6974cb6dc3ef1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\bool.js",
+      "sha256": "1d605f63430047574323f352893ba3c52fc73fbd1b52e47fa6dec2eb375301a5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\float.js",
+      "sha256": "40e68189590e6924d063f2b88c7b2415dcb2f796fbd6e9af18e9b119eed3ce23"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\int.js",
+      "sha256": "6c83bf34c4ecfa722eff2c252c8bdf95661777738c9971c4ccda3a5413218d80"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\merge.js",
+      "sha256": "ccaa0bb00528a3f483e48b93dd2ebc5f094a3e9b8bbeca083f8a96c182f2020a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\omap.js",
+      "sha256": "fb3d04682a48ec1e0ad26c1afc8a85d1e6c814942ca6eba8bfb94a6571d3e9a6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\pairs.js",
+      "sha256": "3c37806050903fd81b51e597bfe7acfff972e788e9a1b3c0148f17b32da3f568"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\schema.js",
+      "sha256": "1e684cad435d9e9601aa56dd4d55243369a010e75edba21ff31d7be84c8600eb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\set.js",
+      "sha256": "0cdce6c41328c116fc17f5660a79f8995af8d0227e424e89177a30894138b687"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\schema\\yaml-1.1\\timestamp.js",
+      "sha256": "18fb9beee49f0f3452601ba01b46ae1d6e49bf4a63b499e9eff28366e3dfcb5d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\stringify\\foldFlowLines.js",
+      "sha256": "1a6360496e3cb52767d4c346655307c978cb2c94853229152f97017c4209745a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\stringify\\stringify.js",
+      "sha256": "af3ccd112cba318ff9b4686ed9afd0b33fc238da51954fd431dc4c7a9db0b455"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\stringify\\stringifyCollection.js",
+      "sha256": "0d2babd8428322fe6a9f5cd10fde361a1d8dedae662fd4245c6d151e4a5ae013"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\stringify\\stringifyComment.js",
+      "sha256": "20d3dc6bebda3efc2394ca162455ce9e4691b6c60995b5b4418b30659e09e03e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\stringify\\stringifyDocument.js",
+      "sha256": "3ca3818dc9e81ee7e45f0e26792065f47fccee99b6150e76a94fcbb3d0306421"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\stringify\\stringifyNumber.js",
+      "sha256": "e2eca9436ce548a6416f6221a924704f306173d8033f809cf20d66f13f0b9e94"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\stringify\\stringifyPair.js",
+      "sha256": "4074dc125fdad4ef2ec8bab4fbf7ece4b399ecd2fbd1813c4a316e88243f1179"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\stringify\\stringifyString.js",
+      "sha256": "0fd2e43243792cfa0a1d8cea13ba8e05ddaf6fb1296a4fde497b956454bfa44c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\util.js",
+      "sha256": "e6b73d7297c4253e5299d4f97dc2c05e6e30d69ace66962412f6ab9690d4d412"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\dist\\visit.js",
+      "sha256": "d9daffd11ec68755a7238684ae3f9c64f59dc86338d0e7cbe521a8fc1d45bd19"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\index.js",
+      "sha256": "5ae196b7abe55bed1d4d11f7eeba63aeda0c49fb73eb3c7359e3d6b9a080696b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "browser\\package.json",
+      "sha256": "3ca9d4afd21425087cf31893b8f9f63c81b0b8408db5e343ca76e5f8aa26ab9a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\cli.d.ts",
+      "sha256": "e31d2f97aadbc0ff370a134851af7757885cfcfcfa3a675cd59feb7872e4f91e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\cli.mjs",
+      "sha256": "0ad1d42d88c0648fb6fbd158b21dcc2b4daa2e34e4d4df7aa949d6978d343d4d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\compose-collection.d.ts",
+      "sha256": "88460b54f95b8bc0294d2071430ec0e2c1e8f8aef2206646c027425a94767faf"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\compose-collection.js",
+      "sha256": "a7db11a1a7987d6412df8adbbb85ccd4370171f82265703b2b6af2d13c45d646"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\compose-doc.d.ts",
+      "sha256": "ba8002d807e2b012f40e877b56bdad9ce0a6e215da96dc2319688b56e2a57212"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\compose-doc.js",
+      "sha256": "0f388537747b5c1a241639413f17fc2b5f831451b5017d6902e46db6842a5fe4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\compose-node.d.ts",
+      "sha256": "8045fa3122bf1c4b97dfb13a404f17d2d2b490521a4607b2ed5eb09b1f9c2a1a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\compose-node.js",
+      "sha256": "86562c85e4e5737d28b24aae2030b97bc9b672e1f2de5da9e4d25c4571e4345c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\compose-scalar.d.ts",
+      "sha256": "fc7fb9cb5044dfbfc552aed73d8b8e33b7e0de07bd3421f1d28c46b8ef4d5ba6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\compose-scalar.js",
+      "sha256": "37920472755bdaa76399b6d33872f0015ae1fd9ba7faa031c03d501aa8c3e903"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\composer.d.ts",
+      "sha256": "3e7ae921a43416e155d7bbe5b4229b7686cfa6a20af0a3ae5a79dfe127355c21"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\composer.js",
+      "sha256": "0b9628cf1fd700b8f7a23cadae49071cec7add35be023402e079f6e40305f131"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-block-map.d.ts",
+      "sha256": "905f841ddfebf6b28a63423c0ff43fc17d4067f4021f7ba0fac4e93bc0c2d449"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-block-map.js",
+      "sha256": "dcfada448c8fc532ebba96d6788a4b41bb015fc5e697a9544ff429b9c4e4c70a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-block-scalar.d.ts",
+      "sha256": "acf6a9b33859e4409b56e68e919061f6daf40132529ec49bd5ba36b7ac2a1f92"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-block-scalar.js",
+      "sha256": "af562e2e3cd7ee7b3cb9342984177f6b5c77de73121e87695db3ff635e12d152"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-block-seq.d.ts",
+      "sha256": "ffd6665710fd9c50d2eb87a584547b4ec583b39e8b639741b770be7ebcb757ea"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-block-seq.js",
+      "sha256": "18f54a39d73b600ebbd74a343e6671d0d08423f125bd86963b72dc24d6261911"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-end.d.ts",
+      "sha256": "df9c83d8eac50c9214400faa415eaee2199288d3b87aaf381fc396799a128407"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-end.js",
+      "sha256": "532bf56299183e75bb7c20db75321367c28393b66ecb8ffd540faedd9817f116"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-flow-collection.d.ts",
+      "sha256": "3f4d40133ff3c69fbb42e7eb758645c4288a52aaa3b1c9b6936339342ca07bd1"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-flow-collection.js",
+      "sha256": "242470b54c0deba1507babba2e879f3005ed2ee3bd53a36affb6ecf82fddd375"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-flow-scalar.d.ts",
+      "sha256": "1e52c1052cad40acf62ba232ff1678c132aff44563e8fd553988c8bd7d282333"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-flow-scalar.js",
+      "sha256": "2808392f0827e658ea2cb2fc5d973e78f29750c6f159db96bfdf261bceec131a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-props.d.ts",
+      "sha256": "f79e69096d500e49deeabf6b4e6bd5d3a51a52170e2ad07300349b963d110547"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\resolve-props.js",
+      "sha256": "0b49c6af0145c309883dbf24d1a00260c0c090412be10aaa301de126dad15983"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\util-contains-newline.d.ts",
+      "sha256": "29d5bb59a4240ce49fb0bea3689f4a7ea6ba936374029db1f16931f50faecb97"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\util-contains-newline.js",
+      "sha256": "60182618fc9fa669e74ab74f4231c15b5d24bc52ab0a419684bb827a00d69be6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\util-empty-scalar-position.d.ts",
+      "sha256": "cd2cc1240eb3720e7154b4ae91116822cc59a5349436ed7631fb9f43302871c3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\util-empty-scalar-position.js",
+      "sha256": "460516395ef7e961d5248e047ee6d52084f279b76e8af9f3c2bac92da1c7d656"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\util-flow-indent-check.d.ts",
+      "sha256": "60a9bbaf35ee0007d0925f376c067a3aa21b32485627cfcba948900a75eb42eb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\util-flow-indent-check.js",
+      "sha256": "c7c0c9837a1f828de19eb3ee0947dff39c4f69222c762aed9fa2fe14fc46ee3e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\util-map-includes.d.ts",
+      "sha256": "5424ca8906bc44d732c1b677a250bc85cd0942461c1d53e6408930cdd9e6e029"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\compose\\util-map-includes.js",
+      "sha256": "0330dc34072cb499493176b293228631ca8ebaaaddcdc0e63b02bf24f6a25c2d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\anchors.d.ts",
+      "sha256": "17b91b170b12687f10167b9e0a712e25ef4bfdc8b1f465e0b756e4512be08773"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\anchors.js",
+      "sha256": "ea9a479b1e98d88235ffa6736d0405e2119e9dde7b5249b72185488ab2527261"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\applyReviver.d.ts",
+      "sha256": "bc41a8e33caf4d193b0c49ec70d1e8db5ce3312eafe5447c6c1d5a2084fece12"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\applyReviver.js",
+      "sha256": "7271668f41f264e4b9aeb184629cfd11c510b401c5a797fa7194d17a9652976e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\createNode.d.ts",
+      "sha256": "33a6d7b07c85ac0cef9a021b78b52e2d901d2ebfd5458db68f229ca482c1910c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\createNode.js",
+      "sha256": "a39d14026d4cc6ff8d76d90db30c41facc26a146ebed30783bcf28e40b5caa65"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\directives.d.ts",
+      "sha256": "9e5b8137b7ee679d31b35221503282561e764116d8b007c5419b6f9d60765683"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\directives.js",
+      "sha256": "8f02c3c03571e377e33680b68027d4336234d7a6da3d8c6a8b7f1183c1c428ff"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\Document.d.ts",
+      "sha256": "df9b266bceb94167c2e8ae25db37d31a28de02ae89ff58e8174708afdec26738"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\doc\\Document.js",
+      "sha256": "9bc1c9a56de3902d554e77193125b6aadcfaec743073b3417b22c95a8f7d7923"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\errors.d.ts",
+      "sha256": "bea7cae6a8b2d41fd1a9d70475b54d741dd7ca2103904934858108eec0336a69"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\errors.js",
+      "sha256": "c389d9c448193ce1bcb9641f5eda62cbe56467b2104357d2fc8dd86df88cb07b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\index.d.ts",
+      "sha256": "9f85a1810d42f75e1abb4fc94be585aae1fdac8ae752c76b912d95aef61bf5de"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\index.js",
+      "sha256": "2d58984e0ae80de4acbd8f009fab332f5ce77d9e1a5f138a3058a0ada6567fb9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\log.d.ts",
+      "sha256": "7c33f11a56ba4e79efc4ddae85f8a4a888e216d2bf66c863f344d403437ffc74"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\log.js",
+      "sha256": "f6ccc3593357801851aa1023b202f842733043ac3b25773048d836f89de8108d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\addPairToJSMap.d.ts",
+      "sha256": "8f648847b52020c1c0cdfcc40d7bcab72ea470201a631004fde4d85ccbc0c4c7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\addPairToJSMap.js",
+      "sha256": "e4977864d75c1fdbf7fc78c9f4329406e153deccfff090fd812dae2b27e6c2c2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Alias.d.ts",
+      "sha256": "a971cba9f67e1c87014a2a544c24bc58bad1983970dfa66051b42ae441da1f46"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Alias.js",
+      "sha256": "fd372850c1ed8953261a74bf0a133bd2dc7e8ca91a67ddbf62600ab632c6d00e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Collection.d.ts",
+      "sha256": "06b37153d512000a91cad6fcbae75ca795ecec00469effaa8916101a00d5b9e2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Collection.js",
+      "sha256": "e2d3ffdc9a997774602e72b296fba641558bc7355c9f12a3ee0502fb1e541306"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\identity.d.ts",
+      "sha256": "a00362ee43d422bcd8239110b8b5da39f1122651a1809be83a518b1298fa6af8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\identity.js",
+      "sha256": "1a7cb042ae725ff68d05dc503efbbecbe65281f18b23dfc23f12d1749a440cfe"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Node.d.ts",
+      "sha256": "961fa18e1658f3f8e38c23e1a9bc3f4d7be75b056a94700291d5f82f57524ff0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Node.js",
+      "sha256": "b57b42071f7ebab633626858656ec5187617f2290c272e87edc57467ef591215"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Pair.d.ts",
+      "sha256": "7821d3b702e0c672329c4d036c7037ecf2e5e758eceb5e740dde1355606dc9f2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Pair.js",
+      "sha256": "d5dad67916ba0e864a892da63265a062c45c15a191349ef50a540f2ddbae93e5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Scalar.d.ts",
+      "sha256": "9249603c91a859973e8f481b67f50d8d0b3fa43e37878f9dfc4c70313ad63065"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\Scalar.js",
+      "sha256": "616ac0f6a0a5a6565307a4bb4443691b0dd019c03d6bb8777353750bd3459487"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\toJS.d.ts",
+      "sha256": "cbef1abd1f8987dee5c9ed8c768a880fbfbff7f7053e063403090f48335c8e4e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\toJS.js",
+      "sha256": "34de93bb4e16abbf317210a7bd1b062ed20acb028cd8395b69b591f433e277b6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\YAMLMap.d.ts",
+      "sha256": "57cbeb55ec95326d068a2ce33403e1b795f2113487f07c1f53b1eaf9c21ff2ce"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\YAMLMap.js",
+      "sha256": "d140cfc5aa8d28737bd3c993d977d5a10ab81efe221e36708ac45b3cf18f5dce"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\YAMLSeq.d.ts",
+      "sha256": "8a641e3402f2988bf993007bd814faba348b813fc4058fce5b06de3e81ed511a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\nodes\\YAMLSeq.js",
+      "sha256": "9f89417f3cba5f22a4436f67a9ff9dce627344b5874d2ed7957ff9acffb030e4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\options.d.ts",
+      "sha256": "1720be851bdb7cdbff68061522a71d9ddaa69db1fe90c6819a26953da05942f2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\cst-scalar.d.ts",
+      "sha256": "079c02dc397960da2786db71d7c9e716475377bcedd81dede034f8a9f94c71b8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\cst-scalar.js",
+      "sha256": "2f72b634348b04b395408ac427fb4f8ee67432244c327561d4b755a28a783b34"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\cst-stringify.d.ts",
+      "sha256": "a7595cbb1b354b54dff14a6bb87d471e6d53b63de101a1b4d9d82d3d3f6eddec"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\cst-stringify.js",
+      "sha256": "4d14a7a286cff9c1a578ab15839388ea76f77ae79293db25b235394bcc377b51"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\cst-visit.d.ts",
+      "sha256": "1f49a85a97e01a26245fd74232b3b301ebe408fb4e969e72e537aa6ffbd3fe14"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\cst-visit.js",
+      "sha256": "525535fc05841407420be6505804c74d873eb3aaa9319679896f7a24a474ca01"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\cst.d.ts",
+      "sha256": "9c38563e4eabfffa597c4d6b9aa16e11e7f9a636f0dd80dd0a8bce1f6f0b2108"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\cst.js",
+      "sha256": "acc25760d010068844f36f4aefc7fe6f5f6048fd7f8fcc29d4290e154819d1a4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\lexer.d.ts",
+      "sha256": "c7200ae85e414d5ed1d3c9507ae38c097050161f57eb1a70bef021d796af87a7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\lexer.js",
+      "sha256": "185b184087b4b45f553113e717748a90231c0778faacc4a56c05b27751c07de5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\line-counter.d.ts",
+      "sha256": "3dfcd0a3bfa70b53135db3cf2e4ddcb7eccc3e4418ce833ae24eecd06928328f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\line-counter.js",
+      "sha256": "ddfd11ca2cdd42d36bc6c3090a31c21e6bbcc90bf3498bf6aacfbb30c5d79436"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\parser.d.ts",
+      "sha256": "4edb4ff36b17b2cf19014b2c901a6bdcdd0d8f732bcf3a11aa6fd0a111198e27"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\parse\\parser.js",
+      "sha256": "1c7de70dd09b752c653a4cf10b93891395d7f24f53f30af148bdcfa99547061a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\public-api.d.ts",
+      "sha256": "810f0d14ce416a343dcdd0d3074c38c094505e664c90636b113d048471c292e2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\public-api.js",
+      "sha256": "9b318ac7b3a3751127c74f59dd1dd209230a70ca116000348b82faae189f72f0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\common\\map.d.ts",
+      "sha256": "e1b042779d17b69719d34f31822ddba8aa6f5eb15f221b02105785f4447e7f5b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\common\\map.js",
+      "sha256": "769207eaa56e34c113da10cdc22da845f92b4080ff2b921a72847a38d3ac03d8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\common\\null.d.ts",
+      "sha256": "68c7d5fe67e3dd9e0ae4809a37541e79c86c639758f6d93c478c900a23b3c715"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\common\\null.js",
+      "sha256": "f5d5f694ea3a42ef136e0fbcc674dfd7aa0a3da2b8d62183fb750166a12e52bb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\common\\seq.d.ts",
+      "sha256": "6858337936b90bd31f1674c43bedda2edbab2a488d04adc02512aef47c792fd0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\common\\seq.js",
+      "sha256": "51fc0e8bfc63d1d9c7c66b0370a069bb33e0dad865080ff76802803597b9909a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\common\\string.d.ts",
+      "sha256": "15cb3deecc635efb26133990f521f7f1cc95665d5db8d87e5056beaea564b0ce"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\common\\string.js",
+      "sha256": "51d0b3aafab2ffa4ad9d86656a3b92c4b4824d0a8806423882ea5f92a1bf8d11"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\core\\bool.d.ts",
+      "sha256": "10e79425c8cb25ab4039f10bd844fb147bace0bbc1ea50b14cd6684e0e54d8b8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\core\\bool.js",
+      "sha256": "9fa696b1efc38cf8c73a398f30d9f9841658aa5afd0b7a6b0822947c3991ba7a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\core\\float.d.ts",
+      "sha256": "68f5e28618d07e0cd09f3c016fc2b5c597d41730cf7a5bc165bb137ee5d239c5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\core\\float.js",
+      "sha256": "139e3964f0e626ad3741500faf51d855ff98eafa2d9e7523cac06260e4515382"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\core\\int.d.ts",
+      "sha256": "5b1d8c847722d2137a61465051289c85b42cb7fbcd16c4a2818ae21f4cca32dd"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\core\\int.js",
+      "sha256": "f0e474254f6877d5dd23bb57017980931ab333a7eaa3d33872247a80d11f754d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\core\\schema.d.ts",
+      "sha256": "4763b3c6a3bfc9864e5712ca1d4a5ac2817e9d05aef44a0a1556bb449bb2bd06"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\core\\schema.js",
+      "sha256": "481d7c64817b40090d519fb65bd83730dadd4c6baec1440b9bf85d29e52c046e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\json\\schema.d.ts",
+      "sha256": "4cb584df88ebd02a7f14013b5d83a7cedd9b1551ad871a58c94dff44520fb1ea"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\json\\schema.js",
+      "sha256": "9efdd848455f6e0621feb13f3eb762453cb02b09d5e04b6501163cfb26af27ed"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\json-schema.d.ts",
+      "sha256": "c82708af4dcb3fb9dfacbadc6faf9cad4f2d07ffce12407f8cf9778af37bbefe"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\Schema.d.ts",
+      "sha256": "a820499a28a5fcdbf4baec05cc069362041d735520ab5a94c38cc44db7df614c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\Schema.js",
+      "sha256": "d3b1bc956a766e2489c36114366f3b3f89762a257ae05ff6271ee3fc8c2a9bf5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\tags.d.ts",
+      "sha256": "213e4f26ee5853e8ba314ecad3a73cd06ab244a0809749bb777cbc1619aa07d8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\tags.js",
+      "sha256": "dba2f42d4dbe8cc8b13f662fd97d253da2da5567e71c47115305efede5a888f2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\types.d.ts",
+      "sha256": "281744305ba2dcb2d80e2021fae211b1b07e5d85cfc8e36f4520325fcf698dbb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\binary.d.ts",
+      "sha256": "d67098dd1ebde01f58645901458c5f7b4fe6a32558e92c91db4883e74d1b5a4d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\binary.js",
+      "sha256": "15d7b0b8516c8190b191ec9a0adaab16808d09751ef534d7829512944072011f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\bool.d.ts",
+      "sha256": "4ec1099a421a4519d614a09f4d88aebd4e2eae1f1840d7b6d06c648f1624e426"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\bool.js",
+      "sha256": "80a0046224dac3437f22e3b27b0180e1aad82277ab2fee4769094c6d12d67b6f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\float.d.ts",
+      "sha256": "68f5e28618d07e0cd09f3c016fc2b5c597d41730cf7a5bc165bb137ee5d239c5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\float.js",
+      "sha256": "a90c44db83152e4d902d46f667737dac90aa86b401abdefe89371ac3bd03abfe"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\int.d.ts",
+      "sha256": "c2a157c5321741265c9e070abdb168bd62c960a8e42fe19b268a13f019e0866b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\int.js",
+      "sha256": "5ff72b08fecc3a924d4a76658a304859db5edb4fadf8893ee837aa06bba60a52"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\merge.d.ts",
+      "sha256": "d0f51295f868055927afc9c23e5077f17b0db247978becf7644612290b18cc45"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\merge.js",
+      "sha256": "6823a379d7682836d8ea04d864316ad2cfd4503f534f0873067d3398c65bda21"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\omap.d.ts",
+      "sha256": "9c37dc73c97cd17686edc94cc534486509e479a1b8809ef783067b7dde5c6713"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\omap.js",
+      "sha256": "3174270cd59c0f0e3ffd73b3b44c4de679efd5c681325b7aac8e0935d547bee8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\pairs.d.ts",
+      "sha256": "e2e85e40eb6108d06a7c2116bb4fbaad323709f979c8135588619b63089efec9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\pairs.js",
+      "sha256": "46ba76da72ad65a6202358c486c6a3084ab7c48a8eb5be60d241d9e198c5a9b5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\schema.d.ts",
+      "sha256": "4763b3c6a3bfc9864e5712ca1d4a5ac2817e9d05aef44a0a1556bb449bb2bd06"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\schema.js",
+      "sha256": "a7320808484dc6d04817b33b2d09b65ead7ffc1c672ab54e068a80972b17702e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\set.d.ts",
+      "sha256": "5fe2ef29b33889d3279d5bc92f8e554ffd32145a02f48d272d30fc1eea8b4c89"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\set.js",
+      "sha256": "e4553b0cbde79090884908f44bb3b4afd04935fc23656a1b87ec1af87f24427a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\timestamp.d.ts",
+      "sha256": "90e99573b3ab716e9203d32e8d9dd1fdb78c125128ffb8deed821c096885338e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\schema\\yaml-1.1\\timestamp.js",
+      "sha256": "b157c946dc1b8854aadc4e7994b268ec8afe6d916721cb3580e0752c7d15a5f7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\foldFlowLines.d.ts",
+      "sha256": "e27605c8932e75b14e742558a4c3101d9f4fdd32e7e9a056b2ca83f37f973945"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\foldFlowLines.js",
+      "sha256": "7819679e80222b80c564ea4a9cf3145fa4d5e28a6cfbac248283ac55b0249761"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringify.d.ts",
+      "sha256": "0132f67b7f128d4a47324f48d0918ec73cf4220a5e9ea8bd92b115397911254f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringify.js",
+      "sha256": "38efb5bc5553e98fee58c825a88131c59184368d8689e3e6f43c652a06e9c167"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyCollection.d.ts",
+      "sha256": "7f03bfa106e6045d0ed9b1b3812df4c6edf70e231be92acb54c910530aefb7c4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyCollection.js",
+      "sha256": "b55fd3b6e3f1346bbcd1fcdc48a59c089b7a4b0e6fac2b46846f7828f9488600"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyComment.d.ts",
+      "sha256": "318c659afa92036e0c838821c40509e34506831f05acc9c2b182ccd39faa265f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyComment.js",
+      "sha256": "490bff57104b7cfdb1893f14528610bb4d0a63c29b314e122233cf308cf96662"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyDocument.d.ts",
+      "sha256": "10eafb672440a5e93d378943b497a7dbd16ac5e63d843edec753d1fa3c3e8e20"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyDocument.js",
+      "sha256": "dd5ba1813a16b62955c466bce8d1c16254e90b36d688f863c508dc8fe38f2afe"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyNumber.d.ts",
+      "sha256": "f0443725119ecde74b0d75c82555b1f95ee1c3cd371558e5528a83d1de8109de"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyNumber.js",
+      "sha256": "fcd753e621767ddd96719b306ac764c5218171518b0c2097ffbe49c88fc18f72"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyPair.d.ts",
+      "sha256": "c0629a169c48068fc384a22bde7e0c4ec35c34e7e6b19b83fba4c378b8fe05cc"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyPair.js",
+      "sha256": "bc03ae533d85bf9122e87c0a256c841ae7fbf063499bc3034d49fd9f7b200659"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyString.d.ts",
+      "sha256": "7794810c4b3f03d2faa81189504b953a73eb80e5662a90e9030ea9a9a359a66f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\stringify\\stringifyString.js",
+      "sha256": "4113b71a9c4c087a197f71452794a6acb9929111f569c973ff4efe7caee8f777"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\test-events.d.ts",
+      "sha256": "5e75986c9b907573b9ea4880e226f96dd189acc668cb24db0ac08651e6cf3068"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\test-events.js",
+      "sha256": "5ff5e7f170702d75d4bfd5ef24a35fc95dc2871680c0ae4d714137d4c2cde571"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\util.d.ts",
+      "sha256": "b074516a691a30279f0fe6dff33cd76359c1daacf4ae024659e44a68756de602"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\util.js",
+      "sha256": "193b1d92fb7641d78f17a8f560cbe44dd7cdede2eb8935bacd4ca30df2f1a17a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\visit.d.ts",
+      "sha256": "e39090ffe9c45c59082c3746e2aa2546dc53e3c5eeb4ad83f8210be7e2e58022"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "dist\\visit.js",
+      "sha256": "a757e3b924af184b25e2386d1678b1fe341805a516ebf9bccee219b47aebd5e7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "LICENSE",
+      "sha256": "5bba27375d93e9119f76c1015f7672cf9ad5f70952296e0842fb2243d6376869"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "package.json",
+      "sha256": "22e05edaafe0a061ea394ed427e86de560b83151528d9c5e9ca31c30487108e0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "README.md",
+      "sha256": "c8aa393826fb1c55ae195399864e7f454a2c66c4d9491459545b26cac4b958e6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\node_modules\\yaml",
+      "path": "util.js",
+      "sha256": "2f1db26f6cc426ef698210b592f40cec49be1b6c4b34e7f2d61904786242bd85"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\array-prerequisites\\dispatch.js",
+      "sha256": "84dbe819199470d396ac1172b76b192b882900e358245431ab625dfd79caa0bf"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\control.js",
+      "sha256": "ca76985ab5225898e6ce9ab34954a26f91679fcf3fba87da2b982643980b43b6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\dispatch.js",
+      "sha256": "c698213f8d711f7305405865660f43369bcfb1f5843739855ebc258b93e7d292"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\hello.js",
+      "sha256": "8109a91bcf8def8230faf13a4d0da6646e8bcb0ae9aa9b3fcefc81986a6e99ae"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\host.js",
+      "sha256": "11d5a5b0628d25c8ff3c721db9ba73033052bea000d55ea5677a53a0ca08e206"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\interpreter.js",
+      "sha256": "e4897148f69474ea0a91fe2eaf880aff173a4652cb9df628782cde513b31e9a2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\memory.js",
+      "sha256": "af1e007ad774548434124a02d8e235b021ae563faed85dd68d4589e9a0b53b13"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\numbers.js",
+      "sha256": "fef9d99dbfde3ae915d6b40d4492c6ccbf1b84d296bcda9f9083574827e8036c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\objects.js",
+      "sha256": "de8b67031879ffb1430e8d5dadaac84a31a19796296fc1430459733fb0153f4d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\property-key-conversion\\numbers.js",
+      "sha256": "33438f6ef8bf9a95e6e8fa77d582f5f610612c43f8805bd462d52ad5015fe502"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\strings.js",
+      "sha256": "be5e93ff1e78a8f0e94e7b01adabcddcfa36c3d8080213536470e555177f58f3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\suspension.js",
+      "sha256": "d48aa9e891608f1b015dc334d2a3f41f0d107cfe2dd457193ccb758d0c9d6021"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "probes\\values.js",
+      "sha256": "2d467fd27e15156bebc1964ca89aa5d1ac95430dce75574daeea0bb6b9639586"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\abstract-equality.js",
+      "sha256": "a0280b9251776d99ee335f96a751e82493ffa0f2774bf430584d05b67e227772"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\array-like.js",
+      "sha256": "f79efa061d89cf662e84f9bccc3a22fa3edb3850e7b200101682469ab764d0eb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\array-map.js",
+      "sha256": "4387eeebefe85aafd41d347b59abad29580899f9bc6c3e248d72a14dbb4fa160"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\array-object.js",
+      "sha256": "a4ad273b8c0d7a217a5e335da9ddac83806a27ee0f576585b6229c1dd3bfa862"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\array.js",
+      "sha256": "822bffd3d5673e24f37c0696fabebcb3856d8f23e0e72faab2c28446036c1ac2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\boolean.js",
+      "sha256": "6325e8b15ec265b312efe4ffdb69ffcdec0b51b3a7e93e551e281c3ace50fbf5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\error.js",
+      "sha256": "085050fc85b022ba671d77d9b06050005790d97cc70f3cfab7928292a0271035"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\function.js",
+      "sha256": "e6d0ee6ee4500626cec5b40967a377ca54c89a5d6a6bb68598330456d1d58a33"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\number.js",
+      "sha256": "6de47e0c9260c1179eea7f6a85e1c156089a77b42c54bebfc912fba0986586c5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\object.js",
+      "sha256": "7b96599d88191ae3979711a7dd29b8bdd5f5842cb1666a48ee5a6f544ea504bf"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\restricted-function.js",
+      "sha256": "c239c5d1c7b81c803b4c5c69010f4f9c5810c2eca0d73079e8a7b93480550658"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\string.js",
+      "sha256": "fd04f4884aa9e82b134113f85add3fed6681e017e40d8a1b6847acb7efbcb29c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\builtins\\symbol.js",
+      "sha256": "b1ef3738c9ef8ef31c9221a59892a75f969737e41081f9ff7edeba97dc43cc86"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\cli.js",
+      "sha256": "b4f76fd4f109d07f2b0cc6bb29ed74fe201dba5dcc26847a1eedad80e86dd1f3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\conversion.js",
+      "sha256": "a423027b154050de9fd2924a6f19415e2050a223acdc24719f56f0b6d866aa05"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\delete-reference.js",
+      "sha256": "1d239655be631360b20ddec0a7a2f7ff6acf310ef6fa83f8ebd55263dae90c6f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\evaluator.js",
+      "sha256": "a949699bcb42cb5e442491319aea36756ff49632514967690a7bbf4be6abc0af"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\global-environment.js",
+      "sha256": "e9186fd8a9285044a99fb093a62de1645c211f4742a969ccd014c6ab8a02f6d8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\interpreter.js",
+      "sha256": "c16f0a182ab54ca0333598e170bfbfceb04afc5b03879c896344ca8b83368cd6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\lexer.js",
+      "sha256": "e1e1f0628731b881e3b67764339bab870a7ab34ed9a4631441d3713340821711"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\number-radix-internal.js",
+      "sha256": "d39de70723bd5f11f055f383b2f56ad05cce8f093a9e8cbbccc2e1b94acbb73d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\number-radix.js",
+      "sha256": "8ca0077bb5eaf30a0ab6cb30cba149232fa258d642be3ec5437f464928d489ea"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\object-conversion.js",
+      "sha256": "92f44c5c9341ec8798e5a58caceb4f97785be0b569c46f28573ac3b6da7eb6f0"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\observation-driver.js",
+      "sha256": "98e168a2450a9ef1f5c3255f1233ffe4c0bc7d49b0d6e6eccf3c59fbb1d145a2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\observation-json.js",
+      "sha256": "5d299dcfb6bcb9d6dad78bbc213040c0dfac7434602f286e69c245ca513ddb01"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\observation.js",
+      "sha256": "1bc5e7ef6060e13e0543ae4dd1028d6acb69fc6fa3be8ef4497bb409413d73d2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\outcomes.js",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\parser.js",
+      "sha256": "24dd17f8e3000870a3129910b499083d448c3391d928f6ebe6cdeac520f86700"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\primitive-conversion.js",
+      "sha256": "bf552e61b4b7be19e34049c3940f2a37fd57a29c49a331becfd6c2c42153af9c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\primitive-objects.js",
+      "sha256": "a5c8f132241723e8015c1fe9615d1fa2a552199ece66fc7bb83234c9733a77be"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\property-keys.js",
+      "sha256": "29e0fe3132d04cf234d3f067e5d5715e037beab5a83c65fff070832c88b2ce49"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\realm.js",
+      "sha256": "72665dd641f2ab1f47350a9bbfba3cd0f129542f5822d079964702a141d4faf4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\runtime.js",
+      "sha256": "4e8a99777a67bdde1e465198ba376101b5109b46f4c004fb42fb49718a7c1aeb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-completion.js",
+      "sha256": "167e68ccaa244d4c7a06b669439364e2ff9570828c04c7a1637c30dda2b5d3c9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-declarations.js",
+      "sha256": "6354f1e2df2a34a1935d6892ce595d92081e6ffd8ae8aa51c97266559b9584b9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-environment.js",
+      "sha256": "07feb320cac933e46f8cad20471ebac219faa4882e68d400e7fcb738690f3bba"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-execution-internal.js",
+      "sha256": "0e0b4c7819d1b5b664c190831e4a57b39951ad6ba4a1b0421a5e6eb1076bc953"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-execution.js",
+      "sha256": "d8ffd6ed546f5242827373932942227ba854758bcc7bc880bb71af24aefe98b8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-global-declarations.js",
+      "sha256": "bd6cc85c413ed50e749eb7fe6133cc483457499d7d538146b68ba94b40cde82b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-metadata.js",
+      "sha256": "1a156969b02e8913900bf1ce1373acccbd18151e63b3fed740b4f60ada8cc5ee"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-observation-driver.js",
+      "sha256": "7e0a1741050b8d773580b284dc703935baca116e0c9ddcc681a489e83db00e29"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-observation-json.js",
+      "sha256": "53c939ac4850b0ac39a6e494a713c805d8f4f7bf37a9185d4e162373e46324cf"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-observation-types.js",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-observation.js",
+      "sha256": "60575ea8737cabc57762db77f946ca7e13e97cc5fc501e422a3ef6d62e8bfd34"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-prologue.js",
+      "sha256": "558fc7ce246e0cb2380b604e2b366bb4c02b22aafeebfbba3b5dd8b5d7b51824"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-record.js",
+      "sha256": "410f4b24af087b3c3b0bd3fb6086ca23336477c48d4d63862e401cad2cf95a80"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\script-throw-inspection.js",
+      "sha256": "0c200656efa39b54a5faa39514e19e01af394732224d05f592ea636725fc5d5d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\strings.js",
+      "sha256": "b1827b79fe0a4db8dce8ccbd14d546f3bba239a2873cb631c2d66c1ad111fa2c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\symbols.js",
+      "sha256": "251ab4bb4a3710d85177248d9410532e73b96d8a75ffd22962e5c4b2f48c818f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\syntax.js",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "src\\typeof.js",
+      "sha256": "1889fc81b6ae1a9b22a8401e3bfc319728bb22593577b5c750e190a3add6c241"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\abstract-equality.js",
+      "sha256": "da5e88b70ee9a3646c785a3ed19e87e463bd930e616eea0ec49b7c80345b545c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\addition.js",
+      "sha256": "7fa8d9ea2095666c4a89023227d935dad21a13b86e72cb08402f5387f5f3a4e7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\array-length-coercion.js",
+      "sha256": "fd32edb00c890797b93f1620825ef3927cb1872962fd1a8c1b027577e09c331c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\array-like.js",
+      "sha256": "d812347e9be7f3a9cc27587f15aed74e3299cd5e53a2734352d83a3e4acc8f93"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\array-literals.js",
+      "sha256": "d772b2e84e995ceec466ca0174de416d76a2ef9636655c7501b73db08c00e22e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\array-map.js",
+      "sha256": "4336d5059a27de41314c7b59baf94b987c7fae6ff1a8e1a88213b0359f06ca77"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\array-storage.js",
+      "sha256": "fb697ea35261e1b5f062b23b71f58cbb16212a56dce99965936b7b4cd9519a7a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\array-string-conversion.js",
+      "sha256": "a08c97211cf2b89c9213e5799090f8fd3dea6095319ee15e433e019a7c1dc412"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\boolean-string-conversions.js",
+      "sha256": "2264fd4f0f4756b0986a73854deba104207fcc664ef6b7c845e7410dde4f9fea"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\compound-assignment.js",
+      "sha256": "9b8c4f8f7f1f437983907343dfa230e94bb8ece045d0d43669e3c3d4fa3840fb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\conversion.js",
+      "sha256": "0a1fe87465fb8f38d9187c512ea4b7e39ff574e4c7452e1991768a3302c2b253"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\definition-dispatch.js",
+      "sha256": "a82a65e8caaf4dbe76eda80c67b4f7a512e54ae138addfbde24c65759d334211"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\delete-operator.js",
+      "sha256": "9732ab653f7561ef4f4ee1f39e0a65b9432ef3d79c2a1739885b5359c0a78017"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\function-call.js",
+      "sha256": "e9c2ae6a3983c6833bf0c371bac67d70e614c11670497b13a9ae81864b2675c9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\function-string-conversion.js",
+      "sha256": "84ffec40f039ee9303843bf355aa4108524d383cdeffb34f7a25259886079920"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\global-environment.js",
+      "sha256": "bca5c01d4f32957c900410ff8bff870280d6f0d6257333078ec68a16d274f237"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-bundle.js",
+      "sha256": "b2f61fd81a1ade9ecaa7631f935ed96046a51c0169b087c58e48dd00094884d4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-catch.js",
+      "sha256": "edc4463b47e8b190e9779de4569f0dbceb596d840b4628731505b8f971cb0069"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-construct.js",
+      "sha256": "a20abce6f83a5d13a9942f04d3faf37a85406fe0149af9b72c6af4afade6aea7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-errors-a.js",
+      "sha256": "697ac9facfbf4e816bf79c33d458c74bf398cff7c0d5e0a0943d3afe6114436d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-errors-b.js",
+      "sha256": "5202a28f5be81633feb2230afc026908f945e2aa8198682c9d2e34ec3940c196"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-for-update.js",
+      "sha256": "92d3ce1bfc37b57a19c8154d6b738e29319e5a8f7da0f32f823d41b080beff97"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-formatting.js",
+      "sha256": "bde17618b822a8908efb89dfce415aa43ed87c78491e660b654b9fa93fd32d0f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-map-default.js",
+      "sha256": "e0a51e92d7ae0383c377ed30be8caf04b488dd4aa41493e52e0feaf7767b64d2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-nonstrict.js",
+      "sha256": "6a2dd2f83e718515fa43868cb693e85dd154632fb7bcccc66be9ac9e6b3c1f49"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\harness-switch.js",
+      "sha256": "900a72c840071a994359c5174253acb9f4af9aab0616f8888a7ad26604ee12f3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\in-operator.js",
+      "sha256": "769185d7ffeac6a60982754f0dee813654bee371e7c52dd03bce2010eb1194f9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\key-assertions.js",
+      "sha256": "c9777798ba3201433708f87b201b4126f28fc2e6c4fd6e4e30cdc08ac0ac248e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\key-coercion.js",
+      "sha256": "def0a7fc52d31d2203b34015a42088edc25e21ab077360440aa9441637ae76b4"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\length-coercion.js",
+      "sha256": "4f53e0e7ee3c826eee68133231e43d1e664e4019c7006810061b5641cd660192"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\number-conversions.js",
+      "sha256": "96b4c49296d8b7186f8455259875cc69359efe6e7e7d9b1d132c484d9205fe08"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\number-radix.js",
+      "sha256": "2847b6fae58600aab87e791958b90d9f0fed4b46aaf46cde20dedfd69131b269"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\numeric-operators.js",
+      "sha256": "0195839684bd6dcb1daa141902fd81dc5248bf3fd545aeb80aad197d0c41a88b"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\object-descriptors.js",
+      "sha256": "7800777e90a099fcd5f0be63d9cb3db731ae33daddda2b1edca59f6019136940"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\object-keys.js",
+      "sha256": "ea70e1e2566fa7f66f3435f5fe68ed8888f11ce7d9c4528bd9ffff01e243d1af"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\object-prototypes.js",
+      "sha256": "9c10f188c38b6f66bb2fb37e05d8c251c5b93fe2851029b25cfce811330ab31e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\object-tostring.js",
+      "sha256": "648f4364eee3dd67a2c37d70918a406bca9d7bc58ff414da7eddef4789a7d669"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\object-valueof.js",
+      "sha256": "6aec61c136c743cde6faf46520cc8f3cecb1d2fef9b696203408880668b0bc6c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\observation-serialization.js",
+      "sha256": "6cccdf5b156528c8e564934a6e73e64676be78f56a0618947be666aefa7adf9e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\operation-context.js",
+      "sha256": "105ebdd1398ef84d23bca60244ad98dda9758200acaa6bbb96583ce8c1de505f"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\operator-coercion.js",
+      "sha256": "f8b5ca5e637b18dd41a7a6555f3c0a7348eb7e159cf3881ca5855ef96030b63d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\primitive-conversion.js",
+      "sha256": "b8cd2209c8604eb24e12585fdd07467ea3f17f317dd8cc126a71c89997046561"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\primitive-reads.js",
+      "sha256": "a9a719beabf7f6760f39fe7cd55b1d3c14f262d5a185925d348153d804ddd706"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\property-accessors.js",
+      "sha256": "9e153a65f86d20a844c5904e1ad0b8e0d88167ebf58c6928a5a1e15ab2534fc7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\property-assignment.js",
+      "sha256": "00a993814380ff8791bbf757c110233f3bebde66292ed91828e758fbac906fe3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\property-key-conversion.js",
+      "sha256": "3d094327a0c85e6a4e489384f3d7305714054e21f368edcbfd8150e6ea3b6191"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\realms.js",
+      "sha256": "0b251f3f6b137507ca1a31c0bcaf00a32ad41c584aba7c6afa337324e4ca3bb2"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\relational.js",
+      "sha256": "5151314936c2486161dcdd80b1f0fefce879de90b55b62de308024b3d563e29d"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\return-audit.js",
+      "sha256": "e7b8240eb962def2c6117b72a80bac562175d0aee68d48bfa267f8030f023134"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-assignment-target-audit.js",
+      "sha256": "1966b3d49538694e5cb66f2fcc77db547ec27ab2f63d5ecd2281bb440a145e71"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-assignment-target-dispatch.js",
+      "sha256": "16bc50b34175967bde1f34cff5b24e864ced031ff50c85b126ce3b59bfef79f3"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-declarations.js",
+      "sha256": "88a21ef6dda198035effd6ac19e9409034697c36c93c14c03c758108544840cb"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-environment.js",
+      "sha256": "c509147be9fb0bb943db5edb48e3fdfffd1b0809e221d65c948fd2860f90f8ab"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-execution.js",
+      "sha256": "d87560d0b5299b4cefc3a282c515f375997189bc80c3b72df70b66fe0e5f220a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-function-materialization.js",
+      "sha256": "2405c3ec774fb7f9ec3bbc4bb6d7a4f117d2452dc4f89cf31c61b112160ee078"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-function-setup.js",
+      "sha256": "85559dd3dc45bcf7f9426286712a68a7d6357795766a849e5a069c39673f211a"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-global-declarations.js",
+      "sha256": "88ccba0201d0d01531483a1174f011d76975fb96c7411778d528a1cff052211c"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-lexical-statement-audit.js",
+      "sha256": "5b91cd3f0dabbc54b86201eb3307f055c4b6a9daa83afcd5fa6699a3c6e2c2db"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-lexical-statement-dispatch.js",
+      "sha256": "5dc104ded8ae55e074d079dfefc85347dd01b3edd4cc44b776a28f6a55589e06"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-metadata.js",
+      "sha256": "143e6478cd9048de42f3ed49b390283f4af9ab82e63f652adbc67cdfe335c4ea"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-observation-serialization.js",
+      "sha256": "fc32686b8f4eb04040fdce4e5936560984659339f7729df03b267d02907b80a8"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-observation.js",
+      "sha256": "b36402a78b19c1118900a70bc3d3e12af3167d24cb7fa350df3d06c62efac2c7"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-realm-bootstrap.js",
+      "sha256": "222ada934550586be28ff9d6275ebf38c62533acf9837299293714ad5f8e3b27"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-record.js",
+      "sha256": "16a0a529fe9767a81c8002cf76ddf9dc506d3f2abbbe41c2207acf31881d0a8e"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-restricted-properties.js",
+      "sha256": "4a3fa40fc28aa671a394c178c5f6124c2af5cb290d9bba5506a36d02aec18afd"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-strict-parameter-audit.js",
+      "sha256": "b8e037256cea82b82c84bd338de21298343d32ab85c36f3e1555ac529defaf46"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-strict-parameter-dispatch.js",
+      "sha256": "e6f35849795e53a4cd952dedc05fa02b19d0984fb37ce89461a65cd1701488a9"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-strict-rule-audit.js",
+      "sha256": "d2eb49116b4166907b2e5c3cb242db9c6855dc4e10cf76a9833a765022773a30"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-strict-rule-dispatch.js",
+      "sha256": "5e9c8ac69f65b8d5ea083b871f04f0da9f0f719e8c27885a7fd384c3cbe72347"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\script-throw-inspection.js",
+      "sha256": "5cc9b1d7951682dc110484559fcf17d47bb167360eecc48ac5119f1c8c2cb0a6"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\structured-outcomes.js",
+      "sha256": "6eddbe75bbc1f0cf1d37c9649e24bb664bf1d0236780a956453dbafe4753a071"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\symbol-conversions.js",
+      "sha256": "cd306e22d9fbb1b69c549853bf598943ca014ab5dd19be45c621746a4be9bfa5"
+    },
+    {
+      "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-observation-zs7sPU\\build\\node",
+      "path": "test\\typeof-void.js",
+      "sha256": "63a8469c8837461f11058b4e70e4b04999446adc6bad455ad1231baead3e9fde"
+    }
+  ],
+  "excludedSharedStaleOutput": "build/node/src/script-producer-request.js",
+  "claim": "Fresh copied accepted generated closure, no build; original shared generated outputs unchanged"
+}

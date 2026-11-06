@@ -1,0 +1,14 @@
+[
+  {
+    "name": "installed",
+    "args": [
+      "tools/test262/script-execution-inputs.test.mjs",
+      "C:/Users/jonku/AppData/Local/Temp/rift-ts031a-test262-91c7075",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3c\\installed-results"
+    ],
+    "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3c-implementation-fg0jC1",
+    "status": 1,
+    "signal": null,
+    "error": null
+  }
+]

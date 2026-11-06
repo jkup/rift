@@ -1,0 +1,1 @@
+{"out":"C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3c\\mutations-mLslrt","baseline":13,"mutants":55,"rejections":110,"guestLaunches":0,"builds":0}

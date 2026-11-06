@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,copyFileSync,cpSync,readdirSync} from 'node:fs';
+import {resolve,join,dirname} from 'node:path';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+const here=import.meta.dirname,base=resolve(here,'../../..'),root=resolve(base,'..');
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const sandbox=mkdtempSync(join(base,'build/ts035e3c-implementation-')),copied=[];
+function copy(path){const target=join(sandbox,path);mkdirSync(dirname(target),{recursive:true});copyFileSync(join(base,path),target);copied.push({path,sha256:hash(readFileSync(target))});}
+for(const path of execFileSync('git',['ls-files','typescript'],{cwd:root,encoding:'utf8'}).trim().split('\n').map(p=>p.slice(11)))copy(path);
+for(const path of ['tools/test262/script-execution-inputs.mjs','tools/test262/script-execution-inputs.test.mjs'])copy(path);
+for(const path of ['node_modules/yaml','node_modules/typescript','node_modules/@types/node','node_modules/undici-types','build/node'])cpSync(join(base,path),join(sandbox,path),{recursive:true});
+const retained=JSON.parse(readFileSync(join(base,'docs/validation/ts-035e3b/implementation/run-location.json'))).sandbox;
+const binaries=JSON.parse(readFileSync(join(base,'docs/validation/ts-035e3b/implementation/fresh-native-outputs.json')));
+const binary=binaries.find(r=>r.binary==='observation-driver.exe');assert(binary);
+const binaryPath=join(retained,'build/native',binary.binary);assert.equal(hash(readFileSync(binaryPath)),binary.sha256);
+mkdirSync(join(sandbox,'build/native'),{recursive:true});copyFileSync(binaryPath,join(sandbox,'build/native',binary.binary));
+const manifest=JSON.parse(readFileSync(join(base,'docs/validation/ts-035e3c-p/correction/proposal-manifest.json')));
+for(const r of manifest.additions)assert.equal(hash(readFileSync(join(sandbox,r.path))),r.sha256);
+writeFileSync(join(here,'setup.json'),JSON.stringify({sandbox,base,retained,binary,copied},null,2)+'\n',{flag:'wx'});
+// Fresh adapters consume installed bytes and historical literals. Historical scripts are never run in place.
+const prior=join(base,'docs/validation/ts-035e3c-p'),correction=join(prior,'correction');
+let context=readFileSync(join(prior,'context-probe.mjs'),'utf8');
+context=context.replace("const here=fileURLToPath(new URL('./',import.meta.url)),base=resolve(here,'../../..'),out=mkdtempSync(resolve(here,'context-'));",`const here=${JSON.stringify(here)},base=${JSON.stringify(sandbox)},out=mkdtempSync(resolve(here,'context-'));`);
+context=context.replace("resolve(here,'proposals/script-execution-inputs.mjs')","resolve(base,'tools/test262/script-execution-inputs.mjs')");
+writeFileSync(join(here,'context.mjs'),context,{flag:'wx'});
+let mutations=readFileSync(join(correction,'mutations.mjs'),'utf8');
+mutations=mutations.replace("const here=fileURLToPath(new URL('./',import.meta.url)),base=resolve(here,'../../../..'),out=mkdtempSync(resolve(here,'mutations-'));",`const here=${JSON.stringify(correction)},base=${JSON.stringify(sandbox)},out=mkdtempSync(${JSON.stringify(join(here,'mutations-'))});`);
+mutations=mutations.replace("resolve(here,'../proposals/script-execution-inputs.mjs')","resolve(base,'tools/test262/script-execution-inputs.mjs')");
+writeFileSync(join(here,'mutations.mjs'),mutations,{flag:'wx'});
+let mutant=readFileSync(join(correction,'probe.mjs'),'utf8');
+mutant=mutant.replace("const here=fileURLToPath(new URL('./',import.meta.url)),base=resolve(here,'../../../..');",`const here=${JSON.stringify(here)},base=${JSON.stringify(sandbox)};`);
+mutant=mutant.replace("resolve(here,name.endsWith('.test.mjs')?name:'../proposals/'+name)","resolve(base,'tools/test262',name)");
+writeFileSync(join(here,'root-mutant.mjs'),mutant,{flag:'wx'});
+console.log(JSON.stringify({sandbox,copied:copied.length,binary,dependencyTrees:['yaml','typescript','@types/node','undici-types'],nodeBuild:'retained current build/node; no native build or probe'}));
