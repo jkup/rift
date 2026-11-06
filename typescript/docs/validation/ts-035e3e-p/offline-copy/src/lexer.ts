@@ -1,0 +1,123 @@
+import type { Rejection } from "./outcomes.js";
+import type { Diagnostic, Location } from "./syntax.js";
+export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number };
+export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
+function digit(c: string): boolean { return c >= "0" && c <= "9"; }
+function letter(c: string): boolean {
+    return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";
+}
+function lineTerminator(c: string): boolean {
+    return c === "\r" || c === "\n" || c === "\u2028" || c === "\u2029";
+}
+export function lex(source: string, allowIncrement = false): LexResult {
+    const tokens: Token[] = [];
+    let i = 0;
+    let line = 1;
+    let column = 1;
+    let error: Diagnostic | null = null;
+    let rejection: Rejection | null = null;
+    function advance(): string {
+        const c = source.charAt(i++);
+        if (lineTerminator(c)) {
+            // CRLF is one line boundary, including inside block comments.
+            if (c !== "\n" || i < 2 || source.charAt(i - 2) !== "\r") line++;
+            column = 1;
+        } else {
+            column++;
+        }
+        return c;
+    }
+    function fail(reason: Rejection, message: string, loc: Location): void {
+        rejection = reason;
+        error = { phase: "parse", name: "SyntaxError", message, loc };
+    }
+    if (source.length > 100000) fail({ kind: "resource-limit", guardCode: "source-units", count: source.length, limit: 100000 }, "source exceeds 100000 UTF-16 units", { line, column });
+    while (i < source.length && error === null) {
+        const c = source.charAt(i);
+        const loc = { line, column };
+        const start = i;
+        if (c === " " || c === "\t" || lineTerminator(c)) {
+            advance();
+            continue;
+        }
+        if (c === "/" && source.charAt(i + 1) === "/") {
+            while (i < source.length && !lineTerminator(source.charAt(i))) advance();
+            continue;
+        }
+        if (c === "/" && source.charAt(i + 1) === "*") {
+            advance();
+            advance();
+            while (i < source.length && !(source.charAt(i) === "*" && source.charAt(i + 1) === "/")) advance();
+            if (i === source.length) fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-comment" }, "unterminated comment", loc);
+            else {
+                advance();
+                advance();
+            }
+            continue;
+        }
+        if (letter(c)) {
+            let text = advance();
+            while (letter(source.charAt(i)) || digit(source.charAt(i))) text += advance();
+            tokens.push({ kind: "word", text, loc, start, end: i });
+            continue;
+        }
+        if (digit(c)) {
+            let text = advance();
+            while (digit(source.charAt(i))) text += advance();
+            if (text.length > 1 && text.charAt(0) === "0") fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
+            if (source.charAt(i) === ".") {
+                text += advance();
+                while (digit(source.charAt(i))) text += advance();
+            }
+            if (letter(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
+            tokens.push({ kind: "number", text, loc, start, end: i });
+            continue;
+        }
+        if (c === "'" || c === '"') {
+            const quote = advance();
+            let text = "";
+            while (i < source.length && source.charAt(i) !== quote && error === null) {
+                let unit = advance();
+                // Unlike CR/LF, raw U+2028/U+2029 are allowed in modern JS strings.
+                if (unit === "\n" || unit === "\r") {
+                    fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-string-newline" }, "newline in string", loc);
+                    break;
+                }
+                if (unit === "\\") {
+                    unit = advance();
+                    if (unit === "n") unit = "\n";
+                    else if (unit === "r") unit = "\r";
+                    else if (unit === "t") unit = "\t";
+                    else if (unit !== "\\" && unit !== "'" && unit !== '"') fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "unsupported string escape", loc);
+                }
+                text += unit;
+            }
+            if (i >= source.length) fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-string-end" }, "unterminated string", loc);
+            else advance();
+            tokens.push({ kind: "string", text, loc, start, end: i });
+            continue;
+        }
+        const three = source.slice(i, i + 3);
+        const two = source.slice(i, i + 2);
+        if (three === "===" || three === "!==") {
+            advance();
+            advance();
+            advance();
+            tokens.push({ kind: "punct", text: three, loc, start, end: i });
+        } else if (allowIncrement && two === "++") {
+            advance();
+            advance();
+            tokens.push({ kind: "punct", text: two, loc, start, end: i });
+        } else if (["++", "--", "=>", "**", "<<", ">>", "?."].includes(two)) {
+            fail({ kind: "unsupported-syntax", capabilityCode: "lex.operator" }, "unsupported operator: " + two, loc);
+        } else if (two === "==" || two === "!=" || two === "<=" || two === ">=" || two === "&&" || two === "||" || two === "+=" || two === "-=" || two === "*=" || two === "/=" || two === "%=") {
+            advance();
+            advance();
+            tokens.push({ kind: "punct", text: two, loc, start, end: i });
+        } else if ("{}();,.:?[]+-*/%<>=!".includes(c)) {
+            tokens.push({ kind: "punct", text: advance(), loc, start, end: i });
+        } else { fail({ kind: "unsupported-syntax", capabilityCode: "lex.character" }, "unsupported character: " + c, loc); }
+    }
+    tokens.push({ kind: "eof", text: "<eof>", loc: { line, column }, start: i, end: i });
+    return { tokens, error, rejection };
+}

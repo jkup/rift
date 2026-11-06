@@ -1,0 +1,18 @@
+{
+  "base": "760b25fead20bc0f10a41aba53db1a2b07d3e430",
+  "replacements": [],
+  "additions": [
+    {
+      "path": "typescript/tools/test262/script-host-services.mjs",
+      "proposal": "proposals/script-host-services.mjs",
+      "oldSha256": null,
+      "sha256": "7249222abfb858a4f6f5448722e80bb03335585157090ad6dd1201b03a768636"
+    },
+    {
+      "path": "typescript/tools/test262/script-host-services.test.mjs",
+      "proposal": "proposals/script-host-services.test.mjs",
+      "oldSha256": null,
+      "sha256": "8553a16b0c7557428f826cefeb5235d8d0af7929b17f5bad4317864c735b6bc0"
+    }
+  ]
+}

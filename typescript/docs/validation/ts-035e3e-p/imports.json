@@ -1,0 +1,1121 @@
+[
+  {
+    "path": "src/abstract-equality.ts",
+    "imports": [
+      "./runtime.js",
+      "./conversion.js",
+      "./primitive-conversion.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/array-like.ts",
+    "imports": [
+      "./runtime.js",
+      "./primitive-conversion.js",
+      "./syntax.js",
+      "./conversion.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/array-map.ts",
+    "imports": [
+      "./array-object.js",
+      "./array-like.js",
+      "./runtime.js",
+      "./syntax.js",
+      "./symbols.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/array-object.ts",
+    "imports": [
+      "./runtime.js",
+      "./runtime.js",
+      "./syntax.js",
+      "./property-keys.js",
+      "./conversion.js",
+      "./primitive-conversion.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/array.ts",
+    "imports": [
+      "../realm.js",
+      "../object-conversion.js",
+      "../array-like.js",
+      "../primitive-conversion.js",
+      "../conversion.js",
+      "../strings.js",
+      "../runtime.js",
+      "../syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/boolean.ts",
+    "imports": [
+      "../realm.js",
+      "../primitive-objects.js",
+      "../runtime.js",
+      "../syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/error.ts",
+    "imports": [
+      "../realm.js",
+      "../syntax.js",
+      "../runtime.js",
+      "../primitive-conversion.js",
+      "../conversion.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/function.ts",
+    "imports": [
+      "../symbols.js",
+      "../syntax.js",
+      "../realm.js",
+      "../runtime.js",
+      "../strings.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/number.ts",
+    "imports": [
+      "../primitive-objects.js",
+      "../conversion.js",
+      "../primitive-conversion.js",
+      "../number-radix.js",
+      "../syntax.js",
+      "../realm.js",
+      "../runtime.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/object.ts",
+    "imports": [
+      "../realm.js",
+      "../object-conversion.js",
+      "../runtime.js",
+      "../array-object.js",
+      "../primitive-objects.js",
+      "../symbols.js",
+      "../runtime.js",
+      "../syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/restricted-function.ts",
+    "imports": [
+      "../realm.js",
+      "../runtime.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/string.ts",
+    "imports": [
+      "../realm.js",
+      "../primitive-objects.js",
+      "../runtime.js",
+      "../strings.js",
+      "../syntax.js",
+      "../primitive-conversion.js",
+      "../conversion.js",
+      "../symbols.js",
+      "../runtime.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/builtins/symbol.ts",
+    "imports": [
+      "../realm.js",
+      "../primitive-objects.js",
+      "../runtime.js",
+      "../symbols.js",
+      "../syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/cli.ts",
+    "imports": [
+      "node:fs",
+      "./interpreter.js",
+      "./realm.js",
+      "./runtime.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/conversion.ts",
+    "imports": [
+      "./realm.js",
+      "./primitive-conversion.js",
+      "./runtime.js",
+      "./runtime.js",
+      "./syntax.js",
+      "./strings.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/delete-reference.ts",
+    "imports": [
+      "./runtime.js",
+      "./object-conversion.js",
+      "./conversion.js",
+      "./symbols.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/evaluator.ts",
+    "imports": [
+      "./script-execution-internal.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/global-environment.ts",
+    "imports": [
+      "./realm.js",
+      "./runtime.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/interpreter.ts",
+    "imports": [
+      "./outcomes.js",
+      "./parser.js",
+      "./evaluator.js",
+      "./runtime.js",
+      "./realm.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/lexer.ts",
+    "imports": [
+      "./outcomes.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/number-radix-internal.ts",
+    "imports": [],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/number-radix.ts",
+    "imports": [
+      "./strings.js",
+      "./number-radix-internal.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/object-conversion.ts",
+    "imports": [
+      "./runtime.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/observation-driver.ts",
+    "imports": [
+      "node:fs",
+      "./realm.js",
+      "./observation.js",
+      "./observation-json.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/observation-json.ts",
+    "imports": [
+      "./observation.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/observation.ts",
+    "imports": [
+      "./parser.js",
+      "./evaluator.js",
+      "./realm.js",
+      "./runtime.js",
+      "./syntax.js",
+      "./outcomes.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/outcomes.ts",
+    "imports": [],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/parser.ts",
+    "imports": [
+      "./script-declarations.js",
+      "./script-declarations.js",
+      "./script-metadata.js",
+      "./outcomes.js",
+      "./lexer.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/primitive-conversion.ts",
+    "imports": [
+      "./runtime.js",
+      "./syntax.js",
+      "./symbols.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/primitive-objects.ts",
+    "imports": [
+      "./symbols.js",
+      "./runtime.js",
+      "./runtime.js",
+      "./property-keys.js",
+      "./strings.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/property-keys.ts",
+    "imports": [
+      "./runtime.js",
+      "./conversion.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/realm.ts",
+    "imports": [
+      "./symbols.js",
+      "./builtins/error.js",
+      "./runtime.js",
+      "./array-object.js",
+      "./runtime.js",
+      "./builtins/number.js",
+      "./builtins/function.js",
+      "./builtins/restricted-function.js",
+      "./builtins/object.js",
+      "./builtins/symbol.js",
+      "./builtins/boolean.js",
+      "./builtins/string.js",
+      "./builtins/array.js",
+      "./global-environment.js",
+      "./syntax.js",
+      "./primitive-objects.js",
+      "./strings.js",
+      "./script-record.js",
+      "./script-execution-internal.js",
+      "./script-environment.js",
+      "./runtime.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/runtime.ts",
+    "imports": [
+      "./outcomes.js",
+      "./symbols.js",
+      "./object-conversion.js",
+      "./conversion.js",
+      "./syntax.js",
+      "./strings.js",
+      "./realm.js",
+      "./script-record.js",
+      "./property-keys.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-completion.ts",
+    "imports": [
+      "./runtime.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-declarations.ts",
+    "imports": [
+      "./parser.js",
+      "./script-prologue.js",
+      "./script-metadata.js",
+      "./syntax.js",
+      "./lexer.js",
+      "./outcomes.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-environment.ts",
+    "imports": [
+      "./global-environment.js",
+      "./runtime.js",
+      "./syntax.js",
+      "./script-record.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-execution-internal.ts",
+    "imports": [
+      "./builtins/function.js",
+      "./runtime.js",
+      "./parser.js",
+      "./realm.js",
+      "./script-declarations.js",
+      "./script-metadata.js",
+      "./syntax.js",
+      "./runtime.js",
+      "./script-environment.js",
+      "./global-environment.js",
+      "./script-global-declarations.js",
+      "./strings.js",
+      "./array-object.js",
+      "./abstract-equality.js",
+      "./object-conversion.js",
+      "./delete-reference.js",
+      "./typeof.js",
+      "./primitive-conversion.js",
+      "./conversion.js",
+      "./script-completion.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-execution.ts",
+    "imports": [
+      "./script-execution-internal.js",
+      "./script-execution-internal.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-global-declarations.ts",
+    "imports": [
+      "./script-declarations.js",
+      "./script-metadata.js",
+      "./global-environment.js",
+      "./runtime.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-metadata.ts",
+    "imports": [
+      "./script-prologue.js",
+      "./lexer.js",
+      "./parser.js",
+      "./outcomes.js",
+      "./syntax.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-observation-driver.ts",
+    "imports": [
+      "node:fs",
+      "./script-observation.js",
+      "./script-observation-json.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-observation-json.ts",
+    "imports": [
+      "./observation-json.js",
+      "./script-observation-types.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-observation-types.ts",
+    "imports": [
+      "./outcomes.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-observation.ts",
+    "imports": [
+      "./realm.js",
+      "./script-record.js",
+      "./script-execution.js",
+      "./script-throw-inspection.js",
+      "./parser.js",
+      "./runtime.js",
+      "./array-object.js",
+      "./symbols.js",
+      "./array-map.js",
+      "./script-observation-types.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-prologue.ts",
+    "imports": [
+      "./lexer.js",
+      "./script-metadata.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-record.ts",
+    "imports": [
+      "./script-execution-internal.js",
+      "./script-execution-internal.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/script-throw-inspection.ts",
+    "imports": [
+      "./script-execution-internal.js",
+      "./script-execution-internal.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/strings.ts",
+    "imports": [],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/symbols.ts",
+    "imports": [
+      "./strings.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/syntax.ts",
+    "imports": [],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "src/typeof.ts",
+    "imports": [
+      "./runtime.js",
+      "./strings.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "test/script-observation.ts",
+    "imports": [
+      "node:fs",
+      "../src/script-observation.js",
+      "../src/script-observation-json.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/assistance/custom-test-audit/inventory.mjs",
+    "imports": [
+      "node:fs",
+      "node:path"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/audit-number-radix.mjs",
+    "imports": [
+      "node:assert/strict",
+      "node:fs",
+      "node:child_process",
+      "node:crypto",
+      "node:url",
+      "./probe-verdict.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/build-native.mjs",
+    "imports": [
+      "node:child_process",
+      "node:fs",
+      "node:path",
+      "node:url",
+      "./probe-verdict.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/probe-verdict.mjs",
+    "imports": [],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/probe-verdict.test.mjs",
+    "imports": [
+      "node:assert/strict",
+      "node:test",
+      "./probe-verdict.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/run-guests.mjs",
+    "imports": [
+      "node:child_process",
+      "node:fs",
+      "node:path",
+      "node:url"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/run-probes.mjs",
+    "imports": [
+      "node:child_process",
+      "node:fs",
+      "node:path",
+      "node:url",
+      "./probe-verdict.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test-number-radix.mjs",
+    "imports": [
+      "node:assert/strict",
+      "node:fs",
+      "node:child_process",
+      "node:crypto",
+      "node:url",
+      "../fixtures/assistance/radix-formatter-options/oracle.mjs",
+      "./probe-verdict.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/boundary.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "./fixtures.mjs",
+      "./result.mjs",
+      "./ledger.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/corpus.integration.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs/promises",
+      "node:os",
+      "node:path",
+      "./input.mjs",
+      "./plan.mjs",
+      "./ledger.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/driver-result.mjs",
+    "imports": [
+      "yaml",
+      "./result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/driver-result.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "./fixtures.mjs",
+      "./result.mjs",
+      "./ledger.mjs",
+      "./driver-result.mjs",
+      "./observe.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/fixtures.mjs",
+    "imports": [
+      "./result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/input.mjs",
+    "imports": [
+      "node:crypto",
+      "node:fs/promises",
+      "node:path",
+      "yaml"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/input.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs/promises",
+      "node:os",
+      "node:path",
+      "./input.mjs",
+      "./fixtures.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/ledger.mjs",
+    "imports": [
+      "node:crypto",
+      "node:fs/promises",
+      "./result.mjs",
+      "node:util"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/ledger.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs/promises",
+      "node:path",
+      "node:os",
+      "./ledger.mjs",
+      "./input.mjs",
+      "./plan.mjs",
+      "./fixtures.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/observation.integration.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs/promises",
+      "node:child_process",
+      "node:module",
+      "node:path",
+      "./input.mjs",
+      "./observe.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/observe.mjs",
+    "imports": [
+      "node:child_process",
+      "node:crypto",
+      "node:fs/promises",
+      "node:path",
+      "node:url",
+      "node:util",
+      "./input.mjs",
+      "./result.mjs",
+      "./ledger.mjs",
+      "./driver-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/plan.mjs",
+    "imports": [
+      "node:fs/promises",
+      "node:path",
+      "node:url",
+      "node:crypto",
+      "./input.mjs",
+      "./result.mjs",
+      "./ledger.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/result.mjs",
+    "imports": [
+      "yaml",
+      "node:util"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/result.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "./fixtures.mjs",
+      "./result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-assignment-target-dispatch.test.mjs",
+    "imports": [
+      "node:assert/strict",
+      "node:test",
+      "node:fs",
+      "../../docs/validation/ts-035d6/driver.mjs",
+      "./script-driver-result.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-capabilities.mjs",
+    "imports": [
+      "node:fs/promises",
+      "node:util",
+      "./input.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-capabilities.test.mjs",
+    "imports": [
+      "node:assert/strict",
+      "node:test",
+      "node:fs/promises",
+      "node:url",
+      "node:child_process",
+      "./script-capabilities.mjs",
+      "./script-capabilities.mjs",
+      "node:fs/promises",
+      "node:module",
+      "node:assert/strict",
+      "./script-capabilities.mjs",
+      "node:fs/promises"
+    ],
+    "dynamicImportSyntax": true
+  },
+  {
+    "path": "tools/test262/script-compose.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-driver-result.mjs",
+    "imports": [
+      "node:crypto",
+      "node:util",
+      "yaml"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-driver-result.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "./script-driver-result.mjs",
+      "./driver-result.mjs",
+      "../../docs/validation/ts-035a/controls.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-execution-inputs.mjs",
+    "imports": [
+      "node:fs/promises",
+      "node:path",
+      "node:util",
+      "./script-plan.mjs",
+      "./input.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-execution-inputs.test.mjs",
+    "imports": [
+      "node:assert/strict",
+      "node:fs",
+      "node:path",
+      "node:zlib",
+      "node:url",
+      "./script-execution-inputs.mjs",
+      "./script-plan.mjs",
+      "./script-ledger.mjs",
+      "./input.mjs",
+      "(\\.\\/[^",
+      "${new URL(specifier,moduleUrl).href}"
+    ],
+    "dynamicImportSyntax": true
+  },
+  {
+    "path": "tools/test262/script-ledger-checkpoint.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:child_process",
+      "node:fs",
+      "node:path"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-ledger.mjs",
+    "imports": [
+      "node:fs/promises",
+      "node:path",
+      "node:crypto",
+      "node:util",
+      "./script-plan.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-ledger.test.mjs",
+    "imports": [
+      "node:assert/strict",
+      "../../docs/validation/ts-035e2b/support.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-lexical-statement-dispatch.test.mjs",
+    "imports": [
+      "node:assert/strict",
+      "node:test",
+      "node:fs",
+      "../../docs/validation/ts-035d8/driver.mjs",
+      "./script-driver-result.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-observation.integration.mjs",
+    "imports": [
+      "node:test",
+      "../../docs/validation/ts-035c/test-lease.mjs",
+      "node:assert/strict",
+      "node:fs/promises",
+      "node:path",
+      "./script-observe.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-observe-codec.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs",
+      "node:child_process",
+      "node:crypto",
+      "./script-driver-result.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-observe-input.test.mjs",
+    "imports": [
+      "node:test",
+      "../../docs/validation/ts-035c/test-lease.mjs",
+      "node:assert/strict",
+      "node:fs/promises",
+      "node:path",
+      "./script-observe.mjs",
+      "./input.mjs",
+      "./result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-observe-launch.test.mjs",
+    "imports": [
+      "node:test",
+      "../../docs/validation/ts-035c/test-lease.mjs",
+      "node:assert/strict",
+      "node:child_process",
+      "node:module",
+      "node:fs/promises",
+      "node:path",
+      "./script-observe.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-observe-live-codec.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs/promises",
+      "node:path",
+      "./script-driver-result.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-observe-preflight.test.mjs",
+    "imports": [
+      "node:test",
+      "../../docs/validation/ts-035c/test-lease.mjs",
+      "node:assert/strict",
+      "node:child_process",
+      "node:module",
+      "node:fs",
+      "node:fs/promises",
+      "node:path",
+      "./script-observe.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-observe.mjs",
+    "imports": [
+      "node:child_process",
+      "node:crypto",
+      "node:fs/promises",
+      "node:path",
+      "node:url",
+      "node:util",
+      "yaml",
+      "./input.mjs",
+      "./script-driver-result.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-plan.mjs",
+    "imports": [
+      "node:fs/promises",
+      "node:path",
+      "node:url",
+      "node:module",
+      "node:crypto",
+      "node:util",
+      "./input.mjs",
+      "./script-capabilities.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-plan.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs/promises",
+      "node:path",
+      "node:url",
+      "./script-plan.mjs",
+      "./input.mjs",
+      "../../docs/validation/ts-035e2a/support.mjs"
+    ],
+    "dynamicImportSyntax": true
+  },
+  {
+    "path": "tools/test262/script-preflight-producer.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs",
+      "node:path",
+      "node:child_process",
+      "node:crypto",
+      "../../build/node/src/script-observation.js",
+      "./script-driver-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-producer.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "node:fs",
+      "node:path",
+      "node:child_process",
+      "../../build/node/src/script-observation.js"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-result.mjs",
+    "imports": [
+      "node:crypto",
+      "node:util",
+      "yaml"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-result.test.mjs",
+    "imports": [
+      "node:test",
+      "node:assert/strict",
+      "./script-driver-result.mjs",
+      "./script-result.mjs",
+      "./result.mjs",
+      "../../docs/validation/ts-035a/controls.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-strict-parameter-dispatch.test.mjs",
+    "imports": [
+      "node:crypto",
+      "node:assert/strict",
+      "node:test",
+      "node:fs",
+      "node:child_process",
+      "./script-driver-result.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  },
+  {
+    "path": "tools/test262/script-strict-rule-dispatch.test.mjs",
+    "imports": [
+      "node:assert/strict",
+      "node:test",
+      "node:fs",
+      "node:child_process",
+      "./script-driver-result.mjs",
+      "./script-result.mjs"
+    ],
+    "dynamicImportSyntax": false
+  }
+]

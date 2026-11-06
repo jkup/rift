@@ -1,0 +1,7 @@
+{
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "20 whole descriptor literals; source snapshot identity; frozen detached data; 10 exact boundary errors\n",
+  "stderr": ""
+}

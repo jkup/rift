@@ -1,0 +1,37 @@
+[
+  {
+    "path": "docs/validation/ts-035e3d/generated-closure.json",
+    "bytes": 39509,
+    "sha256": "b82495dc74fb9e081326264fd22abda2473150a79dd5ad634e9ec2e0b3f089c6"
+  },
+  {
+    "path": "docs/validation/ts-035e3d/copied-inputs.json",
+    "bytes": 3979146,
+    "sha256": "5cb5f557f59bc5a59d9c3e30878289f3e4ebd226c67efd156ce54cb63e1833da"
+  },
+  {
+    "path": "docs/validation/ts-035e3d/complete-artifact-index.json",
+    "bytes": 317627,
+    "sha256": "d742ac3f7d9e308702d8a8d9552c402da19afe5228af8c5a56c6bd9b3ad5a956"
+  },
+  {
+    "path": "docs/validation/ts-035e3d/completion.json",
+    "bytes": 11191,
+    "sha256": "dc80a4eef541f0025b5f2d49eb744e959365cb817615e7a8c8a7764c5e8b834b"
+  },
+  {
+    "path": "docs/validation/ts-035e3d/run-location.json",
+    "bytes": 7841,
+    "sha256": "ffec23d55e2ea6bb53af617558034619ae32983e76c7e8229974cae50ba954db"
+  },
+  {
+    "path": "docs/validation/ts-035e3d/prepare.mjs",
+    "bytes": 2623,
+    "sha256": "a75968113429880ca281ee2fcb73f8edb55bf9152b898e9a3701c2278a12816f"
+  },
+  {
+    "path": "docs/validation/ts-035e3d/run.mjs",
+    "bytes": 6031,
+    "sha256": "3561759a73e1c0466c5e672d24a1ecd22964728d39d76d284d5cf0e0b9073ece"
+  }
+]

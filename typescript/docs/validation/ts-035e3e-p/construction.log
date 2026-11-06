@@ -1,0 +1,3 @@
+20 actual extracted constructor/controlSetup traces; 20 fresh allocations; 100 source/Realm map controls; six completed mutants rejected
+(node:17292) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
