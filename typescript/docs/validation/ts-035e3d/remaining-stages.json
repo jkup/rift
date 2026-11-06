@@ -1,0 +1,42 @@
+[
+  {
+    "name": "E3c-mutations-retry",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\mutations-retry.mjs"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "elapsedMs": 50773
+  },
+  {
+    "name": "policy",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\policy.mjs"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "elapsedMs": 1700
+  },
+  {
+    "name": "dispatch-reduction",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\dispatch-probe.mjs"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "elapsedMs": 157
+  },
+  {
+    "name": "driver-reduction",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\driver-probe.mjs"
+    ],
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "elapsedMs": 99
+  }
+]

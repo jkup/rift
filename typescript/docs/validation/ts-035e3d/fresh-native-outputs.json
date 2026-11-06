@@ -1,0 +1,357 @@
+[
+  {
+    "entry": "src/cli.ts",
+    "binary": "rift.exe",
+    "sha256": "b70f87a3e0384264630aad33054dd06ad773cfa926dcb2ba3e8c70f3803d4aea"
+  },
+  {
+    "entry": "test/realms.ts",
+    "binary": "realms.exe",
+    "sha256": "202af4e07dcf6cb3f5adb0e92c5cebc51165fb465d8926bb4868805c87853db8"
+  },
+  {
+    "entry": "test/object-descriptors.ts",
+    "binary": "object-descriptors.exe",
+    "sha256": "67677eeeca469d73b573b943292e0d1b2b7b52b36758e39f0f826ed2f740bfa3"
+  },
+  {
+    "entry": "test/object-prototypes.ts",
+    "binary": "object-prototypes.exe",
+    "sha256": "f8a8b86b2b96fd96ef511befdd9e91c5247ab57b3e9371fbbce6db36d6ff3dd6"
+  },
+  {
+    "entry": "test/object-keys.ts",
+    "binary": "object-keys.exe",
+    "sha256": "093253f0d589f6db28cb429fce129965dd1730692b109010e61f0af5a4fc1863"
+  },
+  {
+    "entry": "test/conversion.ts",
+    "binary": "conversion.exe",
+    "sha256": "4d64dd7f79e1d3ff2f3ddb714c65cb2d7c061c7942730a7589320e106922df03"
+  },
+  {
+    "entry": "test/definition-dispatch.ts",
+    "binary": "definition-dispatch.exe",
+    "sha256": "bf43a6db575226d49041c90db0554a2d273961bd00cbaa9df1bc825c97651a47"
+  },
+  {
+    "entry": "test/array-storage.ts",
+    "binary": "array-storage.exe",
+    "sha256": "46ef4b421cc8ce3977a8db47a6de47417fa9b543a595d7296b18486835e5ff95"
+  },
+  {
+    "entry": "test/array-like.ts",
+    "binary": "array-like.exe",
+    "sha256": "6b15d327b69eb96a48bfe184ab07362b921e4c9e81035cfcc482d44ac480d8aa"
+  },
+  {
+    "entry": "test/operation-context.ts",
+    "binary": "operation-context.exe",
+    "sha256": "4fde90cff7314a6121524d6399f3e2a3b485017553f9f3c42b7d185f70553c24"
+  },
+  {
+    "entry": "test/array-map.ts",
+    "binary": "array-map.exe",
+    "sha256": "d8ac954d5b4113038c19757ee67c4f93dd18732b770615a4f408f50348dd3756"
+  },
+  {
+    "entry": "test/array-literals.ts",
+    "binary": "array-literals.exe",
+    "sha256": "256970835fd2dae0960670fa28b7f1e024fcc281a2af837c65949993e62182e0"
+  },
+  {
+    "entry": "test/property-key-conversion.ts",
+    "binary": "property-key-conversion.exe",
+    "sha256": "b53d187bd702eb7855c26e71bb1617fcbdf7834efc2863c1d61616af250f4479"
+  },
+  {
+    "entry": "test/numeric-operators.ts",
+    "binary": "numeric-operators.exe",
+    "sha256": "1e68bd9e54797ae3eb73ec2b3443838558dd1a66e9b012dc22b8a1256f0acac4"
+  },
+  {
+    "entry": "test/addition.ts",
+    "binary": "addition.exe",
+    "sha256": "9e05c8fca0f0420f44b1ab99b532d0c0e6eb06e9821dbd03dda2f58e4579727e"
+  },
+  {
+    "entry": "test/relational.ts",
+    "binary": "relational.exe",
+    "sha256": "d0c32ea1bffae668b4cc6c4599def2360d7c2920ab333a5dd4353075e4cd3a93"
+  },
+  {
+    "entry": "test/primitive-conversion.ts",
+    "binary": "primitive-conversion.exe",
+    "sha256": "be9bb543e5aabc750d6cd7527e40fa2e836153759671ae6fa58829b145a042e6"
+  },
+  {
+    "entry": "test/operator-coercion.ts",
+    "binary": "operator-coercion.exe",
+    "sha256": "a0e4ebc9164ab0be594f8960f7ee0adef91e3e2533f4fef6e9a1dd3533aaf5a2"
+  },
+  {
+    "entry": "test/key-coercion.ts",
+    "binary": "key-coercion.exe",
+    "sha256": "d0399f46441a3a9883ee403afff6b80e7a0843f0ae1667a08f7123592e72eec2"
+  },
+  {
+    "entry": "test/length-coercion.ts",
+    "binary": "length-coercion.exe",
+    "sha256": "6eb4492252d6f9d7e46465ce069d8a2b5ea1625ac629adb1c33f25f04301a9fd"
+  },
+  {
+    "entry": "test/array-length-coercion.ts",
+    "binary": "array-length-coercion.exe",
+    "sha256": "baca03eec710699ebd61170fb06dcd441eb2c44e6be40348870ba2121dafb98e"
+  },
+  {
+    "entry": "test/function-call.ts",
+    "binary": "function-call.exe",
+    "sha256": "212df8e2fb3e722d39fc99d36c437764a31c7354e42ce38475fbf02abc164b42"
+  },
+  {
+    "entry": "test/object-valueof.ts",
+    "binary": "object-valueof.exe",
+    "sha256": "4a311f3344ac2fc55cd2e1a87781adf797c7fe754b8b15f4c8b66ee6f215c9b8"
+  },
+  {
+    "entry": "test/array-string-conversion.ts",
+    "binary": "array-string-conversion.exe",
+    "sha256": "66c3316cc71f3016f6f0a633e804ce69788ae4f178014095d2b77b440cc0223a"
+  },
+  {
+    "entry": "test/function-string-conversion.ts",
+    "binary": "function-string-conversion.exe",
+    "sha256": "17d59d6cf72e930eb909ebe876f205ffcfcb08b251e89136ed03ab1576311875"
+  },
+  {
+    "entry": "test/abstract-equality.ts",
+    "binary": "abstract-equality.exe",
+    "sha256": "7511f594d98eb733cdbf1e782741aec9ef304fb8c5ac477e70215a0fa7e6d1c7"
+  },
+  {
+    "entry": "test/delete-operator.ts",
+    "binary": "delete-operator.exe",
+    "sha256": "3bc61c6acf93ba4f7df4d5f778f0f5f571718e0ac7cb4a4ac33b1ea5bafed8ed"
+  },
+  {
+    "entry": "test/typeof-void.ts",
+    "binary": "typeof-void.exe",
+    "sha256": "b1369a2fa65a02b31ab5127cafb171d0c6c4995c1d49fda797975693cf9ec096"
+  },
+  {
+    "entry": "test/in-operator.ts",
+    "binary": "in-operator.exe",
+    "sha256": "0b42b8e241572e383f4df6453762808c7e108b1825627b35f7d1b9204a238a0c"
+  },
+  {
+    "entry": "test/primitive-reads.ts",
+    "binary": "primitive-reads.exe",
+    "sha256": "f038823238633c98437117c0839eb731a0b902ea77f575291540bfec42fa1512"
+  },
+  {
+    "entry": "test/property-assignment.ts",
+    "binary": "property-assignment.exe",
+    "sha256": "c306ac551c0c0bc0004839c17aeec4d2e24aa7beae15f2e243bfa4101eddf6a6"
+  },
+  {
+    "entry": "test/compound-assignment.ts",
+    "binary": "compound-assignment.exe",
+    "sha256": "0a3e187a0b7211a96ab2694f62dbcae2e9b59a982335341c584b1e82b89bdf17"
+  },
+  {
+    "entry": "test/structured-outcomes.ts",
+    "binary": "structured-outcomes.exe",
+    "sha256": "a4bf5487a2a3cdea0d3cfbc34d2d3c4d2e6d10103999a9a2a6a9b4b60ad4528c"
+  },
+  {
+    "entry": "src/observation-driver.ts",
+    "binary": "observation-driver.exe",
+    "sha256": "51e09d4d06b079fdd04ee0b7a6243448a040853d6f6ec4fe54072a1c02fd6d68"
+  },
+  {
+    "entry": "test/observation-serialization.ts",
+    "binary": "observation-serialization.exe",
+    "sha256": "e71252ca470f6be6c6bcc927e1d0cd0152d084939508b84e40de6c837b65771e"
+  },
+  {
+    "entry": "test/return-audit.ts",
+    "binary": "return-audit.exe",
+    "sha256": "1a795921315d6f70baef07ed5e7ba7cb49ad8cbd303aae0f0a26c1f466cb21bb"
+  },
+  {
+    "entry": "test/number-radix.ts",
+    "binary": "number-radix.exe",
+    "sha256": "f4f17468feff84d44a97c5cee95afe6f54f249f68672d68c9857a48b4ff7c814"
+  },
+  {
+    "entry": "test/script-metadata.ts",
+    "binary": "script-metadata.exe",
+    "sha256": "6a8f777153cd29dad1ccab3994762c464713e95229ea4cbcca454c6710336f37"
+  },
+  {
+    "entry": "test/global-environment.ts",
+    "binary": "global-environment.exe",
+    "sha256": "581f7ad5cef06352d05ec3394144bbd0e0995023ffe4754f4bd28c64a794eb3b"
+  },
+  {
+    "entry": "test/script-realm-bootstrap.ts",
+    "binary": "script-realm-bootstrap.exe",
+    "sha256": "1449d7c3fe3c9f748bc00a8dcdfa4472e8eaf167401676e65ee6d46417ba3169"
+  },
+  {
+    "entry": "test/script-declarations.ts",
+    "binary": "script-declarations.exe",
+    "sha256": "91e8b38aa1a8f82e0a9f5f0ddc2d59fa3a337d1e7918345b8afe57261c7db028"
+  },
+  {
+    "entry": "test/script-global-declarations.ts",
+    "binary": "script-global-declarations.exe",
+    "sha256": "b6f558beca75fb0ccc68bb2f6480936d8dcc03946f232eda363fb696e1838f41"
+  },
+  {
+    "entry": "test/script-record.ts",
+    "binary": "script-record.exe",
+    "sha256": "9fad5046d03644b8f055efd479ab03416191ed78e9f9d98af24119404f8944a3"
+  },
+  {
+    "entry": "test/script-environment.ts",
+    "binary": "script-environment.exe",
+    "sha256": "df72fca05a8ba38d31849a069f355ebde11d2a4af5dcdefd5ed0dc7480b81d66"
+  },
+  {
+    "entry": "test/script-function-materialization.ts",
+    "binary": "script-function-materialization.exe",
+    "sha256": "40fb3241b00fd8ed0477fdb6a79b92f1cc00dad5a556f1bcde2e554b11c34306"
+  },
+  {
+    "entry": "test/script-function-setup.ts",
+    "binary": "script-function-setup.exe",
+    "sha256": "d4ddd28b531b2cc8f329f51e30ba294ce8090db1b70507124b8457c4d0cc9a8f"
+  },
+  {
+    "entry": "test/property-accessors.ts",
+    "binary": "property-accessors.exe",
+    "sha256": "5d1b28e5cbeb4b1a66202f0bb67a8136bb404f01f1dd5898adfbf545ddddb2e4"
+  },
+  {
+    "entry": "test/script-restricted-properties.ts",
+    "binary": "script-restricted-properties.exe",
+    "sha256": "18aeb88fa942624dcdd5d2ec9a5fae47b06dacaa5d7215284dfe31a9b2dd39a9"
+  },
+  {
+    "entry": "test/script-execution.ts",
+    "binary": "script-execution.exe",
+    "sha256": "d64487d6776808fd2d496ba0feb97775ddf80e32bd403fe796b2d8c9889a66e9"
+  },
+  {
+    "entry": "test/harness-catch.ts",
+    "binary": "harness-catch.exe",
+    "sha256": "9288c84af805c12ac9ecfe0cf3a8387e3a400b2f6c700a288948d4be11e5c6b8"
+  },
+  {
+    "entry": "test/harness-switch.ts",
+    "binary": "harness-switch.exe",
+    "sha256": "83b93a20c07d09ae31555692068d79411a16d5741d10a5d62f79e781e668a1ff"
+  },
+  {
+    "entry": "test/harness-for-update.ts",
+    "binary": "harness-for-update.exe",
+    "sha256": "2693772ddfa21c0d9b63e70056fbd72e830205ce001d2ac575c051e385aad8a4"
+  },
+  {
+    "entry": "test/harness-nonstrict.ts",
+    "binary": "harness-nonstrict.exe",
+    "sha256": "a6b8d9ee635f745e9675537057a3b342bf92f78502b25491b4aec1a2d01ff4b5"
+  },
+  {
+    "entry": "test/harness-construct.ts",
+    "binary": "harness-construct.exe",
+    "sha256": "fbe3f39b5a3bcc7ea18e3e0189e62472427eaf95d6e7b9c1ef901316fe5775b5"
+  },
+  {
+    "entry": "test/harness-errors-a.ts",
+    "binary": "harness-errors-a.exe",
+    "sha256": "b608da3b58e54496e69c7a0e408ab4fe50be18a506a652f50375981715cd1b6e"
+  },
+  {
+    "entry": "test/harness-errors-b.ts",
+    "binary": "harness-errors-b.exe",
+    "sha256": "4f419eb0b9153dca98ba6a5c3a68e98686bec07be4686ea30fde8ee5cd087232"
+  },
+  {
+    "entry": "test/harness-map-default.ts",
+    "binary": "harness-map-default.exe",
+    "sha256": "05555fbfb6a4d6641f97c7e76731b4cd164a4d7c7870b4ad0e26ad700206f694"
+  },
+  {
+    "entry": "test/harness-formatting.ts",
+    "binary": "harness-formatting.exe",
+    "sha256": "a302ec2d52b59d244536b74ec21a0bb4b114b9eeed18406e88bd8ab31669e999"
+  },
+  {
+    "entry": "test/harness-bundle.ts",
+    "binary": "harness-bundle.exe",
+    "sha256": "7616d4e459b2c236a343a887c6b97de7dc14a5e8c7748ee19b995ce29e1d952b"
+  },
+  {
+    "entry": "test/script-observation-serialization.ts",
+    "binary": "script-observation-serialization.exe",
+    "sha256": "ee73b030fa3ed07bfc6fa5c310ed0945b942e148194919e5d7b117132bf03dc0"
+  },
+  {
+    "entry": "test/script-throw-inspection.ts",
+    "binary": "script-throw-inspection.exe",
+    "sha256": "13e84f51b40f28233c0093a0db6e17b8debb7ff55d647be09f74e2d9eec08415"
+  },
+  {
+    "entry": "src/script-observation-driver.ts",
+    "binary": "script-observation-driver.exe",
+    "sha256": "7d430ded498bda5dd7612215aa2b3d2472aad2c2fbe800b13429919354c1146d"
+  },
+  {
+    "entry": "test/script-observation.ts",
+    "binary": "script-observation.exe",
+    "sha256": "68cc58d86030d01c215c0d99c88ae1702ea904f0072f1138b97f7f995139dd85"
+  },
+  {
+    "entry": "test/script-strict-rule-audit.ts",
+    "binary": "script-strict-rule-audit.exe",
+    "sha256": "811546deadc3954bd0bbf4cd01c45f005f4737d5f60266da6b9a980e48377431"
+  },
+  {
+    "entry": "test/script-strict-rule-dispatch.ts",
+    "binary": "script-strict-rule-dispatch.exe",
+    "sha256": "dc1d925ebef052af288db81bfb0d12987267c3a5285f39a915a268dacf398b88"
+  },
+  {
+    "entry": "test/script-strict-parameter-audit.ts",
+    "binary": "script-strict-parameter-audit.exe",
+    "sha256": "d33a8cb9d7cef7c7475f224911585bdbd88d095670754f93bbeefe610445f71a"
+  },
+  {
+    "entry": "test/script-strict-parameter-dispatch.ts",
+    "binary": "script-strict-parameter-dispatch.exe",
+    "sha256": "1a7c1d577ce8875e2634e803a67ae2b270297a436cff57c36afe1f63e6c1b042"
+  },
+  {
+    "entry": "test/script-assignment-target-audit.ts",
+    "binary": "script-assignment-target-audit.exe",
+    "sha256": "d7b39c6d4fcc09452b227b4e735b67485b59ceb19ca2b25c01df1573f792445e"
+  },
+  {
+    "entry": "test/script-assignment-target-dispatch.ts",
+    "binary": "script-assignment-target-dispatch.exe",
+    "sha256": "068b09ad0640ed9337ae5c63172781ad23d8d1e2bd24c2bc5c98a58d96df37b5"
+  },
+  {
+    "entry": "test/script-lexical-statement-audit.ts",
+    "binary": "script-lexical-statement-audit.exe",
+    "sha256": "ae28db024254b489e80ad2338ea607084627074f612375779a82a9da5d6f7961"
+  },
+  {
+    "entry": "test/script-lexical-statement-dispatch.ts",
+    "binary": "script-lexical-statement-dispatch.exe",
+    "sha256": "a67467e1309a10cf98d0fa64250452e882dfce10e258bbdf0497196d13cf23ab"
+  }
+]

@@ -1,0 +1,1 @@
+Original collect.mjs failed before archive creation: RangeError: Invalid string length at JSON.stringify(artifacts). It overcollected historical result files. Retry narrows forced deterministic outputs to the current suites and streams JSON into gzip. Original histories and all test outcomes unchanged.

@@ -1,0 +1,5 @@
+{
+  "path": "examples/counter.js",
+  "sha256": "c1255926abb84da9666cb0ac9c1258ef27e60465785c3c4822d170471df4a1cc",
+  "reason": "Existing guest suite requires original example; copied before guest execution."
+}

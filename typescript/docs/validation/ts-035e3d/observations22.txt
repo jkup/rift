@@ -1,0 +1,30 @@
+✔ node T21 preparation snapshots caller selection, nested metadata and source before yielding (442.1961ms)
+✔ node T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates (1542.0404ms)
+✔ node actual default guards, throw and no constructor claim (1226.9737ms)
+✔ node T17 T18 invalid argument and every numeric input fault (874.6128ms)
+✔ node T23 T32 exact encoder roundtrip and observable getter effects excluded (49.6984ms)
+✔ node actual timeout and combined output cap terminate process and archive real counts (834.793ms)
+✔ node T30 prelaunch cancellation with an already-aborted signal spawns nothing (339.9016ms)
+✔ node T30 prelaunch cancellation during launch validation spawns nothing (414.4721ms)
+✔ node T30 cancellation after actual child launch terminates the child (351.0306ms)
+✔ native T21 preparation snapshots caller selection, nested metadata and source before yielding (193.3676ms)
+✔ native T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates (525.8541ms)
+✔ native actual default guards, throw and no constructor claim (767.0665ms)
+✔ native T17 T18 invalid argument and every numeric input fault (137.0565ms)
+✔ native T23 T32 exact encoder roundtrip and observable getter effects excluded (60.369ms)
+✔ native actual timeout and combined output cap terminate process and archive real counts (293.5359ms)
+✔ native T30 prelaunch cancellation with an already-aborted signal spawns nothing (71.4413ms)
+✔ native T30 prelaunch cancellation during launch validation spawns nothing (67.6075ms)
+✔ native T30 cancellation after actual child launch terminates the child (155.5922ms)
+✔ T19 fixed caps are rejected before any launch (0.2272ms)
+✔ T21 every prepared Identity/Inputs mutation is rejected before launch (421.6148ms)
+✔ T30 cancellation retains unfinished archive without terminal success (332.2498ms)
+✔ T31 preexisting result and symlink attempt roots rejected, prior bytes preserved (862.7716ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9969.8975

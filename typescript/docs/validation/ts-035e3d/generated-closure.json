@@ -1,0 +1,848 @@
+{
+  "node": {
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v26.13.0",
+    "sha256": "14319838b3f355e0398c13569a90270bce4fc68f25189f58c59b03dadae0e6d5"
+  },
+  "zig": {
+    "path": "C:/Users/jonku/AppData/Local/Microsoft/WinGet/Packages/zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe/zig-x86_64-windows-0.17.0/zig.exe",
+    "sha256": "f54b14f02a4d7d8ac62a94a0663486eb166bba3745d85b466238c1b93e723d46"
+  },
+  "gates": [
+    {
+      "entry": "src/cli.ts",
+      "binary": "rift.exe"
+    },
+    {
+      "entry": "test/realms.ts",
+      "binary": "realms.exe"
+    },
+    {
+      "entry": "test/object-descriptors.ts",
+      "binary": "object-descriptors.exe"
+    },
+    {
+      "entry": "test/object-prototypes.ts",
+      "binary": "object-prototypes.exe"
+    },
+    {
+      "entry": "test/object-keys.ts",
+      "binary": "object-keys.exe"
+    },
+    {
+      "entry": "test/conversion.ts",
+      "binary": "conversion.exe"
+    },
+    {
+      "entry": "test/definition-dispatch.ts",
+      "binary": "definition-dispatch.exe"
+    },
+    {
+      "entry": "test/array-storage.ts",
+      "binary": "array-storage.exe"
+    },
+    {
+      "entry": "test/array-like.ts",
+      "binary": "array-like.exe"
+    },
+    {
+      "entry": "test/operation-context.ts",
+      "binary": "operation-context.exe"
+    },
+    {
+      "entry": "test/array-map.ts",
+      "binary": "array-map.exe"
+    },
+    {
+      "entry": "test/array-literals.ts",
+      "binary": "array-literals.exe"
+    },
+    {
+      "entry": "test/property-key-conversion.ts",
+      "binary": "property-key-conversion.exe"
+    },
+    {
+      "entry": "test/numeric-operators.ts",
+      "binary": "numeric-operators.exe"
+    },
+    {
+      "entry": "test/addition.ts",
+      "binary": "addition.exe"
+    },
+    {
+      "entry": "test/relational.ts",
+      "binary": "relational.exe"
+    },
+    {
+      "entry": "test/primitive-conversion.ts",
+      "binary": "primitive-conversion.exe"
+    },
+    {
+      "entry": "test/operator-coercion.ts",
+      "binary": "operator-coercion.exe"
+    },
+    {
+      "entry": "test/key-coercion.ts",
+      "binary": "key-coercion.exe"
+    },
+    {
+      "entry": "test/length-coercion.ts",
+      "binary": "length-coercion.exe"
+    },
+    {
+      "entry": "test/array-length-coercion.ts",
+      "binary": "array-length-coercion.exe"
+    },
+    {
+      "entry": "test/function-call.ts",
+      "binary": "function-call.exe"
+    },
+    {
+      "entry": "test/object-valueof.ts",
+      "binary": "object-valueof.exe"
+    },
+    {
+      "entry": "test/array-string-conversion.ts",
+      "binary": "array-string-conversion.exe"
+    },
+    {
+      "entry": "test/function-string-conversion.ts",
+      "binary": "function-string-conversion.exe"
+    },
+    {
+      "entry": "test/abstract-equality.ts",
+      "binary": "abstract-equality.exe"
+    },
+    {
+      "entry": "test/delete-operator.ts",
+      "binary": "delete-operator.exe"
+    },
+    {
+      "entry": "test/typeof-void.ts",
+      "binary": "typeof-void.exe"
+    },
+    {
+      "entry": "test/in-operator.ts",
+      "binary": "in-operator.exe"
+    },
+    {
+      "entry": "test/primitive-reads.ts",
+      "binary": "primitive-reads.exe"
+    },
+    {
+      "entry": "test/property-assignment.ts",
+      "binary": "property-assignment.exe"
+    },
+    {
+      "entry": "test/compound-assignment.ts",
+      "binary": "compound-assignment.exe"
+    },
+    {
+      "entry": "test/structured-outcomes.ts",
+      "binary": "structured-outcomes.exe"
+    },
+    {
+      "entry": "src/observation-driver.ts",
+      "binary": "observation-driver.exe"
+    },
+    {
+      "entry": "test/observation-serialization.ts",
+      "binary": "observation-serialization.exe"
+    },
+    {
+      "entry": "test/return-audit.ts",
+      "binary": "return-audit.exe"
+    },
+    {
+      "entry": "test/number-radix.ts",
+      "binary": "number-radix.exe"
+    },
+    {
+      "entry": "test/script-metadata.ts",
+      "binary": "script-metadata.exe"
+    },
+    {
+      "entry": "test/global-environment.ts",
+      "binary": "global-environment.exe"
+    },
+    {
+      "entry": "test/script-realm-bootstrap.ts",
+      "binary": "script-realm-bootstrap.exe"
+    },
+    {
+      "entry": "test/script-declarations.ts",
+      "binary": "script-declarations.exe"
+    },
+    {
+      "entry": "test/script-global-declarations.ts",
+      "binary": "script-global-declarations.exe"
+    },
+    {
+      "entry": "test/script-record.ts",
+      "binary": "script-record.exe"
+    },
+    {
+      "entry": "test/script-environment.ts",
+      "binary": "script-environment.exe"
+    },
+    {
+      "entry": "test/script-function-materialization.ts",
+      "binary": "script-function-materialization.exe"
+    },
+    {
+      "entry": "test/script-function-setup.ts",
+      "binary": "script-function-setup.exe"
+    },
+    {
+      "entry": "test/property-accessors.ts",
+      "binary": "property-accessors.exe"
+    },
+    {
+      "entry": "test/script-restricted-properties.ts",
+      "binary": "script-restricted-properties.exe"
+    },
+    {
+      "entry": "test/script-execution.ts",
+      "binary": "script-execution.exe"
+    },
+    {
+      "entry": "test/harness-catch.ts",
+      "binary": "harness-catch.exe"
+    },
+    {
+      "entry": "test/harness-switch.ts",
+      "binary": "harness-switch.exe"
+    },
+    {
+      "entry": "test/harness-for-update.ts",
+      "binary": "harness-for-update.exe"
+    },
+    {
+      "entry": "test/harness-nonstrict.ts",
+      "binary": "harness-nonstrict.exe"
+    },
+    {
+      "entry": "test/harness-construct.ts",
+      "binary": "harness-construct.exe"
+    },
+    {
+      "entry": "test/harness-errors-a.ts",
+      "binary": "harness-errors-a.exe"
+    },
+    {
+      "entry": "test/harness-errors-b.ts",
+      "binary": "harness-errors-b.exe"
+    },
+    {
+      "entry": "test/harness-map-default.ts",
+      "binary": "harness-map-default.exe"
+    },
+    {
+      "entry": "test/harness-formatting.ts",
+      "binary": "harness-formatting.exe"
+    },
+    {
+      "entry": "test/harness-bundle.ts",
+      "binary": "harness-bundle.exe"
+    },
+    {
+      "entry": "test/script-observation-serialization.ts",
+      "binary": "script-observation-serialization.exe"
+    },
+    {
+      "entry": "test/script-throw-inspection.ts",
+      "binary": "script-throw-inspection.exe"
+    },
+    {
+      "entry": "src/script-observation-driver.ts",
+      "binary": "script-observation-driver.exe"
+    },
+    {
+      "entry": "test/script-observation.ts",
+      "binary": "script-observation.exe"
+    },
+    {
+      "entry": "test/script-strict-rule-audit.ts",
+      "binary": "script-strict-rule-audit.exe"
+    },
+    {
+      "entry": "test/script-strict-rule-dispatch.ts",
+      "binary": "script-strict-rule-dispatch.exe"
+    },
+    {
+      "entry": "test/script-strict-parameter-audit.ts",
+      "binary": "script-strict-parameter-audit.exe"
+    },
+    {
+      "entry": "test/script-strict-parameter-dispatch.ts",
+      "binary": "script-strict-parameter-dispatch.exe"
+    },
+    {
+      "entry": "test/script-assignment-target-audit.ts",
+      "binary": "script-assignment-target-audit.exe"
+    },
+    {
+      "entry": "test/script-assignment-target-dispatch.ts",
+      "binary": "script-assignment-target-dispatch.exe"
+    },
+    {
+      "entry": "test/script-lexical-statement-audit.ts",
+      "binary": "script-lexical-statement-audit.exe"
+    },
+    {
+      "entry": "test/script-lexical-statement-dispatch.ts",
+      "binary": "script-lexical-statement-dispatch.exe"
+    }
+  ],
+  "generated": [
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\array-prerequisites\\dispatch.js",
+      "sha256": "84dbe819199470d396ac1172b76b192b882900e358245431ab625dfd79caa0bf"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\control.js",
+      "sha256": "ca76985ab5225898e6ce9ab34954a26f91679fcf3fba87da2b982643980b43b6"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\dispatch.js",
+      "sha256": "c698213f8d711f7305405865660f43369bcfb1f5843739855ebc258b93e7d292"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\hello.js",
+      "sha256": "8109a91bcf8def8230faf13a4d0da6646e8bcb0ae9aa9b3fcefc81986a6e99ae"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\host.js",
+      "sha256": "11d5a5b0628d25c8ff3c721db9ba73033052bea000d55ea5677a53a0ca08e206"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\interpreter.js",
+      "sha256": "e4897148f69474ea0a91fe2eaf880aff173a4652cb9df628782cde513b31e9a2"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\memory.js",
+      "sha256": "af1e007ad774548434124a02d8e235b021ae563faed85dd68d4589e9a0b53b13"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\numbers.js",
+      "sha256": "fef9d99dbfde3ae915d6b40d4492c6ccbf1b84d296bcda9f9083574827e8036c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\objects.js",
+      "sha256": "de8b67031879ffb1430e8d5dadaac84a31a19796296fc1430459733fb0153f4d"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\property-key-conversion\\numbers.js",
+      "sha256": "33438f6ef8bf9a95e6e8fa77d582f5f610612c43f8805bd462d52ad5015fe502"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\strings.js",
+      "sha256": "be5e93ff1e78a8f0e94e7b01adabcddcfa36c3d8080213536470e555177f58f3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\suspension.js",
+      "sha256": "d48aa9e891608f1b015dc334d2a3f41f0d107cfe2dd457193ccb758d0c9d6021"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\probes\\values.js",
+      "sha256": "2d467fd27e15156bebc1964ca89aa5d1ac95430dce75574daeea0bb6b9639586"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\abstract-equality.js",
+      "sha256": "a0280b9251776d99ee335f96a751e82493ffa0f2774bf430584d05b67e227772"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\array-like.js",
+      "sha256": "f79efa061d89cf662e84f9bccc3a22fa3edb3850e7b200101682469ab764d0eb"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\array-map.js",
+      "sha256": "4387eeebefe85aafd41d347b59abad29580899f9bc6c3e248d72a14dbb4fa160"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\array-object.js",
+      "sha256": "a4ad273b8c0d7a217a5e335da9ddac83806a27ee0f576585b6229c1dd3bfa862"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\array.js",
+      "sha256": "822bffd3d5673e24f37c0696fabebcb3856d8f23e0e72faab2c28446036c1ac2"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\boolean.js",
+      "sha256": "6325e8b15ec265b312efe4ffdb69ffcdec0b51b3a7e93e551e281c3ace50fbf5"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\error.js",
+      "sha256": "085050fc85b022ba671d77d9b06050005790d97cc70f3cfab7928292a0271035"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\function.js",
+      "sha256": "e6d0ee6ee4500626cec5b40967a377ca54c89a5d6a6bb68598330456d1d58a33"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\number.js",
+      "sha256": "6de47e0c9260c1179eea7f6a85e1c156089a77b42c54bebfc912fba0986586c5"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\object.js",
+      "sha256": "7b96599d88191ae3979711a7dd29b8bdd5f5842cb1666a48ee5a6f544ea504bf"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\restricted-function.js",
+      "sha256": "c239c5d1c7b81c803b4c5c69010f4f9c5810c2eca0d73079e8a7b93480550658"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\string.js",
+      "sha256": "fd04f4884aa9e82b134113f85add3fed6681e017e40d8a1b6847acb7efbcb29c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\builtins\\symbol.js",
+      "sha256": "b1ef3738c9ef8ef31c9221a59892a75f969737e41081f9ff7edeba97dc43cc86"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\cli.js",
+      "sha256": "b4f76fd4f109d07f2b0cc6bb29ed74fe201dba5dcc26847a1eedad80e86dd1f3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\conversion.js",
+      "sha256": "a423027b154050de9fd2924a6f19415e2050a223acdc24719f56f0b6d866aa05"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\delete-reference.js",
+      "sha256": "1d239655be631360b20ddec0a7a2f7ff6acf310ef6fa83f8ebd55263dae90c6f"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\evaluator.js",
+      "sha256": "a949699bcb42cb5e442491319aea36756ff49632514967690a7bbf4be6abc0af"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\global-environment.js",
+      "sha256": "e9186fd8a9285044a99fb093a62de1645c211f4742a969ccd014c6ab8a02f6d8"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\interpreter.js",
+      "sha256": "c16f0a182ab54ca0333598e170bfbfceb04afc5b03879c896344ca8b83368cd6"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\lexer.js",
+      "sha256": "e1e1f0628731b881e3b67764339bab870a7ab34ed9a4631441d3713340821711"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\number-radix-internal.js",
+      "sha256": "d39de70723bd5f11f055f383b2f56ad05cce8f093a9e8cbbccc2e1b94acbb73d"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\number-radix.js",
+      "sha256": "8ca0077bb5eaf30a0ab6cb30cba149232fa258d642be3ec5437f464928d489ea"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\object-conversion.js",
+      "sha256": "92f44c5c9341ec8798e5a58caceb4f97785be0b569c46f28573ac3b6da7eb6f0"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\observation-driver.js",
+      "sha256": "98e168a2450a9ef1f5c3255f1233ffe4c0bc7d49b0d6e6eccf3c59fbb1d145a2"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\observation-json.js",
+      "sha256": "5d299dcfb6bcb9d6dad78bbc213040c0dfac7434602f286e69c245ca513ddb01"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\observation.js",
+      "sha256": "1bc5e7ef6060e13e0543ae4dd1028d6acb69fc6fa3be8ef4497bb409413d73d2"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\outcomes.js",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\parser.js",
+      "sha256": "24dd17f8e3000870a3129910b499083d448c3391d928f6ebe6cdeac520f86700"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\primitive-conversion.js",
+      "sha256": "bf552e61b4b7be19e34049c3940f2a37fd57a29c49a331becfd6c2c42153af9c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\primitive-objects.js",
+      "sha256": "a5c8f132241723e8015c1fe9615d1fa2a552199ece66fc7bb83234c9733a77be"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\property-keys.js",
+      "sha256": "29e0fe3132d04cf234d3f067e5d5715e037beab5a83c65fff070832c88b2ce49"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\realm.js",
+      "sha256": "72665dd641f2ab1f47350a9bbfba3cd0f129542f5822d079964702a141d4faf4"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\runtime.js",
+      "sha256": "4e8a99777a67bdde1e465198ba376101b5109b46f4c004fb42fb49718a7c1aeb"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-completion.js",
+      "sha256": "167e68ccaa244d4c7a06b669439364e2ff9570828c04c7a1637c30dda2b5d3c9"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-declarations.js",
+      "sha256": "6354f1e2df2a34a1935d6892ce595d92081e6ffd8ae8aa51c97266559b9584b9"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-environment.js",
+      "sha256": "07feb320cac933e46f8cad20471ebac219faa4882e68d400e7fcb738690f3bba"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-execution-internal.js",
+      "sha256": "0e0b4c7819d1b5b664c190831e4a57b39951ad6ba4a1b0421a5e6eb1076bc953"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-execution.js",
+      "sha256": "d8ffd6ed546f5242827373932942227ba854758bcc7bc880bb71af24aefe98b8"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-global-declarations.js",
+      "sha256": "bd6cc85c413ed50e749eb7fe6133cc483457499d7d538146b68ba94b40cde82b"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-metadata.js",
+      "sha256": "1a156969b02e8913900bf1ce1373acccbd18151e63b3fed740b4f60ada8cc5ee"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-observation-driver.js",
+      "sha256": "7e0a1741050b8d773580b284dc703935baca116e0c9ddcc681a489e83db00e29"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-observation-json.js",
+      "sha256": "53c939ac4850b0ac39a6e494a713c805d8f4f7bf37a9185d4e162373e46324cf"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-observation-types.js",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-observation.js",
+      "sha256": "77d9f2620eb0c6f4ee3eb518e53a4623dd88cfb90ceddd6438b0ef2738269382"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-prologue.js",
+      "sha256": "558fc7ce246e0cb2380b604e2b366bb4c02b22aafeebfbba3b5dd8b5d7b51824"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-record.js",
+      "sha256": "410f4b24af087b3c3b0bd3fb6086ca23336477c48d4d63862e401cad2cf95a80"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\script-throw-inspection.js",
+      "sha256": "0c200656efa39b54a5faa39514e19e01af394732224d05f592ea636725fc5d5d"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\strings.js",
+      "sha256": "b1827b79fe0a4db8dce8ccbd14d546f3bba239a2873cb631c2d66c1ad111fa2c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\symbols.js",
+      "sha256": "251ab4bb4a3710d85177248d9410532e73b96d8a75ffd22962e5c4b2f48c818f"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\syntax.js",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\src\\typeof.js",
+      "sha256": "1889fc81b6ae1a9b22a8401e3bfc319728bb22593577b5c750e190a3add6c241"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\abstract-equality.js",
+      "sha256": "da5e88b70ee9a3646c785a3ed19e87e463bd930e616eea0ec49b7c80345b545c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\addition.js",
+      "sha256": "7fa8d9ea2095666c4a89023227d935dad21a13b86e72cb08402f5387f5f3a4e7"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\array-length-coercion.js",
+      "sha256": "fd32edb00c890797b93f1620825ef3927cb1872962fd1a8c1b027577e09c331c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\array-like.js",
+      "sha256": "d812347e9be7f3a9cc27587f15aed74e3299cd5e53a2734352d83a3e4acc8f93"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\array-literals.js",
+      "sha256": "d772b2e84e995ceec466ca0174de416d76a2ef9636655c7501b73db08c00e22e"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\array-map.js",
+      "sha256": "4336d5059a27de41314c7b59baf94b987c7fae6ff1a8e1a88213b0359f06ca77"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\array-storage.js",
+      "sha256": "fb697ea35261e1b5f062b23b71f58cbb16212a56dce99965936b7b4cd9519a7a"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\array-string-conversion.js",
+      "sha256": "a08c97211cf2b89c9213e5799090f8fd3dea6095319ee15e433e019a7c1dc412"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\boolean-string-conversions.js",
+      "sha256": "2264fd4f0f4756b0986a73854deba104207fcc664ef6b7c845e7410dde4f9fea"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\compound-assignment.js",
+      "sha256": "9b8c4f8f7f1f437983907343dfa230e94bb8ece045d0d43669e3c3d4fa3840fb"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\conversion.js",
+      "sha256": "0a1fe87465fb8f38d9187c512ea4b7e39ff574e4c7452e1991768a3302c2b253"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\definition-dispatch.js",
+      "sha256": "a82a65e8caaf4dbe76eda80c67b4f7a512e54ae138addfbde24c65759d334211"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\delete-operator.js",
+      "sha256": "9732ab653f7561ef4f4ee1f39e0a65b9432ef3d79c2a1739885b5359c0a78017"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\function-call.js",
+      "sha256": "e9c2ae6a3983c6833bf0c371bac67d70e614c11670497b13a9ae81864b2675c9"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\function-string-conversion.js",
+      "sha256": "84ffec40f039ee9303843bf355aa4108524d383cdeffb34f7a25259886079920"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\global-environment.js",
+      "sha256": "bca5c01d4f32957c900410ff8bff870280d6f0d6257333078ec68a16d274f237"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-bundle.js",
+      "sha256": "b2f61fd81a1ade9ecaa7631f935ed96046a51c0169b087c58e48dd00094884d4"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-catch.js",
+      "sha256": "edc4463b47e8b190e9779de4569f0dbceb596d840b4628731505b8f971cb0069"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-construct.js",
+      "sha256": "a20abce6f83a5d13a9942f04d3faf37a85406fe0149af9b72c6af4afade6aea7"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-errors-a.js",
+      "sha256": "697ac9facfbf4e816bf79c33d458c74bf398cff7c0d5e0a0943d3afe6114436d"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-errors-b.js",
+      "sha256": "5202a28f5be81633feb2230afc026908f945e2aa8198682c9d2e34ec3940c196"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-for-update.js",
+      "sha256": "92d3ce1bfc37b57a19c8154d6b738e29319e5a8f7da0f32f823d41b080beff97"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-formatting.js",
+      "sha256": "bde17618b822a8908efb89dfce415aa43ed87c78491e660b654b9fa93fd32d0f"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-map-default.js",
+      "sha256": "e0a51e92d7ae0383c377ed30be8caf04b488dd4aa41493e52e0feaf7767b64d2"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-nonstrict.js",
+      "sha256": "6a2dd2f83e718515fa43868cb693e85dd154632fb7bcccc66be9ac9e6b3c1f49"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\harness-switch.js",
+      "sha256": "900a72c840071a994359c5174253acb9f4af9aab0616f8888a7ad26604ee12f3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\in-operator.js",
+      "sha256": "769185d7ffeac6a60982754f0dee813654bee371e7c52dd03bce2010eb1194f9"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\key-assertions.js",
+      "sha256": "c9777798ba3201433708f87b201b4126f28fc2e6c4fd6e4e30cdc08ac0ac248e"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\key-coercion.js",
+      "sha256": "def0a7fc52d31d2203b34015a42088edc25e21ab077360440aa9441637ae76b4"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\length-coercion.js",
+      "sha256": "4f53e0e7ee3c826eee68133231e43d1e664e4019c7006810061b5641cd660192"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\number-conversions.js",
+      "sha256": "96b4c49296d8b7186f8455259875cc69359efe6e7e7d9b1d132c484d9205fe08"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\number-radix.js",
+      "sha256": "2847b6fae58600aab87e791958b90d9f0fed4b46aaf46cde20dedfd69131b269"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\numeric-operators.js",
+      "sha256": "0195839684bd6dcb1daa141902fd81dc5248bf3fd545aeb80aad197d0c41a88b"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\object-descriptors.js",
+      "sha256": "7800777e90a099fcd5f0be63d9cb3db731ae33daddda2b1edca59f6019136940"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\object-keys.js",
+      "sha256": "ea70e1e2566fa7f66f3435f5fe68ed8888f11ce7d9c4528bd9ffff01e243d1af"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\object-prototypes.js",
+      "sha256": "9c10f188c38b6f66bb2fb37e05d8c251c5b93fe2851029b25cfce811330ab31e"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\object-tostring.js",
+      "sha256": "648f4364eee3dd67a2c37d70918a406bca9d7bc58ff414da7eddef4789a7d669"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\object-valueof.js",
+      "sha256": "6aec61c136c743cde6faf46520cc8f3cecb1d2fef9b696203408880668b0bc6c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\observation-serialization.js",
+      "sha256": "6cccdf5b156528c8e564934a6e73e64676be78f56a0618947be666aefa7adf9e"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\operation-context.js",
+      "sha256": "105ebdd1398ef84d23bca60244ad98dda9758200acaa6bbb96583ce8c1de505f"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\operator-coercion.js",
+      "sha256": "f8b5ca5e637b18dd41a7a6555f3c0a7348eb7e159cf3881ca5855ef96030b63d"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\primitive-conversion.js",
+      "sha256": "b8cd2209c8604eb24e12585fdd07467ea3f17f317dd8cc126a71c89997046561"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\primitive-reads.js",
+      "sha256": "a9a719beabf7f6760f39fe7cd55b1d3c14f262d5a185925d348153d804ddd706"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\property-accessors.js",
+      "sha256": "9e153a65f86d20a844c5904e1ad0b8e0d88167ebf58c6928a5a1e15ab2534fc7"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\property-assignment.js",
+      "sha256": "00a993814380ff8791bbf757c110233f3bebde66292ed91828e758fbac906fe3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\property-key-conversion.js",
+      "sha256": "3d094327a0c85e6a4e489384f3d7305714054e21f368edcbfd8150e6ea3b6191"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\realms.js",
+      "sha256": "0b251f3f6b137507ca1a31c0bcaf00a32ad41c584aba7c6afa337324e4ca3bb2"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\relational.js",
+      "sha256": "5151314936c2486161dcdd80b1f0fefce879de90b55b62de308024b3d563e29d"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\return-audit.js",
+      "sha256": "e7b8240eb962def2c6117b72a80bac562175d0aee68d48bfa267f8030f023134"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-assignment-target-audit.js",
+      "sha256": "1966b3d49538694e5cb66f2fcc77db547ec27ab2f63d5ecd2281bb440a145e71"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-assignment-target-dispatch.js",
+      "sha256": "16bc50b34175967bde1f34cff5b24e864ced031ff50c85b126ce3b59bfef79f3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-declarations.js",
+      "sha256": "88a21ef6dda198035effd6ac19e9409034697c36c93c14c03c758108544840cb"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-environment.js",
+      "sha256": "c509147be9fb0bb943db5edb48e3fdfffd1b0809e221d65c948fd2860f90f8ab"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-execution.js",
+      "sha256": "d87560d0b5299b4cefc3a282c515f375997189bc80c3b72df70b66fe0e5f220a"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-function-materialization.js",
+      "sha256": "2405c3ec774fb7f9ec3bbc4bb6d7a4f117d2452dc4f89cf31c61b112160ee078"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-function-setup.js",
+      "sha256": "85559dd3dc45bcf7f9426286712a68a7d6357795766a849e5a069c39673f211a"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-global-declarations.js",
+      "sha256": "88ccba0201d0d01531483a1174f011d76975fb96c7411778d528a1cff052211c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-lexical-statement-audit.js",
+      "sha256": "5b91cd3f0dabbc54b86201eb3307f055c4b6a9daa83afcd5fa6699a3c6e2c2db"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-lexical-statement-dispatch.js",
+      "sha256": "5dc104ded8ae55e074d079dfefc85347dd01b3edd4cc44b776a28f6a55589e06"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-metadata.js",
+      "sha256": "143e6478cd9048de42f3ed49b390283f4af9ab82e63f652adbc67cdfe335c4ea"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-observation-serialization.js",
+      "sha256": "fc32686b8f4eb04040fdce4e5936560984659339f7729df03b267d02907b80a8"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-observation.js",
+      "sha256": "972d33183f2a1244e772fdb2d923d5b6ec1820f0af076fac25c5a857e8c7458c"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-realm-bootstrap.js",
+      "sha256": "222ada934550586be28ff9d6275ebf38c62533acf9837299293714ad5f8e3b27"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-record.js",
+      "sha256": "16a0a529fe9767a81c8002cf76ddf9dc506d3f2abbbe41c2207acf31881d0a8e"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-restricted-properties.js",
+      "sha256": "4a3fa40fc28aa671a394c178c5f6124c2af5cb290d9bba5506a36d02aec18afd"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-strict-parameter-audit.js",
+      "sha256": "b8e037256cea82b82c84bd338de21298343d32ab85c36f3e1555ac529defaf46"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-strict-parameter-dispatch.js",
+      "sha256": "e6f35849795e53a4cd952dedc05fa02b19d0984fb37ce89461a65cd1701488a9"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-strict-rule-audit.js",
+      "sha256": "d2eb49116b4166907b2e5c3cb242db9c6855dc4e10cf76a9833a765022773a30"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-strict-rule-dispatch.js",
+      "sha256": "5e9c8ac69f65b8d5ea083b871f04f0da9f0f719e8c27885a7fd384c3cbe72347"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\script-throw-inspection.js",
+      "sha256": "5cc9b1d7951682dc110484559fcf17d47bb167360eecc48ac5119f1c8c2cb0a6"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\structured-outcomes.js",
+      "sha256": "6eddbe75bbc1f0cf1d37c9649e24bb664bf1d0236780a956453dbafe4753a071"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\symbol-conversions.js",
+      "sha256": "cd306e22d9fbb1b69c549853bf598943ca014ab5dd19be45c621746a4be9bfa5"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3d-implementation-MFU5dA\\build\\node\\test\\typeof-void.js",
+      "sha256": "63a8469c8837461f11058b4e70e4b04999446adc6bad455ad1231baead3e9fde"
+    }
+  ],
+  "retainedBinariesUsed": 0
+}

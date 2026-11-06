@@ -79,7 +79,7 @@ test('late source/transform/output failure remains driver fault without child',(
 });
 
 test('revised positional API rejects records and has no public request constructor or validator',()=>{
- assert.deepEqual(Object.keys(producer).sort(),['observeScriptControl','observeScripts','produceConformanceScripts','validateConformanceScriptArguments'].sort());
+ assert.deepEqual(Object.keys(producer).sort(),['observeScriptControl','observeScripts','produceConformanceScripts','validateConformanceScriptArguments','produceConformancePreflightControl','validateConformancePreflightArguments'].sort());
  assert.equal(validateConformanceScriptArguments.length,1);assert.equal(produceConformanceScripts.length,2);
  const raw=read('future-producer-literals.json').find(r=>r.request.mode==='conformance'&&r.request.variant==='raw');
  const fakeArray=Object.assign(Object.create(Array.prototype),{...raw.argv,length:raw.argv.length});

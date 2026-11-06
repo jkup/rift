@@ -1,0 +1,523 @@
+{
+  "stages": [
+    {
+      "name": "node-build",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 487
+    },
+    {
+      "name": "native-build",
+      "args": [
+        "tools/build-native.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 494030
+    },
+    {
+      "name": "preflight",
+      "args": [
+        "--test",
+        "tools/test262/script-preflight-producer.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 15400
+    },
+    {
+      "name": "producer",
+      "args": [
+        "--test",
+        "tools/test262/script-producer.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 9143
+    },
+    {
+      "name": "guest-node",
+      "args": [
+        "tools/run-guests.mjs",
+        "node"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 13777
+    },
+    {
+      "name": "guest-native",
+      "args": [
+        "tools/run-guests.mjs",
+        "native"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 6800
+    },
+    {
+      "name": "A-serializers",
+      "args": [
+        "docs/validation/ts-035a/capture.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 238
+    },
+    {
+      "name": "A-decoders",
+      "args": [
+        "--test",
+        "tools/test262/script-result.test.mjs",
+        "tools/test262/script-driver-result.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 14783
+    },
+    {
+      "name": "E3a",
+      "args": [
+        "--test",
+        "tools/test262/script-compose.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 741
+    },
+    {
+      "name": "C-codec",
+      "args": [
+        "--test",
+        "tools/test262/script-observe-codec.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 204
+    },
+    {
+      "name": "C-transport",
+      "args": [
+        "tools/test262/script-observation.integration.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 284321
+    },
+    {
+      "name": "C-live",
+      "args": [
+        "--test",
+        "tools/test262/script-observe-live-codec.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1330
+    },
+    {
+      "name": "C-host-remaining",
+      "args": [
+        "--test",
+        "tools/test262/script-observe-launch.test.mjs",
+        "tools/test262/script-observe-preflight.test.mjs",
+        "tools/test262/script-observe-input.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 64615
+    },
+    {
+      "name": "D8-source",
+      "args": [
+        "docs/validation/ts-035d8/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 81166
+    },
+    {
+      "name": "D7-source",
+      "args": [
+        "docs/validation/ts-035d7/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 85623
+    },
+    {
+      "name": "D6-source",
+      "args": [
+        "docs/validation/ts-035d6/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 51924
+    },
+    {
+      "name": "D5-source",
+      "args": [
+        "docs/validation/ts-035d5/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 11779
+    },
+    {
+      "name": "D4-source",
+      "args": [
+        "docs/validation/ts-035d4/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 31251
+    },
+    {
+      "name": "D3-source",
+      "args": [
+        "docs/validation/ts-035d3/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 5106
+    },
+    {
+      "name": "D2-source",
+      "args": [
+        "docs/validation/ts-035d2/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 19729
+    },
+    {
+      "name": "D1-source",
+      "args": [
+        "docs/validation/ts-035d1/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 4197
+    },
+    {
+      "name": "D8-wire",
+      "args": [
+        "--test",
+        "tools/test262/script-lexical-statement-dispatch.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 12322
+    },
+    {
+      "name": "D6-wire",
+      "args": [
+        "--test",
+        "tools/test262/script-assignment-target-dispatch.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 10241
+    },
+    {
+      "name": "D4-wire",
+      "args": [
+        "--test",
+        "tools/test262/script-strict-parameter-dispatch.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 13788
+    },
+    {
+      "name": "D2-wire",
+      "args": [
+        "--test",
+        "tools/test262/script-strict-rule-dispatch.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 8470
+    },
+    {
+      "name": "D8-future-wire",
+      "args": [
+        "docs/validation/ts-035d8-p/wire.mjs",
+        "--future"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 24615
+    },
+    {
+      "name": "D6-future-wire",
+      "args": [
+        "docs/validation/ts-035d6-p/wire.mjs",
+        "--future"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 19076
+    },
+    {
+      "name": "D5-future-wire",
+      "args": [
+        "docs/validation/ts-035d5-p/wire.mjs",
+        "--future"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 10524
+    },
+    {
+      "name": "D2-future-wire",
+      "args": [
+        "docs/validation/ts-035d2-p/verify-future-wire.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 5290
+    },
+    {
+      "name": "D4-controls",
+      "args": [
+        "docs/validation/ts-035d4/controls.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 154
+    },
+    {
+      "name": "D2-controls",
+      "args": [
+        "docs/validation/ts-035d2/extra-controls.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 762
+    },
+    {
+      "name": "D1-controls",
+      "args": [
+        "docs/validation/ts-035d1/extra-controls.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 835
+    },
+    {
+      "name": "D5-oracle",
+      "args": [
+        "docs/validation/ts-035d5-p/oracle-controls.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 70
+    },
+    {
+      "name": "B-inspection",
+      "args": [
+        "docs/validation/ts-035b/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 390
+    },
+    {
+      "name": "B-boundary",
+      "args": [
+        "docs/validation/ts-035b/boundary.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 75
+    },
+    {
+      "name": "H7",
+      "args": [
+        "docs/validation/ts-034h7/validate.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 4764
+    },
+    {
+      "name": "host73",
+      "args": [
+        "--test",
+        "tools/test262/boundary.test.mjs",
+        "tools/test262/driver-result.test.mjs",
+        "tools/test262/input.test.mjs",
+        "tools/test262/ledger.test.mjs",
+        "tools/test262/result.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 239
+    },
+    {
+      "name": "observations22",
+      "args": [
+        "tools/test262/observation.integration.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 10072
+    },
+    {
+      "name": "runner20",
+      "args": [
+        "--test",
+        "tools/probe-verdict.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 118
+    },
+    {
+      "name": "typecheck",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "tsconfig.json",
+        "--noEmit"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 393
+    },
+    {
+      "name": "probes10",
+      "args": [
+        "tools/run-probes.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 26060
+    },
+    {
+      "name": "E3c-installed",
+      "args": [
+        "tools/test262/script-execution-inputs.test.mjs",
+        "C:/Users/jonku/AppData/Local/Temp/rift-ts031a-test262-91c7075",
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\installed-results"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 54863
+    },
+    {
+      "name": "E3c-context",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\context.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 18548
+    },
+    {
+      "name": "E3c-root-mutant",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\root-mutant.mjs",
+        "--root-mutant"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 3298
+    },
+    {
+      "name": "E3c-mutations-retry",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\mutations-retry.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 50773
+    },
+    {
+      "name": "policy",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\policy.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1700
+    },
+    {
+      "name": "dispatch-reduction",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\dispatch-probe.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 157
+    },
+    {
+      "name": "driver-reduction-retry",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\driver-probe-retry.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 85
+    }
+  ],
+  "originalFilesVerified": 17345,
+  "artifacts": 1911,
+  "archiveSha256": "ea44dfaab9e850776b1d3e90666c6cb39cb24f508c752fe7c46217f2b3534836",
+  "freshNativeGates": 71,
+  "guestRecordsPerLane": 212,
+  "preflightLiterals": 160
+}

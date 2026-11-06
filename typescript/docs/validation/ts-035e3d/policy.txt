@@ -1,0 +1,1 @@
+PASS both actual policy lanes: empty registry, 60 blocked, 19 feature/41 profile, 0 executed/0 body entries

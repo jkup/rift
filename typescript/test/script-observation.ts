@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import { observeScriptControl, type ObservationUnit } from "../src/script-observation.js";
+import { observeScriptControl, validateConformancePreflightArguments, produceConformancePreflightControl, type ObservationUnit } from "../src/script-observation.js";
 import { scriptObservationJSONRecord } from "../src/script-observation-json.js";
 
 function decimal(text: string): number {
@@ -14,6 +14,17 @@ function identifier(text: string): void {
     for (let n = 0; n < text.length; n++) if (text.charCodeAt(n) < 33 || text.charCodeAt(n) > 126) throw new Error("invalid identifier");
 }
 function main(): void {
+    if (process.argv[2] === "conformance-preflight-v1") {
+        const args = process.argv.slice(2);
+        validateConformancePreflightArguments(args);
+        const texts: string[] = [];
+        for (let n = 17; n < args.length; n += 3) texts.push(readFileSync(args[n + 2], "utf8"));
+        const result = produceConformancePreflightControl(args, texts);
+        writeFileSync(args[9], scriptObservationJSONRecord(result.child), { encoding: "utf8", flag: "wx" });
+        writeFileSync(args[9] + ".control.json", JSON.stringify(result.report), { encoding: "utf8", flag: "wx" });
+        return;
+    }
+
     const control = process.argv[2];
     const input = readFileSync(process.argv[3], "utf8").trim();
     const args = process.argv.slice(4);
