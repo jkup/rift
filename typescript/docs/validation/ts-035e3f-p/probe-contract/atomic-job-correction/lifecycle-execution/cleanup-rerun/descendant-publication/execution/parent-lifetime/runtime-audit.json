@@ -1,0 +1,17 @@
+{
+  "node": "v26.13.0",
+  "uv": "1.52.1",
+  "execPath": "C:\\Program Files\\nodejs\\node.exe",
+  "pinnedNodePath": "C:\\Program Files\\nodejs\\node.exe",
+  "pinnedNodeSha256": "14319838b3f355e0398c13569a90270bce4fc68f25189f58c59b03dadae0e6d5",
+  "hostIntrospectionOnly": true,
+  "fixtureInvocations": 0,
+  "builtinChildProcessSha256": "c7a0d4fc3e20418f97d679126480509026a29f334f07f3db5d4ec43c808eb307",
+  "builtinInternalChildProcessSha256": "b03963ab469d980ba8f6f1713ad26a4278187b71083d02b5647af6172f304b60",
+  "sourceReferences": [
+    "https://github.com/libuv/libuv/blob/v1.52.1/src/win/process.c#L65-L114",
+    "https://github.com/libuv/libuv/blob/v1.52.1/src/win/process.c#L1016-L1045",
+    "https://nodejs.org/api/child_process.html#event-spawn"
+  ],
+  "installedNativeBinarySourceEquivalenceProven": false
+}

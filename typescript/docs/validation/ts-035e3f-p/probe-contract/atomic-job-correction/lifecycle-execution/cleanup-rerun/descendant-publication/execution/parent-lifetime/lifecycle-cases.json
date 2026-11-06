@@ -1,0 +1,60 @@
+[
+  {
+    "id": "death-with-live-descendant",
+    "source": "corrected",
+    "mode": "descendant-live",
+    "pauseAt": "after-resume",
+    "fault": "",
+    "action": "kill-descendant",
+    "expect": "empty-after-kill",
+    "resumed": null,
+    "stop": null
+  },
+  {
+    "id": "creation-race-0ms",
+    "source": "corrected",
+    "mode": "idle",
+    "pauseAt": "before-create",
+    "fault": "",
+    "action": "race-kill",
+    "delayMs": 0,
+    "expect": "empty-after-kill",
+    "resumed": null,
+    "stop": null
+  },
+  {
+    "id": "creation-race-1ms",
+    "source": "corrected",
+    "mode": "idle",
+    "pauseAt": "before-create",
+    "fault": "",
+    "action": "race-kill",
+    "delayMs": 1,
+    "expect": "empty-after-kill",
+    "resumed": null,
+    "stop": null
+  },
+  {
+    "id": "creation-race-5ms",
+    "source": "corrected",
+    "mode": "idle",
+    "pauseAt": "before-create",
+    "fault": "",
+    "action": "race-kill",
+    "delayMs": 5,
+    "expect": "empty-after-kill",
+    "resumed": null,
+    "stop": null
+  },
+  {
+    "id": "legacy-gap-control",
+    "source": "legacy",
+    "mode": "idle",
+    "pauseAt": "after-create",
+    "fault": "",
+    "action": "kill",
+    "expect": "survivor-detected-before-safety-cleanup",
+    "resumed": null,
+    "stop": null
+  }
+]

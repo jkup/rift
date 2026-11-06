@@ -1,0 +1,20 @@
+ [DllImport("kernel32.dll",SetLastError=true)] static extern IntPtr OpenProcess(uint access,bool inherit,uint pid);
+ [DllImport("kernel32.dll",SetLastError=true)] static extern bool IsProcessInJob(IntPtr process,IntPtr job,out bool member);
+ [DllImport("kernel32.dll",SetLastError=true)] static extern bool GetExitCodeProcess(IntPtr process,out uint code);
+ [DllImport("kernel32.dll",SetLastError=true,CharSet=CharSet.Unicode)] static extern bool QueryFullProcessImageNameW(IntPtr process,uint flags,StringBuilder name,ref uint size);
+ [DllImport("kernel32.dll",SetLastError=true)] static extern bool GetProcessTimes(IntPtr process,out long created,out long exited,out long kernel,out long user);
+ readonly System.Collections.Generic.Dictionary<uint,IntPtr> observed=new System.Collections.Generic.Dictionary<uint,IntPtr>();
+ public sealed class Identity {public uint Pid {get;set;} public string Created {get;set;} public string Image {get;set;}}
+ public Identity CaptureMember(uint pid) {
+  if(observed.ContainsKey(pid))throw new Exception("duplicate-observed-pid");
+  IntPtr handle=OpenProcess(0x00101000,false,pid);Need(handle!=IntPtr.Zero,"observer-open-member");
+  try {
+   bool member;Need(IsProcessInJob(handle,job,out member),"observer-member-check");if(!member)throw new Exception("observer-process-not-in-outer-job");
+   uint wait=WaitForSingleObject(handle,0);if(wait!=258)throw new Exception("observer-member-not-live: "+wait);
+   uint size=32768;var name=new StringBuilder((int)size);Need(QueryFullProcessImageNameW(handle,0,name,ref size),"observer-member-image");
+   long created,exited,kernel,user;Need(GetProcessTimes(handle,out created,out exited,out kernel,out user),"observer-member-times");
+   observed.Add(pid,handle);handle=IntPtr.Zero;return new Identity {Pid=pid,Created=created.ToString(System.Globalization.CultureInfo.InvariantCulture),Image=name.ToString()};
+  }finally{if(handle!=IntPtr.Zero)CloseHandle(handle);}
+ }
+ public bool WaitMember(uint pid,int ms){uint r=WaitForSingleObject(observed[pid],(uint)ms);if(r==0)return true;if(r==258)return false;throw new Win32Exception(Marshal.GetLastWin32Error(),"observer-member-wait");}
+ public uint MemberExit(uint pid){if(!WaitMember(pid,0))throw new Exception("observer-member-still-running");uint code;Need(GetExitCodeProcess(observed[pid],out code),"observer-member-exit");return code;}

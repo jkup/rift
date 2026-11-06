@@ -1,0 +1,26 @@
+{
+  "status": "design-only-execution-not-authorized",
+  "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-atomic-job-lifecycle-parent-live",
+  "diagnosticRoot": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-atomic-job-lifecycle-parent-live-diagnostic",
+  "remainingOriginalOrdinals": [
+    21,
+    22,
+    23,
+    24,
+    25
+  ],
+  "changedCase": {
+    "oldId": "death-with-descendant",
+    "newId": "death-with-live-descendant",
+    "oldMode": "descendant",
+    "newMode": "descendant-live",
+    "meaning": "supervisor death with independently confirmed live parent and ready leaf"
+  },
+  "diagnosticSeparate": true,
+  "diagnosticVerdicts": [
+    "leaf-exited-after-parent-exit",
+    "leaf-running-at-deadline-after-parent-exit"
+  ],
+  "executions": 0,
+  "compilerInvocations": 0
+}

@@ -1,0 +1,17 @@
+{
+  "nodeExitCode": 0,
+  "nodeSyntaxInheritedFromUnchangedFixture": "syntax-results.json",
+  "powershell": [
+    {
+      "errors": [],
+      "name": "lifecycle-runner.ps1"
+    },
+    {
+      "errors": [],
+      "name": "diagnostic-runner.ps1"
+    }
+  ],
+  "csharpCompilations": 0,
+  "fixtureInvocations": 0,
+  "scriptcInvocations": 0
+}

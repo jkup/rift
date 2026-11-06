@@ -1,0 +1,54 @@
+[
+  {
+    "name": "child_process",
+    "sha256": "c7a0d4fc3e20418f97d679126480509026a29f334f07f3db5d4ec43c808eb307",
+    "matches": [
+      {
+        "line": 112,
+        "text": " *   detached?: boolean;\r"
+      },
+      {
+        "line": 622,
+        "text": "  // Validate detached, if present.\r"
+      },
+      {
+        "line": 623,
+        "text": "  if (options.detached != null) {\r"
+      },
+      {
+        "line": 624,
+        "text": "    validateBoolean(options.detached, 'options.detached');\r"
+      },
+      {
+        "line": 782,
+        "text": "    detached: !!options.detached,\r"
+      },
+      {
+        "line": 839,
+        "text": " *   detached?: boolean;\r"
+      }
+    ]
+  },
+  {
+    "name": "internal/child_process",
+    "sha256": "b03963ab469d980ba8f6f1713ad26a4278187b71083d02b5647af6172f304b60",
+    "matches": [
+      {
+        "line": 182,
+        "text": "        // Act like socket is detached\r"
+      },
+      {
+        "line": 430,
+        "text": "  if (options.detached)\r"
+      },
+      {
+        "line": 437,
+        "text": "  const err = this._handle.spawn(\r"
+      },
+      {
+        "line": 495,
+        "text": "  this.pid = this._handle.pid;\r"
+      }
+    ]
+  }
+]

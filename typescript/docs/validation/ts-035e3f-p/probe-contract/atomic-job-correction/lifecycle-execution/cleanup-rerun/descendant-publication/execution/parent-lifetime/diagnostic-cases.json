@@ -1,0 +1,13 @@
+[
+  {
+    "id": "parent-exit-diagnostic",
+    "source": "corrected",
+    "mode": "descendant-exit-diagnostic",
+    "pauseAt": "after-resume",
+    "fault": "",
+    "action": "observe-parent-exit",
+    "expect": "diagnostic-observation",
+    "resumed": null,
+    "stop": null
+  }
+]
