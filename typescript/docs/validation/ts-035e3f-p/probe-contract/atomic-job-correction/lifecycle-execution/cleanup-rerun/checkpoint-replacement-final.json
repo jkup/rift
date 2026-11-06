@@ -1,0 +1,21 @@
+{
+  "compiled": false,
+  "executed": false,
+  "changes": [
+    {
+      "name": "test-hooks.cs",
+      "old": "    using(var f=new System.IO.FileStream(System.IO.Path.Combine(Root,\"point-\"+name+\".txt\"),System.IO.FileMode.CreateNew,System.IO.FileAccess.Write,System.IO.FileShare.Read)) {\n      byte[] b=System.Text.Encoding.ASCII.GetBytes(pid.ToString()+\"\\n\");f.Write(b,0,b.Length);f.Flush(true);\n    }",
+      "next": "    string published=System.IO.Path.Combine(Root,\"point-\"+name+\".txt\");\n    string staging=published+\".pending\";\n    using(var f=new System.IO.FileStream(staging,System.IO.FileMode.CreateNew,System.IO.FileAccess.Write,System.IO.FileShare.None)) {\n      byte[] b=System.Text.Encoding.ASCII.GetBytes(pid.ToString()+\"\\n\");f.Write(b,0,b.Length);f.Flush(true);\n    }\n    System.IO.File.Move(staging,published);"
+    },
+    {
+      "name": "supervisor.lifecycle.cs",
+      "old": "    using(var f=new System.IO.FileStream(System.IO.Path.Combine(Root,\"point-\"+name+\".txt\"),System.IO.FileMode.CreateNew,System.IO.FileAccess.Write,System.IO.FileShare.Read)) {\n      byte[] b=System.Text.Encoding.ASCII.GetBytes(pid.ToString()+\"\\n\");f.Write(b,0,b.Length);f.Flush(true);\n    }",
+      "next": "    string published=System.IO.Path.Combine(Root,\"point-\"+name+\".txt\");\n    string staging=published+\".pending\";\n    using(var f=new System.IO.FileStream(staging,System.IO.FileMode.CreateNew,System.IO.FileAccess.Write,System.IO.FileShare.None)) {\n      byte[] b=System.Text.Encoding.ASCII.GetBytes(pid.ToString()+\"\\n\");f.Write(b,0,b.Length);f.Flush(true);\n    }\n    System.IO.File.Move(staging,published);"
+    },
+    {
+      "name": "supervisor.legacy-control.cs",
+      "old": "    using(var f=new System.IO.FileStream(System.IO.Path.Combine(Root,\"point-\"+name+\".txt\"),System.IO.FileMode.CreateNew,System.IO.FileAccess.Write,System.IO.FileShare.Read)) {\n      byte[] b=System.Text.Encoding.ASCII.GetBytes(pid.ToString()+\"\\n\");f.Write(b,0,b.Length);f.Flush(true);\n    }",
+      "next": "    string published=System.IO.Path.Combine(Root,\"point-\"+name+\".txt\");\n    string staging=published+\".pending\";\n    using(var f=new System.IO.FileStream(staging,System.IO.FileMode.CreateNew,System.IO.FileAccess.Write,System.IO.FileShare.None)) {\n      byte[] b=System.Text.Encoding.ASCII.GetBytes(pid.ToString()+\"\\n\");f.Write(b,0,b.Length);f.Flush(true);\n    }\n    System.IO.File.Move(staging,published);"
+    }
+  ]
+}

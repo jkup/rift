@@ -1,0 +1,11 @@
+{
+  "script": "preserve.mjs",
+  "exitCode": 1,
+  "error": "AssertionError [ERR_ASSERTION]: test-hooks.cs; 1 !== 2",
+  "cause": "CRLF assumption in proposed replacement; original hook segment uses LF",
+  "retained": [
+    "preserve.mjs",
+    "checkpoint-replacement.json"
+  ],
+  "effect": "Archive and outcome files completed before source proposal assertion; no C# or lifecycle execution. propose.mjs authors the exact LF source replacement separately."
+}

@@ -1,0 +1,198 @@
+// PROPOSAL ONLY. No Add-Type or compiler execution during design validation.
+// Creation-time JOB_LIST membership removes the create-then-assign orphan gap.
+using System;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+
+public static class ProbeSupervisor {
+  [StructLayout(LayoutKind.Sequential)] struct SA { public int Length; public IntPtr Descriptor; [MarshalAs(UnmanagedType.Bool)] public bool Inherit; }
+  [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)] struct SI { public int Size; public string Reserved; public string Desktop; public string Title; public int X,Y,XSize,YSize,XChars,YChars,Fill,Flags; public short Show,ReservedCount; public IntPtr ReservedBytes,Input,Output,Error; }
+  [StructLayout(LayoutKind.Sequential)] struct SIX { public SI Start; public IntPtr Attributes; }
+  [StructLayout(LayoutKind.Sequential)] struct PI { public IntPtr Process,Thread; public uint Pid,Tid; }
+  [StructLayout(LayoutKind.Sequential)] struct BASIC_LIMIT { public long ProcessTime,JobTime; public uint Flags; public UIntPtr MinWorking,MaxWorking; public uint ActiveLimit; public UIntPtr Affinity; public uint Priority,Scheduling; }
+  [StructLayout(LayoutKind.Sequential)] struct IO_COUNTERS { public ulong ReadOps,WriteOps,OtherOps,ReadBytes,WriteBytes,OtherBytes; }
+  [StructLayout(LayoutKind.Sequential)] struct EXT_LIMIT { public BASIC_LIMIT Basic; public IO_COUNTERS Io; public UIntPtr ProcessMemory,JobMemory,PeakProcess,PeakJob; }
+  [StructLayout(LayoutKind.Sequential)] struct ACCOUNTING { public long User,Kernel,PeriodUser,PeriodKernel; public uint Faults,Total,Active,Terminated; }
+  [DllImport("kernel32.dll",SetLastError=true,CharSet=CharSet.Unicode)] static extern IntPtr CreateJobObjectW(IntPtr sa,string name);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool SetInformationJobObject(IntPtr j,int cls,ref EXT_LIMIT info,uint size);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool QueryInformationJobObject(IntPtr j,int cls,out ACCOUNTING info,uint size,IntPtr length);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool IsProcessInJob(IntPtr p,IntPtr job,[MarshalAs(UnmanagedType.Bool)] out bool member);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool TerminateJobObject(IntPtr j,uint code);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool TerminateProcess(IntPtr p,uint code);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool CreatePipe(out IntPtr r,out IntPtr w,ref SA sa,uint size);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool SetHandleInformation(IntPtr h,uint mask,uint flags);
+  [DllImport("kernel32.dll",SetLastError=true,CharSet=CharSet.Unicode)] static extern IntPtr CreateFileW(string path,uint access,uint share,ref SA sa,uint creation,uint flags,IntPtr template);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool InitializeProcThreadAttributeList(IntPtr list,int count,int flags,ref IntPtr size);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool UpdateProcThreadAttribute(IntPtr list,uint flags,IntPtr attribute,IntPtr value,IntPtr size,IntPtr previous,IntPtr returned);
+  [DllImport("kernel32.dll")] static extern void DeleteProcThreadAttributeList(IntPtr list);
+  [DllImport("kernel32.dll",SetLastError=true,CharSet=CharSet.Unicode)] static extern bool CreateProcessW(string app,StringBuilder command,IntPtr psa,IntPtr tsa,bool inherit,uint flags,IntPtr env,string cwd,ref SIX si,out PI pi);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern uint ResumeThread(IntPtr thread);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern uint WaitForSingleObject(IntPtr handle,uint timeout);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool GetExitCodeProcess(IntPtr process,out uint code);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool ReadFile(IntPtr handle,byte[] data,int size,out int count,IntPtr overlapped);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool CloseHandle(IntPtr handle);
+  static void Need(bool ok,string stage) { if(!ok) throw new Win32Exception(Marshal.GetLastWin32Error(),stage); }
+  static void Close(ref IntPtr h) { if(h!=IntPtr.Zero && h!=new IntPtr(-1)) { CloseHandle(h); h=IntPtr.Zero; } }
+  static uint Active(IntPtr job) { ACCOUNTING a; Need(QueryInformationJobObject(job,1,out a,(uint)Marshal.SizeOf<ACCOUNTING>(),IntPtr.Zero),"query-job"); return a.Active; }
+  static string Quote(string s) { var b=new StringBuilder("\""); int slash=0; foreach(char c in s) { if(c=='\\') {slash++;continue;} if(c=='\"') b.Append('\\',slash*2+1); else b.Append('\\',slash); b.Append(c); slash=0; } b.Append('\\',slash*2).Append('"'); return b.ToString(); }
+  public sealed class PipeEvidence {
+    public long ObservedBytes {get;set;} public long RetainedBytes {get;set;}
+    public string ObservedSha256 {get;set;} public string Error {get;set;}
+    public bool Eof {get;set;} public bool Complete {get;set;} public bool Overflow {get;set;}
+  }
+  sealed class Pump {
+    public PipeEvidence Evidence = new PipeEvidence(); public int Overflow,Fault,Done;
+    IntPtr handle; readonly int cap; readonly FileStream file; Thread worker; int started,closed;
+    public bool Started {get {return Volatile.Read(ref started)!=0;}}
+    public Pump(IntPtr h,string path,int limit) { cap=limit; file=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.Read); handle=h; }
+    public void Start() {
+      worker=new Thread(Run) {IsBackground=true};
+      Interlocked.Exchange(ref started,1); // Until positively known unstarted, the worker owns cleanup.
+      try {TestHooks.BeforePumpStart();if(TestHooks.Fault=="stdout-read"&&file.Name.EndsWith("compiler.stdout.bin")){IntPtr old=Interlocked.Exchange(ref handle,IntPtr.Zero);CloseHandle(old);}worker.Start();}
+      catch { // An uncertain started thread keeps ownership; never close under it.
+        if((worker.ThreadState & System.Threading.ThreadState.Unstarted)!=0)Interlocked.Exchange(ref started,0);
+        throw;
+      }
+    }
+    void Release() {
+      if(Interlocked.Exchange(ref closed,1)!=0)return;
+      try {file.Dispose();}catch(Exception e){Evidence.Error=(Evidence.Error??"")+e.ToString();Interlocked.Exchange(ref Fault,1);}
+      IntPtr h=Interlocked.Exchange(ref handle,IntPtr.Zero);
+      if(h!=IntPtr.Zero&&!CloseHandle(h)){Evidence.Error=(Evidence.Error??"")+new Win32Exception(Marshal.GetLastWin32Error(),"close-pipe").ToString();Interlocked.Exchange(ref Fault,1);}
+      Interlocked.Exchange(ref Done,1);
+    }
+    public void CloseUnstarted() {if(!Started)Release();}
+    public void Run() {
+      using(var digest=IncrementalHash.CreateHash(HashAlgorithmName.SHA256)) {
+        try {
+          var bytes=new byte[16384]; int n;
+          while(true) {
+            bool ok=ReadFile(handle,bytes,bytes.Length,out n,IntPtr.Zero);
+            if(!ok) { int code=Marshal.GetLastWin32Error(); if(code==109) {Evidence.Eof=true;break;} throw new Win32Exception(code,"read-pipe"); }
+            if(n==0) {Evidence.Eof=true;break;}
+            Evidence.ObservedBytes+=n; digest.AppendData(bytes,0,n);
+            int retain=(int)Math.Min(n,(long)cap-Evidence.RetainedBytes);
+            if(retain>0) {file.Write(bytes,0,retain); Evidence.RetainedBytes+=retain;}
+            if(Evidence.ObservedBytes>cap) {Evidence.Overflow=true;Interlocked.Exchange(ref Overflow,1);}
+          }
+          Evidence.ObservedSha256=Convert.ToHexString(digest.GetHashAndReset()).ToLowerInvariant();
+          file.Flush(true); Evidence.Complete=true;
+        } catch(Exception e) {Evidence.Error=e.ToString();Interlocked.Exchange(ref Fault,1);}
+        finally {Release();}
+      }
+    }
+  }
+  public sealed class Result {
+    public string Outcome {get;set;} = "supervisor-fault";
+    public string StopReason {get;set;} public List<string> Errors {get;set;} = new List<string>();
+    public List<string> Events {get;set;} = new List<string>();
+    public uint? Pid {get;set;} public uint? NativeExitCode {get;set;} public string Signal {get;set;} = null;
+    public bool CreatedSuspended {get;set;} public bool Assigned {get;set;} public bool Resumed {get;set;}
+    public bool JobListConfigured {get;set;} public bool MembershipVerified {get;set;}
+    public bool CleanupConfirmed {get;set;} public uint? FinalActiveProcesses {get;set;}
+    public long ElapsedMs {get;set;} public PipeEvidence Stdout {get;set;} public PipeEvidence Stderr {get;set;}
+    public string ExternalEffects {get;set;} = "not monitored outside enumerated roots; cooperative installed-tool and OS trust";
+  }
+  public static Result Run(string exe,string[] args,string[] environment,string cwd,int timeout,int cap,int cleanup) {
+    var r=new Result(); var clock=new Stopwatch();
+    IntPtr job=IntPtr.Zero,or=IntPtr.Zero,ow=IntPtr.Zero,er=IntPtr.Zero,ew=IntPtr.Zero,input=IntPtr.Zero,attrs=IntPtr.Zero,handles=IntPtr.Zero,jobs=IntPtr.Zero,env=IntPtr.Zero;
+    bool attrsReady=false; PI pi=new PI(); Pump stdout=null,stderr=null;
+    try {
+      if(timeout!=60000||cap!=8388608||cleanup!=10000) throw new Exception("fixed-limits");
+      if(TestHooks.Fault=="unsupported"||!OperatingSystem.IsWindowsVersionAtLeast(10))throw new PlatformNotSupportedException("creation-time-job-list requires Windows 10+; no fallback");
+      job=CreateJobObjectW(IntPtr.Zero,null);Need(job!=IntPtr.Zero,"create-job");
+      var limits=new EXT_LIMIT();limits.Basic.Flags=0x2000; // KILL_ON_JOB_CLOSE only; no breakaway flags.
+      Need(SetInformationJobObject(job,9,ref limits,(uint)Marshal.SizeOf<EXT_LIMIT>()),"set-job-limit");r.Events.Add("job-kill-on-close");
+      var sa=new SA {Length=Marshal.SizeOf<SA>(),Descriptor=IntPtr.Zero,Inherit=true};
+      Need(CreatePipe(out or,out ow,ref sa,0),"stdout-pipe");Need(CreatePipe(out er,out ew,ref sa,0),"stderr-pipe");
+      Need(SetHandleInformation(or,1,0),"stdout-not-inherited");Need(SetHandleInformation(er,1,0),"stderr-not-inherited");
+      input=CreateFileW("NUL",0x80000000,3,ref sa,3,0,IntPtr.Zero);Need(input!=new IntPtr(-1),"stdin-nul");
+      IntPtr size=IntPtr.Zero;InitializeProcThreadAttributeList(IntPtr.Zero,2,0,ref size);Need(size!=IntPtr.Zero,"attribute-size");
+      attrs=Marshal.AllocHGlobal(size);Need(InitializeProcThreadAttributeList(attrs,2,0,ref size),"attributes");attrsReady=true;
+      handles=Marshal.AllocHGlobal(IntPtr.Size*3);Marshal.WriteIntPtr(handles,0,input);Marshal.WriteIntPtr(handles,IntPtr.Size,ow);Marshal.WriteIntPtr(handles,IntPtr.Size*2,ew);
+      Need(UpdateProcThreadAttribute(attrs,0,new IntPtr(0x20002),handles,new IntPtr(IntPtr.Size*3),IntPtr.Zero,IntPtr.Zero),"handle-list");
+      TestHooks.Fail("job-list-setup");jobs=Marshal.AllocHGlobal(IntPtr.Size);Marshal.WriteIntPtr(jobs,TestHooks.Fault=="invalid-job"?IntPtr.Zero:job);
+      Need(UpdateProcThreadAttribute(attrs,0,new IntPtr(0x2000d),jobs,new IntPtr(IntPtr.Size),IntPtr.Zero,IntPtr.Zero),"creation-time-job-list");
+      r.JobListConfigured=true;r.Events.Add("creation-time-job-list-configured");
+      Array.Sort(environment,StringComparer.OrdinalIgnoreCase);var seen=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+      foreach(string pair in environment) {int equals=pair.IndexOf('=');if(equals<=0||pair.IndexOf('\0')>=0||!seen.Add(pair.Substring(0,equals)))throw new Exception("environment");}
+      env=Marshal.StringToHGlobalUni(String.Join("\0",environment)+"\0\0");
+      var si=new SIX();si.Start.Size=Marshal.SizeOf<SIX>();si.Start.Flags=0x100;si.Start.Input=input;si.Start.Output=ow;si.Start.Error=ew;si.Attributes=attrs;
+      var command=new StringBuilder(Quote(exe));foreach(string a in args)command.Append(' ').Append(Quote(a));
+      stdout=new Pump(or,Path.Combine(cwd,"compiler.stdout.bin"),cap);or=IntPtr.Zero;
+      stderr=new Pump(er,Path.Combine(cwd,"compiler.stderr.bin"),cap);er=IntPtr.Zero;
+      // Start the 60s window before CreateProcess, never after a running child.
+      TestHooks.Point("before-create");clock.Start();bool created=CreateProcessW(exe,command,IntPtr.Zero,IntPtr.Zero,true,0x08080404,env,cwd,ref si,out pi);
+      if(!created) {int error=Marshal.GetLastWin32Error();pi=new PI();throw new Win32Exception(error,"create-suspended");}
+      TestHooks.Point("after-create",pi.Pid);r.Pid=pi.Pid;r.CreatedSuspended=true;r.Assigned=true;r.Events.Add("created-suspended-in-job");
+      bool member;Need(IsProcessInJob(pi.Process,job,out member),"query-exact-job-membership");
+      if(TestHooks.Fault=="membership-false")member=false;if(!member)throw new Exception("creation-time-job-membership-missing; no resume or fallback");
+      r.MembershipVerified=true;r.Events.Add("membership-verified");TestHooks.Point("membership-verified",pi.Pid);
+      Close(ref ow);Close(ref ew);Close(ref input);
+      stdout.Start();
+      stderr.Start();
+      TestHooks.Point("before-resume",pi.Pid);Need(ResumeThread(pi.Thread)!=0xffffffff,"resume");r.Resumed=true;r.Events.Add("resumed");Close(ref pi.Thread);TestHooks.Point("after-resume",pi.Pid);
+      while(true) {
+        if(Volatile.Read(ref stdout.Overflow)!=0||Volatile.Read(ref stderr.Overflow)!=0) {r.StopReason="output-cap";break;}
+        if(Volatile.Read(ref stdout.Fault)!=0||Volatile.Read(ref stderr.Fault)!=0) {r.StopReason="pipe-fault";break;}
+        if(clock.ElapsedMilliseconds>=timeout) {r.StopReason="timeout";break;}
+        uint wait=WaitForSingleObject(pi.Process,10);if(wait==0) {r.StopReason=Active(job)==0?"root-exit":"descendants-after-root-exit";break;}
+        if(wait!=258)throw new Win32Exception(Marshal.GetLastWin32Error(),"wait-root");
+      }
+    } catch(Exception e) {r.Errors.Add(e.ToString());if(r.StopReason==null)r.StopReason="supervisor-fault";}
+    finally {
+      Close(ref ow);Close(ref ew);Close(ref input);
+      try {if(stdout!=null)stdout.CloseUnstarted();if(stderr!=null)stderr.CloseUnstarted();}
+      catch(Exception e) {r.Errors.Add(e.ToString());}
+      try {
+        if(pi.Process!=IntPtr.Zero) {
+          Need(TerminateJobObject(job,0xe0350001),"terminate-job");r.Events.Add("terminate-job");
+          if(!r.MembershipVerified&&WaitForSingleObject(pi.Process,0)!=0) {
+            // Preserve termination failure, then measure cleanup independently.
+            if(TerminateProcess(pi.Process,0xe0350002))r.Events.Add("terminate-unverified-root");
+            else r.Errors.Add(new Win32Exception(Marshal.GetLastWin32Error(),"terminate-unverified-root").ToString());
+          }
+          var drain=Stopwatch.StartNew();
+          while(drain.ElapsedMilliseconds<cleanup) {
+            bool rootDone=WaitForSingleObject(pi.Process,0)==0;
+            uint active=Active(job);r.FinalActiveProcesses=active;
+            bool pipes=(stdout==null||Volatile.Read(ref stdout.Done)!=0)&&(stderr==null||Volatile.Read(ref stderr.Done)!=0);
+            if(rootDone&&active==0&&pipes) {r.CleanupConfirmed=true;break;}Thread.Sleep(10);
+          }
+          uint code;Need(GetExitCodeProcess(pi.Process,out code),"exit-code");r.NativeExitCode=code;
+          if(!r.CleanupConfirmed)r.Errors.Add("cleanup-unconfirmed: stop and inspect; no retry");
+        } else {r.CleanupConfirmed=true;r.FinalActiveProcesses=0;}
+      } catch(Exception e) {r.Errors.Add(e.ToString());r.CleanupConfirmed=false;}
+      // A non-inherited last job handle closing also terminates contained children
+      // if the supervisor is externally killed. That fallback is NOT confirmation.
+      Close(ref job);Close(ref pi.Thread);Close(ref pi.Process);Close(ref or);Close(ref er);
+      if(attrsReady)DeleteProcThreadAttributeList(attrs);if(attrs!=IntPtr.Zero)Marshal.FreeHGlobal(attrs);
+      if(handles!=IntPtr.Zero)Marshal.FreeHGlobal(handles);if(jobs!=IntPtr.Zero)Marshal.FreeHGlobal(jobs);if(env!=IntPtr.Zero)Marshal.FreeHGlobal(env);
+    }
+    r.ElapsedMs=clock.ElapsedMilliseconds;r.Stdout=stdout==null?null:stdout.Evidence;r.Stderr=stderr==null?null:stderr.Evidence;
+    if(r.JobListConfigured&&r.MembershipVerified&&r.CleanupConfirmed&&r.Errors.Count==0&&r.StopReason=="root-exit"&&r.NativeExitCode==0&&r.Stdout!=null&&r.Stderr!=null&&r.Stdout.Complete&&r.Stderr.Complete&&!r.Stdout.Overflow&&!r.Stderr.Overflow&&r.Stdout.Error==null&&r.Stderr.Error==null)
+      r.Outcome="completed-observation";
+    else r.Outcome="failed-observation-stop-review";
+    return r;
+  }
+}
+
+// Included ONLY in the instrumented lifecycle source, never the compiler supervisor.
+public static class TestHooks {
+  public static string Root,PauseAt,Fault;
+  static int pumpStarts;
+  public static void BeforePumpStart() {int n=System.Threading.Interlocked.Increment(ref pumpStarts);if((n==1&&Fault=="first-pump-start")||(n==2&&Fault=="second-pump-start"))throw new System.IO.IOException("injected-"+Fault+"-after-thread-allocation");}
+  public static void Point(string name,uint pid=0) {
+    using(var f=new System.IO.FileStream(System.IO.Path.Combine(Root,"point-"+name+".txt"),System.IO.FileMode.CreateNew,System.IO.FileAccess.Write,System.IO.FileShare.Read)) {
+      byte[] b=System.Text.Encoding.ASCII.GetBytes(pid.ToString()+"\n");f.Write(b,0,b.Length);f.Flush(true);
+    }
+    if(PauseAt==name)while(!System.IO.File.Exists(System.IO.Path.Combine(Root,"release-"+name+".txt")))System.Threading.Thread.Sleep(10);
+  }
+  public static void Fail(string name) {if(Fault==name)throw new System.IO.IOException("injected-"+name);}
+}
