@@ -1,0 +1,17 @@
+[
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/execution/manifest.json",
+    "bytes": 1396972,
+    "sha256": "d7179edb2707a8d217c1070cbcfb6178b877adfd349f1fb7f01da472006c1e0a"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/execution/inventory.json",
+    "bytes": 1454814,
+    "sha256": "c583cb8672e4db37859e7a3ba7479e3a2a9dd20bc400003b737db93f6f950408"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/cleanup-rerun/descendant-publication/execution/parent-lifetime/execution/compiler-probe-refresh/cmd-identity-amendment/execution/verify.mjs",
+    "bytes": 42639,
+    "sha256": "0e67d467570c817fd4393f94a3b49af47e8d2f5d982954219b64746933e47860"
+  }
+]

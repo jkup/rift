@@ -1,0 +1,41 @@
+{
+  "target": {
+    "name": "windows-x64-msvc",
+    "llvm_triple": "x86_64-pc-windows-msvc",
+    "architecture": "x64",
+    "object_format": "coff",
+    "minimum_os": "Windows 10"
+  },
+  "compiler": {
+    "command": "zig",
+    "identity": "clang version 21.1.0",
+    "target": "x86_64-pc-windows-msvc",
+    "speed_codegen": "scriptc-llvm-codegen 22.1.8"
+  },
+  "runtime_abi": {
+    "version": 48,
+    "marker": "scr_runtime_abi_v48"
+  },
+  "system_libraries": [
+    {
+      "name": "advapi32",
+      "predicate": true
+    },
+    {
+      "name": "iphlpapi",
+      "predicate": true
+    },
+    {
+      "name": "ws2_32",
+      "predicate": true
+    },
+    {
+      "name": "bcrypt",
+      "predicate": "tlsEffective"
+    },
+    {
+      "name": "crypt32",
+      "predicate": "tlsCaEffective"
+    }
+  ]
+}
