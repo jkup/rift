@@ -405,3 +405,9 @@ source reproduction and preservation checks are offline evidence only. Root
 actual/second review must precede even supervisor compilation or benign lifecycle
 execution; those results then require review before the metadata probe. No
 production/public API/authority/publication/successor work is authorized here.
+
+## Authorized benign lifecycle attempt: stopped for review
+
+The exact atomic-job-correction lifecycle harness ran once under root authorization from reviewed commit 629def3. Ten cases matched; membership-false (case 11) stopped the harness with exit 1 because inner cleanup was unconfirmed. The successful job-termination request was followed by Win32 error 5 on the separate unverified-root termination call; its exception skipped the bounded cleanup observation. All eleven independent outer jobs were empty before fallback; no fallback or retry occurred. Fourteen cases remain unrun. No scriptc probe was invoked or authorized.
+
+See [the retained attempt and exact unexecuted correction proposal](validation/ts-035e3f-p/probe-contract/atomic-job-correction/lifecycle-execution/README.md). All 163 original output files (19,246,373 bytes), invocation log, copied-source identities and original errors are retained byte-for-byte. The proposal retains a failed direct-termination error while allowing the existing bounded cleanup checks to run; it does not suppress failure, resume the child, change limits/oracles or retry termination. It has not been compiled or executed. Original sealed evidence and document prefixes remain unchanged. Return to root actual/independent review before any fresh harness design or invocation; the existing output root must never be reused. E3e descriptive/E3c null binding/E2 ownership/242-member closure/empty registry and all 60 blocked remain unchanged.

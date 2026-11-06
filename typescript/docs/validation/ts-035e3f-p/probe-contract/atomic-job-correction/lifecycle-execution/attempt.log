@@ -1,0 +1,6 @@
+{"baseline":9333,"originalArtifacts":39,"priorContractArtifacts":44,"correctionArtifacts":42,"fullPlan":1,"reproducedInstrumentedSources":2,"plannedLifecycleCases":25,"executedLifecycleCases":0,"compilersInvoked":0,"passed":true}
+Exception: C:\Users\jonku\code\rift\typescript\docs\validation\ts-035e3f-p\probe-contract\atomic-job-correction\lifecycle-runner.ps1:118
+Line |
+ 118 |  … ') $results;throw 'Lifecycle failed. No retry or compiler invocation. …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Lifecycle failed. No retry or compiler invocation.

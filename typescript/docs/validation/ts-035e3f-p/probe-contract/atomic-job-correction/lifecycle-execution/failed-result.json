@@ -1,0 +1,69 @@
+{
+  "id": "membership-false",
+  "kind": "unmeasured-until-run",
+  "status": "failed-stop-review",
+  "errors": [
+    "inner cleanup unconfirmed"
+  ],
+  "membersBeforeKill": null,
+  "membersBeforeSafety": [],
+  "emptyBeforeSafety": true,
+  "safetyCleanup": false,
+  "statusData": {
+    "Outcome": "failed-observation-stop-review",
+    "StopReason": "supervisor-fault",
+    "Errors": [
+      "System.Exception: creation-time-job-membership-missing; no resume or fallback\r\n   at ProbeSupervisor.Run(String exe, String[] args, String[] environment, String cwd, Int32 timeout, Int32 cap, Int32 cleanup)",
+      "System.ComponentModel.Win32Exception (5): terminate-unverified-root\r\n   at ProbeSupervisor.Need(Boolean ok, String stage)\r\n   at ProbeSupervisor.Run(String exe, String[] args, String[] environment, String cwd, Int32 timeout, Int32 cap, Int32 cleanup)"
+    ],
+    "Events": [
+      "job-kill-on-close",
+      "creation-time-job-list-configured",
+      "created-suspended-in-job",
+      "terminate-job"
+    ],
+    "Pid": 7344,
+    "NativeExitCode": null,
+    "Signal": null,
+    "CreatedSuspended": true,
+    "Assigned": true,
+    "Resumed": false,
+    "JobListConfigured": true,
+    "MembershipVerified": false,
+    "CleanupConfirmed": false,
+    "FinalActiveProcesses": null,
+    "ElapsedMs": 28,
+    "Stdout": {
+      "ObservedBytes": 0,
+      "RetainedBytes": 0,
+      "ObservedSha256": null,
+      "Error": null,
+      "Eof": false,
+      "Complete": false,
+      "Overflow": false
+    },
+    "Stderr": {
+      "ObservedBytes": 0,
+      "RetainedBytes": 0,
+      "ObservedSha256": null,
+      "Error": null,
+      "Eof": false,
+      "Complete": false,
+      "Overflow": false
+    },
+    "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+  },
+  "expectation": {
+    "id": "membership-false",
+    "source": "corrected",
+    "mode": "idle",
+    "pauseAt": "",
+    "fault": "membership-false",
+    "action": "wait",
+    "expect": "failed",
+    "resumed": false,
+    "stop": "supervisor-fault"
+  },
+  "supervisorPid": 17436,
+  "childMarker": null
+}

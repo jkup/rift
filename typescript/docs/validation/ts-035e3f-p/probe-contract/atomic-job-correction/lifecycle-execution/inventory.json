@@ -1,0 +1,965 @@
+{
+  "root": "typescript/build/ts035e3fp-atomic-job-lifecycle",
+  "directories": [
+    "descendant-left",
+    "descendant-left/cache",
+    "descendant-left/cache/scriptc",
+    "descendant-left/cache/zig-global",
+    "descendant-left/cache/zig-local",
+    "descendant-left/home",
+    "descendant-left/home/AppData",
+    "descendant-left/home/AppData/Local",
+    "descendant-left/home/AppData/Local/Microsoft",
+    "descendant-left/home/AppData/Local/Microsoft/PowerShell",
+    "descendant-left/home/AppData/Roaming",
+    "descendant-left/program-data",
+    "descendant-left/tmp",
+    "invalid-job-creation",
+    "invalid-job-creation/cache",
+    "invalid-job-creation/cache/scriptc",
+    "invalid-job-creation/cache/zig-global",
+    "invalid-job-creation/cache/zig-local",
+    "invalid-job-creation/home",
+    "invalid-job-creation/home/AppData",
+    "invalid-job-creation/home/AppData/Local",
+    "invalid-job-creation/home/AppData/Local/Microsoft",
+    "invalid-job-creation/home/AppData/Local/Microsoft/PowerShell",
+    "invalid-job-creation/home/AppData/Roaming",
+    "invalid-job-creation/program-data",
+    "invalid-job-creation/tmp",
+    "job-list-setup",
+    "job-list-setup/cache",
+    "job-list-setup/cache/scriptc",
+    "job-list-setup/cache/zig-global",
+    "job-list-setup/cache/zig-local",
+    "job-list-setup/home",
+    "job-list-setup/home/AppData",
+    "job-list-setup/home/AppData/Local",
+    "job-list-setup/home/AppData/Local/Microsoft",
+    "job-list-setup/home/AppData/Local/Microsoft/PowerShell",
+    "job-list-setup/home/AppData/Roaming",
+    "job-list-setup/program-data",
+    "job-list-setup/tmp",
+    "membership-false",
+    "membership-false/cache",
+    "membership-false/cache/scriptc",
+    "membership-false/cache/zig-global",
+    "membership-false/cache/zig-local",
+    "membership-false/home",
+    "membership-false/home/AppData",
+    "membership-false/home/AppData/Local",
+    "membership-false/home/AppData/Local/Microsoft",
+    "membership-false/home/AppData/Local/Microsoft/PowerShell",
+    "membership-false/home/AppData/Roaming",
+    "membership-false/program-data",
+    "membership-false/tmp",
+    "missing-executable",
+    "missing-executable/cache",
+    "missing-executable/cache/scriptc",
+    "missing-executable/cache/zig-global",
+    "missing-executable/cache/zig-local",
+    "missing-executable/home",
+    "missing-executable/home/AppData",
+    "missing-executable/home/AppData/Local",
+    "missing-executable/home/AppData/Local/Microsoft",
+    "missing-executable/home/AppData/Local/Microsoft/PowerShell",
+    "missing-executable/home/AppData/Roaming",
+    "missing-executable/program-data",
+    "missing-executable/tmp",
+    "nonzero",
+    "nonzero/cache",
+    "nonzero/cache/scriptc",
+    "nonzero/cache/zig-global",
+    "nonzero/cache/zig-local",
+    "nonzero/home",
+    "nonzero/home/AppData",
+    "nonzero/home/AppData/Local",
+    "nonzero/home/AppData/Local/Microsoft",
+    "nonzero/home/AppData/Local/Microsoft/PowerShell",
+    "nonzero/home/AppData/Roaming",
+    "nonzero/program-data",
+    "nonzero/tmp",
+    "normal",
+    "normal/cache",
+    "normal/cache/scriptc",
+    "normal/cache/zig-global",
+    "normal/cache/zig-local",
+    "normal/home",
+    "normal/home/AppData",
+    "normal/home/AppData/Local",
+    "normal/home/AppData/Local/Microsoft",
+    "normal/home/AppData/Local/Microsoft/PowerShell",
+    "normal/home/AppData/Roaming",
+    "normal/program-data",
+    "normal/tmp",
+    "stderr-cap",
+    "stderr-cap/cache",
+    "stderr-cap/cache/scriptc",
+    "stderr-cap/cache/zig-global",
+    "stderr-cap/cache/zig-local",
+    "stderr-cap/home",
+    "stderr-cap/home/AppData",
+    "stderr-cap/home/AppData/Local",
+    "stderr-cap/home/AppData/Local/Microsoft",
+    "stderr-cap/home/AppData/Local/Microsoft/PowerShell",
+    "stderr-cap/home/AppData/Roaming",
+    "stderr-cap/program-data",
+    "stderr-cap/tmp",
+    "stdout-cap",
+    "stdout-cap/cache",
+    "stdout-cap/cache/scriptc",
+    "stdout-cap/cache/zig-global",
+    "stdout-cap/cache/zig-local",
+    "stdout-cap/home",
+    "stdout-cap/home/AppData",
+    "stdout-cap/home/AppData/Local",
+    "stdout-cap/home/AppData/Local/Microsoft",
+    "stdout-cap/home/AppData/Local/Microsoft/PowerShell",
+    "stdout-cap/home/AppData/Roaming",
+    "stdout-cap/program-data",
+    "stdout-cap/tmp",
+    "timeout",
+    "timeout/cache",
+    "timeout/cache/scriptc",
+    "timeout/cache/zig-global",
+    "timeout/cache/zig-local",
+    "timeout/home",
+    "timeout/home/AppData",
+    "timeout/home/AppData/Local",
+    "timeout/home/AppData/Local/Microsoft",
+    "timeout/home/AppData/Local/Microsoft/PowerShell",
+    "timeout/home/AppData/Roaming",
+    "timeout/program-data",
+    "timeout/tmp",
+    "unsupported",
+    "unsupported/cache",
+    "unsupported/cache/scriptc",
+    "unsupported/cache/zig-global",
+    "unsupported/cache/zig-local",
+    "unsupported/home",
+    "unsupported/home/AppData",
+    "unsupported/home/AppData/Local",
+    "unsupported/home/AppData/Local/Microsoft",
+    "unsupported/home/AppData/Local/Microsoft/PowerShell",
+    "unsupported/home/AppData/Roaming",
+    "unsupported/program-data",
+    "unsupported/tmp"
+  ],
+  "files": [
+    {
+      "path": "descendant-left/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "descendant-left/case.json",
+      "bytes": 2237,
+      "sha256": "df6f5f0ae2f13cb9c27f74f587c01e6e5d7de93f5a72e88ecf3b659ad310b33d"
+    },
+    {
+      "path": "descendant-left/child-started.json",
+      "bytes": 88,
+      "sha256": "4d552bb7cc3ac19341367386f44f421963ba874ca5f41abb3a71c24adbcdfd4d"
+    },
+    {
+      "path": "descendant-left/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "descendant-left/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "descendant-left/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "descendant-left/descendant-pid.txt",
+      "bytes": 6,
+      "sha256": "b563f98a1404e239ecc14db9fc424eeb392bf0269fc03ec8050a70feeac42a2c"
+    },
+    {
+      "path": "descendant-left/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193076,
+      "sha256": "70a6d84512289826c246801bc636eb707b9081c97987aac50dd0985ed2efd420"
+    },
+    {
+      "path": "descendant-left/invocation.json",
+      "bytes": 2644,
+      "sha256": "97d46b77b2a3717406a9497743a837a0130b11d59e3a9ff9471baff827c4cdca"
+    },
+    {
+      "path": "descendant-left/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "descendant-left/point-after-create.txt",
+      "bytes": 6,
+      "sha256": "8e89bd8363c044a6ba6bff839be4bdb48d47daffab105887d1d4b19b5aa965ea"
+    },
+    {
+      "path": "descendant-left/point-after-resume.txt",
+      "bytes": 6,
+      "sha256": "8e89bd8363c044a6ba6bff839be4bdb48d47daffab105887d1d4b19b5aa965ea"
+    },
+    {
+      "path": "descendant-left/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "descendant-left/point-before-resume.txt",
+      "bytes": 6,
+      "sha256": "8e89bd8363c044a6ba6bff839be4bdb48d47daffab105887d1d4b19b5aa965ea"
+    },
+    {
+      "path": "descendant-left/point-membership-verified.txt",
+      "bytes": 6,
+      "sha256": "8e89bd8363c044a6ba6bff839be4bdb48d47daffab105887d1d4b19b5aa965ea"
+    },
+    {
+      "path": "descendant-left/result.json",
+      "bytes": 1826,
+      "sha256": "2051b892c722fa25706b2971477190c1261876b258b3b41c5eda9862555a9f75"
+    },
+    {
+      "path": "descendant-left/status.json",
+      "bytes": 1171,
+      "sha256": "5c6e094f0a6b9cd83134db3a5c9bfd73c4fdafbe510812d5c1f93f101190f300"
+    },
+    {
+      "path": "descendant-left/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "failed-results.json",
+      "bytes": 20755,
+      "sha256": "952c88fd110b0d65c1247524dec2b5fab2b935d495fd02ecdee43a1df6385820"
+    },
+    {
+      "path": "invalid-job-creation/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "invalid-job-creation/case.json",
+      "bytes": 2287,
+      "sha256": "b359c7ac93a153570d2da2a90ffdf00504e7ff060769b7287c389e5d000d945c"
+    },
+    {
+      "path": "invalid-job-creation/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "invalid-job-creation/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "invalid-job-creation/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "invalid-job-creation/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193108,
+      "sha256": "4fc04527048c3d3633948a6990a3d13bd98af0b7bf06be8dd9af6551ef42a42c"
+    },
+    {
+      "path": "invalid-job-creation/invocation.json",
+      "bytes": 2704,
+      "sha256": "30362e5eec7c2c4622d26934d081d7068d41e32daf4bce3eb2d3a58dbc1b4be9"
+    },
+    {
+      "path": "invalid-job-creation/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "invalid-job-creation/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "invalid-job-creation/result.json",
+      "bytes": 1816,
+      "sha256": "1755df3ea29048faaa0cf6206f62fa12dcf1359fbc92d1a84d192c7f4a723122"
+    },
+    {
+      "path": "invalid-job-creation/status.json",
+      "bytes": 1147,
+      "sha256": "4b82e0b76af262ed56ead8992ca14199ea7a8439eee784e310198744df29f666"
+    },
+    {
+      "path": "invalid-job-creation/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "job-list-setup/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "job-list-setup/case.json",
+      "bytes": 2236,
+      "sha256": "5da0580d0af3a27afe04bb6487a8962272e3316bc89cf3e89a043d93607b3162"
+    },
+    {
+      "path": "job-list-setup/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "job-list-setup/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193100,
+      "sha256": "c62958b25d1e17af63c4b2d9e3c56174db958b964bf4be9b3c0d66f642b38df2"
+    },
+    {
+      "path": "job-list-setup/invocation.json",
+      "bytes": 2632,
+      "sha256": "b3cbad8b825edfc0fa1cb56f5254e9af2b30f61c23ae17cbcc79d024b32790df"
+    },
+    {
+      "path": "job-list-setup/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "job-list-setup/result.json",
+      "bytes": 1423,
+      "sha256": "27998f64d5a48957803cf3e7a6ebb3d2e87c6e0ad01212cdfa8848f8351a9b9f"
+    },
+    {
+      "path": "job-list-setup/status.json",
+      "bytes": 797,
+      "sha256": "4b78142743f9e91444a7696468a20c5cc6fd1d2b47e403a2d89d8488f5bd7129"
+    },
+    {
+      "path": "job-list-setup/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "membership-false/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "membership-false/case.json",
+      "bytes": 2256,
+      "sha256": "4b98dbf53e647ff40f873138faadebf2624fd57149aaec69d3fd6a28907baf2d"
+    },
+    {
+      "path": "membership-false/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "membership-false/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "membership-false/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "membership-false/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193120,
+      "sha256": "a77400f7a9515147f6e1a2eaf8f1a18de4587c6a15bd95225a09c966b3f819c7"
+    },
+    {
+      "path": "membership-false/invocation.json",
+      "bytes": 2656,
+      "sha256": "03b55d88f57073a8f03e20c5c2693e132c3e5e484ef3ba6e06a013218e9fa2de"
+    },
+    {
+      "path": "membership-false/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "membership-false/point-after-create.txt",
+      "bytes": 5,
+      "sha256": "957ce342fd96a99f852849d1dd3c1763b821b92164e691ffa59bac43a1791291"
+    },
+    {
+      "path": "membership-false/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "membership-false/result.json",
+      "bytes": 2179,
+      "sha256": "0f6f7ca38557ecdb47d6781c39f9cfd75f5a11cef565d89337ae2164c61f5970"
+    },
+    {
+      "path": "membership-false/status.json",
+      "bytes": 1487,
+      "sha256": "f605b9de2a8e38be704df54dd97f8f778487cd0b2f4c89883d70804556a6ff55"
+    },
+    {
+      "path": "membership-false/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "missing-executable/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "missing-executable/case.json",
+      "bytes": 2272,
+      "sha256": "ad51eeaa6689f261702e15ee45628e07d962b231e3baa2bc1c8a9f3f999b1694"
+    },
+    {
+      "path": "missing-executable/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "missing-executable/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "missing-executable/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "missing-executable/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193076,
+      "sha256": "fd35f245ac477776599b337a5e5cd931d3fd4ab4697b76b0f484adbbef85334c"
+    },
+    {
+      "path": "missing-executable/invocation.json",
+      "bytes": 2680,
+      "sha256": "1c0ab206ba9afbf774cc0f39f0ffc8471cefabb076e756c3511131718456e77e"
+    },
+    {
+      "path": "missing-executable/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "missing-executable/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "missing-executable/result.json",
+      "bytes": 1816,
+      "sha256": "d2d02e178fb7be85534b6080837b45d284b762fd40ddb76c790aaeeaeb97ebd6"
+    },
+    {
+      "path": "missing-executable/status.json",
+      "bytes": 1147,
+      "sha256": "67cbd6c4039f374bcee623bebc93f123b7d70fa018bec250045c43b99ca029ab"
+    },
+    {
+      "path": "missing-executable/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "nonzero/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "nonzero/case.json",
+      "bytes": 2160,
+      "sha256": "81c3a726f99008a7a1d9d5a200d0efc029e31251eb8b5d56a2336af269fc82b2"
+    },
+    {
+      "path": "nonzero/child-started.json",
+      "bytes": 83,
+      "sha256": "1672c9bfdbba3c399409832522ae38ea47a2c3ff29a98f67d6ae4d50eb449f8a"
+    },
+    {
+      "path": "nonzero/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "nonzero/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "nonzero/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "nonzero/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193068,
+      "sha256": "664afefd3b236908af5bedfa8f2710f99c86bd053499b2863a5ac5c99a79636a"
+    },
+    {
+      "path": "nonzero/invocation.json",
+      "bytes": 2548,
+      "sha256": "d8c1a97d06a6ec349d839ec7804a3fd7692ec88101317b6f17c75a44acfbe034"
+    },
+    {
+      "path": "nonzero/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "nonzero/point-after-create.txt",
+      "bytes": 6,
+      "sha256": "75bb61ec62e4538601fff744bf6a21bcf23a1b8af5b2935f6e1f121ac9b69aa0"
+    },
+    {
+      "path": "nonzero/point-after-resume.txt",
+      "bytes": 6,
+      "sha256": "75bb61ec62e4538601fff744bf6a21bcf23a1b8af5b2935f6e1f121ac9b69aa0"
+    },
+    {
+      "path": "nonzero/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "nonzero/point-before-resume.txt",
+      "bytes": 6,
+      "sha256": "75bb61ec62e4538601fff744bf6a21bcf23a1b8af5b2935f6e1f121ac9b69aa0"
+    },
+    {
+      "path": "nonzero/point-membership-verified.txt",
+      "bytes": 6,
+      "sha256": "75bb61ec62e4538601fff744bf6a21bcf23a1b8af5b2935f6e1f121ac9b69aa0"
+    },
+    {
+      "path": "nonzero/result.json",
+      "bytes": 1769,
+      "sha256": "63b35584eb3f9a7cd50ba60430597e13db53d61618daf415822567aa0f986bb7"
+    },
+    {
+      "path": "nonzero/status.json",
+      "bytes": 1153,
+      "sha256": "ebda4769d59326303d4054fadaec58949c3d9098335a27f3cc430480e9e8bfaf"
+    },
+    {
+      "path": "nonzero/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "normal/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "normal/case.json",
+      "bytes": 2150,
+      "sha256": "4bd7d83f800a7df8d768b0e8e45c7b79838bb7017ff2e4b34ab93ff56c460222"
+    },
+    {
+      "path": "normal/child-started.json",
+      "bytes": 81,
+      "sha256": "119b16fcaa45c9824d6798d02b2e85948afe4fd5e4568684c817df8e45551df5"
+    },
+    {
+      "path": "normal/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "normal/compiler.stdout.bin",
+      "bytes": 3,
+      "sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22"
+    },
+    {
+      "path": "normal/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "normal/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193188,
+      "sha256": "07d3bd5949f1526bc9396dd14782d9437428359452ad9a758a3157be98b054c1"
+    },
+    {
+      "path": "normal/invocation.json",
+      "bytes": 2536,
+      "sha256": "0ee0470061ecacfbe0b01fea6f8e94fbc05a3fe395d997888b0ea579814d90be"
+    },
+    {
+      "path": "normal/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "normal/point-after-create.txt",
+      "bytes": 5,
+      "sha256": "6f4aaef2262428cc19595db47d9a903a94d116f2043ac228e8a507e2a7b9bba9"
+    },
+    {
+      "path": "normal/point-after-resume.txt",
+      "bytes": 5,
+      "sha256": "6f4aaef2262428cc19595db47d9a903a94d116f2043ac228e8a507e2a7b9bba9"
+    },
+    {
+      "path": "normal/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "normal/point-before-resume.txt",
+      "bytes": 5,
+      "sha256": "6f4aaef2262428cc19595db47d9a903a94d116f2043ac228e8a507e2a7b9bba9"
+    },
+    {
+      "path": "normal/point-membership-verified.txt",
+      "bytes": 5,
+      "sha256": "6f4aaef2262428cc19595db47d9a903a94d116f2043ac228e8a507e2a7b9bba9"
+    },
+    {
+      "path": "normal/result.json",
+      "bytes": 1760,
+      "sha256": "110650b9d374b9887fbc137cbe9e441fbafaacd9ede8c2d111d2845a10952e77"
+    },
+    {
+      "path": "normal/status.json",
+      "bytes": 1144,
+      "sha256": "62991475f694a94524075dbf65a0119d9ff74b27f319df17680bdc2b3134a006"
+    },
+    {
+      "path": "normal/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "observer.cs",
+      "bytes": 6513,
+      "sha256": "3e8882a5bd5b10e8cff9d4d5d2fd642bbcbb0a2ef17b00e0db77152331078f01"
+    },
+    {
+      "path": "owner.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 6172,
+      "sha256": "0aab702bf068cb6026c6dbcf18179cca4707275be2ef49dd8823a4175ecac1d5"
+    },
+    {
+      "path": "stderr-cap/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "stderr-cap/case.json",
+      "bytes": 2192,
+      "sha256": "51b5542dca71ae78319f68b97f66efbda9995dbf8f19e0a102734180cd2b5aae"
+    },
+    {
+      "path": "stderr-cap/child-started.json",
+      "bytes": 87,
+      "sha256": "3a6ee9726223be8036d4d8f48b167ea2c03faf40abed64350ffd8185bbcb2d2b"
+    },
+    {
+      "path": "stderr-cap/compiler.stderr.bin",
+      "bytes": 8388608,
+      "sha256": "042e995365a46153f8d3a1327d986e2fec93554ed9d6b8126cecc7965ecf3be6"
+    },
+    {
+      "path": "stderr-cap/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stderr-cap/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "stderr-cap/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193084,
+      "sha256": "e2daf6ce61415603dce9604618169037b423f64fe19fce56fe40a2d6680d1204"
+    },
+    {
+      "path": "stderr-cap/invocation.json",
+      "bytes": 2584,
+      "sha256": "eabb1bc6ff29d303dabd5d98ab2d18f965d3d4a30c1a83f00806780e51e0751b"
+    },
+    {
+      "path": "stderr-cap/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "stderr-cap/point-after-create.txt",
+      "bytes": 5,
+      "sha256": "6b6388156bbdbb41c5d7670ceb44da7ddf7319f2d652b736435261fe96e317dc"
+    },
+    {
+      "path": "stderr-cap/point-after-resume.txt",
+      "bytes": 5,
+      "sha256": "6b6388156bbdbb41c5d7670ceb44da7ddf7319f2d652b736435261fe96e317dc"
+    },
+    {
+      "path": "stderr-cap/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "stderr-cap/point-before-resume.txt",
+      "bytes": 5,
+      "sha256": "6b6388156bbdbb41c5d7670ceb44da7ddf7319f2d652b736435261fe96e317dc"
+    },
+    {
+      "path": "stderr-cap/point-membership-verified.txt",
+      "bytes": 5,
+      "sha256": "6b6388156bbdbb41c5d7670ceb44da7ddf7319f2d652b736435261fe96e317dc"
+    },
+    {
+      "path": "stderr-cap/result.json",
+      "bytes": 1800,
+      "sha256": "321f56b534f72b86af477a7c703cdf4f5a006df8f0ddcb8ac2d9fbdce4af9c51"
+    },
+    {
+      "path": "stderr-cap/status.json",
+      "bytes": 1173,
+      "sha256": "a4759e853d43b45ce9c91df82ca734f673c49a08d2ab828ab9171cf8ed621e4b"
+    },
+    {
+      "path": "stderr-cap/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "stdout-cap/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "stdout-cap/case.json",
+      "bytes": 2192,
+      "sha256": "27f21ea61d8303a185e04b394c175089f1f86f7c68fc553c162b9563061055d9"
+    },
+    {
+      "path": "stdout-cap/child-started.json",
+      "bytes": 88,
+      "sha256": "4c0dfc098d9804a055a6d78e578c33eb4a4e751d630022f1b675b25e24cf8f37"
+    },
+    {
+      "path": "stdout-cap/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stdout-cap/compiler.stdout.bin",
+      "bytes": 8388608,
+      "sha256": "ad97f87076920684e2ca66fc44e5d322797dc9d64706b174e51b5d0828937043"
+    },
+    {
+      "path": "stdout-cap/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "stdout-cap/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193148,
+      "sha256": "61b11f5c0b6a77214c406301f3eeb3bac9feec109c9a66b82edf1e9aa08c319e"
+    },
+    {
+      "path": "stdout-cap/invocation.json",
+      "bytes": 2584,
+      "sha256": "13ae67d1006a85b87dac3e23cfa33e7f655d6cc97e5611db159f248e5739486f"
+    },
+    {
+      "path": "stdout-cap/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "stdout-cap/point-after-create.txt",
+      "bytes": 6,
+      "sha256": "2fde9c71113232dcd3236a05d84c35400fd7769b3e683d0c17319d0a653a9e3a"
+    },
+    {
+      "path": "stdout-cap/point-after-resume.txt",
+      "bytes": 6,
+      "sha256": "2fde9c71113232dcd3236a05d84c35400fd7769b3e683d0c17319d0a653a9e3a"
+    },
+    {
+      "path": "stdout-cap/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "stdout-cap/point-before-resume.txt",
+      "bytes": 6,
+      "sha256": "2fde9c71113232dcd3236a05d84c35400fd7769b3e683d0c17319d0a653a9e3a"
+    },
+    {
+      "path": "stdout-cap/point-membership-verified.txt",
+      "bytes": 6,
+      "sha256": "2fde9c71113232dcd3236a05d84c35400fd7769b3e683d0c17319d0a653a9e3a"
+    },
+    {
+      "path": "stdout-cap/result.json",
+      "bytes": 1802,
+      "sha256": "89d4bba46065095b9534bb8bd79049e58a24e80f74ad47d948bf6af1c523df92"
+    },
+    {
+      "path": "stdout-cap/status.json",
+      "bytes": 1174,
+      "sha256": "c98cfafaaf508f3f26fb8bae2cf9a5d2e8ccc21b73d58f3349810553edfd7f40"
+    },
+    {
+      "path": "stdout-cap/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "timeout/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "timeout/case.json",
+      "bytes": 2159,
+      "sha256": "54fd017060e5baedf78363ee7303a8ef1e7d07b62287c17380a7ab397b806768"
+    },
+    {
+      "path": "timeout/child-started.json",
+      "bytes": 81,
+      "sha256": "07bf1c2502aa14b6d679be846f2c8058fd83f2f48098f8ad8b17199f5a0407cc"
+    },
+    {
+      "path": "timeout/compiler.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "timeout/compiler.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "timeout/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "timeout/home/AppData/Local/Microsoft/PowerShell/ModuleAnalysisCache-2C7181E4",
+      "bytes": 4248,
+      "sha256": "f31719f4d3ab5d07b9b85307459c00d749f77a81218379850bc64aa977b1f4b8"
+    },
+    {
+      "path": "timeout/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193080,
+      "sha256": "b0c0026858763626a61e8df9da77c39310a6efc6f2d8b2abf14c2b34a2fc0a31"
+    },
+    {
+      "path": "timeout/invocation.json",
+      "bytes": 2548,
+      "sha256": "ac7839465633971a3a28be1e66981c7eb4c44441425d7ad19ac2ba137a151885"
+    },
+    {
+      "path": "timeout/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "timeout/point-after-create.txt",
+      "bytes": 5,
+      "sha256": "1889a8dff16042192eb482263066d75ddc4e2d892caa1fdbf2d8145c4e6660fb"
+    },
+    {
+      "path": "timeout/point-after-resume.txt",
+      "bytes": 5,
+      "sha256": "1889a8dff16042192eb482263066d75ddc4e2d892caa1fdbf2d8145c4e6660fb"
+    },
+    {
+      "path": "timeout/point-before-create.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "timeout/point-before-resume.txt",
+      "bytes": 5,
+      "sha256": "1889a8dff16042192eb482263066d75ddc4e2d892caa1fdbf2d8145c4e6660fb"
+    },
+    {
+      "path": "timeout/point-membership-verified.txt",
+      "bytes": 5,
+      "sha256": "1889a8dff16042192eb482263066d75ddc4e2d892caa1fdbf2d8145c4e6660fb"
+    },
+    {
+      "path": "timeout/result.json",
+      "bytes": 1775,
+      "sha256": "ac0c3a89f78b026cb777de7b732424a9dd83c4cba9b2b18901cf18a41c57c6ce"
+    },
+    {
+      "path": "timeout/status.json",
+      "bytes": 1162,
+      "sha256": "29de72126489b73a693462e3ddbdcaac761aeb9b5ea5f487739d0fbdec4f5cce"
+    },
+    {
+      "path": "timeout/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    },
+    {
+      "path": "unsupported/benign-child.mjs",
+      "bytes": 1154,
+      "sha256": "9e77a39dabc82e306ce8c4174c4cc5b997bd153ae63f139329d1fbd20fcd36d4"
+    },
+    {
+      "path": "unsupported/case.json",
+      "bytes": 2206,
+      "sha256": "c6901ac9feafcc73e8eec6f7f85cf02d801620a630006aaebca097727ff33c1c"
+    },
+    {
+      "path": "unsupported/copied-source-identities.json",
+      "bytes": 458,
+      "sha256": "668b818a31a0a9734c6252836955380d130a6c76f9cebfe778a613e534ae393c"
+    },
+    {
+      "path": "unsupported/home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "bytes": 193072,
+      "sha256": "3fd5f4979a7efa9d51d394fa1ec1972c0c9bdfd59f78bfb0e68cf72138461a0e"
+    },
+    {
+      "path": "unsupported/invocation.json",
+      "bytes": 2596,
+      "sha256": "900b8a382a349b0919a2497857ec8092f943d7943e7d4f638b720097ca8f6342"
+    },
+    {
+      "path": "unsupported/lifecycle-supervise.ps1",
+      "bytes": 1190,
+      "sha256": "41bb478be42bfbe16d1b2404a7fef1863ab2774a8b6b967124ac8b1d241a1972"
+    },
+    {
+      "path": "unsupported/result.json",
+      "bytes": 1393,
+      "sha256": "da5a23a1e44948dec39933b58c76b5f6074c3abe137e1b9b07b30b675509f1be"
+    },
+    {
+      "path": "unsupported/status.json",
+      "bytes": 779,
+      "sha256": "3f72b730cbcbc3db99d5629c5623a70c601db7b91a1733d891f14ea03b7ee3a1"
+    },
+    {
+      "path": "unsupported/supervisor-under-test.cs",
+      "bytes": 17373,
+      "sha256": "41e7fe89a6f5128928896cd1ed63e8a6c75f360e0a0238cea141e0a23b815179"
+    }
+  ]
+}
