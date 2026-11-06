@@ -1,0 +1,9 @@
+{
+  "removedOnly": [
+    "junction",
+    "alias.txt"
+  ],
+  "verifiedTarget": "target",
+  "recursive": false,
+  "reason": "retain regular evidence without live aliases"
+}

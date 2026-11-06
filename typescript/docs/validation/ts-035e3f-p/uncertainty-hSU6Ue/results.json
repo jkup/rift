@@ -1,0 +1,448 @@
+{
+  "kind": "filesystem-uncertainty-not-build-validation",
+  "results": [
+    {
+      "case": "source-ABA-during-copy",
+      "before": "original\n",
+      "copied": "replacement\n",
+      "after": "original\n",
+      "endpointEqual": true,
+      "copyEqualsBefore": false
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "sealed": "original\n",
+      "consumed": "replacement\n",
+      "after": "original\n",
+      "endpointEqual": true,
+      "consumedEqualsSealed": false
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "first": "acquired",
+      "second": "EEXIST",
+      "outsideWriter": "replacement\n",
+      "ownerStillPresent": true
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "partial": "{\"version\":",
+      "second": "EEXIST",
+      "originalPreserved": true,
+      "parse": "SyntaxError"
+    },
+    {
+      "case": "hardlink-alias",
+      "original": "original\n",
+      "alias": "original\n",
+      "sameIdentity": true,
+      "originalLinks": 2,
+      "aliasLinks": 2
+    },
+    {
+      "case": "ancestor-junction",
+      "throughAlias": "original\n",
+      "ancestorIsLink": true,
+      "leafIsLink": false,
+      "realpathEqualsSpelling": false
+    }
+  ],
+  "mutations": [
+    {
+      "case": "source-ABA-during-copy",
+      "key": "case",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "case",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "before",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "before",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "copied",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "copied",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "after",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "after",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "endpointEqual",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "endpointEqual",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "copyEqualsBefore",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "source-ABA-during-copy",
+      "key": "copyEqualsBefore",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "case",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "case",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "sealed",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "sealed",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "consumed",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "consumed",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "after",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "after",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "endpointEqual",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "endpointEqual",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "consumedEqualsSealed",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "key": "consumedEqualsSealed",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "case",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "case",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "first",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "first",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "second",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "second",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "outsideWriter",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "outsideWriter",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "ownerStillPresent",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "key": "ownerStillPresent",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "case",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "case",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "partial",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "partial",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "second",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "second",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "originalPreserved",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "originalPreserved",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "parse",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "key": "parse",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "case",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "case",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "original",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "original",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "alias",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "alias",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "sameIdentity",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "sameIdentity",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "originalLinks",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "originalLinks",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "aliasLinks",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "hardlink-alias",
+      "key": "aliasLinks",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "case",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "case",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "throughAlias",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "throughAlias",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "ancestorIsLink",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "ancestorIsLink",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "leafIsLink",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "leafIsLink",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "realpathEqualsSpelling",
+      "mode": "omit",
+      "result": "whole-literal-difference"
+    },
+    {
+      "case": "ancestor-junction",
+      "key": "realpathEqualsSpelling",
+      "mode": "change",
+      "result": "whole-literal-difference"
+    }
+  ]
+}

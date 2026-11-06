@@ -1,0 +1,20 @@
+{
+  "baselineFiles": 9333,
+  "projectMembers": 311,
+  "installedPackageMembers": 3478,
+  "zigMembers": 19505,
+  "runtimeManifestEntries": 1483,
+  "runtimeManifestMismatch": [],
+  "nodeMatchesPast": true,
+  "zigMatchesPast": true,
+  "nodeMappings": 137,
+  "nativeMappings": 71,
+  "unknown": [
+    "effective scriptc compiler/helper/linker argv",
+    "actual SDK/sysroot/library selection",
+    "complete loaded and dynamically resolved DLL closure",
+    "cache hit and runtime verification-sidecar trust behavior",
+    "race-safe filesystem ownership primitive"
+  ],
+  "productionProposalFrozen": false
+}

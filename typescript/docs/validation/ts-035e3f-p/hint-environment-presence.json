@@ -1,0 +1,298 @@
+[
+  {
+    "name": "SCRIPTC_ARENAS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_BOOTSTRAP_IR_INPUT",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CACHE_DIR",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CACHE_MAX_MB",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CANON_SHADOW",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CANON_SHADOW_OUT",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CC",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CHECKER",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CHECKER_SERVER",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CHECK_DEFERRED_SCANS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CHECK_DISPATCH_CANDIDATES",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CHECK_DISPATCH_SCANS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_CPU_LEVEL",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_DECL_BOUNDARY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_NAN_CODED",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_RUNTIME_OPTIONAL",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_SHAPES",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_SHAPES_PROFILE",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_SHAPES_WHY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_SHAPE_FALLBACK",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_SHAPE_FIELD",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_SHAPE_OVERLAY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_SHAPE_OVERLAY_WHY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DEBUG_SHAPE_TIME",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_DSYMUTIL",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_EMIT_FACTS_VERIFY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_EMIT_WORKERS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_EMIT_WORKER_FUNCTIONS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_EXIT_FREE",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_H9F",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_HEAP_CENSUS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_INCR_LOWERING",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_INCR_VERIFY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_INFER_JS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_INT32_VERIFY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LIBNODE",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LIB_DIAGNOSTICS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LIB_DIAGNOSTICS_RECORD",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LINKER",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LLVM_HELPER",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LLVM_PACKAGE",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LOWER_JOURNAL",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LOWER_JOURNAL_DUMP",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_LOWER_SHUFFLE_SEED",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_NO_CACHE",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_PROVENANCE_CACHE",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_PROVENANCE_MANIFEST",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_RECORD_PROFILE_BLOCKS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_REPR_REPORT",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_RUNTIME_PACK",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_CHECK",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_CHECK_LOG",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_COMPOSE",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_CROSS_FILE",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_CROSS_FILE_REFS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_DEAD_BRANCHES",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_EXHAUSTIVE_TABLES",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_FOLD_STORES",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_MEMBER_FUNCTIONS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_OVERLAY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_OVERLAY_MODULE_VARS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_OVERLAY_ONLY",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_RECORD_ARMS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_SITE_CLONES",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_STATIC_OBJECTS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_SHAPE_WIDEN",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_TARGET",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_TIMING",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_TOOLCHAIN",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_TS7_HOST_LOADS",
+    "present": false
+  },
+  {
+    "name": "SCRIPTC_YOUNG_NURSERY",
+    "present": false
+  },
+  {
+    "name": "ZIG_LIBC",
+    "present": false
+  },
+  {
+    "name": "ZIG_LIB_DIR",
+    "present": false
+  }
+]

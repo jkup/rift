@@ -1,0 +1,40 @@
+{
+  "results": [
+    {
+      "case": "source-ABA-during-copy",
+      "before": "original\n",
+      "copied": "replacement\n",
+      "after": "original\n",
+      "endpointEqual": true,
+      "copyEqualsBefore": false
+    },
+    {
+      "case": "input-ABA-during-consumption",
+      "sealed": "original\n",
+      "consumed": "replacement\n",
+      "after": "original\n",
+      "endpointEqual": true,
+      "consumedEqualsSealed": false
+    },
+    {
+      "case": "exclusive-owner-is-cooperative",
+      "first": "acquired",
+      "second": "EEXIST",
+      "outsideWriter": "replacement\n",
+      "ownerStillPresent": true
+    },
+    {
+      "case": "wx-is-not-complete-publication",
+      "partial": "{\"version\":",
+      "second": "EEXIST",
+      "originalPreserved": true,
+      "parse": "SyntaxError"
+    }
+  ],
+  "error": {
+    "name": "Error",
+    "code": "EPERM",
+    "message": "EPERM: operation not permitted, link 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3f-p\\uncertainty-NvD7NY\\original.txt' -> 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3f-p\\uncertainty-NvD7NY\\alias.txt'",
+    "stack": "Error: EPERM: operation not permitted, link 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3f-p\\uncertainty-NvD7NY\\original.txt' -> 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3f-p\\uncertainty-NvD7NY\\alias.txt'\n    at linkSync (node:fs:2406:11)\n    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3f-p/uncertainty.mjs:20:80\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)"
+  }
+}
