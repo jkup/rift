@@ -1,0 +1,151 @@
+{
+  "status": "passed",
+  "observations": [
+    {
+      "name": "synthetic-approved-policy-still-cannot-execute",
+      "status": "passed"
+    },
+    {
+      "name": "actual-policy-unapproved",
+      "status": "passed"
+    },
+    {
+      "name": "extra-key",
+      "status": "passed"
+    },
+    {
+      "name": "missing-command",
+      "status": "passed"
+    },
+    {
+      "name": "bare-compiler",
+      "status": "passed"
+    },
+    {
+      "name": "alternate-compiler",
+      "status": "passed"
+    },
+    {
+      "name": "remove-noconfig",
+      "status": "passed"
+    },
+    {
+      "name": "remove-nostdlib",
+      "status": "passed"
+    },
+    {
+      "name": "extra-reference",
+      "status": "passed"
+    },
+    {
+      "name": "response-file",
+      "status": "passed"
+    },
+    {
+      "name": "source-workaround-path",
+      "status": "passed"
+    },
+    {
+      "name": "output-escape",
+      "status": "passed"
+    },
+    {
+      "name": "wrong-cwd",
+      "status": "passed"
+    },
+    {
+      "name": "inherited-override",
+      "status": "passed"
+    },
+    {
+      "name": "missing-temp",
+      "status": "passed"
+    },
+    {
+      "name": "ambient-path",
+      "status": "passed"
+    },
+    {
+      "name": "reused-root",
+      "status": "passed"
+    },
+    {
+      "name": "output-exists",
+      "status": "passed"
+    },
+    {
+      "name": "wrong-owned-root",
+      "status": "passed"
+    },
+    {
+      "name": "missing-reference-copy",
+      "status": "passed"
+    },
+    {
+      "name": "copy-path-alias",
+      "status": "passed"
+    },
+    {
+      "name": "copy-junction",
+      "status": "passed"
+    },
+    {
+      "name": "copy-hardlink",
+      "status": "passed"
+    },
+    {
+      "name": "source-byte-drift",
+      "status": "passed"
+    },
+    {
+      "name": "reference-byte-drift",
+      "status": "passed"
+    },
+    {
+      "name": "installed-link-count-drift",
+      "status": "passed"
+    },
+    {
+      "name": "installed-identity-drift",
+      "status": "passed"
+    },
+    {
+      "name": "installed-hash-drift",
+      "status": "passed"
+    },
+    {
+      "name": "hide-bootstrap-compilation",
+      "status": "passed"
+    },
+    {
+      "name": "runtime-gate-removed",
+      "status": "passed"
+    },
+    {
+      "name": "mutant/argv-unchecked",
+      "status": "passed"
+    },
+    {
+      "name": "mutant/system-policy-bypassed",
+      "status": "passed"
+    },
+    {
+      "name": "mutant/source-links-accepted",
+      "status": "passed"
+    },
+    {
+      "name": "mutant/bootstrap-hidden",
+      "status": "passed"
+    },
+    {
+      "name": "mutant/gate-open-accepted",
+      "status": "passed"
+    }
+  ],
+  "fullStateLiterals": 30,
+  "mutants": 5,
+  "compilerInvocations": 0,
+  "addTypeInvocations": 0,
+  "generatedLaunches": 0,
+  "executionAuthorized": false
+}

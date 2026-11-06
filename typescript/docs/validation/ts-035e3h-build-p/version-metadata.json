@@ -1,0 +1,72 @@
+[
+  {
+    "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+    "exists": true,
+    "bytes": 2569832,
+    "fileVersion": "4.8.9221.0 built by: NET481REL1LAST_25H2",
+    "productVersion": "4.8.9221.0"
+  },
+  {
+    "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe.config",
+    "exists": true,
+    "bytes": 182,
+    "fileVersion": null,
+    "productVersion": null
+  },
+  {
+    "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.rsp",
+    "exists": true,
+    "bytes": 1329,
+    "fileVersion": null,
+    "productVersion": null
+  },
+  {
+    "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.dll",
+    "exists": true,
+    "bytes": 5445432,
+    "fileVersion": "4.8.9363.0 built by: NET481REL1LAST_25H2_B",
+    "productVersion": "4.8.9363.0"
+  },
+  {
+    "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\clr.dll",
+    "exists": true,
+    "bytes": 10000696,
+    "fileVersion": "4.8.9363.0 built by: NET481REL1LAST_25H2_B",
+    "productVersion": "4.8.9363.0"
+  },
+  {
+    "path": "C:\\Windows\\System32\\mscoree.dll",
+    "exists": true,
+    "bytes": 430080,
+    "fileVersion": "10.0.26100.3624 (WinBuild.160101.0800)",
+    "productVersion": "10.0.26100.3624"
+  },
+  {
+    "path": "C:\\Program Files\\dotnet\\dotnet.exe",
+    "exists": true,
+    "bytes": 136848,
+    "fileVersion": "6,0,1122,52304 @Commit: 943474ca16db7c65ba6cff4a89c3ebd219dde3e5",
+    "productVersion": "6.0.11 @Commit: 943474ca16db7c65ba6cff4a89c3ebd219dde3e5"
+  },
+  {
+    "path": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+    "exists": true,
+    "bytes": 301368,
+    "fileVersion": "7.6.5.500",
+    "productVersion": "7.6.5 SHA: ea554a8f9c6085f54fb2828f7ea286c65c35599f+ea554a8f9c6085f54fb2828f7ea286c65c35599f"
+  },
+  {
+    "path": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.runtimeconfig.json",
+    "exists": true,
+    "bytes": 790,
+    "fileVersion": null,
+    "productVersion": null
+  },
+  {
+    "path": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\Microsoft.CodeAnalysis.CSharp.dll",
+    "exists": true,
+    "bytes": 18536312,
+    "fileVersion": "5.0.25.56712",
+    "productVersion": "5.0.0-2.25567.12+6c4a46a31302167b425d5e0a31ea83c9a9aa1d09"
+  }
+]

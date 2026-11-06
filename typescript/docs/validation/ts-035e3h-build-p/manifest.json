@@ -1,0 +1,167 @@
+[
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/.gitattributes",
+    "bytes": 121,
+    "sha256": "343564d8e70e72ec597c9681a47ef5d39a971e20a2615e26cf0d0fa956347126"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/authoring-error.json",
+    "bytes": 544,
+    "sha256": "cd86ec98ee854ab3f9ebda21307c075e285eda642de7aeb9ec1e3f41c1e6665e"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/check-design.mjs",
+    "bytes": 4086,
+    "sha256": "649abe33b81136fbf98a19a0739a75793b78529525adddf57900278625916f7d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/csc.exe.config.retained.txt",
+    "bytes": 182,
+    "sha256": "2d4610ade011e530d817dd3ba4fc787e5dc0c2297cc520c30a643b8fb13f9093"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/csc.rsp.retained.txt",
+    "bytes": 1329,
+    "sha256": "e2021640c1f8ad500549fc89cd53bc4c2f0fa13fee9034714142d93c5d554042"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/guard-tasks.md",
+    "bytes": 669793,
+    "sha256": "ec05242b16f11a3ff7a88bb741728388c6151fd6384719d59c798a01628ebf20"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/guard-transformations.json",
+    "bytes": 8015,
+    "sha256": "c75e6af9404e712deab5f413caf03c339b623f4d4c621adea7fd7809d07962d5"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/installed-identities.json",
+    "bytes": 19612,
+    "sha256": "30079c8926f426642f1e924c6985c99b440b62bff23a022c20dbc7f1cb4c29f1"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/parent-supervise.extracted.mjs.txt",
+    "bytes": 2537,
+    "sha256": "6bad6cf49fa3556d14f95563c7957ec79a9dcc0a43bca37746857d91fee35ae6"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/preflight-literals.json",
+    "bytes": 220670,
+    "sha256": "bd4730a887eb85b4319ec579e414411357fc7bf91e745fe48b9fc178badc937d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/preflight-model.mjs",
+    "bytes": 2084,
+    "sha256": "3fd8be79f1b37648cc10aefe4d8cc56d52b16e5d1a6d73dcb8528b4f91ea5702"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/preservation.json",
+    "bytes": 4570144,
+    "sha256": "69e5e227ab675d7eff700af8371a277b54518736c0c5479b5bd66375b5e00e25"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/prior-tasks.md",
+    "bytes": 670146,
+    "sha256": "b8c5955bdfa8c48753817cb287aa6b30837ad9d0e6c99c76c6472333970dcd4e"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/proposal.json",
+    "bytes": 13885,
+    "sha256": "696774358891d641b4b6b389e4de6847623537e2df3c038e4efa7cf9108281a2"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/pwsh.runtimeconfig.json.retained.txt",
+    "bytes": 790,
+    "sha256": "be41756d6eccac092da616818c83f811c377adde6b3696864dd32220770b4d93"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/README.md",
+    "bytes": 11119,
+    "sha256": "05317180fa12388cf151e266e8855500f6b65e56756ded06f495e8546e5b7362"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/supervise.ps1.proposed.txt",
+    "bytes": 1734,
+    "sha256": "f6ea5bd646aece160e8f11f05de42776ae8791d43e880fcd18892ceb05f66f35"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/supervision-sources.json",
+    "bytes": 2012,
+    "sha256": "e4303c54cb13a83e0c18838f65340f5415dc6480ce9d98b06f591abc0753bc3b"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/supervisor.cs.unchanged.txt",
+    "bytes": 15997,
+    "sha256": "ff72647da35de4bae3ba2fdfac9486c37a0c16ce8e401fa004eeec0664b63fef"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/task-entry.txt",
+    "bytes": 1678,
+    "sha256": "218e63fa1ac066e96d6c182ace64244c252a103cb247ee67266a4ef658be55fd"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/test-results.json",
+    "bytes": 2816,
+    "sha256": "f1d4006f1e8e075944365005151991d39511148cf733a49e18a7418ef2caa667"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/tests.mjs",
+    "bytes": 2117,
+    "sha256": "c3ceceea7cbc1b1c7fa8d60c55f61881a132210f9c98170a52cae5cb2e66acb3"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/verify.mjs",
+    "bytes": 3454,
+    "sha256": "be056c2521bb4725fcb897bbf1305aa2e6893c3ed899afccb1f97679c8fc17d5"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/version-metadata.json",
+    "bytes": 2464,
+    "sha256": "897d29d9785cc7a5ebd021dd50b120778cf122d17c4eba791191377f7d86aa09"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/capture-correction-guard.mjs",
+    "bytes": 3603,
+    "sha256": "19f31a4870f7f52804685454c3ec6d0ede2b3a1187c4297ab764a5e99c9033af"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/design-guard.mjs",
+    "bytes": 8834,
+    "sha256": "27930061f4dc158897a8f56bb983da029fc77e3c1023a0e62e7bc10293f077b5"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/direction-guard.mjs",
+    "bytes": 3937,
+    "sha256": "125efd5f7fbd286595fcf992345b7a93df2c01b7393f073a230fc6a1db643ce4"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/empty-design-guard.mjs",
+    "bytes": 4402,
+    "sha256": "e4a805f489d942d986deab397cca76b981d7d4698820961af09fd00339cd5c3f"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/observation-guard.mjs",
+    "bytes": 4064,
+    "sha256": "ad9d32332c5233f42ca36b8d5f09e0f5bdc83783fd6b117a12b8213017c6f384"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/original-observation-guard.mjs",
+    "bytes": 4506,
+    "sha256": "d1f4c1ed2dcf2d5f9fa6234deb9d5d306e6315e661001f666cf2cf6b4ee734b4"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/prior-guard.mjs",
+    "bytes": 65647,
+    "sha256": "af848afcdc2987d5f314c94effd5475de3e78fd16bb58a0eec341ef5584f2f93"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/rejected-capture-guard.mjs",
+    "bytes": 3705,
+    "sha256": "86421adeb5e1d972f695d806d9c6b6806b29c3b26101dfa8734992fc45cf90e5"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-build-p/_preserve/synthetic-guard.mjs",
+    "bytes": 5716,
+    "sha256": "27b3ce325f3b9a755eeb015f28654f877edbacecfab910d73e7f31ac7a886a69"
+  }
+]
