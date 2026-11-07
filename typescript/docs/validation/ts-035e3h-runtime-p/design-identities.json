@@ -1,0 +1,42 @@
+[
+  {
+    "path": "proposal.json",
+    "bytes": 5725,
+    "sha256": "5645e0a98bb7689102e91bcd9a295defb4be11ec0168f349c040f6821c777c55"
+  },
+  {
+    "path": "execution-config.proposed.json",
+    "bytes": 1872,
+    "sha256": "f470e19ec3813a4bc283d6941de1f7de717bd0cd9dfcb8efeb41f714c28041f8"
+  },
+  {
+    "path": "output-policy.proposed.json",
+    "bytes": 1624,
+    "sha256": "b44b7eb37a427e8fe286752e75a8972c7ef19aa9682c79a0946fcfd44ae0870e"
+  },
+  {
+    "path": "review-contract.json",
+    "bytes": 2016,
+    "sha256": "1d9171eff94d5091713acefd65174947886e0b25d377044aaad93aa00e0b52e8"
+  },
+  {
+    "path": "smoke-oracle.json",
+    "bytes": 28442,
+    "sha256": "f0e103a3e0eac667a9c656c311b5fac9c9b26f38f5b1e2d9d0e2ed89a5f104cb"
+  },
+  {
+    "path": "status-literals.json",
+    "bytes": 23661,
+    "sha256": "97fe23fddcf184d850cc8570cbdeb57c2e7a0572a97160f0f71ac793675aecd0"
+  },
+  {
+    "path": "status-model.mjs",
+    "bytes": 1936,
+    "sha256": "ebccaa9b2eb9bc29d3f97ed19961d0e9def44d427dc202ec3df72223fceece2b"
+  },
+  {
+    "path": "validate-design.mjs",
+    "bytes": 2873,
+    "sha256": "b361a28b5acd9001fff07fcf2c5aafaa4a488b9a0d0879d8aabf632bf49df7d0"
+  }
+]

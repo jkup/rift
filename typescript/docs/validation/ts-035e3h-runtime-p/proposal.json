@@ -1,0 +1,119 @@
+{
+  "kind": "design-only-direct-single-recorder-smoke",
+  "implementationAuthorized": false,
+  "executionAuthorized": false,
+  "chosenGate": "CLR startup, Win32 observations, publication and hold/termination require runtime evidence; PE metadata cannot establish them",
+  "offlineMetadataParserRequired": false,
+  "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation",
+  "capture": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\capture",
+  "executable": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\recorder\\link-command-recorder.exe",
+  "sourceAndBinaryTrust": "cooperative build observation only; no source-to-binary equivalence proof",
+  "futureBudgets": {
+    "recorderLaunches": 1,
+    "supervisorAddTypeCalls": 1,
+    "helperCompiles": 0,
+    "retries": 0,
+    "compilerDriverLinkerInvocations": 0
+  },
+  "freshDirectories": [
+    "capture",
+    "recorder",
+    "tmp",
+    "home",
+    "home/AppData",
+    "home/AppData/Local",
+    "home/AppData/Roaming",
+    "program-data"
+  ],
+  "copies": [
+    {
+      "identity": "built-binary",
+      "to": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\recorder\\link-command-recorder.exe"
+    },
+    {
+      "identity": "clr-startup-config",
+      "to": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\recorder\\link-command-recorder.exe.config"
+    },
+    {
+      "identity": "supervisor.cs.proposed.txt",
+      "to": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\supervisor.cs"
+    },
+    {
+      "identity": "supervise.ps1.proposed.txt",
+      "to": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\supervise.ps1"
+    },
+    {
+      "identity": "execution-config.proposed.json",
+      "to": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\contract.json"
+    }
+  ],
+  "supervisorCommand": {
+    "executable": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+    "argv": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\supervise.ps1",
+      "-ConfigPath",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\contract.json"
+    ],
+    "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation",
+    "environment": {
+      "APPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home\\AppData\\Roaming",
+      "COMSPEC": "C:\\WINDOWS\\system32\\cmd.exe",
+      "HOMEDRIVE": "C:",
+      "HOMEPATH": "\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home",
+      "LOCALAPPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home\\AppData\\Local",
+      "NO_COLOR": "1",
+      "PATH": "C:\\WINDOWS\\system32;C:\\WINDOWS",
+      "PATHEXT": ".EXE",
+      "PROGRAMDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\program-data",
+      "PSModulePath": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\Modules",
+      "SystemDrive": "C:",
+      "SystemRoot": "C:\\WINDOWS",
+      "TEMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\tmp",
+      "TMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\tmp",
+      "USERPROFILE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home",
+      "WINDIR": "C:\\WINDOWS",
+      "RIFT_LINK_CAPTURE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\capture\\first-command.bin",
+      "RIFT_EMPTY": "",
+      "RIFT_UNITS": "high-\ud800-low-\udc00-pair-😀"
+    }
+  },
+  "nodeController": {
+    "status": "not implemented or proposed runnable in this checkpoint",
+    "mechanism": "future exact inherited parent supervise function, 90s watchdog/10s close bound; new hash and review required"
+  },
+  "preflight": [
+    "root absent; no reuse or cleanup deletion",
+    "all ancestors ordinary/native no-reparse; all private files single-link",
+    "exact approved source/binary/config hashes and dev/inode/length before and after copies",
+    "copy binary+matching exe.config without load or parse",
+    "exact supervisor/PowerShell/Node identities from accepted build policy; no broad discovery",
+    "all19 environment keys exact; HOMEDRIVE+HOMEPATH=USERPROFILE within root",
+    "capture empty; output stream/status files absent; reserve exclusive root"
+  ],
+  "cleanup": "supervisor retains inherited job kill and bounded drain; forced exit 0xe0350001 is expected only after marker stop; cleanup proof requires active0/root signaled/streams EOF plus no errors",
+  "outputBounds": {
+    "captureFiles": 132,
+    "registeredEntries": 64,
+    "recordBytes": 1048576,
+    "identityBytes": 32,
+    "captureTotalBytes": 1052768,
+    "rawStreamsEach": 8388608,
+    "supervisorStatusBytes": 1048576,
+    "unknown": "retain and reject; never delete or retry"
+  },
+  "notInFirstRuntime": [
+    "concurrent duplicate launches",
+    "fault injection into recorder IO",
+    "alternate roots require source/binary change because Root is compiled constant",
+    "complete process attempt census",
+    "producer/compiler integration",
+    "response-file expansion",
+    "default-link equivalence"
+  ]
+}
