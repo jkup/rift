@@ -1,0 +1,211 @@
+{
+  "time": "2026-11-07T08:29:22.754Z",
+  "invocation": {
+    "authorized": false,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "argv": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-runtime-ready-p\\runner.mjs"
+    ],
+    "cwd": "C:\\Users\\jonku\\code\\rift",
+    "environment": {
+      "APPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home\\AppData\\Roaming",
+      "COMSPEC": "C:\\WINDOWS\\system32\\cmd.exe",
+      "HOMEDRIVE": "C:",
+      "HOMEPATH": "\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home",
+      "LOCALAPPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home\\AppData\\Local",
+      "NO_COLOR": "1",
+      "PATH": "C:\\WINDOWS\\system32;C:\\WINDOWS",
+      "PATHEXT": ".EXE",
+      "PROGRAMDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\program-data",
+      "PSModulePath": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\Modules",
+      "SystemDrive": "C:",
+      "SystemRoot": "C:\\WINDOWS",
+      "TEMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\tmp",
+      "TMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\tmp",
+      "USERPROFILE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home",
+      "WINDIR": "C:\\WINDOWS",
+      "RIFT_LINK_CAPTURE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\capture\\first-command.bin",
+      "RIFT_EMPTY": "",
+      "RIFT_UNITS": "high-\ud800-low-\udc00-pair-😀"
+    },
+    "recorderLaunchesMaximum": 1,
+    "supervisorAddTypeMaximum": 1,
+    "retries": 0,
+    "gates": {
+      "entry": "true in inert txt only",
+      "controller": "true in inert txt only",
+      "supervisor": "true in inert txt only",
+      "wrapper": "throw removed in inert txt only"
+    },
+    "reviewRequired": "actual/root/second review of exact hashes before separate recorder runtime approval; previous helper approval consumed"
+  },
+  "manifest": [
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/controller.mjs.proposed.txt",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/controller.mjs",
+      "mode": "exclusive-copy-after-approval",
+      "bytes": 6581,
+      "sha256": "c8fbcd3d2c340e6dff09f10ca6067800a821abc445b5726012ba4659fde8f448"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/controller-pieces.mjs",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/controller-pieces.mjs",
+      "mode": "verify-existing-dependency",
+      "bytes": 8102,
+      "sha256": "4767696d8e6500ec5c3bcc7fb77b36b91f59e35fdb72fa9385f6cc364db2b71a"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/parent.mjs",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/parent.mjs",
+      "mode": "verify-existing-dependency",
+      "bytes": 2696,
+      "sha256": "8118d2e7176d35235e99f5d69eaef423fb8b5e29190a601a7b44a566fff98a6e"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/files.mjs",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/files.mjs",
+      "mode": "verify-existing-dependency",
+      "bytes": 4818,
+      "sha256": "9e60e9d9a0d2583751c67f714a2f0c173355978141d3085a465ae4e364b7b3ce"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/policy.mjs",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/policy.mjs",
+      "mode": "verify-existing-dependency",
+      "bytes": 5450,
+      "sha256": "9ee0a2e370100878dba17932a3922a4ba8006213be251296f301019742f84e8e"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runtime-support.mjs",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runtime-support.mjs",
+      "mode": "verify-existing-dependency",
+      "bytes": 3484,
+      "sha256": "7c47f8850abf00788b3de41a4068678e465702d9d6b988a4d54d9d0109b4287a"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/format.mjs",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/format.mjs",
+      "mode": "verify-existing-dependency",
+      "bytes": 5551,
+      "sha256": "e2a1104bac75c3c5064b3025679368747d25a6edbd2d129a92651441d2ee110a"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/status-model.mjs",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/status-model.mjs",
+      "mode": "verify-existing-dependency",
+      "bytes": 1936,
+      "sha256": "ebccaa9b2eb9bc29d3f97ed19961d0e9def44d427dc202ec3df72223fceece2b"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/proposal.json",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/proposal.json",
+      "mode": "verify-existing-dependency",
+      "bytes": 5725,
+      "sha256": "5645e0a98bb7689102e91bcd9a295defb4be11ec0168f349c040f6821c777c55"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/execution-config.proposed.json",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/execution-config.proposed.json",
+      "mode": "verify-existing-dependency",
+      "bytes": 1872,
+      "sha256": "f470e19ec3813a4bc283d6941de1f7de717bd0cd9dfcb8efeb41f714c28041f8"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/output-policy.proposed.json",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/output-policy.proposed.json",
+      "mode": "verify-existing-dependency",
+      "bytes": 1624,
+      "sha256": "b44b7eb37a427e8fe286752e75a8972c7ef19aa9682c79a0946fcfd44ae0870e"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/smoke-oracle.json",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/smoke-oracle.json",
+      "mode": "verify-existing-dependency",
+      "bytes": 28442,
+      "sha256": "f0e103a3e0eac667a9c656c311b5fac9c9b26f38f5b1e2d9d0e2ed89a5f104cb"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/alias-policy.json",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/alias-policy.json",
+      "mode": "verify-existing-dependency",
+      "bytes": 35797,
+      "sha256": "bfab8dfb6968e755146d40d477b1aae282ac7961f2d7a4cdca6432e85f6be9c4"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/build-plan.json",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/build-plan.json",
+      "mode": "verify-existing-dependency",
+      "bytes": 13869,
+      "sha256": "31a860246b4900e2a7336e8d086e63334ec0c993a549ea949c4dc3dd4191167f"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/identities.json",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/identities.json",
+      "mode": "verify-existing-dependency",
+      "bytes": 1426,
+      "sha256": "6b1dee5ee0d6309616fab7b27db160eb1ad87dbc86af1d8ddbff5d9c631fcf17"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/supervisor.cs.proposed.txt",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/supervisor.cs.proposed.txt",
+      "mode": "verify-existing-dependency",
+      "bytes": 17638,
+      "sha256": "6881267f74aa90e741f7472ba185586f115f07135ab470188d6a3018868f01d2"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/supervise.ps1.proposed.txt",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/supervise.ps1.proposed.txt",
+      "mode": "verify-existing-dependency",
+      "bytes": 2050,
+      "sha256": "3dcdf1821ffc7252c517846fff069de04f04d6c44bfe43264f6b5c70ab9ce9d4"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-capture-p/recorder.cs.txt",
+      "destination": "typescript/docs/validation/ts-035e3h-capture-p/recorder.cs.txt",
+      "mode": "verify-readonly-external",
+      "bytes": 5797,
+      "sha256": "25e285690c80c9b5d9e7a18136338394cbc9b55d9d6f8c6b82f3342cffd23877"
+    },
+    {
+      "source": "typescript/build/ts035e3h-recorder-build/out/link-command-recorder.exe",
+      "destination": "typescript/build/ts035e3h-recorder-build/out/link-command-recorder.exe",
+      "mode": "verify-readonly-external",
+      "bytes": 8192,
+      "sha256": "093296da037614d1f177de5c4773edd6f1b50fb174ebd762798a88d60a686b2b"
+    },
+    {
+      "source": "typescript/build/ts035e3h-recorder-build/out/link-command-recorder.exe.config",
+      "destination": "typescript/build/ts035e3h-recorder-build/out/link-command-recorder.exe.config",
+      "mode": "verify-readonly-external",
+      "bytes": 125,
+      "sha256": "32d81e039bb59b460cce427dbe27181dc36b06bb9e0fe172334f6b1cfd2eed46"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runner.mjs.proposed.txt",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runner.mjs",
+      "mode": "exclusive-copy-after-approval",
+      "bytes": 1793,
+      "sha256": "c235ee325cce63531ecfaa4e023da4dcd596c50012da4b1f14170aef80739fd4"
+    },
+    {
+      "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runtime-bindings.json",
+      "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runtime-bindings.json",
+      "mode": "verify-existing-dependency",
+      "bytes": 3911,
+      "sha256": "98d3a31259403346d8cfe77e27f8f00a86306c942fc8281347978aef3523caaa"
+    }
+  ],
+  "authority": {
+    "source": "fresh owner approval relayed by coordinator 01a196aa-fd06-7dc0-91d3-cfee750bcd19",
+    "question": "one test run of the recorder helper, plus one supervisor bootstrap, with no retries; this step launches it; no compiler or linker will run",
+    "ownerReply": "Yes!",
+    "scope": "one recorder launch and one supervisor Add-Type bootstrap; no helper compilation/scriptc/linker, no retries or oracle/limit changes",
+    "acceptedReadiness": "1ca44b75; actual/finalsecond/root94272 exit0;39 controls/13622 preserved",
+    "entrySha256": "c235ee325cce63531ecfaa4e023da4dcd596c50012da4b1f14170aef80739fd4",
+    "controllerSha256": "c8fbcd3d2c340e6dff09f10ca6067800a821abc445b5726012ba4659fde8f448",
+    "supervisorSha256": "6881267f74aa90e741f7472ba185586f115f07135ab470188d6a3018868f01d2",
+    "wrapperSha256": "3dcdf1821ffc7252c517846fff069de04f04d6c44bfe43264f6b5c70ab9ce9d4",
+    "previousHelperApprovalConsumed": true
+  },
+  "maximumNodeAttempts": 1
+}

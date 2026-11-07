@@ -1,0 +1,3 @@
+* -text
+*.bin -diff
+cleanup-pids.json whitespace=cr-at-eol

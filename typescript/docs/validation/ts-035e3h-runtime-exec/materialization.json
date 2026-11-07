@@ -1,0 +1,32 @@
+[
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/controller.mjs.proposed.txt",
+    "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/controller.mjs",
+    "mode": "exclusive-copy-after-approval",
+    "bytes": 6581,
+    "sha256": "c8fbcd3d2c340e6dff09f10ca6067800a821abc445b5726012ba4659fde8f448",
+    "identity": {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-runtime-ready-p\\controller.mjs",
+      "dev": "1045235170",
+      "ino": "13229323906323244",
+      "nlink": "1",
+      "bytes": 6581,
+      "sha256": "c8fbcd3d2c340e6dff09f10ca6067800a821abc445b5726012ba4659fde8f448"
+    }
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runner.mjs.proposed.txt",
+    "destination": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runner.mjs",
+    "mode": "exclusive-copy-after-approval",
+    "bytes": 1793,
+    "sha256": "c235ee325cce63531ecfaa4e023da4dcd596c50012da4b1f14170aef80739fd4",
+    "identity": {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-runtime-ready-p\\runner.mjs",
+      "dev": "1045235170",
+      "ino": "7318349395401578",
+      "nlink": "1",
+      "bytes": 1793,
+      "sha256": "c235ee325cce63531ecfaa4e023da4dcd596c50012da4b1f14170aef80739fd4"
+    }
+  }
+]
