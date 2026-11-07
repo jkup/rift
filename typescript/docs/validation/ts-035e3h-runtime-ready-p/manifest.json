@@ -1,0 +1,302 @@
+[
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/.gitattributes",
+    "bytes": 68,
+    "sha256": "98492dc72c56b36e04c339d8a7df93861cfb493cda80b3ceb598b280c6a7a887"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/alias-policy.json",
+    "bytes": 35797,
+    "sha256": "bfab8dfb6968e755146d40d477b1aae282ac7961f2d7a4cdca6432e85f6be9c4"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/build-plan.json",
+    "bytes": 13869,
+    "sha256": "31a860246b4900e2a7336e8d086e63334ec0c993a549ea949c4dc3dd4191167f"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/check-ready.mjs",
+    "bytes": 3283,
+    "sha256": "4f9fee12865c26e6425b666b22c3cd061af28e7f76ac5e821d5e54bd3e4c1cec"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/controller-pieces.mjs",
+    "bytes": 8102,
+    "sha256": "4767696d8e6500ec5c3bcc7fb77b36b91f59e35fdb72fa9385f6cc364db2b71a"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/controller.mjs.proposed.txt",
+    "bytes": 6581,
+    "sha256": "c8fbcd3d2c340e6dff09f10ca6067800a821abc445b5726012ba4659fde8f448"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/copied-dependencies.json",
+    "bytes": 3204,
+    "sha256": "ad2f855e46d93762e67f0759a328ae0fe528b528586df17f3f662d30f2d8df65"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/execution-config.proposed.json",
+    "bytes": 1872,
+    "sha256": "f470e19ec3813a4bc283d6941de1f7de717bd0cd9dfcb8efeb41f714c28041f8"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/files.mjs",
+    "bytes": 4818,
+    "sha256": "9e60e9d9a0d2583751c67f714a2f0c173355978141d3085a465ae4e364b7b3ce"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/format.mjs",
+    "bytes": 5551,
+    "sha256": "e2a1104bac75c3c5064b3025679368747d25a6edbd2d129a92651441d2ee110a"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/frozen-identities.json",
+    "bytes": 4150,
+    "sha256": "6eedde6c53334af56cb75f608bd7d0f5aa2f6d0593df4b4d44894830cbb43dd2"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/guard-tasks.md",
+    "bytes": 681665,
+    "sha256": "0ef6b1caa001d5c4a28fac9c96a3f0a65df153df1c13782709f3f843b05005a1"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/guard-transformations.json",
+    "bytes": 15322,
+    "sha256": "4ed7bd7c77f9d03cda2c3071c92f50f21f05b613c48d4e48bb3b9d2f5b6436ef"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/identities.json",
+    "bytes": 1426,
+    "sha256": "6b1dee5ee0d6309616fab7b27db160eb1ad87dbc86af1d8ddbff5d9c631fcf17"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/invocation.proposed.json",
+    "bytes": 2074,
+    "sha256": "4b98d9eb029a8156023da3c2f681a7bccb2d4f7a8290e844b13e4ca7f2d31138"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/materialization.proposed.json",
+    "bytes": 7340,
+    "sha256": "4a5a6483379fc11c4186ea018df4b7466517d009fe46a72c9c5735f18f52ce16"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/one-shot-protocol.json",
+    "bytes": 2588,
+    "sha256": "a4c14f860086f6b8f5d00901e8d3d71536d65be370f3f8e90cbd2464de949fb6"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/output-policy.proposed.json",
+    "bytes": 1624,
+    "sha256": "b44b7eb37a427e8fe286752e75a8972c7ef19aa9682c79a0946fcfd44ae0870e"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/parent.mjs",
+    "bytes": 2696,
+    "sha256": "8118d2e7176d35235e99f5d69eaef423fb8b5e29190a601a7b44a566fff98a6e"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/policy.mjs",
+    "bytes": 5450,
+    "sha256": "9ee0a2e370100878dba17932a3922a4ba8006213be251296f301019742f84e8e"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/preflight-after.json",
+    "bytes": 48699,
+    "sha256": "5d86f7e8bb8eb5fe866d5801f4971e1bf98529ff74e0dd018d6c672af1c86854"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/preflight-before.json",
+    "bytes": 48699,
+    "sha256": "5d86f7e8bb8eb5fe866d5801f4971e1bf98529ff74e0dd018d6c672af1c86854"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/preflight-results.json",
+    "bytes": 102458,
+    "sha256": "1d506fad7805338712f03f604ab175f3b3d274ae8bd980939ff1e964ba0786fc"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/preflight-started.json",
+    "bytes": 111,
+    "sha256": "b192fea917e64b176227de10760481778e965660902ddf7b3b594d79ae298014"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/preservation.json",
+    "bytes": 4694329,
+    "sha256": "480de82827aef1e77cb1bc2f7ec1ea56007d2009148d229932e0b5deecf4e8a8"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/prior-tasks.md",
+    "bytes": 682057,
+    "sha256": "c56bebaf2c7886cab158a8066b2ea887b722b59a95931f5b6089b985e8c709be"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/proposal-check.mjs",
+    "bytes": 4138,
+    "sha256": "bcf4fe31d6261534dffd7903e9f0f16c8ae9a19b77c89cc3450d775ad4598faf"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/proposal.json",
+    "bytes": 5725,
+    "sha256": "5645e0a98bb7689102e91bcd9a295defb4be11ec0168f349c040f6821c777c55"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/read-only-preflight.mjs",
+    "bytes": 3684,
+    "sha256": "cf5f8e85a8bf6f186056df14ba272c080fa4311387e1b1cea50203b2296ca19d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/README.md",
+    "bytes": 6659,
+    "sha256": "5ca963a4c1f5ce415df847f03bdada9179c6d1262e43e0bc382e287b968f5bfa"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runner.mjs.proposed.txt",
+    "bytes": 1793,
+    "sha256": "c235ee325cce63531ecfaa4e023da4dcd596c50012da4b1f14170aef80739fd4"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runtime-bindings.json",
+    "bytes": 3911,
+    "sha256": "98d3a31259403346d8cfe77e27f8f00a86306c942fc8281347978aef3523caaa"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/runtime-support.mjs",
+    "bytes": 3484,
+    "sha256": "7c47f8850abf00788b3de41a4068678e465702d9d6b988a4d54d9d0109b4287a"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/smoke-oracle.json",
+    "bytes": 28442,
+    "sha256": "f0e103a3e0eac667a9c656c311b5fac9c9b26f38f5b1e2d9d0e2ed89a5f104cb"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/source-transformations.json",
+    "bytes": 2280,
+    "sha256": "0f7697f546fd6319c77a549408ff14670e74edb993fc8947c0f44aa898364275"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/status-model.mjs",
+    "bytes": 1936,
+    "sha256": "ebccaa9b2eb9bc29d3f97ed19961d0e9def44d427dc202ec3df72223fceece2b"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/supervise.ps1.proposed.txt",
+    "bytes": 2050,
+    "sha256": "3dcdf1821ffc7252c517846fff069de04f04d6c44bfe43264f6b5c70ab9ce9d4"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/supervisor.cs.proposed.txt",
+    "bytes": 17638,
+    "sha256": "6881267f74aa90e741f7472ba185586f115f07135ab470188d6a3018868f01d2"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/task-entry.txt",
+    "bytes": 1589,
+    "sha256": "33952f5fd969cf2c0765838500875177a02248c10c46544f7f5bb127ac8c3906"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/test-results.json",
+    "bytes": 3031,
+    "sha256": "0a4f60577131fcf5344ea143370b686c6a3b758d4acf35ec103182e2a47aba84"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/tests.mjs",
+    "bytes": 2309,
+    "sha256": "5f406d1faad7c0ba2862a03e928e54e36ddcd0a77dac66b4d48a179daee9af89"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/verify.mjs",
+    "bytes": 3394,
+    "sha256": "c13b909d6ca8d22412412b8d8f20f85430e25e105559c323f37b0f645a2efa1d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/build-design-guard.mjs",
+    "bytes": 4605,
+    "sha256": "48d79d2a0ff19503d5e6b657927cc2b47b09a6d5c284d9ee5546f82f03a4b371"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/build-execution-guard.mjs",
+    "bytes": 3947,
+    "sha256": "d457e928402b324e040f68a12051c2d2c904d362ed87871667a0019747c809dc"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/capture-correction-guard.mjs",
+    "bytes": 4784,
+    "sha256": "18c6825936dd781b2c2881c28cf29bb77730ea8be77c299488c24e157e95e65e"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/design-guard.mjs",
+    "bytes": 11411,
+    "sha256": "9c450b98ead46694961ae39fa90687a00c06ea51d22b43ad1654b0f9542c5899"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/direction-guard.mjs",
+    "bytes": 5118,
+    "sha256": "78848e5bf6ed47ea1ef8171c78458c4db726499dc5329b48c93fd67fbf8572f9"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/empty-design-guard.mjs",
+    "bytes": 5583,
+    "sha256": "f7d2d2123e104e102017aedffe9e58f1b86f2e0727a6027bec9aa2f5b24d80f7"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/home-evidence-check.mjs",
+    "bytes": 2820,
+    "sha256": "d8b2388dab451535d4bcd6cbeb76389c1ad1b51fa5cb747525ec15a7b475acbb"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/home-guard.mjs",
+    "bytes": 4103,
+    "sha256": "1c4d4b179a006b6e96ecf68f7d609148a6b9c11583a0ddf8718ef2f62e21fc7d"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/inert-controller-guard.mjs",
+    "bytes": 3497,
+    "sha256": "f28b612b5636a3cf32f9dca273bf2d61ea60b8bee2c18faf85f0d86f9389e8ff"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/integration-guard.mjs",
+    "bytes": 4452,
+    "sha256": "fa86907f91c7f776019ee46b07c40e107b49b8957ae81f0e972eedf6a3f1dfab"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/observation-guard.mjs",
+    "bytes": 5245,
+    "sha256": "fe1a804ff8561356dedb08f64f6ab59e41c0f4b5bd72da4f8d44a724f981b280"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/original-observation-guard.mjs",
+    "bytes": 5687,
+    "sha256": "d591d5fc07865ba0b0430c43aab7845d0565d3f80478627163148da592e08c47"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/prior-guard.mjs",
+    "bytes": 76815,
+    "sha256": "9b52c18e0835a981eaef92a70657632d027a557a995cb3f94110292700b27173"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/ready-evidence-check.mjs",
+    "bytes": 4583,
+    "sha256": "c921005fc98a27798cf1f55f565d88303b26f7d7a45596b72c054cad565c5cd3"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/ready-guard.mjs",
+    "bytes": 4247,
+    "sha256": "1ddf6657d895f7389944fdb6d2dae7ce0ea1eaf69d5100bb2861f06102af8d79"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/rejected-capture-guard.mjs",
+    "bytes": 4886,
+    "sha256": "06af53028a938b5217e04cab4675c45edeb28033521dc35fc7ce146b3dfeaf95"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/runtime-design-guard.mjs",
+    "bytes": 3657,
+    "sha256": "308699251ef242742d400e931fd452a12e1e9803159c9177a15da5fc367b9f7c"
+  },
+  {
+    "path": "typescript/docs/validation/ts-035e3h-runtime-ready-p/_preserve/synthetic-guard.mjs",
+    "bytes": 6897,
+    "sha256": "531e38f1c4fb80367663e70b0b8734012c1ae5c66b542a74e069743f69f5237b"
+  }
+]

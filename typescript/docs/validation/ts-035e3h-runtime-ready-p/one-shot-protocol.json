@@ -1,0 +1,43 @@
+{
+  "authorized": false,
+  "materializationManifest": "materialization.proposed.json",
+  "invocation": "invocation.proposed.json",
+  "maxRecorderDispatches": 1,
+  "maxSupervisorAddType": 1,
+  "maxHelperCompiles": 0,
+  "retries": 0,
+  "phases": [
+    {
+      "phase": "approval",
+      "rule": "Require fresh explicit recorder-runtime approval tied to all four enabled source hashes; helper-build approval consumed."
+    },
+    {
+      "phase": "caller-evidence",
+      "rule": "Reserve a new execution-evidence sibling and an exclusive invocation-started record; existing record or destination refuses without retry. Retain exact invocation and approval. No fixedroot creation here."
+    },
+    {
+      "phase": "materialization",
+      "rule": "Verify all22 manifest rows, named current identities and three required absences. Exclusively copy only runner.mjs and controller.mjs from exact txt sources; verify bytes/size/hash. Existing destinations or any failure stop; retain any partial addition, do not recopy/overwrite."
+    },
+    {
+      "phase": "dispatch",
+      "rule": "Record one exclusive dispatch marker. Invoke exact Node executable/argv/cwd/all19 environment from invocation.proposed.json once; redirect outer stdout/stderr to exclusive raw files and retain native status. No inherited environment, shell substitution, alternate command or retry."
+    },
+    {
+      "phase": "controller",
+      "rule": "Existing controller exclusively reserves fixedroot, stages hashchecked inputs and dispatches supervisor once; accepted parent90s watchdog/10s close bound and child60s/8MiB/cleanup10s unchanged."
+    },
+    {
+      "phase": "failure",
+      "rule": "First identity/setup/transport/status/metadata/publication/cleanup failure stops. Preserve outer streams, status, physical partial tree and bounded inventory. Root not owned means no result write there. No deleting or bypassing validation."
+    },
+    {
+      "phase": "cleanup",
+      "rule": "Report creation-time job membership, forced exit0xe0350001, root signaled, active0 and pipeEOF as cooperative supervisor evidence. On unconfirmed cleanup retain and stop for manual review; do not claim clean completion. Any later inspection must not retry the recorder."
+    },
+    {
+      "phase": "success",
+      "rule": "Only captured-attempt-count-unproven with exact child UTF16 and complete bounded publication may stop as a review candidate. Preserve raw allfiles/identities; never equate supplied outer environment with observed child. No response expansion or output launch; no successor invocation."
+    }
+  ]
+}
