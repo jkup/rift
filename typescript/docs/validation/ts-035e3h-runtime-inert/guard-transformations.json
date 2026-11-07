@@ -1,0 +1,376 @@
+[
+  {
+    "name": "runtime-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/verify.mjs",
+    "sourceBytes": 3351,
+    "sourceSha256": "223956d34b407116b44221152248a53ac5ead9dd407815deee2d79d867ac60e3",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p')",
+        "count": 1,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      },
+      {
+        "old": "join(repo,'typescript/TASKS.md')",
+        "next": "join(import.meta.dirname,'../guard-tasks.md')",
+        "count": 1,
+        "all": false
+      },
+      {
+        "old": "'./_preserve/build-execution-guard.mjs'",
+        "next": "'./build-execution-guard.mjs'",
+        "count": 1,
+        "all": false
+      },
+      {
+        "old": "'./validate-design.mjs'",
+        "next": "'../../ts-035e3h-runtime-p/validate-design.mjs'",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 3484,
+    "sha256": "b6cbe97efc6ed67a055108c80d6487098113968c184ee1150f7c6bd3611a0379"
+  },
+  {
+    "name": "build-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/build-design-guard.mjs",
+    "sourceBytes": 4269,
+    "sourceSha256": "3dd898b5317dc5f371718361a8552a749095fb69099ddc63f63f7406e36eae86",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4432,
+    "sha256": "559d25dd424bb4708e76bd97ca46b11eca7e503d400033b56d0407e729f2c87f"
+  },
+  {
+    "name": "build-execution-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/build-execution-guard.mjs",
+    "sourceBytes": 3611,
+    "sourceSha256": "dea129c63aaf21d6cbdeb3d3ceda848daf0703478dde679e4dfc542b76b6be57",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 3774,
+    "sha256": "fa6710e4433dca01bbdd2aa3b1041928583aa41f7227c5256a253d71b4640528"
+  },
+  {
+    "name": "capture-correction-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/capture-correction-guard.mjs",
+    "sourceBytes": 4448,
+    "sourceSha256": "95e1406c8040bc71be1710f8e8bc17a056d9a622286bf7eb144ada9f66aca82c",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4611,
+    "sha256": "79c4b1d716e5bc5b385001e367236581458ce49b593682b5c1f06926b2e58f98"
+  },
+  {
+    "name": "design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/design-guard.mjs",
+    "sourceBytes": 10683,
+    "sourceSha256": "444cfd49321861a1aaa1c48b4924e227635f327e45e0a12acd376dec62c8618c",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 6,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 11034,
+    "sha256": "74017c18ed147b1a28fe470187fd3b190ff171dc713b9c5f5d2b84e3a75dd26a"
+  },
+  {
+    "name": "direction-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/direction-guard.mjs",
+    "sourceBytes": 4782,
+    "sourceSha256": "5c05a042af232ebd5df70f315bd020256c13fb7a94e000a6f4d993895e227b7a",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4945,
+    "sha256": "dd97825e2033d3cc997016e0dfbe37ad18e77133395ea37985b3299e3f53cc73"
+  },
+  {
+    "name": "empty-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/empty-design-guard.mjs",
+    "sourceBytes": 5247,
+    "sourceSha256": "7585c67649c152d642eedcc3289eb4237d1252991c0fa20c7b438f75ce985b13",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 5410,
+    "sha256": "163a899862558e0b80afb7680ccff8455026c4d89e99b837d13f82b85c49261c"
+  },
+  {
+    "name": "home-evidence-check.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/home-evidence-check.mjs",
+    "sourceBytes": 2722,
+    "sourceSha256": "b40af6478cdeaf6599fbff04662a1a7a75bab3ea4dfa44fad155fc11c9fc2c36",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 2769,
+    "sha256": "d1189ca63e64f79432f9dcecc30b60dce5d5d7eff6210f8ce4e4b1a365a109f3"
+  },
+  {
+    "name": "home-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/home-guard.mjs",
+    "sourceBytes": 3767,
+    "sourceSha256": "39814f085afc720449bffceb61fd82ad9014d3269f1bd3594467d740756aa6b6",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 3930,
+    "sha256": "ef320895ba5005d56a46745298e68c1f1d14fe6df106721913cb4ef9c9291eb1"
+  },
+  {
+    "name": "integration-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/integration-guard.mjs",
+    "sourceBytes": 4116,
+    "sourceSha256": "ef6312232dda899b7ab1982f0b9af3f0169984bf3d2cf211878f0a21be11d8a8",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4279,
+    "sha256": "e049b35079a35d117c87e800971513b2367955d6b5f6689c2ae3cd6e974ebfa2"
+  },
+  {
+    "name": "observation-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/observation-guard.mjs",
+    "sourceBytes": 4909,
+    "sourceSha256": "1e9f73ecb96a1148c3ed67ccb408cdb03dc28d3ee153da8c073f9cc557c6a13f",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 5072,
+    "sha256": "ec023e6d5d2a240ddb7858b9909f71b2ad19e0b28c51e2619139dc04af8c06f7"
+  },
+  {
+    "name": "original-observation-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/original-observation-guard.mjs",
+    "sourceBytes": 5351,
+    "sourceSha256": "c3563830d0af1f2a85cdb5e1070559d0a1da85d8ba90ee845717da9cfaf63554",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 5514,
+    "sha256": "787d3f78393a60eefa27f018aaee8b463d55616149622b5349b50ca9fc141bb0"
+  },
+  {
+    "name": "prior-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/prior-guard.mjs",
+    "sourceBytes": 73679,
+    "sourceSha256": "ab45a588dbcae1ba12180742a61e20f646890971b03e42dc227b7e2601190887",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 32,
+        "all": true
+      }
+    ],
+    "bytes": 75183,
+    "sha256": "d1e4daadf567bceab39348f8bdcd4b7e07b5d25a66925dec00de2c4ecb7da48b"
+  },
+  {
+    "name": "ready-evidence-check.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/ready-evidence-check.mjs",
+    "sourceBytes": 4485,
+    "sourceSha256": "584373c27c43b242e6b0fee8f09505af44a9ad7f65800b9b6e130619fad6abac",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 4532,
+    "sha256": "5739d2305e18a5c85511d31dfb76fdfd9167fbc4ac0039982349e5de7922cb34"
+  },
+  {
+    "name": "ready-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/ready-guard.mjs",
+    "sourceBytes": 3911,
+    "sourceSha256": "cc68cdc0553d7380f16e8bb3608f2b57718d7ebe308f89b682a3c08d9184c2ad",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4074,
+    "sha256": "882dcb3fcf3b7d036741b98d114ad2660dd852078f8cd5fb84020c8a5c63096b"
+  },
+  {
+    "name": "rejected-capture-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/rejected-capture-guard.mjs",
+    "sourceBytes": 4550,
+    "sourceSha256": "0e77dcaf0f01dd22cc47ad44751002f90d18be8969f81df3cecc73ae8f6614dd",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 4713,
+    "sha256": "ad050c6bd16bcb1291969839e68da58b2c6703eaa9c7b774029c9cd9e5bef6f2"
+  },
+  {
+    "name": "synthetic-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/_preserve/synthetic-guard.mjs",
+    "sourceBytes": 6561,
+    "sourceSha256": "599c020b143963a760b8e09a13bbd829ecd0ccb54a88a4387b8036629ad0701f",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-p/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-runtime-p/')||p.startsWith('typescript/docs/validation/ts-035e3h-runtime-inert/')",
+        "count": 1,
+        "all": false
+      }
+    ],
+    "bytes": 6724,
+    "sha256": "ceb98651e45d9e464da622a04ea6abf01c35ecfdc91ae0b60b1b17106a2f2d78"
+  }
+]

@@ -1,0 +1,3 @@
+* -text
+*.bin -diff
+supervisor.cs.proposed.txt whitespace=cr-at-eol

@@ -1,0 +1,747 @@
+{
+  "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh",
+  "status": "passed",
+  "results": [
+    {
+      "id": "actual-controller-gate-before-IO",
+      "passed": true
+    },
+    {
+      "id": "full-synthetic-success",
+      "passed": true
+    },
+    {
+      "id": "outer-wins-over-cleanup-and-partial",
+      "passed": true
+    },
+    {
+      "id": "supplied-env-mutated",
+      "passed": true
+    },
+    {
+      "id": "outer-argv",
+      "passed": true
+    },
+    {
+      "id": "outer-extra-key",
+      "passed": true
+    },
+    {
+      "id": "outer-stream-raw",
+      "passed": true
+    },
+    {
+      "id": "cleanup-wins-over-partial",
+      "passed": true
+    },
+    {
+      "id": "raw-child-stream",
+      "passed": true
+    },
+    {
+      "id": "snapshot-incomplete",
+      "passed": true
+    },
+    {
+      "id": "input-tampered",
+      "passed": true
+    },
+    {
+      "id": "pid-mismatch",
+      "passed": true
+    },
+    {
+      "id": "time-inconsistent",
+      "passed": true
+    },
+    {
+      "id": "partial-entry",
+      "passed": true
+    },
+    {
+      "id": "partial-record",
+      "passed": true
+    },
+    {
+      "id": "partial-marker",
+      "passed": true
+    },
+    {
+      "id": "missing-marker",
+      "passed": true
+    },
+    {
+      "id": "unknown-file",
+      "passed": true
+    },
+    {
+      "id": "duplicate-file",
+      "passed": true
+    },
+    {
+      "id": "second-registered",
+      "passed": true
+    },
+    {
+      "id": "observed-rawHex",
+      "passed": true
+    },
+    {
+      "id": "observed-cwdHex",
+      "passed": true
+    },
+    {
+      "id": "observed-imageHex",
+      "passed": true
+    },
+    {
+      "id": "observed-environmentHex",
+      "passed": true
+    },
+    {
+      "id": "observed-argvHex",
+      "passed": true
+    },
+    {
+      "id": "observed-surrogate",
+      "passed": true
+    },
+    {
+      "id": "actual-stage-five-copies",
+      "passed": true
+    },
+    {
+      "id": "actual-staging-preflight",
+      "passed": true
+    },
+    {
+      "id": "root-reuse",
+      "passed": true
+    },
+    {
+      "id": "duplicate-target",
+      "passed": true
+    },
+    {
+      "id": "wrong-source-hash",
+      "passed": true
+    },
+    {
+      "id": "missing-source",
+      "passed": true
+    },
+    {
+      "id": "source-hardlink-refused",
+      "passed": true
+    },
+    {
+      "id": "unexpected-preflight-file",
+      "passed": true
+    },
+    {
+      "id": "unknown-retained-refused",
+      "passed": true
+    },
+    {
+      "id": "junction-root-refused",
+      "passed": true
+    },
+    {
+      "id": "capture-alias-refused",
+      "passed": true
+    },
+    {
+      "id": "actual-capture-extraction",
+      "passed": true
+    },
+    {
+      "id": "actual-status-stream-extraction",
+      "passed": true
+    },
+    {
+      "id": "actual-parent-stream-read",
+      "passed": true
+    },
+    {
+      "id": "actual-extracted-review",
+      "passed": true
+    },
+    {
+      "id": "tampered-private-copy-postreview",
+      "passed": true
+    },
+    {
+      "id": "partial-record-retained",
+      "passed": true
+    },
+    {
+      "id": "malformed-status-refused",
+      "passed": true
+    },
+    {
+      "id": "partial-stage-retained",
+      "passed": true
+    },
+    {
+      "id": "owned-partial-file-still-present",
+      "passed": true
+    }
+  ],
+  "childExecutions": 0,
+  "recorderLaunches": 0,
+  "addTypeCalls": 0,
+  "inventory": [
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh",
+      "dev": "1045235170",
+      "ino": "6755399441763190",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full",
+      "dev": "1045235170",
+      "ino": "1125899907550154",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\capture",
+      "dev": "1045235170",
+      "ino": "1125899907550155",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\capture\\entry-00000007-0000000000000009.bin",
+      "dev": "1045235170",
+      "ino": "1125899907550168",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 32,
+      "sha256": "3a32734f77c74ebf666d18b0ad53bbeee7010025d80d02c6a766f9c13f8c3baa"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\capture\\first-command.bin",
+      "dev": "1045235170",
+      "ino": "1125899907550170",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\capture\\record-complete",
+      "dev": "1045235170",
+      "ino": "1125899907550171",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 32,
+      "sha256": "97ae350eaedb0613a8321d801d24c92ae4b08ddf8da9971974c403a6c300b5fd"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\capture\\winner.bin",
+      "dev": "1045235170",
+      "ino": "1125899907550169",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 32,
+      "sha256": "d2c59e87f5c518ccc2d8488399f624dfab35dee7bdddab4179c2f2174daa3deb"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\compiler.stderr.bin",
+      "dev": "1045235170",
+      "ino": "1125899907550174",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\compiler.stdout.bin",
+      "dev": "1045235170",
+      "ino": "1407374884260829",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\contract.json",
+      "dev": "1045235170",
+      "ino": "1125899907550167",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\home",
+      "dev": "1045235170",
+      "ino": "1125899907550158",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\home\\AppData",
+      "dev": "1045235170",
+      "ino": "1125899907550159",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\home\\AppData\\Local",
+      "dev": "1045235170",
+      "ino": "1125899907550160",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\home\\AppData\\Roaming",
+      "dev": "1045235170",
+      "ino": "1125899907550161",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\program-data",
+      "dev": "1045235170",
+      "ino": "1125899907550162",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\recorder",
+      "dev": "1045235170",
+      "ino": "1125899907550156",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\recorder\\link-command-recorder.exe",
+      "dev": "1045235170",
+      "ino": "1125899907550163",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 28,
+      "sha256": "d9b614ab0c450b88a59ca75da1e7cd7ad6c991497b8800ea051fb89c0c037174"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\recorder\\link-command-recorder.exe.config",
+      "dev": "1045235170",
+      "ino": "1125899907550164",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\supervise.ps1",
+      "dev": "1045235170",
+      "ino": "1125899907550166",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\supervisor-status.json",
+      "dev": "1045235170",
+      "ino": "1125899907550172",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 1,
+      "sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\supervisor.cs",
+      "dev": "1045235170",
+      "ino": "1125899907550165",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\supervisor.stderr.bin",
+      "dev": "1045235170",
+      "ino": "844424930839520",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\supervisor.stdout.bin",
+      "dev": "1045235170",
+      "ino": "844424930839519",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\full\\tmp",
+      "dev": "1045235170",
+      "ino": "1125899907550157",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\hard-source",
+      "dev": "1045235170",
+      "ino": "11258999069133705",
+      "nlink": "2",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\junction",
+      "dev": "1045235170",
+      "ino": "1125899907550152",
+      "nlink": "1",
+      "kind": "alias",
+      "target": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other",
+      "dev": "1045235170",
+      "ino": "1688849860971448",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\capture",
+      "dev": "1045235170",
+      "ino": "1688849860971449",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\capture\\redirect",
+      "dev": "1045235170",
+      "ino": "1125899907550153",
+      "nlink": "1",
+      "kind": "alias",
+      "target": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\recorder"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\contract.json",
+      "dev": "1045235170",
+      "ino": "1125899907550150",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\home",
+      "dev": "1045235170",
+      "ino": "1688849860971452",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\home\\AppData",
+      "dev": "1045235170",
+      "ino": "1688849860971453",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\home\\AppData\\Local",
+      "dev": "1045235170",
+      "ino": "1688849860971454",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\home\\AppData\\Roaming",
+      "dev": "1045235170",
+      "ino": "1407374884260799",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\program-data",
+      "dev": "1045235170",
+      "ino": "1407374884260800",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\recorder",
+      "dev": "1045235170",
+      "ino": "1688849860971450",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\recorder\\link-command-recorder.exe",
+      "dev": "1045235170",
+      "ino": "1407374884260801",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\recorder\\link-command-recorder.exe.config",
+      "dev": "1045235170",
+      "ino": "1407374884260803",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\supervise.ps1",
+      "dev": "1045235170",
+      "ino": "1125899907550149",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\supervisor.cs",
+      "dev": "1045235170",
+      "ino": "1125899907550148",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\tmp",
+      "dev": "1045235170",
+      "ino": "1688849860971451",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\other\\unknown.bin",
+      "dev": "1045235170",
+      "ino": "1125899907550151",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 1,
+      "sha256": "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned",
+      "dev": "1045235170",
+      "ino": "9007199255448459",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\capture",
+      "dev": "1045235170",
+      "ino": "10133099162291086",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\contract.json",
+      "dev": "1045235170",
+      "ino": "1688849860971446",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\home",
+      "dev": "1045235170",
+      "ino": "1970324837682093",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\home\\AppData",
+      "dev": "1045235170",
+      "ino": "1688849860971438",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\home\\AppData\\Local",
+      "dev": "1045235170",
+      "ino": "1688849860971439",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\home\\AppData\\Roaming",
+      "dev": "1045235170",
+      "ino": "1688849860971440",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\program-data",
+      "dev": "1045235170",
+      "ino": "1688849860971441",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\recorder",
+      "dev": "1045235170",
+      "ino": "9570149208869775",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\recorder\\link-command-recorder.exe",
+      "dev": "1045235170",
+      "ino": "1688849860971442",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\recorder\\link-command-recorder.exe.config",
+      "dev": "1045235170",
+      "ino": "1688849860971443",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\supervise.ps1",
+      "dev": "1045235170",
+      "ino": "1688849860971445",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\supervisor.cs",
+      "dev": "1045235170",
+      "ino": "1688849860971444",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\owned\\tmp",
+      "dev": "1045235170",
+      "ino": "3659174697946027",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial",
+      "dev": "1045235170",
+      "ino": "844424930839521",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\capture",
+      "dev": "1045235170",
+      "ino": "844424930839522",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\home",
+      "dev": "1045235170",
+      "ino": "844424930839525",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\home\\AppData",
+      "dev": "1045235170",
+      "ino": "844424930839526",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\home\\AppData\\Local",
+      "dev": "1045235170",
+      "ino": "844424930839527",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\home\\AppData\\Roaming",
+      "dev": "1045235170",
+      "ino": "844424930839528",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\program-data",
+      "dev": "1045235170",
+      "ino": "844424930839529",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\recorder",
+      "dev": "1045235170",
+      "ino": "844424930839523",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\recorder\\link-command-recorder.exe",
+      "dev": "1045235170",
+      "ino": "844424930839530",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\recorder\\link-command-recorder.exe.config",
+      "dev": "1045235170",
+      "ino": "844424930839531",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\partial\\tmp",
+      "dev": "1045235170",
+      "ino": "844424930839524",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\sources",
+      "dev": "1045235170",
+      "ino": "20829148277296000",
+      "nlink": "1",
+      "kind": "directory"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\sources\\input.txt",
+      "dev": "1045235170",
+      "ino": "11258999069133705",
+      "nlink": "2",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-runtime-synthetic-pSrdYh\\sources\\ordinary.txt",
+      "dev": "1045235170",
+      "ino": "1688849860971447",
+      "nlink": "1",
+      "kind": "file",
+      "bytes": 21,
+      "sha256": "7a7a6c0e3f7b81a3b3134ca6a43ec1fd5dd96da7d0e521a16557accbbacf63b3"
+    }
+  ]
+}

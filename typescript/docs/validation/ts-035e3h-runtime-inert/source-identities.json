@@ -1,0 +1,47 @@
+[
+  {
+    "path": "runner.mjs",
+    "bytes": 1794,
+    "sha256": "f50c0b87086b9aa7efca610ea7dc7fd5079055523e86a1ddd31c330a99e62a1c"
+  },
+  {
+    "path": "controller.mjs",
+    "bytes": 6582,
+    "sha256": "3f21bb2ef90d69236cb8a12a1104d3640f7c61ca2a29d37be6389871e25277b7"
+  },
+  {
+    "path": "controller-pieces.mjs",
+    "bytes": 8102,
+    "sha256": "4767696d8e6500ec5c3bcc7fb77b36b91f59e35fdb72fa9385f6cc364db2b71a"
+  },
+  {
+    "path": "parent.mjs",
+    "bytes": 2696,
+    "sha256": "8118d2e7176d35235e99f5d69eaef423fb8b5e29190a601a7b44a566fff98a6e"
+  },
+  {
+    "path": "runtime-bindings.json",
+    "bytes": 3877,
+    "sha256": "a47a70d8f5693a90450f85761d163655538cd2440d7c1c123486c65732564965"
+  },
+  {
+    "path": "invocation.proposed.json",
+    "bytes": 1987,
+    "sha256": "e649dc12e0d85467ffe0516ec2e5f1dd451729f764628f6e22e30aa08028df5f"
+  },
+  {
+    "path": "tests.mjs",
+    "bytes": 6689,
+    "sha256": "83b512bb33e7df12ff074f78960a5717c02f851044ae90596edadbb800b1b34c"
+  },
+  {
+    "path": "additional-tests.mjs",
+    "bytes": 4705,
+    "sha256": "99e31395a68cd6ba5ff9cf0327e3755678334c7fe8ff8fd15efbca2b4837d4cb"
+  },
+  {
+    "path": "review-literals.json",
+    "bytes": 1065740,
+    "sha256": "f0e0b3db8b700416c2b2ab002f52ca6eebcb13871f92970c5e9ec10eb26bd5ff"
+  }
+]

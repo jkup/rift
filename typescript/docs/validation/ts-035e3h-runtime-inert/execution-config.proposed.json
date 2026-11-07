@@ -1,0 +1,38 @@
+{
+  "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation",
+  "executable": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\recorder\\link-command-recorder.exe",
+  "argv": [
+    "rift-recorder-smoke",
+    "",
+    "two words",
+    "quote\"tail",
+    "trail\\",
+    "\ud800",
+    "\udc00",
+    "😀"
+  ],
+  "childEnvironment": {
+    "APPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home\\AppData\\Roaming",
+    "COMSPEC": "C:\\WINDOWS\\system32\\cmd.exe",
+    "HOMEDRIVE": "C:",
+    "HOMEPATH": "\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home",
+    "LOCALAPPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home\\AppData\\Local",
+    "NO_COLOR": "1",
+    "PATH": "C:\\WINDOWS\\system32;C:\\WINDOWS",
+    "PATHEXT": ".EXE",
+    "PROGRAMDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\program-data",
+    "PSModulePath": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\Modules",
+    "SystemDrive": "C:",
+    "SystemRoot": "C:\\WINDOWS",
+    "TEMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\tmp",
+    "TMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\tmp",
+    "USERPROFILE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\home",
+    "WINDIR": "C:\\WINDOWS",
+    "RIFT_LINK_CAPTURE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\capture\\first-command.bin",
+    "RIFT_EMPTY": "",
+    "RIFT_UNITS": "high-\ud800-low-\udc00-pair-😀"
+  },
+  "timeoutMs": 60000,
+  "streamCapBytes": 8388608,
+  "cleanupMs": 10000
+}

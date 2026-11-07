@@ -1,0 +1,110 @@
+[
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/proposal.json",
+    "target": "proposal.json",
+    "bytes": 5725,
+    "sha256": "5645e0a98bb7689102e91bcd9a295defb4be11ec0168f349c040f6821c777c55"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/execution-config.proposed.json",
+    "target": "execution-config.proposed.json",
+    "bytes": 1872,
+    "sha256": "f470e19ec3813a4bc283d6941de1f7de717bd0cd9dfcb8efeb41f714c28041f8"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/output-policy.proposed.json",
+    "target": "output-policy.proposed.json",
+    "bytes": 1624,
+    "sha256": "b44b7eb37a427e8fe286752e75a8972c7ef19aa9682c79a0946fcfd44ae0870e"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/smoke-oracle.json",
+    "target": "smoke-oracle.json",
+    "bytes": 28442,
+    "sha256": "f0e103a3e0eac667a9c656c311b5fac9c9b26f38f5b1e2d9d0e2ed89a5f104cb"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/status-literals.json",
+    "target": "status-literals.json",
+    "bytes": 23661,
+    "sha256": "97fe23fddcf184d850cc8570cbdeb57c2e7a0572a97160f0f71ac793675aecd0"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/status-model.mjs",
+    "target": "status-model.mjs",
+    "bytes": 1936,
+    "sha256": "ebccaa9b2eb9bc29d3f97ed19961d0e9def44d427dc202ec3df72223fceece2b"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/supervisor.cs.proposed.txt",
+    "target": "supervisor.cs.proposed.txt",
+    "bytes": 17639,
+    "sha256": "59053bbf9c5fb5a9c9e25751a8d73668b4966133c5d088d4d402c0eb110a00ca"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/supervise.ps1.proposed.txt",
+    "target": "supervise.ps1.proposed.txt",
+    "bytes": 2092,
+    "sha256": "b4120b91472debb74dfb1b1d0c370799fb43bb6aaac5af780f401a9706946feb"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/identities.json",
+    "target": "identities.json",
+    "bytes": 1408,
+    "sha256": "d3342d224cbe60aafc5d1193d3168cbff487ddbbe512b95e46a43ac48d6955ea"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/review-contract.json",
+    "target": "review-contract.json",
+    "bytes": 2016,
+    "sha256": "1d9171eff94d5091713acefd65174947886e0b25d377044aaad93aa00e0b52e8"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-runtime-p/.gitattributes",
+    "target": ".gitattributes",
+    "bytes": 68,
+    "sha256": "98492dc72c56b36e04c339d8a7df93861cfb493cda80b3ceb598b280c6a7a887"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-home-p/files.mjs",
+    "target": "files.mjs",
+    "bytes": 4818,
+    "sha256": "9e60e9d9a0d2583751c67f714a2f0c173355978141d3085a465ae4e364b7b3ce"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-home-p/policy.mjs",
+    "target": "policy.mjs",
+    "bytes": 5450,
+    "sha256": "9ee0a2e370100878dba17932a3922a4ba8006213be251296f301019742f84e8e"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-home-p/runtime-support.mjs",
+    "target": "runtime-support.mjs",
+    "bytes": 3484,
+    "sha256": "7c47f8850abf00788b3de41a4068678e465702d9d6b988a4d54d9d0109b4287a"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-home-p/alias-policy.json",
+    "target": "alias-policy.json",
+    "bytes": 35797,
+    "sha256": "bfab8dfb6968e755146d40d477b1aae282ac7961f2d7a4cdca6432e85f6be9c4"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-home-p/proposal.json",
+    "target": "build-plan.json",
+    "bytes": 13869,
+    "sha256": "31a860246b4900e2a7336e8d086e63334ec0c993a549ea949c4dc3dd4191167f"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-capture-p/format.mjs",
+    "target": "format.mjs",
+    "bytes": 5551,
+    "sha256": "e2a1104bac75c3c5064b3025679368747d25a6edbd2d129a92651441d2ee110a"
+  },
+  {
+    "source": "typescript/docs/validation/ts-035e3h-build-p/parent-supervise.extracted.mjs.txt",
+    "target": "parent-supervise.extracted.mjs.txt",
+    "bytes": 2537,
+    "sha256": "6bad6cf49fa3556d14f95563c7957ec79a9dcc0a43bca37746857d91fee35ae6"
+  }
+]

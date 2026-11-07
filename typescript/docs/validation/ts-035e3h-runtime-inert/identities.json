@@ -1,0 +1,38 @@
+[
+  {
+    "role": "recorder-source",
+    "path": "typescript/docs/validation/ts-035e3h-capture-p/recorder.cs.txt",
+    "bytes": 5797,
+    "sha256": "25e285690c80c9b5d9e7a18136338394cbc9b55d9d6f8c6b82f3342cffd23877"
+  },
+  {
+    "role": "built-binary",
+    "path": "typescript/build/ts035e3h-recorder-build/out/link-command-recorder.exe",
+    "bytes": 8192,
+    "sha256": "093296da037614d1f177de5c4773edd6f1b50fb174ebd762798a88d60a686b2b"
+  },
+  {
+    "role": "clr-startup-config",
+    "path": "typescript/build/ts035e3h-recorder-build/out/link-command-recorder.exe.config",
+    "bytes": 125,
+    "sha256": "32d81e039bb59b460cce427dbe27181dc36b06bb9e0fe172334f6b1cfd2eed46"
+  },
+  {
+    "role": "execution-config.proposed.json",
+    "path": "typescript/docs/validation/ts-035e3h-runtime-p/execution-config.proposed.json",
+    "bytes": 1872,
+    "sha256": "f470e19ec3813a4bc283d6941de1f7de717bd0cd9dfcb8efeb41f714c28041f8"
+  },
+  {
+    "role": "supervisor.cs.proposed.txt",
+    "path": "typescript/docs/validation/ts-035e3h-runtime-p/supervisor.cs.proposed.txt",
+    "bytes": 17639,
+    "sha256": "59053bbf9c5fb5a9c9e25751a8d73668b4966133c5d088d4d402c0eb110a00ca"
+  },
+  {
+    "role": "supervise.ps1.proposed.txt",
+    "path": "typescript/docs/validation/ts-035e3h-runtime-p/supervise.ps1.proposed.txt",
+    "bytes": 2092,
+    "sha256": "b4120b91472debb74dfb1b1d0c370799fb43bb6aaac5af780f401a9706946feb"
+  }
+]

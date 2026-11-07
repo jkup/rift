@@ -1,0 +1,54 @@
+{
+  "fixed": {
+    "recorder/link-command-recorder.exe": 8192,
+    "recorder/link-command-recorder.exe.config": 125,
+    "supervisor.cs": 1048576,
+    "supervise.ps1": 65536,
+    "contract.json": 65536,
+    "supervisor-status.json": 1048576,
+    "compiler.stdout.bin": 8388608,
+    "compiler.stderr.bin": 8388608,
+    "supervisor.stdout.bin": 1048577,
+    "supervisor.stderr.bin": 1048577,
+    "started.json": 65536,
+    "inputs.json": 1048576,
+    "before.json": 4194304,
+    "after.json": 4194304,
+    "snapshot.json": 4194304,
+    "result.json": 4194304,
+    "home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive": 1048576
+  },
+  "capture": {
+    "directory": "capture",
+    "nestedDirectories": false,
+    "filesMaximum": 132,
+    "entriesMaximum": 64,
+    "record": {
+      "name": "first-command.bin",
+      "bytesMaximum": 1048576
+    },
+    "fixedIdentityNames": [
+      "winner.bin",
+      "record-complete"
+    ],
+    "keyedIdentityPatterns": [
+      "entry-<8lowerhexPID>-<16lowerhexTIME>.bin",
+      "failure-<8lowerhexPID>-<16lowerhexTIME>.bin"
+    ],
+    "identityBytes": 32,
+    "totalBytesMaximum": 1052768
+  },
+  "opaqueTemp": {
+    "directory": "tmp",
+    "depthMaximum": 8,
+    "filesMaximum": 64,
+    "fileBytesMaximum": 8388608,
+    "totalBytesMaximum": 33554432
+  },
+  "root": {
+    "filesMaximum": 512,
+    "totalBytesMaximum": 134217728
+  },
+  "unknown": "retain/refuse; no unbounded enumeration; no traversal through aliases",
+  "allPrivateFiles": "ordinary single-link native no-reparse with ordinary ancestors; hash before/after; no interpretation of binary or opaque temp"
+}
