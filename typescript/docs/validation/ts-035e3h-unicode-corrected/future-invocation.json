@@ -1,0 +1,44 @@
+{
+  "authorized": false,
+  "ready": false,
+  "amendmentAcceptanceRequired": true,
+  "node": {
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "bytes": 100097864,
+    "sha256": "14319838b3f355e0398c13569a90270bce4fc68f25189f58c59b03dadae0e6d5"
+  },
+  "entry": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\entry.mjs",
+    "bytes": 1460,
+    "sha256": "d8fa8adffe0d7c33bcc5293df65d864e612082c096e455b576dddcf89c2c9613"
+  },
+  "argv": [
+    "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\entry.mjs"
+  ],
+  "cwd": "C:\\Users\\jonku\\code\\rift",
+  "environment": {
+    "SystemRoot": "C:\\WINDOWS",
+    "WINDIR": "C:\\WINDOWS",
+    "TEMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\tmp",
+    "TMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\tmp",
+    "USERPROFILE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\home",
+    "HOME": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\home",
+    "APPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\home\\AppData\\Roaming",
+    "LOCALAPPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\home\\AppData\\Local",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_UPDATECHECK": "Off"
+  },
+  "inheritEnvironment": false,
+  "childContract": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\diagnostic-contract.json",
+    "bytes": 3736,
+    "sha256": "2cd2ec5b6c10d5f92aa97f27c2a7b3f9e64396b8b29e8789de09393e678740cc"
+  },
+  "amendment": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\amendment.json",
+    "bytes": 3222,
+    "sha256": "d14ac2bac269bbd153e5a292fd842bbba8ea10bd2bf5d35ac18cb369896e1bcc"
+  },
+  "gate": "RUN = false; no enabled entry proposed",
+  "knownProcessOnly": true
+}

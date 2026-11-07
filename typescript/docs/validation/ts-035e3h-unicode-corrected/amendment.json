@@ -1,0 +1,27 @@
+{
+  "status": "INERT PROPOSED AMENDMENT; separate acceptance/readiness/execution approval required",
+  "basis": "97e6d6623e7d89ead0cff3f12f7c89690f4518c0 rejected inert candidate; accepted unicode-P diagnostic contract remains immutable",
+  "unchanged": ["diagnostic source and input bytes", "both complete stdout literals", "full ten-key child environment with no inheritance", "pinned PowerShell executable", "5000ms observation plus at most 5000ms cleanup", "one future process and zero retries", "known-process exit only, no descendant census"],
+  "streamRetention": {
+    "rawPrefixBytesPerStream": 8192,
+    "overflowEvidenceBytesPerStream": 1,
+    "overflowLocation": "state.overflow.stdout/stderr as two lowercase hexadecimal digits in status",
+    "onOverflow": "stop consuming that stream, retain the prefix and sentinel, fail the observation, request one known-process kill and bounded cleanup",
+    "remainder": "produced or buffered bytes after the sentinel are unknown, neither empty nor retained",
+    "eof": "only real end events count; never fabricate complete EOF or full retention"
+  },
+  "inventory": {
+    "phase": "after capture/finalization/integrity checks, before exclusive status and inventory publication",
+    "limits": {"entries": 10, "directories": 6, "files": 4, "depth": 3, "perFileBytes": 8192, "aggregateBytes": 32768},
+    "counting": "root depth zero and counts as one directory; entries count each consumed directory entry; files count before file opening; depth checked before stat/traversal; directory handles read incrementally",
+    "allowedDirectories": ["", "tmp", "home", "home/AppData", "home/AppData/Roaming", "home/AppData/Local"],
+    "allowedFiles": ["diagnostic.ps1", "input.json", "stdout.bin", "stderr.bin"],
+    "beforeRead": "reject links, unexpected names, excess counts/depth, per-file size or aggregate size before opening file content; verify opened-file identity and size before reading",
+    "readBound": "read at most prechecked size plus one growth sentinel, then fail if size/identity/timestamps changed; no unbounded readFileSync for inventory",
+    "onUnexpectedOrLimit": "retain files/tree untouched, stop traversal, record error and unvisitedEntries unknown, classify observation stopped",
+    "startupCachePolicy": "Any startup-cache file or directory outside the exact allowlist is unexpected and stops the observation before content read or traversal. No guessed cache filenames, no silent exemptions, no deletion. Future evidence may motivate a separately reviewed amendment.",
+    "publicationExclusions": "status.json and inventory.json are written after inspection and excluded from this inventory to avoid self-reference; their later raw bytes require external archival/sealing. Exclusive publication refuses preexisting files with those names."
+  },
+  "teardown": "attempt stdout.destroy, stderr.destroy and child.unref independently; retain each failure. Unref releases a controller reference, does not terminate a process or confirm cleanup.",
+  "finalization": "attempt fsync and close independently for every opened stream descriptor; retain original capture failure and all finalization failures; no retry or masking by a later exception"
+}

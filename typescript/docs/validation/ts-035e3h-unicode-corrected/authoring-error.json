@@ -1,0 +1,1 @@
+{"scope":"new sibling source patch only","failure":"apply_patch expected an incorrect entry binding hash and rejected the combined patch","effect":"No patch changes applied; copied candidate remained unchanged at that point","correction":"Read exact retained entry source, then apply explicit reviewed-line changes","diagnosticInvocations":0}

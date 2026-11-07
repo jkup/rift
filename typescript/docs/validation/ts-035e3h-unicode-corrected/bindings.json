@@ -1,0 +1,84 @@
+{
+  "contract": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\diagnostic-contract.json",
+    "bytes": 3736,
+    "sha256": "2cd2ec5b6c10d5f92aa97f27c2a7b3f9e64396b8b29e8789de09393e678740cc"
+  },
+  "replacement": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\expected-replacement.stdout.txt",
+    "bytes": 563,
+    "sha256": "6b2f27b760946f3c8ec3da213e386b38ccc4388d6becad330c5ac094eada7f80"
+  },
+  "preserved": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\expected-preserved.stdout.txt",
+    "bytes": 563,
+    "sha256": "3baa4752cca6431d2f042fbf907100301c90479ee7732885b54b75a4053cb19a"
+  },
+  "node": {
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "bytes": 100097864,
+    "sha256": "14319838b3f355e0398c13569a90270bce4fc68f25189f58c59b03dadae0e6d5"
+  },
+  "amendment": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\amendment.json",
+    "bytes": 3222,
+    "sha256": "d14ac2bac269bbd153e5a292fd842bbba8ea10bd2bf5d35ac18cb369896e1bcc"
+  },
+  "rows": [
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\controller.mjs",
+      "bytes": 9681,
+      "sha256": "b6bce21f9ffa856a6244f6855e586d1da80edea6e27707fa27b54ae45e5d0a69"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\transport.mjs",
+      "bytes": 1384,
+      "sha256": "8cfc90600ea06a18aa045e7f781b9522b9bc650f99b03401ef87f39655747f07"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\inventory.mjs",
+      "bytes": 4092,
+      "sha256": "11bd1578801b325d0ecb24b51681ca59e64eb1de264c54cc40ec712cd43b5db6"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\amendment.json",
+      "bytes": 3222,
+      "sha256": "d14ac2bac269bbd153e5a292fd842bbba8ea10bd2bf5d35ac18cb369896e1bcc"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\diagnostic-contract.json",
+      "bytes": 3736,
+      "sha256": "2cd2ec5b6c10d5f92aa97f27c2a7b3f9e64396b8b29e8789de09393e678740cc"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\expected-replacement.stdout.txt",
+      "bytes": 563,
+      "sha256": "6b2f27b760946f3c8ec3da213e386b38ccc4388d6becad330c5ac094eada7f80"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\expected-preserved.stdout.txt",
+      "bytes": 563,
+      "sha256": "3baa4752cca6431d2f042fbf907100301c90479ee7732885b54b75a4053cb19a"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\diagnostic.ps1.txt",
+      "bytes": 1093,
+      "sha256": "e23b8be67b21770006f48c5921831bfd39f7bdde3026d39ea568d9ed3f828887"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\diagnostic-input.json.txt",
+      "bytes": 93,
+      "sha256": "edd76a46ea1a2fa0c821234780d464a4530e1648650350830cef2c9a4c36004e"
+    },
+    {
+      "path": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+      "bytes": 301368,
+      "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+    },
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "bytes": 100097864,
+      "sha256": "14319838b3f355e0398c13569a90270bce4fc68f25189f58c59b03dadae0e6d5"
+    }
+  ]
+}
