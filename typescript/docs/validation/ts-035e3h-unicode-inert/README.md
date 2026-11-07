@@ -1,0 +1,23 @@
+# TS-035E3h unicode inert
+
+This implements the proposed parser diagnostic controller with `RUN = false`. No diagnostic, PowerShell, child process, native API, compiler, helper, recorder or linker was executed. The consumed recorder root is unchanged. The separate diagnostic root has not been reserved or materialized. Stop for actual/root/second review before readiness or execution.
+
+The accepted contract, script, JSON input and both complete stdout literals are reused by exact hash from unicode-P. `bindings.json` binds those artifacts, controller, transport and named Node/PowerShell executables. Entry checks the binding-file hash and all source bytes before importing controller or transport; the future invocation separately pins entry bytes. Changing the gate would change that pin and requires a new reviewed proposal.
+
+`controller.mjs` checks named files and ancestors for links, size/hash and file identity; refuses any existing root; creates private home/tmp directories and exclusive input/stream/status/inventory files. Partial roots/files remain on failure and cannot be reused. These checks do not claim protection against an adversary concurrently replacing directories between checks. Post-capture checks revalidate sources, tool and staged inputs before any output classification. Output equality uses the accepted full byte literals, with no Unicode normalization.
+
+Capture receives events through an injected transport and clock. The production adapter is bound but unexecuted. It supplies the exact ten-key environment with no parent merge, launches at most once, consumes bounded readable chunks, and observes process exit plus stdout/stderr EOF independently. A first failure is retained; timeout/cap/error requests one kill of the known process and allows at most five seconds for cleanup. A confirmed process exit can coexist with failed or incomplete capture. Kill failure remains explicit; no exit means cleanup is unconfirmed. `knownProcessOnly` is true and `descendantCensus` false. No job supervisor or Add-Type was added.
+
+Review precedence is first capture/transport failure, incomplete transport, exit, stderr, then complete stdout equality. Both literal matches require review and confer no compatibility, source/binary or provenance authority. Alternative preservation is not silently treated as the predicted result. Mixed units, missing/extra output and stderr stop the observation. Throws during staging or output publication retain partial files and are reported by the entry's outer error record; a status file is not promised when publication itself fails.
+
+## Unresolved cap/retention contract edge
+
+The accepted prose requires both an 8192-byte stream cap and retention of every raw byte. Unlimited output cannot satisfy both under a strict storage bound. The inert implementation uses a bounded proposed interpretation: retain the first 8192 bytes in the raw stream file and the first excess byte as a two-digit `overflow` value in status, stop consuming that stream, request termination, and fail the observation. Bytes buffered or produced after that point are unknown, not asserted empty or retained. EOF is not fabricated. An 8193-byte literal test independently reproduces this edge for both streams.
+
+This interpretation is explicit and **unapproved**. It is a readiness blocker, not a change to the accepted contract. Root/second review must resolve it before enabling this controller; no workaround, diagnostic execution or source fix is authorized by this package.
+
+## Verification evidence
+
+The actual controller runs against synthetic event transports and clocks. Ninety controls cover output order/literals/mismatch, caps, timeout, exit/EOF/error precedence, kill failure/unconfirmed cleanup, exclusive staging, partial writes, existing roots, junctions and hardlinks. A further 38 controls cover all ten environment values, limits, pre/post source/tool drift, staged tampering and split-byte output. Final 90-control rerun uses a distinct root and records the final controller hash. No native transport is imported by these tests.
+
+The first fixture attempt failed with sandbox EPERM at junction creation. `synthetic-first-failure.json` and the partial regular files remain. Permission-enabled tests used a new retained build fixture root; final-code tests use another. `filesystem-fixtures.json` seals all external synthetic files and link identities. Historical guards retain old runtime observations and seals unchanged. The new manifest covers every package file. Future invocation and read-only preflight evidence are proposals/metadata, not execution authorization.

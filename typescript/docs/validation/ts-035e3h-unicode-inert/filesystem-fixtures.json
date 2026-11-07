@@ -1,0 +1,1323 @@
+[
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1",
+    "dev": "1045235170",
+    "ino": "14918173766693575",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11",
+    "dev": "1045235170",
+    "ino": "3659174698397410",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/home",
+    "dev": "1045235170",
+    "ino": "4222124651818727",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/home/AppData",
+    "dev": "1045235170",
+    "ino": "3096224744976105",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "2533274791554795",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "2814749768265450",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/input.json",
+    "dev": "1045235170",
+    "ino": "2251799814844140",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 15,
+    "sha256": "813e14d6762d4471215edd4e70c0154f9709ada4884706db7eee2dd97ef06b67"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/inventory.json",
+    "dev": "1045235170",
+    "ino": "2533274791554800",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 890,
+    "sha256": "c671f05b7c887b5e0e84ad644d521dabaffeec2682cd33e1c32635f9ad4b65ef"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/status.json",
+    "dev": "1045235170",
+    "ino": "2533274791554799",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 1065,
+    "sha256": "430fe2c0fe0fd1b873d4104f08985ec89c89f0dd036f0577c692bb7774caa1c5"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/stderr.bin",
+    "dev": "1045235170",
+    "ino": "2533274791554798",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/stdout.bin",
+    "dev": "1045235170",
+    "ino": "2533274791554797",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 563,
+    "sha256": "6b2f27b760946f3c8ec3da213e386b38ccc4388d6becad330c5ac094eada7f80"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-11/tmp",
+    "dev": "1045235170",
+    "ino": "3659174698397411",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-7",
+    "dev": "1045235170",
+    "ino": "14918173766784889",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-8",
+    "dev": "1045235170",
+    "ino": "6192449488754578",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-8/home",
+    "dev": "1045235170",
+    "ino": "5629499535371982",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-8/home/AppData",
+    "dev": "1045235170",
+    "ino": "5066549581950671",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-8/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "5066549581950673",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-8/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "5066549581950672",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-8/input.json",
+    "dev": "1045235170",
+    "ino": "5066549581950674",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 5,
+    "sha256": "c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-8/tmp",
+    "dev": "1045235170",
+    "ino": "4222124651779994",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-9",
+    "dev": "1045235170",
+    "ino": "5066549581950675",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-9/home",
+    "dev": "1045235170",
+    "ino": "5066549581950677",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-9/home/AppData",
+    "dev": "1045235170",
+    "ino": "5066549581950678",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-9/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "5066549581950680",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-9/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "5066549581950679",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-9/input.json",
+    "dev": "1045235170",
+    "ino": "5348024558661337",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 2,
+    "sha256": "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/case-9/tmp",
+    "dev": "1045235170",
+    "ino": "5066549581950676",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/full-source.txt",
+    "dev": "1045235170",
+    "ino": "3659174698397409",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 15,
+    "sha256": "813e14d6762d4471215edd4e70c0154f9709ada4884706db7eee2dd97ef06b67"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/hardlink.txt",
+    "dev": "1045235170",
+    "ino": "10133099162619942",
+    "nlink": "2",
+    "kind": "file",
+    "bytes": 5,
+    "sha256": "c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/junction-alias",
+    "dev": "1045235170",
+    "ino": "3940649675108064",
+    "nlink": "1",
+    "kind": "junction",
+    "target": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-synthetic-1\\junction-target"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/junction-target",
+    "dev": "1045235170",
+    "ino": "4785074605240029",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/source.txt",
+    "dev": "1045235170",
+    "ino": "10133099162619942",
+    "nlink": "2",
+    "kind": "file",
+    "bytes": 5,
+    "sha256": "c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-1/tool.txt",
+    "dev": "1045235170",
+    "ino": "7599824372307783",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 37,
+    "sha256": "894455be213394c77d37e3da09496528af4f41397a602323738b885460d1c9a5"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final",
+    "dev": "1045235170",
+    "ino": "43347146413946169",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-7",
+    "dev": "1045235170",
+    "ino": "7599824372107057",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-8",
+    "dev": "1045235170",
+    "ino": "8725724278949694",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-8/home",
+    "dev": "1045235170",
+    "ino": "2814749768265466",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-8/home/AppData",
+    "dev": "1045235170",
+    "ino": "1970324838204362",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-8/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "1407374884785692",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-8/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "6755399442288138",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-8/input.json",
+    "dev": "1045235170",
+    "ino": "5629499535445544",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 5,
+    "sha256": "c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-8/tmp",
+    "dev": "1045235170",
+    "ino": "6192449488556219",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-9",
+    "dev": "1045235170",
+    "ino": "3377699721760493",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-9/home",
+    "dev": "1045235170",
+    "ino": "3377699721760495",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-9/home/AppData",
+    "dev": "1045235170",
+    "ino": "3377699721760496",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-9/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "4785074605313778",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-9/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "3377699721760497",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-9/input.json",
+    "dev": "1045235170",
+    "ino": "4222124651892467",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 2,
+    "sha256": "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/case-9/tmp",
+    "dev": "1045235170",
+    "ino": "3377699721760494",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/junction-alias",
+    "dev": "1045235170",
+    "ino": "3659174698471157",
+    "nlink": "1",
+    "kind": "junction",
+    "target": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-synthetic-final\\junction-target"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/junction-target",
+    "dev": "1045235170",
+    "ino": "3659174698471156",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/source.txt",
+    "dev": "1045235170",
+    "ino": "19140298417032053",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 5,
+    "sha256": "c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final/tool.txt",
+    "dev": "1045235170",
+    "ino": "21110623254012194",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 37,
+    "sha256": "894455be213394c77d37e3da09496528af4f41397a602323738b885460d1c9a5"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2",
+    "dev": "1045235170",
+    "ino": "43065671436777322",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11",
+    "dev": "1045235170",
+    "ino": "5629499535445829",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/home",
+    "dev": "1045235170",
+    "ino": "5348024558735175",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/home/AppData",
+    "dev": "1045235170",
+    "ino": "5629499535445832",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "5629499535445839",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "6473924465577806",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/input.json",
+    "dev": "1045235170",
+    "ino": "5348024558735184",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 15,
+    "sha256": "813e14d6762d4471215edd4e70c0154f9709ada4884706db7eee2dd97ef06b67"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/inventory.json",
+    "dev": "1045235170",
+    "ino": "7881299349150502",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 910,
+    "sha256": "6a243bfacf54e4d0bd6361e42ea46ade608ddb14b5f171a147f23422911832ff"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/status.json",
+    "dev": "1045235170",
+    "ino": "8444249302571813",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 1065,
+    "sha256": "430fe2c0fe0fd1b873d4104f08985ec89c89f0dd036f0577c692bb7774caa1c5"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/stderr.bin",
+    "dev": "1045235170",
+    "ino": "7599824372439843",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/stdout.bin",
+    "dev": "1045235170",
+    "ino": "3940649675201133",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 563,
+    "sha256": "6b2f27b760946f3c8ec3da213e386b38ccc4388d6becad330c5ac094eada7f80"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-11/tmp",
+    "dev": "1045235170",
+    "ino": "5629499535445830",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-7",
+    "dev": "1045235170",
+    "ino": "4785074605313785",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-8",
+    "dev": "1045235170",
+    "ino": "4503599628603130",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-8/home",
+    "dev": "1045235170",
+    "ino": "3377699721760509",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-8/home/AppData",
+    "dev": "1045235170",
+    "ino": "3377699721760510",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-8/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "3377699721760512",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-8/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "3377699721760511",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-8/input.json",
+    "dev": "1045235170",
+    "ino": "3377699721760513",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 5,
+    "sha256": "c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-8/tmp",
+    "dev": "1045235170",
+    "ino": "4503599628603131",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-9",
+    "dev": "1045235170",
+    "ino": "3377699721760514",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-9/home",
+    "dev": "1045235170",
+    "ino": "5629499535445764",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-9/home/AppData",
+    "dev": "1045235170",
+    "ino": "4785074605313797",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-9/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "4785074605313799",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-9/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "4785074605313798",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-9/input.json",
+    "dev": "1045235170",
+    "ino": "4785074605313800",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 2,
+    "sha256": "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/case-9/tmp",
+    "dev": "1045235170",
+    "ino": "3377699721760515",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/full-source.txt",
+    "dev": "1045235170",
+    "ino": "4222124651892494",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 15,
+    "sha256": "813e14d6762d4471215edd4e70c0154f9709ada4884706db7eee2dd97ef06b67"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/hardlink.txt",
+    "dev": "1045235170",
+    "ino": "5629499535445751",
+    "nlink": "2",
+    "kind": "file",
+    "bytes": 5,
+    "sha256": "c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/junction-alias",
+    "dev": "1045235170",
+    "ino": "4222124651892493",
+    "nlink": "1",
+    "kind": "junction",
+    "target": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-synthetic-final2\\junction-target"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/junction-target",
+    "dev": "1045235170",
+    "ino": "4503599628603145",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/source.txt",
+    "dev": "1045235170",
+    "ino": "5629499535445751",
+    "nlink": "2",
+    "kind": "file",
+    "bytes": 5,
+    "sha256": "c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-synthetic-final2/tool.txt",
+    "dev": "1045235170",
+    "ino": "4785074605313784",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 37,
+    "sha256": "894455be213394c77d37e3da09496528af4f41397a602323738b885460d1c9a5"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1",
+    "dev": "1045235170",
+    "ino": "2251799814844155",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19",
+    "dev": "1045235170",
+    "ino": "2533274791554850",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/home",
+    "dev": "1045235170",
+    "ino": "2533274791554852",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/home/AppData",
+    "dev": "1045235170",
+    "ino": "2533274791554853",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "2533274791554855",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "2533274791554854",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/input.json",
+    "dev": "1045235170",
+    "ino": "2533274791554856",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/inventory.json",
+    "dev": "1045235170",
+    "ino": "2533274791554860",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 870,
+    "sha256": "3610e7e87febb6df423afbfbf7b96637ed9f8123f8b56d2fcc6319ab5a3ca60a"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/status.json",
+    "dev": "1045235170",
+    "ino": "2533274791554859",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 1175,
+    "sha256": "f37095698908c15bc3a883eb413b9573a088b2c1af4040d04f8bd0d4a7257a24"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/stderr.bin",
+    "dev": "1045235170",
+    "ino": "2533274791554858",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/stdout.bin",
+    "dev": "1045235170",
+    "ino": "2533274791554857",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 563,
+    "sha256": "6b2f27b760946f3c8ec3da213e386b38ccc4388d6becad330c5ac094eada7f80"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-19/tmp",
+    "dev": "1045235170",
+    "ino": "2533274791554851",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20",
+    "dev": "1045235170",
+    "ino": "2533274791554863",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/home",
+    "dev": "1045235170",
+    "ino": "2533274791554865",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/home/AppData",
+    "dev": "1045235170",
+    "ino": "2533274791554866",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "2533274791554868",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "2533274791554867",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/input.json",
+    "dev": "1045235170",
+    "ino": "2533274791554869",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/inventory.json",
+    "dev": "1045235170",
+    "ino": "3659174698397500",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 870,
+    "sha256": "273f29cb6f92086febf801241ca8c915e7fba4b2ca07dbfb62340c2ae264f41c"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/status.json",
+    "dev": "1045235170",
+    "ino": "3659174698397499",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 1177,
+    "sha256": "0fa4b3b8d7c2449f9d34ecbb2be8aa0e4dfbd243a19198b4f0aee8c77bf80919"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/stderr.bin",
+    "dev": "1045235170",
+    "ino": "2533274791554871",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/stdout.bin",
+    "dev": "1045235170",
+    "ino": "2533274791554870",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 563,
+    "sha256": "6b2f27b760946f3c8ec3da213e386b38ccc4388d6becad330c5ac094eada7f80"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-20/tmp",
+    "dev": "1045235170",
+    "ino": "2533274791554864",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21",
+    "dev": "1045235170",
+    "ino": "6192449488830873",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/home",
+    "dev": "1045235170",
+    "ino": "5910974512120220",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/home/AppData",
+    "dev": "1045235170",
+    "ino": "4785074605277604",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/home/AppData/Local",
+    "dev": "1045235170",
+    "ino": "3377699721724617",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/home/AppData/Roaming",
+    "dev": "1045235170",
+    "ino": "5066549581988267",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/input.json",
+    "dev": "1045235170",
+    "ino": "5066549581988562",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 23,
+    "sha256": "b46d9acdd3c86d306d4bd718f2e10b316b5079650429e94a9080086202db9380"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/inventory.json",
+    "dev": "1045235170",
+    "ino": "4503599628568251",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 870,
+    "sha256": "fd560a6ba59ca8b98a4273c4215abbac70d831a135af43d05e73df176fa1055d"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/status.json",
+    "dev": "1045235170",
+    "ino": "4785074605277987",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 1187,
+    "sha256": "603309fce6a47908abf3f17b622e8293b2cdb9e54d03383701b76bd57aaf6b2f"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/stderr.bin",
+    "dev": "1045235170",
+    "ino": "5348024558699230",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/stdout.bin",
+    "dev": "1045235170",
+    "ino": "4785074605277907",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 563,
+    "sha256": "6b2f27b760946f3c8ec3da213e386b38ccc4388d6becad330c5ac094eada7f80"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/case-21/tmp",
+    "dev": "1045235170",
+    "ino": "5910974512120218",
+    "nlink": "1",
+    "kind": "directory"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-1",
+    "dev": "1045235170",
+    "ino": "2251799814844157",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-10",
+    "dev": "1045235170",
+    "ino": "2533274791554831",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-11",
+    "dev": "1045235170",
+    "ino": "2533274791554833",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-12",
+    "dev": "1045235170",
+    "ino": "2533274791554835",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-13",
+    "dev": "1045235170",
+    "ino": "2533274791554837",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-14",
+    "dev": "1045235170",
+    "ino": "2533274791554839",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-15",
+    "dev": "1045235170",
+    "ino": "2533274791554841",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-16",
+    "dev": "1045235170",
+    "ino": "2533274791554843",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-17",
+    "dev": "1045235170",
+    "ino": "2533274791554845",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-18",
+    "dev": "1045235170",
+    "ino": "2533274791554847",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 23,
+    "sha256": "b46d9acdd3c86d306d4bd718f2e10b316b5079650429e94a9080086202db9380"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-19",
+    "dev": "1045235170",
+    "ino": "2533274791554849",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-2",
+    "dev": "1045235170",
+    "ino": "2533274791554815",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-20",
+    "dev": "1045235170",
+    "ino": "2533274791554862",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 23,
+    "sha256": "b46d9acdd3c86d306d4bd718f2e10b316b5079650429e94a9080086202db9380"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-21",
+    "dev": "1045235170",
+    "ino": "6192449488830870",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-22",
+    "dev": "1045235170",
+    "ino": "3096224745039715",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-3",
+    "dev": "1045235170",
+    "ino": "2533274791554817",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-4",
+    "dev": "1045235170",
+    "ino": "2533274791554819",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-5",
+    "dev": "1045235170",
+    "ino": "2251799814844165",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-6",
+    "dev": "1045235170",
+    "ino": "2251799814844167",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-7",
+    "dev": "1045235170",
+    "ino": "2251799814844169",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-8",
+    "dev": "1045235170",
+    "ino": "2251799814844171",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/source-9",
+    "dev": "1045235170",
+    "ino": "2251799814844173",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 16,
+    "sha256": "39631bb5e5dc9326b23f8c00bf43440a84ce711315c6b799de554c56aa04d133"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-1",
+    "dev": "1045235170",
+    "ino": "2251799814844156",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-10",
+    "dev": "1045235170",
+    "ino": "2251799814844174",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-11",
+    "dev": "1045235170",
+    "ino": "2533274791554832",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-12",
+    "dev": "1045235170",
+    "ino": "2533274791554834",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-13",
+    "dev": "1045235170",
+    "ino": "2533274791554836",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-14",
+    "dev": "1045235170",
+    "ino": "2533274791554838",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-15",
+    "dev": "1045235170",
+    "ino": "2533274791554840",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-16",
+    "dev": "1045235170",
+    "ino": "2533274791554842",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-17",
+    "dev": "1045235170",
+    "ino": "2533274791554844",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 21,
+    "sha256": "cbd73dfdfbe06bf22c35af4cdaa0bc3587703f7d5b6679b1b500355d464dc74e"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-18",
+    "dev": "1045235170",
+    "ino": "2533274791554846",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-19",
+    "dev": "1045235170",
+    "ino": "2533274791554848",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 21,
+    "sha256": "cbd73dfdfbe06bf22c35af4cdaa0bc3587703f7d5b6679b1b500355d464dc74e"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-2",
+    "dev": "1045235170",
+    "ino": "2251799814844158",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-20",
+    "dev": "1045235170",
+    "ino": "2533274791554861",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-21",
+    "dev": "1045235170",
+    "ino": "1688849861443067",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-22",
+    "dev": "1045235170",
+    "ino": "1688849861471989",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-3",
+    "dev": "1045235170",
+    "ino": "2533274791554816",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-4",
+    "dev": "1045235170",
+    "ino": "2533274791554818",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-5",
+    "dev": "1045235170",
+    "ino": "2533274791554820",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-6",
+    "dev": "1045235170",
+    "ino": "2251799814844166",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-7",
+    "dev": "1045235170",
+    "ino": "2251799814844168",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-8",
+    "dev": "1045235170",
+    "ino": "2251799814844170",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  },
+  {
+    "path": "typescript/build/ts035e3h-unicode-more-1/tool-9",
+    "dev": "1045235170",
+    "ino": "2251799814844172",
+    "nlink": "1",
+    "kind": "file",
+    "bytes": 14,
+    "sha256": "858062c157c5368ee5591f95c0746662798e20b21c9fcaac8f7c79c5fa5b32cc"
+  }
+]
