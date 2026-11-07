@@ -1,0 +1,4 @@
+
+### TS-035E3h unicode-P — offline localization and separate diagnostic design
+
+Status: offline design complete; stopped for actual/root/second review. Sole writer chat 01a1afd0-5fa8-73b2-98a9-d887c42b9aee; base 659faeb7c7c94681bab19f576c7fae6276c6b86a. Own only docs/validation/ts-035e3h-unicode-p/ and this entry. Pinned Newtonsoft source provides matching replacement mechanism, installed dependency metadata is not binary/source binding; intermediate PowerShell strings remain unmeasured. Exact source trace and independently authored diagnostic literals frozen; diagnostic source remains txt, execution unauthorized. No production fix, oracle normalization, retry, fixedroot reuse, diagnostic/PowerShell/API/Add-Type/compiler/helper/recorder/linker execution or binary loading/reflection. Preserve failed observation, raw bytes, all history/seals; COORDINATION root-owned. No compatibility/provenance authority.

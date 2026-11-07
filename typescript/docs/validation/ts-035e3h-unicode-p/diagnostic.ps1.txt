@@ -1,0 +1,21 @@
+# INERT PROPOSAL ONLY. No materialization or execution authorization.
+param([Parameter(Mandatory=$true)][string]$InputPath)
+$ErrorActionPreference = 'Stop'
+function Units([string]$s) {
+  $out = ''
+  foreach ($c in $s.ToCharArray()) { $out += ('{0:x4}' -f [int]$c) }
+  return $out
+}
+$text = Get-Content -LiteralPath $InputPath -Raw
+if ($text.Length -gt 1024) { throw 'input cap' }
+[Console]::WriteLine('text=' + (Units $text))
+$config = $text | ConvertFrom-Json
+[Console]::WriteLine('parsed0=' + (Units $config.argv[0]))
+[Console]::WriteLine('parsed1=' + (Units $config.argv[1]))
+[Console]::WriteLine('parsed2=' + (Units $config.argv[2]))
+[string[]]$argv = $config.argv
+for ($i=0; $i -lt $argv.Length; $i++) { [Console]::WriteLine('cast' + $i + '=' + (Units $argv[$i])) }
+$environmentPairs = @($config.childEnvironment.PSObject.Properties | ForEach-Object { $_.Name + '=' + [string]$_.Value })
+[Console]::WriteLine('pair=' + (Units $environmentPairs[0]))
+[Console]::WriteLine('controlHigh=' + (Units ([string][char]0xd800)))
+[Console]::WriteLine('controlLow=' + (Units ([string][char]0xdc00)))

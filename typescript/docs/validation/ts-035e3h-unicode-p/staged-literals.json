@@ -1,0 +1,72 @@
+{
+  "source": {
+    "path": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-link-command-observation\\contract.json",
+    "bytes": 1872,
+    "sha256": "f470e19ec3813a4bc283d6941de1f7de717bd0cd9dfcb8efeb41f714c28041f8"
+  },
+  "asciiEscapeOffsets": [
+    {
+      "byteOffset": 340,
+      "literal": "\\ud800"
+    },
+    {
+      "byteOffset": 354,
+      "literal": "\\udc00"
+    },
+    {
+      "byteOffset": 1764,
+      "literal": "\\ud800"
+    },
+    {
+      "byteOffset": 1775,
+      "literal": "\\udc00"
+    }
+  ],
+  "argv": [
+    {
+      "configIndex": 0,
+      "recordIndex": 1,
+      "units": "0072006900660074002d007200650063006f0072006400650072002d0073006d006f006b0065"
+    },
+    {
+      "configIndex": 1,
+      "recordIndex": 2,
+      "units": ""
+    },
+    {
+      "configIndex": 2,
+      "recordIndex": 3,
+      "units": "00740077006f00200077006f007200640073"
+    },
+    {
+      "configIndex": 3,
+      "recordIndex": 4,
+      "units": "00710075006f007400650022007400610069006c"
+    },
+    {
+      "configIndex": 4,
+      "recordIndex": 5,
+      "units": "0074007200610069006c005c"
+    },
+    {
+      "configIndex": 5,
+      "recordIndex": 6,
+      "units": "d800"
+    },
+    {
+      "configIndex": 6,
+      "recordIndex": 7,
+      "units": "dc00"
+    },
+    {
+      "configIndex": 7,
+      "recordIndex": 8,
+      "units": "d83dde00"
+    }
+  ],
+  "environmentValue": {
+    "name": "RIFT_UNITS",
+    "units": "0068006900670068002dd800002d006c006f0077002ddc00002d0070006100690072002dd83dde00"
+  },
+  "decoder": "Offline Node JSON aid; not measured PowerShell intermediate."
+}

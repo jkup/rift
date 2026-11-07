@@ -1,0 +1,474 @@
+[
+  {
+    "name": "runtime-observation-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/verify.mjs",
+    "sourceBytes": 3534,
+    "sourceSha256": "564318847f640a4c6fe9429d8bde44e9935d8293bc519f06cba921e66318cbc9",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec')",
+        "count": 1,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      },
+      {
+        "old": "join(repo,'typescript/TASKS.md')",
+        "next": "join(import.meta.dirname,'../guard-tasks.md')",
+        "count": 1,
+        "all": true
+      },
+      {
+        "old": "'./_preserve/readiness-guard.mjs'",
+        "next": "'./readiness-guard.mjs'",
+        "count": 1,
+        "all": true
+      },
+      {
+        "old": "'./check-observation.mjs'",
+        "next": "'../../ts-035e3h-runtime-exec/check-observation.mjs'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 3669,
+    "sha256": "09f9fcc0aef92151ee1138e5e36ee149789e048511e5a4a8319b762bba31826c"
+  },
+  {
+    "name": "build-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/build-design-guard.mjs",
+    "sourceBytes": 4779,
+    "sourceSha256": "627cb0fc162a44c03e9766f9d595abd7427dc9807184eb7704ee3c70e25a6331",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 4944,
+    "sha256": "43a8f9b17ab6441be6919f3270196d68ba03c0bfc055c8c42df5d72a0ce7c2c4"
+  },
+  {
+    "name": "build-execution-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/build-execution-guard.mjs",
+    "sourceBytes": 4121,
+    "sourceSha256": "8d11c88b5d8a68cd16ccf982b7f7553165689d4bdb12bd0fe3fece710cd86a12",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 4286,
+    "sha256": "b16b7ac43d2abc874dbb08a3b55a1aab9c9e963fd465d5046ae3dbc9ad7f10be"
+  },
+  {
+    "name": "capture-correction-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/capture-correction-guard.mjs",
+    "sourceBytes": 4958,
+    "sourceSha256": "564941e18b91a24e5af6ab7f502917d5f41afa579310b4485c6d285cb99c5804",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 5123,
+    "sha256": "5bd29c543707758de90782719fa55f636ffb795d7e0e09d96b7e37df7a5e4996"
+  },
+  {
+    "name": "design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/design-guard.mjs",
+    "sourceBytes": 11797,
+    "sourceSha256": "d5bcce2d80ef0d8b2e1932fdb87bdc86cb6190ccc5fa990e8f076ebfd9f83fa1",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 6,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 12162,
+    "sha256": "9e4433b0a71294c3bf3524368bfa5409e8dab5084295bcd57f45db6bb388b8ea"
+  },
+  {
+    "name": "direction-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/direction-guard.mjs",
+    "sourceBytes": 5292,
+    "sourceSha256": "fb8468b06ea0268bcfa6b06f06dbdda1d2636ee883394bfec5af4993b732bab3",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 5457,
+    "sha256": "d71e8b585f31623baf7ceacc9883e6629c1b8c747d36bf6142c15a9cf0197599"
+  },
+  {
+    "name": "empty-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/empty-design-guard.mjs",
+    "sourceBytes": 5757,
+    "sourceSha256": "61d754dfa19820e251ca556d2eb9c5b49d39a2f3d6145ae876b4f508e03fc259",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 5922,
+    "sha256": "b817282be7999ded4e1b6fef80db19633b359c5c4a4351a05571452910d76595"
+  },
+  {
+    "name": "home-evidence-check.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/home-evidence-check.mjs",
+    "sourceBytes": 2873,
+    "sourceSha256": "6ef7ff4e256608467659926c322806995d1cd54d6af22361bc2009d0c77ca118",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 2923,
+    "sha256": "ee87fe885972aa8f0f114452dd950682c0b8eb732c82793c522f794e60c06a7b"
+  },
+  {
+    "name": "home-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/home-guard.mjs",
+    "sourceBytes": 4277,
+    "sourceSha256": "71ff52d9a090fba1c7fa1bfc646c4a62240190fe74ee47df5972391bfa3e83d1",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 4442,
+    "sha256": "2cdae5ba0a787153e6a36a4d0350d7d06063b6abeef1a89d3a8f01110d77d516"
+  },
+  {
+    "name": "inert-controller-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/inert-controller-guard.mjs",
+    "sourceBytes": 3652,
+    "sourceSha256": "df2a6839722d2678fcee32bd14fff4b8e2b7975727b42bacecc8de5acbdbcdde",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 3817,
+    "sha256": "a10f2a98f92e0ca3d7e3b7739be1c59ee730364c8293b74afb6e2335b11fd68f"
+  },
+  {
+    "name": "inert-evidence-check.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/inert-evidence-check.mjs",
+    "sourceBytes": 3345,
+    "sourceSha256": "57848242d6f79cc4ec04e5146b73d2e91ff54c446ed63353e261ef0d1d733016",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 3395,
+    "sha256": "211ebf9c41d88a8bc4f4dfb65eb4d48973c23f3b1a7e00cbaf309828a5e5a026"
+  },
+  {
+    "name": "integration-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/integration-guard.mjs",
+    "sourceBytes": 4626,
+    "sourceSha256": "91d59ec0c538e1ac518417511ea9fa28f50e06abf1e6ccb6454a4e0f57574c95",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 4791,
+    "sha256": "3511ecae3870d6bba1788a7c72b987a60091bac8c0d91341c883fc3a89ebd7c4"
+  },
+  {
+    "name": "observation-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/observation-guard.mjs",
+    "sourceBytes": 5419,
+    "sourceSha256": "adc6316400a053e98d55a069bfa61b52a059df94ad6411519b9c335bbfac3dfb",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 5584,
+    "sha256": "fedad2810af6e069aecf1cad8951d0f06b081c39c47a582eab35444ced8b72a3"
+  },
+  {
+    "name": "original-observation-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/original-observation-guard.mjs",
+    "sourceBytes": 5861,
+    "sourceSha256": "ec246a08e6b965a616d3a66844410883881ee3f66a22935d465447c5e91b3a33",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 6026,
+    "sha256": "3e3fe2cd0a3e33ab448a401c4432c83ff146f870bfdb82e1015501da8714cc54"
+  },
+  {
+    "name": "prior-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/prior-guard.mjs",
+    "sourceBytes": 78511,
+    "sourceSha256": "73e22f208f38aaff54a4385804ab0ec5357cca11f981d8d00e8554cdc5b7c493",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 32,
+        "all": true
+      }
+    ],
+    "bytes": 80111,
+    "sha256": "68d23600dad7b1821ab45f04bd4fafc459b682747cc4bebaabc703e4f0cb3d19"
+  },
+  {
+    "name": "readiness-evidence-check.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/readiness-evidence-check.mjs",
+    "sourceBytes": 3371,
+    "sourceSha256": "67644861334f98ee13cea9e7f19c39774d8c77ceec18e9de305a30e2fd19b700",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 3421,
+    "sha256": "f18cc318f830c701627d4f743132cc098a83b4f88673ae5038da675205eb6623"
+  },
+  {
+    "name": "readiness-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/readiness-guard.mjs",
+    "sourceBytes": 3583,
+    "sourceSha256": "49a85d4a09e48994528517b5f8f27737c39d1f42fab98bf84770f70ccee9b420",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 3748,
+    "sha256": "eb3a62d0648a2830d061ce6f502e373a4794b2ac1bcc3155a4d6d6c8aa11e525"
+  },
+  {
+    "name": "ready-evidence-check.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/ready-evidence-check.mjs",
+    "sourceBytes": 4636,
+    "sourceSha256": "74670dae9f2bab39fe7c12f49bce4878d2d5ec2b570b10b15a7f9fb194f54552",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 4686,
+    "sha256": "ab38be57bffddbab77b4298590585989fd6e1de379a5f710f52649b0ea559b79"
+  },
+  {
+    "name": "ready-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/ready-guard.mjs",
+    "sourceBytes": 4421,
+    "sourceSha256": "24d6fd85a38c8be3283e5dfc582919a9dbc0ba4da04e05f149dc031e8ba96610",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 4586,
+    "sha256": "6a9667228eb915f9751f9ba6e41d58ec80af147873a58c2c174abac82987b9ad"
+  },
+  {
+    "name": "rejected-capture-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/rejected-capture-guard.mjs",
+    "sourceBytes": 5060,
+    "sourceSha256": "c803b968b7f1a24bbf8d12dbc1b6fbc7706470f794505ae2c473d818b3c27407",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 5225,
+    "sha256": "011bc016d7163409a85d8ccc0201e9f692fff864fe9881cf6303d9c8c605a6d6"
+  },
+  {
+    "name": "runtime-design-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/runtime-design-guard.mjs",
+    "sourceBytes": 3831,
+    "sourceSha256": "d80d1186505ffda67e44bbb531a7a55cccf26a632f8d36304825c5ec8fa86675",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 3996,
+    "sha256": "feb79e503b88f8356c4f15b8167c66a161229a99381708c7ebf08c603bd46088"
+  },
+  {
+    "name": "synthetic-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3h-runtime-exec/_preserve/synthetic-guard.mjs",
+    "sourceBytes": 7071,
+    "sourceSha256": "51a4672f68a34379448efab15d3edea082b097ebfa56a5930fcaefa34aab0a48",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'../../ts-035e3h-runtime-exec/_preserve')",
+        "count": 2,
+        "all": true
+      },
+      {
+        "old": "p==='typescript/TASKS.md'",
+        "next": "p.startsWith('typescript/docs/validation/ts-035e3h-unicode-p/')||p==='typescript/TASKS.md'",
+        "count": 1,
+        "all": true
+      }
+    ],
+    "bytes": 7236,
+    "sha256": "da1f06a1d59e949dcba7a8cbbdcff29ebfb1251410220b5135b92e01e657a0ae"
+  }
+]

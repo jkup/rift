@@ -1,0 +1,1 @@
+{"scope":"offline metadata extraction only","failure":"TypeError cfg.argv undefined: inputs.json is the source identity inventory, not the wrapper configuration","correction":"Retain inputs identity as read evidence; independently read named contract.json and write staged-literals.json via finish-evidence.mjs","diagnosticExecuted":false,"runtimeChanged":false}

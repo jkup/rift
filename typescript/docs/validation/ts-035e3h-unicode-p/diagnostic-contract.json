@@ -1,0 +1,69 @@
+{
+  "status": "DESIGN ONLY; execution unauthorized",
+  "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1",
+  "executable": {
+    "path": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+    "bytes": 301368,
+    "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+  },
+  "argv": [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\diagnostic.ps1",
+    "-InputPath",
+    "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\input.json"
+  ],
+  "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1",
+  "environment": {
+    "SystemRoot": "C:\\WINDOWS",
+    "WINDIR": "C:\\WINDOWS",
+    "TEMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\tmp",
+    "TMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\tmp",
+    "USERPROFILE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\home",
+    "HOME": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\home",
+    "APPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\home\\AppData\\Roaming",
+    "LOCALAPPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\home\\AppData\\Local",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_UPDATECHECK": "Off"
+  },
+  "inheritEnvironment": false,
+  "inputs": [
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\diagnostic.ps1.txt",
+      "bytes": 1093,
+      "sha256": "e23b8be67b21770006f48c5921831bfd39f7bdde3026d39ea568d9ed3f828887",
+      "destination": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\diagnostic.ps1"
+    },
+    {
+      "path": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3h-unicode-p\\diagnostic-input.json.txt",
+      "bytes": 93,
+      "sha256": "edd76a46ea1a2fa0c821234780d464a4530e1648650350830cef2c9a4c36004e",
+      "destination": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1\\input.json"
+    }
+  ],
+  "limits": {
+    "launches": 1,
+    "retries": 0,
+    "timeoutMs": 5000,
+    "cleanupMs": 5000,
+    "stdoutBytes": 8192,
+    "stderrBytes": 8192,
+    "inputBytes": 1024
+  },
+  "outputs": {
+    "stdout": "stdout.bin",
+    "stderr": "stderr.bin",
+    "status": "status.json",
+    "inventory": "inventory.json",
+    "exitCode": 0,
+    "stderrExpectedBytes": 0,
+    "requireCompleteEOF": true,
+    "expectedReplacement": "expected-replacement.stdout.txt",
+    "alternativePreservation": "expected-preserved.stdout.txt"
+  },
+  "readinessRequired": "Separate review of exact bounded controller, no inherited environment, source/executable hashes, absent fresh root, exclusive copies, stream caps, timeout cleanup and status. No materialization in this task.",
+  "cleanup": "On exit or failure, close streams; retain every raw byte/status and root. On timeout/cap, terminate the one known process then wait at most cleanupMs; report unconfirmed cleanup if still present. No recursive directory deletion, fixed-root reuse, broad process scan, or claim of complete descendant census. Script creates no children. Any need for native job supervisor requires a separate design; not silently authorized.",
+  "interpretation": "Predicted replacement localizes this diagnostic parse path only. Preservation or any mixed output requires review; no automatic fix, rerun or provenance authority."
+}

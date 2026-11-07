@@ -1,0 +1,1 @@
+{"scope":"new guard authoring only","failure":"EEXIST observation-guard.mjs: top guard filename collided with a historical copied guard","correction":"Move the newly generated top guard to runtime-observation-guard.mjs; resume exclusive creation with exact-byte checks for already written files","runtimeDiagnosticExecuted":false,"oldFilesChanged":false}

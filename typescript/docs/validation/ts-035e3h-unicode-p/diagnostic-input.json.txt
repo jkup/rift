@@ -1,0 +1,1 @@
+{"argv":["\ud800","\udc00","\ud83d\ude00"],"childEnvironment":{"RIFT_UNITS":"\ud800-\udc00"}}

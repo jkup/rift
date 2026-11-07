@@ -1,0 +1,28 @@
+{
+  "source": {
+    "path": "C:/Users/jonku/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.deps.json",
+    "bytes": 84458,
+    "sha256": "fd5f2fd6e17a111d122ad380dd22b880a920d5723688792b05fe927412a61910"
+  },
+  "libraries": [
+    [
+      "Newtonsoft.Json/13.0.4",
+      {
+        "type": "package",
+        "serviceable": true,
+        "sha512": "sha512-pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A==",
+        "path": "newtonsoft.json/13.0.4",
+        "hashPath": "newtonsoft.json.13.0.4.nupkg.sha512"
+      }
+    ],
+    [
+      "Microsoft.PowerShell.Commands.Utility/7.6.5",
+      {
+        "type": "project",
+        "serviceable": false,
+        "sha512": ""
+      }
+    ]
+  ],
+  "limitation": "Named manifest metadata only; no assembly loading or proof of executed source revision."
+}
