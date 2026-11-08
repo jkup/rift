@@ -3179,6 +3179,6 @@ Add Math atan2/pow/imul with ordered conversion of both arguments, missing and i
 
 ## TS-079 — Math clz32 and fround
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `f5b96ab6`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `f5b96ab6`, implementation `43104508`. Both guest suites pass 528/528, full tooling290/290, runner30 and probes10 pass. All 89 native entries pass build and static coverage in one invocation; Math driver5176/5176 static. The reduced width probe passes static coverage and both executions without a workaround. All 225 C++ fixture results agree across hosts: 67 reported successes, 30 unchecked completions, 53 parse errors, 73 runtime errors and two reported failures. All 97 previously successful or unchecked files retain their outcomes. The Math fixture reaches missing hypot. Reports: build/legacy-suite-node-1E1SeN/report.json and build/legacy-suite-native-88Fi69/report.json. Logs: build/math-width-*.
 
 Add clz32 and fround through the existing unary numeric path. Verify uint32 wrapping, binary32 rounding ties, subnormals, signed zero, overflow, coercion, metadata and resource behavior in both hosts. Probe compiler support before integration.
