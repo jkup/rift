@@ -1,7 +1,14 @@
 import type { Realm } from "../realm.js";
 import { GuestSymbolObject } from "../primitive-objects.js";
 import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
-import { GuestSymbol, symbolFor, keyForSymbol, symbolDescriptiveString, wellKnownHasInstance, wellKnownIsConcatSpreadable, wellKnownSpecies, wellKnownSplit, wellKnownToPrimitive, wellKnownToStringTag } from "../symbols.js";
+import {
+    GuestSymbol, symbolFor, keyForSymbol, symbolDescriptiveString,
+    wellKnownAsyncDispose, wellKnownAsyncIterator, wellKnownDispose,
+    wellKnownHasInstance, wellKnownIsConcatSpreadable, wellKnownIterator,
+    wellKnownMatch, wellKnownMatchAll, wellKnownReplace, wellKnownSearch,
+    wellKnownSpecies, wellKnownSplit, wellKnownToPrimitive, wellKnownToStringTag,
+    wellKnownUnscopables,
+} from "../symbols.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString } from "../conversion.js";
 import type { Location } from "../syntax.js";
@@ -42,12 +49,21 @@ export function registerSymbol(realm: Realm): void {
         return normal(key === undefined ? UNDEFINED : { kind: "string", value: key });
     });
     for (const entry of [
+        { name: "asyncDispose", symbol: wellKnownAsyncDispose },
+        { name: "asyncIterator", symbol: wellKnownAsyncIterator },
+        { name: "dispose", symbol: wellKnownDispose },
         { name: "hasInstance", symbol: wellKnownHasInstance },
         { name: "isConcatSpreadable", symbol: wellKnownIsConcatSpreadable },
+        { name: "iterator", symbol: wellKnownIterator },
+        { name: "match", symbol: wellKnownMatch },
+        { name: "matchAll", symbol: wellKnownMatchAll },
+        { name: "replace", symbol: wellKnownReplace },
+        { name: "search", symbol: wellKnownSearch },
         { name: "species", symbol: wellKnownSpecies },
         { name: "split", symbol: wellKnownSplit },
         { name: "toPrimitive", symbol: wellKnownToPrimitive },
         { name: "toStringTag", symbol: wellKnownToStringTag },
+        { name: "unscopables", symbol: wellKnownUnscopables },
     ]) {
         factory.bootstrapDefine(entry.name, { value: { kind: "symbol", value: entry.symbol }, writable: false, enumerable: false, configurable: false });
     }

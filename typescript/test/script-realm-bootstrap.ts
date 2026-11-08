@@ -77,7 +77,11 @@ function inventory(a: Realm): void {
                 desc(f, "prototype", obj(p), false, false, false);
                 desc(f, "name", {kind:"string",value:"Symbol"}, false, false, true);
                 desc(f, "length", n(0), false, false, true);
-                keys(f, ["name","length","prototype","for","keyFor","hasInstance","isConcatSpreadable","species","split","toPrimitive","toStringTag"]);
+                keys(f, [
+                    "name", "length", "prototype", "for", "keyFor", "asyncDispose", "asyncIterator", "dispose",
+                    "hasInstance", "isConcatSpreadable", "iterator", "match", "matchAll", "replace", "search",
+                    "species", "split", "toPrimitive", "toStringTag", "unscopables",
+                ]);
                 method(a, f, "for", "for", 1);
                 method(a, f, "keyFor", "keyFor", 1);
                 const slot = f.constructorSlot;

@@ -3338,3 +3338,9 @@ Expose Script Symbol as a callable with a rejecting construct operation with str
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 220aaf7e, implementation c169a38e. Both guest suites pass 591/591, tooling 290/290, runner 31/31 and all ten probes pass. All 104 native entries pass fresh build and static coverage checks; registry driver 6460/6460 static. All 225 complete fixture results agree: 84 reported successes, 36 unchecked completions, 53 parse errors, 51 runtime errors and one reported failure. symbol-registry.js now completes and prints seven true values without recognized check markers; all 119 previous completions remain. Reports: build/legacy-suite-node-DFxSND/report.json and build/legacy-suite-native-EkB8r2/report.json. Logs: build/symbol-registry-*.
 
 Implement Symbol.for/keyFor with explicit runtime-module shared symbol interning, string-hint coercion, identity-based reverse lookup, Realm-owned errors and bounded operations. Document the deliberate shared primitive registry exception to Realm-local guest state; no guest objects are shared. Own symbols.ts, Symbol registration, current inventory, dedicated tests/manifests and architecture/scope documentation.
+
+## TS-106 — Complete well-known symbol identities
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 03a35d0a.
+
+Add the nine missing well-known Symbol identities and immutable public properties, preserving existing identities, registry separation and cross-Realm sharing. Validate all fifteen names/descriptions/flags and ordinary property-key behavior. Protocol consumers such as iterators, RegExp and disposal remain separate tasks. Own symbols.ts, Symbol registration, current inventory, dedicated tests/manifests and scope documentation.

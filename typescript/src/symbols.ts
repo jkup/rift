@@ -23,12 +23,21 @@ export function keyForSymbol(symbol: GuestSymbol): GuestString | undefined {
 }
 
 // Shared semantic identity across every Realm in this runtime module instance.
+export const wellKnownAsyncDispose = new GuestSymbol("Symbol.asyncDispose");
+export const wellKnownAsyncIterator = new GuestSymbol("Symbol.asyncIterator");
+export const wellKnownDispose = new GuestSymbol("Symbol.dispose");
 export const wellKnownHasInstance = new GuestSymbol("Symbol.hasInstance");
 export const wellKnownIsConcatSpreadable = new GuestSymbol("Symbol.isConcatSpreadable");
+export const wellKnownIterator = new GuestSymbol("Symbol.iterator");
+export const wellKnownMatch = new GuestSymbol("Symbol.match");
+export const wellKnownMatchAll = new GuestSymbol("Symbol.matchAll");
+export const wellKnownReplace = new GuestSymbol("Symbol.replace");
+export const wellKnownSearch = new GuestSymbol("Symbol.search");
 export const wellKnownSplit = new GuestSymbol("Symbol.split");
 export const wellKnownSpecies = new GuestSymbol("Symbol.species");
 export const wellKnownToPrimitive = new GuestSymbol("Symbol.toPrimitive");
 export const wellKnownToStringTag = new GuestSymbol("Symbol.toStringTag");
+export const wellKnownUnscopables = new GuestSymbol("Symbol.unscopables");
 
 export function symbolDescriptiveString(symbol: GuestSymbol): GuestString {
     return "Symbol(" + (symbol.description === undefined ? "" : symbol.description) + ")";
