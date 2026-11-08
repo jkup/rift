@@ -64,6 +64,9 @@ TS-062 adds generic `reduce` and `reduceRight`; see [array reduction](array-redu
 TS-063 adds generic `shift` and `unshift`, preserving holes and partial mutations;
 see [array mutation](array-mutation.md).
 
+TS-064 adds `Object.defineProperty` and `Object.getOwnPropertyDescriptor`;
+see [descriptor reflection](property-descriptor-reflection.md).
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a

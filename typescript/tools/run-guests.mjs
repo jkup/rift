@@ -48,6 +48,16 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["descriptor-defaults", "let o={}; console.log(Object.defineProperty(o,'x',{value:7})===o); let d=Object.getOwnPropertyDescriptor(o,'x'); console.log(d.value,d.writable,d.enumerable,d.configurable,Object.keys(d).join(','));", 0, "", "true\n7 false false false value,writable,enumerable,configurable\n"],
+    ["descriptor-accessors", "let o={n:3}; let calls=0; function get(){calls++;return this.n;} function set(v){this.n=v;} Object.defineProperty(o,'x',{get:get,set:set,configurable:true}); let d=Object.getOwnPropertyDescriptor(o,'x'); console.log(calls,d.get===get,d.set===set,Object.keys(d).join(',')); o.x=9; console.log(o.x,calls,o.n);", 0, "", "0 true true get,set,enumerable,configurable\n9 1 9\n"],
+    ["descriptor-preserve-absent", "let o={x:7}; Object.defineProperty(o,'x',{enumerable:false}); let d=Object.getOwnPropertyDescriptor(o,'x'); console.log(d.value,d.writable,d.enumerable,d.configurable); Object.defineProperty(o,'x',{value:undefined}); console.log(o.x,Object.hasOwn(o,'x'));", 0, "", "7 true false true\nundefined true\n"],
+    ["descriptor-string", "let d=Object.getOwnPropertyDescriptor('abc','1'); console.log(d.value,d.writable,d.enumerable,d.configurable,Object.getOwnPropertyDescriptor('abc','length').value); let s=new String('a'); console.log(Object.defineProperty(s,'0',{value:'a'})===s); try{Object.defineProperty(s,'0',{value:'b'});}catch(e){console.log(e.name);}", 0, "", "b false true false 3\ntrue\nTypeError\n"],
+    ["descriptor-array-rollback", "let a=[0,1,2,3]; Object.defineProperty(a,'1',{configurable:false}); try{Object.defineProperty(a,'length',{value:0,writable:false});}catch(e){console.log(e.name);} console.log(a.length,0 in a,1 in a,2 in a,3 in a,Object.getOwnPropertyDescriptor(a,'length').writable);", 0, "", "TypeError\n2 true true false false false\n"],
+    ["descriptor-fixed-samevalue", "let o={}; Object.defineProperty(o,'x',{value:NaN}); console.log(Object.defineProperty(o,'x',{value:NaN})===o); Object.defineProperty(o,'z',{value:-0}); try{Object.defineProperty(o,'z',{value:0});}catch(e){console.log(e.name);} console.log(1/o.z);", 0, "", "true\nTypeError\n-Infinity\n"],
+    ["descriptor-invalid", "try{Object.defineProperty(1,'x',{});}catch(e){console.log(e.name);} try{Object.defineProperty({},'x');}catch(e){console.log(e.name);} try{Object.defineProperty({},'x',{get:null});}catch(e){console.log(e.name);} try{Object.defineProperty({},'x',{value:undefined,get:undefined});}catch(e){console.log(e.name);}", 0, "", "TypeError\nTypeError\nTypeError\nTypeError\n"],
+    ["descriptor-function", "function f(x){} function attrs(){} attrs.value=9; Object.defineProperty(f,'x',attrs); console.log(f.x,Object.getOwnPropertyDescriptor(f,'length').value);", 0, "", "9 1\n"],
+    ["descriptor-missing", "console.log(Object.getOwnPropertyDescriptor({},'x'),Object.getOwnPropertyDescriptor({undefined:7}).value,Object.getOwnPropertyDescriptor(3,'x'));", 0, "", "undefined 7 undefined\n"],
+    ["descriptor-metadata", "console.log(Object.defineProperty.name,Object.defineProperty.length,Object.getOwnPropertyDescriptor.name,Object.getOwnPropertyDescriptor.length,Object.keys(Object).length);", 0, "", "defineProperty 3 getOwnPropertyDescriptor 2 0\n"],
     ["front-basic", "let a=[1,2,3]; console.log(a.shift(),a.join(','),a.unshift(7,9),a.join(','));", 0, "", "1 2,3 4 7,9,2,3\n"],
     ["front-empty", "let a=[]; console.log(a.shift(),a.length,a.unshift(),a.unshift(7),a.shift(),a.length);", 0, "", "undefined 0 0 1 7 0\n"],
     ["front-holes", "let a=[1,,3]; console.log(a.shift(),a.length,0 in a,1 in a); console.log(a.unshift(7),a.length,0 in a,1 in a,2 in a,a.join(','));", 0, "", "1 2 false true\n3 3 true false true 7,,3\n"],
@@ -367,6 +377,7 @@ executeDriver("array-constructor", { stdout: "Array constructor passed\n" });
 executeDriver("own-property-predicates", { stdout: "Own-property predicates passed\n" });
 executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
+executeDriver("object-descriptor-reflection", { stdout: "Property descriptor reflection passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });

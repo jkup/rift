@@ -3086,3 +3086,9 @@ Add generic reduce and reduceRight with shared directional traversal. Preserve l
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `5a6204d4`, implementation `4b2e9730`. Both guest suites pass 390/390, full tooling 290/290, runner30 and probes10 pass. All 80 native entries pass build and static coverage in one invocation; mutation driver4825/4825 static. All 225 C++ fixture results agree across hosts: 56 reported successes, 22 unchecked completions, 67 parse errors, 78 runtime errors and two reported failures. One file gains reported success and all 77 previously completed files retain their outcomes. Logs: build/array-front-*.
 
 Add generic shift and unshift with ordered Has/Get/Set/Delete operations, inherited elements, sparse holes, strict length writes, partial mutation and safe-length bounds. Extend mutation controls and CLI cases; validate both hosts, static coverage and the fixed C++ selection without copying its hole or empty-operation shortcuts.
+
+## TS-064 — Property descriptor reflection
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `ff7c2abe`.
+
+Add Object.defineProperty and Object.getOwnPropertyDescriptor using existing descriptor validation and exotic definition dispatch. Preserve conversion/field observation order, inherited descriptor fields, callable accessor validation, absent versus undefined fields, fresh descriptor objects, Realm ownership, partial array-length behavior and resource bounds. Test both hosts and static coverage; preserve original C++ fixtures.
