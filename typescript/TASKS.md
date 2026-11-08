@@ -3146,3 +3146,9 @@ Add Function.prototype.apply using existing call machinery and array-like operat
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `7a5a67c4`, implementation `41e77433`. Both guest suites pass 487/487, full tooling290/290, runner30 and probes10 pass. All 86 native entries pass build and static coverage in one invocation; Math driver5035/5035 static. All 225 C++ fixture results agree across hosts: 66 reported successes, 30 unchecked completions, 55 parse errors, 72 runtime errors and two reported failures. All 96 previously successful or unchecked files retain their outcomes. Reports: build/legacy-suite-node-oyIREB/report.json and build/legacy-suite-native-6EfKPQ/report.json. Logs: build/math-extrema-*.
 
 Add variadic Math min/max with ordered number conversion, continued coercion after NaN, abrupt completion, signed-zero selection, empty inputs, descriptors, Realm ownership and budgets. Validate both hosts and fixed fixtures.
+
+## TS-074 — Decimal exponent literals
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `6eb70e34`.
+
+Extend Script numeric lexing to decimal exponents and leading-dot fractions. Preserve raw token spans, numeric property keys, negative zero through unary minus, strict malformed-exponent rejection and legacy parser behavior. Radix literals, separators and legacy octal remain separate. Validate both hosts and fixed fixtures.

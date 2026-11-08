@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["decimal-exponents","console.log(1e2,1E+2,1e-2,1.e2,.5e2,.5);",0,"","100 100 0.01 100 50 0.5\n"],
+    ["decimal-boundaries","console.log(1e999,1e-999,1/(-1e-999),5e-324,9007199254740993e0);",0,"","Infinity 0 -Infinity 5e-324 9007199254740992\n"],
+    ["decimal-keys","let o={1e2:'a',100:'b',.5:'c'};console.log(o[100],o[.5],Object.keys(o).join(','));",0,"","b c 100,0.5\n"],
+    ["decimal-operators","console.log(1e2+3,1e-2-3,.5*2,1.e2/4);",0,"","103 -2.99 1 25\n"],
+    ["decimal-member","console.log(1e2.toString(),.5.toString(),1..toString());",0,"","100 0.5 1\n"],
+    ["decimal-missing-exponent","console.log('must not run');1e+;",2,"parse SyntaxError: decimal exponent requires digits",""],
+    ["decimal-suffix","1e2foo;",2,"parse SyntaxError: unsupported numeric literal",""],
+    ["decimal-split-exponent","1e\n2;",2,"parse SyntaxError: decimal exponent requires digits",""],
     ["math-extrema-basic","console.log(Math.min(),Math.max(),Math.min(3,-2,7),Math.max(3,-2,7));",0,"","Infinity -Infinity -2 7\n"],
     ["math-extrema-zeros","console.log(1/Math.min(0,-0),1/Math.min(-0,0),1/Math.max(0,-0),1/Math.max(-0,0));",0,"","-Infinity -Infinity Infinity Infinity\n"],
     ["math-extrema-coercion","let trace='';let a={valueOf:function(){trace+='a';return NaN;}};let b={valueOf:function(){trace+='b';return 4;}};console.log(Math.min(a,b),trace);trace='';console.log(Math.max(a,b),trace);",0,"","NaN ab\nNaN ab\n"],
@@ -227,7 +235,7 @@ const generated = [
     ["string", "'unterminated", 2, "parse SyntaxError: unterminated string"],
     ["comment", "/* unterminated", 2, "parse SyntaxError: unterminated comment"],
     ["number", "console.log(01);", 2, "parse SyntaxError: leading-zero numbers are unsupported"],
-    ["exponent", "console.log(1e2);", 2, "parse SyntaxError: unsupported numeric literal"],
+    ["exponent", "console.log(1e2);", 0, "", "100\n"],
     ["proto", "let o={__proto__: null};", 2, "parse SyntaxError: prototype literal syntax is unsupported"],
     ["coercion", "console.log(1 + '2');", 0, "", "12\n"],
     ["primitive-base", "console.log(null.x);", 1, "runtime TypeError: cannot convert null or undefined to object"],
@@ -271,7 +279,7 @@ lineCase("object-numeric-format", "let o={1000000000000000000000:7,0.0000001:11}
 lineCase("object-numeric-zero", "let o={0.0:7,'0.0':11}; console.log(o[0],o[-0],o['0.0']);", {stdout:"7 7 11\n"});
 lineCase("object-negative-key", "let o={-1:2};", {status:2,errorContains:"parse SyntaxError: expected literal property name"});
 lineCase("object-computed-key", "console.log('no'); let o={[1]:2};", {status:2,errorContains:"parse SyntaxError: expected literal property name"});
-lineCase("object-exponent-key", "let o={1e2:7};", {status:2,errorContains:"parse SyntaxError: unsupported numeric literal"});
+lineCase("object-exponent-key", "let o={1e2:7};console.log(o[100]);", {stdout:"7\n"});
 lineCase("array-predicate-basic", "function positive(x){return x>0;} console.log([1,2,3].every(positive),[1,-2,3].every(positive),[-1,-2].some(positive),[-1,2].some(positive),[].every(positive),[].some(positive));", {stdout:"true false false true true false\n"});
 lineCase("array-predicate-short-circuit", "let a=[]; console.log([1,2,3].every(function(x){a.push(x);return x<2;}),a.join()); a=[]; console.log([1,2,3].some(function(x){a.push(x);return x===2;}),a.join());", {stdout:"false 1,2\ntrue 1,2\n"});
 lineCase("array-predicate-holes", "let a=[,undefined,,7]; let seen=[]; console.log(a.every(function(x,i,o){seen.push(i);return o===a;}),seen.join()); seen=[]; console.log(a.some(function(x,i){seen.push(i);return x===7;}),seen.join());", {stdout:"true 1,3\ntrue 1,3\n"});
@@ -460,6 +468,7 @@ executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
 executeDriver("object-descriptor-reflection", { stdout: "Property descriptor reflection passed\n" });
 executeDriver("function-apply", { stdout: "Function apply passed\n" });
+executeDriver("decimal-literals", { stdout: "Decimal literals passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });
 executeDriver("do-while", { stdout: "Do-while passed\n" });
 executeDriver("script-templates", { stdout: "Script templates passed\n" });

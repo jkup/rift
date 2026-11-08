@@ -128,12 +128,18 @@ export function lex(source: string, script = false): LexResult {
             tokens.push({ kind: "word", text, loc, start, end: i });
             continue;
         }
-        if (digit(c)) {
+        if (digit(c) || (script && c === "." && digit(source.charAt(i + 1)))) {
             let text = advance();
             while (digit(source.charAt(i))) text += advance();
             if (text.length > 1 && text.charAt(0) === "0") fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
-            if (source.charAt(i) === ".") {
+            if (c !== "." && source.charAt(i) === ".") {
                 text += advance();
+                while (digit(source.charAt(i))) text += advance();
+            }
+            if (script && (source.charAt(i) === "e" || source.charAt(i) === "E")) {
+                text += advance();
+                if (source.charAt(i) === "+" || source.charAt(i) === "-") text += advance();
+                if (!digit(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "decimal exponent requires digits", loc);
                 while (digit(source.charAt(i))) text += advance();
             }
             if (letter(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
