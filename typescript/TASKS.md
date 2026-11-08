@@ -2936,3 +2936,9 @@ Use the existing Script preparation/session API from the CLI. Cover loops, const
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; commits `feae65e2` and `bf16e72e`. Full tooling suite281/281, zero skips, with freshly downloaded corpus and overridden scratch root; historical evidence unchanged.
 
 Give active tests a configurable pinned corpus under build/, provide a verified preparation command, and separate live test helpers from immutable historical evidence. Keep all behavior assertions and expected literals. Validate with the corpus outside the original user-specific temporary path and require no tracked-report writes.
+
+## TS-039 — Array push and pop
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `d254e757`.
+
+Implement generic Array.prototype.push/pop using existing property operations. Cover argument and length coercion order, inherited values, holes, strict failures even in sloppy code, partial mutations, array and array-like length limits, method metadata and budgets. Validate expected results in Node and freshly built native lanes; keep unsupported features explicit.

@@ -11,6 +11,7 @@ import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBooleanConversions } from "./builtins/boolean.js";
 import { registerString, registerStringConversions } from "./builtins/string.js";
 import { registerArrayConversions } from "./builtins/array.js";
+import { registerArrayMutators } from "./builtins/array-mutation.js";
 import { GlobalEnvironment } from "./global-environment.js";
 import type { Stmt, FunctionSource, Location } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
@@ -65,6 +66,7 @@ export class Realm {
         registerObjectValueOf(this);
         const objectToString = registerObjectToString(this);
         registerArrayConversions(this, objectToString);
+        registerArrayMutators(this);
         registerFunction(this);
         registerSymbolConversions(this);
         registerBooleanConversions(this);

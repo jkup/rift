@@ -97,6 +97,15 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("array-push-pop", "let a=[7]; console.log(a.push(11,13),a.pop(),a.length,a.pop(),a.pop(),a.pop(),a.push());", {stdout:"3 13 2 11 7 undefined 0\n"});
+lineCase("array-pop-hole", "let a=[,,]; console.log(a.pop(),a.length,0 in a);", {stdout:"undefined 1 false\n"});
+lineCase("array-mutation-coercion", "let o={length:{valueOf:function(){console.log('length'); return 1.9;}}}; console.log([].push.call(o,7),o[1],o.length);", {stdout:"length\n2 7 2\n"});
+lineCase("array-mutation-strings", "try{[].pop.call('abc');}catch(e){console.log(e.name);} try{[].push.call('');}catch(e){console.log(e.name);}", {stdout:"TypeError\nTypeError\n"});
+lineCase("array-push-array-limit", "let a=[]; a.length=4294967295; try{a.push(7);}catch(e){console.log(e.name,a.length,a[4294967295]);}", {stdout:"RangeError 4294967295 7\n"});
+lineCase("array-mutation-nullish", "try{[].pop.call(null);}catch(e){console.log(e.name);} try{[].push.call(undefined,7);}catch(e){console.log(e.name);}", {stdout:"TypeError\nTypeError\n"});
+lineCase("array-pop-safe-limit", "let o={length:Infinity}; o[9007199254740990]=7; console.log([].pop.call(o),o.length,9007199254740990 in o);", {stdout:"7 9007199254740990 false\n"});
+lineCase("array-mutation-negative-length", "let o={length:-3}; console.log([].pop.call(o),o.length); o.length=-5; console.log([].push.call(o,7),o[0],o.length);", {stdout:"undefined 0\n1 7 1\n"});
+lineCase("array-push-argument-order", "let o={length:{valueOf:function(){console.log('length'); return 0;}}}; function arg(){console.log('argument'); return 7;} console.log([].push.call(o,arg()));", {stdout:"argument\nlength\n1\n"});
 lineCase("script-for", "var total=0; for(var i=0;i<5;i++){total+=i;} console.log(total, i);", { stdout: "10 5\n" });
 lineCase("script-catch", "try { throw new Error('boom'); } catch(e) { console.log(e.message); } console.log('after');", { stdout: "boom\nafter\n" });
 lineCase("script-construct", "function Point(x){this.x=x;} let p=new Point(3); console.log(p.x, p instanceof Point);", { stdout: "3 true\n" });
@@ -233,6 +242,9 @@ execute("io", command, [...prefix, "build/nonexistent-guest.js"], { status: 66, 
 const realmCommand = lane === "node" ? process.execPath : join(root, "build/native/realms" + suffix);
 const realmPrefix = lane === "node" ? [join(root, "build/node/test/realms.js")] : [];
 execute("realms", realmCommand, [...realmPrefix, "test/fixtures/realm-setup.js", "test/fixtures/realm-check.js"], { stdout: "a 41\nb 7 undefined\na 42\na 23\nrealms independent\n" });
+const mutationCommand = lane === "node" ? process.execPath : join(root, "build/native/array-mutation" + suffix);
+const mutationArgs = lane === "node" ? [join(root, "build/node/test/array-mutation.js")] : [];
+execute("array-mutation", mutationCommand, mutationArgs, { stdout: "array mutation passed\n" });
 const descriptorCommand = lane === "node" ? process.execPath : join(root, "build/native/object-descriptors" + suffix);
 const descriptorArgs = lane === "node" ? [join(root, "build/node/test/object-descriptors.js")] : [];
 execute("object-descriptors", descriptorCommand, descriptorArgs, { stdout: "object descriptors passed\n" });
