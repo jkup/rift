@@ -3365,6 +3365,6 @@ Implement Object.fromEntries using reusable synchronous iterator acquisition/ste
 
 ## TS-110 — Ordered keyed collection storage
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base e2800adc.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base e2800adc, implementation f5d9d415. Both guest suites pass 596/596 with no skips, runner 31/31 and all ten probes pass; typechecking passes. The new storage driver passes a fresh static-only native build and separate 6771/6771 coverage gate. The isolated mixed-key probe passes both hosts with 20/20 static statements. The initial direct GuestObject driver exposed a reduced native module-reachability failure; using real Realm-owned keys resolves the test setup without a production workaround. Existing runtime entry points do not import the new module: their 108 native builds, tooling 290/290 and 225 fixed fixture results retain the TS-109 baseline, not a fresh full rebuild. Logs: build/keyed-collection-*; design and compiler evidence: docs/keyed-collection-storage.md.
 
 Probe native mixed primitive/object/symbol Map keys, then implement private ordered collection storage with SameValueZero identity, fast lookup, live cursors and released deleted payloads. Own keyed-collection.ts, isolated storage tests/probe evidence and documentation/manifests. No public Map bootstrap or guest operations yet; constructor/method integration follows separately. Validate the storage under Node and static-only native builds, preserving all existing gates.
