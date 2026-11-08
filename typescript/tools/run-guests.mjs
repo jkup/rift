@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { scriptHostCases } from "./script-host-cases.mjs";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const lane = process.argv[2];
 if (process.argv.length !== 3 || !["node", "native"].includes(lane)) throw new Error("usage: run-guests.mjs node|native");
@@ -359,6 +360,11 @@ execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-
 const outcomesCommand = lane === "node" ? process.execPath : join(root, "build/native/structured-outcomes" + suffix);
 const outcomesArgs = lane === "node" ? [join(root, "build/node/test/structured-outcomes.js")] : [];
 execute("structured-outcomes", outcomesCommand, outcomesArgs, { stdout: "structured-outcomes ok\n" });
+for (const { driver, variant, fixture, stdout } of scriptHostCases) {
+    const executable = lane === "node" ? process.execPath : join(root, "build/native", driver + suffix);
+    const args = lane === "node" ? [join(root, "build/node/test", driver + ".js"), fixture] : [fixture];
+    execute(driver + "/" + variant, executable, args, { stdout });
+}
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

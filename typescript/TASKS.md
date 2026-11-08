@@ -2960,3 +2960,9 @@ Put the current Script execution path and runtime model ahead of the historical 
 Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `051e02d5`.
 
 Implement generic indexOf/includes through existing guest object operations. Preserve captured length, fromIndex coercion and clamping, inherited values, holes, strict equality versus SameValueZero, abrupt completion, and bounded iteration. Add expected-result checks in Node and fresh native builds; keep unsupported reflection/proxy features explicit. Consult ECMA-262 and engine262 at18cdeb03c363eb31d775648a0d070bdc8a26ced1.
+
+## TS-043 — Restore routine execution of Script host checks
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `ddeb51d0`. All four drivers pass both committed inputs under Node and fresh native binaries. Expanded guest suites252/252 each, zero skips. Remaining audit candidates stay on the roadmap.
+
+Audit compiled drivers absent from ordinary validation and bring a bounded first group (function materialization/setup, property accessors and restricted properties) into the guest runner in both hosts. Reuse committed runtime inputs and independent expected output, preserve all assertions, and write only to build/. Keep the broader driver audit on the roadmap rather than claiming complete coverage.
