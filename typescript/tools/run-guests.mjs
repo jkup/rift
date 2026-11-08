@@ -67,6 +67,14 @@ const generated = [
     ["updates-invalid-prefix", "console.log('no'); ++(1+2);", 2, "parse SyntaxError: invalid update target"],
     ["updates-invalid-postfix", "console.log('no'); (1+2)--;", 2, "parse SyntaxError: invalid decrement target"],
     ["updates-postfix-newline", "let x=2; x\n--;", 2, "parse SyntaxError: newline before postfix decrement is unsupported"],
+    ["boolean-call", "console.log(Boolean(),Boolean(undefined),Boolean(null),Boolean(false),Boolean(0),Boolean(-0),Boolean(NaN),Boolean(''));", 0, "", "false false false false false false false false\n"],
+    ["boolean-truthy", "console.log(Boolean(1),Boolean(-1),Boolean(Infinity),Boolean('false'),Boolean({}),Boolean([]),Boolean(new Boolean(false)));", 0, "", "true true true true true true true\n"],
+    ["boolean-construct", "let b=new Boolean(false); console.log(typeof b,b.valueOf(),b.toString(),b instanceof Boolean,b.constructor===Boolean,b.value);", 0, "", "object false false true true undefined\n"],
+    ["boolean-prototype", "console.log(Boolean.prototype.valueOf(),Boolean.prototype.toString(),Boolean.name,Boolean.length,Boolean.prototype.constructor===Boolean);", 0, "", "false false Boolean 1 true\n"],
+    ["boolean-no-coercion", "let x={valueOf:function(){throw 'bad';},toString:function(){throw 'bad';}}; console.log(Boolean(x),(new Boolean(x)).valueOf());", 0, "", "true true\n"],
+    ["boolean-extra-arguments", "function effect(){console.log('effect');return 1;} console.log(Boolean(0,effect()),(new Boolean('',effect())).valueOf());", 0, "", "effect\neffect\nfalse false\n"],
+    ["boolean-borrowed-call", "console.log(Boolean.call(null,''),Boolean.call({},'x'));", 0, "", "false true\n"],
+    ["boolean-brand", "try{Boolean.prototype.valueOf.call({});}catch(e){console.log(e.name);} console.log(Boolean.prototype.valueOf.call(true));", 0, "", "TypeError\ntrue\n"],
     ["assignment-target", "1 = 2;", 2, "parse SyntaxError: invalid numeric assignment target"],
     ["break", "break;", 2, "parse SyntaxError: break outside loop"],
     ["continue", "continue;", 2, "parse SyntaxError: continue outside loop"],
@@ -304,6 +312,7 @@ for (const [name, text] of [["seed", bootstrapRows], ["other", bootstrapRows.rep
     executeDriver("script-realm-bootstrap", { stdout: bootstrapExpected }, [file], "script-realm-bootstrap-" + name);
 }
 executeDriver("string-methods", { stdout: "string methods passed\n" });
+executeDriver("boolean-constructor", { stdout: "Boolean constructor passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });

@@ -3044,3 +3044,9 @@ Run the existing C++ regression fixtures unchanged through both TypeScript hosts
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `77f7dcdf`, implementation `c4673633`, static test correction `d7e084ac`. Both guest suites pass 327/327, runner30 and probes10 pass. Native acceptance covers 73 entries in the full run plus separate successful retries of the global-environment and update drivers (a Zig cache read failure and two callback adapters respectively). Corrected update coverage is 4787/4787 static with zero dynamic statements. Full tooling passed 289/290; the updated ++42 diagnostic expectation then passed all five parser-audit groups (1318 child runs), accounting for all 290 checks. Original failures are retained; no single all-green full invocation is claimed. Logs: build/update-*. The fixed C++ selection gains three reported-success files (43 to 46), with no previously completed file regressing.
 
 Generalize postfix increment to prefix/postfix increment and decrement in the Script profile. Preserve single reference evaluation, numeric coercion, getter/setter order, strict/sloppy failures and budgets. Reject invalid targets and unsupported line-terminator forms explicitly. Add semantic controls and rerun the fixed C++ fixture selection in both hosts; require fresh native static coverage and existing parser regressions.
+
+## TS-057 — Boolean call and construction
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `01faea52`.
+
+Expose Boolean as a Script builtin constructor: calls return primitive truthiness, construction allocates genuine Boolean objects with the owning Realm prototype. Avoid coercion hooks, preserve allocation budgets, constructor metadata and Realm isolation. Test missing arguments, all primitive kinds, truthy objects, boxed false values, call versus construct, and cross-Realm behavior. Re-run both guest hosts, native coverage and the fixed C++ fixture selection.

@@ -8,7 +8,7 @@ import { registerFunction, nativeFunctionString } from "./builtins/function.js";
 import { registerRestrictedFunctionProperties } from "./builtins/restricted-function.js";
 import { registerObject, registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
 import { registerSymbolConversions } from "./builtins/symbol.js";
-import { registerBooleanConversions } from "./builtins/boolean.js";
+import { registerBoolean, registerBooleanConversions } from "./builtins/boolean.js";
 import { registerString, registerStringConversions, registerStringMethods } from "./builtins/string.js";
 import { registerArrayConversions } from "./builtins/array.js";
 import { registerArrayMutators } from "./builtins/array-mutation.js";
@@ -99,6 +99,7 @@ export class Realm {
             for (const name of names) this.errorConstructors.set(name, createErrorConstructor(this, name));
             registerErrors(this);
             registerString(this);
+            registerBoolean(this);
             registerObject(this);
         }
     }
