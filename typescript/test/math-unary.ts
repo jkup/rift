@@ -26,6 +26,9 @@ function run(realm: Realm, text: string, steps = 10000): ValueCompletion {
     return completion;
 }
 const methods = ["abs", "ceil", "floor", "round", "sign", "trunc"];
+const transcendental = ["acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh",
+    "cosh", "sinh", "tanh", "exp", "expm1", "log", "log1p", "log2", "log10", "sqrt", "cbrt"];
+const unaryMethods = methods.concat(transcendental);
 const inputs = [-Infinity, -2.7, -1.5, -0.5, -0.1, -0, 0, 0.49999999999999994, 0.5, 2.7, Infinity, NaN];
 const expected = [
     [Infinity, 2.7, 1.5, 0.5, 0.1, 0, 0, 0.49999999999999994, 0.5, 2.7, Infinity, NaN],
@@ -55,7 +58,7 @@ for (let m = 0; m < methods.length; m++) {
     }
     const tag = left.getOwnProperty(wellKnownToStringTag);
     check(tag !== undefined && tag.kind === "data" && tag.value.kind === "string" && tag.value.value === "Math" && !tag.writable && !tag.enumerable && tag.configurable, "Math tag");
-    for (const name of methods) {
+    for (const name of unaryMethods) {
         const value = own(left, name), other = own(right, name);
         check(value.kind === "object" && other.kind === "object" && value.object !== other.object, "fresh Math methods");
         caller.defineScriptGlobal("method", {value, configurable: true});
@@ -64,7 +67,7 @@ for (let m = 0; m < methods.length; m++) {
         check(bad.type === "throw" && bad.value.kind === "object" && bad.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"), "Math error Realm");
     }
 }
-for (const name of methods) {
+for (const name of unaryMethods) {
     const realm = fresh(), input = realm.createObject();
     let calls = 0;
     input.bootstrapDefine(wellKnownToPrimitive, {value: obj(realm.createBuiltin("convert", 1, (receiver, args, context, _loc): ValueCompletion => {
@@ -88,6 +91,47 @@ for (const name of methods) {
     }
     check(interrupted && completed, "Math budget boundary");
     check(new Realm((_line: string) => {}).global.bindings.has("Math") === false, "legacy globals unchanged");
+}
+const specialInputs = [-Infinity, -1, -0, 0, 1, Infinity, NaN];
+const specialResults = [
+    [NaN, 3.141592653589793, 1.5707963267948966, 1.5707963267948966, 0, NaN, NaN],
+    [NaN, -1.5707963267948966, -0, 0, 1.5707963267948966, NaN, NaN],
+    [-1.5707963267948966, -0.7853981633974483, -0, 0, 0.7853981633974483, 1.5707963267948966, NaN],
+    [NaN, 0.5403023058681398, 1, 1, 0.5403023058681398, NaN, NaN],
+    [NaN, -0.8414709848078965, -0, 0, 0.8414709848078965, NaN, NaN],
+    [NaN, -1.5574077246549023, -0, 0, 1.5574077246549023, NaN, NaN],
+    [NaN, NaN, NaN, NaN, 0, Infinity, NaN],
+    [-Infinity, -0.881373587019543, -0, 0, 0.881373587019543, Infinity, NaN],
+    [NaN, -Infinity, -0, 0, Infinity, NaN, NaN],
+    [Infinity, 1.5430806348152437, 1, 1, 1.5430806348152437, Infinity, NaN],
+    [-Infinity, -1.1752011936438014, -0, 0, 1.1752011936438014, Infinity, NaN],
+    [-1, -0.7615941559557649, -0, 0, 0.7615941559557649, 1, NaN],
+    [0, 0.36787944117144233, 1, 1, 2.718281828459045, Infinity, NaN],
+    [-1, -0.6321205588285577, -0, 0, 1.718281828459045, Infinity, NaN],
+    [NaN, NaN, -Infinity, -Infinity, 0, Infinity, NaN],
+    [NaN, -Infinity, -0, 0, 0.6931471805599453, Infinity, NaN],
+    [NaN, NaN, -Infinity, -Infinity, 0, Infinity, NaN],
+    [NaN, NaN, -Infinity, -Infinity, 0, Infinity, NaN],
+    [NaN, NaN, -0, 0, 1, Infinity, NaN],
+    [-Infinity, -1, -0, 0, 1, Infinity, NaN],
+];
+for (let m = 0; m < transcendental.length; m++) {
+    const realm = fresh(), name = transcendental[m];
+    const descriptor = math(realm).getOwnProperty(name);
+    check(descriptor !== undefined && descriptor.kind === "data" && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "transcendental descriptor");
+    const metadata = run(realm, "Math." + name + ".length===1 && Math." + name + ".name==='" + name + "';");
+    check(metadata.type === "normal" && metadata.value.kind === "boolean" && metadata.value.value, "transcendental metadata");
+    for (let i = 0; i < specialInputs.length; i++) {
+        realm.defineScriptGlobal("input", {value: {kind: "number", value: specialInputs[i]}, configurable: true});
+        const result = run(realm, "Math." + name + "(input);");
+        const expectedValue = specialResults[m][i];
+        if (result.type !== "normal" || result.value.kind !== "number") throw new Error("transcendental numeric result");
+        const actual = result.value.value;
+        const exact = sameValue(result.value, {kind: "number", value: expectedValue});
+        const approximate = expectedValue !== 0 && expectedValue !== Infinity && expectedValue !== -Infinity
+            && Math.abs(actual - expectedValue) < 1e-14;
+        check(exact || approximate, "transcendental special value " + name + " input " + i);
+    }
 }
 for (const name of ["min", "max"]) {
     const minimum = name === "min";

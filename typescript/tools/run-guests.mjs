@@ -48,6 +48,12 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["math-roots","console.log(Math.sqrt(9),Math.cbrt(27),Math.cbrt(-8),1/Math.sqrt(-0),1/Math.cbrt(-0));",0,"","3 3 -2 -Infinity -Infinity\n"],
+    ["math-logs","console.log(Math.log2(8),Math.log10(1000),Math.log(1),Math.log1p(-1));",0,"","3 3 0 -Infinity\n"],
+    ["math-domains","console.log(Math.acos(2),Math.asin(-2),Math.acosh(.5),Math.atanh(2),Math.sqrt(-1),Math.log(-1),Math.log1p(-2));",0,"","NaN NaN NaN NaN NaN NaN NaN\n"],
+    ["math-trig","console.log(Math.abs(Math.sin(Math.PI/2)-1)<1e-14,Math.abs(Math.cos(Math.PI)+1)<1e-14,Math.abs(Math.atan(1)-Math.PI/4)<1e-14);",0,"","true true true\n"],
+    ["math-hyperbolic","console.log(Math.abs(Math.acosh(2)-1.3169578969248166)<1e-14,Math.abs(Math.asinh(2)-1.4436354751788103)<1e-14,Math.abs(Math.atanh(.5)-.5493061443340548)<1e-14);",0,"","true true true\n"],
+    ["math-exponential","console.log(Math.abs(Math.exp(1)-Math.E)<1e-14,Math.abs(Math.expm1(1)-(Math.E-1))<1e-14,Math.expm1(-Infinity));try{new Math.sin();}catch(e){console.log(e.name);}",0,"","true true -1\nTypeError\n"],
     ["radix-values","console.log(0xFF,0XfF,0b101,0B101,0o777,0O777);",0,"","255 255 5 5 511 511\n"],
     ["radix-keys","let o={0x10:'a',16:'b',0b11:'c',0o7:'d'};console.log(o[16],o[3],o[7],Object.keys(o).join(','));",0,"","b c d 3,7,16\n"],
     ["radix-members","console.log(0xFF.toString(),0b10.toString(),0o7.toString(),0xE+1,0xF-1,1/(-0x0));",0,"","255 2 7 15 14 -Infinity\n"],

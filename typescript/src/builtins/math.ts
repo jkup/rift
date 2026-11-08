@@ -14,7 +14,9 @@ export function registerMath(realm: Realm): void {
     ];
     for (const constant of constants) object.bootstrapDefine(constant.name, {value: {kind: "number", value: constant.value}});
     object.bootstrapDefine(wellKnownToStringTag, {value: {kind: "string", value: "Math"}, configurable: true});
-    for (const name of ["abs", "ceil", "floor", "round", "sign", "trunc"]) {
+    for (const name of ["abs", "ceil", "floor", "round", "sign", "trunc",
+        "acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh",
+        "cosh", "sinh", "tanh", "exp", "expm1", "log", "log1p", "log2", "log10", "sqrt", "cbrt"]) {
         realm.registerBuiltin(object, name, 1, (_receiver, args, context, loc): ValueCompletion => {
             const tick = context.tick(loc);
             if (tick.type === "throw") return tick;
@@ -23,12 +25,34 @@ export function registerMath(realm: Realm): void {
             const number = toNumber(primitive.value, loc, context.realm);
             if (number.type === "throw") return number;
             let value = number.value;
-            if (name === "abs") value = Math.abs(value);
-            else if (name === "ceil") value = Math.ceil(value);
-            else if (name === "floor") value = Math.floor(value);
-            else if (name === "round") value = Math.round(value);
-            else if (name === "sign") value = Math.sign(value);
-            else value = Math.trunc(value);
+            switch (name) {
+                case "abs": value = Math.abs(value); break;
+                case "ceil": value = Math.ceil(value); break;
+                case "floor": value = Math.floor(value); break;
+                case "round": value = Math.round(value); break;
+                case "sign": value = Math.sign(value); break;
+                case "trunc": value = Math.trunc(value); break;
+                case "acos": value = Math.acos(value); break;
+                case "asin": value = Math.asin(value); break;
+                case "atan": value = Math.atan(value); break;
+                case "cos": value = Math.cos(value); break;
+                case "sin": value = Math.sin(value); break;
+                case "tan": value = Math.tan(value); break;
+                case "acosh": value = Math.acosh(value); break;
+                case "asinh": value = Math.asinh(value); break;
+                case "atanh": value = Math.atanh(value); break;
+                case "cosh": value = Math.cosh(value); break;
+                case "sinh": value = Math.sinh(value); break;
+                case "tanh": value = Math.tanh(value); break;
+                case "exp": value = Math.exp(value); break;
+                case "expm1": value = Math.expm1(value); break;
+                case "log": value = Math.log(value); break;
+                case "log1p": value = Math.log1p(value); break;
+                case "log2": value = Math.log2(value); break;
+                case "log10": value = Math.log10(value); break;
+                case "sqrt": value = Math.sqrt(value); break;
+                case "cbrt": value = Math.cbrt(value); break;
+            }
             return normal({kind: "number", value});
         });
     }

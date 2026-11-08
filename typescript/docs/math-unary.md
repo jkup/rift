@@ -36,3 +36,19 @@ and [Math.min](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-math
 The C++ implementation's early NaN return and order-dependent zero selection are
 not copied. Tests cover both zero orders, conversion effects and throws, captured
 arguments, Realm ownership, descriptors and resource boundaries. Both guest suites pass 487/487, full tooling290/290, runner30 and probes10 pass. All 86 native entries pass build and static coverage in one invocation; Math driver5035/5035 static. All 225 C++ fixture results agree across hosts: 66 reported successes, 30 unchecked completions, 55 parse errors, 72 runtime errors and two reported failures. All 96 previously successful or unchecked files retain their outcomes. Reports: build/legacy-suite-node-oyIREB/report.json and build/legacy-suite-native-6EfKPQ/report.json. Logs: build/math-extrema-*.
+
+## Transcendental unary methods (TS-076)
+
+Adds acos, asin, atan, cos, sin, tan, acosh, asinh, atanh, cosh, sinh, tanh, exp,
+expm1, log, log1p, log2, log10, sqrt and cbrt. They share the existing unary
+conversion, metadata and resource path; only primitive numbers reach host Math.
+The twenty-operation probe passes static compilation and coverage in both hosts
+(`build/math-transcendental-probe-*`). No compiler workaround is needed.
+
+The [Math specification](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-math-object)
+permits implementation approximations for these operations. Tests use literal
+reference values with a small absolute tolerance for finite nonzero results,
+and exact checks for NaN, infinities and signed zero. Shared conversion tests
+cover numeric hints, ignored extra arguments, errors and defining-Realm ownership.
+C++ implementations were consulted. Binary, integer-specific and random methods
+remain separate work. Acceptance pending.
