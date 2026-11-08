@@ -25,3 +25,7 @@ export function stringCompare(left: GuestString, right: GuestString): number {
 export function stringSlice(value: GuestString, start: number, end: number): GuestString {
     return value.slice(start, end);
 }
+
+export function stringIndexOf(value: GuestString, search: GuestString, start: number): number {
+    return value.indexOf(search, start);
+}

@@ -131,4 +131,50 @@ for (const method of ["charAt", "charCodeAt", "slice"]) {
     }
     check(interrupted, "budget interrupts coercion without later effects");
 }
+{
+    const realm = fixture(str("A😀\ud800Z\udfff"));
+    const needles = ["A", "😀", "\ud83d", "\ude00", "\ud800", "Z", "\udfff", "", "missing"];
+    const expected = [0, 1, 1, 2, 3, 4, 5, 0, -1];
+    for (let i = 0; i < needles.length; i++) {
+        define(realm, "needle", str(needles[i]));
+        result(run(realm, "indexOf", "needle"), num(expected[i]));
+    }
+    define(realm, "needle", str("\ude00"));
+    result(run(realm, "indexOf", "needle,2"), num(2));
+    result(run(realm, "indexOf", "needle,3"), num(-1));
+    result(run(realm, "indexOf", "'',Infinity"), num(6));
+}
+for (const failure of ["", "R", "S", "P"]) {
+    const realm = new Realm((_line: string) => {}, "script");
+    const target = realm.createObject(), search = realm.createObject(), position = realm.createObject();
+    let trace = "";
+    for (const label of ["R", "S", "P"]) {
+        const hook = realm.createBuiltin(label, 1, (_receiver, args, context, loc): ValueCompletion => {
+            check(args[0].kind === "string" && args[0].value === (label === "P" ? "number" : "string"), "search coercion hints");
+            trace += label;
+            if (failure === label) return languageFailure(context.realm, "TypeError", "search " + label, loc);
+            return normal(label === "P" ? num(1) : str(label === "R" ? "abca" : "a"));
+        });
+        (label === "R" ? target : label === "S" ? search : position).bootstrapDefine(wellKnownToPrimitive, {value: obj(hook)});
+    }
+    define(realm, "target", obj(target)); define(realm, "search", obj(search)); define(realm, "position", obj(position));
+    const actual = run(realm, "indexOf", "search,position");
+    if (failure === "") { result(actual, num(3)); check(trace === "RSP", "search conversion order"); }
+    else {
+        check(actual.type === "throw" && actual.diagnostic.message === "search " + failure, "search conversion failure");
+        check(trace === (failure === "R" ? "R" : failure === "S" ? "RS" : "RSP"), "search stops at failed coercion");
+    }
+}
+{
+    const realm = fixture({kind: "null"});
+    const actual = run(realm, "indexOf", "'x'");
+    check(actual.type === "throw" && actual.diagnostic.name === "TypeError", "null search receiver");
+    let interrupted = false, completed = false;
+    for (let steps = 0; steps < 25; steps++) {
+        const r = fixture(str("abca")), actual = run(r, "indexOf", "'a',1", steps);
+        if (actual.type === "throw") { check(actual.origin.kind === "resource-limit", "search budget"); interrupted = true; }
+        else { result(actual, num(3)); completed = true; }
+    }
+    check(interrupted && completed, "search budget boundary");
+}
 console.log("string methods passed");

@@ -294,7 +294,7 @@ for (const realm of [boxA, boxB]) {
         }
     }
     checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
-    checkGraph(stringKeys(realm.booleanPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && stringKeys(realm.numberPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length,toString,valueOf,charAt,charCodeAt,slice", "M1 root keys");
+    checkGraph(stringKeys(realm.booleanPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && stringKeys(realm.numberPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length,toString,valueOf,indexOf,charAt,charCodeAt,slice", "M1 root keys");
     checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call,toString" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length,join,toString,push,pop,shift,unshift,reverse,at,indexOf,includes,lastIndexOf,every,some,find,findIndex,findLast,findLastIndex,reduce,reduceRight", "W1 original root keys");
     for (const name of ["Object", "Boolean", "String"]) checkGraph(!realm.global.bindings.has(name), "W17 no new globals");
     const namespace = graphObject(graphBinding(realm, "Number"));

@@ -1,7 +1,7 @@
 import type { Realm } from "../realm.js";
 import { GuestStringObject } from "../primitive-objects.js";
 import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
-import { stringLength, stringUnit, stringCodeUnit, stringSlice, type GuestString } from "../strings.js";
+import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, type GuestString } from "../strings.js";
 import type { Location } from "../syntax.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
@@ -87,6 +87,18 @@ function sliceIndex(index: number, length: number): number {
 }
 
 export function registerStringMethods(realm: Realm): void {
+    realm.registerBuiltin(realm.stringPrototype, "indexOf", 1, (receiver, args, context, loc) => {
+        const text = stringReceiver(receiver, context, loc);
+        if (text.type === "throw") return text;
+        const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);
+        if (primitive.type === "throw") return primitive;
+        const search = toString(primitive.value, loc, context.realm);
+        if (search.type === "throw") return search;
+        const position = integerArgument(args.length < 2 ? UNDEFINED : args[1], context, loc);
+        if (position.type === "throw") return position;
+        const start = Math.min(Math.max(position.value, 0), stringLength(text.value));
+        return normal({ kind: "number", value: stringIndexOf(text.value, search.value, start) });
+    });
     realm.registerBuiltin(realm.stringPrototype, "charAt", 1, (receiver, args, context, loc) => {
         const text = stringReceiver(receiver, context, loc);
         if (text.type === "throw") return text;

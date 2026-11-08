@@ -1,5 +1,17 @@
 # String indexing and slicing
 
+TS-069 adds generic `indexOf`. It converts the receiver, search value and position
+in that order, with string/string/number hints. Omitted search values become
+"undefined". Positions truncate and clamp to the string bounds; an empty needle
+matches at that clamped position, including the end of an empty string. The
+string backend searches UTF-16 code units, including lone surrogates and positions
+within surrogate pairs. Conversion failures stop later effects.
+
+The implementation follows [String.prototype.indexOf](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.indexof).
+The C++ string builtin was consulted; its omitted-argument and empty-needle
+shortcuts are not preserved. Tests cover conversions, metadata, primitives,
+positions, UTF-16 and resource limits. Native acceptance pending.
+
 TS-054 adds generic `charAt`, `charCodeAt` and `slice`. They reject nullish
 receivers, convert the receiver with a string hint, then convert positions with
 a number hint. Conversion hooks run through the existing operation context;

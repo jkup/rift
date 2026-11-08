@@ -37,7 +37,7 @@ string properties; see [enumeration behavior](docs/object-enumeration.md).
 `Object.defineProperty` and `Object.getOwnPropertyDescriptor` expose data and
 accessor attributes; see [descriptor reflection](docs/property-descriptor-reflection.md).
 
-Strings support `charAt`, `charCodeAt` and `slice` with UTF-16 indexing; see
+Strings support `indexOf`, `charAt`, `charCodeAt` and `slice` with UTF-16 indexing; see
 [string methods](docs/string-methods.md).
 
 Boolean calls and construction preserve primitive versus boxed values; see

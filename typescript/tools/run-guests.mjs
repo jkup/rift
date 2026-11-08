@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["string-index-basic","console.log('abca'.indexOf('a'),'abca'.indexOf('a',1),'abca'.indexOf('x'),'abca'.indexOf('bc'));",0,"","0 3 -1 1\n"],
+    ["string-index-empty","console.log('abc'.indexOf(''),'abc'.indexOf('',99),''.indexOf(''),''.indexOf('x'),'abc'.indexOf('c',Infinity));",0,"","0 3 0 -1 -1\n"],
+    ["string-index-position","console.log('abca'.indexOf('a',NaN),'abca'.indexOf('a',-Infinity),'abca'.indexOf('a',1.9),'abca'.indexOf('a',-1.9),'abca'.indexOf('a',undefined));",0,"","0 0 3 0 0\n"],
+    ["string-index-missing","console.log('undefined'.indexOf(),'null'.indexOf(null),'false'.indexOf(false));",0,"","0 0 0\n"],
+    ["string-index-generic","let f=String.prototype.indexOf; console.log(f.call(12321,2),f.call(true,'r'),new String('abc').indexOf('b'));",0,"","1 1 1\n"],
+    ["string-index-coercion","let s='';let o={toString:function(){s+='R';return 'abca';}};let q={toString:function(){s+='S';return 'a';}};let p={valueOf:function(){s+='P';return 1;}};console.log(String.prototype.indexOf.call(o,q,p),s);",0,"","3 RSP\n"],
+    ["string-index-utf16","let s=`A\\u{1F600}Z`; console.log(s.indexOf('Z'),s.indexOf(`\\uDE00`),s.indexOf(`\\uD83D`),s.indexOf('',Infinity));",0,"","3 2 1 4\n"],
+    ["string-index-metadata","console.log(String.prototype.indexOf.length,Object.keys(String.prototype).length); let n=0;try{String.prototype.indexOf.call(null,{toString:function(){n++;return '';}});}catch(e){console.log(e.name,n);}",0,"","1 0\nTypeError 0\n"],
     ["template-basic","let n=3; console.log(`hello ${n+1}`,`empty:${''}`,`${true}:${null}:${undefined}`);",0,"","hello 4 empty: true:null:undefined\n"],
     ["template-nested","console.log(`a${`b${{x:3}.x}c`}d`);",0,"","ab3cd\n"],
     ["template-order","let s=''; function v(n){s+=n;return {toString:function(){s+='s';return n;}};} console.log(`${v(1)}${v(2)}`,s);",0,"","12 1s2s\n"],
