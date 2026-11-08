@@ -80,4 +80,4 @@ The C++ `src/builtins/array/array_mutators.cpp` implementation was consulted.
 Its hole handling and skipped length writes for empty operations are not copied.
 Tests check exact operation order, holes, inherited values, readonly and fixed
 properties, partial failures, getter mutations, overflow and budget interruption.
-Native and regression acceptance is pending.
+Both guest suites pass 390/390, full tooling 290/290, runner30 and probes10 pass. All 80 native entries pass build and static coverage in one invocation; mutation driver4825/4825 static. All 225 C++ fixture results agree across hosts: 56 reported successes, 22 unchecked completions, 67 parse errors, 78 runtime errors and two reported failures. One file gains reported success and all 77 previously completed files retain their outcomes. Logs: build/array-front-*.
