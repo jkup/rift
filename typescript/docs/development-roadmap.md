@@ -24,6 +24,13 @@ provides a fixed 225-file diagnostic selection in both hosts. Use its concrete
 failures alongside semantic tests to prioritize work; existing C++ runner counts
 are not an authoritative conformance score.
 
+TS-066 baseline review: the 67 parse failures include nine first failures on
+template literals, six on `for…of`, five on arrows, five on binding patterns,
+five on unsupported non-strict block function planning, and four on classes.
+After the current array-method gaps, inspect template literal parsing and
+evaluation as a bounded grammar task. These are first-failure counts, not
+predicted passes: each file may expose further unsupported behavior afterward.
+
 ## Findings and next work
 
 Completed in this catch-up: ordinary input-test invocation, the five tracked report
