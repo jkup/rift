@@ -6,6 +6,7 @@ import { registerObjectEnumeration } from "./object-enumeration.js";
 import { registerObjectDescriptors } from "./object-descriptors.js";
 import { registerObjectIntegrity } from "./object-integrity.js";
 import { registerObjectPrototypes } from "./object-prototypes.js";
+import { registerObjectFromEntries } from "./object-from-entries.js";
 import { GuestArray } from "../array-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
@@ -57,6 +58,7 @@ export function registerObject(realm: Realm): void {
         return normal({kind: "boolean", value: descriptor !== undefined && descriptor.enumerable});
     });
     registerObjectPrototypes(realm, constructor);
+    registerObjectFromEntries(realm, constructor);
     realm.defineScriptGlobal("Object", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
 

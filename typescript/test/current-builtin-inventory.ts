@@ -27,6 +27,7 @@ export const objectMethods = [
     {name: "is", length: 2},
     {name: "getPrototypeOf", length: 1},
     {name: "setPrototypeOf", length: 2},
+    {name: "fromEntries", length: 1},
 ];
 
 export function objectConstructorKeys(): string[] {
