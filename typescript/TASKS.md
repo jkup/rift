@@ -3267,3 +3267,9 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 3f1e6c48, impleme
 
 Probe Unicode default case conversion across Node/native with literal expectations, expansions, contextual sigma, supplementary characters and lone surrogates. Expose Script toLowerCase/toUpperCase only if backend semantics are adequate; otherwise record a concrete follow-up and preserve the current surface.
 
+## TS-094 — Iterative Array flattening
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 0de05146.
+
+Implement Script flat/flatMap using an explicit traversal stack, captured lengths, sparse Has/Get, array-only flattening, top-level mapping, default species and bounded deep/cyclic work. Keep custom species explicit, update closed capability codecs and validate both hosts and fixed fixtures.
+

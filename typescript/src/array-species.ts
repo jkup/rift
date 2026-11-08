@@ -5,9 +5,9 @@ import { wellKnownSpecies } from "./symbols.js";
 
 import { createArrayWithLength, type ArrayCompletion } from "./array-create.js";
 
-export function createDefaultSpeciesArray(object: GuestObject, length: number, method: "map" | "splice" | "slice" | "concat" | "filter", context: OperationContext, loc: Location): ArrayCompletion {
+export function createDefaultSpeciesArray(object: GuestObject, length: number, method: "map" | "splice" | "slice" | "concat" | "filter" | "flat" | "flatMap", context: OperationContext, loc: Location): ArrayCompletion {
     const input: Value = { kind: "object", object };
-    const capability = `runtime.${method}-species` as const;
+    const capability = method === "flatMap" ? "runtime.flatmap-species" : `runtime.${method}-species` as const;
     if (object instanceof GuestArray) {
         const constructor = object.internalGet("constructor", input, context, loc);
         if (constructor.type === "throw") return constructor;

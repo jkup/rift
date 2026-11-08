@@ -1,3 +1,4 @@
+import { registerArrayFlat } from "./builtins/array-flat.js";
 import { registerStringSplit } from "./builtins/string-split.js";
 import { registerArraySort, registerArrayToSorted } from "./builtins/array-sort.js";
 import { registerArraySlice, registerArrayConcat, registerArrayToReversed, registerArrayToSpliced, registerArrayWith } from "./builtins/array-copy.js";
@@ -86,6 +87,7 @@ export class Realm {
             registerArrayToSorted(this);
             registerArrayToSpliced(this);
             registerArrayWith(this);
+            registerArrayFlat(this);
         }
         registerArraySearch(this);
         registerArrayPredicates(this);
