@@ -3341,6 +3341,6 @@ Implement Symbol.for/keyFor with explicit runtime-module shared symbol interning
 
 ## TS-106 — Complete well-known symbol identities
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 03a35d0a.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 03a35d0a, implementation 7caab3e7. Both guest suites pass 592/592, tooling 290/290, runner 31/31 and all ten probes pass. All 105 native entries pass fresh build and static coverage checks; well-known-symbol driver 6451/6451 static. All 225 complete fixture results agree: 84 reported successes, 37 unchecked completions, 53 parse errors, 50 runtime errors and one reported failure. symbol-wellknown.js now completes with ten true values without recognized check markers; all 120 previous completions remain. Reports: build/legacy-suite-node-Cyqawt/report.json and build/legacy-suite-native-c9RsWH/report.json. Logs: build/symbol-well-known-*.
 
 Add the nine missing well-known Symbol identities and immutable public properties, preserving existing identities, registry separation and cross-Realm sharing. Validate all fifteen names/descriptions/flags and ordinary property-key behavior. Protocol consumers such as iterators, RegExp and disposal remain separate tasks. Own symbols.ts, Symbol registration, current inventory, dedicated tests/manifests and scope documentation.
