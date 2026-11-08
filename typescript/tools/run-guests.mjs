@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["enumeration-order", "let o={b:4,10:10,2:2,a:1}; console.log(Object.keys(o).join(','),Object.values(o).join(','));", 0, "", "2,10,b,a 2,10,4,1\n"],
+    ["enumeration-entries", "let o={x:{},y:undefined}; let a=Object.entries(o); console.log(Array.isArray(a),Array.isArray(a[0]),a.length,a[0][0],a[0][1]===o.x,a[1][0],a[1].length,1 in a[1]);", 0, "", "true true 2 x true y 2 true\n"],
+    ["enumeration-strings", "console.log(Object.keys('abc').join(','),Object.values('abc').join(','),Object.entries('ab').join(';'));", 0, "", "0,1,2 a,b,c 0,a;1,b\n"],
+    ["enumeration-array-holes", "let a=[,undefined,3]; a.x=4; console.log(Object.keys(a).join(','),Object.values(a).join(','));", 0, "", "1,2,x ,3,4\n"],
+    ["enumeration-primitives", "console.log(Object.keys(3).length,Object.values(true).length,Object.entries('').length);", 0, "", "0 0 0\n"],
+    ["enumeration-nullish", "try{Object.keys();}catch(e){console.log(e.name);} try{Object.values(null);}catch(e){console.log(e.name);} try{Object.entries(undefined);}catch(e){console.log(e.name);}", 0, "", "TypeError\nTypeError\nTypeError\n"],
+    ["enumeration-fresh", "let a=Object.entries({x:1,y:2}); console.log(a!==Object.entries({x:1,y:2}),a[0]!==a[1],Object.keys({})!==Object.keys({}),Object.keys(Object).length);", 0, "", "true true true 0\n"],
+    ["enumeration-metadata", "console.log(Object.keys.name,Object.keys.length,Object.values.name,Object.values.length,Object.entries.name,Object.entries.length);", 0, "", "keys 1 values 1 entries 1\n"],
     ["own-properties", "let o={x:undefined}; console.log(o.hasOwnProperty('x'),Object.hasOwn(o,'x'),o.hasOwnProperty('toString'),Object.hasOwn(o,'missing'));", 0, "", "true true false false\n"],
     ["own-holes", "let a=[,undefined]; console.log(a.hasOwnProperty(0),Object.hasOwn(a,1),a.hasOwnProperty('length'),Object.hasOwn(a,'push'));", 0, "", "false true true false\n"],
     ["own-strings", "console.log('abc'.hasOwnProperty(1),Object.hasOwn('abc','length'),Object.hasOwn('abc',3));", 0, "", "true true false\n"],
@@ -332,6 +340,7 @@ executeDriver("string-methods", { stdout: "string methods passed\n" });
 executeDriver("boolean-constructor", { stdout: "Boolean constructor passed\n" });
 executeDriver("array-constructor", { stdout: "Array constructor passed\n" });
 executeDriver("own-property-predicates", { stdout: "Own-property predicates passed\n" });
+executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });

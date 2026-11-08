@@ -2,6 +2,7 @@ import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
 import { GuestError, normal, UNDEFINED, type Value } from "../runtime.js";
 import { toPropertyKey } from "../conversion.js";
+import { registerObjectEnumeration } from "./object-enumeration.js";
 import { GuestArray } from "../array-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
@@ -34,6 +35,7 @@ export function registerObject(realm: Realm): void {
         return normal({ kind: "boolean", value: object.value.getOwnProperty(key.value) !== undefined });
     });
     realm.objectPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+    registerObjectEnumeration(realm, constructor);
     realm.registerBuiltin(realm.objectPrototype, "hasOwnProperty", 1, (receiver, args, context, loc) => {
         const key = toPropertyKey(args.length === 0 ? UNDEFINED : args[0], context, loc);
         if (key.type === "throw") return key;

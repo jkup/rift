@@ -3062,3 +3062,9 @@ Add Array call/construct semantics and Array.isArray in Script Realms using exis
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `355ee8a0`, implementation `81dce0b6`. Both guest suites pass 355/355, full tooling 290/290, runner30 and probes10 pass. All 78 native entries pass build and static coverage in one invocation; predicate driver4363/4363 static. All 225 C++ fixture results agree across hosts: 51 reported successes, 22 unchecked completions, 67 parse errors, 84 runtime errors and one reported failure. Both hasOwnProperty fixtures now complete, without regressing the 71 previously completed files. Logs: build/own-property-*.
 
 Add Script Object.prototype.hasOwnProperty and Object.hasOwn using existing key conversion, boxing and own descriptors. Preserve their different coercion order, symbols, string virtual properties, sparse holes and abrupt completions without invoking property getters. Check metadata and Realm ownership, both execution hosts, native static coverage and the fixed C++ fixture selection.
+
+## TS-060 — Enumerable own properties
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `09d0a3e4`.
+
+Add Script Object.keys, Object.values and Object.entries with shared enumeration of own enumerable string properties. Preserve snapshot key order, live descriptor checks, getter effects and abrupt completions, primitive boxing, fresh Realm-owned result arrays and resource bounds. Keep incorrect C++ string-boxing expectations unchanged and document disagreements. Validate both hosts and native static coverage.

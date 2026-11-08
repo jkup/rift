@@ -54,6 +54,9 @@ recognizes foreign intrinsic Array constructors by identity.
 TS-059 adds `Object.prototype.hasOwnProperty` and `Object.hasOwn`, preserving
 their distinct conversion order; see [own-property predicates](own-property-predicates.md).
 
+TS-060 adds `Object.keys`, `Object.values` and `Object.entries` with ordered
+enumeration and live descriptor checks; see [Object enumeration](object-enumeration.md).
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a

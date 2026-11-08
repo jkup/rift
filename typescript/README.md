@@ -23,6 +23,9 @@ for scope and validation.
 Own-property checks support `Object.hasOwn` and `Object.prototype.hasOwnProperty`;
 see [property predicates](docs/own-property-predicates.md).
 
+`Object.keys`, `Object.values` and `Object.entries` enumerate own enumerable
+string properties; see [enumeration behavior](docs/object-enumeration.md).
+
 Strings support `charAt`, `charCodeAt` and `slice` with UTF-16 indexing; see
 [string methods](docs/string-methods.md).
 
