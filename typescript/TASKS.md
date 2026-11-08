@@ -3002,3 +3002,9 @@ Include the existing exact radix oracle checks in ordinary tooling validation an
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `2347d674`. Both hosts pass 284/284 with no skips. Complete result objects match the saved pre-refactor results, including order, expected output, stdout/stderr and process status. The runner is 67 lines shorter; logs: build/guest-ts049-node.log and build/guest-ts049-native.log.
 
 Consolidate repeated Node/native executable selection in the guest runner. Preserve case order, inputs, expected output and process assertions. Compare complete results before and after in both hosts; no engine changes or native rebuild required.
+
+## TS-050 — Generic Array reverse
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `da6cec84`.
+
+Implement Array.prototype.reverse with captured array-like length, inherited and missing properties, specified Has/Get/Set/Delete order, strict failures, retained partial mutations and iteration budgets. Extend existing mutation and CLI tests, verify both hosts and fresh static native coverage, and update feature scope.

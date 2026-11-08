@@ -1,4 +1,4 @@
-# Array push and pop
+# Array mutation
 
 TS-039 adds `Array.prototype.push` and `pop` to the shared Realm bootstrap.
 Both methods are generic: they use ordinary guest Get, Set and Delete operations,
@@ -33,3 +33,25 @@ also rebuilt separately: 4132/4132 statements compile statically. Logs are under
 
 Guest accessor syntax, reflection, proxies and other missing Array methods
 remain outside this change.
+
+## Reverse (TS-050)
+
+`Array.prototype.reverse` is generic and returns its boxed receiver. It captures
+length once, visits each outer pair and leaves the middle element untouched.
+Presence checks distinguish holes from present `undefined` values and include
+inherited properties. Each pair reads the lower element before checking the
+upper element, then performs strict writes and deletions in specification order.
+It never writes length. Earlier mutations survive a later failure.
+
+The implementation follows
+[ECMA-262 reverse](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.reverse),
+with the corresponding engine262 algorithm at the revision linked above checked
+for operation order. Rift charges its execution budget before each pair, even
+when both properties are absent. No dense-array shortcut bypasses observable
+guest operations.
+
+The mutation driver checks all four presence combinations, inherited values,
+accessor receivers, length changes during a getter, strict write/delete failures,
+partial mutations and interruption between pairs. CLI tests cover dense and
+sparse arrays, generic receivers, coercion, primitive boxing and method metadata.
+Native acceptance is pending the fresh full build.

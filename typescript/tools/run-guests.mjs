@@ -91,13 +91,17 @@ for (const [name, source, status, errorContains, stdout = ""] of generated) {
     writeFileSync(join(root, file), source);
     cases.push({ file, status, errorContains, stdout });
 }
-// Write actual line terminators into runtime files, rather than guest escapes.
-// All five forms must agree on comment boundaries and source coordinates.
 function lineCase(name, source, expected) {
     const file = "build/guest-fixtures/" + name + ".js";
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("array-reverse-dense", "let a=[1,2,3,4]; console.log(a.reverse()===a,a.join(),a.length); console.log([1,2,3].reverse().join(),[].reverse().length);", {stdout:"true 4,3,2,1 4\n3,2,1 0\n"});
+lineCase("array-reverse-sparse", "let a=[,7,,undefined]; a.reverse(); console.log(a.join(),0 in a,1 in a,2 in a,3 in a);", {stdout:",,7, true false true false\n"});
+lineCase("array-reverse-generic", "let o={length:3.9,'0':'a','2':'b'}; console.log([].reverse.call(o)===o,o[0],o[2],o.length);", {stdout:"true b a 3.9\n"});
+lineCase("array-reverse-coercion", "let o={'0':7,'1':11,length:{valueOf:function(){console.log('length');return 2;}}}; [].reverse.call(o); console.log(o[0],o[1]);", {stdout:"length\n11 7\n"});
+lineCase("array-reverse-primitives", "console.log([].reverse.call('a').valueOf(),[].reverse.call(7).valueOf()); try{[].reverse.call('ab');}catch(e){console.log(e.name);} try{[].reverse.call(null);}catch(e){console.log(e.name);} try{[].reverse.call(undefined);}catch(e){console.log(e.name);}", {stdout:"a 7\nTypeError\nTypeError\nTypeError\n"});
+lineCase("array-reverse-empty", "let o={length:-1,'0':7}; [].reverse.call(o); console.log(o.length,o[0],[].reverse.name,[].reverse.length);", {stdout:"-1 7 reverse 0\n"});
 lineCase("array-search-equality", "let a=[NaN,0,undefined,'7',7]; console.log(a.indexOf(NaN),a.includes(NaN),a.indexOf(-0),a.includes(-0),a.indexOf(7),a.indexOf('7'));", {stdout:"-1 true 1 true 4 3\n"});
 lineCase("array-search-identity", "let x={}; let y={}; let a=[x]; console.log(a.indexOf(x),a.includes(y),a.indexOf(y));", {stdout:"0 false -1\n"});
 lineCase("array-search-offset", "let a=[7,11,7]; console.log(a.indexOf(7,1),a.indexOf(7,-2),a.indexOf(7,1.9),a.includes(11,-1),a.includes(7,Infinity),a.indexOf(7,-Infinity),a.indexOf(7,NaN));", {stdout:"2 2 2 false false 0 0\n"});
@@ -193,6 +197,8 @@ for (const [name, source, expected] of [
 ]) {
     lineCase("conditional-" + name, source, expected);
 }
+// Write actual line terminators into runtime files, rather than guest escapes.
+// All five forms must agree on comment boundaries and source coordinates.
 for (const [name, separator] of [["lf", "\n"], ["cr", "\r"], ["crlf", "\r\n"], ["ls", "\u2028"], ["ps", "\u2029"]]) {
     lineCase(name + "-line-comment", "console.log(1); // comment" + separator + "console.log(2);", { stdout: "1\n2\n" });
     lineCase(name + "-whitespace", "console.log(1);" + separator + "console.log(2);", { stdout: "1\n2\n" });

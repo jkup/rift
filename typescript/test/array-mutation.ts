@@ -12,6 +12,10 @@ function data(object: GuestObject, key: string, value: number, writable = true, 
 }
 class Observed extends GuestObject {
     trace = "";
+    internalHasProperty(key: PropertyKey, loc: Location): InternalBooleanCompletion {
+        this.trace += "has:" + key + ";";
+        return super.internalHasProperty(key, loc);
+    }
     internalGet(key: PropertyKey, receiver: Value, context: OperationContext, loc: Location): ValueCompletion {
         this.trace += "get:" + key + ";";
         return super.internalGet(key, receiver, context, loc);
@@ -143,5 +147,90 @@ for (const key of ["length", "0"]) {
         }
     }
     check(reachedPartialWrite, "push checks budget between writes");
+}
+for (const lower of [false, true]) for (const upper of [false, true]) {
+    const { realm, target } = fixture();
+    data(target, "length", 3, false);
+    if (lower) data(target, "0", 7);
+    if (upper) data(target, "2", 11);
+    result(run(realm, "[].reverse.call(target);"), obj(target));
+    const reads = "get:length;has:0;" + (lower ? "get:0;" : "") + "has:2;" + (upper ? "get:2;" : "");
+    const writes = lower && upper ? "set:0;set:2;" : upper ? "set:0;delete:2;" : lower ? "delete:0;set:2;" : "";
+    check(target.trace === reads + writes, "reverse presence order");
+    if (upper) own(target, "0", 11);
+    else check(target.getOwnProperty("0") === undefined, "reverse lower hole");
+    if (lower) own(target, "2", 7);
+    else check(target.getOwnProperty("2") === undefined, "reverse upper hole");
+    own(target, "length", 3);
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 2); data(realm.objectPrototype, "0", 7); data(target, "1", 11);
+    result(run(realm, "[].reverse.call(target);"), obj(target));
+    own(target, "0", 11); own(target, "1", 7); own(realm.objectPrototype, "0", 7);
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 2);
+    const getter = realm.createBuiltin("getLower", 0, (receiver, _args, _context, _loc): ValueCompletion => {
+        check(receiver.kind === "object" && receiver.object === target, "reverse getter receiver");
+        data(target, "1", 11); data(target, "length", 0);
+        return { type: "normal", value: num(7) };
+    });
+    const setter = realm.createBuiltin("setLower", 1, (receiver, args, _context, _loc): ValueCompletion => {
+        check(receiver.kind === "object" && receiver.object === target && sameValue(args[0], num(11)), "reverse setter receiver/value");
+        return { type: "normal", value: num(99) };
+    });
+    target.bootstrapDefine("0", { get: obj(getter), set: obj(setter), configurable: true });
+    result(run(realm, "[].reverse.call(target);"), obj(target));
+    check(target.trace === "get:length;has:0;get:0;has:1;get:1;set:0;set:1;", "reverse reads lower before checking upper");
+    own(target, "1", 7); own(target, "length", 0);
+}
+for (const failure of ["lower-write", "upper-write", "upper-delete", "lower-delete", "missing-upper-write"]) {
+    const { realm, target } = fixture();
+    data(target, "length", 2);
+    if (failure !== "upper-delete") data(target, "0", 7, failure !== "lower-write", failure !== "lower-delete");
+    if (failure === "lower-write" || failure === "upper-write" || failure === "upper-delete") {
+        data(target, "1", 11, failure !== "upper-write", failure !== "upper-delete");
+    }
+    if (failure === "missing-upper-write") target.preventExtensions();
+    error(run(realm, "[].reverse.call(target);"));
+    if (failure === "upper-write") { own(target, "0", 11); own(target, "1", 11); }
+    else if (failure === "upper-delete") { own(target, "0", 11); own(target, "1", 11); }
+    else if (failure === "missing-upper-write") {
+        check(target.getOwnProperty("0") === undefined && target.getOwnProperty("1") === undefined, "reverse deletion survives failed write");
+    } else own(target, "0", 7);
+    own(target, "length", 2);
+    if (failure === "lower-write") check(!target.trace.includes("set:1;"), "failed lower write stops upper write");
+    if (failure === "lower-delete") check(!target.trace.includes("set:1;"), "failed lower delete stops upper write");
+}
+for (const key of ["length", "0", "1"]) {
+    const { realm, target } = fixture();
+    data(target, "length", 2); data(target, "0", 7); data(target, "1", 11);
+    const getter = realm.createBuiltin("throwingGet", 0, (_receiver, _args, _context, _loc): ValueCompletion => {
+        throw new Error("reverse getter sentinel");
+    });
+    target.bootstrapDefine(key, { get: obj(getter), configurable: true });
+    let caught = false;
+    try { run(realm, "[].reverse.call(target);"); }
+    catch (failure) { caught = failure instanceof Error && failure.message === "reverse getter sentinel"; }
+    check(caught && !target.trace.includes("set:") && !target.trace.includes("delete:"), "reverse getter failure stops mutation");
+}
+{
+    let interrupted = false;
+    for (let steps = 1; steps < 80; steps++) {
+        const { realm, target } = fixture();
+        data(target, "length", 6); data(target, "0", 7); data(target, "5", 11); data(target, "1", 17);
+        const prepared = prepareBoundedScript({ id: "reverse-budget", text: "[].reverse.call(target);" }, realm);
+        if (prepared.kind !== "ready") throw new Error("reverse budget prepare");
+        const outcome = evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record).completion;
+        if (outcome.type === "throw" && target.trace.includes("set:5;") && !target.trace.includes("has:1;")) {
+            check(outcome.origin.kind === "resource-limit", "reverse budget classification");
+            own(target, "0", 11); own(target, "5", 7); own(target, "1", 17);
+            interrupted = true;
+            break;
+        }
+    }
+    check(interrupted, "reverse checks budget between pairs");
 }
 console.log("array mutation passed");

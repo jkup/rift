@@ -2,7 +2,15 @@ import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
 import { lengthOfArrayLike } from "../array-like.js";
 import { numberToString } from "../conversion.js";
-import { languageFailure, normal, UNDEFINED } from "../runtime.js";
+import { languageFailure, normal, UNDEFINED, type Value, type GuestObject, type OperationContext, type ValueCompletion } from "../runtime.js";
+import type { Location } from "../syntax.js";
+
+function deleteProperty(object: GuestObject, key: string, context: OperationContext, loc: Location): ValueCompletion {
+    const deleted = object.internalDelete(key);
+    if (deleted.type === "throw") return deleted;
+    if (!deleted.value) return languageFailure(context.realm, "TypeError", "property is not configurable: " + key, loc);
+    return normal(UNDEFINED);
+}
 
 export function registerArrayMutators(realm: Realm): void {
     realm.registerBuiltin(realm.arrayPrototype, "push", 1, (receiver, args, context, loc) => {
@@ -43,12 +51,59 @@ export function registerArrayMutators(realm: Realm): void {
         const key = numberToString(next);
         const element = boxed.value.internalGet(key, { kind: "object", object: boxed.value }, context, loc);
         if (element.type === "throw") return element;
-        const deleted = boxed.value.internalDelete(key);
+        const deleted = deleteProperty(boxed.value, key, context, loc);
         if (deleted.type === "throw") return deleted;
-        if (!deleted.value) {
-            return languageFailure(context.realm, "TypeError", "property is not configurable: " + key, loc);
-        }
         const written = boxed.value.set("length", { kind: "number", value: next }, context, loc);
         return written.type === "throw" ? written : element;
+    });
+    realm.registerBuiltin(realm.arrayPrototype, "reverse", 0, (receiver, _args, context, loc) => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const object = boxed.value;
+        const result: Value = { kind: "object", object };
+        const length = lengthOfArrayLike(object, context, loc);
+        if (length.type === "throw") return length;
+        const middle = Math.floor(length.value / 2);
+        for (let lower = 0; lower < middle; lower++) {
+            const iteration = context.tick(loc);
+            if (iteration.type === "throw") return iteration;
+            const lowerKey = numberToString(lower);
+            const upperKey = numberToString(length.value - lower - 1);
+            const lowerExists = object.internalHasProperty(lowerKey, loc);
+            if (lowerExists.type === "throw") return lowerExists;
+            let lowerValue: Value = UNDEFINED;
+            if (lowerExists.value) {
+                const read = object.internalGet(lowerKey, result, context, loc);
+                if (read.type === "throw") return read;
+                lowerValue = read.value;
+            }
+            const upperExists = object.internalHasProperty(upperKey, loc);
+            if (upperExists.type === "throw") return upperExists;
+            let upperValue: Value = UNDEFINED;
+            if (upperExists.value) {
+                const read = object.internalGet(upperKey, result, context, loc);
+                if (read.type === "throw") return read;
+                upperValue = read.value;
+            }
+            if (lowerExists.value && upperExists.value) {
+                const lowerWritten = object.set(lowerKey, upperValue, context, loc);
+                if (lowerWritten.type === "throw") return lowerWritten;
+                const upperWritten = object.set(upperKey, lowerValue, context, loc);
+                if (upperWritten.type === "throw") return upperWritten;
+            } else if (upperExists.value) {
+                const written = object.set(lowerKey, upperValue, context, loc);
+                if (written.type === "throw") return written;
+                const deleted = deleteProperty(object, upperKey, context, loc);
+                if (deleted.type === "throw") return deleted;
+            } else if (lowerExists.value) {
+                const deleted = deleteProperty(object, lowerKey, context, loc);
+                if (deleted.type === "throw") return deleted;
+                const written = object.set(upperKey, lowerValue, context, loc);
+                if (written.type === "throw") return written;
+            }
+        }
+        return normal(result);
     });
 }
