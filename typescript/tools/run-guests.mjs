@@ -96,6 +96,14 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("array-predicate-basic", "function positive(x){return x>0;} console.log([1,2,3].every(positive),[1,-2,3].every(positive),[-1,-2].some(positive),[-1,2].some(positive),[].every(positive),[].some(positive));", {stdout:"true false false true true false\n"});
+lineCase("array-predicate-short-circuit", "let a=[]; console.log([1,2,3].every(function(x){a.push(x);return x<2;}),a.join()); a=[]; console.log([1,2,3].some(function(x){a.push(x);return x===2;}),a.join());", {stdout:"false 1,2\ntrue 1,2\n"});
+lineCase("array-predicate-holes", "let a=[,undefined,,7]; let seen=[]; console.log(a.every(function(x,i,o){seen.push(i);return o===a;}),seen.join()); seen=[]; console.log(a.some(function(x,i){seen.push(i);return x===7;}),seen.join());", {stdout:"true 1,3\ntrue 1,3\n"});
+lineCase("array-predicate-this", "let marker={}; let global=this; console.log([1].every(function(){'use strict';return this===marker;},marker),[1].some(function(){'use strict';return this===undefined;}),[1].every(function(){return this===global;},null),[1].some(function(){'use strict';return this===null;},null));", {stdout:"true true true true\n"});
+lineCase("array-predicate-generic", "let seen=''; console.log([].every.call('ab',function(x,i,o){seen+=x+i;return o.valueOf()==='ab';}),seen,[].some.call(7,function(){throw 'no';}));", {stdout:"true a0b1 false\n"});
+lineCase("array-predicate-truthiness", "let o={valueOf:function(){throw 'no';}}; console.log([0].every(function(){return o;}),[0].some(function(){return o;}),[0].every(function(){return 0;}),[0].some(function(){return '';}));", {stdout:"true true false false\n"});
+lineCase("array-predicate-errors", "try{[].every();}catch(e){console.log(e.name);} try{[].some(7);}catch(e){console.log(e.name);} try{[].every.call(null,function(){});}catch(e){console.log(e.name);} try{[1,2].some(function(){throw 'sentinel';});}catch(e){console.log(e);}", {stdout:"TypeError\nTypeError\nTypeError\nsentinel\n"});
+lineCase("array-predicate-metadata", "console.log([].every.name,[].every.length,[].some.name,[].some.length);", {stdout:"every 1 some 1\n"});
 lineCase("array-reverse-dense", "let a=[1,2,3,4]; console.log(a.reverse()===a,a.join(),a.length); console.log([1,2,3].reverse().join(),[].reverse().length);", {stdout:"true 4,3,2,1 4\n3,2,1 0\n"});
 lineCase("array-reverse-sparse", "let a=[,7,,undefined]; a.reverse(); console.log(a.join(),0 in a,1 in a,2 in a,3 in a);", {stdout:",,7, true false true false\n"});
 lineCase("array-reverse-generic", "let o={length:3.9,'0':'a','2':'b'}; console.log([].reverse.call(o)===o,o[0],o[2],o.length);", {stdout:"true b a 3.9\n"});
@@ -268,6 +276,7 @@ for (const [name, text] of [["seed", bootstrapRows], ["other", bootstrapRows.rep
     writeFileSync(file, text);
     executeDriver("script-realm-bootstrap", { stdout: bootstrapExpected }, [file], "script-realm-bootstrap-" + name);
 }
+executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });
 executeDriver("object-descriptors", { stdout: "object descriptors passed\n" });

@@ -11,9 +11,10 @@ unless they contain a `"use strict"` directive. Unsupported syntax, including
 `const`, arrows and automatic semicolon insertion, still fails explicitly.
 See the [current development roadmap](docs/development-roadmap.md).
 
-Array methods include `join`, `toString`, `push`, `pop`, `reverse`, `indexOf`
-and `includes`; see [mutation behavior](docs/array-mutation.md) and
-[search behavior](docs/array-search.md) for scope and validation.
+Array methods include `join`, `toString`, `push`, `pop`, `reverse`, `indexOf`,
+`includes`, `every` and `some`; see [mutation behavior](docs/array-mutation.md),
+[search behavior](docs/array-search.md) and [predicate iteration](docs/array-predicate.md)
+for scope and validation.
 
 ## Build and run
 
