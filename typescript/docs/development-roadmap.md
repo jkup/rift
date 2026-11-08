@@ -407,6 +407,22 @@ ErrorName consumers and closed observation contracts before extending public
 constructors; preserve foreign-Realm errors, cause/message order and all existing
 diagnostic classifications.
 
+Read-only audit: runtime ScriptConstructor.name and Diagnostic.name are strings;
+the closed syntax-error constructor remains SyntaxError. ErrorName currently
+governs intrinsic allocation/bootstrap only. Update the current Error constructor
+key expectations in harness-errors-a/b for isError, while retaining historical
+observation literals and separate syntax/unsupported classifications.
+
+### Syntax follow-up after the error family
+
+At the Set-iterator checkpoint, six of the 53 fixed parse failures first stop at
+for-of. Plan that next using the established synchronous iterator protocol.
+Inspect lexical per-iteration environments and declaration planning before
+changing parser admission. General cleanup must distinguish normal break/return
+from guest throws, and iterator step faults must retain their separate boundary.
+Keep async iteration and destructuring explicit separate capabilities. These are
+first blockers, not a prediction that all six fixtures will complete afterward.
+
 ### TS-112 checkpoint
 
 Both guest suites pass 598/598 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 111 native entries pass fresh static-only builds and separate coverage gates; Map iterator driver 6845/6845 static. Live mutation/exhaustion, captured-Realm results/pairs, next-Realm completion and bounded deleted-node traversal pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure. test-object-new-methods.js now completes with 32 true results and no recognized check markers; all 121 previous completions remain. Reports: build/legacy-suite-node-11V5PM/report.json and build/legacy-suite-native-Av1AdA/report.json. Logs: build/map-iterator-*.
@@ -426,3 +442,7 @@ Both guest suites pass 601/601 with no skips, tooling 290/290, runner 31/31 and 
 ### TS-116 checkpoint
 
 Both guest suites pass 602/602 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. Native acceptance covers 114 initial passes plus a successful isolated object-descriptors retry after a Zig cache file-open failure; all 115 entries pass static coverage, Set driver 7028/7028. Initial focused test syntax used unsupported comma-separated declarations and was corrected before native builds. Identity, saved adders, cleanup, live forEach, brands, foreign Realms and bounds pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 39 unchecked completions, 53 parse errors, 48 runtime errors and one reported failure; all 123 prior completions remain. The Set fixture passes 33 checks before missing values(). Reports: build/legacy-suite-node-VMESjM/report.json and build/legacy-suite-native-BCxurx/report.json. Initial/retry evidence: build/set-object-native-initial-results.json and build/set-object-native-retry-results.json. Logs: build/set-object-*.
+
+### TS-117 checkpoint
+
+Both guest suites pass 603/603 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 116 native entries pass fresh static-only builds and separate coverage gates in one run; Set iterator driver 7089/7089 static. Live mutation/exhaustion, exact aliases, fresh pairs, captured-Realm results and bounded deleted-node traversal pass on both hosts. Typechecking initially caught a private field shadowing GuestObject.set; it was renamed collection before validation. All 225 complete fixture results agree: 85 reported successes, 39 unchecked completions, 53 parse errors, 47 runtime errors and one reported failure. set-test.js now reports all 56 checks passing; all 123 prior completions remain. Reports: build/legacy-suite-node-iJju8K/report.json and build/legacy-suite-native-j97sh8/report.json. Logs: build/set-iterator-*.
