@@ -17,4 +17,4 @@ coercion and unscaled summation for three or more arguments are not copied.
 Tests cover exact triples, very large/small inputs, accumulated small terms,
 special values, coercion order and errors, Realm ownership, metadata and budgets.
 
-Acceptance pending.
+Both guest suites pass 533/533, full tooling290/290, runner30 and probes10 pass. All 89 native entries pass build and static coverage in one invocation; Math driver5235/5235 static. All 225 C++ fixture results agree across hosts: 67 reported successes, 31 unchecked completions, 53 parse errors, 72 runtime errors and two reported failures under the current marker-only classifier. All 97 previously successful or unchecked files retain their outcomes. The Math fixture now completes and prints 69 passed, 0 failed; the classifier does not yet recognize this summary. Review also found two unchecked fixtures printing failure summaries for missing splice/JSON.parse; roadmap records the reporting gap. Reports: build/legacy-suite-node-yC4VX2/report.json and build/legacy-suite-native-NVilGl/report.json. Logs: build/math-hypot-*.

@@ -48,6 +48,15 @@ fixture now reaches clz32; implement clz32/fround, then hypot as bounded next
 steps. Recent catch-up acceptance remains on codex/test262-classification; it has
 not been pushed or merged during this loop.
 
+TS-080 reporting review: the fixed baseline only recognizes PASS:/FAIL: and
+check/cross emoji markers. It misses explicit numeric summaries: the completed
+Math fixture prints69 passed/0 failed, while integer-overflow-safety prints5/6
+passed and1/6 failed (missing Array.splice), and string-validation prints4/6
+passed and2/6 failed (missing JSON.parse). Prioritize tested recognition of these
+summary formats, preserving process-error precedence and historical reports.
+Then inspect splice and JSON support as separate semantic tasks. Existing
+completed-without-checks totals must not be treated as passes.
+
 ## Findings and next work
 
 Completed in this catch-up: ordinary input-test invocation, the five tracked report

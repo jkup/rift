@@ -3185,6 +3185,6 @@ Add clz32 and fround through the existing unary numeric path. Verify uint32 wrap
 
 ## TS-080 — Math hypot
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `0f8cbd05`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `0f8cbd05`, implementation `23527f83`. Both guest suites pass 533/533, full tooling290/290, runner30 and probes10 pass. All 89 native entries pass build and static coverage in one invocation; Math driver5235/5235 static. All 225 C++ fixture results agree across hosts: 67 reported successes, 31 unchecked completions, 53 parse errors, 72 runtime errors and two reported failures under the current marker-only classifier. All 97 previously successful or unchecked files retain their outcomes. The Math fixture now completes and prints 69 passed, 0 failed; the classifier does not yet recognize this summary. Review also found two unchecked fixtures printing failure summaries for missing splice/JSON.parse; roadmap records the reporting gap. Reports: build/legacy-suite-node-yC4VX2/report.json and build/legacy-suite-native-NVilGl/report.json. Logs: build/math-hypot-*.
 
 Add variadic hypot with complete ordered conversion, Infinity precedence over NaN, positive-zero empty/all-zero results and scaled compensated summation. Validate large/small magnitudes, coercion effects and throws, metadata, Realm ownership and bounded work on both hosts and fixed fixtures.
