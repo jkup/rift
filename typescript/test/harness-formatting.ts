@@ -1,3 +1,4 @@
+import { scriptGlobalKeys, objectConstructorKeys } from "./current-builtin-inventory.js";
 import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
 import { GuestObject, GuestError, UNDEFINED, normal, sameValue, unsupportedFailure, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type ConstructBuiltin, type PropertyKey } from "../src/runtime.js";
@@ -455,10 +456,10 @@ for(const cross of [false,true]){
  const m=b.createObject();let effects="";data(m,wellKnownToPrimitive,obj(b.createBuiltin("convert",1,(receiver,args,c,_l)=>{check(receiver.kind==="object"&&receiver.object===m&&args.length===1&&sameValue(args[0],str("string"))&&c.realm===b,"F05 protocol");effects+="M";return normal(str(payload));})));define(b,"m",obj(m));check(sameValue(value(run("String(m);",b)),str(payload)),"F05 call");box(run("new String(m);",b),a,payload);check(effects==="MM","F05 once per operation");
 }
 for(const r of [fresh(),fresh()]){
- keys(r.globalObject,["undefined","NaN","Infinity","console","Number","parseInt","parseFloat","Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object","Array","Math","isNaN","isFinite","JSON"]);
+ keys(r.globalObject,scriptGlobalKeys);
  keys(r.stringPrototype,["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"]);keys(r.objectPrototype,["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf"]);
  for(const name of ["String","Object"]){const cv=own(r.globalObject,name),ctor=object(cv),proto=name==="String"?r.stringPrototype:r.objectPrototype;
-  descriptor(r.globalObject,name,cv,true,false,true);descriptor(ctor,"name",str(name),false,false,true);descriptor(ctor,"length",num(1),false,false,true);descriptor(ctor,"prototype",obj(proto),false,false,false);descriptor(proto,"constructor",cv,true,false,true);keys(ctor,name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","getOwnPropertyNames","getOwnPropertySymbols","assign","defineProperty","getOwnPropertyDescriptor","defineProperties","create","getOwnPropertyDescriptors","preventExtensions","seal","freeze","isExtensible","isSealed","isFrozen","is","getPrototypeOf","setPrototypeOf"]:["name","length","prototype"]);check(ctor.getPrototypeOf()===r.functionPrototype,"F10 Function link");
+  descriptor(r.globalObject,name,cv,true,false,true);descriptor(ctor,"name",str(name),false,false,true);descriptor(ctor,"length",num(1),false,false,true);descriptor(ctor,"prototype",obj(proto),false,false,false);descriptor(proto,"constructor",cv,true,false,true);keys(ctor,name==="Object"?objectConstructorKeys():["name","length","prototype"]);check(ctor.getPrototypeOf()===r.functionPrototype,"F10 Function link");
   const c=ctor.callable,k=ctor.constructorSlot;check(c!==null&&c.kind==="builtin"&&c.realm===r&&k!==null&&k.kind==="builtin-constructor"&&k.realm===r&&k.callable===c,"F10 exact guard graph");
   data(ctor,"name",str("changed"));check(sameValue(value(run(name+".toString();",r)),str("function "+name+"() { [native code] }")),"initial native name");
  }

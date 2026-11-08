@@ -1,3 +1,4 @@
+import { scriptGlobalKeys, objectMethods, objectConstructorKeys, prototypeMethodLength } from "./current-builtin-inventory.js";
 import { readFileSync } from "node:fs";
 import { Realm, type RealmProfile } from "../src/realm.js";
 import { Evaluator } from "../src/evaluator.js";
@@ -43,10 +44,23 @@ function inventory(a: Realm): void {
     keys(c,["log"]); method(a,c,"log","log",0);
     const names=["NaN","POSITIVE_INFINITY","NEGATIVE_INFINITY","MAX_VALUE","MIN_VALUE","EPSILON","MAX_SAFE_INTEGER","MIN_SAFE_INTEGER"];
     const values=[NaN,Infinity,-Infinity,1.7976931348623157e308,5e-324,2.220446049250313e-16,9007199254740991,-9007199254740991];
-    keys(num,["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger","parseInt","parseFloat"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
+    const numberKeys = ["name", "length", "prototype", ...names, "isNaN", "isFinite", "isInteger", "isSafeInteger", "parseInt", "parseFloat"];
+    keys(num, numberKeys);
+    for (let i = 0; i < names.length; i++) desc(num, names[i], n(values[i]), false, false, false);
     method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1); method(a,num,"isInteger","isInteger",1); method(a,num,"isSafeInteger","isSafeInteger",1);
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
-    const lists: PropertyKey[][]=[["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf"],["name","length","caller","arguments","call","apply","toString",wellKnownHasInstance],["length","join","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with","flat","flatMap","at","indexOf","includes","lastIndexOf","every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter"],["toString","valueOf","constructor"],["toString","valueOf","toFixed","toExponential","toPrecision","constructor"],["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
+    const lists: PropertyKey[][] = [
+        ["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf"],
+        ["name","length","caller","arguments","call","apply","toString",wellKnownHasInstance],
+        ["length","join","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with",
+            "flat","flatMap","at","indexOf","includes","lastIndexOf",
+            "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter"],
+        ["toString","valueOf","constructor"],
+        ["toString","valueOf","toFixed","toExponential","toPrecision","constructor"],
+        ["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
+            "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"],
+        ["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag],
+    ];
     for(let i=0;i<prototypes.length;i++) {
         const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),"prototype chain");
         for(const k of lists[i]) if(typeof k==="string" && k!=="name" && k!=="length") {
@@ -57,14 +71,19 @@ function inventory(a: Realm): void {
                 check(i===0 || i===2 || i===3 || i===4 || i===5,"supported prototype constructors");
                 const name=i===0?"Object":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
                 desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
-                keys(f,name==="Number"?["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger","parseInt","parseFloat"]:name==="Array"?["name","length","prototype","isArray"]:name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","getOwnPropertyNames","getOwnPropertySymbols","assign","defineProperty","getOwnPropertyDescriptor","defineProperties","create","getOwnPropertyDescriptors","preventExtensions","seal","freeze","isExtensible","isSealed","isFrozen","is","getPrototypeOf","setPrototypeOf"]:["name","length","prototype"]);
+                if (name === "Number") keys(f, numberKeys);
+                else if (name === "Array") keys(f, ["name", "length", "prototype", "isArray"]);
+                else if (name === "Object") keys(f, objectConstructorKeys());
+                else keys(f, ["name", "length", "prototype"]);
                 if(name==="Array")method(a,f,"isArray","isArray",1);
-                if(name==="Object"){method(a,f,"hasOwn","hasOwn",2);for(const key of ["keys","values","entries","getOwnPropertyNames","getOwnPropertySymbols","assign","defineProperty","getOwnPropertyDescriptor","defineProperties","create","getOwnPropertyDescriptors","preventExtensions","seal","freeze","isExtensible","isSealed","isFrozen","is","getPrototypeOf","setPrototypeOf"])method(a,f,key,key,key==="defineProperty"?3:key==="getOwnPropertyDescriptor"||key==="defineProperties"||key==="create"||key==="is"||key==="setPrototypeOf"||key==="assign"?2:1);}
+                if (name === "Object") {
+                    for (const expected of objectMethods) method(a, f, expected.name, expected.name, expected.length);
+                }
                 desc(f,"name",{kind:"string",value:name},false,false,true); desc(f,"length",n(1),false,false,true);
                 desc(f,"prototype",obj(p),false,false,false);
                 check(f.getPrototypeOf()===a.functionPrototype && callable!==null && callable.kind==="builtin" && callable.realm===a && slot!==null && slot.kind==="builtin-constructor" && slot.realm===a && slot.callable===callable,"formatting constructor graph and matching slots");
                 check(f.getOwnProperty("caller")===undefined && f.getOwnProperty("arguments")===undefined,"constructor inherited restrictions");
-            } else method(a,p,k,k,k==="split"||k==="toSpliced"||k==="with"||k==="slice"||k==="apply"||k==="splice"?2:k==="toFixed"||k==="toExponential"||k==="toPrecision"||k==="flatMap"||k==="toSorted"||k==="sort"||k==="concat"||k==="propertyIsEnumerable"||k==="isPrototypeOf"||k==="hasOwnProperty"||k==="call"||k==="join"||k==="push"||k==="unshift"||k==="at"||k==="lastIndexOf"||k==="indexOf"||k==="includes"||k==="filter"||k==="map"||k==="forEach"||k==="reduce"||k==="reduceRight"||k==="find"||k==="findIndex"||k==="findLast"||k==="findLastIndex"||k==="every"||k==="some"||k==="charAt"||k==="charCodeAt"||(i===4&&k==="toString")?1:0);
+            } else method(a, p, k, k, prototypeMethodLength(k, i === 4));
         }
     }
     desc(a.functionPrototype,"name",{kind:"string",value:""},false,false,true); desc(a.functionPrototype,"length",n(0),false,false,true);
@@ -88,7 +107,7 @@ function row(id: string,name: string,initial: number): void {
     const x=new Realm((line:string)=>{output+=line; outputCalls++;}), y=new Realm((line:string)=>{output+=line; outputCalls++;},"legacy");
     const e=new Evaluator(x), context=stub(a), first=n(initial), next=n(initial===7?11:7);
     const legacyGlobals=["undefined","NaN","Infinity","console","Number"];
-    const globals=[...legacyGlobals,"parseInt","parseFloat","Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object","Array","Math","isNaN","isFinite","JSON"];
+    const globals = scriptGlobalKeys;
     switch(id) {
     case "B01": {
         for(const l of [x,y]) check(l.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,"legacy hasInstance absent");
