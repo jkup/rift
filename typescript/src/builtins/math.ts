@@ -23,7 +23,7 @@ export function registerMath(realm: Realm): void {
     ];
     for (const constant of constants) object.bootstrapDefine(constant.name, {value: {kind: "number", value: constant.value}});
     object.bootstrapDefine(wellKnownToStringTag, {value: {kind: "string", value: "Math"}, configurable: true});
-    for (const name of ["abs", "ceil", "floor", "round", "sign", "trunc",
+    for (const name of ["abs", "ceil", "floor", "round", "sign", "trunc", "clz32", "fround",
         "acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh",
         "cosh", "sinh", "tanh", "exp", "expm1", "log", "log1p", "log2", "log10", "sqrt", "cbrt"]) {
         realm.registerBuiltin(object, name, 1, (_receiver, args, context, loc): ValueCompletion => {
@@ -37,6 +37,8 @@ export function registerMath(realm: Realm): void {
                 case "round": value = Math.round(value); break;
                 case "sign": value = Math.sign(value); break;
                 case "trunc": value = Math.trunc(value); break;
+                case "clz32": value = Math.clz32(value); break;
+                case "fround": value = Math.fround(value); break;
                 case "acos": value = Math.acos(value); break;
                 case "asin": value = Math.asin(value); break;
                 case "atan": value = Math.atan(value); break;

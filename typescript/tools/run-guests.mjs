@@ -48,6 +48,10 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["math-clz32","console.log(Math.clz32(),Math.clz32(1),Math.clz32(1000),Math.clz32(-1),Math.clz32(4294967297));",0,"","32 31 22 0 31\n"],
+    ["math-fround","console.log(Math.fround(1.337),Math.fround(16777217),Math.fround(16777219),1/Math.fround(-1e-50));",0,"","1.3370000123977661 16777216 16777220 -Infinity\n"],
+    ["math-width-metadata","console.log(Math.clz32.name,Math.clz32.length,Math.fround.name,Math.fround.length);let d=Object.getOwnPropertyDescriptor(Math,'fround');console.log(d.writable,d.enumerable,d.configurable);try{new Math.clz32();}catch(e){console.log(e.name);}",0,"","clz32 1 fround 1\ntrue false true\nTypeError\n"],
+    ["math-width-coercion","console.log(Math.clz32('1'),Math.clz32(null),Math.fround('1.5'),Math.fround(null));",0,"","31 32 1.5 0\n"],
     ["math-binary-values","console.log(Math.pow(2,10),Math.imul(0xffffffff,5),Math.abs(Math.atan2(1,1)-Math.PI/4)<1e-14);",0,"","1024 -5 true\n"],
     ["math-pow-special","console.log(Math.pow(NaN,0),Math.pow(1,Infinity),Math.pow(-1,Infinity),Math.pow(-0,-3),1/Math.pow(-0,3));",0,"","1 NaN NaN -Infinity -Infinity\n"],
     ["math-atan2-zeros","console.log(1/Math.atan2(-0,1),1/Math.atan2(0,1),Math.atan2(0,-0)===Math.PI,Math.atan2(-0,-0)===-Math.PI);",0,"","-Infinity Infinity true true\n"],

@@ -28,7 +28,7 @@ function run(realm: Realm, text: string, steps = 10000): ValueCompletion {
 const methods = ["abs", "ceil", "floor", "round", "sign", "trunc"];
 const transcendental = ["acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh",
     "cosh", "sinh", "tanh", "exp", "expm1", "log", "log1p", "log2", "log10", "sqrt", "cbrt"];
-const unaryMethods = methods.concat(transcendental);
+const unaryMethods = methods.concat(transcendental, ["clz32", "fround"]);
 const inputs = [-Infinity, -2.7, -1.5, -0.5, -0.1, -0, 0, 0.49999999999999994, 0.5, 2.7, Infinity, NaN];
 const expected = [
     [Infinity, 2.7, 1.5, 0.5, 0.1, 0, 0, 0.49999999999999994, 0.5, 2.7, Infinity, NaN],
@@ -78,7 +78,7 @@ for (const name of unaryMethods) {
     const actual = run(realm, "Math." + name + "(input,{valueOf:function(){throw 7;}});");
     check(actual.type === "normal" && calls === 1, "Math coerces first argument once");
     const absent = run(realm, "Math." + name + "();");
-    check(absent.type === "normal" && sameValue(absent.value, {kind: "number", value: NaN}), "missing Math argument");
+    check(absent.type === "normal" && sameValue(absent.value, {kind: "number", value: name === "clz32" ? 32 : NaN}), "missing Math argument");
     const thrown = run(fresh(), "let marker={};let input={valueOf:function(){throw marker;}};try{Math." + name + "(input);}catch(e){e===marker;}");
     check(thrown.type === "normal" && thrown.value.kind === "boolean" && thrown.value.value, "Math exact conversion throw");
 }
@@ -207,5 +207,24 @@ for (const name of ["atan2", "pow", "imul"]) {
         }
     }
     check(interrupted && completed, "binary Math budget boundary");
+}
+const widthCases = [
+    {source: "Math.clz32(0)", value: 32}, {source: "Math.clz32(-0)", value: 32},
+    {source: "Math.clz32(1)", value: 31}, {source: "Math.clz32(0x80000000)", value: 0},
+    {source: "Math.clz32(-1)", value: 0}, {source: "Math.clz32(4294967296)", value: 32},
+    {source: "Math.clz32(4294967297)", value: 31}, {source: "Math.clz32(3.9)", value: 30},
+    {source: "Math.clz32(Infinity)", value: 32}, {source: "Math.clz32(NaN)", value: 32},
+    {source: "Math.fround(-0)", value: -0}, {source: "Math.fround(NaN)", value: NaN},
+    {source: "Math.fround(Infinity)", value: Infinity}, {source: "Math.fround(-Infinity)", value: -Infinity},
+    {source: "Math.fround(1.337)", value: 1.3370000123977661},
+    {source: "Math.fround(16777217)", value: 16777216}, {source: "Math.fround(16777219)", value: 16777220},
+    {source: "Math.fround(1e40)", value: Infinity}, {source: "Math.fround(-1e40)", value: -Infinity},
+    {source: "Math.fround(1e-50)", value: 0}, {source: "Math.fround(-1e-50)", value: -0},
+    {source: "Math.fround(1.401298464324817e-45)", value: 1.401298464324817e-45},
+    {source: "Math.fround(7.006492321624085e-46)", value: 0},
+];
+for (const entry of widthCases) {
+    const actual = run(fresh(), entry.source + ";");
+    check(actual.type === "normal" && sameValue(actual.value, {kind: "number", value: entry.value}), "Math numeric width " + entry.source);
 }
 console.log("Math unary passed");
