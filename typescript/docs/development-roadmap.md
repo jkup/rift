@@ -423,6 +423,12 @@ from guest throws, and iterator step faults must retain their separate boundary.
 Keep async iteration and destructuring explicit separate capabilities. These are
 first blockers, not a prediction that all six fixtures will complete afterward.
 
+Stage the work: normal-completion iterator cleanup plus var/assignment loop heads
+first, then let/const per-iteration bindings. The fixed basic loop fixture uses
+all three declaration forms; the other five first-blocked fixtures use var.
+Keep unsupported lexical heads explicit until their declaration/environment
+semantics are implemented, rather than reusing the var binding across iterations.
+
 ### TS-112 checkpoint
 
 Both guest suites pass 598/598 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 111 native entries pass fresh static-only builds and separate coverage gates; Map iterator driver 6845/6845 static. Live mutation/exhaustion, captured-Realm results/pairs, next-Realm completion and bounded deleted-node traversal pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure. test-object-new-methods.js now completes with 32 true results and no recognized check markers; all 121 previous completions remain. Reports: build/legacy-suite-node-11V5PM/report.json and build/legacy-suite-native-Av1AdA/report.json. Logs: build/map-iterator-*.
@@ -446,3 +452,7 @@ Both guest suites pass 602/602 with no skips, tooling 290/290, runner 31/31 and 
 ### TS-117 checkpoint
 
 Both guest suites pass 603/603 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 116 native entries pass fresh static-only builds and separate coverage gates in one run; Set iterator driver 7089/7089 static. Live mutation/exhaustion, exact aliases, fresh pairs, captured-Realm results and bounded deleted-node traversal pass on both hosts. Typechecking initially caught a private field shadowing GuestObject.set; it was renamed collection before validation. All 225 complete fixture results agree: 85 reported successes, 39 unchecked completions, 53 parse errors, 47 runtime errors and one reported failure. set-test.js now reports all 56 checks passing; all 123 prior completions remain. Reports: build/legacy-suite-node-iJju8K/report.json and build/legacy-suite-native-j97sh8/report.json. Logs: build/set-iterator-*.
+
+### TS-118 checkpoint
+
+Both guest suites pass 604/604 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 117 native entries pass fresh static-only builds and separate coverage gates; error-family driver 7077/7077 static. Error branding, metadata, message/cause order, foreign Realms and resource bounds pass on both hosts. Initial test typing was corrected to preserve the literal ErrorName union before validation. All 225 complete fixture results agree: 85 reported successes, 40 unchecked completions, 53 parse errors, 46 runtime errors and one reported failure. error-iserror.js now completes; all 124 prior completions remain. Reports: build/legacy-suite-node-dg5czb/report.json and build/legacy-suite-native-ThpmrS/report.json. Logs: build/error-family-*.
