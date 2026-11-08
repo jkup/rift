@@ -3173,6 +3173,6 @@ Add Script global isNaN/isFinite with ordered number coercion, ignored extra arg
 
 ## TS-078 — Binary Math operations
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `8bc45037`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `8bc45037`, implementation `1d38a5fa`. Both guest suites pass 524/524, full tooling290/290, runner30 and probes10 pass. All 89 native entries pass build and static coverage in one invocation; Math driver5168/5168 static. The reduced binary Math probe passes static coverage and both executions without a workaround. All 225 C++ fixture results agree across hosts: 67 reported successes, 30 unchecked completions, 53 parse errors, 73 runtime errors and two reported failures. All 97 previously successful or unchecked files retain their outcomes. The Math fixture reaches missing clz32. Reports: build/legacy-suite-node-58xzVm/report.json and build/legacy-suite-native-LoaZzM/report.json. Logs: build/math-binary-*.
 
 Add Math atan2/pow/imul with ordered conversion of both arguments, missing and ignored arguments, numeric edge cases, metadata, Realm ownership and budgets. Probe native backends first, preserve explicit completions, and validate both hosts and fixed fixtures.

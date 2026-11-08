@@ -16,4 +16,4 @@ native probe passes static coverage and agrees with Node on power exceptions,
 signed-zero quadrants and integer wrapping (`build/math-binary-probe-*`).
 
 Tests cover numeric boundaries, missing/extra arguments, ordered effects and
-throws, Realm ownership, metadata and budgets. Acceptance pending.
+throws, Realm ownership, metadata and budgets. Both guest suites pass 524/524, full tooling290/290, runner30 and probes10 pass. All 89 native entries pass build and static coverage in one invocation; Math driver5168/5168 static. The reduced binary Math probe passes static coverage and both executions without a workaround. All 225 C++ fixture results agree across hosts: 67 reported successes, 30 unchecked completions, 53 parse errors, 73 runtime errors and two reported failures. All 97 previously successful or unchecked files retain their outcomes. The Math fixture reaches missing clz32. Reports: build/legacy-suite-node-58xzVm/report.json and build/legacy-suite-native-LoaZzM/report.json. Logs: build/math-binary-*.

@@ -40,6 +40,14 @@ strict and non-strict code, declaration conflicts and cross-unit global state.
 The three fixtures first blocked on `const` also include destructuring and loop
 declarations, so enabling the keyword alone would not finish that group.
 
+TS-078 checkpoint: both guest suites pass524/524, tooling290/290, and all89
+native entries pass static compilation and coverage. Fixed C++ fixtures report
+67 successes,30 unchecked completions,53 parse errors,73 runtime errors and two
+reported failures, with all225 complete outcomes agreeing across hosts. The Math
+fixture now reaches clz32; implement clz32/fround, then hypot as bounded next
+steps. Recent catch-up acceptance remains on codex/test262-classification; it has
+not been pushed or merged during this loop.
+
 ## Findings and next work
 
 Completed in this catch-up: ordinary input-test invocation, the five tracked report
