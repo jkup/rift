@@ -45,4 +45,4 @@ The C++ `src/builtins/array/array_accessors.cpp` reference ignores `fromIndex`
 and reads holes as undefined; those shortcuts are not preserved. Tests cover
 coercion order and mutation, missing versus undefined, empty inputs, NaN,
 negative zero, identity, holes, inherited matches, primitives and budgets.
-Native acceptance pending.
+Both guest suites pass 433/433, full tooling 290/290, runner30 and probes10 pass. All 82 native entries pass build and static coverage; search driver4906/4906 static. All 225 C++ fixture results agree across hosts: 59 reported successes, 23 unchecked completions, 67 parse errors, 74 runtime errors and two reported failures. The phase-two array fixture now succeeds; all 81 previously successful or unchecked files retain their outcomes. Logs: build/array-lastindex-*.

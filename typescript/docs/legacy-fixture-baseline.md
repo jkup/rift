@@ -70,7 +70,7 @@ after diagnostic path normalization. Reports:
 `build/legacy-suite-node-wYAtgS/report.json` and
 `build/legacy-suite-native-rmFt3P/report.json`.
 
-## Builtin follow-ups (TS-058–065)
+## Builtin follow-ups (TS-058–067)
 
 The selection remains 225 files with the same 15 exclusions. Both hosts agree on
 all complete results after diagnostic path normalization at every milestone.
@@ -85,6 +85,8 @@ all complete results after diagnostic path normalization at every milestone.
 | Array shift/unshift | 56 | 22 | 67 | 78 | 2 |
 | Property descriptor reflection | 56 | 22 | 67 | 77 | 3 |
 | Public map/forEach | 58 | 23 | 67 | 75 | 2 |
+| Predicate searches | 58 | 23 | 67 | 75 | 2 |
+| Array.lastIndexOf | 59 | 23 | 67 | 74 | 2 |
 
 No previously successful or unchecked file regressed. Enumeration advances
 `object-keys-values-test.js` to its incorrect expectations that strings have no
@@ -95,6 +97,9 @@ Reflection lets the array range-error fixture finish and report missing public
 map behavior; public iteration then makes it succeed. The callback binding
 fixture also succeeds, and the debug callback fixture completes without checks.
 
-Latest reports: `build/legacy-suite-node-wFDKSX/report.json` and
-`build/legacy-suite-native-PrT30F/report.json`. These marker-based outcomes remain
+Predicate searches advance the phase-two array fixture to its lastIndexOf call;
+reverse value search then lets it complete successfully.
+
+Latest reports: `build/legacy-suite-node-uwywPC/report.json` and
+`build/legacy-suite-native-SNzOqR/report.json`. These marker-based outcomes remain
 separate from semantic test assertions and test262 conformance admission.
