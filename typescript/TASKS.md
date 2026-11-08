@@ -3269,7 +3269,7 @@ Probe Unicode default case conversion across Node/native with literal expectatio
 
 ## TS-094 — Iterative Array flattening
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 0de05146.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 0de05146, implementation f2ea5f14. Both guest suites pass 581/581, full tooling 290/290, runner 31/31 and all ten probes pass. All 94 native entries pass build and static coverage in one invocation; flatten driver 6084/6084 static. All 225 complete fixture results agree: 82 reported successes, 30 unchecked completions, 53 parse errors, 59 runtime errors and one reported failure. Both phase-three array fixtures now report success; all 110 previously completed outcomes remain. Reports: build/legacy-suite-node-RqpMDg/report.json and build/legacy-suite-native-WfGp6h/report.json. Logs: build/array-flat-*.
 
 Implement Script flat/flatMap using an explicit traversal stack, captured lengths, sparse Has/Get, array-only flattening, top-level mapping, default species and bounded deep/cyclic work. Keep custom species explicit, update closed capability codecs and validate both hosts and fixed fixtures.
 
