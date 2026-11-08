@@ -3227,6 +3227,6 @@ Add Script Array.prototype.filter with length-before-callback validation, defaul
 
 ## TS-087 — Stable generic Array sort
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base `d323170b`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `d323170b`, implementation `db420357`. Both guest suites pass 579/579, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage; sort driver 5736/5736 static. All 225 complete fixture results agree: 78 reported successes, 27 unchecked completions, 53 parse errors, 66 runtime errors and one reported failure. Three sort fixtures gain success; all 102 previously completed outcomes remain. Reports: build/legacy-suite-node-sj0Gml/report.json and build/legacy-suite-native-lnirqE/report.json. Logs: build/array-sort-*.
 
 Add Script Array.prototype.sort with comparator validation before boxing, sparse collection, stable iterative merge sort, UTF-16 default comparison, undefined ordering, callback/result coercion and strict writeback/deletion. Propagate explicit throws and resource guards without host sorting or recursion. Test stability, access order, mutation failures, Realm behavior and budgets on both hosts and the fixed C++ fixtures.

@@ -248,3 +248,7 @@ merged merely to copy its prose into the repository.
 - Generated checkpoint directories were moved to
   `build/catch-up-checkpoint-artifacts/`, with a relocation map. Remaining
   portability and scratch-directory work is tracked above.
+
+### TS-087 checkpoint
+
+Both guest suites pass 579/579, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage; sort driver 5736/5736 static. All 225 complete fixture results agree: 78 reported successes, 27 unchecked completions, 53 parse errors, 66 runtime errors and one reported failure. Three sort fixtures gain success; all 102 previously completed outcomes remain. Reports: build/legacy-suite-node-sj0Gml/report.json and build/legacy-suite-native-lnirqE/report.json. Logs: build/array-sort-*. Next: toReversed/toSorted, then toSpliced/with to complete the original copy-method fixture.
