@@ -27,7 +27,9 @@ grammar. Keys are normalized from the numeric value: `1.0` and `1` both name
 source order. Numeric rounding and decimal/scientific formatting follow the same
 host number primitives already used by numeric literals and Number conversion.
 Computed and negative keys, exponent/radix literals and prototype-literal syntax
-remain outside this change. Native acceptance is pending.
+remain outside this change. Both guest suites pass 307/307, full tooling passes
+290/290, and all 74 native entries compile with full static coverage. Runner20
+and all ten compiler probes pass. Logs: `build/numeric-object-keys-*`.
 
 This follows ECMA-262
 [PropName](https://tc39.es/ecma262/multipage/syntax-directed-operations.html#sec-static-semantics-propname)

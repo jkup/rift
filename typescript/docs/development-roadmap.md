@@ -67,7 +67,7 @@ declaration plans and 154 serializer records against accepted expectations.
 TS-048 brings the exact radix oracle into the ordinary tooling command, with
 14768 inputs per host and reports under `build/`.
 
-The 70 compiled test drivers now have identified execution routes: 55 through
+The 71 compiled test drivers now have identified execution routes: 56 through
 the guest runner, five through parser audits, three through inspection tests,
 four through dispatch tests, one through Script preflight tests, one through
 the radix oracle, and one through `npm run test:observations`. This accounts for
@@ -90,6 +90,13 @@ pass 299/299 per host and tooling passes 290/290. Native validation covers all
 retry. Its inferred-never callback adapter was reduced and removed by declaring
 the test callback's completion type. See [predicate iteration](array-predicate.md)
 for the retained initial failure and acceptance details.
+
+TS-052 accepts numeric object-literal property names and normalizes their keys
+without changing numeric literal syntax. All original structured-outcome source
+cases remain, with the newly supported case updated and a computed-key rejection
+added. Both guest suites pass 307/307, tooling 290/290, runner20 and probes10.
+All 74 native entries pass a fresh full static build in one invocation; existing
+parser audit and inspection expectations remain unchanged.
 
 | Priority | Work | Evidence and completion condition |
 |---|---|---|

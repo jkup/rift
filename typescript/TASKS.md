@@ -3017,6 +3017,6 @@ Implement generic every/some with captured length, callable validation, inherite
 
 ## TS-052 — Numeric object literal keys
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `8bef7cb6`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `8bef7cb6`, implementation `3a1ab9f7`. Node/native guest suites pass 307/307 each, full tooling 290/290, runner 20/20 and all ten probes. All 74 native entries pass build and static coverage in one invocation. Existing metadata, declaration and parser-audit expectations pass unchanged. Logs: build/numeric-object-keys-*.
 
 Accept currently supported numeric literal tokens as object keys, using their canonical numeric string. Cover integer/fractional keys, duplicate normalization, rounding, key lookup and unsupported computed/negative keys. Preserve existing source cases while updating the now-supported outcome and adding a replacement unsupported-key control. Keep literal syntax limits and prototype-literal restrictions explicit; validate both hosts and static native coverage.
