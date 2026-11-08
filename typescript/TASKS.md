@@ -3065,6 +3065,6 @@ Add Script Object.prototype.hasOwnProperty and Object.hasOwn using existing key 
 
 ## TS-060 — Enumerable own properties
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `09d0a3e4`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `09d0a3e4`, implementation `b34195d6`. Both guest suites pass 364/364, full tooling 290/290, runner30 and probes10 pass. All 79 native entries pass build and static coverage in one invocation; enumeration driver4444/4444 static. All 225 C++ fixture results agree across hosts: 53 reported successes, 22 unchecked completions, 67 parse errors, 81 runtime errors and two reported failures. Two files gain reported success; object-keys-values-test.js reaches its incorrect empty-string-enumeration expectations and reports two failures. All 73 previously completed files retain their outcomes. Logs: build/enumeration-*.
 
 Add Script Object.keys, Object.values and Object.entries with shared enumeration of own enumerable string properties. Preserve snapshot key order, live descriptor checks, getter effects and abrupt completions, primitive boxing, fresh Realm-owned result arrays and resource bounds. Keep incorrect C++ string-boxing expectations unchanged and document disagreements. Validate both hosts and native static coverage.

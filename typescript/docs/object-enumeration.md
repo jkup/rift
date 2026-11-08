@@ -21,4 +21,4 @@ that fixture remains unchanged and its disagreement must remain visible.
 
 Host and CLI tests cover ordering, filtering, getter mutations and throws,
 descriptors, primitive boxing, Realm ownership, result identity and budgets.
-Native and regression acceptance is pending.
+Both guest suites pass 364/364, full tooling 290/290, runner30 and probes10 pass. All 79 native entries pass build and static coverage in one invocation; enumeration driver4444/4444 static. All 225 C++ fixture results agree across hosts: 53 reported successes, 22 unchecked completions, 67 parse errors, 81 runtime errors and two reported failures. Two files gain reported success; object-keys-values-test.js reaches its incorrect empty-string-enumeration expectations and reports two failures. All 73 previously completed files retain their outcomes. Logs: build/enumeration-*.
