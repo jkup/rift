@@ -28,6 +28,7 @@ const entries = [
     ["test/keyed-collection.ts", "keyed-collection"],
     ["test/map-object.ts", "map-object"],
     ["test/map-iterator.ts", "map-iterator"],
+    ["test/group-by.ts", "group-by"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

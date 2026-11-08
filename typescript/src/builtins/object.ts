@@ -7,6 +7,7 @@ import { registerObjectDescriptors } from "./object-descriptors.js";
 import { registerObjectIntegrity } from "./object-integrity.js";
 import { registerObjectPrototypes } from "./object-prototypes.js";
 import { registerObjectFromEntries } from "./object-from-entries.js";
+import { registerGroupBy } from "./group-by.js";
 import { GuestArray } from "../array-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
@@ -59,6 +60,7 @@ export function registerObject(realm: Realm): void {
     });
     registerObjectPrototypes(realm, constructor);
     registerObjectFromEntries(realm, constructor);
+    registerGroupBy(realm, constructor, "property");
     realm.defineScriptGlobal("Object", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
 

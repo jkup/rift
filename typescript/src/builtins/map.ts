@@ -4,6 +4,7 @@ import { addEntriesFromIterable } from "../iterable-entries.js";
 import { languageFailure, normal, UNDEFINED, type OperationContext, type ThrowCompletion, type Value, type ValueCompletion } from "../runtime.js";
 import { wellKnownSpecies, wellKnownToStringTag } from "../symbols.js";
 import type { Location } from "../syntax.js";
+import { registerGroupBy } from "./group-by.js";
 
 function mapReceiver(receiver: Value, context: OperationContext, loc: Location): { type: "normal"; value: GuestMap } | ThrowCompletion {
     if (receiver.kind !== "object" || !(receiver.object instanceof GuestMap))
@@ -33,6 +34,7 @@ export function registerMap(realm: Realm): void {
     realm.mapPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     const species = realm.createBuiltin("get [Symbol.species]", 0, (receiver, _args, _context, _loc) => normal(receiver));
     constructor.bootstrapDefine(wellKnownSpecies, { get: { kind: "object", object: species }, set: UNDEFINED, enumerable: false, configurable: true });
+    registerGroupBy(realm, constructor, "collection");
 
     for (const name of ["get", "set", "has", "delete", "clear"] as const) {
         realm.registerBuiltin(realm.mapPrototype, name, name === "set" ? 2 : name === "clear" ? 0 : 1,

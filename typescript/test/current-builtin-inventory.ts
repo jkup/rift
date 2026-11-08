@@ -28,6 +28,7 @@ export const objectMethods = [
     {name: "getPrototypeOf", length: 1},
     {name: "setPrototypeOf", length: 2},
     {name: "fromEntries", length: 1},
+    {name: "groupBy", length: 2},
 ];
 
 export function objectConstructorKeys(): string[] {
