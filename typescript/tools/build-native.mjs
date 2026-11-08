@@ -15,6 +15,7 @@ const entries = [
     ["test/radix-literals.ts", "radix-literals"],
     ["test/decimal-literals.ts", "decimal-literals"],
     ["test/function-apply.ts", "function-apply"],
+    ["test/json-parse.ts", "json-parse"],
     ["test/math-unary.ts", "math-unary"],
     ["test/do-while.ts", "do-while"],
     ["test/script-templates.ts", "script-templates"],

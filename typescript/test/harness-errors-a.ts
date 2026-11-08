@@ -113,7 +113,7 @@ console.log("PASS A02");
         const global = r.globalObject.getOwnProperty(name);
         check(global !== undefined && global.kind === "data" && global.value.kind === "object" && global.value.object === ctor && global.writable && !global.enumerable && global.configurable, "Error global identity/flags");
     }
-    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number", "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "String", "Boolean", "Object", "Array", "Math", "isNaN", "isFinite"]), "exact C globals");
+    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number", "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "String", "Boolean", "Object", "Array", "Math", "isNaN", "isFinite", "JSON"]), "exact C globals");
     for (const name of ["String", "Object"]) {
         const global = r.globalObject.getOwnProperty(name), p = name === "String" ? r.stringPrototype : r.objectPrototype;
         check(global !== undefined && global.kind === "data" && global.value.kind === "object" && global.writable && !global.enumerable && global.configurable, "formatting global flags");

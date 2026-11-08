@@ -182,6 +182,12 @@ const generated = [
     ["descriptor-function", "function f(x){} function attrs(){} attrs.value=9; Object.defineProperty(f,'x',attrs); console.log(f.x,Object.getOwnPropertyDescriptor(f,'length').value);", 0, "", "9 1\n"],
     ["descriptor-missing", "console.log(Object.getOwnPropertyDescriptor({},'x'),Object.getOwnPropertyDescriptor({undefined:7}).value,Object.getOwnPropertyDescriptor(3,'x'));", 0, "", "undefined 7 undefined\n"],
     ["descriptor-metadata", "console.log(Object.defineProperty.name,Object.defineProperty.length,Object.getOwnPropertyDescriptor.name,Object.getOwnPropertyDescriptor.length,Object.keys(Object).length);", 0, "", "defineProperty 3 getOwnPropertyDescriptor 2 0\n"],
+    ["json-primitives","console.log(JSON.parse('null'),JSON.parse('true'),JSON.parse('false'),1/JSON.parse('-0'),JSON.parse('1.25e2'));",0,"","null true false -Infinity 125\n"],
+    ["json-nested","let o=JSON.parse('{\"a\":[1,null,{\"b\":true}],\"empty\":{},\"list\":[]}');console.log(o.a.length,o.a[1],o.a[2].b,Object.keys(o.empty).length,o.list.length);",0,"","3 null true 0 0\n"],
+    ["json-duplicates","let o=JSON.parse('{\"x\":1,\"y\":2,\"x\":3,\"__proto__\":4}');console.log(o.x,Object.keys(o).join(','),o.__proto__,Object.hasOwn(o,'__proto__'));",0,"","3 x,y,__proto__ 4 true\n"],
+    ["json-coercion","console.log(JSON.parse(7),JSON.parse(null),JSON.parse(true),JSON.parse({toString:function(){return '[3]';}})[0],JSON.parse('2',false));",0,"","7 null true 3 2\n"],
+    ["json-invalid","try{JSON.parse('[1,]');}catch(e){console.log(e.name);}try{JSON.parse('01');}catch(e){console.log(e.name);}try{JSON.parse();}catch(e){console.log(e.name);}",0,"","SyntaxError\nSyntaxError\nSyntaxError\n"],
+    ["json-metadata","let d=Object.getOwnPropertyDescriptor(JSON,'parse');console.log(d.value.name,d.value.length,d.writable,d.enumerable,d.configurable,Object.prototype.toString.call(JSON));",0,"","parse 2 true false true [object JSON]\n"],
     ["splice-basic","let a=[1,2,3,4]; let d=a.splice(1,2,7); console.log(a.join(','),d.join(','),d.length);",0,"","1,7,4 2,3 2\n"],
     ["splice-omission","let a=[1,2,3]; console.log(a.splice().length,a.length,a.splice(1,undefined).length,a.length,a.splice(1).join(','),a.join(','));",0,"","0 3 0 3 2,3 1\n"],
     ["splice-coercion","let a=[1,2,3,4]; console.log(a.splice(-2.8,1.9,7,8).join(','),a.join(',')); console.log(a.splice(-Infinity,NaN).length,a.splice(Infinity,99,9).length,a.join(','));",0,"","3 1,2,7,8,4\n0 0 1,2,7,8,4,9\n"],
@@ -514,6 +520,7 @@ executeDriver("function-apply", { stdout: "Function apply passed\n" });
 executeDriver("radix-literals", { stdout: "Radix literals passed\n" });
 executeDriver("decimal-literals", { stdout: "Decimal literals passed\n" });
 executeDriver("global-numeric-predicates", { stdout: "Global numeric predicates passed\n" });
+executeDriver("json-parse", { stdout: "JSON parse passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });
 executeDriver("do-while", { stdout: "Do-while passed\n" });
 executeDriver("script-templates", { stdout: "Script templates passed\n" });

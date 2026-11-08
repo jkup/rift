@@ -107,7 +107,7 @@ declaration plans and 154 serializer records against accepted expectations.
 TS-048 brings the exact radix oracle into the ordinary tooling command, with
 14768 inputs per host and reports under `build/`.
 
-The 86 compiled test drivers now have identified execution routes: 71 through
+The 87 compiled test drivers now have identified execution routes: 72 through
 the guest runner, five through parser audits, three through inspection tests,
 four through dispatch tests, one through Script preflight tests, one through
 the radix oracle, and one through `npm run test:observations`. This accounts for

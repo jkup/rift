@@ -1,3 +1,4 @@
+import { registerJSON } from "./builtins/json.js";
 import type { GuestSymbol } from "./symbols.js";
 import { registerErrors, createErrorConstructor } from "./builtins/error.js";
 import type { ConstructBuiltin, Callable } from "./runtime.js";
@@ -110,6 +111,7 @@ export class Realm {
             this.arrayConstructor = registerArray(this);
             registerMath(this);
             registerGlobalNumericPredicates(this);
+            registerJSON(this);
             registerScriptArrayIteration(this);
         }
     }
