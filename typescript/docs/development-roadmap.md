@@ -368,6 +368,20 @@ Both guest suites pass 596/596 with no skips, runner 31/31 and all ten probes pa
 
 Both guest suites pass 597/597 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 110 native entries pass fresh static-only builds and separate coverage gates; Map driver 6787/6787 static. Constructor adder order, shared entry cleanup, SameValueZero keys, live forEach mutation, foreign Realms and resource limits pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 37 unchecked completions, 53 parse errors, 50 runtime errors and one reported failure; all 121 previous completions remain. The newer-Object fixture now reaches fromEntries(map); grouping/upsert fixtures reach their missing methods. Reports: build/legacy-suite-node-2OnUBQ/report.json and build/legacy-suite-native-PGex5h/report.json. Logs: build/map-object-*.
 
+### String search predicates after grouping
+
+The Map grouping fixture now reaches error-message assertions that require
+String.prototype.includes. Implement includes, startsWith and endsWith next,
+before Map upsert. Preserve receiver conversion, Symbol.match inspection, search
+conversion and position conversion in that order. Probe the native UTF-16 search
+primitives, including lone surrogates and embedded NUL. RegExp objects remain
+deferred, but ordinary objects with Symbol.match already require correct rejection
+and getter ordering; future RegExp integration must add the branded fallback.
+
 ### TS-112 checkpoint
 
 Both guest suites pass 598/598 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 111 native entries pass fresh static-only builds and separate coverage gates; Map iterator driver 6845/6845 static. Live mutation/exhaustion, captured-Realm results/pairs, next-Realm completion and bounded deleted-node traversal pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure. test-object-new-methods.js now completes with 32 true results and no recognized check markers; all 121 previous completions remain. Reports: build/legacy-suite-node-11V5PM/report.json and build/legacy-suite-native-Av1AdA/report.json. Logs: build/map-iterator-*.
+
+### TS-113 checkpoint
+
+Both guest suites pass 599/599 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 112 native entries pass fresh static-only builds and separate coverage gates; grouping driver 6900/6900 static. Key coercion/identity, iterator cleanup, intrinsic allocation, foreign Realms and resource bounds pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure; all 122 previous completions remain. The Map grouping fixture now reaches error-message checks requiring String.includes. Reports: build/legacy-suite-node-0qOr2p/report.json and build/legacy-suite-native-kI1g7m/report.json. Logs: build/group-by-*.

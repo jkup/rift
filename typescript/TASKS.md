@@ -3383,6 +3383,6 @@ Implement Map keys/values/entries and the entries Symbol.iterator alias with bra
 
 ## TS-113 — Object and Map grouping
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 7524edb5.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 7524edb5, implementation 5c87cdc5. Both guest suites pass 599/599 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 112 native entries pass fresh static-only builds and separate coverage gates; grouping driver 6900/6900 static. Key coercion/identity, iterator cleanup, intrinsic allocation, foreign Realms and resource bounds pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure; all 122 previous completions remain. The Map grouping fixture now reaches error-message checks requiring String.includes. Reports: build/legacy-suite-node-0qOr2p/report.json and build/legacy-suite-native-kI1g7m/report.json. Logs: build/group-by-*.
 
 Implement shared GroupBy traversal and Object.groupBy/Map.groupBy, preserving callback/index order, property-key coercion versus SameValueZero identity, iterator cleanup, null-prototype Object results, intrinsic Realm-owned Map/Array allocation and resource bounds. Use indexed group lookup and materialize guest arrays after traversal. Own grouping module/builtin, Object/Map registration, current inventory, semantic tests/manifests/docs. Upsert, Set and syntax expansion remain separate.
