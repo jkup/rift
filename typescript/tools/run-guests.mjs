@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["do-once","let n=0;do{n++;}while(false);console.log(n);",0,"","1\n"],
+    ["do-continue","let n=0;let s='';do{n++;if(n===2){continue;}s+=n;}while(n<4);console.log(s,n);",0,"","134 4\n"],
+    ["do-break","let n=0;do{n++;break;}while(missing);console.log(n);",0,"","1\n"],
+    ["do-nested","let i=0;let n=0;do{let j=0;do{j++;if(j===2){break;}n++;}while(true);i++;}while(i<3);console.log(n);",0,"","3\n"],
+    ["do-return","function f(){do{return 7;}while(missing);}console.log(f());",0,"","7\n"],
+    ["do-condition-throw","let marker={};let n=0;function bad(){throw marker;}try{do{n++;}while(bad());}catch(e){console.log(e===marker,n);}",0,"","true 1\n"],
+    ["do-semicolon","let i=0;do{i++;}while(false) console.log(i);",0,"","1\n"],
+    ["do-source","function f(){do{return 3;}while(false);}console.log(f.toString(),f());",0,"","function f(){do{return 3;}while(false);} 3\n"],
     ["string-index-basic","console.log('abca'.indexOf('a'),'abca'.indexOf('a',1),'abca'.indexOf('x'),'abca'.indexOf('bc'));",0,"","0 3 -1 1\n"],
     ["string-index-empty","console.log('abc'.indexOf(''),'abc'.indexOf('',99),''.indexOf(''),''.indexOf('x'),'abc'.indexOf('c',Infinity));",0,"","0 3 0 -1 -1\n"],
     ["string-index-position","console.log('abca'.indexOf('a',NaN),'abca'.indexOf('a',-Infinity),'abca'.indexOf('a',1.9),'abca'.indexOf('a',-1.9),'abca'.indexOf('a',undefined));",0,"","0 0 3 0 0\n"],
@@ -427,6 +435,7 @@ executeDriver("own-property-predicates", { stdout: "Own-property predicates pass
 executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
 executeDriver("object-descriptor-reflection", { stdout: "Property descriptor reflection passed\n" });
+executeDriver("do-while", { stdout: "Do-while passed\n" });
 executeDriver("script-templates", { stdout: "Script templates passed\n" });
 executeDriver("array-iteration", { stdout: "Public array iteration passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });

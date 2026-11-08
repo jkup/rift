@@ -124,7 +124,7 @@ export function collectBlockFunctionAudit(unit: ScriptSourceUnit, body: Stmt[], 
     return analysis.audit();
 }
 
-export type LexicalStatementContext = "if-consequent" | "if-alternate" | "while-body" | "for-body";
+export type LexicalStatementContext = "if-consequent" | "if-alternate" | "while-body" | "do-while-body" | "for-body";
 export type LexicalStatementCandidate = {
     readonly ruleCode: "lexical-declaration-statement";
     readonly context: LexicalStatementContext;
@@ -391,6 +391,7 @@ class DeclarationCollector {
                 }
                 break;
             case "while": this.statement(node.body, scope, variableScope); this.expression(node.test, scope, variableScope); break;
+            case "do-while": this.expression(node.test, scope, variableScope); this.statement(node.body, scope, variableScope); break;
             case "empty": case "break": case "continue": break;
         }
     }

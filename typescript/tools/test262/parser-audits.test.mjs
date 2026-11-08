@@ -73,6 +73,12 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    const loop = rows.find(row => row.id === 'excluded-do');
+    assert.equal(loop.text, 'do let x; while(false);');
+    loop.expected = {kind: 'eligible', sourceUnits: 22, consumedUnits: 22, candidates: [{
+      ruleCode: 'lexical-declaration-statement', context: 'do-while-body',
+      keyword: {text: 'let', start: 3, end: 6, loc: {line: 1, column: 4}},
+    }]};
     for (const [id, text, start] of [
       ['mixed-template-false-false', 'while(false) let x; `x`;', 13],
       ['mixed-template-false-true', '`x`; while(false) let x;', 18],

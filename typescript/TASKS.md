@@ -3122,3 +3122,9 @@ Add Script template literals and interpolation with nested lexical context, cook
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `a2767c5c`, implementation `b5e5ca15`. Both guest suites pass 452/452, full tooling290/290, runner30 and probes10 pass. All 83 native entries pass build and static coverage in one invocation; string driver5008/5008 static. All 225 C++ fixture results agree across hosts: 61 reported successes, 29 unchecked completions, 58 parse errors, 75 runtime errors and two reported failures. The comprehensive template fixture now succeeds; all 89 previously successful or unchecked files retain their outcomes. Reports: build/legacy-suite-node-pAkUn1/report.json and build/legacy-suite-native-K6dnUg/report.json. Logs: build/string-index-*.
 
 Add generic UTF-16 String.prototype.indexOf with receiver/search/position coercion order, omitted arguments, empty needles, clamped positions, abrupt completions and budgets. Validate both hosts and fixed C++ fixtures.
+
+## TS-070 — Do-while loops
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `9c704b1c`.
+
+Add Script do-while parsing and reuse loop completion handling. Preserve body-first evaluation, continue/test order, abrupt propagation, completion values, declaration traversal, isolated block scopes and resource bounds. Update the current lexical audit expectation for the newly recognized do-body context. Validate both hosts and C++ fixtures.

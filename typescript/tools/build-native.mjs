@@ -11,6 +11,7 @@ if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error("RIFT_NATIVE_JOBS m
 mkdirSync(join(root, "build/native"), { recursive: true });
 const run = args => runNativeCommand(scriptc, args, { cwd: root });
 const entries = [
+    ["test/do-while.ts", "do-while"],
     ["test/script-templates.ts", "script-templates"],
     ["test/array-iteration.ts", "array-iteration"],
     ["test/object-descriptor-reflection.ts", "object-descriptor-reflection"],

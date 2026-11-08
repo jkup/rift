@@ -353,6 +353,17 @@ class Parser {
             this.loops--;
             return { kind: "for", loc, initializer, test, update, body };
         }
+        if (this.structuralPlan() && this.eat("do")) {
+            this.loops++;
+            const body = this.branch("do-while-body");
+            this.loops--;
+            this.expect("while");
+            this.expect("(");
+            const test = this.expression(0);
+            this.expect(")");
+            this.eat(";");
+            return { kind: "do-while", loc, test, body };
+        }
         if (this.eat("while")) {
             this.expect("(");
             const test = this.expression(0);

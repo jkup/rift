@@ -758,7 +758,7 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
-            case "for": throw new Error("Script for AST requires Script execution");
+            case "for": case "do-while": throw new Error("Script loop AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "switch": throw new Error("Script switch AST requires Script execution");
             case "try-catch": throw new Error("Script try-catch AST requires Script execution");
@@ -1453,12 +1453,16 @@ class ExecutionEngine {
                     }
                 }
             }
-            case "while": {
+            case "while": case "do-while": {
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
+                let first = true;
                 while (true) {
-                    const test = this.#value(stmt.test);
-                    if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
-                    if (!truthy(test.value)) return { type: "normal", payload: value };
+                    if (stmt.kind === "while" || !first) {
+                        const test = this.#value(stmt.test);
+                        if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
+                        if (!truthy(test.value)) return { type: "normal", payload: value };
+                    }
+                    first = false;
                     const result = this.#statement(stmt.body);
                     if (result.type === "break") {
                         return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };

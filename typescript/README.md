@@ -5,10 +5,10 @@ source is read **at runtime** by Rift; scriptc compiles the interpreter, never t
 guest programs. No host eval, Function, vm, or dynamic compiler fallback is used.
 The original C++ engine remains intact.
 
-The CLI uses the Script evaluator: `var`, `for`, prefix/postfix `++` and `--`, `try`/`catch`, and
+The CLI uses the Script evaluator: `var`, `for`, `do…while`, prefix/postfix `++` and `--`, `try`/`catch`, and
 ordinary `new` calls work alongside the existing subset. Scripts are non-strict
 unless they contain a `"use strict"` directive. Unsupported syntax, including
-`const`, arrows and automatic semicolon insertion, still fails explicitly.
+`const`, arrows and general automatic semicolon insertion, still fails explicitly.
 Object literals accept identifier, string and numeric property names.
 Ordinary template literals support nested interpolation and cooked text; see
 [template behavior](docs/template-literals.md). Tagged templates remain unsupported.

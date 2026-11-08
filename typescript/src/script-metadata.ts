@@ -120,6 +120,7 @@ class MetadataCollector {
                 this.expression(stmt.test, strict, parent);
                 break;
             case "while": this.statement(stmt.body, strict, parent); this.expression(stmt.test, strict, parent); break;
+            case "do-while": this.expression(stmt.test, strict, parent); this.statement(stmt.body, strict, parent); break;
             case "empty": case "break": case "continue": break;
         }
     }

@@ -39,6 +39,6 @@ export type Stmt =
     | SwitchStmt
     | TryCatchStmt
     | { kind: "if"; loc: Location; test: Expr; consequent: Stmt; alternate: Stmt | null }
-    | { kind: "while"; loc: Location; test: Expr; body: Stmt }
+    | { kind: "while" | "do-while"; loc: Location; test: Expr; body: Stmt }
     | { kind: "return" | "throw"; loc: Location; value: Expr | null }
     | { kind: "break" | "continue"; loc: Location };
