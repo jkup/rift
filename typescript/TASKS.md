@@ -3233,7 +3233,7 @@ Add Script Array.prototype.sort with comparator validation before boxing, sparse
 
 ## TS-088 — Array reversed and sorted copies
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 8e6016ad.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 8e6016ad, implementation 4ee14fc1. Both guest suites pass 579/579 with expanded copy assertions, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage; array-copy driver 5869/5869 static. All 225 complete fixture results agree: 78 reported successes, 27 unchecked completions, 53 parse errors, 66 runtime errors and one reported failure. All 105 previously completed outcomes remain. The copy-method fixture passes seven checks and reaches toSpliced. Reports: build/legacy-suite-node-Rd4QTx/report.json and build/legacy-suite-native-0dPlKT/report.json. Logs: build/array-copy-value-*.
 
 Implement toReversed and toSorted with dense copies, ordered reads, no species lookup, builtin Realm allocation and bounded work. Validate both hosts and existing gates.
 

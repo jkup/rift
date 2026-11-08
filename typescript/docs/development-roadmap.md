@@ -252,3 +252,7 @@ merged merely to copy its prose into the repository.
 ### TS-087 checkpoint
 
 Both guest suites pass 579/579, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage; sort driver 5736/5736 static. All 225 complete fixture results agree: 78 reported successes, 27 unchecked completions, 53 parse errors, 66 runtime errors and one reported failure. Three sort fixtures gain success; all 102 previously completed outcomes remain. Reports: build/legacy-suite-node-sj0Gml/report.json and build/legacy-suite-native-lnirqE/report.json. Logs: build/array-sort-*. Next: toReversed/toSorted, then toSpliced/with to complete the original copy-method fixture.
+
+### TS-088 checkpoint
+
+Both guest suites pass 579/579 with expanded copy assertions, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage; array-copy driver 5869/5869 static. All 225 complete fixture results agree: 78 reported successes, 27 unchecked completions, 53 parse errors, 66 runtime errors and one reported failure. All 105 previously completed outcomes remain. The copy-method fixture passes seven checks and reaches toSpliced. Reports: build/legacy-suite-node-Rd4QTx/report.json and build/legacy-suite-native-0dPlKT/report.json. Logs: build/array-copy-value-*. Next: finish copy methods with toSpliced and with, including skipped getter semantics.
