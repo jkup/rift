@@ -3311,6 +3311,6 @@ Implement Script Object.getOwnPropertyNames, getOwnPropertySymbols and getOwnPro
 
 ## TS-101 — Object identity and prototype operations
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 383df384.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 383df384, implementation 8c2e32e9. Both guest suites pass 588/588, full tooling 290/290, runner 31/31 and all ten probes pass. All 101 native entries pass build and static coverage in one invocation; prototype driver 6382/6382 static. Probe emission completed before Node readers, with no output race. Deep 2,000-link inspection/mutation passes and interruption preserves the old prototype. All 225 complete fixture results agree: 84 reported successes, 32 unchecked completions, 53 parse errors, 55 runtime errors and one reported failure. All 116 previously completed outcomes remain; the function-descriptor fixture reaches Object.assign and the newer Object fixture reaches fromEntries. Reports: build/legacy-suite-node-PM6tA2/report.json and build/legacy-suite-native-scW0N8/report.json. Logs: build/object-prototype-methods-*.
 
 Implement Script Object.is/getPrototypeOf/setPrototypeOf and Object.prototype.isPrototypeOf. Preserve primitive ordering, SameValue, immutable/nonextensible prototypes, cycles and Realm behavior. Share trusted-host and metered guest prototype mutation without duplicate traversal; bound guest chain inspection and mutation.
