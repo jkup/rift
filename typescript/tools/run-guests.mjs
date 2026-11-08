@@ -550,6 +550,7 @@ executeDriver("radix-literals", { stdout: "Radix literals passed\n" });
 executeDriver("decimal-literals", { stdout: "Decimal literals passed\n" });
 executeDriver("global-numeric-predicates", { stdout: "Global numeric predicates passed\n" });
 executeDriver("array-sort", { stdout: "Array sort passed\n" });
+executeDriver("string-split", { stdout: "String split passed\n" });
 executeDriver("array-copy", { stdout: "Array copy passed\n" });
 executeDriver("json-parse", { stdout: "JSON parse passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });

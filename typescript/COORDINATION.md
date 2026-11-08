@@ -1762,3 +1762,5 @@ The owner authorized continued development and frequent commits. Defer the prove
 2026-11-08 TS-091 claimed by Codex catch-up chat. Scope: shared whitespace predicate and Script trim methods, semantic tests and current Script inventories.
 
 2026-11-08 TS-091 accepted, implementation 328356c0. Both guest suites pass 579/579, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage in one invocation; string driver 6078/6078 static. All 225 complete fixture results agree: 80 reported successes, 27 unchecked completions, 53 parse errors, 64 runtime errors and one reported failure. All 107 previously completed outcomes remain. Comprehensive string tests now reach split; chaining reaches toLowerCase. Reports: build/legacy-suite-node-tVUzmH/report.json and build/legacy-suite-native-Asf0kF/report.json. Logs: build/string-trim-*. Next: String split with ordered custom protocol dispatch and bounded string splitting.
+
+2026-11-08 TS-092 claimed by Codex catch-up chat. Scope: string split, internal well-known split identity, dedicated semantic driver and inventories.

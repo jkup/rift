@@ -1,3 +1,4 @@
+import { registerStringSplit } from "./builtins/string-split.js";
 import { registerArraySort, registerArrayToSorted } from "./builtins/array-sort.js";
 import { registerArraySlice, registerArrayConcat, registerArrayToReversed, registerArrayToSpliced, registerArrayWith } from "./builtins/array-copy.js";
 import { registerJSON } from "./builtins/json.js";
@@ -94,6 +95,7 @@ export class Realm {
         registerBooleanConversions(this);
         registerStringConversions(this);
         registerStringMethods(this);
+        if (profile === "script") registerStringSplit(this);
         registerNumberConversions(this);
         if (profile === "legacy") this.legacyGlobal = new Environment(null);
         else {

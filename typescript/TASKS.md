@@ -3255,3 +3255,9 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 31525b3d, impleme
 
 Add Script trim/trimStart/trimEnd with shared numeric-conversion whitespace classification, ordered generic receiver coercion, bounded scanning and UTF-16 preservation. Validate both hosts and existing gates; aliases remain separate.
 
+## TS-092 — String split and custom split protocol
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 8f54e950.
+
+Implement Script split with RequireObjectCoercible before custom split lookup, original callback arguments, receiver/limit/separator coercion order, UTF-16 units, bounded dense results and builtin Realm allocation. RegExp/public Symbol installation remain separate. Validate both hosts and fixed fixtures.
+
