@@ -5,6 +5,7 @@ import { toPropertyKey } from "../conversion.js";
 import { registerObjectEnumeration } from "./object-enumeration.js";
 import { registerObjectDescriptors } from "./object-descriptors.js";
 import { registerObjectIntegrity } from "./object-integrity.js";
+import { registerObjectPrototypes } from "./object-prototypes.js";
 import { GuestArray } from "../array-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
@@ -47,6 +48,7 @@ export function registerObject(realm: Realm): void {
         if (object.type === "throw") return object;
         return normal({ kind: "boolean", value: object.value.getOwnProperty(key.value) !== undefined });
     });
+    registerObjectPrototypes(realm, constructor);
     realm.defineScriptGlobal("Object", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
 

@@ -182,11 +182,23 @@ export class GuestObject {
     }
     getPrototypeOf(): GuestObject | null { return this.prototypeSlot; }
     setPrototypeOf(prototype: GuestObject | null): BooleanCompletion {
+        const result = this.changePrototype(prototype, null, null);
+        if (result.type === "throw") throw new Error("trusted prototype mutation interrupted");
+        return result;
+    }
+    internalSetPrototypeOf(prototype: GuestObject | null, context: OperationContext, loc: Location): InternalBooleanCompletion {
+        return this.changePrototype(prototype, context, loc);
+    }
+    private changePrototype(prototype: GuestObject | null, context: OperationContext | null, loc: Location | null): InternalBooleanCompletion {
         if (prototype === this.prototypeSlot) return { type: "normal", value: true };
         if (this.immutablePrototypeSlot) return { type: "normal", value: false };
         if (!this.extensible) return { type: "normal", value: false };
         let candidate = prototype;
         while (candidate !== null) {
+            if (context !== null && loc !== null) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") return tick;
+            }
             if (candidate === this) return { type: "normal", value: false };
             candidate = candidate.prototypeSlot;
         }

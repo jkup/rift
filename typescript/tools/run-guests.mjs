@@ -552,6 +552,7 @@ executeDriver("global-numeric-predicates", { stdout: "Global numeric predicates 
 executeDriver("array-sort", { stdout: "Array sort passed\n" });
 executeDriver("string-split", { stdout: "String split passed\n" });
 executeDriver("array-flat", { stdout: "Array flattening passed\n" });
+executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });
 executeDriver("object-integrity", { stdout: "Object integrity passed\n" });

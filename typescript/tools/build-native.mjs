@@ -17,6 +17,7 @@ const entries = [
     ["test/object-integrity.ts", "object-integrity"],
     ["test/object-create.ts", "object-create"],
     ["test/object-reflection.ts", "object-reflection"],
+    ["test/object-prototype-methods.ts", "object-prototype-methods"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],
