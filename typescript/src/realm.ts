@@ -14,6 +14,7 @@ import { registerArray, registerArrayConversions } from "./builtins/array.js";
 import { registerArrayMutators } from "./builtins/array-mutation.js";
 import { registerArraySearch } from "./builtins/array-search.js";
 import { registerArrayPredicates } from "./builtins/array-predicate.js";
+import {registerMath} from "./builtins/math.js";
 import { registerArrayReduction } from "./builtins/array-reduce.js";
 import { registerScriptArrayIteration } from "./builtins/array-iteration.js";
 import { GlobalEnvironment } from "./global-environment.js";
@@ -106,6 +107,7 @@ export class Realm {
             registerBoolean(this);
             registerObject(this);
             this.arrayConstructor = registerArray(this);
+            registerMath(this);
             registerScriptArrayIteration(this);
         }
     }

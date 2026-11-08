@@ -40,6 +40,9 @@ accessor attributes; see [descriptor reflection](docs/property-descriptor-reflec
 Strings support `indexOf`, `charAt`, `charCodeAt` and `slice` with UTF-16 indexing; see
 [string methods](docs/string-methods.md).
 
+Math exposes its standard constants and `abs`, `ceil`, `floor`, `round`, `sign`
+and `trunc`; see [Math behavior](docs/math-unary.md).
+
 Boolean calls and construction preserve primitive versus boxed values; see
 [Boolean behavior](docs/boolean-constructor.md). The
 [C++ fixture baseline](docs/legacy-fixture-baseline.md) tracks concrete coverage gaps.

@@ -3128,3 +3128,9 @@ Add generic UTF-16 String.prototype.indexOf with receiver/search/position coerci
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `9c704b1c`, implementation `998bc6d6`, correction `54d954fc`. Both guest suites pass 461/461, full tooling290/290, runner30 and probes10 pass. All 84 native entries pass build and static coverage in the restarted invocation; loop driver4904/4904 static. Initial Node457/461 caught a stale do rejection and an unnecessarily reworded legacy host guard; 54d954fc restores the diagnostic and checks break outside the completed loop instead. The initial native run was interrupted; original logs are retained. All 225 C++ fixture results agree across hosts: 64 reported successes, 29 unchecked completions, 55 parse errors, 75 runtime errors and two reported failures. All three do-while fixtures succeed, and all 90 previously successful or unchecked files retain their outcomes. Logs: build/do-while-*.
 
 Add Script do-while parsing and reuse loop completion handling. Preserve body-first evaluation, continue/test order, abrupt propagation, completion values, declaration traversal, isolated block scopes and resource bounds. Update the current lexical audit expectation for the newly recognized do-body context. Validate both hosts and C++ fixtures.
+
+## TS-071 — Math constants and unary methods
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `b65f9549`.
+
+Add a per-Realm Script Math object, eight standard constants and abs/ceil/floor/round/sign/trunc. Preserve numeric coercion, NaN/infinity/signed-zero behavior, descriptors, nonconstructibility and resource limits. Validate both hosts and fixed C++ fixtures; keep other Math methods separate.

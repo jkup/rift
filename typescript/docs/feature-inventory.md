@@ -76,6 +76,8 @@ TS-069 adds generic string `indexOf`; see [string methods](string-methods.md).
 
 TS-070 adds Script `do…while`; see [loop behavior](do-while.md).
 
+TS-071 adds Math constants and six unary numeric methods; see [Math](math-unary.md).
+
 TS-063 adds generic `shift` and `unshift`, preserving holes and partial mutations;
 see [array mutation](array-mutation.md).
 

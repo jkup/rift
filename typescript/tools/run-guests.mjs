@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["math-basic","console.log(Math.abs(-5),Math.ceil(-2.3),Math.floor(-2.3),Math.round(-1.5),Math.trunc(-2.7),Math.sign(-2));",0,"","5 -2 -3 -1 -2 -1\n"],
+    ["math-zero","console.log(1/Math.abs(-0),1/Math.ceil(-0.1),1/Math.floor(-0),1/Math.round(-0.5),1/Math.sign(-0),1/Math.trunc(-0.7));",0,"","Infinity -Infinity -Infinity -Infinity -Infinity -Infinity\n"],
+    ["math-arguments","console.log(Math.abs(),Math.ceil(undefined),Math.floor(null),Math.round('2.7'),Math.sign(false),Math.trunc(true));",0,"","NaN NaN 0 3 0 1\n"],
+    ["math-rounding","console.log(Math.round(0.49999999999999994),Math.round(0.5),Math.round(-2.5),Math.round(Infinity),Math.round(-Infinity));",0,"","0 1 -2 Infinity -Infinity\n"],
+    ["math-descriptors","let d=Object.getOwnPropertyDescriptor(Math,'PI');console.log(d.value===3.141592653589793,d.writable,d.enumerable,d.configurable);Math.PI=0;console.log(Math.PI===3.141592653589793,delete Math.PI,Object.keys(Math).length);",0,"","true false false false\ntrue false 0\n"],
+    ["math-metadata","console.log(Object.prototype.toString.call(Math),Math.abs.name,Math.abs.length,Math.ceil.length,Math.floor.length,Math.round.length,Math.sign.length,Math.trunc.length);",0,"","[object Math] abs 1 1 1 1 1 1\n"],
+    ["math-nonconstructible","try{Math();}catch(e){console.log(e.name);}try{new Math();}catch(e){console.log(e.name);}try{new Math.abs(1);}catch(e){console.log(e.name);}console.log(Math.abs.call(null,-7));",0,"","TypeError\nTypeError\nTypeError\n7\n"],
+    ["math-conversion","let s='';let x={valueOf:function(){s+='v';return {};},toString:function(){s+='s';return '-2.7';}};console.log(Math.floor(x),s);",0,"","-3 vs\n"],
     ["do-once","let n=0;do{n++;}while(false);console.log(n);",0,"","1\n"],
     ["do-continue","let n=0;let s='';do{n++;if(n===2){continue;}s+=n;}while(n<4);console.log(s,n);",0,"","134 4\n"],
     ["do-break","let n=0;do{n++;break;}while(missing);console.log(n);",0,"","1\n"],
@@ -435,6 +443,7 @@ executeDriver("own-property-predicates", { stdout: "Own-property predicates pass
 executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
 executeDriver("object-descriptor-reflection", { stdout: "Property descriptor reflection passed\n" });
+executeDriver("math-unary", { stdout: "Math unary passed\n" });
 executeDriver("do-while", { stdout: "Do-while passed\n" });
 executeDriver("script-templates", { stdout: "Script templates passed\n" });
 executeDriver("array-iteration", { stdout: "Public array iteration passed\n" });
