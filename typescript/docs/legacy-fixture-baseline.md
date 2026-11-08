@@ -45,6 +45,14 @@ does not inject simulated GC helpers: ten runtime failures name `gc`, `gcStats`
 or `createArray`. Those are harness dependencies, not evidence of broken guest
 semantics. A successful file with no checks is kept separate.
 
+Two additional baseline outcomes need interpretation before feature work:
+array-index-validation-test.js:91 assigns a nonnumeric string to array length and
+expects execution to continue. The current RangeError agrees with
+[ArraySetLength](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-arraysetlength).
+throw-comprehensive-test.js:8 deliberately throws an uncaught string and says the
+following statement must not run. Preserve both fixtures and their runtime-error
+classifications; these first failures are not missing interpreter features.
+
 Useful next gaps include Array and Boolean constructors (six and three first
 failures), update expressions (four `--` failures and one prefix `++` failure),
 and missing array/object/string methods (35 not-callable failures). Templates

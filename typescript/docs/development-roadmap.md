@@ -60,9 +60,20 @@ fixture with incorrect expectations for string enumeration. This does not imply
 only one engine gap: runtime and parse errors remain separate categories.
 TS-084 accepts generic Array.slice with 556/556 guest tests on each host and all
 91 native entries passing static gates. The two fixtures first blocked on slice
-now reach concat; classifications are unchanged. Next: generic concat, then other
-missing array operations reached by the fixed fixtures. Callable JSON revivers and custom Array species construction
+now reach concat; classifications are unchanged. TS-085 accepts concat with
+563/563 guest tests on each host, all 91 native static gates and all 290 tooling
+checks. Array-gc-success gains reported success: the fixed baseline now has 74
+reported successes, 27 unchecked completions, 53 parse errors, 70 runtime errors
+and one reported failure. Next: filter, now reached by array-gc-tracking. Callable JSON revivers and custom Array species construction
 remain explicit unsupported behavior; JSON.stringify remains absent.
+
+Two additional baseline outcomes need interpretation before feature work:
+array-index-validation-test.js:91 assigns a nonnumeric string to array length and
+expects execution to continue. The current RangeError agrees with
+[ArraySetLength](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-arraysetlength).
+throw-comprehensive-test.js:8 deliberately throws an uncaught string and says the
+following statement must not run. Preserve both fixtures and their runtime-error
+classifications; these first failures are not missing interpreter features.
 
 ## Findings and next work
 
