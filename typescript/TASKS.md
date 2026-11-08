@@ -2990,3 +2990,9 @@ Restore ordinary execution of global-environment, Script global declarations, re
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `0944c8d0`. Three inspection tests pass:136 metadata snapshots,135 declaration plans/winners and154 ASCII serializer records in both hosts. The shared runner also passes all5 parser-audit tests. The initial declaration mismatch was the documented H1 catchParameter schema migration; the test now uses its accepted replay, with old fixtures unchanged.
 
 Execute the three remaining inspection/serialization drivers in ordinary tooling tests. Compare metadata snapshots, declaration-plan literals and winners, and all frozen ASCII serializer rows in both hosts. Preserve current driver assertions and historical fixtures, keep reports in build/, and distinguish these regressions from conformance or replay of obsolete parser snapshots.
+
+## TS-048 — Routine radix formatter validation
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `1cb6386c`. The ordinary tooling wrapper passes all 14768 inputs per host, exact oracle checks, malformed controls and resource bounds. Reports now default to build/; historical evidence is unchanged. Log: build/number-radix-restored.log.
+
+Include the existing exact radix oracle checks in ordinary tooling validation and redirect their default output away from historical evidence. Preserve all14768 inputs per host, controls, shortest-roundtrip checks, resource bounds and benchmarks. Use existing fresh drivers; do not rebuild or change formatter semantics.

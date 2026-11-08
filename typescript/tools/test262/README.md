@@ -36,6 +36,11 @@ hosts. The declaration expectations use the accepted catch-scope schema. All
 136/135 inputs are read after compilation; serializer checks cover both runtime
 input files and exact ASCII bytes.
 
+`number-radix.test.mjs` runs the existing exact radix oracle on all 14768 inputs
+per host, including malformed controls, shortest-roundtrip checks and resource
+bounds. Its reports go to a unique scratch directory. Direct invocation of
+`tools/test-number-radix.mjs` defaults to `build/number-radix/`.
+
 Start with `input.mjs` for pinned input validation, `script-plan.mjs` for Script
 selection, `script-observe.mjs` for observation launches, and `script-result.mjs`
 for result decoding. `test-support/` contains live test helpers; files under

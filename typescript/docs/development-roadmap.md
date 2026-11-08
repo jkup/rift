@@ -61,6 +61,21 @@ A more precise command-path scan also flags ten earlier Script/global-environmen
 bundle and observation-inspection drivers for verification; broad substring
 matches in the initial scan were insufficient evidence that a driver ran.
 
+TS-046/047 restore those ten drivers. The guest suites now pass 284/284 in
+each host. Additional tooling checks compare 136 metadata snapshots, 135
+declaration plans and 154 serializer records against accepted expectations.
+TS-048 brings the exact radix oracle into the ordinary tooling command, with
+14768 inputs per host and reports under `build/`.
+
+The 70 compiled test drivers now have identified execution routes: 55 through
+the guest runner, five through parser audits, three through inspection tests,
+four through dispatch tests, one through Script preflight tests, one through
+the radix oracle, and one through `npm run test:observations`. This accounts for
+driver entry points, not every historical mode or full ECMAScript coverage.
+
+The combined tooling run passes all 290 tests with zero skips
+(`build/current-tooling.log`), using the current Node and native builds.
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |

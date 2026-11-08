@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { shortest, judge, roundingInterval } from '../fixtures/assistance/radix-formatter-options/oracle.mjs';
 import { probeVerdict } from './probe-verdict.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
-const evidence = new URL(process.env.RIFT_RADIX_EVIDENCE ?? '../docs/validation/ts-032a/', import.meta.url);
+const evidence = new URL(process.env.RIFT_RADIX_EVIDENCE ?? '../build/number-radix/', import.meta.url);
 mkdirSync(evidence, { recursive: true });
 if (process.argv.includes('--build')) {
     const invoke = (command, args) => {
