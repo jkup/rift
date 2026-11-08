@@ -29,3 +29,9 @@ underflow, UTF-16 escapes, malformed grammar, nested values, duplicate propertie
 Realm ownership, coercion, reviver precedence and step bounds. CLI cases cover
 ordinary user-facing parsing and namespace metadata. Validation is recorded in
 TASKS.md and COORDINATION.md after both hosts complete.
+
+The initial native JSON test driver used join on PropertyKey[], whose element type
+includes GuestSymbol. The pinned compiler rejects that operation (SC1090). A reduced
+probe preserves the rejection and verifies direct indexed assertions under both
+hosts with 4/4 static statements. Only the test assertion changed; the parser needed
+no compiler workaround. Probe files and logs: build/json-key-probe-*.

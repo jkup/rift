@@ -52,11 +52,15 @@ commits remain on codex/test262-classification, without a push or merge.
 TS-081 corrected fixture reporting to recognize explicit passed/failed numeric
 summaries, retain process-error precedence and avoid double counting. Historical
 reports are preserved. Unchecked completions are not counted as successes.
-The remaining string-validation failure prints4/6 passed and2/6 failed because
-JSON.parse is absent. Next: strict bounded JSON parsing into guest values;
-callable reviver support needs its own explicit scope, not silent omission.
-Custom Array species construction likewise remains explicit unsupported behavior
-until builtin contexts have construction authority.
+TS-083 adds strict bounded JSON parsing: string validation and JSON memory safety
+now report 6/6 and 7/7 respectively. Both hosts agree on 73 reported successes,
+27 unchecked completions, 53 parse errors, 71 runtime errors and one reported
+failure. The remaining reported failure is the preserved object-keys-values
+fixture with incorrect expectations for string enumeration. This does not imply
+only one engine gap: runtime and parse errors remain separate categories.
+Next: generic Array.slice, followed by other missing array operations reached by
+the fixed fixtures. Callable JSON revivers and custom Array species construction
+remain explicit unsupported behavior; JSON.stringify remains absent.
 
 ## Findings and next work
 
