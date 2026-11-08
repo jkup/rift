@@ -456,7 +456,7 @@ for(const cross of [false,true]){
 }
 for(const r of [fresh(),fresh()]){
  keys(r.globalObject,["undefined","NaN","Infinity","console","Number","Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Object"]);
- keys(r.stringPrototype,["length","toString","valueOf","constructor"]);keys(r.objectPrototype,["valueOf","toString","constructor"]);
+ keys(r.stringPrototype,["length","toString","valueOf","charAt","charCodeAt","slice","constructor"]);keys(r.objectPrototype,["valueOf","toString","constructor"]);
  for(const name of ["String","Object"]){const cv=own(r.globalObject,name),ctor=object(cv),proto=name==="String"?r.stringPrototype:r.objectPrototype;
   descriptor(r.globalObject,name,cv,true,false,true);descriptor(ctor,"name",str(name),false,false,true);descriptor(ctor,"length",num(1),false,false,true);descriptor(ctor,"prototype",obj(proto),false,false,false);descriptor(proto,"constructor",cv,true,false,true);keys(ctor,["name","length","prototype"]);check(ctor.getPrototypeOf()===r.functionPrototype,"F10 Function link");
   const c=ctor.callable,k=ctor.constructorSlot;check(c!==null&&c.kind==="builtin"&&c.realm===r&&k!==null&&k.kind==="builtin-constructor"&&k.realm===r&&k.callable===c,"F10 exact guard graph");
@@ -465,7 +465,7 @@ for(const r of [fresh(),fresh()]){
  check(object(own(r.globalObject,"Number")).callable===null&&object(own(r.globalObject,"Number")).constructorSlot===null,"Number namespace");
 }
 {
- const legacy=new Realm((_line:string)=>{});check([...legacy.global.bindings.keys()].join(",")==="undefined,NaN,Infinity,console,Number","legacy whitelist");keys(legacy.stringPrototype,["length","toString","valueOf"]);keys(legacy.objectPrototype,["valueOf","toString"]);
+ const legacy=new Realm((_line:string)=>{});check([...legacy.global.bindings.keys()].join(",")==="undefined,NaN,Infinity,console,Number","legacy whitelist");keys(legacy.stringPrototype,["length","toString","valueOf","charAt","charCodeAt","slice"]);keys(legacy.objectPrototype,["valueOf","toString"]);
  const a=fresh(),b=fresh();for(const name of ["String","Object"]){check(!sameValue(own(a.globalObject,name),own(b.globalObject,name)),"distinct Realm constructors");}
 }
 console.log("PASS F01-F12 semantics metadata UTF16 legacy cross-Realm");

@@ -38,6 +38,9 @@ and its numeric-literal string conversion. The C++ engine's
 was consulted for grammar scope; the TypeScript AST stores normalized string
 keys rather than adding a separate numeric-key node.
 
+TS-054 adds generic String `charAt`, `charCodeAt` and `slice`, preserving UTF-16
+code units and observable conversion order. See [string methods](string-methods.md).
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a

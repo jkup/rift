@@ -77,7 +77,7 @@ export function testBooleanStringConversions(): void {
         const realms = [a, b, c];
         const methods = [family.root.get("toString", evaluator.context, loc), family.root.get("valueOf", evaluator.context, loc)];
         for (let r = 0; r < roots.length; r++) {
-            keys(roots[r].ownPropertyKeys(), family.label === "string" ? ["length", "toString", "valueOf"] : ["toString", "valueOf"]);
+            keys(roots[r].ownPropertyKeys(), family.label === "string" ? ["length", "toString", "valueOf", "charAt", "charCodeAt", "slice"] : ["toString", "valueOf"]);
             check(!sameValue(roots[r].get("toString", evaluator.context, loc), roots[r].get("valueOf", evaluator.context, loc)), "distinct methods");
             for (const name of ["toString", "valueOf"]) {
                 const descriptor = roots[r].getOwnProperty(name);

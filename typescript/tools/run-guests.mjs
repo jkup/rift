@@ -96,6 +96,15 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("string-char-at", "console.log('abc'.charAt(),'abc'.charAt(1.9),'abc'.charAt(-0.9),'abc'.charAt(NaN),'abc'.charAt(-1).length,'abc'.charAt(Infinity).length);", {stdout:"a b a a 0 0\n"});
+lineCase("string-char-code", "console.log('abc'.charCodeAt(),'abc'.charCodeAt(1.9),'abc'.charCodeAt(-0.9),Number.isNaN('abc'.charCodeAt(3)),Number.isNaN(''.charCodeAt()));", {stdout:"97 98 97 true true\n"});
+lineCase("string-utf16-methods", "let s='A😀Z'; console.log(s.charCodeAt(0),s.charCodeAt(1),s.charCodeAt(2),s.charCodeAt(3),s.slice(1,3)==='😀',s.slice(1,2).charCodeAt(0),s.charAt(2).charCodeAt(0));", {stdout:"65 55357 56832 90 true 55357 56832\n"});
+lineCase("string-slice-bounds", "let s='abcdef'; console.log(s.slice(),s.slice(1,-1),s.slice(-2),s.slice(4,1).length,s.slice(Infinity).length,s.slice(-Infinity,Infinity),s.slice(-0.9,2.9));", {stdout:"abcdef bcde ef 0 0 abcdef ab\n"});
+lineCase("string-slice-end", "console.log('abc'.slice(1,undefined),'abc'.slice(1,null).length,'abc'.slice(0,NaN).length,'abc'.slice(-99,99));", {stdout:"bc 0 0 abc\n"});
+lineCase("string-method-generic", "console.log(''.charAt.call(12345,2),''.charCodeAt.call(true,1),''.slice.call(new String('abc'),1));", {stdout:"3 114 bc\n"});
+lineCase("string-method-coercion", "let trace=''; let o={toString:function(){trace+='R';return 'abcd';}}; let start={valueOf:function(){trace+='S';return 1;}}; let end={valueOf:function(){trace+='E';return 3;}}; console.log(''.slice.call(o,start,end),trace);", {stdout:"bc RSE\n"});
+lineCase("string-method-errors", "try{''.charAt.call(null);}catch(e){console.log(e.name);} try{''.charCodeAt.call(undefined);}catch(e){console.log(e.name);} try{''.slice.call(null);}catch(e){console.log(e.name);} try{'abc'.slice({valueOf:function(){throw 'start';}});}catch(e){console.log(e);}", {stdout:"TypeError\nTypeError\nTypeError\nstart\n"});
+lineCase("string-method-metadata", "console.log(''.charAt.name,''.charAt.length,''.charCodeAt.name,''.charCodeAt.length,''.slice.name,''.slice.length);", {stdout:"charAt 1 charCodeAt 1 slice 2\n"});
 lineCase("object-numeric-keys", "let o={0:'zero',12:'twelve',0.50:'half'}; console.log(o[0],o[12],o[0.5],o['0.50']);", {stdout:"zero twelve half undefined\n"});
 lineCase("object-numeric-duplicates", "let trace=''; function mark(x){trace+=x;return x;} let o={1:mark('a'),1.0:mark('b'),'1':mark('c')}; console.log(trace,o[1],'1.0' in o);", {stdout:"abc c false\n"});
 lineCase("object-numeric-rounding", "let o={9007199254740993:7,9007199254740992:11}; console.log(o['9007199254740992'],o['9007199254740993']);", {stdout:"11 undefined\n"});
@@ -284,6 +293,7 @@ for (const [name, text] of [["seed", bootstrapRows], ["other", bootstrapRows.rep
     writeFileSync(file, text);
     executeDriver("script-realm-bootstrap", { stdout: bootstrapExpected }, [file], "script-realm-bootstrap-" + name);
 }
+executeDriver("string-methods", { stdout: "string methods passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });

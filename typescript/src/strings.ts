@@ -3,6 +3,7 @@
 export type GuestString = string;
 export function stringLength(value: GuestString): number { return value.length; }
 export function stringUnit(value: GuestString, index: number): GuestString { return value.charAt(index); }
+export function stringCodeUnit(value: GuestString, index: number): number { return value.charCodeAt(index); }
 export function stringConcat(left: GuestString, right: GuestString): GuestString { return left + right; }
 
 // Compare code units, not code points: a supplementary character's leading

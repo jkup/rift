@@ -9,7 +9,7 @@ import { registerRestrictedFunctionProperties } from "./builtins/restricted-func
 import { registerObject, registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
 import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBooleanConversions } from "./builtins/boolean.js";
-import { registerString, registerStringConversions } from "./builtins/string.js";
+import { registerString, registerStringConversions, registerStringMethods } from "./builtins/string.js";
 import { registerArrayConversions } from "./builtins/array.js";
 import { registerArrayMutators } from "./builtins/array-mutation.js";
 import { registerArraySearch } from "./builtins/array-search.js";
@@ -75,6 +75,7 @@ export class Realm {
         registerSymbolConversions(this);
         registerBooleanConversions(this);
         registerStringConversions(this);
+        registerStringMethods(this);
         registerNumberConversions(this);
         if (profile === "legacy") this.legacyGlobal = new Environment(null);
         else {

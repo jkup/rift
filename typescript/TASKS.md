@@ -3026,3 +3026,9 @@ Accept currently supported numeric literal tokens as object keys, using their ca
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `63a9c52a`. Two workers completed all 74 native entries in 233 seconds versus approximately 483 seconds sequentially on this machine. Ordered entries, verdicts and complete coverage reports match exactly. All 307 native guest results also match exactly; runner27 passes including timeout, launch, exit and output-overflow failures. Default two workers retained with RIFT_NATIVE_JOBS override. Logs: build/native-two-workers*.
 
 Measure a two-worker native build against the completed 483-second sequential run. Preserve every entry, static-only compilation, independent coverage, failure records and result order. Keep an explicit one-worker option. Test subprocess failures, timeouts and worker bounds before running all native entries; retain concurrency only if it improves the measured loop without weakening acceptance.
+
+## TS-054 — Basic string indexing and slicing
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `ad1953fc`.
+
+Implement generic charAt, charCodeAt and slice with UTF-16 code-unit behavior, nullish rejection, receiver-before-position coercion, integer/infinity bounds and abrupt completion. Test surrogate halves, lone surrogates, primitive/boxed receivers, hooks and budgets in both hosts. Preserve String constructor/conversion behavior and exact prototype inventories; require a fresh static native build.
