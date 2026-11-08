@@ -302,7 +302,7 @@ Both guest suites pass 584/584, full tooling 290/290, runner 31/31 and all ten p
 
 Both guest suites pass 585/585, full tooling 290/290, runner 31/31 and all ten probes pass. All 98 native entries pass build and static coverage in one invocation; integrity driver 6249/6249 static. All 225 complete fixture results agree: 84 reported successes, 31 unchecked completions, 53 parse errors, 56 runtime errors and one reported failure. frozen-sealed-typeerror-test.js now reports success with 17 checks; all 114 previously completed outcomes remain. Reports: build/legacy-suite-node-799kx0/report.json and build/legacy-suite-native-fAssOl/report.json. Logs: build/object-integrity-*. Next: Object.defineProperties and Object.create, preserving descriptor collection before application and partial writes on application failure.
 
-### Current bootstrap inventory readability
+### Current bootstrap inventory readability — addressed in TS-103
 
 Current builtin inventories are repeated in script-realm-bootstrap.ts, harness-formatting.ts and harness-errors-a.ts. TS-096 exposed stale expectations in the last driver; the prototype metadata dispatch also contains a long inline method-length expression. Review these current test contracts for a small, readable test-only inventory representation and clearer metadata checks. First distinguish intentional independent coverage from accidental duplication; preserve historical frozen inventories and do not derive expected metadata from implementation registration. This is a follow-up, not authority to relax acceptance checks.
 
@@ -321,3 +321,7 @@ Both guest suites pass 588/588, full tooling 290/290, runner 31/31 and all ten p
 ### TS-102 checkpoint
 
 Both guest suites pass 589/589, full tooling 290/290, runner 31/31 and all ten probes pass. All 102 native entries pass build and static coverage in one invocation; assignment driver 6403/6403 static. All 225 complete fixture results agree: 84 reported successes, 33 unchecked completions, 53 parse errors, 54 runtime errors and one reported failure. test-object-function-descriptors.js now completes and prints 20 passed, 0 failed; its summary is not a recognized check marker and remains classified unchecked. All 116 previously completed outcomes remain. Reports: build/legacy-suite-node-r44VJS/report.json and build/legacy-suite-native-mThG5d/report.json. Logs: build/object-assign-*. Next: current inventory readability/duplication audit, followed by public Symbol APIs.
+
+### TS-103 checkpoint
+
+Both guest suites pass 589/589 with no skips; tooling 290/290, runner 31/31 and all ten probes pass. All three affected native test drivers pass fresh static-only builds and separate static coverage gates. Literal parity checks preserve globals, Object keys/arities and 63 prototype method occurrences. Production sources are unchanged; the other native entries and fixed C++ fixture results retain the TS-102 baseline, not a new full rebuild. Evidence: build/bootstrap-inventory-{parity.log,native-results.json,node.log,native.log,tooling.log}. Shared expectations are literal test data, independent of runtime registration; all three drivers and frozen historical inventories remain intact.
