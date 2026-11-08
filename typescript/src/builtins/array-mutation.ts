@@ -1,8 +1,10 @@
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
 import { lengthOfArrayLike } from "../array-like.js";
-import { numberToString } from "../conversion.js";
+import { numberToString, toIntegerOrInfinity } from "../conversion.js";
 import { languageFailure, normal, UNDEFINED, type Value, type GuestObject, type OperationContext, type ValueCompletion } from "../runtime.js";
+import { toPrimitive } from "../primitive-conversion.js";
+import { createDefaultSpeciesArray } from "../array-species.js";
 import type { Location } from "../syntax.js";
 
 function deleteProperty(object: GuestObject, key: string, context: OperationContext, loc: Location): ValueCompletion {
@@ -167,5 +169,78 @@ export function registerArrayMutators(realm: Realm): void {
             }
         }
         return normal(result);
+    });
+}
+
+export function registerArraySplice(realm: Realm): void {
+    realm.registerBuiltin(realm.arrayPrototype, "splice", 2, (receiver, args, context, loc): ValueCompletion => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const object = boxed.value;
+        const length = lengthOfArrayLike(object, context, loc);
+        if (length.type === "throw") return length;
+        const primitiveStart = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
+        if (primitiveStart.type === "throw") return primitiveStart;
+        const relative = toIntegerOrInfinity(primitiveStart.value, loc, context.realm);
+        if (relative.type === "throw") return relative;
+        const start = relative.value < 0 ? Math.max(length.value + relative.value, 0) : Math.min(relative.value, length.value);
+        let deleteCount = args.length === 0 ? 0 : length.value - start;
+        if (args.length > 1) {
+            const primitive = toPrimitive(args[1], "number", context, loc);
+            if (primitive.type === "throw") return primitive;
+            const count = toIntegerOrInfinity(primitive.value, loc, context.realm);
+            if (count.type === "throw") return count;
+            deleteCount = Math.min(Math.max(count.value, 0), length.value - start);
+        }
+        const itemCount = Math.max(args.length - 2, 0);
+        const nextLength = length.value - deleteCount + itemCount;
+        if (nextLength > 9007199254740991) return languageFailure(context.realm, "TypeError", "splice exceeds maximum array-like length", loc);
+        const created = createDefaultSpeciesArray(object, deleteCount, "splice", context, loc);
+        if (created.type === "throw") return created;
+        const deleted = created.value;
+        for (let index = 0; index < deleteCount; index++) {
+            const step = context.tick(loc);
+            if (step.type === "throw") return step;
+            const key = numberToString(start + index);
+            const present = object.internalHasProperty(key, loc);
+            if (present.type === "throw") return present;
+            if (!present.value) continue;
+            const value = object.internalGet(key, { kind: "object", object }, context, loc);
+            if (value.type === "throw") return value;
+            const defined = deleted.defineOwnProperty(numberToString(index), { value: value.value, writable: true, enumerable: true, configurable: true }, context, loc);
+            if (defined.type === "throw") return defined;
+            if (!defined.value) throw new Error("fresh splice array element invariant");
+        }
+        if (itemCount < deleteCount) {
+            for (let index = start; index < length.value - deleteCount; index++) {
+                const step = context.tick(loc);
+                if (step.type === "throw") return step;
+                const moved = moveProperty(object, numberToString(index + deleteCount), numberToString(index + itemCount), context, loc);
+                if (moved.type === "throw") return moved;
+            }
+            for (let index = length.value; index > nextLength; index--) {
+                const step = context.tick(loc);
+                if (step.type === "throw") return step;
+                const removed = deleteProperty(object, numberToString(index - 1), context, loc);
+                if (removed.type === "throw") return removed;
+            }
+        } else if (itemCount > deleteCount) {
+            for (let index = length.value - deleteCount; index > start; index--) {
+                const step = context.tick(loc);
+                if (step.type === "throw") return step;
+                const moved = moveProperty(object, numberToString(index + deleteCount - 1), numberToString(index + itemCount - 1), context, loc);
+                if (moved.type === "throw") return moved;
+            }
+        }
+        for (let index = 0; index < itemCount; index++) {
+            const step = context.tick(loc);
+            if (step.type === "throw") return step;
+            const written = object.set(numberToString(start + index), args[index + 2], context, loc);
+            if (written.type === "throw") return written;
+        }
+        const written = object.set("length", { kind: "number", value: nextLength }, context, loc);
+        return written.type === "throw" ? written : normal({ kind: "object", object: deleted });
     });
 }

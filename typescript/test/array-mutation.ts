@@ -337,4 +337,82 @@ for (const method of ["shift", "unshift"]) {
     }
     check(interrupted && completed, "front mutation partial progress budget boundary");
 }
+{
+    const { realm, target } = fixture();
+    data(target, "length", 4); data(target, "0", 10); data(target, "2", 30); data(target, "3", 40);
+    const deleted = run(realm, "[].splice.call(target,0,2,7);");
+    check(deleted.type === "normal" && deleted.value.kind === "object", "splice result");
+    if (deleted.type !== "normal" || deleted.value.kind !== "object") throw new Error("splice array");
+    own(deleted.value.object, "length", 2); own(deleted.value.object, "0", 10);
+    check(deleted.value.object.getOwnProperty("1") === undefined, "deleted hole preserved");
+    check(target.trace === "get:length;has:0;get:0;has:1;has:2;get:2;set:1;has:3;get:3;set:2;delete:3;set:0;set:length;", "splice read and forward move order");
+    own(target, "0", 7); own(target, "1", 30); own(target, "2", 40); own(target, "length", 3);
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 3); data(target, "0", 10); data(target, "2", 30);
+    run(realm, "[].splice.call(target,0,1,7,8);");
+    check(target.trace === "get:length;has:0;get:0;has:2;get:2;set:3;has:1;delete:2;set:0;set:1;set:length;", "splice backward move and hole deletion");
+    own(target, "0", 7); own(target, "1", 8); own(target, "3", 30); own(target, "length", 4);
+    check(target.getOwnProperty("2") === undefined, "shifted hole");
+}
+for (const source of ["[].splice.call(target,0,1);", "[].splice.call(target,0,0,7);"]) {
+    const { realm, target } = fixture();
+    data(target, "length", 3); data(target, "0", 10); data(target, "1", 20, false); data(target, "2", 30);
+    error(run(realm, source));
+    own(target, "length", 3); own(target, "1", 20);
+    if (source.includes("0,1")) own(target, "0", 20);
+    else { own(target, "3", 30); own(target, "2", 20); }
+    check(!target.trace.includes("set:length"), "splice keeps earlier writes on movement failure");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 2); data(target, "1", 20, true, false);
+    error(run(realm, "[].splice.call(target,0,2);"));
+    check(target.trace === "get:length;has:0;has:1;get:1;delete:1;", "trailing deletion failure");
+}
+for (const args of ["", "0,0,7"]) {
+    const { realm, target } = fixture();
+    data(target, "length", 0, false);
+    error(run(realm, "[].splice.call(target" + (args === "" ? "" : "," + args) + ");"));
+    if (args !== "") own(target, "0", 7);
+    own(target, "length", 0);
+    check(target.trace.endsWith("set:length;"), "strict final length even on no-op");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 9007199254740991);
+    error(run(realm, "[].splice.call(target,0,0,7);"));
+    check(target.trace === "get:length;", "safe integer overflow before traversal");
+    const large = run(realm, "[].splice.call(target,0,4294967296);");
+    check(large.type === "throw" && large.diagnostic.name === "RangeError", "deleted array length limit");
+    target.trace = "";
+    result(run(realm, "[].splice.call(target,9007199254740990,1,7).length;"), num(1));
+    own(target, "9007199254740990", 7); own(target, "length", 9007199254740991);
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 2); data(realm.objectPrototype, "1", 13);
+    const completion = run(realm, "[].splice.call(target,0,2);");
+    check(completion.type === "normal" && completion.value.kind === "object", "inherited deletion result");
+    if (completion.type !== "normal" || completion.value.kind !== "object") throw new Error("inherited result");
+    own(completion.value.object, "1", 13);
+    check(completion.value.object.getOwnProperty("0") === undefined, "inherited holes");
+    own(realm.objectPrototype, "1", 13); own(target, "length", 0);
+}
+for (const args of ["0,1", "0,0,7", "0,4"]) {
+    let interrupted = false, completed = false;
+    for (let steps = 1; steps < 60; steps++) {
+        const { realm, target } = fixture();
+        data(target, "length", 4); for (let i = 0; i < 4; i++) data(target, String(i), i + 10);
+        const prepared = prepareBoundedScript({id: "splice-budget", text: "[].splice.call(target," + args + ");"}, realm);
+        if (prepared.kind !== "ready") throw new Error("splice budget prepare");
+        const completion = evaluateScript(createScriptSession({maxSteps: steps, maxCalls: 64}), prepared.record).completion;
+        if (completion.type === "throw") {
+            check(completion.origin.kind === "resource-limit", "splice budget origin");
+            if ((target.trace.includes("set:") || target.trace.includes("delete:")) && !target.trace.includes("set:length;")) interrupted = true;
+        } else completed = true;
+    }
+    check(interrupted && completed, "splice bounded partial progress");
+}
 console.log("array mutation passed");

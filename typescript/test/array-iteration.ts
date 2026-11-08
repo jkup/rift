@@ -86,4 +86,36 @@ for (const method of ["map", "forEach"]) {
 }
 const legacy = new Realm((_line: string) => {});
 check(legacy.arrayPrototype.getOwnProperty("map") === undefined && legacy.arrayPrototype.getOwnProperty("forEach") === undefined, "public iteration is a Script surface");
+{
+    const owner = fresh(), caller = fresh(), input = caller.createArray();
+    input.bootstrapDefine("0", {value:num(7), writable:true, configurable:true});
+    seed(caller, "splice", own(owner.arrayPrototype, "splice")); seed(caller, "input", obj(input));
+    const completion = run(caller, "splice.call(input,0,1);");
+    check(completion.type === "normal" && completion.value.kind === "object" && completion.value.object.getPrototypeOf() === owner.arrayPrototype, "splice foreign intrinsic result Realm");
+    if (completion.type !== "normal" || completion.value.kind !== "object") throw new Error("splice result");
+    check(sameValue(own(completion.value.object,"0"),num(7)), "foreign deleted element");
+}
+{
+    const r = fresh(), input = r.createArray(), holder = r.createObject();
+    input.bootstrapDefine("0", {value:num(7), writable:true, configurable:true});
+    input.bootstrapDefine("constructor", {value:obj(holder)});
+    let trace = "";
+    const custom = r.createBuiltinConstructor("species", 1,
+        (_receiver, _args, _context, _loc): ValueCompletion => { throw new Error("splice species called"); },
+        (_callee, _args, _context, _loc): ValueCompletion => { throw new Error("splice species constructed"); });
+    holder.bootstrapDefine(wellKnownSpecies, {get:obj(r.createBuiltin("speciesGetter",0,(_receiver,_args,_context,_loc): ValueCompletion => {
+        trace += "species;"; return normal(obj(custom));
+    })), configurable:true});
+    seed(r,"input",obj(input));
+    const unsupported = run(r,"input.splice({valueOf:function(){return 0;}},1);");
+    check(unsupported.type === "throw" && unsupported.origin.kind === "unsupported-operation" && unsupported.origin.capabilityCode === "runtime.splice-species", "custom splice species explicit");
+    check(trace === "species;" && sameValue(own(input,"0"),num(7)) && sameValue(own(input,"length"),num(1)), "species before receiver mutation");
+    holder.bootstrapDefine(wellKnownSpecies,{value:num(7),configurable:true});
+    const invalid = run(r,"input.splice(0,1);");
+    check(invalid.type === "throw" && invalid.origin.kind === "engine-diagnostic" && invalid.diagnostic.name === "TypeError", "splice invalid species language failure");
+    holder.bootstrapDefine(wellKnownSpecies,{value:{kind:"null"},configurable:true});
+    const fallback = run(r,"input.splice(0,1);");
+    check(fallback.type === "normal" && fallback.value.kind === "object" && fallback.value.object.getPrototypeOf() === r.arrayPrototype, "null splice species default");
+}
+check(legacy.arrayPrototype.getOwnProperty("splice") === undefined, "splice is a Script surface");
 console.log("Public array iteration passed");

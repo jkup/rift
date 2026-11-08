@@ -11,7 +11,7 @@ import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBoolean, registerBooleanConversions } from "./builtins/boolean.js";
 import { registerString, registerStringConversions, registerStringMethods } from "./builtins/string.js";
 import { registerArray, registerArrayConversions } from "./builtins/array.js";
-import { registerArrayMutators } from "./builtins/array-mutation.js";
+import { registerArrayMutators, registerArraySplice } from "./builtins/array-mutation.js";
 import { registerArraySearch } from "./builtins/array-search.js";
 import { registerArrayPredicates } from "./builtins/array-predicate.js";
 import {registerMath} from "./builtins/math.js";
@@ -73,6 +73,7 @@ export class Realm {
         const objectToString = registerObjectToString(this);
         registerArrayConversions(this, objectToString);
         registerArrayMutators(this);
+        if (profile === "script") registerArraySplice(this);
         registerArraySearch(this);
         registerArrayPredicates(this);
         registerArrayReduction(this);

@@ -12,7 +12,7 @@ function sync(r){const c=r.child;r.envelope.observation=c.result;for(const k of 
 function accept(r){sync(r);assert.deepEqual(parseScriptDriverResult(Buffer.from(JSON.stringify(r.child)),r.binding),r.child);assert.deepEqual(parseScriptEnvelope(JSON.stringify(r.envelope),r.binding),r.envelope);}
 function reject(r){sync(r);assert.throws(()=>parseScriptDriverResult(Buffer.from(JSON.stringify(r.child)),r.binding));assert.throws(()=>parseScriptEnvelope(JSON.stringify(r.envelope),r.binding));}
 test('approved closure: parse-only harness secondary steps/calls/unsupported retain original',()=>{
- for(const result of [{kind:'resource-limit',guardCode:'steps',count:100001,limit:100000},{kind:'resource-limit',guardCode:'calls',count:64,limit:64},{kind:'unsupported-operation',phase:'runtime',capabilityCode:'runtime.map-species'}]){const r=copy();r.child.result=result;accept(r);}
+ for(const result of [{kind:'resource-limit',guardCode:'steps',count:100001,limit:100000},{kind:'resource-limit',guardCode:'calls',count:64,limit:64},{kind:'unsupported-operation',phase:'runtime',capabilityCode:'runtime.map-species'},{kind:'unsupported-operation',phase:'runtime',capabilityCode:'runtime.splice-species'}]){const r=copy();r.child.result=result;accept(r);}
 });
 test('approved closure: every forbidden neighbor remains rejected in both boundaries',()=>{
  for(const phase of ['body','instantiation']){const r=copy();r.child.operation={stage:'test',phase,unitId:'u3',realmId:'test'};r.child.inspection.operation=r.child.operation;r.child.testBodyEvaluated=phase==='body';r.child.completedUnits=['u0','u1','u2'];reject(r);}

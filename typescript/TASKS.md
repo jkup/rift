@@ -3194,3 +3194,9 @@ Add variadic hypot with complete ordered conversion, Infinity precedence over Na
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `a5cf19c8`. All31 runner tests and full tooling290/290 pass. Fresh reports agree on all225 complete results:70 reported successes,26 unchecked completions,53 parse errors,72 runtime errors and4 reported failures. Exactly five classifications changed: GC safety, builtin descriptors and Math gain reported success; integer-overflow safety and string validation expose their explicit failures. All process outputs, fixture bytes and the Node engine hash match TS-080, so this is reporting-only. Existing Node/native533/533 and89 native static gates remain the engine baseline; no engine rebuild was needed. Reports: build/legacy-suite-node-6dBuEf/report.json and build/legacy-suite-native-MgWglH/report.json. Logs: build/fixture-summary-*.
 
 Recognize explicit titled passed/failed totals and Passed/Failed fraction summaries in the fixed C++ baseline. Preserve process-error precedence, conservative malformed/partial summary handling, failure visibility and no double counting. Keep fixtures and historical reports unchanged; compare fresh reports across both existing validated hosts.
+
+## TS-082 — Generic Array splice
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base `c67aa831`.
+
+Implement Script Array.prototype.splice with ordered coercion, sparse deleted arrays, inherited elements, strict directional moves, partial mutation failures and bounded loops. Share the existing default-species allocation with map; custom construction remains explicit unsupported behavior. Validate both hosts, fixed fixtures, static gates and tooling before acceptance.
