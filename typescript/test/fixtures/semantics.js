@@ -1,3 +1,4 @@
+"use strict";
 console.log(before(4));
 function before(n) { if (n <= 1) return 1; return n * before(n - 1); }
 function make(start) { let n = start; return function() { n = n + 1; return n; }; }

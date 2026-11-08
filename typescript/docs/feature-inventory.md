@@ -1,4 +1,18 @@
-# Tested foundation profile
+# Current CLI profile
+
+As of TS-037 (2026-11-08), the CLI prepares and evaluates bounded Scripts through
+`script-record.ts` and `script-execution.ts`. It supports `var`, ordinary `for`
+loops and updates, `try`/`catch`, ordinary constructors and the existing Script
+Error objects. Strictness follows directives; sloppy calls and failed property
+writes no longer inherit the legacy engine's always-strict behavior. Source,
+parse, step, call and evaluation-depth limits remain enforced.
+
+`const`, arrows, templates and automatic semicolon insertion remain unsupported.
+The legacy `interpreter.run` and observation API still exist; their migration is
+separate work. The milestone sections below record historical behavior, not a
+single current feature matrix.
+
+## Historical foundation profile
 
 This inventory is a scope statement, not an ECMAScript conformance score.
 TS-033ER-A adds host-defined ordinary accessors and contextful semantic reads.

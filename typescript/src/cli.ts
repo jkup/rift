@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
-import { run } from "./interpreter.js";
+import { prepareBoundedScript } from "./script-record.js";
+import { createScriptSession, evaluateScript } from "./script-execution.js";
 import { Realm } from "./realm.js";
 import { display } from "./runtime.js";
 import type { Diagnostic } from "./syntax.js";
@@ -18,10 +19,16 @@ function main(): void {
         try { source = readFileSync(filename, "utf8"); }
         catch { console.error("cannot read source: " + filename); process.exitCode = 66; return; }
     }
-    const realm = new Realm((line) => { console.log(line); });
-    const result = run(source, realm);
-    if (result.phase === "parse") { report(filename, result.diagnostic); process.exitCode = 2; }
-    else if (result.completion.type === "throw") {
+    const realm = new Realm((line) => { console.log(line); }, "script");
+    const prepared = prepareBoundedScript({ id: filename, text: source }, realm);
+    if (prepared.kind === "profile-rejected") throw new Error("CLI Script profile rejected");
+    if (prepared.kind !== "ready") {
+        report(filename, prepared.diagnostic);
+        process.exitCode = 2;
+        return;
+    }
+    const result = evaluateScript(createScriptSession(), prepared.record);
+    if (result.completion.type === "throw") {
         const d = result.completion.diagnostic;
         if (d.name === "Uncaught") d.message = display(result.completion.value);
         report(filename, d); process.exitCode = 1;

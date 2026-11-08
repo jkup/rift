@@ -23,16 +23,16 @@ cases.push(
     { file: "test/fixtures/primitive-reads-basic.js", stdout: "a 2 true 2\n" },
     { file: "test/fixtures/primitive-reads-methods.js", stdout: "x false undefined\n" },
     { file: "test/fixtures/primitive-reads-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
-    { file: "test/fixtures/primitive-reads-write.js", status: 1, error: "1:1: runtime TypeError: property is not writable: 0" },
+    { file: "test/fixtures/primitive-reads-write.js", status: 1, error: "2:1: runtime TypeError: property is not writable: 0" },
     { file: "test/fixtures/primitive-reads-effects.js", stdout: "2 1\n" },
     { file: "test/fixtures/primitive-reads-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: **" },
 );
 // TS-029A C1-C6: frozen independent CLI expectations.
 cases.push(
     { file: "test/fixtures/property-assignment-object.js", stdout: "7 7\n" },
-    { file: "test/fixtures/property-assignment-primitive.js", status: 1, error: "1:1: runtime TypeError: property is not writable: 0" },
+    { file: "test/fixtures/property-assignment-primitive.js", status: 1, error: "2:1: runtime TypeError: property is not writable: 0" },
     { file: "test/fixtures/property-assignment-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
-    { file: "test/fixtures/property-assignment-effects.js", stdout: "rhs\nkey\n", status: 1, error: "2:1: runtime TypeError: property is not writable: x" },
+    { file: "test/fixtures/property-assignment-effects.js", stdout: "rhs\nkey\n", status: 1, error: "3:1: runtime TypeError: property is not writable: x" },
     { file: "test/fixtures/property-assignment-rhs-wins.js", status: 1, error: "1:10: runtime ReferenceError: missing is not defined" },
     { file: "test/fixtures/property-assignment-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: **" },
 );
@@ -41,22 +41,22 @@ cases.push(
     { file: "test/fixtures/compound-basic.js", stdout: "15 9 36 4 0\n15 9 36 4 0\n" },
     { file: "test/fixtures/compound-effects.js", stdout: "15 15 1 1\n" },
     { file: "test/fixtures/compound-get-failure.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
-    { file: "test/fixtures/compound-write-failure.js", stdout: "coerce\n", status: 1, error: "2:1: runtime TypeError: property is not writable: NaN" },
+    { file: "test/fixtures/compound-write-failure.js", stdout: "coerce\n", status: 1, error: "3:1: runtime TypeError: property is not writable: NaN" },
     { file: "test/fixtures/compound-coercion-failure.js", stdout: "coerce\n", status: 1, error: "1:50: runtime Uncaught: sentinel" },
-    { file: "test/fixtures/compound-parse.js", status: 2, error: "1:11: parse SyntaxError: invalid assignment target" },
+    { file: "test/fixtures/compound-parse.js", status: 2, error: "1:11: parse SyntaxError: invalid numeric assignment target" },
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
     ["delete-success", "let o={x:1}; console.log(delete o.x, o.x);", 0, "", "true undefined\n"],
-    ["delete-identifier", "console.log('no'); delete x;", 2, "1:20: parse SyntaxError: delete of an identifier is not allowed"],
-    ["delete-fixed", "delete Number.NaN;", 1, "1:1: runtime TypeError: property is not configurable: NaN"],
+    ["delete-identifier", "'use strict';\nconsole.log('no'); delete x;", 2, "2:20: parse SyntaxError: delete of an identifier is not allowed"],
+    ["delete-fixed", "'use strict';\ndelete Number.NaN;", 1, "2:1: runtime TypeError: property is not configurable: NaN"],
     ["delete-null", "delete null.x;", 1, "1:8: runtime TypeError: cannot convert null or undefined to object"],
-    ["duplicate", "let x; let x;", 2, "parse SyntaxError: duplicate binding: x"],
+    ["duplicate", "let x; let x;", 2, "parse SyntaxError: duplicate-lexical: x"],
     ["duplicate-param", "function f(x,x) {}", 2, "parse SyntaxError: duplicate parameter: x"],
-    ["param-let", "function f(x) { let x; }", 2, "parse SyntaxError: duplicate binding: x"],
+    ["param-let", "function f(x) { let x; }", 2, "parse SyntaxError: formal-lexical: x"],
     ["const", "const x = 1;", 2, "parse SyntaxError: unsupported or unexpected syntax: const"],
-    ["increment", "let x=1; x++ + 2;", 2, "parse SyntaxError: unsupported operator: ++"],
-    ["assignment-target", "1 = 2;", 2, "parse SyntaxError: invalid assignment target"],
+    ["increment", "let x=1; console.log(x++ + 2, x);", 0, "", "3 2\n"],
+    ["assignment-target", "1 = 2;", 2, "parse SyntaxError: invalid numeric assignment target"],
     ["break", "break;", 2, "parse SyntaxError: break outside loop"],
     ["continue", "continue;", 2, "parse SyntaxError: continue outside loop"],
     ["return", "return 1;", 2, "parse SyntaxError: return outside function"],
@@ -71,10 +71,10 @@ const generated = [
     ["proto", "let o={__proto__: null};", 2, "parse SyntaxError: prototype literal syntax is unsupported"],
     ["coercion", "console.log(1 + '2');", 0, "", "12\n"],
     ["primitive-base", "console.log(null.x);", 1, "runtime TypeError: cannot convert null or undefined to object"],
-    ["detached", "let o={x:1, f:function(){return this.x;}}; let f=o.f; f();", 1, "runtime TypeError: cannot convert null or undefined to object"],
-    ["assignment-missing", "missing=1;", 1, "runtime ReferenceError: missing is not defined"],
+    ["detached", "'use strict'; let o={x:1, f:function(){return this.x;}}; let f=o.f; f();", 1, "runtime TypeError: cannot convert null or undefined to object"],
+    ["assignment-missing", "'use strict'; missing=1;", 1, "runtime ReferenceError: missing is not defined"],
     ["self-tdz", "let x=x;", 1, "runtime ReferenceError: x is not initialized"],
-    ["readonly", "undefined=1;", 1, "runtime TypeError: binding is not mutable: undefined"],
+    ["readonly", "'use strict'; undefined=1;", 1, "runtime TypeError: property is not writable: undefined"],
     ["not-callable", "let x=1; x(console.log('arg'));", 1, "runtime TypeError: value is not callable", "arg\n"],
     ["abrupt-args", "function f(a,b) {} f(missing,console.log('no'));", 1, "runtime ReferenceError: missing is not defined"],
     ["parse-before-execute", "console.log('no'); const x=1;", 2, "parse SyntaxError: unsupported or unexpected syntax: const"],
@@ -97,6 +97,16 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("script-for", "var total=0; for(var i=0;i<5;i++){total+=i;} console.log(total, i);", { stdout: "10 5\n" });
+lineCase("script-catch", "try { throw new Error('boom'); } catch(e) { console.log(e.message); } console.log('after');", { stdout: "boom\nafter\n" });
+lineCase("script-construct", "function Point(x){this.x=x;} let p=new Point(3); console.log(p.x, p instanceof Point);", { stdout: "3 true\n" });
+lineCase("script-sloppy-this", "let global=this; function f(){return this;} let o={f:f}; console.log(f()===global, o.f()===o);", { stdout: "true true\n" });
+lineCase("script-strict-this", "'use strict'; function f(){return this;} let o={f:f}; console.log(f()===undefined, o.f()===o);", { stdout: "true true\n" });
+lineCase("script-sloppy-writes", "missing=7; Number.NaN=2; 'ab'[0]='z'; console.log(this.missing, Number.isNaN(Number.NaN), 'ab'[0]);", { stdout: "7 true a\n" });
+lineCase("script-sloppy-delete", "var x=1; console.log(delete x, delete absent, delete Number.NaN);", { stdout: "false true false\n" });
+lineCase("script-strict-early-error", "'use strict'; console.log('no'); delete x;", { status: 2, errorContains: "parse SyntaxError: delete of an identifier is not allowed" });
+lineCase("script-conflict-before-effects", "console.log('no'); let x; var x;", { status: 2, errorContains: "parse SyntaxError: lexical-var: x" });
+lineCase("script-loop-limit", "for(;;){}", { status: 1, errorPattern: "1:\\d+: runtime RangeError: execution step limit exceeded" });
 lineCase("typeof-void-success", "console.log(typeof missing, typeof null, void 0);", { stdout: "undefined object undefined\n" });
 lineCase("typeof-operand", "typeof;", { status: 2, error: "1:7: parse SyntaxError: unsupported or unexpected syntax: ;" });
 lineCase("void-missing", "void missing;", { status: 1, error: "1:6: runtime ReferenceError: missing is not defined" });
@@ -122,8 +132,8 @@ for (const [name, source, expected] of [
 }
 // Conditional failures assert the phase, diagnostic and effects before completion.
 for (const key of ["NaN", "POSITIVE_INFINITY", "NEGATIVE_INFINITY", "MAX_VALUE", "MIN_VALUE", "EPSILON", "MAX_SAFE_INTEGER", "MIN_SAFE_INTEGER"]) {
-    lineCase("number-readonly-" + key, "Number." + key + " = console.log('rhs'); console.log('after');", {
-        status: 1, stdout: "rhs\n", error: "1:1: runtime TypeError: property is not writable: " + key,
+    lineCase("number-readonly-" + key, "'use strict';\nNumber." + key + " = console.log('rhs'); console.log('after');", {
+        status: 1, stdout: "rhs\n", error: "2:1: runtime TypeError: property is not writable: " + key,
     });
 }
 for (const predicate of ["isNaN", "isFinite"]) {
@@ -131,8 +141,8 @@ for (const predicate of ["isNaN", "isFinite"]) {
         status: 1, errorPattern: "1:\\d+: runtime ReferenceError: missing is not defined",
     });
     for (const key of ["name", "length"]) {
-        lineCase("number-metadata-" + predicate + "-" + key, "Number." + predicate + "." + key + " = 2;", {
-            status: 1, error: "1:1: runtime TypeError: property is not writable: " + key,
+        lineCase("number-metadata-" + predicate + "-" + key, "'use strict';\nNumber." + predicate + "." + key + " = 2;", {
+            status: 1, error: "2:1: runtime TypeError: property is not writable: " + key,
         });
     }
 }

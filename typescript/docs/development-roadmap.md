@@ -20,6 +20,12 @@ archive migration can keep it retrievable; do not rewrite Git history.
 
 ## Findings and next work
 
+Completed in this catch-up: ordinary input-test invocation, the five tracked report
+overwrites, separation of the historical checkpoint gate, and the CLI Script
+migration. CLI validation is 222/222 in each host with fresh native CLI compilation
+and full static coverage. The table retains review findings and their acceptance
+criteria; portability, legacy removal and the later items remain open.
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Repair the normal test command | `script-execution-inputs.test.mjs`, introduced in `7f887deb`, requires positional arguments absent under `node --test`. Add no-argument setup without dropping its assertions; retain the explicit invocation. |

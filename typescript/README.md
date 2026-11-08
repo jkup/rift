@@ -5,6 +5,12 @@ source is read **at runtime** by Rift; scriptc compiles the interpreter, never t
 guest programs. No host eval, Function, vm, or dynamic compiler fallback is used.
 The original C++ engine remains intact.
 
+The CLI uses the Script evaluator: `var`, `for` with `++`, `try`/`catch`, and
+ordinary `new` calls work alongside the existing subset. Scripts are non-strict
+unless they contain a `"use strict"` directive. Unsupported syntax, including
+`const`, arrows and automatic semicolon insertion, still fails explicitly.
+See the [current development roadmap](docs/development-roadmap.md).
+
 ## Build and run
 
 From this directory, with Node >=24 and the pinned npm dependencies:

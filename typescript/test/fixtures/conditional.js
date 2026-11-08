@@ -1,3 +1,4 @@
+"use strict";
 // Distinguish right association from (true ? 0 : false) ? 2 : 3.
 console.log(true ? 0 : false ? 2 : 3);
 console.log(false ? 1 : true ? 2 : 3);
