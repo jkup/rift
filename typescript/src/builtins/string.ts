@@ -87,37 +87,39 @@ function sliceIndex(index: number, length: number): number {
 }
 
 export function registerStringMethods(realm: Realm): void {
-    realm.registerBuiltin(realm.stringPrototype, "concat", 1, (receiver, args, context, loc): ValueCompletion => {
-        const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
-        const parts: GuestString[] = [text.value];
-        for (const argument of args) {
-            const tick = context.tick(loc);
-            if (tick.type === "throw") return tick;
-            const primitive = toPrimitive(argument, "string", context, loc);
+    if (realm.profile === "script") {
+        realm.registerBuiltin(realm.stringPrototype, "concat", 1, (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") return text;
+            const parts: GuestString[] = [text.value];
+            for (const argument of args) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") return tick;
+                const primitive = toPrimitive(argument, "string", context, loc);
+                if (primitive.type === "throw") return primitive;
+                const converted = toString(primitive.value, loc, context.realm);
+                if (converted.type === "throw") return converted;
+                parts.push(converted.value);
+            }
+            return normal({ kind: "string", value: stringJoin(parts) });
+        });
+        realm.registerBuiltin(realm.stringPrototype, "lastIndexOf", 1, (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") return text;
+            const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);
             if (primitive.type === "throw") return primitive;
-            const converted = toString(primitive.value, loc, context.realm);
-            if (converted.type === "throw") return converted;
-            parts.push(converted.value);
-        }
-        return normal({ kind: "string", value: stringJoin(parts) });
-    });
-    realm.registerBuiltin(realm.stringPrototype, "lastIndexOf", 1, (receiver, args, context, loc): ValueCompletion => {
-        const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
-        const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);
-        if (primitive.type === "throw") return primitive;
-        const search = toString(primitive.value, loc, context.realm);
-        if (search.type === "throw") return search;
-        const positionPrimitive = toPrimitive(args.length < 2 ? UNDEFINED : args[1], "number", context, loc);
-        if (positionPrimitive.type === "throw") return positionPrimitive;
-        const numeric = toNumber(positionPrimitive.value, loc, context.realm);
-        if (numeric.type === "throw") return numeric;
-        const position = toIntegerOrInfinity({ kind: "number", value: Number.isNaN(numeric.value) ? Infinity : numeric.value }, loc, context.realm);
-        if (position.type === "throw") return position;
-        const start = Math.min(Math.max(position.value, 0), stringLength(text.value));
-        return normal({ kind: "number", value: stringLastIndexOf(text.value, search.value, start) });
-    });
+            const search = toString(primitive.value, loc, context.realm);
+            if (search.type === "throw") return search;
+            const positionPrimitive = toPrimitive(args.length < 2 ? UNDEFINED : args[1], "number", context, loc);
+            if (positionPrimitive.type === "throw") return positionPrimitive;
+            const numeric = toNumber(positionPrimitive.value, loc, context.realm);
+            if (numeric.type === "throw") return numeric;
+            const position = toIntegerOrInfinity({ kind: "number", value: Number.isNaN(numeric.value) ? Infinity : numeric.value }, loc, context.realm);
+            if (position.type === "throw") return position;
+            const start = Math.min(Math.max(position.value, 0), stringLength(text.value));
+            return normal({ kind: "number", value: stringLastIndexOf(text.value, search.value, start) });
+        });
+    }
     realm.registerBuiltin(realm.stringPrototype, "indexOf", 1, (receiver, args, context, loc) => {
         const text = stringReceiver(receiver, context, loc);
         if (text.type === "throw") return text;
