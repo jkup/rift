@@ -2,6 +2,7 @@ import { numberToString } from "./conversion.js";
 import type { GuestArray } from "./array-object.js";
 import { languageFailure, normal, type Value, type ValueCompletion, type OperationContext, type ThrowCompletion } from "./runtime.js";
 import type { Location } from "./syntax.js";
+import type { Realm } from "./realm.js";
 
 export type ArrayCompletion = { type: "normal"; value: GuestArray } | ThrowCompletion;
 
@@ -13,10 +14,10 @@ export function createArrayWithLength(length: number, context: OperationContext,
     return { type: "normal", value: result };
 }
 
-export function arrayFromList(values: Value[], context: OperationContext, loc: Location): ValueCompletion {
+export function arrayFromList(values: Value[], context: OperationContext, loc: Location, realm: Realm = context.realm): ValueCompletion {
     const allocation = context.tick(loc);
     if (allocation.type === "throw") return allocation;
-    const array = context.realm.createArray();
+    const array = realm.createArray();
     for (let i = 0; i < values.length; i++) {
         const step = context.tick(loc);
         if (step.type === "throw") return step;
