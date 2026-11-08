@@ -52,9 +52,12 @@ TS-080 reporting review: the fixed baseline only recognizes PASS:/FAIL: and
 check/cross emoji markers. It misses explicit numeric summaries: the completed
 Math fixture prints69 passed/0 failed, while integer-overflow-safety prints5/6
 passed and1/6 failed (missing Array.splice), and string-validation prints4/6
-passed and2/6 failed (missing JSON.parse). Prioritize tested recognition of these
+passed and2/6 failed (missing JSON.parse). TS-081 now recognizes these
 summary formats, preserving process-error precedence and historical reports.
-Then inspect splice and JSON support as separate semantic tasks. Existing
+Fresh reports classify70 successes,26 unchecked completions,53 parse errors,72
+runtime errors and4 reported failures. All process outputs are unchanged; this
+is a reporting correction, not an engine gain. Inspect splice and JSON support
+as separate semantic tasks. Existing
 completed-without-checks totals must not be treated as passes.
 
 ## Findings and next work

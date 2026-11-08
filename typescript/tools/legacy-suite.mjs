@@ -24,8 +24,28 @@ export function runFixture(command, args, timeoutMs = 5000) {
 
 export function classifyFixture(result) {
   const lines = result.stdout.split(/\r?\n/);
-  const failures = lines.filter(line => line.includes('FAIL:') || line.includes('❌')).length;
-  const checks = lines.filter(line => line.includes('PASS:') || line.includes('✅')).length;
+  let failures = lines.filter(line => line.includes('FAIL:') || line.includes('❌')).length;
+  let checks = lines.filter(line => line.includes('PASS:') || line.includes('✅')).length;
+  for (let i = 0; i < lines.length; i++) {
+    const summary = /^.+\btests?: (\d+) passed, (\d+) failed$/i.exec(lines[i]);
+    if (summary) {
+      const passed = Number(summary[1]), failed = Number(summary[2]);
+      if (Number.isSafeInteger(passed + failed)) {
+        checks = Math.max(checks, passed);
+        failures = Math.max(failures, failed);
+      }
+    }
+    const fraction = /^(Passed|Failed): (\d+)\/(\d+)$/.exec(lines[i]);
+    if (!fraction) continue;
+    const count = Number(fraction[2]), total = Number(fraction[3]);
+    if (!Number.isSafeInteger(total) || count > total) continue;
+    if (fraction[1] === 'Failed') failures = Math.max(failures, count);
+    else {
+      const failed = /^Failed: (\d+)\/(\d+)$/.exec(lines[i + 1] ?? '');
+      if (count === total || (failed && Number(failed[2]) === total && count + Number(failed[1]) === total))
+        checks = Math.max(checks, count);
+    }
+  }
   let outcome;
   if (result.error?.code === 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER') outcome = 'output-limit';
   else if (result.deadlineExpired) outcome = 'timeout';

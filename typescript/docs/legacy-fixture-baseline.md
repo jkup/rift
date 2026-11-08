@@ -13,6 +13,14 @@ Each run snapshots exact fixture bytes and retains process output in a fresh
 the runner could not complete. Selection follows `test-runner.js`: recurse into
 `test/`, excluding `skipped/` and `temp_*.js`. Excluded files remain listed.
 
+TS-081 also recognizes titled `N passed, M failed` summaries and consistent
+`Passed: N/T` / `Failed: M/T` summaries. A standalone all-passed fraction is
+accepted; an incomplete partial-pass fraction is not. Counts take the maximum
+of markers and summaries, so they are conservative reported counts rather than
+a sum that could count the same assertions twice. Positive failure evidence
+cannot be erased by a later success summary. Process errors take precedence.
+Generic prose such as "all tests passed" remains unchecked.
+
 The initial results at engine commit `75a0e359` agree in both hosts:
 
 | Outcome | Files |
@@ -142,3 +150,7 @@ numeric-literals fixture reports 15 passing checks; the Math fixture advances
 from parsing to missing acos. All 96 prior completed outcomes are retained.
 Reports: `build/legacy-suite-node-iIAHfy/report.json` and
 `build/legacy-suite-native-jumZjo/report.json`.
+
+## Explicit summaries (TS-081)
+
+All31 runner tests and full tooling290/290 pass. Fresh reports agree on all225 complete results:70 reported successes,26 unchecked completions,53 parse errors,72 runtime errors and4 reported failures. Exactly five classifications changed: GC safety, builtin descriptors and Math gain reported success; integer-overflow safety and string validation expose their explicit failures. All process outputs, fixture bytes and the Node engine hash match TS-080, so this is reporting-only. Existing Node/native533/533 and89 native static gates remain the engine baseline; no engine rebuild was needed. Reports: build/legacy-suite-node-6dBuEf/report.json and build/legacy-suite-native-MgWglH/report.json. Logs: build/fixture-summary-*.
