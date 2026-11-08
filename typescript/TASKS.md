@@ -3098,3 +3098,9 @@ Add Object.defineProperty and Object.getOwnPropertyDescriptor using existing des
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `318bb687`, implementation `007c8b12`. Both guest suites pass 414/414, full tooling 290/290, runner30 and probes10 pass. All 82 native entries pass build and static coverage; iteration driver4726/4726 static. All 225 C++ fixture results agree across hosts: 58 reported successes, 23 unchecked completions, 67 parse errors, 75 runtime errors and two reported failures. All 78 previously successful or unchecked files retain their outcomes. Logs: build/array-iteration-*.
 
 Expose map in Script Realms by boxing receivers and reusing mapObjectDefaultArray; preserve its explicit unsupported custom-species boundary. Add generic forEach with captured length, live presence/value checks, callback thisArg and abrupt completion propagation. Test public dispatch, primitives, holes, mutation, constructor ordering, Realm ownership and budgets under both hosts, plus native static coverage and fixed C++ fixtures.
+
+## TS-066 — Array predicate searches
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `8ff1bac8`.
+
+Add find, findIndex, findLast and findLastIndex with shared directional traversal. Preserve length-before-validation order, unconditional reads of holes, captured length, live mutation, saved matched values, callback receiver/tuple, abrupt completions and budgets. Validate both hosts, static compilation and the fixed C++ fixture selection.

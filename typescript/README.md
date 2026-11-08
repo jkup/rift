@@ -18,6 +18,8 @@ Array methods include `join`, `toString`, `push`, `pop`, `shift`, `unshift`, `re
 for scope and validation.
 See [relative indexing](docs/array-at.md) for `at`.
 See [reduction behavior](docs/array-reduction.md) for `reduce` and `reduceRight`.
+Predicate searches include `find`, `findIndex`, `findLast` and `findLastIndex`;
+see [search traversal](docs/array-find.md).
 Script Realms also expose `map` and `forEach`; see [array iteration](docs/array-iteration.md)
 for the supported default-array behavior and custom species boundary.
 

@@ -64,6 +64,9 @@ TS-062 adds generic `reduce` and `reduceRight`; see [array reduction](array-redu
 TS-065 exposes Script `map` and `forEach`; see [array iteration](array-iteration.md).
 Custom map species construction remains unsupported.
 
+TS-066 adds `find`, `findIndex`, `findLast` and `findLastIndex`;
+see [predicate searches](array-find.md).
+
 TS-063 adds generic `shift` and `unshift`, preserving holes and partial mutations;
 see [array mutation](array-mutation.md).
 

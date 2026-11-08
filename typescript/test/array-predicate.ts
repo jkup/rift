@@ -136,4 +136,64 @@ for (const method of ["every", "some"]) {
         check(target.trace.includes("has:0;") && !target.trace.includes("get:0;"), "budget enters sparse loop");
     }
 }
+for (const method of ["find", "findIndex", "findLast", "findLastIndex"]) {
+    const reverse = method === "findLast" || method === "findLastIndex";
+    const returnsIndex = method === "findIndex" || method === "findLastIndex";
+    {
+        const { realm, target } = fixture();
+        const callbackRealm = new Realm((_line: string) => {}, "script");
+        const marker = realm.createObject();
+        realm.defineScriptGlobal("marker", { value: obj(marker) });
+        target.failHas = true;
+        let calls = 0;
+        const callback = callbackRealm.createBuiltin("callback", 3, (receiver, args, context, _loc): ValueCompletion => {
+            const index = reverse ? 2 - calls : calls;
+            check(context.realm === callbackRealm && sameValue(receiver, obj(marker)), "search callback Realm and receiver");
+            check(args.length === 3 && sameValue(args[1], num(index)) && sameValue(args[2], obj(target)), "search callback tuple");
+            check(index === 1 ? args[0].kind === "undefined" : sameValue(args[0], num(index === 0 ? 11 : 17)), "search visits holes");
+            target.trace += "call:" + index + ";";
+            calls++;
+            return normal(bool(false));
+        });
+        realm.defineScriptGlobal("callback", { value: obj(callback) });
+        const actual = run(realm, method, "callback", "marker");
+        check(actual.type === "normal" && (returnsIndex ? sameValue(actual.value, num(-1)) : actual.value.kind === "undefined"), "missing search result");
+        check(calls === 3 && target.trace === (reverse ? "get:length;get:2;call:2;get:1;call:1;get:0;call:0;" : "get:length;get:0;call:0;get:1;call:1;get:2;call:2;"), "search never checks presence");
+    }
+    {
+        const { realm, target } = fixture();
+        const first = reverse ? 2 : 0;
+        const callback = realm.createBuiltin("callback", 3, (_receiver, _args, _context, _loc): ValueCompletion => {
+            data(target, String(first), 99);
+            return normal(obj(realm.createObject()));
+        });
+        realm.defineScriptGlobal("callback", { value: obj(callback) });
+        const actual = run(realm, method);
+        check(actual.type === "normal" && sameValue(actual.value, num(returnsIndex ? first : reverse ? 17 : 11)), "search saves value before truthy callback");
+        check(target.trace === "get:length;get:" + first + ";", "search stops immediately");
+    }
+    for (const failure of ["length", reverse ? "2" : "0", "callback"]) {
+        const { realm, target } = fixture();
+        target.failGet = failure;
+        const callback = realm.createBuiltin("callback", 3, (_receiver, _args, context, loc): ValueCompletion =>
+            languageFailure(context.realm, "TypeError", "search sentinel", loc));
+        realm.defineScriptGlobal("callback", { value: obj(callback) });
+        const actual = run(realm, method, failure === "length" ? "7" : "callback");
+        check(actual.type === "throw" && actual.diagnostic.message === (failure === "callback" ? "search sentinel" : "get sentinel"), "search abrupt order");
+    }
+    {
+        const { realm, target } = fixture();
+        data(target, "length", 0);
+        const actual = run(realm, method, "7");
+        check(actual.type === "throw" && actual.diagnostic.name === "TypeError" && target.trace === "get:length;", "empty search validates callback after length");
+    }
+    {
+        const { realm, target } = fixture();
+        data(target, "length", Infinity);
+        const callback = realm.createBuiltin("callback", 3, (_receiver, _args, _context, _loc): ValueCompletion => normal(bool(false)));
+        realm.defineScriptGlobal("callback", { value: obj(callback) });
+        const actual = run(realm, method, "callback", "undefined", 40);
+        check(actual.type === "throw" && actual.origin.kind === "resource-limit", "search traversal bounded");
+    }
+}
 console.log("array predicates passed");

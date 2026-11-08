@@ -48,6 +48,17 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["find-basic","let a=[1,4,3,6]; function even(x){return x%2===0;} console.log(a.find(even),a.findIndex(even),a.findLast(even),a.findLastIndex(even));",0,"","4 1 6 3\n"],
+    ["find-missing","function no(){return false;} let a=[1,2]; console.log(a.find(no),a.findIndex(no),a.findLast(no),a.findLastIndex(no),[].find(no),[].findLastIndex(no));",0,"","undefined -1 undefined -1 undefined -1\n"],
+    ["find-holes","let a=[,,]; let n=0; function hole(x){n++;return x===undefined;} console.log(a.findIndex(hole),a.findLastIndex(hole),n);",0,"","0 1 2\n"],
+    ["find-mutation","let a=[1,2,3]; let s=''; a.find(function(x,i){s+=i+':'+x+';';if(i===0){delete a[1];a[2]=7;a[3]=9;a.length=2;}return false;}); console.log(s);",0,"","0:1;1:undefined;2:undefined;\n"],
+    ["find-reverse-mutation","let a=[1,2,3]; let s=''; a.findLast(function(x,i){s+=i+':'+x+';';if(i===2){delete a[1];a[0]=7;a[3]=9;}return false;}); console.log(s);",0,"","2:3;1:undefined;0:7;\n"],
+    ["find-inherited","Array.prototype[1]=7; let a=[1,,3]; function seven(x){return x===7;} console.log(a.find(seven),a.findIndex(seven),a.findLast(seven),a.findLastIndex(seven));",0,"","7 1 7 1\n"],
+    ["find-string","let p=Array.prototype; function yes(x,i,o){return typeof o==='object' && x==='b';} console.log(p.find.call('abc',yes),p.findIndex.call('abc',yes),p.findLast.call('abc',yes),p.findLastIndex.call('abc',yes));",0,"","b 1 b 1\n"],
+    ["find-thisarg","let a=[1,2,3]; let o={n:2}; function yes(x){return this.n===x;} console.log(a.find(yes,o),a.findIndex(yes,o),a.findLast(yes,o),a.findLastIndex(yes,o));",0,"","2 1 2 1\n"],
+    ["find-saved","let a=[1,2]; console.log(a.find(function(x,i){a[i]=9;return true;}),a.findLast(function(x,i){a[i]=8;return true;}),a.join(','));",0,"","1 2 9,8\n"],
+    ["find-abrupt","let marker={}; let a=[1,2]; function bad(){throw marker;} try{a.find(bad);}catch(e){console.log(e===marker);} try{a.findLastIndex(bad);}catch(e){console.log(e===marker);}",0,"","true\ntrue\n"],
+    ["find-metadata","let p=Array.prototype; console.log(p.find.length,p.findIndex.length,p.findLast.length,p.findLastIndex.length,Object.keys(p).length);",0,"","1 1 1 1 0\n"],
     ["iteration-map-basic", "let a=[1,,3]; let b=a.map(function(x,i,o){return x+i+o.length;}); console.log(b.join(','),b.length,1 in b,a.join(','),b!==a);", 0, "", "4,,8 3 false 1,,3 true\n"],
     ["iteration-foreach-basic", "let s=''; let a=[1,,3]; console.log(a.forEach(function(x,i,o){s+=i+':'+x+':'+(o===a)+';';return false;}),s);", 0, "", "undefined 0:1:true;2:3:true;\n"],
     ["iteration-thisarg", "let o={n:7}; console.log([1,2].map(function(x){return this.n+x;},o).join(',')); let s=0; [1,2].forEach(function(x){s+=this.n+x;},o); console.log(s);", 0, "", "8,9\n17\n"],

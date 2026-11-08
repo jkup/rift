@@ -46,7 +46,7 @@ function inventory(a: Realm): void {
     keys(num,[...names,"isNaN","isFinite"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
     method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1);
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
-    const lists: PropertyKey[][]=[["valueOf","toString","constructor","hasOwnProperty"],["name","length","caller","arguments","call","toString",wellKnownHasInstance],["length","join","toString","push","pop","shift","unshift","reverse","at","indexOf","includes","every","some","reduce","reduceRight","constructor","map","forEach"],["toString","valueOf","constructor"],["toString","valueOf"],["length","toString","valueOf","charAt","charCodeAt","slice","constructor"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
+    const lists: PropertyKey[][]=[["valueOf","toString","constructor","hasOwnProperty"],["name","length","caller","arguments","call","toString",wellKnownHasInstance],["length","join","toString","push","pop","shift","unshift","reverse","at","indexOf","includes","every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach"],["toString","valueOf","constructor"],["toString","valueOf"],["length","toString","valueOf","charAt","charCodeAt","slice","constructor"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
     for(let i=0;i<prototypes.length;i++) {
         const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),"prototype chain");
         for(const k of lists[i]) if(typeof k==="string" && k!=="name" && k!=="length") {
@@ -64,7 +64,7 @@ function inventory(a: Realm): void {
                 desc(f,"prototype",obj(p),false,false,false);
                 check(f.getPrototypeOf()===a.functionPrototype && callable!==null && callable.kind==="builtin" && callable.realm===a && slot!==null && slot.kind==="builtin-constructor" && slot.realm===a && slot.callable===callable,"formatting constructor graph and matching slots");
                 check(f.getOwnProperty("caller")===undefined && f.getOwnProperty("arguments")===undefined,"constructor inherited restrictions");
-            } else method(a,p,k,k,k==="slice"?2:k==="hasOwnProperty"||k==="call"||k==="join"||k==="push"||k==="unshift"||k==="at"||k==="indexOf"||k==="includes"||k==="map"||k==="forEach"||k==="reduce"||k==="reduceRight"||k==="every"||k==="some"||k==="charAt"||k==="charCodeAt"||(i===4&&k==="toString")?1:0);
+            } else method(a,p,k,k,k==="slice"?2:k==="hasOwnProperty"||k==="call"||k==="join"||k==="push"||k==="unshift"||k==="at"||k==="indexOf"||k==="includes"||k==="map"||k==="forEach"||k==="reduce"||k==="reduceRight"||k==="find"||k==="findIndex"||k==="findLast"||k==="findLastIndex"||k==="every"||k==="some"||k==="charAt"||k==="charCodeAt"||(i===4&&k==="toString")?1:0);
         }
     }
     desc(a.functionPrototype,"name",{kind:"string",value:""},false,false,true); desc(a.functionPrototype,"length",n(0),false,false,true);
