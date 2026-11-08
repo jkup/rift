@@ -47,6 +47,15 @@ for (const [driver, directory, count, variants] of [
 ]) test(`${driver}: full audit literals, both input orders and hosts`, () => {
   const rows = json(`docs/validation/${directory}/semantic-matrix.json`).rows;
   assert.equal(rows.length, count);
+  if (driver === 'script-assignment-target-audit') {
+    const prefix = rows.find(row => row.id === 'U14');
+    assert.equal(prefix.text, '++42;');
+    prefix.expected = {
+      kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'invalid update target', loc: {line: 1, column: 1}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.assignment-target'},
+    };
+  }
   for (const lane of ['node', 'native']) for (const order of [variants, variants.toReversed()]) for (const row of rows) {
     const extra = order.map(name => `test/fixtures/${driver}/${name}.js`);
     run(driver, lane, row, extra, (stdout, label) => assert.deepEqual(JSON.parse(stdout).audit, row.expected, label));

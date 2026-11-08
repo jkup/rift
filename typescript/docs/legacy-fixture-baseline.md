@@ -46,3 +46,17 @@ they do not predict how many complete files an implementation will pass.
 Add precise semantic regressions for each change, then rerun this fixed selection
 to see which files advance. Preserve failures and denominators; do not rewrite
 the C++ fixtures to fit the TypeScript subset.
+
+## Update-expression follow-up (TS-056)
+
+Both hosts now report 46 successes, 21 unchecked completions, 67 parse errors,
+90 runtime errors and one reported failure, still across all 225 selected files.
+All 64 previously completed files retained their outcomes. The comparison
+fixture and both increment/decrement fixtures now report success. The array-index
+fixture advances to an invalid array-length assignment, which correctly throws
+RangeError despite its older comment expecting success. Do not copy that behavior
+from the C++ fixture into the engine.
+
+Reports: `build/legacy-suite-node-RomWqv/report.json` and
+`build/legacy-suite-native-wSqNPO/report.json`; all complete results agree after
+diagnostic path normalization.

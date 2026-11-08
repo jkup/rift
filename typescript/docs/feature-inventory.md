@@ -41,6 +41,9 @@ keys rather than adding a separate numeric-key node.
 TS-054 adds generic String `charAt`, `charCodeAt` and `slice`, preserving UTF-16
 code units and observable conversion order. See [string methods](string-methods.md).
 
+TS-056 adds prefix/postfix increment and decrement to Script execution; see
+[update expressions](update-expressions.md) for evaluation order and validation.
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a
