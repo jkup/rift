@@ -1,11 +1,40 @@
 import type {Realm} from "../realm.js";
 import {toObject} from "../object-conversion.js";
 import {toPropertyKey} from "../conversion.js";
-import {normal, languageFailure, truthy, UNDEFINED, type GuestObject, type OperationContext,
-    type PropertyDescriptor, type PropertyDescriptorUpdate, type ThrowCompletion, type Value, type ValueCompletion} from "../runtime.js";
+import {normal, languageFailure, truthy, UNDEFINED, GuestObject, type OperationContext,
+    type PropertyKey, type PropertyDescriptor, type PropertyDescriptorUpdate, type ThrowCompletion, type Value, type ValueCompletion} from "../runtime.js";
 import type {Location} from "../syntax.js";
 
 type DescriptorCompletion = {type: "normal"; value: PropertyDescriptorUpdate} | ThrowCompletion;
+
+function defineProperties(target: GuestObject, properties: Value, context: OperationContext, loc: Location): ValueCompletion {
+    const converted = toObject(properties, context, loc);
+    if (converted.type === "throw") return converted;
+    const source = converted.value;
+    const receiver: Value = {kind: "object", object: source};
+    const descriptors: {key: PropertyKey; descriptor: PropertyDescriptorUpdate}[] = [];
+    for (const key of source.ownPropertyKeys()) {
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const own = source.getOwnProperty(key);
+        if (own === undefined || !own.enumerable) continue;
+        const read = source.internalGet(key, receiver, context, loc);
+        if (read.type === "throw") return read;
+        const convertedDescriptor = toDescriptor(read.value, context, loc);
+        if (convertedDescriptor.type === "throw") return convertedDescriptor;
+        descriptors.push({key, descriptor: convertedDescriptor.value});
+    }
+    // Conversion is complete before the first definition; application failures
+    // retain any earlier definitions, including exotic array-length effects.
+    for (const entry of descriptors) {
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const defined = target.defineOwnProperty(entry.key, entry.descriptor, context, loc);
+        if (defined.type === "throw") return defined;
+        if (!defined.value) return languageFailure(context.realm, "TypeError", "cannot define property", loc);
+    }
+    return normal({kind: "object", object: target});
+}
 
 function toDescriptor(input: Value, context: OperationContext, loc: Location): DescriptorCompletion {
     if (input.kind !== "object") return languageFailure(context.realm, "TypeError", "property descriptor must be an object", loc);
@@ -74,5 +103,19 @@ export function registerObjectDescriptors(realm: Realm, constructor: GuestObject
         const key = toPropertyKey(args.length < 2 ? UNDEFINED : args[1], context, loc);
         if (key.type === "throw") return key;
         return descriptorObject(object.value.getOwnProperty(key.value), context, loc);
+    });
+    realm.registerBuiltin(constructor, "defineProperties", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Object.defineProperties requires an object", loc);
+        return defineProperties(target.object, args.length < 2 ? UNDEFINED : args[1], context, loc);
+    });
+    realm.registerBuiltin(constructor, "create", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const prototype = args.length === 0 ? UNDEFINED : args[0];
+        if (prototype.kind !== "object" && prototype.kind !== "null") return languageFailure(context.realm, "TypeError", "Object.create requires an object or null prototype", loc);
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const object = new GuestObject(prototype.kind === "object" ? prototype.object : null);
+        const properties = args.length < 2 ? UNDEFINED : args[1];
+        return properties.kind === "undefined" ? normal({kind: "object", object}) : defineProperties(object, properties, context, loc);
     });
 }
