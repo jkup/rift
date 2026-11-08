@@ -10,7 +10,7 @@ within surrogate pairs. Conversion failures stop later effects.
 The implementation follows [String.prototype.indexOf](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.indexof).
 The C++ string builtin was consulted; its omitted-argument and empty-needle
 shortcuts are not preserved. Tests cover conversions, metadata, primitives,
-positions, UTF-16 and resource limits. Native acceptance pending.
+positions, UTF-16 and resource limits. Both guest suites pass 452/452, full tooling290/290, runner30 and probes10 pass. All 83 native entries pass build and static coverage in one invocation; string driver5008/5008 static. All 225 C++ fixture results agree across hosts: 61 reported successes, 29 unchecked completions, 58 parse errors, 75 runtime errors and two reported failures. The comprehensive template fixture now succeeds; all 89 previously successful or unchecked files retain their outcomes. Reports: build/legacy-suite-node-pAkUn1/report.json and build/legacy-suite-native-K6dnUg/report.json. Logs: build/string-index-*.
 
 TS-054 adds generic `charAt`, `charCodeAt` and `slice`. They reject nullish
 receivers, convert the receiver with a string hint, then convert positions with
