@@ -48,6 +48,13 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["array-at-basic", "let a=[10,20,30]; console.log(a.at(),a.at(1),a.at(-1),a.at(-3),a.at(3),a.at(-4));", 0, "", "10 20 30 10 undefined undefined\n"],
+    ["array-at-conversion", "let a=[10,20,30]; console.log(a.at('1'),a.at(1.9),a.at(-1.9),a.at(NaN),a.at(-0),a.at(Infinity),a.at(-Infinity));", 0, "", "20 20 30 10 10 undefined undefined\n"],
+    ["array-at-generic", "console.log(Array.prototype.at.call('abc',-1),Array.prototype.at.call({length:2,1:7},-1),Array.prototype.at.call(true,0));", 0, "", "c 7 undefined\n"],
+    ["array-at-holes", "let a=[,undefined]; console.log(a.at(0),a.at(1),[].at(0));", 0, "", "undefined undefined undefined\n"],
+    ["array-at-empty-converts", "let k={valueOf:function(){console.log('index');return 0;}}; console.log([].at(k));", 0, "", "index\nundefined\n"],
+    ["array-at-nullish", "let k={valueOf:function(){console.log('bad');return 0;}}; try{Array.prototype.at.call(null,k);}catch(e){console.log(e.name);}", 0, "", "TypeError\n"],
+    ["array-at-metadata", "console.log(Array.prototype.at.name,Array.prototype.at.length,Object.keys(Array.prototype).length);", 0, "", "at 1 0\n"],
     ["enumeration-order", "let o={b:4,10:10,2:2,a:1}; console.log(Object.keys(o).join(','),Object.values(o).join(','));", 0, "", "2,10,b,a 2,10,4,1\n"],
     ["enumeration-entries", "let o={x:{},y:undefined}; let a=Object.entries(o); console.log(Array.isArray(a),Array.isArray(a[0]),a.length,a[0][0],a[0][1]===o.x,a[1][0],a[1].length,1 in a[1]);", 0, "", "true true 2 x true y 2 true\n"],
     ["enumeration-strings", "console.log(Object.keys('abc').join(','),Object.values('abc').join(','),Object.entries('ab').join(';'));", 0, "", "0,1,2 a,b,c 0,a;1,b\n"],

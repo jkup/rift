@@ -16,6 +16,21 @@ function toClampedIndex(value: Value, length: number, context: OperationContext,
 }
 
 export function registerArraySearch(realm: Realm): void {
+    realm.registerBuiltin(realm.arrayPrototype, "at", 1, (receiver, args, context, loc) => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
+        if (primitive.type === "throw") return primitive;
+        const relative = toIntegerOrInfinity(primitive.value, loc, context.realm);
+        if (relative.type === "throw") return relative;
+        const index = relative.value < 0 ? length.value + relative.value : relative.value;
+        if (index < 0 || index >= length.value) return normal();
+        return boxed.value.internalGet(numberToString(index), { kind: "object", object: boxed.value }, context, loc);
+    });
     realm.registerBuiltin(realm.arrayPrototype, "indexOf", 1, (receiver, args, context, loc) => {
         const boxed = toObject(receiver, context, loc);
         if (boxed.type === "throw") return boxed;

@@ -57,6 +57,8 @@ their distinct conversion order; see [own-property predicates](own-property-pred
 TS-060 adds `Object.keys`, `Object.values` and `Object.entries` with ordered
 enumeration and live descriptor checks; see [Object enumeration](object-enumeration.md).
 
+TS-061 adds generic `Array.prototype.at`; see [relative indexing](array-at.md).
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a

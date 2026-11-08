@@ -12,10 +12,11 @@ unless they contain a `"use strict"` directive. Unsupported syntax, including
 Object literals accept identifier, string and numeric property names.
 See the [current development roadmap](docs/development-roadmap.md).
 
-Array methods include `join`, `toString`, `push`, `pop`, `reverse`, `indexOf`,
+Array methods include `join`, `toString`, `push`, `pop`, `reverse`, `at`, `indexOf`,
 `includes`, `every` and `some`; see [mutation behavior](docs/array-mutation.md),
 [search behavior](docs/array-search.md) and [predicate iteration](docs/array-predicate.md)
 for scope and validation.
+See [relative indexing](docs/array-at.md) for `at`.
 
 `Array` supports calls, construction and `Array.isArray`; see
 [Array construction](docs/array-constructor.md) for sparse lengths and brand checks.

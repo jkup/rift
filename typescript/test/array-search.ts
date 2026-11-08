@@ -4,6 +4,7 @@ import { GuestObject, sameValue, normal, languageFailure, type Value, type Value
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { Location } from "../src/syntax.js";
+import { wellKnownToPrimitive } from "../src/symbols.js";
 
 function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
 function num(value: number): Value { return { kind: "number", value }; }
@@ -105,5 +106,73 @@ for (const method of ["indexOf", "includes"]) {
     target.trace = "";
     result(run(realm, "includes", "11"), { kind: "boolean", value: true });
     check(target.trace === "get:length;get:0;", "includes never calls HasProperty");
+}
+for (const index of ["0", "-3", "NaN", "-0", "0.9"]) {
+    const { realm, target } = fixture();
+    target.failHas = true;
+    result(run(realm, "at", index), num(11));
+    check(target.trace === "get:length;get:0;", "at reads once without HasProperty");
+}
+for (const index of ["-1", "2.9", "-1.9"]) {
+    const { realm, target } = fixture();
+    result(run(realm, "at", index), num(17));
+    check(target.trace === "get:length;get:2;", "at relative index truncation");
+}
+for (const index of ["3", "-4", "Infinity", "-Infinity", "99999999999999999999"]) {
+    const { realm, target } = fixture();
+    result(run(realm, "at", index), { kind: "undefined" });
+    check(target.trace === "get:length;", "at out of bounds skips Get");
+}
+{
+    const { realm, target } = fixture();
+    result(run(realm, "at", "1"), { kind: "undefined" });
+    data(realm.objectPrototype, "1", 23); target.trace = "";
+    result(run(realm, "at", "-2"), num(23));
+    check(target.trace === "get:length;get:1;", "at inherits through a hole");
+    data(target, "length", Infinity);
+    data(target, "9007199254740990", 29); target.trace = "";
+    result(run(realm, "at", "-1"), num(29));
+    check(target.trace === "get:length;get:9007199254740990;", "at uses ToLength safe integer bound");
+}
+{
+    const { realm, target } = fixture();
+    const index = realm.createObject();
+    const convert = realm.createBuiltin("index", 1, (receiver, args, _context, _loc): ValueCompletion => {
+        check(receiver.kind === "object" && receiver.object === index && args.length === 1 &&
+            sameValue(args[0], { kind: "string", value: "number" }), "at number hint");
+        target.trace += "index;";
+        data(target, "length", 0);
+        return normal(num(-1));
+    });
+    index.bootstrapDefine(wellKnownToPrimitive, { value: obj(convert) });
+    realm.defineScriptGlobal("index", { value: obj(index) });
+    result(run(realm, "at", "index"), num(17));
+    check(target.trace === "get:length;index;get:2;", "at captures length before index conversion");
+    target.trace = "";
+    result(run(realm, "at", "index"), { kind: "undefined" });
+    check(target.trace === "get:length;index;", "empty at still converts index");
+    target.trace = ""; target.failGet = "length";
+    const abrupt = run(realm, "at", "index");
+    check(abrupt.type === "throw" && abrupt.diagnostic.message === "get sentinel" && target.trace === "get:length;", "length failure precedes index conversion");
+}
+{
+    const { realm, target } = fixture();
+    realm.defineScriptGlobal("symbol", { value: {kind: "symbol", value: wellKnownToPrimitive} });
+    const symbol = run(realm, "at", "symbol");
+    check(symbol.type === "throw" && symbol.diagnostic.name === "TypeError" && target.trace === "get:length;", "symbol index fails before element Get");
+    const thrown = run(realm, "at", "{valueOf:function(){throw target;}}");
+    check(thrown.type === "throw" && thrown.origin.kind === "guest" && thrown.value.kind === "object" && thrown.value.object === target, "exact at index throw identity");
+    target.trace = ""; target.failGet = "2";
+    const element = run(realm, "at", "-1");
+    check(element.type === "throw" && element.diagnostic.message === "get sentinel" && target.trace === "get:length;get:2;", "at element Get failure");
+}
+{
+    let interrupted = false, completed = false;
+    for (let steps = 0; steps < 30; steps++) {
+        const { realm } = fixture(), completion = run(realm, "at", "-1", "undefined", steps);
+        if (completion.type === "throw") { check(completion.origin.kind === "resource-limit", "at budget"); interrupted = true; }
+        else { result(completion, num(17)); completed = true; }
+    }
+    check(interrupted && completed, "at budget boundary");
 }
 console.log("array search passed");
