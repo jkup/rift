@@ -48,6 +48,15 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["array-empty", "console.log(Array().length,(new Array()).length,Array.isArray(Array()),Array.isArray(new Array()));", 0, "", "0 0 true true\n"],
+    ["array-holes", "let a=Array(3); let b=new Array(3); console.log(a.length,b.length,0 in a,2 in b,a.join('-'));", 0, "", "3 3 false false --\n"],
+    ["array-length-limits", "console.log(Array(-0).length,Array(4294967295).length);", 0, "", "0 4294967295\n"],
+    ["array-invalid-length", "try { Array(1.5); } catch(e) { console.log(e.name); } try { new Array(-1); } catch(e) { console.log(e.name); }", 0, "", "RangeError\nRangeError\n"],
+    ["array-single-element", "let a=Array('3'); let b=new Array(undefined); console.log(a.length,a[0],b.length,0 in b);", 0, "", "1 3 1 true\n"],
+    ["array-elements", "let o={}; let a=Array(o,undefined,3); console.log(a.length,a[0]===o,1 in a,a[2]);", 0, "", "3 true true 3\n"],
+    ["array-no-coercion", "let o={valueOf:function(){throw 'bad';},toString:function(){throw 'bad';}}; console.log(Array(o)[0]===o,Array.isArray(o));", 0, "", "true false\n"],
+    ["array-brand", "console.log(Array.isArray(),Array.isArray(null),Array.isArray({length:0,push:function(){}}),Array.isArray([]),Array.isArray(Array.prototype));", 0, "", "false false false true true\n"],
+    ["array-metadata", "console.log(Array.name,Array.length,Array.isArray.name,Array.isArray.length,Array.prototype.constructor===Array,Array() instanceof Array);", 0, "", "Array 1 isArray 1 true true\n"],
     ["delete-success", "let o={x:1}; console.log(delete o.x, o.x);", 0, "", "true undefined\n"],
     ["delete-identifier", "'use strict';\nconsole.log('no'); delete x;", 2, "2:20: parse SyntaxError: delete of an identifier is not allowed"],
     ["delete-fixed", "'use strict';\ndelete Number.NaN;", 1, "2:1: runtime TypeError: property is not configurable: NaN"],
@@ -313,6 +322,7 @@ for (const [name, text] of [["seed", bootstrapRows], ["other", bootstrapRows.rep
 }
 executeDriver("string-methods", { stdout: "string methods passed\n" });
 executeDriver("boolean-constructor", { stdout: "Boolean constructor passed\n" });
+executeDriver("array-constructor", { stdout: "Array constructor passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });

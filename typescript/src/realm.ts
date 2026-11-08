@@ -10,7 +10,7 @@ import { registerObject, registerObjectValueOf, registerObjectToString } from ".
 import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBoolean, registerBooleanConversions } from "./builtins/boolean.js";
 import { registerString, registerStringConversions, registerStringMethods } from "./builtins/string.js";
-import { registerArrayConversions } from "./builtins/array.js";
+import { registerArray, registerArrayConversions } from "./builtins/array.js";
 import { registerArrayMutators } from "./builtins/array-mutation.js";
 import { registerArraySearch } from "./builtins/array-search.js";
 import { registerArrayPredicates } from "./builtins/array-predicate.js";
@@ -37,6 +37,7 @@ export class Realm {
     readonly objectPrototype: GuestObject;
     readonly functionPrototype: GuestObject;
     readonly arrayPrototype: GuestArray;
+    readonly arrayConstructor: GuestObject | null = null;
     readonly booleanPrototype: GuestBoolean;
     readonly numberPrototype: GuestNumber;
     readonly symbolPrototype: GuestObject;
@@ -101,6 +102,7 @@ export class Realm {
             registerString(this);
             registerBoolean(this);
             registerObject(this);
+            this.arrayConstructor = registerArray(this);
         }
     }
     get global(): Environment {

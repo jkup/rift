@@ -455,7 +455,7 @@ for(const cross of [false,true]){
  const m=b.createObject();let effects="";data(m,wellKnownToPrimitive,obj(b.createBuiltin("convert",1,(receiver,args,c,_l)=>{check(receiver.kind==="object"&&receiver.object===m&&args.length===1&&sameValue(args[0],str("string"))&&c.realm===b,"F05 protocol");effects+="M";return normal(str(payload));})));define(b,"m",obj(m));check(sameValue(value(run("String(m);",b)),str(payload)),"F05 call");box(run("new String(m);",b),a,payload);check(effects==="MM","F05 once per operation");
 }
 for(const r of [fresh(),fresh()]){
- keys(r.globalObject,["undefined","NaN","Infinity","console","Number","Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object"]);
+ keys(r.globalObject,["undefined","NaN","Infinity","console","Number","Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object","Array"]);
  keys(r.stringPrototype,["length","toString","valueOf","charAt","charCodeAt","slice","constructor"]);keys(r.objectPrototype,["valueOf","toString","constructor"]);
  for(const name of ["String","Object"]){const cv=own(r.globalObject,name),ctor=object(cv),proto=name==="String"?r.stringPrototype:r.objectPrototype;
   descriptor(r.globalObject,name,cv,true,false,true);descriptor(ctor,"name",str(name),false,false,true);descriptor(ctor,"length",num(1),false,false,true);descriptor(ctor,"prototype",obj(proto),false,false,false);descriptor(proto,"constructor",cv,true,false,true);keys(ctor,["name","length","prototype"]);check(ctor.getPrototypeOf()===r.functionPrototype,"F10 Function link");
@@ -469,10 +469,11 @@ for(const r of [fresh(),fresh()]){
  const a=fresh(),b=fresh();for(const name of ["String","Object"]){check(!sameValue(own(a.globalObject,name),own(b.globalObject,name)),"distinct Realm constructors");}
 }
 console.log("PASS F01-F12 semantics metadata UTF16 legacy cross-Realm");
-// Actual public C Object link: canonical species remains observable on its chain.
+// An explicit Object constructor keeps canonical species observable on its chain.
 for(const where of ["own","function","object"])for(let mode=0;mode<5;mode++){
  const r=fresh(),ctor=object(own(r.globalObject,"Object")),a=r.createArray(),marker=obj(r.createError("Error","marker"));let getters=0,callbacks=0;
- check(sameValue(a.get("constructor",{realm:r,call:(_f,_r,_a,_l):ValueCompletion=>{throw new Error("unexpected call");},tick:(_l)=>normal()},loc),obj(ctor)),"actual C inherited Object");
+ data(a,"constructor",obj(ctor));
+ check(sameValue(a.get("constructor",{realm:r,call:(_f,_r,_a,_l):ValueCompletion=>{throw new Error("unexpected call");},tick:(_l)=>normal()},loc),obj(ctor)),"actual C explicit Object");
  const target=where==="own"?ctor:where==="function"?r.functionPrototype:r.objectPrototype;
  const poison=r.createBuiltin("species",0,(receiver,_args,c,_l):ValueCompletion=>{getters++;check(sameValue(receiver,obj(ctor))&&c.realm===r,"actual species receiver");return {type:"throw",value:marker,diagnostic:{phase:"runtime",name:"Uncaught",message:"marker",loc},origin:{kind:"guest"}};});
  if(mode===4)target.bootstrapDefine(wellKnownSpecies,{get:obj(poison),configurable:true});else data(target,wellKnownSpecies,mode===0?UNDEFINED:mode===1?{kind:"null"}:mode===2?num(7):obj(r.getErrorConstructor("Error")));

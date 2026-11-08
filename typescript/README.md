@@ -17,6 +17,9 @@ Array methods include `join`, `toString`, `push`, `pop`, `reverse`, `indexOf`,
 [search behavior](docs/array-search.md) and [predicate iteration](docs/array-predicate.md)
 for scope and validation.
 
+`Array` supports calls, construction and `Array.isArray`; see
+[Array construction](docs/array-constructor.md) for sparse lengths and brand checks.
+
 Strings support `charAt`, `charCodeAt` and `slice` with UTF-16 indexing; see
 [string methods](docs/string-methods.md).
 

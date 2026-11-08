@@ -3050,3 +3050,9 @@ Generalize postfix increment to prefix/postfix increment and decrement in the Sc
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `01faea52`, implementation `30fc2d17`. Both guest suites pass 336/336, full tooling 290/290, runner30 and probes10 pass. All 76 native entries pass build and static coverage in one invocation; Boolean driver4308/4308 static. Both C++ fixture lanes agree on all 225 results: 49 reported successes, 21 unchecked completions, 67 parse errors, 87 runtime errors and one reported failure. The three Boolean files improve without regressing previously completed files. Logs: build/boolean-*.
 
 Expose Boolean as a Script builtin constructor: calls return primitive truthiness, construction allocates genuine Boolean objects with the owning Realm prototype. Avoid coercion hooks, preserve allocation budgets, constructor metadata and Realm isolation. Test missing arguments, all primitive kinds, truthy objects, boxed false values, call versus construct, and cross-Realm behavior. Re-run both guest hosts, native coverage and the fixed C++ fixture selection.
+
+## TS-058 — Array construction and brand checking
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `f61cefef`.
+
+Add Array call/construct semantics and Array.isArray in Script Realms using existing sparse array storage. Distinguish a single numeric length from element arguments without coercing objects; validate lengths, holes, descriptors, intrinsic metadata, Realm ownership and budgets. Preserve C++ fixtures and rerun the fixed selection in both hosts. Require fresh native static coverage and current regression checks.

@@ -4,8 +4,47 @@ import { lengthOfArrayLike } from "../array-like.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString, numberToString, type StringCompletion } from "../conversion.js";
 import { stringConcat } from "../strings.js";
-import { normal, UNDEFINED, type Value, type OperationContext } from "../runtime.js";
+import { GuestArray } from "../array-object.js";
+import { normal, UNDEFINED, type GuestObject, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import type { Location } from "../syntax.js";
+
+function arrayArguments(callee: GuestObject, args: Value[], context: OperationContext, loc: Location): ValueCompletion {
+    const prototype = callee.internalGet("prototype", { kind: "object", object: callee }, context, loc);
+    if (prototype.type === "throw") return prototype;
+    const proto = prototype.value.kind === "object" ? prototype.value.object : context.realm.arrayPrototype;
+    const allocation = context.tick(loc);
+    if (allocation.type === "throw") return allocation;
+    const array = new GuestArray(proto);
+    const numericLength = args.length === 1 && args[0].kind === "number";
+    const length: Value = numericLength ? args[0] : { kind: "number", value: args.length };
+    const resized = array.defineOwnProperty("length", { value: length }, context, loc);
+    if (resized.type === "throw") return resized;
+    if (!resized.value) throw new Error("fresh array length definition failed");
+    if (!numericLength) for (let i = 0; i < args.length; i++) {
+        const step = context.tick(loc);
+        if (step.type === "throw") return step;
+        const defined = array.defineOwnProperty(numberToString(i), {
+            value: args[i], writable: true, enumerable: true, configurable: true,
+        }, context, loc);
+        if (defined.type === "throw") return defined;
+        if (!defined.value) throw new Error("fresh array element definition failed");
+    }
+    return normal({ kind: "object", object: array });
+}
+
+export function registerArray(realm: Realm): GuestObject {
+    const constructor: GuestObject = realm.createBuiltinConstructor("Array", 1,
+        (_receiver, args, context, loc) => arrayArguments(constructor, args, context, loc),
+        (callee, args, context, loc) => arrayArguments(callee, args, context, loc));
+    constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.arrayPrototype }, writable: false, enumerable: false, configurable: false });
+    realm.registerBuiltin(constructor, "isArray", 1, (_receiver, args, _context, _loc) => {
+        const value = args.length === 0 ? UNDEFINED : args[0];
+        return normal({ kind: "boolean", value: value.kind === "object" && value.object instanceof GuestArray });
+    });
+    realm.arrayPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+    realm.defineScriptGlobal("Array", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+    return constructor;
+}
 
 function toElementString(value: Value, context: OperationContext, loc: Location): StringCompletion {
     const primitive = toPrimitive(value, "string", context, loc);

@@ -156,7 +156,7 @@ for(const cross of [false,true])for(const empty of [false,true])for(let row=1;ro
     const ctorProto=f.b.createObject(),speciesProto=f.b.createObject();
     if(row===1){
         a.internalDelete("constructor");selection="LK";
-        check(a.getOwnProperty("constructor")===undefined && sameValue(own(f.b.objectPrototype,"constructor"),own(f.b.globalObject,"Object")),"C default array inherits exact Object");
+        check(a.getOwnProperty("constructor")===undefined && sameValue(own(f.b.arrayPrototype,"constructor"),own(f.b.globalObject,"Array")),"C default array inherits exact Array");
         // Keep the original genuinely absent-constructor case as a separate control.
         const missing=fixture(traces[empty?0:1],cross);
         missing.array.internalDelete("constructor");missing.array.setPrototypeOf(null);
@@ -178,7 +178,7 @@ for(const cross of [false,true])for(const empty of [false,true])for(let row=1;ro
     if(row===17||row===18||row===19||row===20){
         const ctor=c.createBuiltinConstructor(empty?"Object":"Array",1,(_r,_args,_ctx,_l):ValueCompletion=>{throw new Error("custom call");},(_k,_args,_ctx,_l):ValueCompletion=>{throw new Error("custom construct");});
         data(ctor,"prototype",obj(c.arrayPrototype));
-        if(row===19||row===20){a.internalDelete("constructor");data(f.b.objectPrototype,"constructor",obj(ctor));}else data(a,"constructor",obj(ctor));selection="LK";
+        if(row===19||row===20){a.internalDelete("constructor");data(f.b.arrayPrototype,"constructor",obj(ctor));}else data(a,"constructor",obj(ctor));selection="LK";
         if(row===18){ctor.bootstrapDefine(wellKnownSpecies,{get:obj(poison),configurable:true});expected="abrupt";}
         if(row===20){data(ctor,wellKnownSpecies,empty?nullValue:num(7));if(!empty)expected="invalid";}
     }
@@ -349,7 +349,7 @@ for(const scriptOperation of [false,true])for(const scriptObject of [false,true]
     let v:ValueCompletion=normal();if(scriptOperation){define(r,"probe",obj(probe));v=run(input,r,createScriptSession(),inputId);}else{const evaluator=new Evaluator(r);v=evaluator.call(obj(probe),UNDEFINED,[num(payload)],loc);check(evaluator.calls===0&&evaluator.depth===0,"legacy cleanup");}
     if(!scriptOperation&&(defined||scriptObject))check(v.type==="throw"&&v.origin.kind==="unsupported-operation"&&v.origin.capabilityCode==="runtime.map-species"&&v.value.kind==="string"&&species===0,"legacy unchanged with own or inherited constructor");else{result(v,r,a,0,false);check(species===(scriptOperation&&defined?1:0),"running profile policy");}
     if(scriptObject&&!defined) {
-        check(sameValue(own(origin.objectPrototype,"constructor"),own(origin.globalObject,"Object")),"Script origin inherits exact Object");
+        check(sameValue(own(origin.arrayPrototype,"constructor"),own(origin.globalObject,"Array")),"Script origin inherits exact Array");
         // An explicit undefined own property retains the previous default-success case.
         data(a,"constructor",UNDEFINED);
         let shadow:ValueCompletion=normal();
@@ -361,9 +361,9 @@ for(const scriptOperation of [false,true])for(const scriptObject of [false,true]
 {
     const f=fixture(traces[1],true);check(wellKnownSpecies.description==="Symbol.species","canonical description");
     for(const r of [f.a,f.b,f.c])for(const o of [r.globalObject,r.objectPrototype,r.arrayPrototype,r.functionPrototype])check(o.getOwnProperty(wellKnownSpecies)===undefined,"no species installation");
-    check(f.a.globalObject.getOwnProperty("Array")===undefined&&f.b.globalObject.getOwnProperty("Array")===undefined,"X06 foreign intrinsic Array remains unrepresentable");
+    check(f.a.arrayConstructor!==null&&f.b.arrayConstructor!==null&&f.a.arrayConstructor!==f.b.arrayConstructor,"X06 distinct intrinsic Arrays");
 }
-console.log("PASS lengths mutations profiles inventories; X06 unrepresentable");
+console.log("PASS lengths mutations profiles inventories; X06 intrinsic Array");
 
 let primitiveControls=0;
 for(const cross of [false,true])for(const empty of [false,true])for(const species of [false,true])for(const invalid of [num(0),num(7),num(NaN),{kind:"boolean",value:false} as Value,{kind:"boolean",value:true} as Value,{kind:"string",value:"text"} as Value,{kind:"symbol",value:new GuestSymbol("invalid")} as Value]) {
@@ -388,7 +388,7 @@ let objectLinkControls=0;
 for(const cross of [false,true])for(const empty of [false,true])for(const selected of ["undefined","null","invalid","custom","poison"]) {
     const f=fixture(traces[empty?0:1],cross);let invoked=0,gets=0;
     const ctor=f.c.createBuiltinConstructor("Object",1,(_r,_args,_ctx,_l):ValueCompletion=>{invoked++;throw new Error("Object call forbidden");},(_k,_args,_ctx,_l):ValueCompletion=>{invoked++;throw new Error("Object construct forbidden");});
-    data(ctor,"prototype",obj(f.b.objectPrototype));f.array.internalDelete("constructor");data(f.b.objectPrototype,"constructor",obj(ctor));
+    data(ctor,"prototype",obj(f.b.objectPrototype));f.array.internalDelete("constructor");data(f.b.arrayPrototype,"constructor",obj(ctor));
     if(selected==="undefined")data(ctor,wellKnownSpecies,UNDEFINED);
     if(selected==="null")data(ctor,wellKnownSpecies,{kind:"null"});
     if(selected==="invalid")data(ctor,wellKnownSpecies,num(7));

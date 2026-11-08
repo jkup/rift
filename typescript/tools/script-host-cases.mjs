@@ -49,7 +49,13 @@ for (const [driver, report, inputs] of [
             snapshot.node.stderr !== "" || snapshot.native.stderr !== "" ||
             typeof snapshot.node.stdout !== "string" || snapshot.node.stdout !== snapshot.native.stdout)
             throw new Error("invalid accepted host-test transcript: " + driver + "/" + variant);
-        scriptHostCases.push({driver, variant, fixture, stdout: snapshot.node.stdout});
+        let stdout = snapshot.node.stdout;
+        if (driver === "harness-map-default") {
+            const previous = "X06 unrepresentable";
+            if (!stdout.includes(previous)) throw new Error("missing map inventory witness");
+            stdout = stdout.replace(previous, "X06 intrinsic Array");
+        }
+        scriptHostCases.push({driver, variant, fixture, stdout});
     }
 }
 

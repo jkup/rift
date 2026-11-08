@@ -17,9 +17,11 @@ export function mapObjectDefaultArray(object: GuestObject, callback: Value, this
             if (constructor.value.kind !== "undefined") return unsupportedFailure("runtime.map-species", "TypeError", "unsupported map constructor/species", loc);
         } else {
             let selected = constructor.value;
-            // No Realm has an intrinsic Array constructor yet, so the foreign
-            // intrinsic exception has no representable case. Names and prototype
-            // properties do not establish intrinsic identity.
+            if (selected.kind === "object") {
+                const callable = selected.object.callable;
+                if (callable !== null && callable.realm !== context.realm && callable.realm.arrayConstructor === selected.object)
+                    selected = { kind: "undefined" };
+            }
             if (selected.kind === "object") {
                 const species = selected.object.internalGet(wellKnownSpecies, selected, context, loc);
                 if (species.type === "throw") return species;
