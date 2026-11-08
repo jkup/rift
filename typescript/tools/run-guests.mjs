@@ -559,6 +559,7 @@ executeDriver("symbol-well-known", { stdout: "Well-known symbols passed\n" });
 executeDriver("array-iterator", { stdout: "Array iterators passed\n" });
 executeDriver("string-iterator", { stdout: "String iterators passed\n" });
 executeDriver("object-from-entries", { stdout: "Object fromEntries passed\n" });
+executeDriver("keyed-collection", { stdout: "Keyed collection storage passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });
