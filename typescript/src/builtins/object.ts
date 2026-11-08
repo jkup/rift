@@ -1,6 +1,7 @@
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
-import { GuestError, normal, type Value } from "../runtime.js";
+import { GuestError, normal, UNDEFINED, type Value } from "../runtime.js";
+import { toPropertyKey } from "../conversion.js";
 import { GuestArray } from "../array-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
@@ -25,7 +26,21 @@ export function registerObject(realm: Realm): void {
         (_receiver, args, context, loc) => objectArgument(args, context, loc),
         (_callee, args, context, loc) => objectArgument(args, context, loc));
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.objectPrototype }, writable: false, enumerable: false, configurable: false });
+    realm.registerBuiltin(constructor, "hasOwn", 2, (_receiver, args, context, loc) => {
+        const object = toObject(args.length === 0 ? UNDEFINED : args[0], context, loc);
+        if (object.type === "throw") return object;
+        const key = toPropertyKey(args.length < 2 ? UNDEFINED : args[1], context, loc);
+        if (key.type === "throw") return key;
+        return normal({ kind: "boolean", value: object.value.getOwnProperty(key.value) !== undefined });
+    });
     realm.objectPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+    realm.registerBuiltin(realm.objectPrototype, "hasOwnProperty", 1, (receiver, args, context, loc) => {
+        const key = toPropertyKey(args.length === 0 ? UNDEFINED : args[0], context, loc);
+        if (key.type === "throw") return key;
+        const object = toObject(receiver, context, loc);
+        if (object.type === "throw") return object;
+        return normal({ kind: "boolean", value: object.value.getOwnProperty(key.value) !== undefined });
+    });
     realm.defineScriptGlobal("Object", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
 

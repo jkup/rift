@@ -51,6 +51,9 @@ TS-058 adds Array calls, construction and brand checking; see
 [Array construction](array-constructor.md). The internal map operation now
 recognizes foreign intrinsic Array constructors by identity.
 
+TS-059 adds `Object.prototype.hasOwnProperty` and `Object.hasOwn`, preserving
+their distinct conversion order; see [own-property predicates](own-property-predicates.md).
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a

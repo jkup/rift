@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["own-properties", "let o={x:undefined}; console.log(o.hasOwnProperty('x'),Object.hasOwn(o,'x'),o.hasOwnProperty('toString'),Object.hasOwn(o,'missing'));", 0, "", "true true false false\n"],
+    ["own-holes", "let a=[,undefined]; console.log(a.hasOwnProperty(0),Object.hasOwn(a,1),a.hasOwnProperty('length'),Object.hasOwn(a,'push'));", 0, "", "false true true false\n"],
+    ["own-strings", "console.log('abc'.hasOwnProperty(1),Object.hasOwn('abc','length'),Object.hasOwn('abc',3));", 0, "", "true true false\n"],
+    ["own-missing-key", "let o={undefined:1}; console.log(o.hasOwnProperty(),Object.hasOwn(o));", 0, "", "true true\n"],
+    ["own-shadowed-method", "let o={hasOwnProperty:0}; console.log(Object.hasOwn(o,'hasOwnProperty'),Object.prototype.hasOwnProperty.call(o,'hasOwnProperty'));", 0, "", "true true\n"],
+    ["own-key-order", "let s=''; let k={toString:function(){s+='K';return 'x';}}; try{Object.hasOwn(null,k);}catch(e){s+='S';} try{Object.prototype.hasOwnProperty.call(null,k);}catch(e){s+='P';} console.log(s);", 0, "", "SKP\n"],
+    ["own-key-coercion", "let o={}; let k={toString:function(){o.x=1;return 'x';}}; console.log(Object.hasOwn(o,k));", 0, "", "true\n"],
+    ["own-metadata", "console.log(Object.hasOwn.name,Object.hasOwn.length,Object.prototype.hasOwnProperty.name,Object.prototype.hasOwnProperty.length);", 0, "", "hasOwn 2 hasOwnProperty 1\n"],
     ["array-empty", "console.log(Array().length,(new Array()).length,Array.isArray(Array()),Array.isArray(new Array()));", 0, "", "0 0 true true\n"],
     ["array-holes", "let a=Array(3); let b=new Array(3); console.log(a.length,b.length,0 in a,2 in b,a.join('-'));", 0, "", "3 3 false false --\n"],
     ["array-length-limits", "console.log(Array(-0).length,Array(4294967295).length);", 0, "", "0 4294967295\n"],
@@ -323,6 +331,7 @@ for (const [name, text] of [["seed", bootstrapRows], ["other", bootstrapRows.rep
 executeDriver("string-methods", { stdout: "string methods passed\n" });
 executeDriver("boolean-constructor", { stdout: "Boolean constructor passed\n" });
 executeDriver("array-constructor", { stdout: "Array constructor passed\n" });
+executeDriver("own-property-predicates", { stdout: "Own-property predicates passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });

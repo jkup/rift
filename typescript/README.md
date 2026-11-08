@@ -20,6 +20,9 @@ for scope and validation.
 `Array` supports calls, construction and `Array.isArray`; see
 [Array construction](docs/array-constructor.md) for sparse lengths and brand checks.
 
+Own-property checks support `Object.hasOwn` and `Object.prototype.hasOwnProperty`;
+see [property predicates](docs/own-property-predicates.md).
+
 Strings support `charAt`, `charCodeAt` and `slice` with UTF-16 indexing; see
 [string methods](docs/string-methods.md).
 
