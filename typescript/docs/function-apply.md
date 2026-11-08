@@ -17,4 +17,7 @@ This follows [Function.prototype.apply](https://tc39.es/ecma262/multipage/fundam
 The C++ function builtin was consulted; its numeric-only length handling is not
 copied. Tests cover receiver/argument preservation, generic lists, holes,
 inheritance, mutations, read order, abrupt completions, Realm ownership,
-metadata, invalid input and resource limits. Native acceptance pending.
+metadata, invalid input and resource limits. Both guest suites pass 481/481; tooling290/290, runner30 and probes10 pass.
+Native acceptance covers 85 initial passes and an isolated array-literals retry
+after a Zig cache file-open failure; all 86 entries pass static coverage.
+The apply driver is 4996/4996 static. Logs: `build/function-apply-*`.

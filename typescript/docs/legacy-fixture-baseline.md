@@ -123,3 +123,13 @@ errors, 75 runtime errors and two reported failures. All 90 previously successfu
 or unchecked fixtures retain their outcomes. Reports:
 `build/legacy-suite-node-HDK6EP/report.json` and
 `build/legacy-suite-native-bNLeoL/report.json`.
+
+## Math unary and Function apply (TS-071–072)
+
+Both hosts agree on all 225 complete outcomes: 66 reported successes, 30 unchecked
+completions, 55 parse errors, 72 runtime errors and two reported failures. Math
+adds two reported successes and one unchecked completion. Apply advances the
+call/apply/bind fixture to missing bind without changing its runtime-error category.
+All 96 prior completed outcomes are retained. Reports:
+`build/legacy-suite-node-fVzKVO/report.json` and
+`build/legacy-suite-native-Ef21Cn/report.json`.
