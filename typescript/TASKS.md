@@ -3077,6 +3077,6 @@ Add generic Array.prototype.at using existing length and integer conversions. Pr
 
 ## TS-062 — Array reduction
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `9124dfc0`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `9124dfc0`, implementation `ce639c5a`. Both guest suites pass 382/382, full tooling 290/290, runner30 and probes10 pass. All 80 native entries pass build and static coverage in one invocation; reduction driver4509/4509 static. All 225 C++ fixture results agree across hosts: 55 reported successes, 22 unchecked completions, 67 parse errors, 79 runtime errors and two reported failures. The empty-reduction fixture improves and all 76 previously completed files retain their outcomes. Logs: build/array-reduce-*.
 
 Add generic reduce and reduceRight with shared directional traversal. Preserve length-before-callback validation, missing versus explicit initial accumulator, inherited elements and holes, live mutation, callback tuple/receiver, abrupt completions and resource bounds. Validate both hosts, static coverage and the fixed C++ fixture selection.

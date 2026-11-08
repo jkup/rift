@@ -22,4 +22,4 @@ existing callable dispatch for builtin and Script functions.
 Host tests check exact access order, callback tuple and Realm, inherited initial
 elements, explicit undefined, mutations, competing failures and resource bounds.
 CLI cases cover both directions, generic receivers, strict/sloppy callback this,
-holes, empty inputs and metadata. Native and regression acceptance is pending.
+holes, empty inputs and metadata. Both guest suites pass 382/382, full tooling 290/290, runner30 and probes10 pass. All 80 native entries pass build and static coverage in one invocation; reduction driver4509/4509 static. All 225 C++ fixture results agree across hosts: 55 reported successes, 22 unchecked completions, 67 parse errors, 79 runtime errors and two reported failures. The empty-reduction fixture improves and all 76 previously completed files retain their outcomes. Logs: build/array-reduce-*.

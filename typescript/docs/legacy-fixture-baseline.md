@@ -69,3 +69,25 @@ all previously completed files retain their outcomes. All 225 results agree
 after diagnostic path normalization. Reports:
 `build/legacy-suite-node-wYAtgS/report.json` and
 `build/legacy-suite-native-rmFt3P/report.json`.
+
+## Builtin follow-ups (TS-058–062)
+
+The selection remains 225 files with the same 15 exclusions. Both hosts agree on
+all complete results after diagnostic path normalization at every milestone.
+
+| Change | Reported success | Unchecked completion | Parse error | Runtime error | Reported failure |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Array construction/isArray | 50 | 21 | 67 | 86 | 1 |
+| Own-property predicates | 51 | 22 | 67 | 84 | 1 |
+| Object enumeration | 53 | 22 | 67 | 81 | 2 |
+| Array.at | 54 | 22 | 67 | 80 | 2 |
+| Array reduction | 55 | 22 | 67 | 79 | 2 |
+
+No previously successful or unchecked file regressed. Enumeration advances
+`object-keys-values-test.js` to its incorrect expectations that strings have no
+enumerable characters. Those two failure messages are retained; the engine and
+original fixture are not altered to inflate this diagnostic score.
+
+Latest reports: `build/legacy-suite-node-wdLrm4/report.json` and
+`build/legacy-suite-native-remDqa/report.json`. These marker-based outcomes remain
+separate from semantic test assertions and test262 conformance admission.
