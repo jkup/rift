@@ -3245,7 +3245,7 @@ Add toSpliced and with using dense own data copies, ordered index/count coercion
 
 ## TS-090 — String concatenation and reverse search
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 4b2a4b26.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 4b2a4b26, implementation 8ae03a2d, correction 3cc581b5. Both guest suites pass 579/579, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage in the restarted invocation; string driver 6019/6019 static. Initial Node 575/579 exposed unintended legacy registration and a stale Script inventory; correction 3cc581b5 scopes the new methods and updates that assertion. The initial native run was interrupted before correction; logs are retained. All 225 complete fixture results agree: 80 reported successes, 27 unchecked completions, 53 parse errors, 64 runtime errors and one reported failure. The lastIndexOf fixture passes all 13 checks; all 106 previously completed outcomes remain. Reports: build/legacy-suite-node-kx4dYm/report.json and build/legacy-suite-native-45ALXL/report.json. Logs: build/string-concat-lastindex-*.
 
 Implement String.concat and lastIndexOf with ordered coercion, UTF-16 semantics, NaN position handling, metadata and resource guards. Validate both hosts, native gates and fixed fixtures.
 
