@@ -61,6 +61,9 @@ TS-061 adds generic `Array.prototype.at`; see [relative indexing](array-at.md).
 
 TS-062 adds generic `reduce` and `reduceRight`; see [array reduction](array-reduction.md).
 
+TS-065 exposes Script `map` and `forEach`; see [array iteration](array-iteration.md).
+Custom map species construction remains unsupported.
+
 TS-063 adds generic `shift` and `unshift`, preserving holes and partial mutations;
 see [array mutation](array-mutation.md).
 

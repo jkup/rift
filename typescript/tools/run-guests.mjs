@@ -48,6 +48,18 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["iteration-map-basic", "let a=[1,,3]; let b=a.map(function(x,i,o){return x+i+o.length;}); console.log(b.join(','),b.length,1 in b,a.join(','),b!==a);", 0, "", "4,,8 3 false 1,,3 true\n"],
+    ["iteration-foreach-basic", "let s=''; let a=[1,,3]; console.log(a.forEach(function(x,i,o){s+=i+':'+x+':'+(o===a)+';';return false;}),s);", 0, "", "undefined 0:1:true;2:3:true;\n"],
+    ["iteration-thisarg", "let o={n:7}; console.log([1,2].map(function(x){return this.n+x;},o).join(',')); let s=0; [1,2].forEach(function(x){s+=this.n+x;},o); console.log(s);", 0, "", "8,9\n17\n"],
+    ["iteration-string", "console.log(Array.prototype.map.call('abc',function(x,i,o){return x+i+':'+typeof o;}).join(',')); let s=''; Array.prototype.forEach.call('ab',function(x){s+=x;}); console.log(s);", 0, "", "a0:object,b1:object,c2:object\nab\n"],
+    ["iteration-inherited", "Array.prototype[1]=7; let a=[1,,3]; let b=a.map(function(x){return x*2;}); console.log(b.join(','),Object.hasOwn(b,'1')); let n=0; a.forEach(function(x){n+=x;}); console.log(n);", 0, "", "2,14,6 true\n11\n"],
+    ["iteration-mutation", "let o={0:1,2:3,length:3}; let a=Array.prototype.map.call(o,function(x,i){if(i===0){delete o[2];o[1]=5;o[3]=9;o.length=0;}return x*2;}); console.log(a.join(','),a.length,2 in a,o.length);", 0, "", "2,10, 3 false 0\n"],
+    ["iteration-foreach-mutation", "let o={0:1,2:3,length:3}; let s=''; Array.prototype.forEach.call(o,function(x,i){s+=i+':'+x+';';if(i===0){delete o[2];o[1]=5;o[3]=9;o.length=0;}}); console.log(s);", 0, "", "0:1;1:5;\n"],
+    ["iteration-constructor-order", "let a=[]; Object.defineProperty(a,'constructor',{get:function(){throw a;}}); try{a.map(0);}catch(e){console.log(e.name);} try{a.map(function(){});}catch(e){console.log(e===a);} console.log(a.forEach(function(){}));", 0, "", "TypeError\ntrue\nundefined\n"],
+    ["iteration-length-order", "let o={}; Object.defineProperty(o,'length',{get:function(){console.log('length');throw 7;}}); try{Array.prototype.map.call(o,0);}catch(e){console.log(e);} try{Array.prototype.forEach.call(o,0);}catch(e){console.log(e);}", 0, "", "length\n7\nlength\n7\n"],
+    ["iteration-map-range", "try{Array.prototype.map.call({length:Infinity},function(){});}catch(e){console.log(e.name);} try{Array.prototype.map.call({length:Infinity},0);}catch(e){console.log(e.name);}", 0, "", "RangeError\nTypeError\n"],
+    ["iteration-empty-validation", "try{[].map();}catch(e){console.log(e.name);} try{[].forEach();}catch(e){console.log(e.name);} console.log([].map(function(){throw 7;}).length,[].forEach(function(){throw 7;}));", 0, "", "TypeError\nTypeError\n0 undefined\n"],
+    ["iteration-metadata", "console.log(Array.prototype.map.name,Array.prototype.map.length,Array.prototype.forEach.name,Array.prototype.forEach.length,Object.keys(Array.prototype).length);", 0, "", "map 1 forEach 1 0\n"],
     ["descriptor-defaults", "let o={}; console.log(Object.defineProperty(o,'x',{value:7})===o); let d=Object.getOwnPropertyDescriptor(o,'x'); console.log(d.value,d.writable,d.enumerable,d.configurable,Object.keys(d).join(','));", 0, "", "true\n7 false false false value,writable,enumerable,configurable\n"],
     ["descriptor-accessors", "let o={n:3}; let calls=0; function get(){calls++;return this.n;} function set(v){this.n=v;} Object.defineProperty(o,'x',{get:get,set:set,configurable:true}); let d=Object.getOwnPropertyDescriptor(o,'x'); console.log(calls,d.get===get,d.set===set,Object.keys(d).join(',')); o.x=9; console.log(o.x,calls,o.n);", 0, "", "0 true true get,set,enumerable,configurable\n9 1 9\n"],
     ["descriptor-preserve-absent", "let o={x:7}; Object.defineProperty(o,'x',{enumerable:false}); let d=Object.getOwnPropertyDescriptor(o,'x'); console.log(d.value,d.writable,d.enumerable,d.configurable); Object.defineProperty(o,'x',{value:undefined}); console.log(o.x,Object.hasOwn(o,'x'));", 0, "", "7 true false true\nundefined true\n"],
@@ -378,6 +390,7 @@ executeDriver("own-property-predicates", { stdout: "Own-property predicates pass
 executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
 executeDriver("object-descriptor-reflection", { stdout: "Property descriptor reflection passed\n" });
+executeDriver("array-iteration", { stdout: "Public array iteration passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });
