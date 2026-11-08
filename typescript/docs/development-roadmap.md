@@ -83,6 +83,14 @@ The expanded guest suites and full tooling suite each pass 290/290 with no
 skips. All 73 native entries were rebuilt with full static coverage; runner20
 and all ten compiler probes pass. See [array mutation](array-mutation.md).
 
+TS-051 adds generic Array `every` and `some` with callback argument/receiver
+checks, hole skipping, live property mutations and short-circuiting. Guest suites
+pass 299/299 per host and tooling passes 290/290. Native validation covers all
+74 entries: 73 in the full run and the corrected predicate test in a separate
+retry. Its inferred-never callback adapter was reduced and removed by declaring
+the test callback's completion type. See [predicate iteration](array-predicate.md)
+for the retained initial failure and acceptance details.
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |

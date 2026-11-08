@@ -23,11 +23,20 @@ checked against [engine262 at 18cdeb03](https://github.com/engine262/engine262/b
 The host driver checks traversal order, callback arguments, short-circuiting,
 inherited elements, live mutations, callable-validation order, abrupt completion
 and sparse-loop budgets. CLI cases cover callback truthiness, primitive receivers,
-strict/sloppy `this`, errors, holes and method metadata. The Node guest suite
-passes 299/299; native acceptance is pending the fresh full build.
+strict/sloppy `this`, errors, holes and method metadata. Both guest suites pass
+299/299, full tooling passes 290/290, and the 20 runner tests and ten compiler
+probes pass, with no skips. Logs are under `build/array-predicate-*`.
 
 Two test callbacks always throw host faults. Their return type is explicitly
 `ValueCompletion`: scriptc 0.4.7 otherwise infers `never` and inserts a dynamic
 adapter when assigning the callback to the builtin interface. A three-statement
 probe reproduced this, and the annotation removes the dynamic statement. The
 focused native driver then builds, passes static coverage and executes successfully.
+
+The full native invocation passed the other 73 entries. Its original predicate
+failure remains in `native-build-results.json`; the corrected driver's separate
+build and coverage logs show 4297/4297 static statements and zero dynamic
+statements. All 74 current entries are accounted for, without claiming a single
+all-green full invocation after the test annotation fix. The original failed
+link attempt also reported a missing Zig import-library definition; the focused
+retry linked successfully.
