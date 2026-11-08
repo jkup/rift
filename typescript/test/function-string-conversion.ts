@@ -292,7 +292,7 @@ for (const realm of [a, b]) {
             && sameValue(metadata.value, key === "name" ? str("toString") : num(0)), "F1 metadata");
     }
     const keys = realm.functionPrototype.ownPropertyKeys();
-    check(keys.length === 4 && keys[0] === "name" && keys[1] === "length" && keys[2] === "call" && keys[3] === "toString", "F2 root keys");
+    check(keys.length === 5 && keys[0] === "name" && keys[1] === "length" && keys[2] === "call" && keys[3] === "apply" && keys[4] === "toString", "F2 root keys");
     check(!realm.global.bindings.has("Function") && realm.functionPrototype.getOwnProperty("constructor") === undefined, "F2 bounded root");
 }
 check(T !== b.functionPrototype.get("toString", active.context, loc) && object(T) !== object(b.functionPrototype.get("toString", active.context, loc)), "F1 fresh methods");

@@ -128,5 +128,5 @@ hostError(() => { callable.invoke(left, [], context, loc); }, "Script execution 
 hostError(() => { evaluator.call(t, left, [], loc); }, "cross-profile callable invocation");
 hostError(() => { new Evaluator(a); }, "legacy Realm required");
 check(evaluator.steps === 5 && evaluator.calls === 2 && evaluator.depth === 3 && evaluator.context.realm === legacy && ticks === 2 && calls === 11, "guards before effects");
-check(exactKeys(legacy.functionPrototype, ["name", "length", "call", "toString"]) && legacy.functionPrototype.getOwnProperty("caller") === undefined && legacy.functionPrototype.getOwnProperty("arguments") === undefined, "legacy exact surface");
+check(exactKeys(legacy.functionPrototype, ["name", "length", "call", "apply", "toString"]) && legacy.functionPrototype.getOwnProperty("caller") === undefined && legacy.functionPrototype.getOwnProperty("arguments") === undefined, "legacy exact surface");
 console.log("R35 guarded invocation PASS");

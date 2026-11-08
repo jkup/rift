@@ -48,6 +48,16 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["apply-basic","function f(a,b){return this.n+a+b;}console.log(f.apply({n:7},[2,3]));",0,"","12\n"],
+    ["apply-empty","function f(a){'use strict';return typeof this+':'+a;}console.log(f.apply(),f.apply(null,null),f.apply(7,undefined));",0,"","undefined:undefined object:undefined number:undefined\n"],
+    ["apply-arraylike","function f(a,b){return a+':'+b;}console.log(f.apply(null,{0:'a',1:'b',2:'c',length:'2.9'}),f.apply(null,new String('xy')));",0,"","a:b x:y\n"],
+    ["apply-holes","Array.prototype[1]=7;function f(a,b,c){return a+':'+b+':'+c;}console.log(f.apply(null,[,,3]));",0,"","undefined:7:3\n"],
+    ["apply-invalid-list","function f(){}try{f.apply(null,'ab');}catch(e){console.log(e.name);}try{f.apply(null,7);}catch(e){console.log(e.name);}try{f.apply(null,true);}catch(e){console.log(e.name);}",0,"","TypeError\nTypeError\nTypeError\n"],
+    ["apply-validation-order","let n=0;let list={};Object.defineProperty(list,'length',{get:function(){n++;throw 7;}});try{(function(){}).apply.call({},null,list);}catch(e){console.log(e.name,n);}",0,"","TypeError 0\n"],
+    ["apply-getter-order","let list={0:1,length:2};Object.defineProperty(list,'1',{get:function(){list[0]=9;return 2;}});function f(a,b){return a+':'+b;}console.log(f.apply(null,list),list[0]);",0,"","1:2 9\n"],
+    ["apply-length-throw","let marker={};let n=0;let list={};Object.defineProperty(list,'length',{get:function(){throw marker;}});function f(){n++;}try{f.apply(null,list);}catch(e){console.log(e===marker,n);}",0,"","true 0\n"],
+    ["apply-builtin","console.log(Array.prototype.join.apply([1,2,3],['-']),Math.abs.apply(null,[-7]));",0,"","1-2-3 7\n"],
+    ["apply-metadata","let a=(function(){}).apply;console.log(a.name,a.length,Object.keys(a).length);try{new a();}catch(e){console.log(e.name);}",0,"","apply 2 0\nTypeError\n"],
     ["math-basic","console.log(Math.abs(-5),Math.ceil(-2.3),Math.floor(-2.3),Math.round(-1.5),Math.trunc(-2.7),Math.sign(-2));",0,"","5 -2 -3 -1 -2 -1\n"],
     ["math-zero","console.log(1/Math.abs(-0),1/Math.ceil(-0.1),1/Math.floor(-0),1/Math.round(-0.5),1/Math.sign(-0),1/Math.trunc(-0.7));",0,"","Infinity -Infinity -Infinity -Infinity -Infinity -Infinity\n"],
     ["math-arguments","console.log(Math.abs(),Math.ceil(undefined),Math.floor(null),Math.round('2.7'),Math.sign(false),Math.trunc(true));",0,"","NaN NaN 0 3 0 1\n"],
@@ -443,6 +453,7 @@ executeDriver("own-property-predicates", { stdout: "Own-property predicates pass
 executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
 executeDriver("object-descriptor-reflection", { stdout: "Property descriptor reflection passed\n" });
+executeDriver("function-apply", { stdout: "Function apply passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });
 executeDriver("do-while", { stdout: "Do-while passed\n" });
 executeDriver("script-templates", { stdout: "Script templates passed\n" });

@@ -43,6 +43,8 @@ Strings support `indexOf`, `charAt`, `charCodeAt` and `slice` with UTF-16 indexi
 Math exposes its standard constants and `abs`, `ceil`, `floor`, `round`, `sign`
 and `trunc`; see [Math behavior](docs/math-unary.md).
 
+Functions support `call` and `apply`; see [argument-list calls](docs/function-apply.md).
+
 Boolean calls and construction preserve primitive versus boxed values; see
 [Boolean behavior](docs/boolean-constructor.md). The
 [C++ fixture baseline](docs/legacy-fixture-baseline.md) tracks concrete coverage gaps.
