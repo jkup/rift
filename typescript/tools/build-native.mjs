@@ -19,6 +19,7 @@ const entries = [
     ["test/object-reflection.ts", "object-reflection"],
     ["test/object-prototype-methods.ts", "object-prototype-methods"],
     ["test/object-assign.ts", "object-assign"],
+    ["test/symbol-factory.ts", "symbol-factory"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

@@ -8,9 +8,12 @@ import {numberToString} from "../conversion.js";
 
 export function nativeFunctionString(initialName: string | null): GuestString {
     const name = initialName === null ? "" : initialName;
-    if (name !== "[Symbol.toPrimitive]" && name !== "[Symbol.hasInstance]") {
-        for (let i = 0; i < name.length; i++) {
-            const c = name.charAt(i);
+    const accessor = name.startsWith("get ") || name.startsWith("set ");
+    const propertyName = accessor ? stringSlice(name, 4, name.length) : name;
+    if (accessor && propertyName.length === 0) throw new Error("invalid builtin initial name");
+    if (propertyName !== "[Symbol.toPrimitive]" && propertyName !== "[Symbol.hasInstance]") {
+        for (let i = 0; i < propertyName.length; i++) {
+            const c = propertyName.charAt(i);
             const letter = (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";
             if (!letter && !(i > 0 && c >= "0" && c <= "9")) throw new Error("invalid builtin initial name");
         }

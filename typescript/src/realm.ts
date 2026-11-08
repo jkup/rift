@@ -12,7 +12,7 @@ import { registerNumber, registerNumberConversions, registerGlobalNumericPredica
 import { registerFunction, nativeFunctionString } from "./builtins/function.js";
 import { registerRestrictedFunctionProperties } from "./builtins/restricted-function.js";
 import { registerObject, registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
-import { registerSymbolConversions } from "./builtins/symbol.js";
+import { registerSymbol, registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBoolean, registerBooleanConversions } from "./builtins/boolean.js";
 import { registerString, registerStringConversions, registerStringMethods } from "./builtins/string.js";
 import { registerArray, registerArrayConversions } from "./builtins/array.js";
@@ -127,6 +127,7 @@ export class Realm {
             registerMath(this);
             registerGlobalNumericPredicates(this);
             registerJSON(this);
+            registerSymbol(this);
             registerScriptArrayIteration(this);
         }
     }

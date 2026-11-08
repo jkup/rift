@@ -59,7 +59,7 @@ function inventory(a: Realm): void {
         ["toString","valueOf","toFixed","toExponential","toPrecision","constructor"],
         ["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
             "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"],
-        ["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag],
+        ["toString","valueOf","constructor","description",wellKnownToPrimitive,wellKnownToStringTag],
     ];
     for(let i=0;i<prototypes.length;i++) {
         const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),"prototype chain");
@@ -67,6 +67,19 @@ function inventory(a: Realm): void {
             if (i===1 && (k==="caller" || k==="arguments")) {
                 const d=p.getOwnProperty(k), other=p.getOwnProperty("caller");
                 check(d!==undefined && d.kind==="accessor" && !d.enumerable && d.configurable && d.get.kind==="object" && d.set===d.get && other!==undefined && other.kind==="accessor" && d.get===other.get,"restricted descriptors");
+            } else if (i === 6 && k === "description") {
+                const d = p.getOwnProperty(k);
+                check(d !== undefined && d.kind === "accessor" && d.get.kind === "object" && d.set.kind === "undefined" && !d.enumerable && d.configurable, "Symbol description accessor");
+            } else if (i === 6 && k === "constructor") {
+                const v = own(p, k), f = object(v);
+                desc(p, k, v, true, false, true);
+                desc(a.globalObject, "Symbol", v, true, false, true);
+                desc(f, "prototype", obj(p), false, false, false);
+                desc(f, "name", {kind:"string",value:"Symbol"}, false, false, true);
+                desc(f, "length", n(0), false, false, true);
+                keys(f, ["name","length","prototype","hasInstance","isConcatSpreadable","species","split","toPrimitive","toStringTag"]);
+                const slot = f.constructorSlot;
+                check(f.getPrototypeOf() === a.functionPrototype && f.callable !== null && f.callable.realm === a && slot !== null && slot.kind === "builtin-constructor" && slot.realm === a && slot.callable === f.callable, "Symbol callable and rejecting construct slot");
             } else if (k==="constructor") {
                 check(i===0 || i===2 || i===3 || i===4 || i===5,"supported prototype constructors");
                 const name=i===0?"Object":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
@@ -130,12 +143,16 @@ function row(id: string,name: string,initial: number): void {
         for(let i=0;i<left.length;i++) { check(left[i]!==right[i],"fresh objects"); for(const key of left[i].ownPropertyKeys()) {
             const ld=left[i].getOwnProperty(key), rd=right[i].getOwnProperty(key);
             if (ld!==undefined && ld.kind==="accessor") {
+                if (i === 6 && key === "description") {
+                    check(rd !== undefined && rd.kind === "accessor" && ld.get.kind === "object" && rd.get.kind === "object" && ld.get.object !== rd.get.object && ld.set.kind === "undefined" && rd.set.kind === "undefined" && !ld.enumerable && !rd.enumerable && ld.configurable && rd.configurable, "fresh Symbol description getters");
+                    continue;
+                }
                 check(i===1 && (key==="caller" || key==="arguments"),"only restricted accessors");
                 const lc=left[i].getOwnProperty("caller"), rc=right[i].getOwnProperty("caller");
                 check(rd!==undefined && rd.kind==="accessor" && !ld.enumerable && ld.configurable && !rd.enumerable && rd.configurable && ld.get.kind==="object" && rd.get.kind==="object" && ld.get.object!==rd.get.object && ld.set===ld.get && rd.set===rd.get && lc!==undefined && lc.kind==="accessor" && lc.get===ld.get && rc!==undefined && rc.kind==="accessor" && rc.get===rd.get,"fresh restricted endpoints");
             } else { const l=own(left[i],key),r=own(right[i],key); if(l.kind==="object") check(r.kind==="object" && l.object!==r.object,"fresh methods"); }
         } }
-        check(a.symbolPrototype.ownPropertyKeys()[2]===b.symbolPrototype.ownPropertyKeys()[2],"canonical symbol"); seed(a,name,first); guestError(b.readScriptGlobal(name, context,loc),"ReferenceError"); break;
+        check(a.symbolPrototype.ownPropertyKeys()[4]===wellKnownToPrimitive && b.symbolPrototype.ownPropertyKeys()[4]===wellKnownToPrimitive,"canonical symbol"); seed(a,name,first); guestError(b.readScriptGlobal(name, context,loc),"ReferenceError"); break;
     }
     case "B05": error(()=>{a.global;},legacyError); error(()=>{a.global=x.global;},legacyError); error(()=>{x.globalObject;},"Script Realm required"); error(()=>{x.globalEnvironment;},"Script Realm required"); error(()=>{x.globalThisValue;},"Script Realm required"); break;
     case "B06": seed(a,name,first); value(a.readScriptGlobal(name, context,loc),first); desc(a.globalObject,name,first,true,true,true); seed(a,name,next); value(a.readScriptGlobal(name, context,loc),next); a.globalObject.preventExtensions(); error(()=>{seed(a,name+"new",first);},"invalid internal property definition: "+name+"new"); check(a.globalObject.getOwnProperty(name+"new")===undefined,"no failed seed"); break;

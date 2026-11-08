@@ -3326,3 +3326,9 @@ Implement Script Object.assign and Object.prototype.propertyIsEnumerable. Preser
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base a68bcef0, implementation eb15253c. Both guest suites pass 589/589 with no skips; tooling 290/290, runner 31/31 and all ten probes pass. All three affected native test drivers pass fresh static-only builds and separate static coverage gates. Literal parity checks preserve globals, Object keys/arities and 63 prototype method occurrences. Production sources are unchanged; the other native entries and fixed C++ fixture results retain the TS-102 baseline, not a new full rebuild. Evidence: build/bootstrap-inventory-{parity.log,native-results.json,node.log,native.log,tooling.log}.
 
 Replace duplicated current Script global/Object inventories and long inline metadata arity expressions with explicit test-only literal data and readable checks. Preserve independently specified expectations, assertions and ordering; do not derive metadata from runtime registration or modify frozen historical expectations. Rebuild affected native test drivers and run both guest suites.
+
+## TS-104 — Public Symbol creation and descriptions
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 5c8a4362.
+
+Expose Script Symbol as a callable with a rejecting construct operation with string-hint description conversion, fresh identity, description getter and the six existing well-known identities. Preserve boxing, property keys, conversion ordering, Realm errors and resource limits. Registry and additional well-known protocols follow separately. Own symbol builtin/bootstrap, current inventories, dedicated semantic tests, manifests and scope documentation.
