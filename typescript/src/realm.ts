@@ -1,3 +1,4 @@
+import { registerArraySort } from "./builtins/array-sort.js";
 import { registerArraySlice, registerArrayConcat } from "./builtins/array-copy.js";
 import { registerJSON } from "./builtins/json.js";
 import type { GuestSymbol } from "./symbols.js";
@@ -79,6 +80,7 @@ export class Realm {
             registerArraySplice(this);
             registerArraySlice(this);
             registerArrayConcat(this);
+            registerArraySort(this);
         }
         registerArraySearch(this);
         registerArrayPredicates(this);

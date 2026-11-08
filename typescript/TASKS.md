@@ -3224,3 +3224,9 @@ Add Script Array.prototype.concat with default species, IsConcatSpreadable, spar
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `98c9df33`, implementation `5be9bac6`. Both guest suites pass 570/570, full tooling 290/290, runner 31/31 and all ten probes pass. All 91 native entries pass build and static coverage in one invocation; iteration driver 5649/5649 static. All 225 complete fixture results agree: 75 reported successes, 27 unchecked completions, 53 parse errors, 69 runtime errors and one reported failure. Array-gc-tracking now reports success; all 101 previously completed outcomes remain. Reports: build/legacy-suite-node-oRr3JA/report.json and build/legacy-suite-native-6GmjAd/report.json. Logs: build/array-filter-*.
 
 Add Script Array.prototype.filter with length-before-callback validation, default species, sparse source traversal, dense selected results, live mutations, callback this/arguments/Realm behavior and bounded work. Preserve exact throws and selected original values. Custom species stays explicit. Validate both hosts, native gates, tooling and the fixed C++ fixtures.
+
+## TS-087 — Stable generic Array sort
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base `d323170b`.
+
+Add Script Array.prototype.sort with comparator validation before boxing, sparse collection, stable iterative merge sort, UTF-16 default comparison, undefined ordering, callback/result coercion and strict writeback/deletion. Propagate explicit throws and resource guards without host sorting or recursion. Test stability, access order, mutation failures, Realm behavior and budgets on both hosts and the fixed C++ fixtures.

@@ -188,6 +188,14 @@ const generated = [
     ["json-coercion","console.log(JSON.parse(7),JSON.parse(null),JSON.parse(true),JSON.parse({toString:function(){return '[3]';}})[0],JSON.parse('2',false));",0,"","7 null true 3 2\n"],
     ["json-invalid","try{JSON.parse('[1,]');}catch(e){console.log(e.name);}try{JSON.parse('01');}catch(e){console.log(e.name);}try{JSON.parse();}catch(e){console.log(e.name);}",0,"","SyntaxError\nSyntaxError\nSyntaxError\n"],
     ["json-metadata","let d=Object.getOwnPropertyDescriptor(JSON,'parse');console.log(d.value.name,d.value.length,d.writable,d.enumerable,d.configurable,Object.prototype.toString.call(JSON));",0,"","parse 2 true false true [object JSON]\n"],
+    ["sort-basic","let a=[10,9,2,1];console.log(a.sort()===a,a.join(','));console.log(a.sort(function(a,b){return a-b;}).join(','),a.sort(function(a,b){return b-a;}).join(','));",0,"","true 1,10,2,9\n1,2,9,10 10,9,2,1\n"],
+    ["sort-holes","let a=[undefined,,3,1,undefined,,];let calls=0;a.sort(function(a,b){calls=calls+1;return a-b;});console.log(a.length,a[0],a[1],a[2],a[3],4 in a,5 in a,calls);",0,"","6 1 3 undefined undefined false false 1\n"],
+    ["sort-stability","let a=[{n:1,id:'a'},{n:0,id:'b'},{n:1,id:'c'},{n:0,id:'d'}];a.sort(function(a,b){return a.n-b.n;});console.log(a[0].id+a[1].id+a[2].id+a[3].id);let b=[3,1,2];console.log(b.sort(function(){return NaN;}).join(','));",0,"","bdac\n3,1,2\n"],
+    ["sort-generic","let o={length:4,0:3,2:1};console.log(Array.prototype.sort.call(o)===o,o[0],o[1],2 in o,3 in o,o.length);try{Array.prototype.sort.call('a');}catch(e){console.log(e.name);}",0,"","true 1 3 false false 4\nTypeError\n"],
+    ["sort-order","let log='';let a={toString:function(){log=log+'L';return 'b';}};let b={toString:function(){log=log+'R';return 'a';}};let input=[a,b];console.log(input.sort()[0]===b,log);let o={};Object.defineProperty(o,'length',{get:function(){throw 'length';}});try{[].sort.call(o,0);}catch(e){console.log(e.name);}try{[].sort.call(o);}catch(e){console.log(e);}",0,"","true LR\nTypeError\nlength\n"],
+    ["sort-effects","let a=[3,1,2];a.sort(function(x,y){a[0]=99;return x-y;});console.log(a.join(','));let marker={};try{a.sort(function(){return {valueOf:function(){throw marker;}};});}catch(e){console.log(e===marker);}",0,"","1,2,3\ntrue\n"],
+    ["sort-undefined","let a=[undefined,2,undefined];console.log(a.sort(function(){throw 7;}).join(','));let b=[2,1];Object.defineProperty(b,'constructor',{get:function(){throw 7;}});console.log(b.sort().join(','));",0,"","2,,\n1,2\n"],
+    ["sort-metadata","let d=Object.getOwnPropertyDescriptor(Array.prototype,'sort');console.log(d.value.name,d.value.length,d.writable,d.enumerable,d.configurable);",0,"","sort 1 true false true\n"],
     ["filter-basic","let a=[1,2,3,4];let b=a.filter(function(v){return v%2===0;});console.log(b.join(','),a.join(','),b!==a,[].filter(function(){throw 7;}).length);",0,"","2,4 1,2,3,4 true 0\n"],
     ["filter-holes","let seen='';let b=[,1,,3].filter(function(v,i,a){seen=seen+i+':'+a.length+';';return true;});console.log(seen,b.join(','),b.length,0 in b,1 in b);",0,"","1:4;3:4; 1,3 2 true true\n"],
     ["filter-generic","console.log(Array.prototype.filter.call('abc',function(v){return v!=='b';}).join(','),Array.prototype.filter.call({0:'a',2:'c',length:3.9},function(){return true;}).join(','));",0,"","a,c a,c\n"],
@@ -541,6 +549,7 @@ executeDriver("function-apply", { stdout: "Function apply passed\n" });
 executeDriver("radix-literals", { stdout: "Radix literals passed\n" });
 executeDriver("decimal-literals", { stdout: "Decimal literals passed\n" });
 executeDriver("global-numeric-predicates", { stdout: "Global numeric predicates passed\n" });
+executeDriver("array-sort", { stdout: "Array sort passed\n" });
 executeDriver("array-copy", { stdout: "Array copy passed\n" });
 executeDriver("json-parse", { stdout: "JSON parse passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });
