@@ -31,6 +31,7 @@ const entries = [
     ["test/group-by.ts", "group-by"],
     ["test/string-search.ts", "string-search"],
     ["test/map-upsert.ts", "map-upsert"],
+    ["test/set-object.ts", "set-object"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

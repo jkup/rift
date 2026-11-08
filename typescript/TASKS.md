@@ -3398,3 +3398,9 @@ Implement Script String includes/startsWith/endsWith with ordered receiver, Symb
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 9f2e2b8d, implementation c5dcf55f. Both guest suites pass 601/601 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 114 native entries pass fresh static-only builds and separate coverage gates; Map upsert driver 6943/6943 static. Stored undefined, callback validation/mutation, signed zero, live order, foreign errors and resource limits pass on both hosts. An initial resource test used unsupported named function-expression syntax; the corrected test uses a supported declaration. All 225 complete fixture results agree: 84 reported successes, 39 unchecked completions, 53 parse errors, 48 runtime errors and one reported failure; all 123 prior completions remain. The upsert fixture passes its Map assertions and reaches missing WeakMap. Reports: build/legacy-suite-node-KGSKKu/report.json and build/legacy-suite-native-g17HnD/report.json. Logs: build/map-upsert-*.
 
 Implement Map.prototype.getOrInsert/getOrInsertComputed using existing keyed storage. Preserve brand and callback validation, stored undefined, key identity and signed zero, callback mutation/order, abrupt completion and resource bounds. Own Map builtin, dedicated semantic driver/manifests and scope docs. WeakMap and Set remain separate.
+
+## TS-116 — Set constructor and ordinary methods
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base b3d97275.
+
+Add Script Set construction, add/has/delete/clear, size, live forEach, species and tag with a distinct GuestSet brand over shared keyed storage. Preserve adder/iterator order, cleanup, value identity, Realm ownership and resource bounds. Own Set modules, Realm bootstrap, current global inventories, dedicated semantic driver/manifests and docs. Set iterators and algebra remain separate.
