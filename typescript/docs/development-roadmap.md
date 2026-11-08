@@ -389,6 +389,15 @@ preserve their mutations on abrupt completion. Test poisoned public get/has/set
 methods, live iterator order and cross-Realm errors. The fixed upsert fixture also
 tests WeakMap, so Map support alone will advance it without completing the file.
 
+### Set readiness
+
+The fixed Set fixture exercises ordinary methods, then live iterators. Reuse
+KeyedCollection for identity and insertion order, storing values as keys; keep a
+distinct guest Set brand. First add construction, add/has/delete/clear, size and
+forEach with cached adder lookup and iterator cleanup. Follow with values/keys
+aliasing, entries pairs and Symbol.iterator, including captured-Realm results and
+permanent exhaustion. Set algebra and weak collections remain separate work.
+
 ### TS-112 checkpoint
 
 Both guest suites pass 598/598 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 111 native entries pass fresh static-only builds and separate coverage gates; Map iterator driver 6845/6845 static. Live mutation/exhaustion, captured-Realm results/pairs, next-Realm completion and bounded deleted-node traversal pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure. test-object-new-methods.js now completes with 32 true results and no recognized check markers; all 121 previous completions remain. Reports: build/legacy-suite-node-11V5PM/report.json and build/legacy-suite-native-Av1AdA/report.json. Logs: build/map-iterator-*.
@@ -400,3 +409,7 @@ Both guest suites pass 599/599 with no skips, tooling 290/290, runner 31/31 and 
 ### TS-114 checkpoint
 
 Both guest suites pass 600/600 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 113 native entries pass fresh static-only builds and separate coverage gates; String search driver 6937/6937 static. Twelve explicit native primitive probe cases pass with 7/7 static statements. Ordered Symbol.match/coercion, UTF-16 boundaries, foreign errors and resource limits pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 39 unchecked completions, 53 parse errors, 48 runtime errors and one reported failure. map-groupby.js now completes; all 122 prior completions remain. Reports: build/legacy-suite-node-SLZdsf/report.json and build/legacy-suite-native-RiHdcu/report.json. Logs: build/string-search-*.
+
+### TS-115 checkpoint
+
+Both guest suites pass 601/601 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 114 native entries pass fresh static-only builds and separate coverage gates; Map upsert driver 6943/6943 static. Stored undefined, callback validation/mutation, signed zero, live order, foreign errors and resource limits pass on both hosts. An initial resource test used unsupported named function-expression syntax; the corrected test uses a supported declaration. All 225 complete fixture results agree: 84 reported successes, 39 unchecked completions, 53 parse errors, 48 runtime errors and one reported failure; all 123 prior completions remain. The upsert fixture passes its Map assertions and reaches missing WeakMap. Reports: build/legacy-suite-node-KGSKKu/report.json and build/legacy-suite-native-g17HnD/report.json. Logs: build/map-upsert-*.
