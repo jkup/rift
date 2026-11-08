@@ -179,4 +179,44 @@ check(legacy.arrayPrototype.getOwnProperty("slice") === undefined,"slice Script 
     check(result.type === "throw" && sameValue(result.value,obj(marker)),"concat spread getter throw identity");
 }
 check(legacy.arrayPrototype.getOwnProperty("concat") === undefined,"concat Script only");
+
+
+for (const name of ["toReversed", "toSorted"]) {
+    const realm = fresh(), target = new Observed(realm.objectPrototype);
+    data(target, "length", 3); data(target, "0", 9); data(realm.objectPrototype, "2", 4);
+    realm.defineScriptGlobal("target", {value:obj(target)});
+    const result = array(run(realm, "[]." + name + ".call(target);"));
+    check(target.trace === (name === "toReversed" ? "get:length;get:2;get:1;get:0;" : "get:length;get:0;get:1;get:2;"), name + " unconditional ordered reads");
+    check(sameValue(own(result,"0"),num(4)) && sameValue(own(result,name === "toReversed" ? "2" : "1"),num(9)) && own(result,name === "toReversed" ? "1" : "2").kind === "undefined", name + " dense inherited copy");
+    check(target.getOwnProperty("1") === undefined && sameValue(own(target,"0"),num(9)), name + " source unchanged");
+    check(legacy.arrayPrototype.getOwnProperty(name) === undefined, name + " Script only");
+
+    const owner = fresh(), caller = fresh(), input = caller.createArray();
+    data(input,"0",7);
+    input.bootstrapDefine("constructor", {get:obj(caller.createBuiltin("poison",0,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("copy constructor read");}))});
+    caller.defineScriptGlobal("input",{value:obj(input)});
+    caller.defineScriptGlobal("copy",{value:own(owner.arrayPrototype,name)});
+    const foreign = array(run(caller,"copy.call(input);"));
+    check(foreign.getPrototypeOf() === owner.arrayPrototype && foreign !== input && sameValue(own(foreign,"0"),num(7)),name + " builtin Realm and no species");
+    const huge = new Observed(realm.objectPrototype); data(huge,"length",4294967296);
+    realm.defineScriptGlobal("huge",{value:obj(huge)});
+    const range = run(realm,"[]." + name + ".call(huge);");
+    check(range.type === "throw" && range.diagnostic.name === "RangeError" && huge.trace === "get:length;",name + " allocate before element reads");
+    const bounded = run(fresh(),"[]." + name + ".call({length:4294967295});",40);
+    check(bounded.type === "throw" && bounded.origin.kind === "resource-limit",name + " bounded copy");
+    const throws = run(fresh(),"let marker={};let a={length:1};Object.defineProperty(a,'0',{get:function(){throw marker;}});try{[]." + name + ".call(a);}catch(e){e===marker;}");
+    check(throws.type === "normal" && sameValue(throws.value,{kind:"boolean",value:true}),name + " getter throw identity");
+}
+for (const source of [
+    "let a=[3,1,2];let b=a.toSorted(function(a,b){return a-b;});a.join()==='3,1,2'&&b.join()==='1,2,3';",
+    "let a=[{k:1,id:'a'},{k:0,id:'b'},{k:1,id:'c'}];let b=a.toSorted(function(a,b){return a.k-b.k;});b[0].id==='b'&&b[1].id==='a'&&b[2].id==='c';",
+    "[].toReversed.call('abc').join('')==='cba'&&[].toSorted.call('cba').join('')==='abc';",
+    "let touched=false;let a={};Object.defineProperty(a,'length',{get:function(){touched=true;}});try{[].toSorted.call(a,1);}catch(e){} touched===false;",
+    "let a=[2,1];let marker={};try{a.toSorted(function(){throw marker;});}catch(e){e===marker&&a.join()==='2,1';}",
+    "let a=[3,,1];let n=0;let b=a.toSorted(function(a,b){if(a===undefined||b===undefined)throw 1;n++;return a-b;});b.join()==='1,3,'&&b.hasOwnProperty('2')&&n>0;",
+    "let a={length:3,0:1,1:2};Object.defineProperty(a,'2',{get:function(){a[0]=9;a.length=0;return 3;}});[].toReversed.call(a).join()==='3,2,9';"
+]) {
+    const result = run(fresh(),source);
+    check(result.type === "normal" && sameValue(result.value,{kind:"boolean",value:true}),"copy semantic case: " + source);
+}
 console.log("Array copy passed");

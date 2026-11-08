@@ -1,3 +1,4 @@
+import { createArrayWithLength } from "../array-create.js";
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
 import { lengthOfArrayLike } from "../array-like.js";
@@ -102,5 +103,39 @@ export function registerArraySort(realm: Realm): void {
             if (!deleted.value) return languageFailure(context.realm, "TypeError", "property is not configurable: " + key, loc);
         }
         return normal(input);
+    });
+}
+
+export function registerArrayToSorted(realm: Realm): void {
+    realm.registerBuiltin(realm.arrayPrototype, "toSorted", 1, (receiver, args, context, loc): ValueCompletion => {
+        const comparator = args.length === 0 ? UNDEFINED : args[0];
+        if (comparator.kind !== "undefined" && (comparator.kind !== "object" || comparator.object.callable === null))
+            return languageFailure(context.realm, "TypeError", "toSorted comparator is not callable", loc);
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        const created = createArrayWithLength(length.value, context, loc);
+        if (created.type === "throw") return created;
+        const values: Value[] = [];
+        for (let index = 0; index < length.value; index++) {
+            const step = context.tick(loc);
+            if (step.type === "throw") return step;
+            const value = boxed.value.internalGet(numberToString(index), { kind: "object", object: boxed.value }, context, loc);
+            if (value.type === "throw") return value;
+            values.push(value.value);
+        }
+        const sorted = stableSort(values, comparator, context, loc);
+        if (sorted.type === "throw") return sorted;
+        for (let index = 0; index < sorted.value.length; index++) {
+            const step = context.tick(loc);
+            if (step.type === "throw") return step;
+            const defined = created.value.defineOwnProperty(numberToString(index), { value: sorted.value[index], writable: true, enumerable: true, configurable: true }, context, loc);
+            if (defined.type === "throw") return defined;
+            if (!defined.value) throw new Error("fresh sorted array element invariant");
+        }
+        return normal({ kind: "object", object: created.value });
     });
 }

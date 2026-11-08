@@ -1,9 +1,9 @@
 import { GuestArray } from "./array-object.js";
-import { languageFailure, unsupportedFailure, type GuestObject, type OperationContext, type Value, type ThrowCompletion } from "./runtime.js";
+import { languageFailure, unsupportedFailure, type GuestObject, type OperationContext, type Value } from "./runtime.js";
 import type { Location } from "./syntax.js";
 import { wellKnownSpecies } from "./symbols.js";
 
-type ArrayCompletion = { type: "normal"; value: GuestArray } | ThrowCompletion;
+import { createArrayWithLength, type ArrayCompletion } from "./array-create.js";
 
 export function createDefaultSpeciesArray(object: GuestObject, length: number, method: "map" | "splice" | "slice" | "concat" | "filter", context: OperationContext, loc: Location): ArrayCompletion {
     const input: Value = { kind: "object", object };
@@ -35,8 +35,5 @@ export function createDefaultSpeciesArray(object: GuestObject, length: number, m
         }
     }
     if (length > 4294967295) return languageFailure(context.realm, "RangeError", method + " result length exceeds array limit", loc);
-    const result = context.realm.createArray();
-    const initialized = result.defineOwnProperty("length", { value: { kind: "number", value: length } }, context, loc);
-    if (initialized.type === "throw" || !initialized.value) throw new Error("fresh array length invariant");
-    return { type: "normal", value: result };
+    return createArrayWithLength(length, context, loc);
 }

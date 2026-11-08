@@ -1746,3 +1746,5 @@ The owner authorized continued development and frequent commits. Defer the prove
 2026-11-08 TS-087 claimed by Codex catch-up chat. Scope: stable generic sort with bounded explicit-completion machinery, semantic tests and relevant inventories. Keep source fixed through native and tooling validation.
 
 2026-11-08 TS-087 accepted, implementation db420357. Both guest suites pass 579/579, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage; sort driver 5736/5736 static. All 225 complete fixture results agree: 78 reported successes, 27 unchecked completions, 53 parse errors, 66 runtime errors and one reported failure. Three sort fixtures gain success; all 102 previously completed outcomes remain. Reports: build/legacy-suite-node-sj0Gml/report.json and build/legacy-suite-native-lnirqE/report.json. Logs: build/array-sort-*. Next: toReversed and toSorted, with dense copies and no species lookup.
+
+2026-11-08 TS-088 claimed by Codex catch-up chat. Scope: toReversed/toSorted and semantic regressions; source freeze during native validation.

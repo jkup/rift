@@ -1,3 +1,4 @@
+import { createArrayWithLength } from "../array-create.js";
 import { GuestArray } from "../array-object.js";
 import { wellKnownIsConcatSpreadable } from "../symbols.js";
 import type { Location } from "../syntax.js";
@@ -56,7 +57,7 @@ function isConcatSpreadable(value: Value, context: OperationContext, loc: Locati
 function defineElement(object: GuestObject, index: number, value: Value, context: OperationContext, loc: Location): ValueCompletion {
     const defined = object.defineOwnProperty(numberToString(index), { value, writable: true, enumerable: true, configurable: true }, context, loc);
     if (defined.type === "throw") return defined;
-    if (!defined.value) throw new Error("fresh concat array element invariant");
+    if (!defined.value) throw new Error("fresh copy array element invariant");
     return normal();
 }
 
@@ -106,5 +107,27 @@ export function registerArrayConcat(realm: Realm): void {
         }
         const length = result.set("length", { kind: "number", value: nextIndex }, context, loc);
         return length.type === "throw" ? length : normal({ kind: "object", object: result });
+    });
+}
+
+export function registerArrayToReversed(realm: Realm): void {
+    realm.registerBuiltin(realm.arrayPrototype, "toReversed", 0, (receiver, _args, context, loc): ValueCompletion => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        const created = createArrayWithLength(length.value, context, loc);
+        if (created.type === "throw") return created;
+        for (let index = 0; index < length.value; index++) {
+            const step = context.tick(loc);
+            if (step.type === "throw") return step;
+            const value = boxed.value.internalGet(numberToString(length.value - index - 1), { kind: "object", object: boxed.value }, context, loc);
+            if (value.type === "throw") return value;
+            const defined = defineElement(created.value, index, value.value, context, loc);
+            if (defined.type === "throw") return defined;
+        }
+        return normal({ kind: "object", object: created.value });
     });
 }
