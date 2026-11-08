@@ -79,5 +79,10 @@ merged merely to copy its prose into the repository.
   verifier is unchanged. Log: `build/catch-up-checkpoint-tests.log`.
 - The 35 input/ledger tests that encountered sandbox restrictions pass with Windows
   link permissions enabled. Log: `build/catch-up-host-tests.log`.
+- The combined run exposed one further historical/current-source mismatch in
+  `script-host-services.test.mjs`: its frozen descriptive snapshot required the
+  current CLI's old hash despite `currentSourceVerified: false`. Keep the complete
+  historical descriptor oracle and assert no build authority, rather than requiring
+  current files to equal old source. The focused descriptor test passes.
 - The full suite is not yet accepted as green in one fresh invocation. Remaining
   portability and scratch-directory work is tracked above.

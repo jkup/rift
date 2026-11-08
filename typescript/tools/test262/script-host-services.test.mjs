@@ -15,11 +15,14 @@ for(const row of literals){
  assert.deepEqual(actual,row.expected,'whole independent descriptor '+row.args.join('/'));
  assert.equal(JSON.stringify(actual),JSON.stringify(row.expected),'canonical order');
  assert.notEqual(actual,api.describeScriptHostServices(...row.args));
+ assert.equal(actual.data.currentSourceVerified,false);
+ assert.equal(actual.data.buildCertification,'unavailable');
+ assert.equal(actual.data.authority,'none');
  const visit=x=>{if(x&&typeof x==='object'){assert.ok(Object.isFrozen(x));Object.values(x).forEach(visit);}};visit(actual);
  assert.throws(()=>{actual.data.realms[0].profile='legacy';},TypeError);
 }
-for(const row of literals[0].expected.data.sourceSnapshot)
- assert.equal(hash(readFileSync(new URL(row.path,root))),row.sha256,'construction source '+row.path);
+// The whole-descriptor literals above pin the historical snapshot. Comparing it
+// to today's source would incorrectly turn descriptive data into a build gate.
 for(const [args,code] of [[[],'arguments'],[['main'],'arguments'],[['main',null,0],'arguments'],[[null,null],'purpose'],[['script-observation',null],'purpose'],[['main','B09'],'control'],[['conformance-preflight-v1',null],'control'],[['conformance-preflight-v1','S01'],'control'],[['conformance-preflight-v1','U01'],'control'],[['conformance-preflight-v1',{}],'control']])
  assert.throws(()=>api.describeScriptHostServices(...args),{message:'script-host-services/'+code});
-console.log('20 whole descriptor literals; source snapshot identity; frozen detached data; 10 exact boundary errors');
+console.log('20 historical descriptor literals; no current-build authority; frozen detached data; 10 exact boundary errors');
