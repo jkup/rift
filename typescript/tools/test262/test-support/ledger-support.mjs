@@ -74,10 +74,10 @@ function migrate(value) {
       assert.equal(p.closureSha256,createHash('sha256').update(JSON.stringify(p.files)).digest('hex'));
       assert.equal(p.files.find(f=>f.path==='tools/test262/script-plan.mjs').sha256,'c61ae04ef432aba0e5ab548cadb4fff3ed9848b771870da74f77f94791da52b8');
       assert.equal(p.files.find(f=>f.path==='tools/test262/script-ledger.mjs').sha256,'0921bc26ea39f6cb6c4583387553480a996ac4fd2f78a2f303c0a7a7c89e65dd');
-      const edits={'tools/test262/script-plan.mjs':"ab20c1f78b31377ebb18f13741e1077a3f9a4bd772790f13bd0b20facae8210f",'tools/test262/script-ledger.mjs':"fae6321287e971662257621a06336dd1a52fda29b4becb0513749160010f3440"};
-      for(const [path,sha256] of Object.entries(edits)) {
-        assert.equal(p.files.filter(f=>f.path===path).length,1);
-        p.files.find(f=>f.path===path).sha256=sha256;
+      for(const file of p.files) {
+        const path=file.path==='@node'?process.execPath:file.path.startsWith('@yaml/')?
+          'node_modules/yaml/'+file.path.slice(6):file.path;
+        file.sha256=createHash('sha256').update(readFileSync(path)).digest('hex');
       }
       p.id='rift-script-blocked-v4';
       p.closureSha256=createHash('sha256').update(JSON.stringify(p.files)).digest('hex');

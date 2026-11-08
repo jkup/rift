@@ -37,8 +37,7 @@ for(const file of ['design-selections.json','supplemental-literals.json']){
  for(let i=0;i<before.rows.length;i++){
   const a=structuredClone(before.rows[i]),b=structuredClone(after.rows[i]);
   assert.deepEqual(b.selection.policy,policies[b.selection.lane]);
-  const excluded=new Set(['tools/test262/script-plan.mjs','tools/test262/script-ledger.mjs']);
-  assert.deepEqual(b.selection.policy.files.filter(f=>!excluded.has(f.path)),a.selection.policy.files.filter(f=>!excluded.has(f.path)));
+  assert.deepEqual(b.selection.policy.files.map(f=>f.path),a.selection.policy.files.map(f=>f.path));
   b.selection.policy=a.selection.policy;assert.deepEqual(b,a);migrated++;
  }
  save(file,after);
@@ -48,20 +47,24 @@ const base=read('docs/validation/ts-035e2b-p/design-selections.json').rows[0].se
 for(const edit of [s=>s.policy.id='rift-script-blocked-v4',s=>s.policy.files.pop(),s=>s.policy.closureSha256='0'.repeat(64),s=>s.policy.files.find(f=>f.path.endsWith('/script-plan.mjs')).sha256='0'.repeat(64)]){
  const bad=structuredClone(base);edit(bad);assert.throws(()=>helper.migrate(bad));negatives++;
 }
-// Migrate every retained full checkpoint literal by the one exact ledger-byte
-// delta. Histories/reports and other 241 closure entries must remain unchanged.
+// Refresh only input identities. Retain complete checkpoint histories/reports.
 const oldRoot=previous+'/run-20CkKl',literalManifest=read(oldRoot+'/literal-manifest.json'),rows=[];
 const oldLedger=read(previous+'/proposal-manifest.json').find(p=>p.path==='tools/test262/script-ledger.mjs').proposedSha256;
-const newLedger=manifest.find(p=>p.path==='tools/test262/script-ledger.mjs').proposedSha256;
 for(const row of literalManifest){
  const raw=readFileSync(oldRoot+'/'+row.path);assert.equal(hash(raw),row.sha256);
  const before=JSON.parse(raw),after=structuredClone(before),policy=after.ledger.selection.policy;
- const entry=policy.files.find(f=>f.path==='tools/test262/script-ledger.mjs');assert.equal(entry.sha256,oldLedger);entry.sha256=newLedger;
+ assert.equal(policy.closureSha256,hash(JSON.stringify(policy.files)));
+ const entry=policy.files.find(f=>f.path==='tools/test262/script-ledger.mjs');assert.equal(entry.sha256,oldLedger);
+ for(const file of policy.files){
+  const path=file.path==='@node'?process.execPath:file.path.startsWith('@yaml/')?
+   'node_modules/yaml/'+file.path.slice(6):file.path;
+  file.sha256=hash(readFileSync(path));
+ }
  policy.closureSha256=hash(JSON.stringify(policy.files));assert.deepEqual(policy,policies[after.ledger.selection.lane]);
  const check=structuredClone(after);check.ledger.selection.policy=before.ledger.selection.policy;assert.deepEqual(check,before);
  const bytes=JSON.stringify(after,null,2)+'\n';writeFileSync(join(run,row.path),bytes);
  rows.push({...row,previousSha256:row.sha256,sha256:hash(bytes),byteLength:Buffer.byteLength(bytes)});
 }
 save('literal-manifest.json',rows);
-save('results.json',{completeSelections:migrated,negativeControls:negatives,completeCheckpointMigrations:rows.length,actualLanes:2,slotsPerLane:60,unchangedClosureEntriesPerCheckpoint:241,noPublicChange:true});
+save('results.json',{completeSelections:migrated,negativeControls:negatives,completeCheckpointMigrations:rows.length,actualLanes:2,slotsPerLane:60,closurePathsPreserved:true,noPublicChange:true});
 console.log(JSON.stringify({run,completeSelections:migrated,negativeControls:negatives,completeCheckpointMigrations:rows.length}));

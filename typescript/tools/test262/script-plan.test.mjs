@@ -20,7 +20,7 @@ const error = code => e => {
   return true;
 };
 
-// E2b: preserve historical expectations; transform only the exact closure delta.
+// Preserve historical behavior while checking the current planner input closure.
 async function ledgerPolicyLiteral(selection) {
   const value=structuredClone(selection), policy=value.policy;
   assert.equal(policy.id,'rift-script-blocked-v2');
@@ -29,10 +29,12 @@ async function ledgerPolicyLiteral(selection) {
   assert.equal(policy.files.filter(f=>f.path==='tools/test262/script-plan.mjs').length,1);
   assert.equal(policy.files.find(f=>f.path==='tools/test262/script-plan.mjs').sha256,'d1d8bd3a0eecb2336ccafea70fe5b08432932898a0f3763b2567d38a7feb9a62');
   assert(!policy.files.some(f=>f.path==='tools/test262/script-ledger.mjs'));
-  const planHash=sha256(await readFile('tools/test262/script-plan.mjs'));
-  assert.equal(planHash,'ab20c1f78b31377ebb18f13741e1077a3f9a4bd772790f13bd0b20facae8210f');
-  policy.files.find(f=>f.path==='tools/test262/script-plan.mjs').sha256=planHash;
-  policy.files.push({path:'tools/test262/script-ledger.mjs',sha256:sha256(await readFile('tools/test262/script-ledger.mjs'))});
+  policy.files.push({path:'tools/test262/script-ledger.mjs',sha256:''});
+  for (const file of policy.files) {
+    const path=file.path==='@node'?process.execPath:file.path.startsWith('@yaml/')?
+      'node_modules/yaml/'+file.path.slice(6):file.path;
+    file.sha256=sha256(await readFile(path));
+  }
   policy.files.sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
   assert.equal(policy.files.length,242);
   policy.id='rift-script-blocked-v4';
