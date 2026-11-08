@@ -3317,6 +3317,6 @@ Implement Script Object.is/getPrototypeOf/setPrototypeOf and Object.prototype.is
 
 ## TS-102 — Enumerable property copying
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 3c7c2021.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 3c7c2021, implementation ef0eeeb1. Both guest suites pass 589/589, full tooling 290/290, runner 31/31 and all ten probes pass. All 102 native entries pass build and static coverage in one invocation; assignment driver 6403/6403 static. All 225 complete fixture results agree: 84 reported successes, 33 unchecked completions, 53 parse errors, 54 runtime errors and one reported failure. test-object-function-descriptors.js now completes and prints 20 passed, 0 failed; its summary is not a recognized check marker and remains classified unchecked. All 116 previously completed outcomes remain. Reports: build/legacy-suite-node-r44VJS/report.json and build/legacy-suite-native-mThG5d/report.json. Logs: build/object-assign-*.
 
 Implement Script Object.assign and Object.prototype.propertyIsEnumerable. Preserve target/source boxing, ordered own enumerable string and symbol keys, source getters, strict target setters, partial writes, key-conversion order, Realm errors and bounded scans.
