@@ -346,6 +346,13 @@ const negatives = [
 ];
 for(const row of negatives) {
  const r=fresh(), session=createScriptSession(); const result=prepareStrictScript({id:row.id,text:(row.id === "N14" ? "" : '"use strict";')+row.source},r);
+ if (["++x;", "x--;", "--x;"].includes(row.source)) {
+  check(result.kind === "ready" && session.inspect().steps === 0, "new update prepares without effects");
+  define(r, "x", {kind: "number", value: 7});
+  num(run('"use strict";' + row.source, r, session), row.source === "++x;" ? 8 : row.source === "x--;" ? 7 : 6);
+  check(scalar(own(r, "x") ?? UNDEFINED) === (row.source === "++x;" ? "8" : "6"), "new update stores result");
+  continue;
+ }
  check(result.kind !== "ready",row.id+" rejected: "+row.source); check(session.inspect().steps===0,"no prepare ticks");idle(session);
 }
 console.log("PASS N01-N14 frozen negatives");
@@ -548,7 +555,7 @@ console.log("PASS X04 same-session cross-Realm getter/numeric reentry");
  const evaluator=new Evaluator(new Realm((_line:string)=>{})),env=new Environment(null);
  const node:Stmt={kind:"for",loc,initializer:null,test:null,update:null,body:{kind:"empty",loc}};
  hostFault(()=>{evaluator.statementInner(node,env,UNDEFINED);},"Script for AST requires Script execution");
- hostFault(()=>{evaluator.evaluate({kind:"postfix-increment",loc,target:{kind:"identifier",loc,name:"effect"}},env,UNDEFINED);},"Script postfix increment AST requires Script execution");check(env.bindings.size===0,"legacy no target effects");
+ hostFault(()=>{evaluator.evaluate({kind:"update",op:"++",prefix:false,loc,target:{kind:"identifier",loc,name:"effect"}},env,UNDEFINED);},"Script update AST requires Script execution");check(env.bindings.size===0,"legacy no target effects");
  for(const source of ['x++;','switch(1){case 1:x++;}','return;class X{}x++;']){const p=parse(source);check(p.error!==null&&p.error.message==="unsupported operator: ++"&&p.rejection?.kind==="unsupported-syntax"&&p.rejection.capabilityCode==="lex.operator"&&auditScriptReturns(source).kind==="blocked","legacy exact lex rejection");}
 }
 {
@@ -592,4 +599,32 @@ for (const source of ['let x=1;(-x++).p;', 'let x=1;(x++).p;', '"++".length;']) 
  check(second !== undefined && second.node.kind === "var" && second.node === bodyDeclaration, "exact original body declaration");
  const fn = nodes.scopes.get(1), block = nodes.scopes.get(2);
  check(fn !== undefined && fn.node !== null && fn.node.kind === "function" && fn.node === initializer && block !== undefined && block.node !== null && block.node.kind === "block" && block.node === loop.body && block.body === loop.body.body, "exact original function/block identities");
+}
+
+
+for (const expression of ["base()[key]++", "++base()[key]", "base()[key]--", "--base()[key]"]) {
+    const r = fresh();
+    let trace = "", stored = 0;
+    const target = r.createObject(), key = r.createObject(), value = r.createObject();
+    define(r, "base", builtin(r, "base", () => { trace += "B"; return normal({kind: "object", object: target}); }));
+    key.bootstrapDefine("toString", {value: builtin(r, "key", () => { trace += "K"; return normal({kind: "string", value: "p"}); })});
+    value.bootstrapDefine("valueOf", {value: builtin(r, "number", () => { trace += "C"; return normal({kind: "number", value: 7}); })});
+    define(r, "key", {kind: "object", object: key});
+    property(r, target, "p", {
+        get: builtin(r, "get", () => { trace += "G"; return normal({kind: "object", object: value}); }),
+        set: builtin(r, "set", (_receiver, args) => {
+            trace += "S"; check(args[0].kind === "number", "numeric update write");
+            if (args[0].kind === "number") stored = args[0].value;
+            return normal();
+        }), configurable: true,
+    });
+    const updated = expression.includes("++") ? 8 : 6;
+    num(run('"use strict";' + expression + ';', r), expression.startsWith("base") ? 7 : updated);
+    check(trace === "BKGCS" && stored === updated, "update reference and coercion order " + expression);
+}
+for (const source of ["++1;", "--(a+b);", "++f();", "x++++;", "new ++x;", "x--.p;", "-x--();", "(++x)++;"]) {
+    check(prepareStrictScript({id: "invalid update", text: '"use strict";' + source}, fresh()).kind !== "ready", "reject invalid update " + source);
+}
+for (const source of ["let x=2; (++x).p;", "let x=2; (--x).p;", "let x=2; (-x--).p;", "let x=2; --(x);"]) {
+    check(run('"use strict";' + source, fresh()).type === "normal", "parenthesized update " + source);
 }

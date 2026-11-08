@@ -9,7 +9,7 @@ function letter(c: string): boolean {
 function lineTerminator(c: string): boolean {
     return c === "\r" || c === "\n" || c === "\u2028" || c === "\u2029";
 }
-export function lex(source: string, allowIncrement = false): LexResult {
+export function lex(source: string, allowUpdate = false): LexResult {
     const tokens: Token[] = [];
     let i = 0;
     let line = 1;
@@ -104,7 +104,7 @@ export function lex(source: string, allowIncrement = false): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
-        } else if (allowIncrement && two === "++") {
+        } else if (allowUpdate && (two === "++" || two === "--")) {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });

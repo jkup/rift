@@ -870,8 +870,8 @@ class ExecutionEngine {
                 if (value.type !== "normal") return value;
                 return this.#put(ref.reference, value.value, expr.loc);
             }
-            case "postfix-increment": {
-                if (env !== null) throw new Error("Script postfix increment AST requires Script execution");
+            case "update": {
+                if (env !== null) throw new Error("Script update AST requires Script execution");
                 const ref = this.#reference(expr.target, null, receiver);
                 if (ref.type === "abrupt") return ref.completion;
                 const oldValue = this.#get(ref.reference, expr.loc);
@@ -881,9 +881,10 @@ class ExecutionEngine {
                 const numeric = toNumber(primitive.value, expr.loc, this.context.realm);
                 if (numeric.type === "throw") return numeric;
                 // The Reference caches the converted key, never a descriptor or setter.
-                const written = this.#put(ref.reference, { kind: "number", value: numeric.value + 1 }, expr.loc);
+                const newValue = expr.op === "++" ? numeric.value + 1 : numeric.value - 1;
+                const written = this.#put(ref.reference, { kind: "number", value: newValue }, expr.loc);
                 if (written.type === "throw") return written;
-                return normal({ kind: "number", value: numeric.value });
+                return normal({ kind: "number", value: expr.prefix ? newValue : numeric.value });
             }
             case "compound": {
                 const ref = this.#reference(expr.target, env, receiver);

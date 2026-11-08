@@ -367,6 +367,12 @@ const rejects = [
 for (const row of rejects) {
     const r = fresh(), session = createScriptSession();
     const result = prepareStrictScript({ id: row.id, text: (row.id === "N10" ? "" : '"use strict";') + row.source }, r);
+    if (row.source === "switch(1){case 1:++x;}") {
+        check(result.kind === "ready" && session.inspect().steps === 0, "prefix update prepares in switch");
+        const completion = run('"use strict";' + row.source, r);
+        check(completion.type === "throw" && completion.diagnostic.name === "ReferenceError", "switch update resolves missing target");
+        continue;
+    }
     check(result.kind === "blocked" || result.kind === "conflict", row.id + " reject");
     if (row.id === "N01" || row.id === "N02") check(result.kind === "conflict" && result.conflict.kind === "duplicate-lexical", row.id);
     else if (row.id === "N03") check(result.kind === "conflict" && result.conflict.kind === "lexical-var", row.id);

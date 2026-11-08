@@ -404,7 +404,7 @@ class DeclarationCollector {
                 }
                 break;
             case "object": for (let i = node.values.length - 1; i >= 0; i--) this.expression(node.values[i], scope, variableScope); break;
-            case "postfix-increment": this.expression(node.target, scope, variableScope); break;
+            case "update": this.expression(node.target, scope, variableScope); break;
             case "unary":
                 if (node.op === "delete" && node.operand.kind === "identifier") this.identifierDeletes.push({ scope, loc: node.loc });
                 this.expression(node.operand, scope, variableScope); break;

@@ -453,7 +453,7 @@ class Parser {
         // A unary operand may already have consumed the postfix token. Its
         // enclosing expression must not reopen the member/call suffix chain.
         const lastPrimaryToken = this.tokens[this.index - 1];
-        let updated = lastPrimaryToken.kind === "punct" && lastPrimaryToken.text === "++";
+        let updated = lastPrimaryToken.kind === "punct" && (lastPrimaryToken.text === "++" || lastPrimaryToken.text === "--");
         while (this.error === null) {
             if (!updated && this.eat(".")) {
                 const key = this.take();
@@ -478,12 +478,13 @@ class Parser {
                 left = { kind: "call", loc, callee: left, args };
                 continue;
             }
-            if (!updated && this.structuralPlan() && this.at("++")) {
+            if (!updated && this.structuralPlan() && (this.at("++") || this.at("--"))) {
                 const previous = this.tokens[this.index - 1];
                 const increment = this.take();
-                if (increment.loc.line !== previous.loc.line) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.line-terminator" }, "newline before postfix increment is unsupported", increment.loc);
-                if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid increment target", left.loc);
-                left = { kind: "postfix-increment", loc: left.loc, target: left };
+                const operation = increment.text === "++" ? "increment" : "decrement";
+                if (increment.loc.line !== previous.loc.line) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.line-terminator" }, "newline before postfix " + operation + " is unsupported", increment.loc);
+                if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + operation + " target", left.loc);
+                left = { kind: "update", loc: left.loc, target: left, op: increment.text === "++" ? "++" : "--", prefix: false };
                 updated = true;
                 continue;
             }
@@ -541,7 +542,7 @@ class Parser {
         if (t.kind === "word" && t.text === "new" && this.structuralPlan()) {
             const first = this.current();
             // Only primary/member syntax here; parentheses can contain calls.
-            if ((first.kind === "word" || first.kind === "punct") && ["new", "-", "+", "!", "delete", "typeof", "void"].includes(first.text)) {
+            if ((first.kind === "word" || first.kind === "punct") && ["new", "-", "+", "!", "delete", "typeof", "void", "++", "--"].includes(first.text)) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported constructor operand", first.loc);
                 return { kind: "literal", loc, value: null };
             }
@@ -584,6 +585,11 @@ class Parser {
             this.expect(")");
             if (this.structuralPlan()) this.parenthesized.set(expr, true);
             return expr;
+        }
+        if (t.kind === "punct" && (t.text === "++" || t.text === "--") && this.structuralPlan()) {
+            const target = this.expression(9, allowIn);
+            if (target.kind !== "identifier" && target.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid update target", loc);
+            return { kind: "update", loc, target, op: t.text, prefix: true };
         }
         if (t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {
             const operand = this.expression(9, allowIn);

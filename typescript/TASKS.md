@@ -3038,3 +3038,9 @@ Implement generic charAt, charCodeAt and slice with UTF-16 code-unit behavior, n
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `56e195bd`. Both hosts agree on all 225 fixture results: 43 reported-success, 21 unchecked completions, 1 reported failure, 71 parse errors and 89 runtime errors; 15 exclusions retained. Runner30 passes, including subprocess and selection controls. No engine changes or conformance claim; see docs/legacy-fixture-baseline.md.
 
 Run the existing C++ regression fixtures unchanged through both TypeScript hosts. Preserve the original runner's selection rules, record excluded files, retain complete process output, and distinguish reported checks from mere completion, assertion failures, parse/runtime failures, timeouts and host faults. Do not claim test262 conformance or verified C++ pass counts. Use the resulting failure groups to choose the next small semantic fix; keep source fixtures unchanged and reports under build/.
+
+## TS-056 — Complete numeric update expressions
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `77f7dcdf`.
+
+Generalize postfix increment to prefix/postfix increment and decrement in the Script profile. Preserve single reference evaluation, numeric coercion, getter/setter order, strict/sloppy failures and budgets. Reject invalid targets and unsupported line-terminator forms explicitly. Add semantic controls and rerun the fixed C++ fixture selection in both hosts; require fresh native static coverage and existing parser regressions.
