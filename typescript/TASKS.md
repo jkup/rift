@@ -3155,6 +3155,6 @@ Extend Script numeric lexing to decimal exponents and leading-dot fractions. Pre
 
 ## TS-075 — Radix integer literals
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `7bdae472`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `7bdae472`, implementation `1e57fae4`. Both guest suites pass 505/505, full tooling290/290, runner30 and probes10 pass. All 88 native entries pass build and static coverage in one invocation; radix driver4995/4995 static. All 225 C++ fixture results agree across hosts: 67 reported successes, 30 unchecked completions, 53 parse errors, 73 runtime errors and two reported failures. The numeric-literals fixture reports all 15 checks passing, and the Math fixture reaches missing acos. All 96 previously successful or unchecked files retain their outcomes. Reports: build/legacy-suite-node-iIAHfy/report.json and build/legacy-suite-native-jumZjo/report.json. Logs: build/radix-literals-*.
 
 Add Script binary, octal and hexadecimal integer literals with explicit digit validation, exact source spans and existing numeric conversion. Reject missing/invalid digits and unsupported suffixes; preserve legacy parsing. Validate property keys, rounding, unary minus and both hosts against fixed fixtures.

@@ -133,3 +133,12 @@ call/apply/bind fixture to missing bind without changing its runtime-error categ
 All 96 prior completed outcomes are retained. Reports:
 `build/legacy-suite-node-fVzKVO/report.json` and
 `build/legacy-suite-native-Ef21Cn/report.json`.
+
+## Radix literals (TS-075)
+
+Both hosts agree on all 225 complete outcomes: 67 reported successes, 30 unchecked
+completions, 53 parse errors, 73 runtime errors and two reported failures. The
+numeric-literals fixture reports 15 passing checks; the Math fixture advances
+from parsing to missing acos. All 96 prior completed outcomes are retained.
+Reports: `build/legacy-suite-node-iIAHfy/report.json` and
+`build/legacy-suite-native-jumZjo/report.json`.

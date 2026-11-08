@@ -12,4 +12,4 @@ is not copied. Tests cover each radix and prefix case, malformed inputs, propert
 keys, member access, operators, rounding ties, overflow, negative zero and raw
 spans. Legacy parsing, separators, BigInt and legacy octal remain separate.
 
-Acceptance pending.
+Both guest suites pass 505/505, full tooling290/290, runner30 and probes10 pass. All 88 native entries pass build and static coverage in one invocation; radix driver4995/4995 static. All 225 C++ fixture results agree across hosts: 67 reported successes, 30 unchecked completions, 53 parse errors, 73 runtime errors and two reported failures. The numeric-literals fixture reports all 15 checks passing, and the Math fixture reaches missing acos. All 96 previously successful or unchecked files retain their outcomes. Reports: build/legacy-suite-node-iIAHfy/report.json and build/legacy-suite-native-jumZjo/report.json. Logs: build/radix-literals-*.
