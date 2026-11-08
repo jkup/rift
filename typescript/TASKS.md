@@ -3251,7 +3251,7 @@ Implement String.concat and lastIndexOf with ordered coercion, UTF-16 semantics,
 
 ## TS-091 — ECMAScript string trimming
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 31525b3d.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 31525b3d, implementation 328356c0. Both guest suites pass 579/579, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage in one invocation; string driver 6078/6078 static. All 225 complete fixture results agree: 80 reported successes, 27 unchecked completions, 53 parse errors, 64 runtime errors and one reported failure. All 107 previously completed outcomes remain. Comprehensive string tests now reach split; chaining reaches toLowerCase. Reports: build/legacy-suite-node-tVUzmH/report.json and build/legacy-suite-native-Asf0kF/report.json. Logs: build/string-trim-*.
 
 Add Script trim/trimStart/trimEnd with shared numeric-conversion whitespace classification, ordered generic receiver coercion, bounded scanning and UTF-16 preservation. Validate both hosts and existing gates; aliases remain separate.
 
