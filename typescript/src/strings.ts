@@ -1,6 +1,8 @@
 // Host strings store UTF-16 code units, including lone surrogates. This boundary
 // can change representation without changing guest string operations.
 export type GuestString = string;
+export function stringStartsWith(value: GuestString, search: GuestString, start: number): boolean { return value.startsWith(search, start); }
+export function stringEndsWith(value: GuestString, search: GuestString, end: number): boolean { return value.endsWith(search, end); }
 export function stringLength(value: GuestString): number { return value.length; }
 export function stringUnit(value: GuestString, index: number): GuestString { return value.charAt(index); }
 export function stringCodeUnit(value: GuestString, index: number): number { return value.charCodeAt(index); }

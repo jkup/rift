@@ -1,6 +1,7 @@
 import { registerArrayFlat } from "./builtins/array-flat.js";
 import { registerArrayIterators } from "./builtins/array-iterator.js";
 import { registerStringIterator } from "./builtins/string-iterator.js";
+import { registerStringSearch } from "./builtins/string-search.js";
 import { registerMap } from "./builtins/map.js";
 import { registerMapIterators } from "./builtins/map-iterator.js";
 import { registerStringSplit } from "./builtins/string-split.js";
@@ -145,6 +146,7 @@ export class Realm {
             registerScriptArrayIteration(this);
             registerArrayIterators(this);
             registerStringIterator(this);
+            registerStringSearch(this);
             registerMap(this);
             registerMapIterators(this);
         }

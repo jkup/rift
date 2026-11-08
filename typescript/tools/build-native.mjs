@@ -29,6 +29,7 @@ const entries = [
     ["test/map-object.ts", "map-object"],
     ["test/map-iterator.ts", "map-iterator"],
     ["test/group-by.ts", "group-by"],
+    ["test/string-search.ts", "string-search"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

@@ -45,7 +45,7 @@ export function prototypeMethodLength(name: string, numberPrototype: boolean): n
         "concat", "propertyIsEnumerable", "isPrototypeOf", "hasOwnProperty", "call",
         "join", "push", "unshift", "at", "lastIndexOf", "indexOf", "includes",
         "filter", "map", "forEach", "reduce", "reduceRight", "find", "findIndex",
-        "findLast", "findLastIndex", "every", "some", "charAt", "charCodeAt",
+        "findLast", "findLastIndex", "every", "some", "charAt", "charCodeAt", "startsWith", "endsWith",
     ].includes(name)) return 1;
     if ([
         "valueOf", "pop", "shift", "reverse", "toReversed", "flat", "trim",
