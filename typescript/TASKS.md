@@ -3293,6 +3293,6 @@ Probe native binary64 formatting with literal expectations before implementing S
 
 ## TS-098 — Object integrity methods
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 1d39c7e2.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 1d39c7e2, implementation 63c3fb01. Both guest suites pass 585/585, full tooling 290/290, runner 31/31 and all ten probes pass. All 98 native entries pass build and static coverage in one invocation; integrity driver 6249/6249 static. All 225 complete fixture results agree: 84 reported successes, 31 unchecked completions, 53 parse errors, 56 runtime errors and one reported failure. frozen-sealed-typeerror-test.js now reports success with 17 checks; all 114 previously completed outcomes remain. Reports: build/legacy-suite-node-799kx0/report.json and build/legacy-suite-native-fAssOl/report.json. Logs: build/object-integrity-*.
 
 Implement Script preventExtensions/isExtensible, seal/isSealed and freeze/isFrozen over existing internal operations. Preserve primitive identity, accessor behavior, shallow freezing, array/string exotic descriptors, symbol keys and resource bounds. Validate both hosts and fixed fixtures without changing legacy behavior.
