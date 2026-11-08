@@ -3,6 +3,7 @@ import { registerNumericParsing } from "./number-parse.js";
 import { numberToString, toIntegerOrInfinity, toNumber, type NumberCompletion } from "../conversion.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { numberToStringRadix } from "../number-radix.js";
+import { numberToFixed, numberToExponential, numberToPrecision } from "../number-format.js";
 import type { Location } from "../syntax.js";
 import type { Realm } from "../realm.js";
 import { GuestObject, languageFailure, normal, UNDEFINED, type Builtin, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
@@ -122,4 +123,32 @@ export function registerNumberConversions(realm: Realm): void {
         if (result.type === "throw") return result;
         return normal({ kind: "number", value: result.value });
     });
+    if (realm.profile === "script") registerNumberFormatting(realm);
+}
+
+function registerNumberFormatting(realm: Realm): void {
+    for (const name of ["toFixed", "toExponential", "toPrecision"]) {
+        realm.registerBuiltin(realm.numberPrototype, name, 1, (receiver, args, context, loc): ValueCompletion => {
+            const extracted = thisNumberValue(receiver, loc, context.realm);
+            if (extracted.type === "throw") return extracted;
+            const value = extracted.value;
+            const argument = args.length === 0 ? UNDEFINED : args[0];
+            if (name === "toPrecision" && argument.kind === "undefined") return normal({ kind: "string", value: numberToString(value) });
+            const primitive = toPrimitive(argument, "number", context, loc);
+            if (primitive.type === "throw") return primitive;
+            const integer = toIntegerOrInfinity(primitive.value, loc, context.realm);
+            if (integer.type === "throw") return integer;
+            // Exponential and precision formatting return nonfinite values before
+            // validating the converted digit count; fixed formatting does not.
+            if (name !== "toFixed" && !Number.isFinite(value)) return normal({ kind: "string", value: numberToString(value) });
+            const digits = integer.value;
+            if (digits < (name === "toPrecision" ? 1 : 0) || digits > 100) return languageFailure(context.realm, "RangeError", "invalid number formatting digits", loc);
+            if (!Number.isFinite(value)) return normal({ kind: "string", value: numberToString(value) });
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+            if (name === "toFixed") return normal({ kind: "string", value: numberToFixed(value, digits) });
+            if (name === "toExponential") return normal({ kind: "string", value: numberToExponential(value, digits, argument.kind === "undefined") });
+            return normal({ kind: "string", value: numberToPrecision(value, digits) });
+        });
+    }
 }

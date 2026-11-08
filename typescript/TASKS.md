@@ -3285,3 +3285,8 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base be4618cb, impleme
 
 Implement Script parseInt/parseFloat with shared Number aliases, ordered string/radix coercion, explicit prefix grammar, bounded scanning and validated native rounding. Probe host primitives before choosing a backend; keep legacy behavior and fixed fixtures intact.
 
+## TS-097 — Number decimal formatting
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 2f31d8bb.
+
+Probe native binary64 formatting with literal expectations before implementing Script toFixed/toExponential/toPrecision. Preserve receiver-slot checks, coercion order, digit ranges and signed zero; isolate backend limitations instead of silently accepting divergent output.

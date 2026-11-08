@@ -552,6 +552,7 @@ executeDriver("global-numeric-predicates", { stdout: "Global numeric predicates 
 executeDriver("array-sort", { stdout: "Array sort passed\n" });
 executeDriver("string-split", { stdout: "String split passed\n" });
 executeDriver("array-flat", { stdout: "Array flattening passed\n" });
+executeDriver("number-format", { stdout: "Number formatting passed\n" });
 executeDriver("number-parse", { stdout: "Numeric parsing passed\n" });
 executeDriver("number-constructor", { stdout: "Number constructor passed\n" });
 executeDriver("array-copy", { stdout: "Array copy passed\n" });
