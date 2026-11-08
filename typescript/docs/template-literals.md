@@ -23,4 +23,4 @@ lexer uses one interpolation-depth stack rather than a separate rescan state.
 
 Tests cover nesting, comments and braces, cooked UTF-16, raw source and locations,
 directives, functions and closures, ordered conversion hooks, exact throw
-identity, symbols, malformed input and resource limits. Acceptance pending.
+identity, symbols, malformed input and resource limits. Both guest suites pass 444/444, full tooling rerun290/290, runner30 and probes10 pass. Native acceptance covers 82 initial passes plus a successful isolated harness-bundle retry after a Zig cache file-open error; all 83 entries pass static coverage. Template driver4886/4886 static. Initial tooling287/290 exposed six stale template rejection expectations in three audit groups; current expectations now assert the reached syntax candidates, with historical files unchanged. Original build and tooling failures are retained. All 225 C++ fixture results agree across hosts: 60 reported successes, 29 unchecked completions, 58 parse errors, 76 runtime errors and two reported failures. All 82 previously successful or unchecked files retain their outcomes. Logs: build/templates-*.

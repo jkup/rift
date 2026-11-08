@@ -3113,6 +3113,6 @@ Add generic lastIndexOf with omitted versus explicit fromIndex, length-before-in
 
 ## TS-068 — Ordinary template literals
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `cff1c7f9`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `cff1c7f9`, implementation `09a35770`. Both guest suites pass 444/444, full tooling rerun290/290, runner30 and probes10 pass. Native acceptance covers 82 initial passes plus a successful isolated harness-bundle retry after a Zig cache file-open error; all 83 entries pass static coverage. Template driver4886/4886 static. Initial tooling287/290 exposed six stale template rejection expectations in three audit groups; current expectations now assert the reached syntax candidates, with historical files unchanged. Original build and tooling failures are retained. All 225 C++ fixture results agree across hosts: 60 reported successes, 29 unchecked completions, 58 parse errors, 76 runtime errors and two reported failures. All 82 previously successful or unchecked files retain their outcomes. Logs: build/templates-*.
 
 Add Script template literals and interpolation with nested lexical context, cooked text, ordered string conversion, source locations, declaration traversal and resource bounds. Tagged templates remain unsupported. Preserve legacy parser behavior and historical evidence; validate both hosts and fixed C++ fixtures.

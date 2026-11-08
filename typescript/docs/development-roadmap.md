@@ -27,9 +27,11 @@ are not an authoritative conformance score.
 TS-066 baseline review: the 67 parse failures include nine first failures on
 template literals, six on `for…of`, five on arrows, five on binding patterns,
 five on unsupported non-strict block function planning, and four on classes.
-After the current array-method gaps, inspect template literal parsing and
-evaluation as a bounded grammar task. These are first-failure counts, not
-predicted passes: each file may expose further unsupported behavior afterward.
+TS-068 implements ordinary template literals and interpolation; all nine files
+advance past parsing. One reports success, six complete without checks, and two
+reach runtime limitations (Math and String.prototype.indexOf). Tagged templates
+remain unsupported. These are first-failure counts, not predicted passes: each
+file may expose further unsupported behavior afterward.
 
 ## Findings and next work
 
@@ -80,7 +82,7 @@ declaration plans and 154 serializer records against accepted expectations.
 TS-048 brings the exact radix oracle into the ordinary tooling command, with
 14768 inputs per host and reports under `build/`.
 
-The 79 compiled test drivers now have identified execution routes: 64 through
+The 80 compiled test drivers now have identified execution routes: 65 through
 the guest runner, five through parser audits, three through inspection tests,
 four through dispatch tests, one through Script preflight tests, one through
 the radix oracle, and one through `npm run test:observations`. This accounts for

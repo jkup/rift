@@ -103,3 +103,13 @@ reverse value search then lets it complete successfully.
 Latest reports: `build/legacy-suite-node-uwywPC/report.json` and
 `build/legacy-suite-native-SNzOqR/report.json`. These marker-based outcomes remain
 separate from semantic test assertions and test262 conformance admission.
+
+## Template literals (TS-068)
+
+Both hosts agree on all 225 complete outcomes: 60 reported successes, 29 unchecked
+completions, 58 parse errors, 76 runtime errors and two reported failures. Nine
+files advance past parsing: one gains reported success, six complete without
+checks, and two reach missing Math or String.indexOf behavior. All 82 previously
+successful or unchecked fixtures retain their outcomes. Reports:
+`build/legacy-suite-node-1Oxs6c/report.json` and
+`build/legacy-suite-native-Yqeh0o/report.json`.
