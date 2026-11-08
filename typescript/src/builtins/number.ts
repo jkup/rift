@@ -1,5 +1,5 @@
 import { GuestNumber } from "../primitive-objects.js";
-import { numberToString, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
+import { numberToString, toIntegerOrInfinity, toNumber, type NumberCompletion } from "../conversion.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { numberToStringRadix } from "../number-radix.js";
 import type { Location } from "../syntax.js";
@@ -30,6 +30,20 @@ export function registerNumber(realm: Realm): void {
 
 function registerPredicate(realm: Realm, namespace: GuestObject, name: string, invoke: Builtin): void {
     realm.registerBuiltin(namespace, name, 1, invoke);
+}
+
+export function registerGlobalNumericPredicates(realm: Realm): void {
+    for (const name of ["isNaN", "isFinite"]) {
+        realm.registerBuiltin(realm.globalObject, name, 1, (_receiver, args, context, loc) => {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+            const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
+            if (primitive.type === "throw") return primitive;
+            const number = toNumber(primitive.value, loc, context.realm);
+            if (number.type === "throw") return number;
+            return normal({kind: "boolean", value: name === "isNaN" ? Number.isNaN(number.value) : Number.isFinite(number.value)});
+        });
+    }
 }
 
 // Slots survive prototype relinking; Number.prototype itself holds genuine +0.

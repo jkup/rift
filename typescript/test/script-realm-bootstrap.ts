@@ -88,7 +88,7 @@ function row(id: string,name: string,initial: number): void {
     const x=new Realm((line:string)=>{output+=line; outputCalls++;}), y=new Realm((line:string)=>{output+=line; outputCalls++;},"legacy");
     const e=new Evaluator(x), context=stub(a), first=n(initial), next=n(initial===7?11:7);
     const legacyGlobals=["undefined","NaN","Infinity","console","Number"];
-    const globals=[...legacyGlobals,"Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object","Array","Math"];
+    const globals=[...legacyGlobals,"Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object","Array","Math","isNaN","isFinite"];
     switch(id) {
     case "B01": {
         for(const l of [x,y]) check(l.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,"legacy hasInstance absent");

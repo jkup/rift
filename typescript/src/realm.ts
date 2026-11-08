@@ -3,7 +3,7 @@ import { registerErrors, createErrorConstructor } from "./builtins/error.js";
 import type { ConstructBuiltin, Callable } from "./runtime.js";
 import { GuestArray } from "./array-object.js";
 import { Environment, GuestObject, GuestError, UNDEFINED, display, normal, type ErrorName, type Builtin, type Value, validatePropertyDescriptorUpdate, type PropertyDescriptorUpdate, type ValueCompletion } from "./runtime.js";
-import { registerNumber, registerNumberConversions } from "./builtins/number.js";
+import { registerNumber, registerNumberConversions, registerGlobalNumericPredicates } from "./builtins/number.js";
 import { registerFunction, nativeFunctionString } from "./builtins/function.js";
 import { registerRestrictedFunctionProperties } from "./builtins/restricted-function.js";
 import { registerObject, registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
@@ -108,6 +108,7 @@ export class Realm {
             registerObject(this);
             this.arrayConstructor = registerArray(this);
             registerMath(this);
+            registerGlobalNumericPredicates(this);
             registerScriptArrayIteration(this);
         }
     }

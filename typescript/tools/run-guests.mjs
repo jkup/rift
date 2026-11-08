@@ -48,6 +48,12 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["global-isnan","console.log(isNaN(),isNaN(undefined),isNaN(null),isNaN(true),isNaN(''),isNaN('4'),isNaN('x'),isNaN(NaN),isNaN(Infinity));",0,"","true true false false false false true true false\n"],
+    ["global-isfinite","console.log(isFinite(),isFinite(null),isFinite(false),isFinite(''),isFinite('4'),isFinite('x'),isFinite(NaN),isFinite(Infinity),isFinite(-Infinity));",0,"","false true true true true false false false false\n"],
+    ["global-predicate-objects","console.log(isNaN({}),isNaN([]),isNaN([1]),isNaN([1,2]),isFinite(new String('7')),Number.isFinite('7'),Number.isNaN('x'));",0,"","true false false true true false false\n"],
+    ["global-predicate-hints","let trace='';let o={valueOf:function(){trace+='v';return {};},toString:function(){trace+='s';return '4';}};console.log(isFinite(o),trace);",0,"","true vs\n"],
+    ["global-predicate-metadata","console.log(isNaN.name,isNaN.length,isFinite.name,isFinite.length);try{new isNaN();}catch(e){console.log(e.name);}try{new isFinite();}catch(e){console.log(e.name);}",0,"","isNaN 1 isFinite 1\nTypeError\nTypeError\n"],
+    ["global-predicate-mutable","let f=isNaN;isNaN=7;console.log(isNaN,f('x'));",0,"","7 true\n"],
     ["math-roots","console.log(Math.sqrt(9),Math.cbrt(27),Math.cbrt(-8),1/Math.sqrt(-0),1/Math.cbrt(-0));",0,"","3 3 -2 -Infinity -Infinity\n"],
     ["math-logs","console.log(Math.log2(8),Math.log10(1000),Math.log(1),Math.log1p(-1));",0,"","3 3 0 -Infinity\n"],
     ["math-domains","console.log(Math.acos(2),Math.asin(-2),Math.acosh(.5),Math.atanh(2),Math.sqrt(-1),Math.log(-1),Math.log1p(-2));",0,"","NaN NaN NaN NaN NaN NaN NaN\n"],
@@ -484,6 +490,7 @@ executeDriver("object-descriptor-reflection", { stdout: "Property descriptor ref
 executeDriver("function-apply", { stdout: "Function apply passed\n" });
 executeDriver("radix-literals", { stdout: "Radix literals passed\n" });
 executeDriver("decimal-literals", { stdout: "Decimal literals passed\n" });
+executeDriver("global-numeric-predicates", { stdout: "Global numeric predicates passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });
 executeDriver("do-while", { stdout: "Do-while passed\n" });
 executeDriver("script-templates", { stdout: "Script templates passed\n" });
