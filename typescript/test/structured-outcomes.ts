@@ -44,17 +44,18 @@ function observedResource(result: ObservationResult, guard: Guard, count: number
     const o = result.observation;
     check(o.kind === "resource-limit" && o.guardCode === guard && o.count === count && o.limit === limit, label);
 }
-// P01-P42: literal frozen inputs; columns are independent expected constants.
+// Original P01-P42 inputs retained; P16 now parses. P43 covers computed-key rejection.
 export const sources: string[] = [
     "", "let x; x = 2;", "1 = 2;", "while(false) let x;", "while(false) { let x; }", "return 1;", "function f(){return 1;}",
     "function f(x,x){}", '"use strict"; function f(x,x){}', "{function f(){} function f(){}}", "let x; let x;", "function f(x){let x;}",
     "let x=1\n x;", "let eval;", "let o={}; o.1;", "let o={1:2};", "const x=1;", "function f(){return\n1;}", "throw\n1;", "throw;", "break;", "continue;", "delete x;", "[...x];", "let o={__proto__:null};", "/*", "'a\nb';", "'a", "01;", "1e2;", "'\\x41';", "1**2;", "let π=1;", "return 1; 1**2;", "1=2; const x=1;", "'\\x", "\r\nreturn 1;", "\u2028\u2029return 1;", "'\u2028';", "\uFEFF1;", "\0" + "1;", "console.log('no'); const x=1;",
+    "let o={[1]:2};",
 ];
 const codes: string[] = [
-    "", "", "parse.assignment-target", "parse.declaration-statement", "", "parse.return-context", "", "parse.duplicate-parameter", "parse.duplicate-parameter", "parse.duplicate-binding", "parse.duplicate-binding", "parse.duplicate-binding", "parse.expected-token", "parse.binding-identifier", "parse.property-name", "parse.object-key", "parse.unexpected", "parse.line-terminator", "parse.line-terminator", "parse.throw-expression", "parse.loop-context", "parse.loop-context", "parse.delete-identifier", "parse.array-spread", "parse.prototype-literal", "lex.indeterminate-comment", "lex.indeterminate-string-newline", "lex.indeterminate-string-end", "lex.leading-zero", "lex.numeric-literal", "lex.string-escape", "lex.operator", "lex.character", "lex.operator", "parse.assignment-target", "lex.indeterminate-string-end", "parse.return-context", "parse.return-context", "", "lex.character", "lex.character", "parse.unexpected",
+    "", "", "parse.assignment-target", "parse.declaration-statement", "", "parse.return-context", "", "parse.duplicate-parameter", "parse.duplicate-parameter", "parse.duplicate-binding", "parse.duplicate-binding", "parse.duplicate-binding", "parse.expected-token", "parse.binding-identifier", "parse.property-name", "", "parse.unexpected", "parse.line-terminator", "parse.line-terminator", "parse.throw-expression", "parse.loop-context", "parse.loop-context", "parse.delete-identifier", "parse.array-spread", "parse.prototype-literal", "lex.indeterminate-comment", "lex.indeterminate-string-newline", "lex.indeterminate-string-end", "lex.leading-zero", "lex.numeric-literal", "lex.string-escape", "lex.operator", "lex.character", "lex.operator", "parse.assignment-target", "lex.indeterminate-string-end", "parse.return-context", "parse.return-context", "", "lex.character", "lex.character", "parse.unexpected", "parse.object-key",
 ];
-const lines = [0,0,1,1,0,1,0,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,0,1,1,1];
-const columns = [0,0,1,14,0,1,0,1,15,17,8,15,2,5,13,8,1,14,1,1,1,1,1,2,8,1,1,1,1,1,1,2,5,12,1,1,1,1,0,1,1,20];
+const lines = [0,0,1,1,0,1,0,1,1,1,1,1,2,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,0,1,1,1,1];
+const columns = [0,0,1,14,0,1,0,1,15,17,8,15,2,5,13,0,1,14,1,1,1,1,1,2,8,1,1,1,1,1,1,2,5,12,1,1,1,1,0,1,1,20,8];
 for (let i = 0; i < sources.length; i++) {
     const realm = fresh();
     const result = observe(sources[i], realm, i === 41 ? "body-observation" : "parser-observation", unit);

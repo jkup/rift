@@ -615,9 +615,9 @@ class Parser {
             if (!this.at("}")) {
                 do {
                     const key = this.take();
-                    if (key.kind !== "word" && key.kind !== "string") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected string property name", key.loc);
+                    if (key.kind !== "word" && key.kind !== "string" && key.kind !== "number") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", key.loc);
                     if (key.text === "__proto__") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, "prototype literal syntax is unsupported", key.loc);
-                    keys.push(key.text);
+                    keys.push(key.kind === "number" ? String(Number(key.text)) : key.text);
                     this.expect(":");
                     values.push(this.expression(0));
                 } while (this.error === null && this.eat(","));

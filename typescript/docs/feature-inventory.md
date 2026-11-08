@@ -16,6 +16,26 @@ holes and `NaN`. Both guest lanes pass 270/270; all 73 native build entries pass
 static coverage. See
 [array search](array-search.md).
 
+TS-050 adds generic Array `reverse`; TS-051 adds `every` and `some`, including
+callback receivers, hole skipping and short-circuiting. See
+[array mutation](array-mutation.md) and [predicate iteration](array-predicate.md)
+for their Node/native acceptance and limits.
+
+TS-052 accepts numeric object-literal keys using the existing decimal literal
+grammar. Keys are normalized from the numeric value: `1.0` and `1` both name
+`"1"`, while quoted `"1.0"` remains distinct. Duplicate values still evaluate in
+source order. Numeric rounding and decimal/scientific formatting follow the same
+host number primitives already used by numeric literals and Number conversion.
+Computed and negative keys, exponent/radix literals and prototype-literal syntax
+remain outside this change. Native acceptance is pending.
+
+This follows ECMA-262
+[PropName](https://tc39.es/ecma262/multipage/syntax-directed-operations.html#sec-static-semantics-propname)
+and its numeric-literal string conversion. The C++ engine's
+[`parse_object_literal`](../../src/frontend/parser/parser_expressions.cpp)
+was consulted for grammar scope; the TypeScript AST stores normalized string
+keys rather than adding a separate numeric-key node.
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a

@@ -3014,3 +3014,9 @@ Implement Array.prototype.reverse with captured array-like length, inherited and
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `394697bd`, implementation `ffe9de0d`. Node/native guest suites pass 299/299, full tooling 290/290, runner 20/20 and all ten probes. Full native run passed 73 entries; the predicate driver passed a separate corrected build and 4297/4297 static coverage after explicit completion return types removed an inferred-never adapter. All 74 entries accounted for, no skips; original failure retained. Logs under build/array-predicate-*.
 
 Implement generic every/some with captured length, callable validation, inherited elements and hole skipping, callback arguments/thisArg, short-circuiting, abrupt completion and budgets. Preserve ordinary guest operations and test mutation during traversal. Require both hosts, a fresh full static native build and current regression checks.
+
+## TS-052 — Numeric object literal keys
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `8bef7cb6`.
+
+Accept currently supported numeric literal tokens as object keys, using their canonical numeric string. Cover integer/fractional keys, duplicate normalization, rounding, key lookup and unsupported computed/negative keys. Preserve existing source cases while updating the now-supported outcome and adding a replacement unsupported-key control. Keep literal syntax limits and prototype-literal restrictions explicit; validate both hosts and static native coverage.

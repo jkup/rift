@@ -96,6 +96,14 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("object-numeric-keys", "let o={0:'zero',12:'twelve',0.50:'half'}; console.log(o[0],o[12],o[0.5],o['0.50']);", {stdout:"zero twelve half undefined\n"});
+lineCase("object-numeric-duplicates", "let trace=''; function mark(x){trace+=x;return x;} let o={1:mark('a'),1.0:mark('b'),'1':mark('c')}; console.log(trace,o[1],'1.0' in o);", {stdout:"abc c false\n"});
+lineCase("object-numeric-rounding", "let o={9007199254740993:7,9007199254740992:11}; console.log(o['9007199254740992'],o['9007199254740993']);", {stdout:"11 undefined\n"});
+lineCase("object-numeric-format", "let o={1000000000000000000000:7,0.0000001:11}; console.log(o['1e+21'],o['1e-7'],o['0.0000001']);", {stdout:"7 11 undefined\n"});
+lineCase("object-numeric-zero", "let o={0.0:7,'0.0':11}; console.log(o[0],o[-0],o['0.0']);", {stdout:"7 7 11\n"});
+lineCase("object-negative-key", "let o={-1:2};", {status:2,errorContains:"parse SyntaxError: expected literal property name"});
+lineCase("object-computed-key", "console.log('no'); let o={[1]:2};", {status:2,errorContains:"parse SyntaxError: expected literal property name"});
+lineCase("object-exponent-key", "let o={1e2:7};", {status:2,errorContains:"parse SyntaxError: unsupported numeric literal"});
 lineCase("array-predicate-basic", "function positive(x){return x>0;} console.log([1,2,3].every(positive),[1,-2,3].every(positive),[-1,-2].some(positive),[-1,2].some(positive),[].every(positive),[].some(positive));", {stdout:"true false false true true false\n"});
 lineCase("array-predicate-short-circuit", "let a=[]; console.log([1,2,3].every(function(x){a.push(x);return x<2;}),a.join()); a=[]; console.log([1,2,3].some(function(x){a.push(x);return x===2;}),a.join());", {stdout:"false 1,2\ntrue 1,2\n"});
 lineCase("array-predicate-holes", "let a=[,undefined,,7]; let seen=[]; console.log(a.every(function(x,i,o){seen.push(i);return o===a;}),seen.join()); seen=[]; console.log(a.some(function(x,i){seen.push(i);return x===7;}),seen.join());", {stdout:"true 1,3\ntrue 1,3\n"});
