@@ -20,5 +20,4 @@ observation order within that species boundary. Tests cover sparse and inherited
 elements, live mutation, primitives, callback validation, constructor effects,
 cross-Realm ownership and budgets.
 
-Initial validation: 414/414 Node checks; the new driver has 4726/4726 static
-statements. Native acceptance is pending.
+Both guest suites pass 414/414, full tooling 290/290, runner30 and probes10 pass. All 82 native entries pass build and static coverage; iteration driver4726/4726 static. All 225 C++ fixture results agree across hosts: 58 reported successes, 23 unchecked completions, 67 parse errors, 75 runtime errors and two reported failures. All 78 previously successful or unchecked files retain their outcomes. Logs: build/array-iteration-*.

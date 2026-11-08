@@ -70,7 +70,7 @@ after diagnostic path normalization. Reports:
 `build/legacy-suite-node-wYAtgS/report.json` and
 `build/legacy-suite-native-rmFt3P/report.json`.
 
-## Builtin follow-ups (TS-058–062)
+## Builtin follow-ups (TS-058–065)
 
 The selection remains 225 files with the same 15 exclusions. Both hosts agree on
 all complete results after diagnostic path normalization at every milestone.
@@ -82,12 +82,19 @@ all complete results after diagnostic path normalization at every milestone.
 | Object enumeration | 53 | 22 | 67 | 81 | 2 |
 | Array.at | 54 | 22 | 67 | 80 | 2 |
 | Array reduction | 55 | 22 | 67 | 79 | 2 |
+| Array shift/unshift | 56 | 22 | 67 | 78 | 2 |
+| Property descriptor reflection | 56 | 22 | 67 | 77 | 3 |
+| Public map/forEach | 58 | 23 | 67 | 75 | 2 |
 
 No previously successful or unchecked file regressed. Enumeration advances
 `object-keys-values-test.js` to its incorrect expectations that strings have no
 enumerable characters. Those two failure messages are retained; the engine and
 original fixture are not altered to inflate this diagnostic score.
 
-Latest reports: `build/legacy-suite-node-wdLrm4/report.json` and
-`build/legacy-suite-native-remDqa/report.json`. These marker-based outcomes remain
+Reflection lets the array range-error fixture finish and report missing public
+map behavior; public iteration then makes it succeed. The callback binding
+fixture also succeeds, and the debug callback fixture completes without checks.
+
+Latest reports: `build/legacy-suite-node-wFDKSX/report.json` and
+`build/legacy-suite-native-PrT30F/report.json`. These marker-based outcomes remain
 separate from semantic test assertions and test262 conformance admission.
