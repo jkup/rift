@@ -48,6 +48,16 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["template-basic","let n=3; console.log(`hello ${n+1}`,`empty:${''}`,`${true}:${null}:${undefined}`);",0,"","hello 4 empty: true:null:undefined\n"],
+    ["template-nested","console.log(`a${`b${{x:3}.x}c`}d`);",0,"","ab3cd\n"],
+    ["template-order","let s=''; function v(n){s+=n;return {toString:function(){s+='s';return n;}};} console.log(`${v(1)}${v(2)}`,s);",0,"","12 1s2s\n"],
+    ["template-shortcircuit","let o={toString:function(){throw 7;}};let n=0;try{`${o}${n++}`;}catch(e){console.log(e,n);}",0,"","7 0\n"],
+    ["template-source","function f(){return `a${1}b`;} console.log(f.toString(),f());",0,"","function f(){return `a${1}b`;} a1b\n"],
+    ["template-directive","`use strict`; function f(){return this===undefined;} console.log(f());",0,"","false\n"],
+    ["template-cooked","let t=`\\x41\\u0042\\u{1F600}`;console.log(t.length,t.charCodeAt(0),t.charCodeAt(2),t.charCodeAt(3));",0,"","4 65 55357 56832\n"],
+    ["template-linebreaks","let t=`a\r\nb\rc`;console.log(t.length,t.charCodeAt(1),t.charCodeAt(3));",0,"","5 10 10\n"],
+    ["template-malformed","console.log('must not run'); `\\1`;",2,"parse SyntaxError: invalid template escape",""],
+    ["template-tagged","function tag(){} tag`x`;",2,"parse SyntaxError: tagged templates are unsupported",""],
     ["lastindex-start","let a=[1,2,1]; console.log(a.lastIndexOf(1),a.lastIndexOf(1,undefined),a.lastIndexOf(1,NaN),a.lastIndexOf(1,1),a.lastIndexOf(1,-1),a.lastIndexOf(1,-2),a.lastIndexOf(1,Infinity),a.lastIndexOf(1,-Infinity));",0,"","2 0 0 0 2 0 2 -1\n"],
     ["lastindex-fraction","let a=[1,2,1]; console.log(a.lastIndexOf(1,1.9),a.lastIndexOf(1,-1.9),a.lastIndexOf(1,-4),a.lastIndexOf(1,-0),1/a.lastIndexOf(1,-0));",0,"","0 2 -1 0 Infinity\n"],
     ["lastindex-equality","let x={}; let a=[NaN,0,x,'1',1]; console.log(a.lastIndexOf(NaN),a.lastIndexOf(-0),a.lastIndexOf(x),a.lastIndexOf({}),a.lastIndexOf('1'));",0,"","-1 1 2 -1 3\n"],
@@ -409,6 +419,7 @@ executeDriver("own-property-predicates", { stdout: "Own-property predicates pass
 executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
 executeDriver("object-descriptor-reflection", { stdout: "Property descriptor reflection passed\n" });
+executeDriver("script-templates", { stdout: "Script templates passed\n" });
 executeDriver("array-iteration", { stdout: "Public array iteration passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });

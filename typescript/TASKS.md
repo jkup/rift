@@ -3110,3 +3110,9 @@ Add find, findIndex, findLast and findLastIndex with shared directional traversa
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `d7054c16`, implementation `c6617e57`. Both guest suites pass 433/433, full tooling 290/290, runner30 and probes10 pass. All 82 native entries pass build and static coverage; search driver4906/4906 static. All 225 C++ fixture results agree across hosts: 59 reported successes, 23 unchecked completions, 67 parse errors, 74 runtime errors and two reported failures. The phase-two array fixture now succeeds; all 81 previously successful or unchecked files retain their outcomes. Logs: build/array-lastindex-*.
 
 Add generic lastIndexOf with omitted versus explicit fromIndex, length-before-index conversion, empty early return, strict equality, descending Has/Get traversal, inherited elements, abrupt completions and resource bounds. Validate both hosts and the fixed C++ fixture selection.
+
+## TS-068 — Ordinary template literals
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `cff1c7f9`.
+
+Add Script template literals and interpolation with nested lexical context, cooked text, ordered string conversion, source locations, declaration traversal and resource bounds. Tagged templates remain unsupported. Preserve legacy parser behavior and historical evidence; validate both hosts and fixed C++ fixtures.

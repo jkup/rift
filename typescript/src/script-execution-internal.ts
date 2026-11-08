@@ -857,6 +857,19 @@ class ExecutionEngine {
                 return normal({ kind: "string", value });
             }
             case "this": return normal(receiver);
+            case "template": {
+                let text = expr.strings[0];
+                for (let i = 0; i < expr.expressions.length; i++) {
+                    const value = this.#eval(expr.expressions[i], env, receiver);
+                    if (value.type !== "normal") return value;
+                    const primitive = toPrimitive(value.value, "string", this.context, expr.expressions[i].loc);
+                    if (primitive.type === "throw") return primitive;
+                    const converted = toString(primitive.value, expr.expressions[i].loc, this.context.realm);
+                    if (converted.type === "throw") return converted;
+                    text = stringConcat(stringConcat(text, converted.value), expr.strings[i + 1]);
+                }
+                return normal({ kind: "string", value: text });
+            }
             case "identifier": case "member": {
                 const ref = this.#reference(expr, env, receiver);
                 return ref.type === "abrupt" ? ref.completion : this.#get(ref.reference, expr.loc);

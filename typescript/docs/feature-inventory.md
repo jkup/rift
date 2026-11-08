@@ -69,6 +69,9 @@ see [predicate searches](array-find.md).
 
 TS-067 adds generic `lastIndexOf`; see [reverse value search](array-search.md).
 
+TS-068 adds ordinary Script template literals; see [templates](template-literals.md).
+Tagged templates remain unsupported.
+
 TS-063 adds generic `shift` and `unshift`, preserving holes and partial mutations;
 see [array mutation](array-mutation.md).
 

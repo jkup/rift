@@ -12,6 +12,7 @@ export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: st
 export type Expr =
     | { kind: "array"; loc: Location; elements: (Expr | null)[] }
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
+    | { kind: "template"; loc: Location; strings: string[]; expressions: Expr[] }
     | { kind: "identifier"; loc: Location; name: string }
     | { kind: "this"; loc: Location }
     | { kind: "unary"; loc: Location; op: string; operand: Expr }

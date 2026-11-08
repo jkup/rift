@@ -1,6 +1,6 @@
 import type { Rejection } from "./outcomes.js";
 import type { Diagnostic, Location } from "./syntax.js";
-export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number };
+export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly cooked?: string };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function letter(c: string): boolean {
@@ -9,13 +9,14 @@ function letter(c: string): boolean {
 function lineTerminator(c: string): boolean {
     return c === "\r" || c === "\n" || c === "\u2028" || c === "\u2029";
 }
-export function lex(source: string, allowUpdate = false): LexResult {
+export function lex(source: string, script = false): LexResult {
     const tokens: Token[] = [];
     let i = 0;
     let line = 1;
     let column = 1;
     let error: Diagnostic | null = null;
     let rejection: Rejection | null = null;
+    const templates: number[] = [];
     function advance(): string {
         const c = source.charAt(i++);
         if (lineTerminator(c)) {
@@ -31,11 +32,77 @@ export function lex(source: string, allowUpdate = false): LexResult {
         rejection = reason;
         error = { phase: "parse", name: "SyntaxError", message, loc };
     }
+    function hexDigits(count: number, braced: boolean, loc: Location): number {
+        let value = 0, digits = 0;
+        while (i < source.length && (braced ? source.charAt(i) !== "}" : digits < count)) {
+            const code = source.charCodeAt(i);
+            const digit = code >= 48 && code <= 57 ? code - 48 : code >= 65 && code <= 70 ? code - 55 : code >= 97 && code <= 102 ? code - 87 : -1;
+            if (digit < 0) break;
+            advance(); digits++; value = value * 16 + digit;
+            if (value > 0x10ffff) break;
+        }
+        if (digits === 0 || value > 0x10ffff || (braced ? source.charAt(i) !== "}" : digits !== count)) {
+            fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "invalid template escape", loc);
+            return 0;
+        }
+        if (braced) advance();
+        return value;
+    }
+    function templatePart(initial: boolean, start: number, loc: Location): void {
+        advance();
+        let cooked = "";
+        while (i < source.length && error === null) {
+            let unit = advance();
+            if (unit === "`") {
+                tokens.push({ kind: initial ? "template" : "template-tail", text: source.slice(start, i), cooked, loc, start, end: i });
+                if (!initial) templates.pop();
+                return;
+            }
+            if (unit === "$" && source.charAt(i) === "{") {
+                advance();
+                tokens.push({ kind: initial ? "template-head" : "template-middle", text: source.slice(start, i), cooked, loc, start, end: i });
+                if (initial) templates.push(0);
+                if (templates.length > 128) fail({ kind: "resource-limit", guardCode: "parse-depth", count: templates.length, limit: 128 }, "syntax nesting limit exceeded", loc);
+                return;
+            }
+            if (unit === "\\") {
+                if (i === source.length) break;
+                unit = advance();
+                if (lineTerminator(unit)) {
+                    if (unit === "\r" && source.charAt(i) === "\n") advance();
+                    continue;
+                }
+                if (unit === "n") unit = "\n";
+                else if (unit === "r") unit = "\r";
+                else if (unit === "t") unit = "\t";
+                else if (unit === "b") unit = "\b";
+                else if (unit === "f") unit = "\f";
+                else if (unit === "v") unit = "\v";
+                else if (unit === "0" && !digit(source.charAt(i))) unit = "\0";
+                else if (digit(unit)) fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "invalid template escape", loc);
+                else if (unit === "x" || unit === "u") {
+                    const braced = unit === "u" && source.charAt(i) === "{";
+                    if (braced) advance();
+                    const value = hexDigits(unit === "x" ? 2 : 4, braced, loc);
+                    unit = value <= 0xffff ? String.fromCharCode(value) : String.fromCharCode(0xd800 + Math.floor((value - 0x10000) / 1024), 0xdc00 + (value - 0x10000) % 1024);
+                }
+            } else if (unit === "\r") {
+                if (source.charAt(i) === "\n") advance();
+                unit = "\n";
+            }
+            cooked += unit;
+        }
+        if (error === null) fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-string-end" }, "unterminated template", loc);
+    }
     if (source.length > 100000) fail({ kind: "resource-limit", guardCode: "source-units", count: source.length, limit: 100000 }, "source exceeds 100000 UTF-16 units", { line, column });
     while (i < source.length && error === null) {
         const c = source.charAt(i);
         const loc = { line, column };
         const start = i;
+        if (script && (c === "`" || (c === "}" && templates.length > 0 && templates[templates.length - 1] === 0))) {
+            templatePart(c === "`", start, loc);
+            continue;
+        }
         if (c === " " || c === "\t" || lineTerminator(c)) {
             advance();
             continue;
@@ -104,7 +171,7 @@ export function lex(source: string, allowUpdate = false): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
-        } else if (allowUpdate && (two === "++" || two === "--")) {
+        } else if (script && (two === "++" || two === "--")) {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });
@@ -115,9 +182,11 @@ export function lex(source: string, allowUpdate = false): LexResult {
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });
         } else if ("{}();,.:?[]+-*/%<>=!".includes(c)) {
+            if (templates.length > 0 && (c === "{" || c === "}")) templates[templates.length - 1] += c === "{" ? 1 : -1;
             tokens.push({ kind: "punct", text: advance(), loc, start, end: i });
         } else { fail({ kind: "unsupported-syntax", capabilityCode: "lex.character" }, "unsupported character: " + c, loc); }
     }
+    if (error === null && templates.length > 0) fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-string-end" }, "unterminated template substitution", { line, column });
     tokens.push({ kind: "eof", text: "<eof>", loc: { line, column }, start: i, end: i });
     return { tokens, error, rejection };
 }

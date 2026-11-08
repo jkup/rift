@@ -455,6 +455,10 @@ class Parser {
         const lastPrimaryToken = this.tokens[this.index - 1];
         let updated = lastPrimaryToken.kind === "punct" && (lastPrimaryToken.text === "++" || lastPrimaryToken.text === "--");
         while (this.error === null) {
+            if (this.current().kind === "template" || this.current().kind === "template-head") {
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "tagged templates are unsupported", this.current().loc);
+                break;
+            }
             if (!updated && this.eat(".")) {
                 const key = this.take();
                 if (key.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
@@ -573,6 +577,24 @@ class Parser {
             return literal;
         }
         if (t.kind === "string") return { kind: "literal", loc, value: t.text };
+        if (t.kind === "template" || t.kind === "template-head") {
+            if (t.cooked === undefined) throw new Error("template token lacks cooked text");
+            const strings = [t.cooked], expressions: Expr[] = [];
+            if (t.kind === "template-head") {
+                while (this.error === null) {
+                    expressions.push(this.expression(0));
+                    const part = this.take();
+                    if (part.kind !== "template-middle" && part.kind !== "template-tail") {
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "expected template continuation", part.loc);
+                        break;
+                    }
+                    if (part.cooked === undefined) throw new Error("template token lacks cooked text");
+                    strings.push(part.cooked);
+                    if (part.kind === "template-tail") break;
+                }
+            }
+            return { kind: "template", loc, strings, expressions };
+        }
         if (t.text === "true" || t.text === "false") return { kind: "literal", loc, value: t.text === "true" };
         if (t.text === "null") return { kind: "literal", loc, value: null };
         if (t.text === "this") return { kind: "this", loc };

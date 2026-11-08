@@ -10,6 +10,8 @@ ordinary `new` calls work alongside the existing subset. Scripts are non-strict
 unless they contain a `"use strict"` directive. Unsupported syntax, including
 `const`, arrows and automatic semicolon insertion, still fails explicitly.
 Object literals accept identifier, string and numeric property names.
+Ordinary template literals support nested interpolation and cooked text; see
+[template behavior](docs/template-literals.md). Tagged templates remain unsupported.
 See the [current development roadmap](docs/development-roadmap.md).
 
 Array methods include `join`, `toString`, `push`, `pop`, `shift`, `unshift`, `reverse`, `at`, `indexOf`,
