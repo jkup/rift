@@ -65,7 +65,7 @@ export function registerStringConversions(realm: Realm): void {
     });
 }
 
-function stringReceiver(receiver: Value, context: OperationContext, loc: Location): StringCompletion {
+export function stringReceiver(receiver: Value, context: OperationContext, loc: Location): StringCompletion {
     if (receiver.kind === "null" || receiver.kind === "undefined") {
         return languageFailure(context.realm, "TypeError", "cannot convert null or undefined to object", loc);
     }

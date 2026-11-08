@@ -1,19 +1,11 @@
-import { GuestObject, normal, UNDEFINED, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
+import { iteratorResult } from "./iterator-result.js";
+import { GuestObject, UNDEFINED, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
 import { lengthOfArrayLike } from "./array-like.js";
 import { numberToString } from "./conversion.js";
 import { arrayFromList } from "./array-create.js";
 import type { Location } from "./syntax.js";
 
 export type ArrayIterationKind = "key" | "value" | "key+value";
-
-function iteratorResult(value: Value, done: boolean, context: OperationContext, loc: Location): ValueCompletion {
-    const allocation = context.tick(loc);
-    if (allocation.type === "throw") return allocation;
-    const result = context.realm.createObject();
-    result.bootstrapDefine("value", { value, writable: true, enumerable: true, configurable: true });
-    result.bootstrapDefine("done", { value: { kind: "boolean", value: done }, writable: true, enumerable: true, configurable: true });
-    return normal({ kind: "object", object: result });
-}
 
 export class GuestArrayIterator extends GuestObject {
     private nextIndex = 0;

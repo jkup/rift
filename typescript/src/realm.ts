@@ -1,5 +1,6 @@
 import { registerArrayFlat } from "./builtins/array-flat.js";
 import { registerArrayIterators } from "./builtins/array-iterator.js";
+import { registerStringIterator } from "./builtins/string-iterator.js";
 import { registerStringSplit } from "./builtins/string-split.js";
 import { registerArraySort, registerArrayToSorted } from "./builtins/array-sort.js";
 import { registerArraySlice, registerArrayConcat, registerArrayToReversed, registerArrayToSpliced, registerArrayWith } from "./builtins/array-copy.js";
@@ -48,6 +49,7 @@ export class Realm {
     readonly arrayPrototype: GuestArray;
     readonly iteratorPrototype: GuestObject;
     readonly arrayIteratorPrototype: GuestObject;
+    readonly stringIteratorPrototype: GuestObject;
     readonly arrayConstructor: GuestObject | null = null;
     readonly booleanPrototype: GuestBoolean;
     readonly numberPrototype: GuestNumber;
@@ -75,6 +77,7 @@ export class Realm {
         this.arrayPrototype = new GuestArray(this.objectPrototype);
         this.iteratorPrototype = new GuestObject(this.objectPrototype);
         this.arrayIteratorPrototype = new GuestObject(this.iteratorPrototype);
+        this.stringIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.booleanPrototype = new GuestBoolean(false, this.objectPrototype);
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);
@@ -135,6 +138,7 @@ export class Realm {
             registerSymbol(this);
             registerScriptArrayIteration(this);
             registerArrayIterators(this);
+            registerStringIterator(this);
         }
     }
     get global(): Environment {

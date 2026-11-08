@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
 import { GuestObject, GuestError, UNDEFINED, normal, sameValue, unsupportedFailure, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type ConstructBuiltin, type PropertyKey } from "../src/runtime.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "../src/primitive-objects.js";
-import { GuestSymbol, wellKnownToPrimitive, wellKnownSpecies } from "../src/symbols.js";
+import { GuestSymbol, wellKnownToPrimitive, wellKnownSpecies, wellKnownIterator } from "../src/symbols.js";
 import { prepareBoundedScript, type ExecutableScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript, type ScriptSession } from "../src/script-execution.js";
 import type { Location } from "../src/syntax.js";
@@ -24,7 +24,7 @@ function idle(s:ScriptSession):void{const v=s.inspect();check(v.active===null&&v
 function run(text:string,r:Realm,s:ScriptSession=createScriptSession(),id:string=inputId):ValueCompletion{const v=evaluateScript(s,prepare(text,r,id));idle(s);return v.completion;}
 function seed(s:ScriptSession,r:Realm,n:number):void{if(n){run(";;;;;;;",r,s,"seed");check(s.inspect().steps===7,"seed");}}
 function error(v:ValueCompletion,r:Realm):void{check(v.type==="throw"&&v.origin.kind==="engine-diagnostic"&&v.diagnostic.name==="TypeError"&&v.value.kind==="object"&&v.value.object instanceof GuestError&&v.value.object.getPrototypeOf()===r.getErrorPrototype("TypeError"),"genuine TypeError Realm");}
-function keys(o:GuestObject,expected:string[]):void{const got=o.ownPropertyKeys();check(got.length===expected.length&&got.every((k,i)=>k===expected[i]),"exact keys "+expected.join(","));}
+function keys(o:GuestObject,expected:PropertyKey[]):void{const got=o.ownPropertyKeys();check(got.length===expected.length&&got.every((k,i)=>k===expected[i]),"exact keys");}
 function descriptor(o:GuestObject,k:string,v:Value,w:boolean,e:boolean,c:boolean):void{const d=o.getOwnProperty(k);check(d!==undefined&&d.kind==="data"&&sameValue(d.value,v)&&d.writable===w&&d.enumerable===e&&d.configurable===c,"descriptor "+k);}
 function box(v:ValueCompletion,r:Realm,text:string):GuestStringObject{const o=object(value(v));check(o instanceof GuestStringObject&&o.stringData===text&&o.getPrototypeOf()===r.stringPrototype,"StringData/prototype");if(!(o instanceof GuestStringObject))throw new Error("box");return o;}
 function hostFault(f:()=>void):void{let caught=false;try{f();}catch(e){if(!(e instanceof Error))throw e;caught=true;}check(caught,"host denial");}
@@ -457,7 +457,7 @@ for(const cross of [false,true]){
 }
 for(const r of [fresh(),fresh()]){
  keys(r.globalObject,scriptGlobalKeys);
- keys(r.stringPrototype,["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"]);keys(r.objectPrototype,["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf"]);
+ keys(r.stringPrototype,["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor",wellKnownIterator]);keys(r.objectPrototype,["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf"]);
  for(const name of ["String","Object"]){const cv=own(r.globalObject,name),ctor=object(cv),proto=name==="String"?r.stringPrototype:r.objectPrototype;
   descriptor(r.globalObject,name,cv,true,false,true);descriptor(ctor,"name",str(name),false,false,true);descriptor(ctor,"length",num(1),false,false,true);descriptor(ctor,"prototype",obj(proto),false,false,false);descriptor(proto,"constructor",cv,true,false,true);keys(ctor,name==="Object"?objectConstructorKeys():["name","length","prototype"]);check(ctor.getPrototypeOf()===r.functionPrototype,"F10 Function link");
   const c=ctor.callable,k=ctor.constructorSlot;check(c!==null&&c.kind==="builtin"&&c.realm===r&&k!==null&&k.kind==="builtin-constructor"&&k.realm===r&&k.callable===c,"F10 exact guard graph");

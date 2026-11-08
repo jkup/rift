@@ -58,7 +58,7 @@ function inventory(a: Realm): void {
         ["toString","valueOf","constructor"],
         ["toString","valueOf","toFixed","toExponential","toPrecision","constructor"],
         ["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
-            "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"],
+            "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor",wellKnownIterator],
         ["toString","valueOf","constructor","description",wellKnownToPrimitive,wellKnownToStringTag],
     ];
     for(let i=0;i<prototypes.length;i++) {
@@ -116,6 +116,7 @@ function inventory(a: Realm): void {
     desc(a.arrayPrototype,"length",n(0),true,false,false); desc(a.stringPrototype,"length",n(0),false,false,false);
     method(a, a.arrayPrototype, wellKnownIterator, "values", 0);
     check(sameValue(own(a.arrayPrototype, wellKnownIterator), own(a.arrayPrototype, "values")), "Array iterator alias");
+    method(a, a.stringPrototype, wellKnownIterator, "[Symbol.iterator]", 0);
     method(a,a.symbolPrototype,wellKnownToPrimitive,"[Symbol.toPrimitive]",1,false); desc(a.symbolPrototype,wellKnownToStringTag,{kind:"string",value:"Symbol"},false,false,true);
     check(!a.objectPrototype.setPrototypeOf(a.createObject()).value,"immutable object root");
     check(!a.booleanPrototype.booleanData && a.numberPrototype.numberData===0 && a.stringPrototype.stringData==="","primitive slots");
