@@ -1,3 +1,4 @@
+import { toPrimitive } from "../primitive-conversion.js";
 import { createArrayWithLength } from "../array-create.js";
 import { GuestArray } from "../array-object.js";
 import { wellKnownIsConcatSpreadable } from "../symbols.js";
@@ -6,7 +7,7 @@ import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
 import { lengthOfArrayLike, toClampedIndex } from "../array-like.js";
 import { createDefaultSpeciesArray } from "../array-species.js";
-import { numberToString } from "../conversion.js";
+import { numberToString, toIntegerOrInfinity } from "../conversion.js";
 import { languageFailure, normal, truthy, UNDEFINED, type Value, type GuestObject, type OperationContext, type ValueCompletion, type InternalBooleanCompletion } from "../runtime.js";
 
 export function registerArraySlice(realm: Realm): void {
@@ -126,6 +127,83 @@ export function registerArrayToReversed(realm: Realm): void {
             const value = boxed.value.internalGet(numberToString(length.value - index - 1), { kind: "object", object: boxed.value }, context, loc);
             if (value.type === "throw") return value;
             const defined = defineElement(created.value, index, value.value, context, loc);
+            if (defined.type === "throw") return defined;
+        }
+        return normal({ kind: "object", object: created.value });
+    });
+}
+
+export function registerArrayToSpliced(realm: Realm): void {
+    realm.registerBuiltin(realm.arrayPrototype, "toSpliced", 2, (receiver, args, context, loc): ValueCompletion => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        const start = toClampedIndex(args.length === 0 ? UNDEFINED : args[0], length.value, context, loc);
+        if (start.type === "throw") return start;
+        let skipCount = args.length === 0 ? 0 : length.value - start.value;
+        if (args.length > 1) {
+            const primitive = toPrimitive(args[1], "number", context, loc);
+            if (primitive.type === "throw") return primitive;
+            const count = toIntegerOrInfinity(primitive.value, loc, context.realm);
+            if (count.type === "throw") return count;
+            skipCount = Math.min(Math.max(count.value, 0), length.value - start.value);
+        }
+        const insertCount = Math.max(args.length - 2, 0);
+        const nextLength = length.value - skipCount + insertCount;
+        if (nextLength > 9007199254740991)
+            return languageFailure(context.realm, "TypeError", "toSpliced exceeds maximum array-like length", loc);
+        const created = createArrayWithLength(nextLength, context, loc);
+        if (created.type === "throw") return created;
+        for (let index = 0; index < nextLength; index++) {
+            const step = context.tick(loc);
+            if (step.type === "throw") return step;
+            let value: Value;
+            if (index >= start.value && index < start.value + insertCount) {
+                value = args[index - start.value + 2];
+            } else {
+                const sourceIndex = index < start.value ? index : index - insertCount + skipCount;
+                const read = boxed.value.internalGet(numberToString(sourceIndex), { kind: "object", object: boxed.value }, context, loc);
+                if (read.type === "throw") return read;
+                value = read.value;
+            }
+            const defined = defineElement(created.value, index, value, context, loc);
+            if (defined.type === "throw") return defined;
+        }
+        return normal({ kind: "object", object: created.value });
+    });
+}
+
+export function registerArrayWith(realm: Realm): void {
+    realm.registerBuiltin(realm.arrayPrototype, "with", 2, (receiver, args, context, loc): ValueCompletion => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
+        if (primitive.type === "throw") return primitive;
+        const relative = toIntegerOrInfinity(primitive.value, loc, context.realm);
+        if (relative.type === "throw") return relative;
+        const selected = relative.value < 0 ? length.value + relative.value : relative.value;
+        if (selected < 0 || selected >= length.value)
+            return languageFailure(context.realm, "RangeError", "with index is out of range", loc);
+        const created = createArrayWithLength(length.value, context, loc);
+        if (created.type === "throw") return created;
+        const replacement = args.length < 2 ? UNDEFINED : args[1];
+        for (let index = 0; index < length.value; index++) {
+            const step = context.tick(loc);
+            if (step.type === "throw") return step;
+            let value = replacement;
+            if (index !== selected) {
+                const read = boxed.value.internalGet(numberToString(index), { kind: "object", object: boxed.value }, context, loc);
+                if (read.type === "throw") return read;
+                value = read.value;
+            }
+            const defined = defineElement(created.value, index, value, context, loc);
             if (defined.type === "throw") return defined;
         }
         return normal({ kind: "object", object: created.value });

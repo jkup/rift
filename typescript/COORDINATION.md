@@ -1750,3 +1750,5 @@ The owner authorized continued development and frequent commits. Defer the prove
 2026-11-08 TS-088 claimed by Codex catch-up chat. Scope: toReversed/toSorted and semantic regressions; source freeze during native validation.
 
 2026-11-08 TS-088 accepted, implementation 4ee14fc1. Both guest suites pass 579/579 with expanded copy assertions, full tooling 290/290, runner 31/31 and all ten probes pass. All 92 native entries pass build and static coverage; array-copy driver 5869/5869 static. All 225 complete fixture results agree: 78 reported successes, 27 unchecked completions, 53 parse errors, 66 runtime errors and one reported failure. All 105 previously completed outcomes remain. The copy-method fixture passes seven checks and reaches toSpliced. Reports: build/legacy-suite-node-Rd4QTx/report.json and build/legacy-suite-native-0dPlKT/report.json. Logs: build/array-copy-value-*. Next: toSpliced and with.
+
+2026-11-08 TS-089 claimed by Codex catch-up chat. Scope: toSpliced/with, dense copy regressions and metadata. Preserve source freeze through validation.

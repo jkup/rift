@@ -219,4 +219,51 @@ for (const source of [
     const result = run(fresh(),source);
     check(result.type === "normal" && sameValue(result.value,{kind:"boolean",value:true}),"copy semantic case: " + source);
 }
+
+
+for (const name of ["toSpliced", "with"]) {
+    const realm = fresh(), target = new Observed(realm.objectPrototype);
+    data(target,"length",4); data(target,"0",7); data(realm.objectPrototype,"3",11);
+    target.bootstrapDefine("1",{get:obj(realm.createBuiltin("poison",0,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("skipped index read");}))});
+    realm.defineScriptGlobal("target",{value:obj(target)});
+    const call = name === "toSpliced" ? "(target,1,1,9)" : "(target,1,9)";
+    const result = array(run(realm,"[]."+name+".call"+call+";"));
+    check(target.trace === "get:length;get:0;get:2;get:3;",name + " skips replaced/deleted getters without Has");
+    check(sameValue(own(result,"0"),num(7)) && sameValue(own(result,"1"),num(9)) && own(result,"2").kind === "undefined" && sameValue(own(result,"3"),num(11)),name + " dense data and inherited values");
+    check(target.getOwnProperty("1")?.kind === "accessor" && target.getOwnProperty("2") === undefined,name + " source preserved");
+    check(legacy.arrayPrototype.getOwnProperty(name) === undefined,name + " Script only");
+    const owner = fresh(), caller = fresh(), input = caller.createArray();
+    data(input,"0",7);
+    input.bootstrapDefine("constructor",{get:obj(caller.createBuiltin("poison",0,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("copy species read");}))});
+    caller.defineScriptGlobal("input",{value:obj(input)}); caller.defineScriptGlobal("copy",{value:own(owner.arrayPrototype,name)});
+    const foreign = array(run(caller,name === "with" ? "copy.call(input,0,9);" : "copy.call(input,0,1,9);"));
+    check(foreign.getPrototypeOf() === owner.arrayPrototype && foreign !== input && sameValue(own(foreign,"0"),num(9)),name + " foreign Realm and no species");
+    const huge = new Observed(realm.objectPrototype); data(huge,"length",4294967296);
+    realm.defineScriptGlobal("huge",{value:obj(huge)});
+    const range = run(realm,"[]."+name+".call(huge,0,0);");
+    check(range.type === "throw" && range.diagnostic.name === "RangeError" && huge.trace === "get:length;",name + " allocation rejects before reads");
+    const bounded = run(fresh(),"[]."+name+".call({length:4294967295},0,0);",40);
+    check(bounded.type === "throw" && bounded.origin.kind === "resource-limit",name + " bounded dense copy");
+}
+for (const source of [
+    "let a=[1,2,3];a.toSpliced().join()==='1,2,3'&&a.toSpliced(undefined).length===0&&a.toSpliced(1).join()==='1'&&a.toSpliced(1,undefined,9).join()==='1,9,2,3'&&a.join()==='1,2,3';",
+    "let a=[1,2,3];a.toSpliced(-2,1,8,9).join()==='1,8,9,3'&&a.toSpliced(-Infinity,Infinity,7).join()==='7'&&a.toSpliced(Infinity,1,8).join()==='1,2,3,8';",
+    "let a=[1,2,3];a.with(-1,9).join()==='1,2,9'&&a.with(1.9,8).join()==='1,8,3'&&a.with(NaN,7).join()==='7,2,3'&&a.with().hasOwnProperty('0')&&a.with()[0]===undefined&&a.join()==='1,2,3';",
+    "let n=0;try{[].with(0);}catch(e){if(e.name==='RangeError')n++;}try{[1].with(-2);}catch(e){if(e.name==='RangeError')n++;}try{[1].with(Infinity);}catch(e){if(e.name==='RangeError')n++;}try{[1].with(-Infinity);}catch(e){if(e.name==='RangeError')n++;}n===4;",
+    "[].toSpliced.call('abc',1,1,'x').join('')==='axc'&&[].with.call('abc',-1,'x').join('')==='abx';",
+    "let log='';let a={0:1,1:2,2:3};Object.defineProperty(a,'length',{get:function(){log+='L';return 3;}});let b=[].toSpliced.call(a,{valueOf:function(){log+='S';a[2]=9;return 1;}},{valueOf:function(){log+='D';return 1;}},8);log==='LSD'&&b.join()==='1,8,9';",
+    "let a={length:3,0:1,1:2,2:3};let b=[].with.call(a,{valueOf:function(){a.length=0;a[2]=9;return 1;}},8);b.join()==='1,8,9';",
+    "let a={length:9007199254740991};[].toSpliced.call(a,0,Infinity).length===0;",
+    "let marker={};let ok=false;try{[1].with({valueOf:function(){throw marker;}},0);}catch(e){ok=e===marker;}ok;",
+    "let marker={};try{[1].toSpliced(0,{valueOf:function(){throw marker;}});}catch(e){e===marker;}",
+    "let a=[1];Object.defineProperty(a,'0',{writable:false});a.with(0,2)[0]===2&&a.toSpliced(0,1,3)[0]===3&&a[0]===1;"
+]) {
+    const result = run(fresh(),source);
+    check(result.type === "normal" && sameValue(result.value,{kind:"boolean",value:true}),"replace copy semantic case: " + source);
+}
+{
+    const realm = fresh(), target = new Observed(realm.objectPrototype);data(target,"length",9007199254740991);realm.defineScriptGlobal("target",{value:obj(target)});
+    const overflow = run(realm,"[].toSpliced.call(target,0,0,1);");
+    check(overflow.type === "throw" && overflow.diagnostic.name === "TypeError" && target.trace === "get:length;","safe length overflow before allocation or reads");
+}
 console.log("Array copy passed");

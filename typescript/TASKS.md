@@ -3237,3 +3237,9 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 8e6016ad, impleme
 
 Implement toReversed and toSorted with dense copies, ordered reads, no species lookup, builtin Realm allocation and bounded work. Validate both hosts and existing gates.
 
+## TS-089 — Array spliced and replaced copies
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 0676c82e.
+
+Add toSpliced and with using dense own data copies, ordered index/count coercion, omitted argument distinctions, skipped getters, builtin Realm allocation and bounded loops. Validate both hosts, fixed fixtures and native/tooling gates.
+
