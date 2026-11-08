@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {writeFileSync} from 'node:fs';
-import {here,read,observe,results} from '../../docs/validation/ts-035d8/driver.mjs';
+import {createDispatchDriver} from './test-support/dispatch-driver.mjs';
+const {output,read,observe,results}=createDispatchDriver('script-lexical-statement-dispatch','test/fixtures/script-lexical-statement-dispatch','docs/validation/ts-035d8-p');
 import {parseScriptDriverResult} from './script-driver-result.mjs';
 import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
 test('D8 actual both-host producer and serializer bytes match all 320 frozen wire literals',()=>{
@@ -12,5 +13,5 @@ test('D8 actual both-host producer and serializer bytes match all 320 frozen wir
  assert.equal(bytes,row.ascii,row.id);assert.deepEqual(JSON.parse(bytes),row.child,row.id);assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),b),row.child);
  const child=JSON.parse(bytes),envelope=structuredClone(row.envelope);for(const key of ['operation','source','testBodyEvaluated','harnessValidated','preflightId','completedUnits','inspection'])envelope.evidence[key]=child[key];envelope.observation=child.result;
  assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),b),row.envelope);assert.deepEqual(assertScriptContext(envelope,row.context,b),row.envelope);
- }assert.equal(results.length,320);}finally{writeFileSync(here+'/wire-results.json',JSON.stringify(results,null,2)+'\n');}
+ }assert.equal(results.length,320);}finally{writeFileSync(output+'/wire-results.json',JSON.stringify(results,null,2)+'\n');}
 });

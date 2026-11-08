@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { readFile, writeFile, mkdir, copyFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { readFile, writeFile, mkdir, copyFile, mkdtemp } from 'node:fs/promises';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { join, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { readScriptCapabilities, reconstructScriptDebts } from './script-capabilities.mjs';
+import { scratchRoot } from './test-support/environment.mjs';
 
 const evidence = new URL('../../docs/validation/ts-035e1/', import.meta.url);
 const literals = JSON.parse(await readFile(new URL('../ts-035e-p/e1-literals.json', evidence)));
@@ -71,10 +73,10 @@ test('actual fixed reader has fresh frozen results and rejects explicit undefine
   await assert.rejects(readScriptCapabilities(undefined), exactError('script-capabilities/arguments'));
 });
 
-// Copy the actual module and unchanged input dependency into new evidence only.
+// Copy the actual module and unchanged input dependency into isolated scratch.
 // Fresh child imports exercise IO and module initialization without public hooks.
 test('isolated actual reader bytes, IO failures, fresh imports and private mapping witness', async () => {
-  const root = new URL('isolated/', evidence);
+  const root = pathToFileURL(await mkdtemp(join(scratchRoot, 'capabilities-')) + sep);
   const moduleDir = new URL('tools/test262/', root);
   await mkdir(moduleDir, { recursive: true });
   await mkdir(new URL('fixtures/assistance/test262-starter-corpus/', root), { recursive: true });

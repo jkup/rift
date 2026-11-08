@@ -2945,7 +2945,7 @@ Implement generic Array.prototype.push/pop using existing property operations. C
 
 ## TS-040 — Keep remaining test reports out of historical evidence
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `185c2cfb`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `185c2cfb`. Full tooling281/281 passes; the final capability scratch change passes133/133 focused checks. Script integration passes all4 groups (172 controls across both hosts). Failed-launch diagnostics also stay in scratch. No historical content changes.
 
 Redirect the remaining parser-dispatch reports, capability isolation files and Script observation integration report to the shared scratch directory. Replace active historical dispatch helpers without changing their literal inputs. Preserve assertions and historical fixtures, inspect other test writes, and update the tooling entry point to distinguish current commands from its original TS-031A description. Validate the affected suites and check that historical files remain unchanged.
 

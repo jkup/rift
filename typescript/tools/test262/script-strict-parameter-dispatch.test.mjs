@@ -1,3 +1,5 @@
+import {join} from 'node:path';
+import {scratchRoot} from './test-support/environment.mjs';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import test from 'node:test';
@@ -14,7 +16,7 @@ test('D4 real serializer bytes: both hosts, two runtime inputs, all three closed
   const args=['fixtures/'+sourceDir+'/'+input+'.js',input,'wire',action,role,rule,diagnostic,row.binding.requestSha256];
   const r=spawnSync(lane==='node'?process.execPath:'build/native/script-strict-parameter-dispatch.exe',lane==='node'?['build/node/test/script-strict-parameter-dispatch.js',...args]:args,{encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024});
   results.push({id:row.id,productionEmission:row.productionEmission,status:r.status,signal:r.signal,stdout:r.stdout,stderr:r.stderr});
-  writeFileSync('docs/validation/ts-035d4/wire-results.json',JSON.stringify(results,null,2)+'\n');
+  writeFileSync(join(scratchRoot,'script-strict-parameter-wire-results.json'),JSON.stringify(results,null,2)+'\n');
   assert.equal(r.status,0,row.id+': '+r.stderr);assert.equal(r.signal,null);
   const bytes=r.stdout.trim();assert.ok(!/[^\x00-\x7f]/.test(bytes));
   assert.equal(bytes,row.ascii,row.id+' exact ASCII serialization');
@@ -31,7 +33,7 @@ test('D4 real serializer bytes: both hosts, two runtime inputs, all three closed
 });
 test('D4 frozen mutations, closed schema, v1 exclusion and independent transport priority',()=>{
  const r=spawnSync(process.execPath,['docs/validation/ts-035d4-p/wire.mjs','--future'],{encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024});
- writeFileSync('docs/validation/ts-035d4/wire-mutations.log',r.stdout+r.stderr);assert.equal(r.status,0,r.stderr);
+ writeFileSync(join(scratchRoot,'script-strict-parameter-wire-mutations.log'),r.stdout+r.stderr);assert.equal(r.status,0,r.stderr);
 });
 
 test('D4 fixed source authority across variant and expected-negative metadata on both hosts',()=>{
@@ -43,7 +45,7 @@ test('D4 fixed source authority across variant and expected-negative metadata on
   const args=['fixtures/script-strict-parameter-dispatch/'+input+'.js',input,'wire',action,role,rule,diagnostic,binding.requestSha256];
   const r=spawnSync(lane==='node'?process.execPath:'build/native/script-strict-parameter-dispatch.exe',lane==='node'?['build/node/test/script-strict-parameter-dispatch.js',...args]:args,{encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024});
   results.push({id:row.id,variant,status:r.status,signal:r.signal,error:r.error?.message??null,stdout:r.stdout,stderr:r.stderr});
-  writeFileSync('docs/validation/ts-035d4/metadata-results.json',JSON.stringify(results,null,2)+'\n');
+  writeFileSync(join(scratchRoot,'script-strict-parameter-metadata-results.json'),JSON.stringify(results,null,2)+'\n');
   assert.equal(r.status,0,r.stderr);assert.equal(r.signal,null);
   const expected={...row.child,requestSha256:binding.requestSha256},child=JSON.parse(r.stdout);
   // Metadata cannot change producer semantics or manufacture preflight authority.

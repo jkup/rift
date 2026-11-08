@@ -1,4 +1,38 @@
-# Host-only test262 adapter, TS-031A
+# test262 tooling
+
+Build the Node and native drivers first; see the [project README](../../README.md#validation)
+for the pinned toolchain and preparation steps. From `typescript/`:
+
+```sh
+node tools/test262/prepare-corpus.mjs
+npm run test:test262
+node tools/test262/script-observation.integration.mjs
+```
+
+Preparation verifies 33 test files and three harness files from the pinned
+revision. An existing checkout can be supplied for offline preparation.
+`RIFT_TEST262_ROOT` overrides the default `build/test262-corpus` location;
+`RIFT_TEST_OUTPUT_ROOT` overrides shared test scratch output under
+`build/test262-tests`. Some older tests have separate directories under `build/`.
+Historical fixtures remain read-only inputs. The tooling source is explicitly
+allowed by `.gitignore`; downloaded corpus files remain ignored.
+
+The ordinary test suite covers planning, decoding, classification, execution
+controls and failure handling. The Script integration command launches the real
+drivers on registered controls in both hosts. These are regression and
+observation results, not a test262 conformance score. A published corpus
+conformance baseline remains roadmap work.
+
+Start with `input.mjs` for pinned input validation, `script-plan.mjs` for Script
+selection, `script-observe.mjs` for observation launches, and `script-result.mjs`
+for result decoding. `test-support/` contains live test helpers; files under
+`docs/validation/` record earlier milestones.
+
+## Original host-only adapter, TS-031A
+
+The following describes the original v1 adapter (`plan.mjs`, `result.mjs` and
+`ledger.mjs`). Its implementation limits are historical and do not describe all
+current Script tools in this directory.
 
 This directory verifies and plans the frozen CL-004 selection. It cannot launch
 Rift, Node guest execution, a native driver, or any other engine. Every production
@@ -25,7 +59,8 @@ as the headline and retain subsequent attempts without enlarging the denominator
 
 The external root must contain exact bytes from the full revision, including
 `harness/assert.js`, `harness/sta.js`, and, for the async control,
-`harness/doneprintHandle.js`. No corpus is downloaded by these tools or checked in.
+`harness/doneprintHandle.js`. The v1 planner does not download corpus files;
+use the preparation command above.
 The revision argument is checked against the pin; each selected test and needed
 harness file is then independently attested by its frozen Git blob identity. This
 does not trust a checkout's line-ending conversion or an unverified revision label.
@@ -38,8 +73,8 @@ containment and planning. `result.mjs` owns the closed v1 envelope and pure
 classifier. `ledger.mjs` preserves selection/attempts and reports per lane.
 `plan.mjs` supplies host-only `not-run` records with unavailable engine facts null.
 `fixtures.mjs` contains synthetic test data and is not imported by production.
-The repository's broad `test262/` ignore rule also matches this tooling; initial
-files are explicitly tracked without changing the root ignore policy.
+The original files were explicitly tracked under the broad `test262/` ignore
+rule. The current policy allows this tooling directory explicitly.
 
 The v1 envelope groups the design's fields into `identity`, `inputs`, `evidence`,
 `observation`, and, only in conformance mode, `classification`. All records are

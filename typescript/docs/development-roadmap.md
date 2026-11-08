@@ -40,6 +40,13 @@ expanded mutation driver covers ordering, accessors, partial failures and budget
 See [array mutation](array-mutation.md). The shared Realm change preserves the
 existing behavior checks while updating exact prototype inventories.
 
+TS-040 completes another report-write audit: parser-dispatch reports, failure
+diagnostics, capability isolation copies and Script integration artifacts now
+use scratch paths. Full tooling passes 281/281; the final capability-path fix
+passes 133 focused checks. Script integration passes all four groups, covering
+172 controls in both hosts. No historical content changed. TS-041 puts a current
+Script architecture guide ahead of the historical foundation notes.
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Repair the normal test command | `script-execution-inputs.test.mjs`, introduced in `7f887deb`, requires positional arguments absent under `node --test`. Add no-argument setup without dropping its assertions; retain the explicit invocation. |

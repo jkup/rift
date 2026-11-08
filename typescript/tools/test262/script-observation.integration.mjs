@@ -1,3 +1,4 @@
+import {scratchRoot} from './test-support/environment.mjs';
 import test, {after} from 'node:test';
 import {acquireScriptTestLease} from '../../docs/validation/ts-035c/test-lease.mjs';
 const releaseLease=await acquireScriptTestLease();after(releaseLease);
@@ -7,7 +8,7 @@ import {resolve,join} from 'node:path';
 import {prepareScriptObservation,launchScriptObservation} from './script-observe.mjs';
 import {inspectScriptEnvelope,parseScriptEnvelope} from './script-result.mjs';
 const registry=JSON.parse(await readFile('test/fixtures/script-observation/controls.json'));
-const archiveRoot=resolve('build/script-observations-final');await mkdir(archiveRoot,{recursive:true});
+const archiveRoot=join(scratchRoot,'script-observations');await mkdir(archiveRoot,{recursive:true});
 const lanes=process.argv[2]==='node'?['node']:['node','native'];
 const results=[];
 for(const lane of lanes)for(const input of registry.inputs)test('actual '+lane+'/'+input+' frozen registered controls',async()=>{
@@ -15,7 +16,7 @@ for(const lane of lanes)for(const input of registry.inputs)test('actual '+lane+'
   const limits=row.id==='loop'?{steps:Number.MAX_SAFE_INTEGER,wallMs:750}:{};
   const plan=await prepareScriptObservation({mode:'script-observation',control:row.id,input,lane,variant:row.variant,action:row.action,archiveRoot,limits});
   const result=await launchScriptObservation(plan);results.push({lane,input,id:row.id,directory:result.directory,state:result.state,record:result.record??null});
-  await writeFile('docs/validation/ts-035c/integration-latest.json',JSON.stringify(results,null,2)+'\n');
+  await writeFile(join(scratchRoot,'script-observation-integration.json'),JSON.stringify(results,null,2)+'\n');
   const label=lane+'/'+input+'/'+row.id+' '+result.directory;
   assert.equal(result.state,row.expectedState??'complete',label);const r=result.record??result.failure.record,e=row.expected;
   if(row.expectedState){assert.equal(r.observation.kind,e.kind,label);assert.equal(r.evidence.operation.phase,e.phase,label);assert.equal(r.evidence.stage,'harness',label);assert.equal(r.evidence.harnessValidated,false,label);assert.equal(r.evidence.preflightId,null,label);assert.equal(plan.binding.preflightId,null,label);continue;}

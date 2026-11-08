@@ -1,3 +1,5 @@
+import {join} from 'node:path';
+import {scratchRoot} from './test-support/environment.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync,writeFileSync} from 'node:fs';
@@ -12,7 +14,7 @@ test('D2 real serializer bytes: both hosts, two runtime inputs, both closed code
   const args=['fixtures/script-strict-rule-dispatch/'+input+'.js',input,'wire',action,role,rule,diagnostic,row.binding.requestSha256];
   const r=spawnSync(lane==='node'?process.execPath:'build/native/script-strict-rule-dispatch.exe',lane==='node'?['build/node/test/script-strict-rule-dispatch.js',...args]:args,{encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024});
   results.push({id:row.id,productionEmission:row.productionEmission,status:r.status,signal:r.signal,stdout:r.stdout,stderr:r.stderr});
-  writeFileSync('docs/validation/ts-035d2/wire-results.json',JSON.stringify(results,null,2)+'\n');
+  writeFileSync(join(scratchRoot,'script-strict-rule-wire-results.json'),JSON.stringify(results,null,2)+'\n');
   assert.equal(r.status,0,row.id+': '+r.stderr);assert.equal(r.signal,null);
   const bytes=r.stdout.trim();assert.ok(!/[^\x00-\x7f]/.test(bytes));
   assert.equal(bytes,row.ascii,row.id+' exact ASCII serialization');
@@ -29,5 +31,5 @@ test('D2 real serializer bytes: both hosts, two runtime inputs, both closed code
 });
 test('D2 frozen mutations, closed schema, v1 exclusion and independent transport priority',()=>{
  const r=spawnSync(process.execPath,['docs/validation/ts-035d2-p/verify-future-wire.mjs'],{encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024});
- writeFileSync('docs/validation/ts-035d2/wire-mutations.log',r.stdout+r.stderr);assert.equal(r.status,0,r.stderr);
+ writeFileSync(join(scratchRoot,'script-strict-rule-wire-mutations.log'),r.stdout+r.stderr);assert.equal(r.status,0,r.stderr);
 });

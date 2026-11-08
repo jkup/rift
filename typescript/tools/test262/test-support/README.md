@@ -10,3 +10,7 @@ The checkpoint runner passes absolute paths to its subprocesses so a temporary
 change of working directory cannot select a different corpus. `RIFT_TEST262_ROOT`
 selects the corpus; `RIFT_TEST_OUTPUT_ROOT` selects scratch output. The defaults
 are ignored directories under `typescript/build/`.
+
+`dispatch-driver.mjs` runs assignment-target and lexical-statement wire checks
+against the current drivers. It retains their historical literal inputs while
+writing runtime sources, reports and failure diagnostics to shared scratch.
