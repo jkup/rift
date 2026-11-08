@@ -378,6 +378,17 @@ primitives, including lone surrogates and embedded NUL. RegExp objects remain
 deferred, but ordinary objects with Symbol.match already require correct rejection
 and getter ordering; future RegExp integration must add the branded fallback.
 
+### Map insertion follow-up
+
+After search predicates, implement getOrInsert/getOrInsertComputed using the
+existing keyed storage. Validate callback callability before looking up even an
+existing key; distinguish an absent key from a stored undefined value. The
+computed callback receives canonical positive zero and an undefined receiver.
+Recheck storage after callbacks because they can insert, delete or clear entries;
+preserve their mutations on abrupt completion. Test poisoned public get/has/set
+methods, live iterator order and cross-Realm errors. The fixed upsert fixture also
+tests WeakMap, so Map support alone will advance it without completing the file.
+
 ### TS-112 checkpoint
 
 Both guest suites pass 598/598 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 111 native entries pass fresh static-only builds and separate coverage gates; Map iterator driver 6845/6845 static. Live mutation/exhaustion, captured-Realm results/pairs, next-Realm completion and bounded deleted-node traversal pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure. test-object-new-methods.js now completes with 32 true results and no recognized check markers; all 121 previous completions remain. Reports: build/legacy-suite-node-11V5PM/report.json and build/legacy-suite-native-Av1AdA/report.json. Logs: build/map-iterator-*.
@@ -385,3 +396,7 @@ Both guest suites pass 598/598 with no skips, tooling 290/290, runner 31/31 and 
 ### TS-113 checkpoint
 
 Both guest suites pass 599/599 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 112 native entries pass fresh static-only builds and separate coverage gates; grouping driver 6900/6900 static. Key coercion/identity, iterator cleanup, intrinsic allocation, foreign Realms and resource bounds pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure; all 122 previous completions remain. The Map grouping fixture now reaches error-message checks requiring String.includes. Reports: build/legacy-suite-node-0qOr2p/report.json and build/legacy-suite-native-kI1g7m/report.json. Logs: build/group-by-*.
+
+### TS-114 checkpoint
+
+Both guest suites pass 600/600 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 113 native entries pass fresh static-only builds and separate coverage gates; String search driver 6937/6937 static. Twelve explicit native primitive probe cases pass with 7/7 static statements. Ordered Symbol.match/coercion, UTF-16 boundaries, foreign errors and resource limits pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 39 unchecked completions, 53 parse errors, 48 runtime errors and one reported failure. map-groupby.js now completes; all 122 prior completions remain. Reports: build/legacy-suite-node-SLZdsf/report.json and build/legacy-suite-native-RiHdcu/report.json. Logs: build/string-search-*.

@@ -3389,6 +3389,6 @@ Implement shared GroupBy traversal and Object.groupBy/Map.groupBy, preserving ca
 
 ## TS-114 — String search predicates
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base ea825192.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base ea825192, implementation 56a0edbd. Both guest suites pass 600/600 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 113 native entries pass fresh static-only builds and separate coverage gates; String search driver 6937/6937 static. Twelve explicit native primitive probe cases pass with 7/7 static statements. Ordered Symbol.match/coercion, UTF-16 boundaries, foreign errors and resource limits pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 39 unchecked completions, 53 parse errors, 48 runtime errors and one reported failure. map-groupby.js now completes; all 122 prior completions remain. Reports: build/legacy-suite-node-SLZdsf/report.json and build/legacy-suite-native-RiHdcu/report.json. Logs: build/string-search-*.
 
 Implement Script String includes/startsWith/endsWith with ordered receiver, Symbol.match, search and position conversion. Probe native UTF-16 primitives; preserve generic receivers, errors, metadata, Realm ownership and resource bounds. Own search builtins/string helpers, Realm registration, current inventories, dedicated semantic driver/manifests and scope docs. RegExp construction and other string methods remain separate.
