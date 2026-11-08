@@ -3131,6 +3131,6 @@ Add Script do-while parsing and reuse loop completion handling. Preserve body-fi
 
 ## TS-071 — Math constants and unary methods
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `b65f9549`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `b65f9549`, implementation `de619090`. Both guest suites pass 470/470, full tooling290/290, runner30 and probes10 pass. All 85 native entries pass build and static coverage in one invocation; Math driver4969/4969 static. All 225 C++ fixture results agree across hosts: 66 reported successes, 30 unchecked completions, 55 parse errors, 72 runtime errors and two reported failures. Two files gain reported success and the builtin-descriptor fixture completes without checks; all 93 previously successful or unchecked files retain their outcomes. Reports: build/legacy-suite-node-xzbF9i/report.json and build/legacy-suite-native-wdyedR/report.json. Logs: build/math-unary-*.
 
 Add a per-Realm Script Math object, eight standard constants and abs/ceil/floor/round/sign/trunc. Preserve numeric coercion, NaN/infinity/signed-zero behavior, descriptors, nonconstructibility and resource limits. Validate both hosts and fixed C++ fixtures; keep other Math methods separate.
