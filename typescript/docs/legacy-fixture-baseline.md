@@ -113,3 +113,13 @@ checks, and two reach missing Math or String.indexOf behavior. All 82 previously
 successful or unchecked fixtures retain their outcomes. Reports:
 `build/legacy-suite-node-1Oxs6c/report.json` and
 `build/legacy-suite-native-Yqeh0o/report.json`.
+
+## String search and do-while (TS-069–070)
+
+String.indexOf advances the comprehensive template fixture to reported success.
+Do-while support makes all three loop fixtures succeed. Both hosts agree on all
+225 complete outcomes: 64 reported successes, 29 unchecked completions, 55 parse
+errors, 75 runtime errors and two reported failures. All 90 previously successful
+or unchecked fixtures retain their outcomes. Reports:
+`build/legacy-suite-node-HDK6EP/report.json` and
+`build/legacy-suite-native-bNLeoL/report.json`.

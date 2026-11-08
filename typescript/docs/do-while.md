@@ -16,4 +16,4 @@ This follows [DoWhileLoopEvaluation](https://tc39.es/ecma262/multipage/ecmascrip
 The C++ parser and control-flow evaluator were consulted. Tests cover condition
 order, abrupt completions, completion values, nested loops, closures and var
 hoisting, source retention, invalid contexts and resource limits.
-Native acceptance pending.
+Both guest suites pass 461/461, full tooling290/290, runner30 and probes10 pass. All 84 native entries pass build and static coverage in the restarted invocation; loop driver4904/4904 static. Initial Node457/461 caught a stale do rejection and an unnecessarily reworded legacy host guard; 54d954fc restores the diagnostic and checks break outside the completed loop instead. The initial native run was interrupted; original logs are retained. All 225 C++ fixture results agree across hosts: 64 reported successes, 29 unchecked completions, 55 parse errors, 75 runtime errors and two reported failures. All three do-while fixtures succeed, and all 90 previously successful or unchecked files retain their outcomes. Logs: build/do-while-*.

@@ -33,6 +33,13 @@ reach runtime limitations (Math and String.prototype.indexOf). Tagged templates
 remain unsupported. These are first-failure counts, not predicted passes: each
 file may expose further unsupported behavior afterward.
 
+Inspect `const` as a binding-semantics task, not a parser alias for `let`:
+Script local and global lexical records currently admit mutable bindings only.
+Acceptance must cover TDZ, required initialization, immutable writes in both
+strict and non-strict code, declaration conflicts and cross-unit global state.
+The three fixtures first blocked on `const` also include destructuring and loop
+declarations, so enabling the keyword alone would not finish that group.
+
 ## Findings and next work
 
 Completed in this catch-up: ordinary input-test invocation, the five tracked report
@@ -82,7 +89,7 @@ declaration plans and 154 serializer records against accepted expectations.
 TS-048 brings the exact radix oracle into the ordinary tooling command, with
 14768 inputs per host and reports under `build/`.
 
-The 80 compiled test drivers now have identified execution routes: 65 through
+The 81 compiled test drivers now have identified execution routes: 66 through
 the guest runner, five through parser audits, three through inspection tests,
 four through dispatch tests, one through Script preflight tests, one through
 the radix oracle, and one through `npm run test:observations`. This accounts for
