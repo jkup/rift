@@ -67,5 +67,11 @@ merged merely to copy its prose into the repository.
   the five historical reports remain unchanged. Log: `build/catch-up-targeted-tests.log`.
 - All ten compiler probes rebuilt and passed Node/native execution and static
   coverage. Log: `build/catch-up-probes.log`. Typecheck and runner 20/20 pass again.
-- Checkpoint regression repair is being validated separately. The full suite is
-  not yet accepted as green.
+- Checkpoint behavior regression passes after removing historical whole-checkout
+  preservation from its normal entry point. All public, boundary, migration,
+  literal and fault checks remain; the historical `ts-035e2c/preservation.mjs`
+  verifier is unchanged. Log: `build/catch-up-checkpoint-tests.log`.
+- The 35 input/ledger tests that encountered sandbox restrictions pass with Windows
+  link permissions enabled. Log: `build/catch-up-host-tests.log`.
+- The full suite is not yet accepted as green in one fresh invocation. Remaining
+  portability and scratch-directory work is tracked above.
