@@ -61,6 +61,9 @@ TS-061 adds generic `Array.prototype.at`; see [relative indexing](array-at.md).
 
 TS-062 adds generic `reduce` and `reduceRight`; see [array reduction](array-reduction.md).
 
+TS-063 adds generic `shift` and `unshift`, preserving holes and partial mutations;
+see [array mutation](array-mutation.md).
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a

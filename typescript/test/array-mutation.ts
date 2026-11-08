@@ -1,5 +1,5 @@
 import { Realm } from "../src/realm.js";
-import { GuestObject, sameValue, type Value, type ValueCompletion, type OperationContext, type PropertyKey, type InternalBooleanCompletion } from "../src/runtime.js";
+import { GuestObject, normal, sameValue, type Value, type ValueCompletion, type OperationContext, type PropertyKey, type InternalBooleanCompletion } from "../src/runtime.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { Location } from "../src/syntax.js";
@@ -232,5 +232,109 @@ for (const key of ["length", "0", "1"]) {
         }
     }
     check(interrupted, "reverse checks budget between pairs");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 3); data(target, "0", 11); data(target, "2", 17);
+    result(run(realm, "[].shift.call(target);"), num(11));
+    check(target.trace === "get:length;get:0;has:1;delete:0;has:2;get:2;set:1;delete:2;set:length;", "shift hole movement order");
+    own(target, "1", 17); own(target, "length", 2);
+    check(target.getOwnProperty("0") === undefined && target.getOwnProperty("2") === undefined, "shift preserves holes and deletes last");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 3); data(target, "0", 11); data(target, "2", 17);
+    result(run(realm, "[].unshift.call(target,7,9);"), num(5));
+    check(target.trace === "get:length;has:2;get:2;set:4;has:1;delete:3;has:0;get:0;set:2;set:0;set:1;set:length;", "unshift backwards movement then argument order");
+    own(target, "0", 7); own(target, "1", 9); own(target, "2", 11); own(target, "4", 17); own(target, "length", 5);
+    check(target.getOwnProperty("3") === undefined, "unshift preserves holes");
+}
+for (const method of ["shift", "unshift"]) {
+    const { realm, target } = fixture();
+    data(target, "length", 0, false);
+    error(run(realm, "[]." + method + ".call(target);"));
+    check(target.trace === "get:length;set:length;", "empty front mutation still writes length strictly");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 3); data(realm.objectPrototype, "1", 13);
+    result(run(realm, "[].shift.call(target);"), {kind: "undefined"});
+    own(target, "0", 13); own(realm.objectPrototype, "1", 13);
+    check(target.getOwnProperty("1") === undefined, "shift deletes own destination without deleting inherited source");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 2); data(realm.objectPrototype, "1", 13);
+    result(run(realm, "[].unshift.call(target,7);"), num(3));
+    own(target, "2", 13); own(target, "0", 7); own(realm.objectPrototype, "1", 13);
+    check(target.getOwnProperty("1") === undefined, "unshift missing source deletes destination own property only");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 3); data(target, "0", 1); data(target, "1", 2, false); data(target, "2", 3);
+    error(run(realm, "[].shift.call(target);"));
+    own(target, "0", 2); own(target, "1", 2); own(target, "2", 3); own(target, "length", 3);
+    check(target.trace === "get:length;get:0;has:1;get:1;set:0;has:2;get:2;set:1;", "shift keeps writes before failure");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 2); data(target, "0", 1); data(target, "1", 2, false);
+    error(run(realm, "[].unshift.call(target,7);"));
+    own(target, "0", 1); own(target, "1", 2); own(target, "2", 2); own(target, "length", 2);
+    check(target.trace === "get:length;has:1;get:1;set:2;has:0;get:0;set:1;", "unshift preserves earlier backward move");
+}
+for (const method of ["shift", "unshift"]) {
+    const { realm, target } = fixture();
+    data(target, "length", 2);
+    data(target, method === "shift" ? "0" : "2", 9, true, false);
+    error(run(realm, "[]." + method + ".call(target,7);"));
+    check(target.trace === (method === "shift" ? "get:length;get:0;has:1;delete:0;" : "get:length;has:1;delete:2;"), "hole deletion failure stops mutation");
+    own(target, "length", 2);
+}
+for (const method of ["shift", "unshift"]) {
+    const { realm, target } = fixture();
+    data(target, "length", 1, false); data(target, "0", 5);
+    error(run(realm, "[]." + method + ".call(target,7);"));
+    own(target, "length", 1);
+    if (method === "shift") check(target.getOwnProperty("0") === undefined, "shift deletion survives length failure");
+    else { own(target, "0", 7); own(target, "1", 5); }
+    check(target.trace.endsWith("set:length;"), "length write is last");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 9007199254740991);
+    error(run(realm, "[].unshift.call(target,1);"));
+    check(target.trace === "get:length;", "unshift safe length overflow precedes movement");
+    target.trace = "";
+    result(run(realm, "[].unshift.call(target);"), num(9007199254740991));
+    check(target.trace === "get:length;set:length;", "zero arguments skip moving huge array-like");
+}
+{
+    const { realm, target } = fixture();
+    data(target, "length", 3); data(target, "0", 7); data(target, "1", 11);
+    target.bootstrapDefine("2", {get: obj(realm.createBuiltin("last", 0, (receiver, _args, _context, _loc): ValueCompletion => {
+        check(receiver.kind === "object" && receiver.object === target, "shift getter receiver");
+        data(target, "length", 0);
+        return normal(num(17));
+    })), configurable: true});
+    result(run(realm, "[].shift.call(target);"), num(7));
+    own(target, "0", 11); own(target, "1", 17); own(target, "length", 2);
+}
+for (const method of ["shift", "unshift"]) {
+    let interrupted = false, completed = false;
+    for (let steps = 1; steps < 40; steps++) {
+        const { realm, target } = fixture();
+        data(target, "length", 4); for (let i = 0; i < 4; i++) data(target, String(i), i + 10);
+        const prepared = prepareBoundedScript({id: "front-budget", text: "[]." + method + ".call(target,7);"}, realm);
+        if (prepared.kind !== "ready") throw new Error("front budget prepare");
+        const completion = evaluateScript(createScriptSession({maxSteps: steps, maxCalls: 64}), prepared.record).completion;
+        if (completion.type === "throw") {
+            check(completion.origin.kind === "resource-limit", "front mutation budget");
+            if (target.trace.includes(method === "shift" ? "set:0;" : "set:4;") && !target.trace.includes("set:length;")) {
+                own(target, "length", 4); interrupted = true;
+            }
+        } else completed = true;
+    }
+    check(interrupted && completed, "front mutation partial progress budget boundary");
 }
 console.log("array mutation passed");

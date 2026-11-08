@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["front-basic", "let a=[1,2,3]; console.log(a.shift(),a.join(','),a.unshift(7,9),a.join(','));", 0, "", "1 2,3 4 7,9,2,3\n"],
+    ["front-empty", "let a=[]; console.log(a.shift(),a.length,a.unshift(),a.unshift(7),a.shift(),a.length);", 0, "", "undefined 0 0 1 7 0\n"],
+    ["front-holes", "let a=[1,,3]; console.log(a.shift(),a.length,0 in a,1 in a); console.log(a.unshift(7),a.length,0 in a,1 in a,2 in a,a.join(','));", 0, "", "1 2 false true\n3 3 true false true 7,,3\n"],
+    ["front-generic", "let o={0:'a',1:'b',length:2.9}; console.log(Array.prototype.shift.call(o),o[0],o.length,1 in o); console.log(Array.prototype.unshift.call(o,'x','y'),o[0],o[1],o[2],o.length);", 0, "", "a b 1 false\n3 x y b 3\n"],
+    ["front-string-errors", "try{Array.prototype.shift.call('ab');}catch(e){console.log(e.name);} try{Array.prototype.unshift.call('');}catch(e){console.log(e.name);}", 0, "", "TypeError\nTypeError\n"],
+    ["front-nullish-errors", "try{Array.prototype.shift.call(null);}catch(e){console.log(e.name);} try{Array.prototype.unshift.call(undefined,1);}catch(e){console.log(e.name);}", 0, "", "TypeError\nTypeError\n"],
+    ["front-identity", "let o={}; let a=[o]; console.log(a.shift()===o,a.unshift(o),a[0]===o,a.unshift(),a[0]===o);", 0, "", "true 1 true 1 true\n"],
+    ["front-metadata", "console.log(Array.prototype.shift.name,Array.prototype.shift.length,Array.prototype.unshift.name,Array.prototype.unshift.length,Object.keys(Array.prototype).length);", 0, "", "shift 0 unshift 1 0\n"],
     ["reduce-basic", "function sum(a,b){return a+b;} console.log([1,2,3].reduce(sum),[1,2,3].reduce(sum,10),[1,2,3].reduceRight(sum),[1,2,3].reduceRight(sum,10));", 0, "", "6 16 6 16\n"],
     ["reduce-order", "function f(a,b,i){return a+i+':'+b+';';} console.log([1,2,3].reduce(f,''),[1,2,3].reduceRight(f,''));", 0, "", "0:1;1:2;2:3; 2:3;1:2;0:1;\n"],
     ["reduce-empty", "function f(){throw 'bad';} console.log([].reduce(f,42),[].reduceRight(f,undefined),[7].reduce(f),[8].reduceRight(f));", 0, "", "42 undefined 7 8\n"],

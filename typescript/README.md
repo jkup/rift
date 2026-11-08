@@ -12,7 +12,7 @@ unless they contain a `"use strict"` directive. Unsupported syntax, including
 Object literals accept identifier, string and numeric property names.
 See the [current development roadmap](docs/development-roadmap.md).
 
-Array methods include `join`, `toString`, `push`, `pop`, `reverse`, `at`, `indexOf`,
+Array methods include `join`, `toString`, `push`, `pop`, `shift`, `unshift`, `reverse`, `at`, `indexOf`,
 `includes`, `every`, `some`, `reduce` and `reduceRight`; see [mutation behavior](docs/array-mutation.md),
 [search behavior](docs/array-search.md) and [predicate iteration](docs/array-predicate.md)
 for scope and validation.

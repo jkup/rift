@@ -12,6 +12,16 @@ function deleteProperty(object: GuestObject, key: string, context: OperationCont
     return normal(UNDEFINED);
 }
 
+function moveProperty(object: GuestObject, from: string, to: string, context: OperationContext, loc: Location): ValueCompletion {
+    const present = object.internalHasProperty(from, loc);
+    if (present.type === "throw") return present;
+    if (!present.value) return deleteProperty(object, to, context, loc);
+    const value = object.internalGet(from, { kind: "object", object }, context, loc);
+    if (value.type === "throw") return value;
+    const written = object.set(to, value.value, context, loc);
+    return written.type === "throw" ? written : normal();
+}
+
 export function registerArrayMutators(realm: Realm): void {
     realm.registerBuiltin(realm.arrayPrototype, "push", 1, (receiver, args, context, loc) => {
         const boxed = toObject(receiver, context, loc);
@@ -55,6 +65,58 @@ export function registerArrayMutators(realm: Realm): void {
         if (deleted.type === "throw") return deleted;
         const written = boxed.value.set("length", { kind: "number", value: next }, context, loc);
         return written.type === "throw" ? written : element;
+    });
+    realm.registerBuiltin(realm.arrayPrototype, "shift", 0, (receiver, _args, context, loc) => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const object = boxed.value;
+        const length = lengthOfArrayLike(object, context, loc);
+        if (length.type === "throw") return length;
+        if (length.value === 0) {
+            const written = object.set("length", { kind: "number", value: 0 }, context, loc);
+            return written.type === "throw" ? written : normal();
+        }
+        const first = object.internalGet("0", { kind: "object", object }, context, loc);
+        if (first.type === "throw") return first;
+        for (let index = 1; index < length.value; index++) {
+            const step = context.tick(loc);
+            if (step.type === "throw") return step;
+            const moved = moveProperty(object, numberToString(index), numberToString(index - 1), context, loc);
+            if (moved.type === "throw") return moved;
+        }
+        const deleted = deleteProperty(object, numberToString(length.value - 1), context, loc);
+        if (deleted.type === "throw") return deleted;
+        const written = object.set("length", { kind: "number", value: length.value - 1 }, context, loc);
+        return written.type === "throw" ? written : first;
+    });
+    realm.registerBuiltin(realm.arrayPrototype, "unshift", 1, (receiver, args, context, loc) => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const object = boxed.value;
+        const length = lengthOfArrayLike(object, context, loc);
+        if (length.type === "throw") return length;
+        const next = length.value + args.length;
+        if (next > 9007199254740991) return languageFailure(context.realm, "TypeError", "unshift exceeds maximum array-like length", loc);
+        if (args.length > 0) {
+            for (let index = length.value; index > 0; index--) {
+                const step = context.tick(loc);
+                if (step.type === "throw") return step;
+                const moved = moveProperty(object, numberToString(index - 1), numberToString(index + args.length - 1), context, loc);
+                if (moved.type === "throw") return moved;
+            }
+            for (let index = 0; index < args.length; index++) {
+                const step = context.tick(loc);
+                if (step.type === "throw") return step;
+                const written = object.set(numberToString(index), args[index], context, loc);
+                if (written.type === "throw") return written;
+            }
+        }
+        const written = object.set("length", { kind: "number", value: next }, context, loc);
+        return written.type === "throw" ? written : normal({ kind: "number", value: next });
     });
     realm.registerBuiltin(realm.arrayPrototype, "reverse", 0, (receiver, _args, context, loc) => {
         const boxed = toObject(receiver, context, loc);

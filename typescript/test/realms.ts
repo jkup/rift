@@ -138,7 +138,7 @@ for (const realm of [r1, r2]) {
     checkGraph(o.getPrototypeOf() === null && f.getPrototypeOf() === o && ar.getPrototypeOf() === o, "G1 graph");
     checkGraph(o.callable === null && f.callable !== null && ar instanceof GuestArray, "G1 root kinds");
     checkGraph(f.callable !== null && f.callable.realm === realm, "R1 root owner");
-    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call,toString" && stringKeys(ar.ownPropertyKeys()).join(",") === "length,join,toString,push,pop,reverse,at,indexOf,includes,every,some,reduce,reduceRight", "G17 exact initial keys");
+    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call,toString" && stringKeys(ar.ownPropertyKeys()).join(",") === "length,join,toString,push,pop,shift,unshift,reverse,at,indexOf,includes,every,some,reduce,reduceRight", "G17 exact initial keys");
     for (const root of [o, f, ar]) {
         checkGraph(root.get("valueOf", hostContext, at) === o.get("valueOf", hostContext, at), "G17 inherited valueOf");
         checkGraph(root.get("join", hostContext, at).kind === (root === ar ? "object" : "undefined"), "G17 Array join only");
@@ -295,7 +295,7 @@ for (const realm of [boxA, boxB]) {
     }
     checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
     checkGraph(stringKeys(realm.booleanPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && stringKeys(realm.numberPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length,toString,valueOf,charAt,charCodeAt,slice", "M1 root keys");
-    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call,toString" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length,join,toString,push,pop,reverse,at,indexOf,includes,every,some,reduce,reduceRight", "W1 original root keys");
+    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call,toString" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length,join,toString,push,pop,shift,unshift,reverse,at,indexOf,includes,every,some,reduce,reduceRight", "W1 original root keys");
     for (const name of ["Object", "Boolean", "String"]) checkGraph(!realm.global.bindings.has(name), "W17 no new globals");
     const namespace = graphObject(graphBinding(realm, "Number"));
     checkGraph(namespace !== realm.numberPrototype && namespace.getPrototypeOf() === realm.objectPrototype && namespace.callable === null, "W1 Number namespace preserved");

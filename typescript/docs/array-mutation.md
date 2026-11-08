@@ -58,3 +58,26 @@ Validation: both guest suites pass 290/290, the full tooling suite passes
 290/290, and the 20 runner tests and ten compiler probes pass. All 73 native
 entries build with full static coverage; the expanded mutation driver has
 4368/4368 static statements. Logs are under `build/array-reverse-*`.
+
+## Shift and unshift (TS-063)
+
+`shift` reads the first element, moves later elements toward zero, deletes the
+last own property, and writes the new length. `unshift` moves elements backward
+before writing its arguments in order and updating length. Both are generic,
+capture length once, include inherited elements and preserve sparse holes through
+HasProperty/Get/Set/Delete operations. Writes and deletions are strict, including
+the length write for an empty shift or zero-argument unshift. Earlier mutations
+remain observable if a later operation fails or exhausts the step budget.
+
+Unshift checks the maximum safe array-like length before moving properties;
+zero arguments skip movement. The existing array storage enforces its separate
+array-length limit. Each movement and inserted argument charges the operation
+budget.
+
+The algorithms follow [shift](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.shift)
+and [unshift](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.unshift).
+The C++ `src/builtins/array/array_mutators.cpp` implementation was consulted.
+Its hole handling and skipped length writes for empty operations are not copied.
+Tests check exact operation order, holes, inherited values, readonly and fixed
+properties, partial failures, getter mutations, overflow and budget interruption.
+Native and regression acceptance is pending.

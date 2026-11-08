@@ -3080,3 +3080,9 @@ Add generic Array.prototype.at using existing length and integer conversions. Pr
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `9124dfc0`, implementation `ce639c5a`. Both guest suites pass 382/382, full tooling 290/290, runner30 and probes10 pass. All 80 native entries pass build and static coverage in one invocation; reduction driver4509/4509 static. All 225 C++ fixture results agree across hosts: 55 reported successes, 22 unchecked completions, 67 parse errors, 79 runtime errors and two reported failures. The empty-reduction fixture improves and all 76 previously completed files retain their outcomes. Logs: build/array-reduce-*.
 
 Add generic reduce and reduceRight with shared directional traversal. Preserve length-before-callback validation, missing versus explicit initial accumulator, inherited elements and holes, live mutation, callback tuple/receiver, abrupt completions and resource bounds. Validate both hosts, static coverage and the fixed C++ fixture selection.
+
+## TS-063 — Array front insertion and removal
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `5a6204d4`.
+
+Add generic shift and unshift with ordered Has/Get/Set/Delete operations, inherited elements, sparse holes, strict length writes, partial mutation and safe-length bounds. Extend mutation controls and CLI cases; validate both hosts, static coverage and the fixed C++ selection without copying its hole or empty-operation shortcuts.
