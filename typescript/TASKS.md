@@ -2918,3 +2918,15 @@ Status: bounded inert correction complete; stopped actual/root/second before ame
 Handoff: three defects corrected with actual fake-child adapter lifecycle tests, independent per-fd finalization and bounded inventory.271synthetic controls119+24+90+38 pass; source/input/fulloracles/ten-env/tool/5s+5s unchanged. Exact source transformations, eleven bound rows, explicit prefix+sentinel/unknownremainder amendment and strict unexpected-startup-cache stop policy frozen. Fixedroot absent; no real child/API/diagnostic/PowerShell/helper/compiler/recorder/linker. Preserve13854baseline/rejected97e6d662/alloldseals/failed observation. Amendments require review; no readiness/execution or provenance authority.
 
 Coordinator acceptance (2026-11-07): corrected inert Unicode controller01b69251 accepted actual/finalsecond/root75938exit0/13854baseline/271controls/allseals. Accepted bounded prefix8192+one overflow byte (remainder unknown) and strict inventory10 entries/6 dirs/4 files/depth3/perfile8192/aggregate32768; unexpected cache entries stop unread. Diagnostic remains unauthorized; next exact readiness DESIGN only.
+
+## TS-036 — Restore a usable development loop
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `ec63ebee`. Fixes: `6109b868`, `e1b142e8`, `11c9365b`. Preserve the pre-existing Unicode readiness proposal and companion-roadmap edits.
+
+Review recent changes and PR #82, repair ordinary test invocation and tracked-evidence writes, and record remaining blockers in `docs/development-roadmap.md`. Retain all assertions and historical evidence. No conformance or native freshness claim follows from running old binaries. Next engine milestone: expose the existing Script evaluator through the CLI with explicit behavior migrations and both-host validation.
+
+## TS-037 — Expose Script execution through the CLI
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; implementation `e88fc9d7`. Node/native guest suites 222/222 each; fresh CLI static coverage 3996/3996.
+
+Use the existing Script preparation/session API from the CLI. Cover loops, constructors, catch, strict/sloppy receivers, rejection before effects and existing diagnostics. Migrate legacy CLI expectations explicitly; preserve host tests and the legacy observation path until their separate migration. Require Node and fresh native CLI validation with static coverage. Do not delete the legacy engine in this slice.

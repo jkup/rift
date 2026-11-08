@@ -84,5 +84,11 @@ merged merely to copy its prose into the repository.
   current CLI's old hash despite `currentSourceVerified: false`. Keep the complete
   historical descriptor oracle and assert no build authority, rather than requiring
   current files to equal old source. The focused descriptor test passes.
-- The full suite is not yet accepted as green in one fresh invocation. Remaining
+- Combined tooling run completed: 279/280 passed, zero skips; the only failure was
+  the old source-snapshot assertion fixed afterward in `11c9365b`. Its focused
+  rerun passed. Thus all 280 checks are accounted for, but no claim is made of a
+  single all-green full invocation after that last fix. Log:
+  `build/catch-up-full-test262.log`.
+- Generated checkpoint directories were moved to
+  `build/catch-up-checkpoint-artifacts/`, with a relocation map. Remaining
   portability and scratch-directory work is tracked above.
