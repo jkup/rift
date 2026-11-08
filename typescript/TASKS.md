@@ -3197,6 +3197,6 @@ Recognize explicit titled passed/failed totals and Passed/Failed fraction summar
 
 ## TS-082 — Generic Array splice
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base `c67aa831`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `c67aa831`, implementation `542f3a88`, audit correction `8cc81784`. Both guest suites pass541/541, full tooling290/290, runner31 and probes10 pass. All89 native entries pass build and static coverage; mutation driver5608/5608 and iteration driver5274/5274 static. Initial tooling289/290 exposed a stale closed capability audit; the explicit splice addition passes the focused test and a fresh full run. All225 complete fixture results agree across hosts:71 reported successes,27 unchecked completions,53 parse errors,71 runtime errors and3 reported failures. Integer-overflow safety reports6/6 and its simple companion completes; all96 previously completed outcomes remain. Reports: build/legacy-suite-node-JEzsiy/report.json and build/legacy-suite-native-iggMZR/report.json. Logs: build/splice-*.
 
 Implement Script Array.prototype.splice with ordered coercion, sparse deleted arrays, inherited elements, strict directional moves, partial mutation failures and bounded loops. Share the existing default-species allocation with map; custom construction remains explicit unsupported behavior. Validate both hosts, fixed fixtures, static gates and tooling before acceptance.

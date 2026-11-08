@@ -40,25 +40,23 @@ strict and non-strict code, declaration conflicts and cross-unit global state.
 The three fixtures first blocked on `const` also include destructuring and loop
 declarations, so enabling the keyword alone would not finish that group.
 
-TS-078 checkpoint: both guest suites pass524/524, tooling290/290, and all89
-native entries pass static compilation and coverage. Fixed C++ fixtures report
-67 successes,30 unchecked completions,53 parse errors,73 runtime errors and two
-reported failures, with all225 complete outcomes agreeing across hosts. The Math
-fixture now reaches clz32; implement clz32/fround, then hypot as bounded next
-steps. Recent catch-up acceptance remains on codex/test262-classification; it has
-not been pushed or merged during this loop.
+TS-082 checkpoint: Math coverage now includes clz32, fround and scaled hypot;
+the original Math fixture reports69 passes. Generic splice fixes the integer
+overflow safety fixture (6/6) and lets its simpler companion complete. Both hosts
+agree on all225 fixed fixture outcomes:71 reported successes,27 unchecked
+completions,53 parse errors,71 runtime errors and3 reported failures. All96
+previously successful or unchecked files retain their outcomes. Acceptance and
+full validation logs are tracked in TASKS.md and COORDINATION.md. Recent catch-up
+commits remain on codex/test262-classification, without a push or merge.
 
-TS-080 reporting review: the fixed baseline only recognizes PASS:/FAIL: and
-check/cross emoji markers. It misses explicit numeric summaries: the completed
-Math fixture prints69 passed/0 failed, while integer-overflow-safety prints5/6
-passed and1/6 failed (missing Array.splice), and string-validation prints4/6
-passed and2/6 failed (missing JSON.parse). TS-081 now recognizes these
-summary formats, preserving process-error precedence and historical reports.
-Fresh reports classify70 successes,26 unchecked completions,53 parse errors,72
-runtime errors and4 reported failures. All process outputs are unchanged; this
-is a reporting correction, not an engine gain. Inspect splice and JSON support
-as separate semantic tasks. Existing
-completed-without-checks totals must not be treated as passes.
+TS-081 corrected fixture reporting to recognize explicit passed/failed numeric
+summaries, retain process-error precedence and avoid double counting. Historical
+reports are preserved. Unchecked completions are not counted as successes.
+The remaining string-validation failure prints4/6 passed and2/6 failed because
+JSON.parse is absent. Next: strict bounded JSON parsing into guest values;
+callable reviver support needs its own explicit scope, not silent omission.
+Custom Array species construction likewise remains explicit unsupported behavior
+until builtin contexts have construction authority.
 
 ## Findings and next work
 
