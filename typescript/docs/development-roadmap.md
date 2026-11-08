@@ -58,8 +58,10 @@ now report 6/6 and 7/7 respectively. Both hosts agree on 73 reported successes,
 failure. The remaining reported failure is the preserved object-keys-values
 fixture with incorrect expectations for string enumeration. This does not imply
 only one engine gap: runtime and parse errors remain separate categories.
-Next: generic Array.slice, followed by other missing array operations reached by
-the fixed fixtures. Callable JSON revivers and custom Array species construction
+TS-084 accepts generic Array.slice with 556/556 guest tests on each host and all
+91 native entries passing static gates. The two fixtures first blocked on slice
+now reach concat; classifications are unchanged. Next: generic concat, then other
+missing array operations reached by the fixed fixtures. Callable JSON revivers and custom Array species construction
 remain explicit unsupported behavior; JSON.stringify remains absent.
 
 ## Findings and next work

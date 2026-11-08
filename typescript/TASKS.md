@@ -3209,6 +3209,6 @@ Add Script JSON.parse with exact JSON grammar, ordered string coercion, guest-ow
 
 ## TS-084 — Generic Array slice
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base `aa1a906f`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `aa1a906f`, implementation `d343ce12`. Both guest suites pass 556/556, full tooling 290/290, runner 31/31 and all ten probes pass. All 91 native entries pass build and static coverage in one invocation; array-copy driver 5482/5482 static. All 225 complete fixture results agree: 73 reported successes, 27 unchecked completions, 53 parse errors, 71 runtime errors and one reported failure. All 100 previously completed outcomes remain. The two fixtures first blocked on slice now reach concat; classifications are unchanged. Reports: build/legacy-suite-node-rrouUM/report.json and build/legacy-suite-native-8zIJ1R/report.json. Logs: build/array-slice-*.
 
 Add Script Array.prototype.slice with ordered start/end coercion, captured length, sparse and inherited copying, Realm-correct default species and bounded work. Reuse clamped-index conversion across array search, splice and slice. Keep custom species explicit; validate both hosts, native gates, tooling and fixed C++ fixtures.
