@@ -29,3 +29,9 @@ export function stringSlice(value: GuestString, start: number, end: number): Gue
 export function stringIndexOf(value: GuestString, search: GuestString, start: number): number {
     return value.indexOf(search, start);
 }
+
+export function stringLastIndexOf(value: GuestString, search: GuestString, start: number): number {
+    return value.lastIndexOf(search, start);
+}
+
+export function stringJoin(parts: GuestString[]): GuestString { return parts.join(""); }

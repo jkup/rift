@@ -144,25 +144,27 @@ for (const method of ["charAt", "charCodeAt", "slice"]) {
     result(run(realm, "indexOf", "needle,3"), num(-1));
     result(run(realm, "indexOf", "'',Infinity"), num(6));
 }
-for (const failure of ["", "R", "S", "P"]) {
-    const realm = new Realm((_line: string) => {}, "script");
-    const target = realm.createObject(), search = realm.createObject(), position = realm.createObject();
-    let trace = "";
-    for (const label of ["R", "S", "P"]) {
-        const hook = realm.createBuiltin(label, 1, (_receiver, args, context, loc): ValueCompletion => {
-            check(args[0].kind === "string" && args[0].value === (label === "P" ? "number" : "string"), "search coercion hints");
-            trace += label;
-            if (failure === label) return languageFailure(context.realm, "TypeError", "search " + label, loc);
-            return normal(label === "P" ? num(1) : str(label === "R" ? "abca" : "a"));
-        });
-        (label === "R" ? target : label === "S" ? search : position).bootstrapDefine(wellKnownToPrimitive, {value: obj(hook)});
-    }
-    define(realm, "target", obj(target)); define(realm, "search", obj(search)); define(realm, "position", obj(position));
-    const actual = run(realm, "indexOf", "search,position");
-    if (failure === "") { result(actual, num(3)); check(trace === "RSP", "search conversion order"); }
-    else {
-        check(actual.type === "throw" && actual.diagnostic.message === "search " + failure, "search conversion failure");
-        check(trace === (failure === "R" ? "R" : failure === "S" ? "RS" : "RSP"), "search stops at failed coercion");
+for (const method of ["indexOf", "lastIndexOf"]) {
+    for (const failure of ["", "R", "S", "P"]) {
+        const realm = new Realm((_line: string) => {}, "script");
+        const target = realm.createObject(), search = realm.createObject(), position = realm.createObject();
+        let trace = "";
+        for (const label of ["R", "S", "P"]) {
+            const hook = realm.createBuiltin(label, 1, (_receiver, args, context, loc): ValueCompletion => {
+                check(args[0].kind === "string" && args[0].value === (label === "P" ? "number" : "string"), "search coercion hints");
+                trace += label;
+                if (failure === label) return languageFailure(context.realm, "TypeError", "search " + label, loc);
+                return normal(label === "P" ? num(1) : str(label === "R" ? "abca" : "a"));
+            });
+            (label === "R" ? target : label === "S" ? search : position).bootstrapDefine(wellKnownToPrimitive, {value: obj(hook)});
+        }
+        define(realm, "target", obj(target)); define(realm, "search", obj(search)); define(realm, "position", obj(position));
+        const actual = run(realm, method, "search,position");
+        if (failure === "") { result(actual, num(method === "indexOf" ? 3 : 0)); check(trace === "RSP", "search conversion order"); }
+        else {
+            check(actual.type === "throw" && actual.diagnostic.message === "search " + failure, "search conversion failure");
+            check(trace === (failure === "R" ? "R" : failure === "S" ? "RS" : "RSP"), "search stops at failed coercion");
+        }
     }
 }
 {
@@ -176,5 +178,61 @@ for (const failure of ["", "R", "S", "P"]) {
         else { result(actual, num(3)); completed = true; }
     }
     check(interrupted && completed, "search budget boundary");
+}
+
+
+{
+    const realm = fixture(str("A😀A\ud800"));
+    define(realm,"needle",str("\ud83d")); result(run(realm,"lastIndexOf","needle"),num(1));
+    define(realm,"needle",str("\ude00")); result(run(realm,"lastIndexOf","needle"),num(2));
+    define(realm,"needle",str("\ud800")); result(run(realm,"lastIndexOf","needle"),num(4));
+    for (const position of ["undefined","NaN","Infinity","99","'bad'"]) result(run(realm,"lastIndexOf","'A',"+position),num(3));
+    for (const position of ["null","-Infinity","-1","1.9"]) result(run(realm,"lastIndexOf","'A',"+position),num(0));
+    result(run(realm,"lastIndexOf","''"),num(5));
+    result(run(realm,"lastIndexOf","'',-Infinity"),num(0));
+    result(run(realm,"lastIndexOf","'longer than input'"),num(-1));
+    result(run(fixture(str("undefined undefined")),"lastIndexOf"),num(10));
+    result(run(fixture(str("aaaa")),"lastIndexOf","'aa',2"),num(2));
+    result(run(fixture(str("")),"lastIndexOf","''"),num(0));
+}
+for (const method of ["concat", "lastIndexOf"]) {
+    const realm = fixture({kind:"null"});
+    const rejected = run(realm,method,"'x'");
+    check(rejected.type === "throw" && rejected.diagnostic.name === "TypeError",method + " null receiver");
+    const r = fixture(str("x"));define(r,"symbol",{kind:"symbol",value:wellKnownToPrimitive});
+    const symbol = run(r,method,"symbol");
+    check(symbol.type === "throw" && symbol.diagnostic.name === "TypeError",method + " symbol argument");
+}
+{
+    const realm = fixture(str("A\ud83d"));define(realm,"tail",str("\ude00\ud800"));
+    result(run(realm,"concat","tail,null,undefined,7,true"),str("A😀\ud800nullundefined7true"));
+    result(run(fixture(num(12)),"concat","3"),str("123"));
+    result(run(fixture(str("x")),"concat"),str("x"));
+}
+for (const failure of ["", "R", "A", "B"]) {
+    const realm = fixture(str("")), target = realm.createObject(), a = realm.createObject(), b = realm.createObject();
+    let trace = "";
+    for (const label of ["R", "A", "B"]) {
+        const hook = realm.createBuiltin(label,1,(_receiver,args,context,loc): ValueCompletion => {
+            check(args[0].kind === "string" && args[0].value === "string","concat string hint");
+            trace += label;
+            if (label === failure) return languageFailure(context.realm,"TypeError","concat "+label,loc);
+            return normal(str(label));
+        });
+        (label === "R" ? target : label === "A" ? a : b).bootstrapDefine(wellKnownToPrimitive,{value:obj(hook)});
+    }
+    define(realm,"target",obj(target));define(realm,"a",obj(a));define(realm,"b",obj(b));
+    const actual = run(realm,"concat","a,b");
+    if (failure === "") { result(actual,str("RAB"));check(trace === "RAB","concat order"); }
+    else check(actual.type === "throw" && actual.diagnostic.message === "concat "+failure && trace === (failure === "R" ? "R" : failure === "A" ? "RA" : "RAB"),"concat stops on failed conversion");
+}
+{
+    let interrupted = false, completed = false;
+    for (let steps = 0; steps < 40; steps++) {
+        const actual = run(fixture(str("x")),"concat","1,2,3,4,5",steps);
+        if (actual.type === "throw") {check(actual.origin.kind === "resource-limit","concat step classification");interrupted = true;}
+        else {result(actual,str("x12345"));completed = true;}
+    }
+    check(interrupted && completed,"concat bounded argument loop");
 }
 console.log("string methods passed");

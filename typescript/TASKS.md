@@ -3243,3 +3243,9 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 0676c82e, impleme
 
 Add toSpliced and with using dense own data copies, ordered index/count coercion, omitted argument distinctions, skipped getters, builtin Realm allocation and bounded loops. Validate both hosts, fixed fixtures and native/tooling gates.
 
+## TS-090 — String concatenation and reverse search
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 4b2a4b26.
+
+Implement String.concat and lastIndexOf with ordered coercion, UTF-16 semantics, NaN position handling, metadata and resource guards. Validate both hosts, native gates and fixed fixtures.
+
