@@ -3029,6 +3029,6 @@ Measure a two-worker native build against the completed 483-second sequential ru
 
 ## TS-054 — Basic string indexing and slicing
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `ad1953fc`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `ad1953fc`, implementation `75a0e359`. Node/native guest suites pass 317/317 each, full tooling 290/290, runner 27/27 and all ten compiler probes. All 75 native entries pass build and static coverage; the string driver covers 4340/4340 statements. Logs: build/string-methods-*. Initial tooling run passed 287/290; stale planner/checkpoint input identities were repaired in `68c3b018`, then all 290 passed in one invocation.
 
 Implement generic charAt, charCodeAt and slice with UTF-16 code-unit behavior, nullish rejection, receiver-before-position coercion, integer/infinity bounds and abrupt completion. Test surrogate halves, lone surrogates, primitive/boxed receivers, hooks and budgets in both hosts. Preserve String constructor/conversion behavior and exact prototype inventories; require a fresh static native build.

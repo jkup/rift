@@ -21,4 +21,10 @@ their own conversions and bounds checks before using that boundary.
 Tests cover surrogate pairs and lone units, missing/fractional/infinite positions,
 generic receivers, overridden String-box conversion, Symbol rejection, conversion
 ordering, failures and budgets. Bootstrap tests retain exact prototype metadata.
-Native acceptance is pending.
+Node/native guest suites pass 317/317 each, full tooling 290/290, runner 27/27 and all ten compiler probes. All 75 native entries pass build and static coverage; the string driver covers 4340/4340 statements. Logs: build/string-methods-*.
+
+The initial tooling run passed 287/290. Three regression fixtures incorrectly
+required historical package identities after the build-runner change. Commit
+`68c3b018` refreshes current input identities while preserving historical files,
+behavioral assertions, migration controls and complete checkpoint records. The
+subsequent full run passed all 290 (`build/string-methods-tooling-final.log`).

@@ -67,7 +67,7 @@ declaration plans and 154 serializer records against accepted expectations.
 TS-048 brings the exact radix oracle into the ordinary tooling command, with
 14768 inputs per host and reports under `build/`.
 
-The 71 compiled test drivers now have identified execution routes: 56 through
+The 72 compiled test drivers now have identified execution routes: 57 through
 the guest runner, five through parser audits, three through inspection tests,
 four through dispatch tests, one through Script preflight tests, one through
 the radix oracle, and one through `npm run test:observations`. This accounts for
@@ -105,18 +105,33 @@ ordered entries, verdicts and coverage reports match, as do all 307 native guest
 result records. Runner27 checks subprocess errors, timeout, output overflow and
 worker bounds. This changes build scheduling, not engine behavior.
 
-| Priority | Work | Evidence and completion condition |
-|---|---|---|
-| P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |
-| P1 | Repair the normal test command | `script-execution-inputs.test.mjs`, introduced in `7f887deb`, requires positional arguments absent under `node --test`. Add no-argument setup without dropping its assertions; retain the explicit invocation. |
-| P1 | Stop tests overwriting historical reports | Running `npm run test:test262` changed five initially clean tracked reports in TS-035C/E2A. Write fresh reports under `build/`; restore the old bytes and retain the new run separately. |
-| P1 | Separate historical acceptance from regression testing | `script-ledger-checkpoint.test.mjs` invokes an old full-tree preservation check that currently fails on `Claude Roadmap.md`. A routine roadmap edit must not invalidate checkpoint behavior. Keep the historical verifier available, and run current checkpoint API/fault assertions independently. Do not update old hashes to manufacture acceptance. |
-| P1 | Make the test suite portable and self-contained | Several tests depend on a user-specific temporary corpus, old native binaries, and executable test helpers under `docs/validation`. Explicitly prepare the pinned corpus, build prerequisites, and relocate scratch work to `build/`. Preserve hard-link/junction tests; distinguish Windows sandbox permission failures from product failures. |
-| P1 | Route the CLI through Script execution | Independently reproduced: CLI rejects `for` with `++`, `try/catch`, and `new`, while Script execution prints `10`, `boom`, and `3` for the same programs. Use `prepareBoundedScript` and `evaluateScript`; migrate diagnostics, strict/sloppy behavior and resource tests explicitly. Require freshly built Node/native CLI cases. |
-| P2 | Remove the legacy execution path after migration | Migrate the observation driver and host tests before deleting `Environment`, legacy profile branches and the evaluator re-export. A one-line CLI switch alone is not a complete migration. Preserve evaluation-order and Realm tests. |
-| P2 | Publish a small, honest conformance baseline | Use the pinned starter corpus with unchanged denominators and separate pass, fail, unsupported, harness, timeout and host-fault outcomes. Verify actual harness behavior before adding syntax solely to parse it. Do not present observation or synthetic fixture results as conformance. |
-| P2 | Improve current-state documentation and readability | Add a concise architecture entry point and CLI/internal/unsupported feature table. Format and split source in bounded changes with semantic checks; review parser audit modes and capability objects individually rather than deleting all safeguards wholesale. |
-| P2 | Archive large historical artifacts | Inventory size and Windows path lengths, choose a retrievable artifact location, then replace raw tracked artifacts with summaries and references. No mass deletion or history rewrite as part of this review. |
+TS-054 adds String `charAt`, `charCodeAt` and `slice`, with UTF-16 and coercion
+checks. Both guest suites pass 317/317; all 75 native entries compile statically.
+Tooling passes 290/290 after `68c3b018` repairs three stale input-identity
+expectations. Runner27 and probes10 pass. See [string methods](string-methods.md).
+
+| Status | Priority | Work | Evidence and completion condition |
+|---|---|---|---|
+| Done | P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |
+| Done | P1 | Repair the normal test command | `script-execution-inputs.test.mjs`, introduced in `7f887deb`, requires positional arguments absent under `node --test`. Add no-argument setup without dropping its assertions; retain the explicit invocation. |
+| Done | P1 | Stop tests overwriting historical reports | Running `npm run test:test262` changed five initially clean tracked reports in TS-035C/E2A. Write fresh reports under `build/`; restore the old bytes and retain the new run separately. |
+| Done | P1 | Separate historical acceptance from regression testing | `script-ledger-checkpoint.test.mjs` invokes an old full-tree preservation check that currently fails on `Claude Roadmap.md`. A routine roadmap edit must not invalidate checkpoint behavior. Keep the historical verifier available, and run current checkpoint API/fault assertions independently. Do not update old hashes to manufacture acceptance. |
+| Done | P1 | Make the test suite portable and self-contained | Several tests depend on a user-specific temporary corpus, old native binaries, and executable test helpers under `docs/validation`. Explicitly prepare the pinned corpus, build prerequisites, and relocate scratch work to `build/`. Preserve hard-link/junction tests; distinguish Windows sandbox permission failures from product failures. |
+| Done | P1 | Route the CLI through Script execution | Independently reproduced: CLI rejects `for` with `++`, `try/catch`, and `new`, while Script execution prints `10`, `boom`, and `3` for the same programs. Use `prepareBoundedScript` and `evaluateScript`; migrate diagnostics, strict/sloppy behavior and resource tests explicitly. Require freshly built Node/native CLI cases. |
+| Open | P2 | Remove the legacy execution path after migration | Migrate the observation driver and host tests before deleting `Environment`, legacy profile branches and the evaluator re-export. A one-line CLI switch alone is not a complete migration. Preserve evaluation-order and Realm tests. |
+| Open | P2 | Publish a small, honest conformance baseline | Use the pinned starter corpus with unchanged denominators and separate pass, fail, unsupported, harness, timeout and host-fault outcomes. Verify actual harness behavior before adding syntax solely to parse it. Do not present observation or synthetic fixture results as conformance. |
+| Open | P2 | Improve current-state documentation and readability | Add a concise architecture entry point and CLI/internal/unsupported feature table. Format and split source in bounded changes with semantic checks; review parser audit modes and capability objects individually rather than deleting all safeguards wholesale. |
+| Open | P2 | Archive large historical artifacts | Inventory size and Windows path lengths, choose a retrievable artifact location, then replace raw tracked artifacts with summaries and references. No mass deletion or history rewrite as part of this review. |
+
+The conformance baseline needs a current admission path: `script-plan.mjs`
+still emits blocked selections and `script-capabilities.json` has no entries.
+The positional producer can execute requests, but its conformance mode alone
+is not evidence of harness validation. Verify the pinned harness and controls
+before admitting cases; keep parse-negative, unsupported and harness failures
+separate. Current tooling totals remain regression counts. A fresh diagnostic
+loads both pinned `assert.js` and `sta.js` successfully in the current Node and
+native CLIs (`build/harness-readiness-corrected.json`); this checks startup only,
+not assertion behavior or conformance admission.
 
 ## Review scope and limits
 
