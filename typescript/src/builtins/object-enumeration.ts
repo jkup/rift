@@ -67,4 +67,28 @@ export function registerObjectEnumeration(realm: Realm, constructor: GuestObject
             return arrayFromList(values, context, loc);
         });
     }
+    realm.registerBuiltin(constructor, "assign", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const target = toObject(args.length === 0 ? UNDEFINED : args[0], context, loc);
+        if (target.type === "throw") return target;
+        for (let i = 1; i < args.length; i++) {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+            const input = args[i];
+            if (input.kind === "undefined" || input.kind === "null") continue;
+            const source = toObject(input, context, loc);
+            if (source.type === "throw") return source;
+            const receiver: Value = {kind: "object", object: source.value};
+            for (const key of source.value.ownPropertyKeys()) {
+                const step = context.tick(loc);
+                if (step.type === "throw") return step;
+                const descriptor = source.value.getOwnProperty(key);
+                if (descriptor === undefined || !descriptor.enumerable) continue;
+                const read = source.value.internalGet(key, receiver, context, loc);
+                if (read.type === "throw") return read;
+                const written = target.value.set(key, read.value, context, loc);
+                if (written.type === "throw") return written;
+            }
+        }
+        return normal({kind: "object", object: target.value});
+    });
 }

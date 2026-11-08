@@ -48,6 +48,14 @@ export function registerObject(realm: Realm): void {
         if (object.type === "throw") return object;
         return normal({ kind: "boolean", value: object.value.getOwnProperty(key.value) !== undefined });
     });
+    realm.registerBuiltin(realm.objectPrototype, "propertyIsEnumerable", 1, (receiver, args, context, loc): ValueCompletion => {
+        const key = toPropertyKey(args.length === 0 ? UNDEFINED : args[0], context, loc);
+        if (key.type === "throw") return key;
+        const object = toObject(receiver, context, loc);
+        if (object.type === "throw") return object;
+        const descriptor = object.value.getOwnProperty(key.value);
+        return normal({kind: "boolean", value: descriptor !== undefined && descriptor.enumerable});
+    });
     registerObjectPrototypes(realm, constructor);
     realm.defineScriptGlobal("Object", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
