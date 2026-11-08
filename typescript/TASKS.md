@@ -3263,7 +3263,7 @@ Implement Script split with RequireObjectCoercible before custom split lookup, o
 
 ## TS-093 — Unicode case conversion backend check
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 3f1e6c48.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 3f1e6c48, implementation fc930975. Both guest suites pass 580/580, full tooling 290/290, runner 31/31 and all ten probes pass. Native acceptance covers 92 initial passes plus a successful isolated JSON-driver retry after a Zig cache file-open failure; all 93 entries pass static coverage, string driver 6190/6190. The preliminary case probe passes all 12 explicit triples on both hosts and is 13/13 static. All 225 complete fixture results agree: 80 reported successes, 30 unchecked completions, 53 parse errors, 61 runtime errors and one reported failure. Comprehensive string and chaining fixtures now complete without check markers; all 108 previously completed outcomes remain. Reports: build/legacy-suite-node-0xPenr/report.json and build/legacy-suite-native-Dssvac/report.json. Initial/retry evidence: build/string-case-native-initial-results.json and build/string-case-native-retry-results.json. Logs: build/string-case-*.
 
 Probe Unicode default case conversion across Node/native with literal expectations, expansions, contextual sigma, supplementary characters and lone surrogates. Expose Script toLowerCase/toUpperCase only if backend semantics are adequate; otherwise record a concrete follow-up and preserve the current surface.
 

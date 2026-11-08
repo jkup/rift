@@ -272,3 +272,12 @@ Both guest suites pass 579/579, full tooling 290/290, runner 31/31 and all ten p
 ### TS-092 checkpoint
 
 Both guest suites pass 580/580, full tooling 290/290, runner 31/31 and all ten probes pass. All 93 native entries pass build and static coverage in one invocation; split driver 5994/5994 static. All 225 complete fixture results agree: 80 reported successes, 28 unchecked completions, 53 parse errors, 63 runtime errors and one reported failure. The simple split fixture completes without check markers; all 107 previously completed outcomes remain. Comprehensive strings now reach toLowerCase. Reports: build/legacy-suite-node-7700Xi/report.json and build/legacy-suite-native-BpKNyo/report.json. Logs: build/string-split-*. Next: verify Unicode case-conversion behavior, including contextual sigma, expansions, supplementary characters and lone surrogates, before installing lower/upper methods.
+
+### Native build reliability follow-up
+
+Repeated Windows Zig cache file-open failures have occurred during two-worker native builds (TS-089 sort driver; TS-093 JSON driver). Earlier isolated retries passed without source changes. Investigate cache access/concurrency or host interference using retained build logs; keep original failures visible and do not weaken static coverage or automatically classify arbitrary build failures as transient.
+
+
+### TS-093 checkpoint
+
+Both guest suites pass 580/580, full tooling 290/290, runner 31/31 and all ten probes pass. Native acceptance covers 92 initial passes plus a successful isolated JSON-driver retry after a Zig cache file-open failure; all 93 entries pass static coverage, string driver 6190/6190. The preliminary case probe passes all 12 explicit triples on both hosts and is 13/13 static. All 225 complete fixture results agree: 80 reported successes, 30 unchecked completions, 53 parse errors, 61 runtime errors and one reported failure. Comprehensive string and chaining fixtures now complete without check markers; all 108 previously completed outcomes remain. Reports: build/legacy-suite-node-0xPenr/report.json and build/legacy-suite-native-Dssvac/report.json. Initial/retry evidence: build/string-case-native-initial-results.json and build/string-case-native-retry-results.json. Logs: build/string-case-*. Unicode version alignment remains an audit follow-up; current evidence is targeted. Next: iterative flat/flatMap with sparse traversal, callbacks and explicit species limitations.
