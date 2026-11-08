@@ -28,5 +28,5 @@ invalid-input returns and own-only descriptor-field checks are not copied.
 Tests cover ordered field effects and throws, symbol keys, inherited descriptors,
 data/accessor defaults, fixed properties and SameValue, array rollback, string
 virtual properties, function objects, Realm identity and resource limits.
-Native and regression acceptance is pending. Object.defineProperties and other
+Both guest suites pass 401/401, full tooling 290/290, runner30 and probes10 pass. Native acceptance covers 80 initial passes and a successful isolated retry of script-assignment-target-audit after a Zig cache file-open failure; all 81 entries have passing static coverage. Reflection driver4670/4670 static. Original failure and retry reports are retained separately. All 225 C++ fixture results agree across hosts: 56 reported successes, 22 unchecked completions, 67 parse errors, 77 runtime errors and three reported failures. The array-range fixture now completes and reports missing public map behavior; all 78 previously successful or unchecked files retain their outcomes. Logs: build/descriptor-*. Object.defineProperties and other
 reflection methods remain separate work.

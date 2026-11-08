@@ -3089,6 +3089,6 @@ Add generic shift and unshift with ordered Has/Get/Set/Delete operations, inheri
 
 ## TS-064 — Property descriptor reflection
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `ff7c2abe`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `ff7c2abe`, implementation `ba27662c`. Both guest suites pass 401/401, full tooling 290/290, runner30 and probes10 pass. Native acceptance covers 80 initial passes and a successful isolated retry of script-assignment-target-audit after a Zig cache file-open failure; all 81 entries have passing static coverage. Reflection driver4670/4670 static. Original failure and retry reports are retained separately. All 225 C++ fixture results agree across hosts: 56 reported successes, 22 unchecked completions, 67 parse errors, 77 runtime errors and three reported failures. The array-range fixture now completes and reports missing public map behavior; all 78 previously successful or unchecked files retain their outcomes. Logs: build/descriptor-*.
 
 Add Object.defineProperty and Object.getOwnPropertyDescriptor using existing descriptor validation and exotic definition dispatch. Preserve conversion/field observation order, inherited descriptor fields, callable accessor validation, absent versus undefined fields, fresh descriptor objects, Realm ownership, partial array-length behavior and resource bounds. Test both hosts and static coverage; preserve original C++ fixtures.
