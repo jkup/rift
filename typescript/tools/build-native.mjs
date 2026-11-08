@@ -1,27 +1,103 @@
-import { spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { completed, probeVerdict } from "./probe-verdict.mjs";
+import { runNativeCommand, mapConcurrent } from "./native-build-runner.mjs";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const scriptc = join(root, "node_modules/scriptc/bin/scriptc.exe");
 const suffix = process.platform === "win32" ? ".exe" : "";
+const jobs = Number(process.env.RIFT_NATIVE_JOBS ?? 2);
+if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error("RIFT_NATIVE_JOBS must be a positive safe integer");
 mkdirSync(join(root, "build/native"), { recursive: true });
-function run(args) {
-    const r = spawnSync(scriptc, args, { cwd: root, encoding: "utf8", timeout: 600000 });
-    return { status: r.status, signal: r.signal, error: r.error ? { code: r.error.code, message: r.error.message } : null, stdout: r.stdout ?? "", stderr: r.stderr ?? "" };
-}
-const results = [];
-for (const [entry, name] of [["test/array-predicate.ts", "array-predicate"], ["test/array-search.ts", "array-search"], ["test/array-mutation.ts", "array-mutation"], ["src/cli.ts", "rift"], ["test/realms.ts", "realms"], ["test/object-descriptors.ts", "object-descriptors"], ["test/object-prototypes.ts", "object-prototypes"], ["test/object-keys.ts", "object-keys"], ["test/conversion.ts", "conversion"], ["test/definition-dispatch.ts", "definition-dispatch"], ["test/array-storage.ts", "array-storage"], ["test/array-like.ts", "array-like"], ["test/operation-context.ts", "operation-context"], ["test/array-map.ts", "array-map"], ["test/array-literals.ts", "array-literals"], ["test/property-key-conversion.ts", "property-key-conversion"], ["test/numeric-operators.ts", "numeric-operators"], ["test/addition.ts", "addition"], ["test/relational.ts", "relational"], ["test/primitive-conversion.ts", "primitive-conversion"], ["test/operator-coercion.ts", "operator-coercion"], ["test/key-coercion.ts", "key-coercion"], ["test/length-coercion.ts", "length-coercion"], ["test/array-length-coercion.ts", "array-length-coercion"], ["test/function-call.ts", "function-call"], ["test/object-valueof.ts", "object-valueof"], ["test/array-string-conversion.ts", "array-string-conversion"], ["test/function-string-conversion.ts", "function-string-conversion"], ["test/abstract-equality.ts", "abstract-equality"], ["test/delete-operator.ts", "delete-operator"], ["test/typeof-void.ts", "typeof-void"], ["test/in-operator.ts", "in-operator"], ["test/primitive-reads.ts", "primitive-reads"], ["test/property-assignment.ts", "property-assignment"], ["test/compound-assignment.ts", "compound-assignment"], ["test/structured-outcomes.ts", "structured-outcomes"], ["src/observation-driver.ts", "observation-driver"], ["test/observation-serialization.ts", "observation-serialization"], ["test/return-audit.ts", "return-audit"], ["test/number-radix.ts", "number-radix"], ["test/script-metadata.ts", "script-metadata"], ["test/global-environment.ts", "global-environment"], ["test/script-realm-bootstrap.ts", "script-realm-bootstrap"], ["test/script-declarations.ts", "script-declarations"], ["test/script-global-declarations.ts", "script-global-declarations"], ["test/script-record.ts", "script-record"], ["test/script-environment.ts", "script-environment"], ["test/script-function-materialization.ts", "script-function-materialization"], ["test/script-function-setup.ts", "script-function-setup"], ["test/property-accessors.ts", "property-accessors"], ["test/script-restricted-properties.ts", "script-restricted-properties"], ["test/script-execution.ts", "script-execution"], ["test/harness-catch.ts", "harness-catch"], ["test/harness-switch.ts", "harness-switch"], ["test/harness-for-update.ts", "harness-for-update"], ["test/harness-nonstrict.ts", "harness-nonstrict"], ["test/harness-construct.ts", "harness-construct"], ["test/harness-errors-a.ts", "harness-errors-a"], ["test/harness-errors-b.ts", "harness-errors-b"], ["test/harness-map-default.ts", "harness-map-default"], ["test/harness-formatting.ts", "harness-formatting"], ["test/harness-bundle.ts", "harness-bundle"], ["test/script-observation-serialization.ts", "script-observation-serialization"], ["test/script-throw-inspection.ts", "script-throw-inspection"], ["src/script-observation-driver.ts", "script-observation-driver"], ["test/script-observation.ts", "script-observation"], ["test/script-strict-rule-audit.ts", "script-strict-rule-audit"], ["test/script-strict-rule-dispatch.ts", "script-strict-rule-dispatch"], ["test/script-strict-parameter-audit.ts", "script-strict-parameter-audit"], ["test/script-strict-parameter-dispatch.ts", "script-strict-parameter-dispatch"], ["test/script-assignment-target-audit.ts", "script-assignment-target-audit"], ["test/script-assignment-target-dispatch.ts", "script-assignment-target-dispatch"], ["test/script-lexical-statement-audit.ts", "script-lexical-statement-audit"], ["test/script-lexical-statement-dispatch.ts", "script-lexical-statement-dispatch"]]) {
-    const build = run(["build", entry, "--tier", "static-only", "-o", join(root, "build/native", name + suffix)]);
-    const coverage = run(["coverage", entry]);
+const run = args => runNativeCommand(scriptc, args, { cwd: root });
+const entries = [
+    ["test/array-predicate.ts", "array-predicate"],
+    ["test/array-search.ts", "array-search"],
+    ["test/array-mutation.ts", "array-mutation"],
+    ["src/cli.ts", "rift"],
+    ["test/realms.ts", "realms"],
+    ["test/object-descriptors.ts", "object-descriptors"],
+    ["test/object-prototypes.ts", "object-prototypes"],
+    ["test/object-keys.ts", "object-keys"],
+    ["test/conversion.ts", "conversion"],
+    ["test/definition-dispatch.ts", "definition-dispatch"],
+    ["test/array-storage.ts", "array-storage"],
+    ["test/array-like.ts", "array-like"],
+    ["test/operation-context.ts", "operation-context"],
+    ["test/array-map.ts", "array-map"],
+    ["test/array-literals.ts", "array-literals"],
+    ["test/property-key-conversion.ts", "property-key-conversion"],
+    ["test/numeric-operators.ts", "numeric-operators"],
+    ["test/addition.ts", "addition"],
+    ["test/relational.ts", "relational"],
+    ["test/primitive-conversion.ts", "primitive-conversion"],
+    ["test/operator-coercion.ts", "operator-coercion"],
+    ["test/key-coercion.ts", "key-coercion"],
+    ["test/length-coercion.ts", "length-coercion"],
+    ["test/array-length-coercion.ts", "array-length-coercion"],
+    ["test/function-call.ts", "function-call"],
+    ["test/object-valueof.ts", "object-valueof"],
+    ["test/array-string-conversion.ts", "array-string-conversion"],
+    ["test/function-string-conversion.ts", "function-string-conversion"],
+    ["test/abstract-equality.ts", "abstract-equality"],
+    ["test/delete-operator.ts", "delete-operator"],
+    ["test/typeof-void.ts", "typeof-void"],
+    ["test/in-operator.ts", "in-operator"],
+    ["test/primitive-reads.ts", "primitive-reads"],
+    ["test/property-assignment.ts", "property-assignment"],
+    ["test/compound-assignment.ts", "compound-assignment"],
+    ["test/structured-outcomes.ts", "structured-outcomes"],
+    ["src/observation-driver.ts", "observation-driver"],
+    ["test/observation-serialization.ts", "observation-serialization"],
+    ["test/return-audit.ts", "return-audit"],
+    ["test/number-radix.ts", "number-radix"],
+    ["test/script-metadata.ts", "script-metadata"],
+    ["test/global-environment.ts", "global-environment"],
+    ["test/script-realm-bootstrap.ts", "script-realm-bootstrap"],
+    ["test/script-declarations.ts", "script-declarations"],
+    ["test/script-global-declarations.ts", "script-global-declarations"],
+    ["test/script-record.ts", "script-record"],
+    ["test/script-environment.ts", "script-environment"],
+    ["test/script-function-materialization.ts", "script-function-materialization"],
+    ["test/script-function-setup.ts", "script-function-setup"],
+    ["test/property-accessors.ts", "property-accessors"],
+    ["test/script-restricted-properties.ts", "script-restricted-properties"],
+    ["test/script-execution.ts", "script-execution"],
+    ["test/harness-catch.ts", "harness-catch"],
+    ["test/harness-switch.ts", "harness-switch"],
+    ["test/harness-for-update.ts", "harness-for-update"],
+    ["test/harness-nonstrict.ts", "harness-nonstrict"],
+    ["test/harness-construct.ts", "harness-construct"],
+    ["test/harness-errors-a.ts", "harness-errors-a"],
+    ["test/harness-errors-b.ts", "harness-errors-b"],
+    ["test/harness-map-default.ts", "harness-map-default"],
+    ["test/harness-formatting.ts", "harness-formatting"],
+    ["test/harness-bundle.ts", "harness-bundle"],
+    ["test/script-observation-serialization.ts", "script-observation-serialization"],
+    ["test/script-throw-inspection.ts", "script-throw-inspection"],
+    ["src/script-observation-driver.ts", "script-observation-driver"],
+    ["test/script-observation.ts", "script-observation"],
+    ["test/script-strict-rule-audit.ts", "script-strict-rule-audit"],
+    ["test/script-strict-rule-dispatch.ts", "script-strict-rule-dispatch"],
+    ["test/script-strict-parameter-audit.ts", "script-strict-parameter-audit"],
+    ["test/script-strict-parameter-dispatch.ts", "script-strict-parameter-dispatch"],
+    ["test/script-assignment-target-audit.ts", "script-assignment-target-audit"],
+    ["test/script-assignment-target-dispatch.ts", "script-assignment-target-dispatch"],
+    ["test/script-lexical-statement-audit.ts", "script-lexical-statement-audit"],
+    ["test/script-lexical-statement-dispatch.ts", "script-lexical-statement-dispatch"],
+];
+const started = Date.now();
+const results = await mapConcurrent(entries, jobs, async ([entry, name]) => {
+    const build = await run(["build", entry, "--tier", "static-only", "-o", join(root, "build/native", name + suffix)]);
+    const coverage = await run(["coverage", entry]);
     // Reuse the fail-closed pinned coverage parser. Execution has its own suite.
     const success = { status: 0, signal: null, error: null, stdout: "" };
     const verdict = probeVerdict({ build, coverage, node: success, native: success });
-    results.push({ entry, build, coverage, verdict });
     console.log(`${verdict} ${entry}`);
     if (!completed(build)) console.error(build.stderr);
     if (verdict !== "PASS") console.error(coverage.stdout, coverage.stderr);
-}
+    return { entry, build, coverage, verdict };
+});
+console.log(`Native build: ${entries.length} entries, ${Math.min(jobs, entries.length)} workers, ${Date.now() - started}ms`);
 writeFileSync(join(root, "build/native-build-results.json"), JSON.stringify(results, null, 2));
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

@@ -14,7 +14,7 @@
   "scripts": {
     "test:observations": "node tools/test262/observation.integration.mjs",
     "test:test262": "node --test tools/test262/*.test.mjs",
-    "test:runner": "node --test tools/probe-verdict.test.mjs",
+    "test:runner": "node --test tools/probe-verdict.test.mjs tools/native-build-runner.test.mjs",
     "typecheck": "tsc -p tsconfig.json",
     "test:probes": "node tools/run-probes.mjs",
     "build:node": "tsc -p tsconfig.json",

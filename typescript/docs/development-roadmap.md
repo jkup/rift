@@ -98,6 +98,13 @@ added. Both guest suites pass 307/307, tooling 290/290, runner20 and probes10.
 All 74 native entries pass a fresh full static build in one invocation; existing
 parser audit and inspection expectations remain unchanged.
 
+TS-053 bounds native compilation to two concurrent workers by default, with
+`RIFT_NATIVE_JOBS=1` available for sequential execution. One measured Windows
+run took 233 seconds versus approximately 483 seconds sequentially. All 74
+ordered entries, verdicts and coverage reports match, as do all 307 native guest
+result records. Runner27 checks subprocess errors, timeout, output overflow and
+worker bounds. This changes build scheduling, not engine behavior.
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |

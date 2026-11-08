@@ -3020,3 +3020,9 @@ Implement generic every/some with captured length, callable validation, inherite
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `8bef7cb6`, implementation `3a1ab9f7`. Node/native guest suites pass 307/307 each, full tooling 290/290, runner 20/20 and all ten probes. All 74 native entries pass build and static coverage in one invocation. Existing metadata, declaration and parser-audit expectations pass unchanged. Logs: build/numeric-object-keys-*.
 
 Accept currently supported numeric literal tokens as object keys, using their canonical numeric string. Cover integer/fractional keys, duplicate normalization, rounding, key lookup and unsupported computed/negative keys. Preserve existing source cases while updating the now-supported outcome and adding a replacement unsupported-key control. Keep literal syntax limits and prototype-literal restrictions explicit; validate both hosts and static native coverage.
+
+## TS-053 — Bounded native build concurrency
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `63a9c52a`. Two workers completed all 74 native entries in 233 seconds versus approximately 483 seconds sequentially on this machine. Ordered entries, verdicts and complete coverage reports match exactly. All 307 native guest results also match exactly; runner27 passes including timeout, launch, exit and output-overflow failures. Default two workers retained with RIFT_NATIVE_JOBS override. Logs: build/native-two-workers*.
+
+Measure a two-worker native build against the completed 483-second sequential run. Preserve every entry, static-only compilation, independent coverage, failure records and result order. Keep an explicit one-worker option. Test subprocess failures, timeouts and worker bounds before running all native entries; retain concurrency only if it improves the measured loop without weakening acceptance.

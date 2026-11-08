@@ -39,6 +39,11 @@ npm run build:native
 .\build\native\rift.exe -e 'console.log(6 * 7);'
 ```
 
+Native builds use two workers. Set `RIFT_NATIVE_JOBS=1` for sequential builds,
+or another positive integer to choose the worker limit. Every entry still runs
+static-only compilation and an independent coverage check; the result file keeps
+the declared entry order.
+
 Expected example output:
 
 ```text
