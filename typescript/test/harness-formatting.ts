@@ -462,7 +462,7 @@ for(const r of [fresh(),fresh()]){
   const c=ctor.callable,k=ctor.constructorSlot;check(c!==null&&c.kind==="builtin"&&c.realm===r&&k!==null&&k.kind==="builtin-constructor"&&k.realm===r&&k.callable===c,"F10 exact guard graph");
   data(ctor,"name",str("changed"));check(sameValue(value(run(name+".toString();",r)),str("function "+name+"() { [native code] }")),"initial native name");
  }
- check(object(own(r.globalObject,"Number")).callable===null&&object(own(r.globalObject,"Number")).constructorSlot===null,"Number namespace");
+ check(object(own(r.globalObject,"Number")).callable!==null&&object(own(r.globalObject,"Number")).constructorSlot!==null&&object(own(r.numberPrototype,"constructor"))===object(own(r.globalObject,"Number")),"Number constructor");
 }
 {
  const legacy=new Realm((_line:string)=>{});check([...legacy.global.bindings.keys()].join(",")==="undefined,NaN,Infinity,console,Number","legacy whitelist");keys(legacy.stringPrototype,["length","toString","valueOf","indexOf","charAt","charCodeAt","slice"]);keys(legacy.objectPrototype,["valueOf","toString"]);

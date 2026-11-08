@@ -439,8 +439,8 @@ for (const predicate of ["isNaN", "isFinite"]) {
         });
     }
 }
-lineCase("number-noncallable", "Number(console.log('arg'));", {
-    status: 1, stdout: "arg\n", error: "1:1: runtime TypeError: value is not callable",
+lineCase("number-conversion-argument", "console.log(Number(console.log('arg')));", {
+    stdout: "arg\nNaN\n",
 });
 for (const [name, source, expected] of [
     ["missing-colon", "true ? 1;", { status: 2, error: "1:9: parse SyntaxError: expected ':', found ';'" }],
@@ -552,6 +552,7 @@ executeDriver("global-numeric-predicates", { stdout: "Global numeric predicates 
 executeDriver("array-sort", { stdout: "Array sort passed\n" });
 executeDriver("string-split", { stdout: "String split passed\n" });
 executeDriver("array-flat", { stdout: "Array flattening passed\n" });
+executeDriver("number-constructor", { stdout: "Number constructor passed\n" });
 executeDriver("array-copy", { stdout: "Array copy passed\n" });
 executeDriver("json-parse", { stdout: "JSON parse passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });

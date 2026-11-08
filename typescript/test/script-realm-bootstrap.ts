@@ -39,14 +39,14 @@ function method(a: Realm,o: GuestObject,key: PropertyKey,name: string,length: nu
 }
 function inventory(a: Realm): void {
     const c=object(own(a.globalObject,"console")), num=object(own(a.globalObject,"Number"));
-    check(c.getPrototypeOf()===a.objectPrototype && c.callable===null && num.getPrototypeOf()===a.objectPrototype && num.callable===null && num!==a.numberPrototype,"namespaces");
+    check(c.getPrototypeOf()===a.objectPrototype && c.callable===null && num.getPrototypeOf()===a.functionPrototype && num.callable!==null && num!==a.numberPrototype,"namespaces");
     keys(c,["log"]); method(a,c,"log","log",0);
     const names=["NaN","POSITIVE_INFINITY","NEGATIVE_INFINITY","MAX_VALUE","MIN_VALUE","EPSILON","MAX_SAFE_INTEGER","MIN_SAFE_INTEGER"];
     const values=[NaN,Infinity,-Infinity,1.7976931348623157e308,5e-324,2.220446049250313e-16,9007199254740991,-9007199254740991];
-    keys(num,[...names,"isNaN","isFinite"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
-    method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1);
+    keys(num,["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
+    method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1); method(a,num,"isInteger","isInteger",1); method(a,num,"isSafeInteger","isSafeInteger",1);
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
-    const lists: PropertyKey[][]=[["valueOf","toString","constructor","hasOwnProperty"],["name","length","caller","arguments","call","apply","toString",wellKnownHasInstance],["length","join","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with","flat","flatMap","at","indexOf","includes","lastIndexOf","every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter"],["toString","valueOf","constructor"],["toString","valueOf"],["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
+    const lists: PropertyKey[][]=[["valueOf","toString","constructor","hasOwnProperty"],["name","length","caller","arguments","call","apply","toString",wellKnownHasInstance],["length","join","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with","flat","flatMap","at","indexOf","includes","lastIndexOf","every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter"],["toString","valueOf","constructor"],["toString","valueOf","constructor"],["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
     for(let i=0;i<prototypes.length;i++) {
         const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),"prototype chain");
         for(const k of lists[i]) if(typeof k==="string" && k!=="name" && k!=="length") {
@@ -54,10 +54,10 @@ function inventory(a: Realm): void {
                 const d=p.getOwnProperty(k), other=p.getOwnProperty("caller");
                 check(d!==undefined && d.kind==="accessor" && !d.enumerable && d.configurable && d.get.kind==="object" && d.set===d.get && other!==undefined && other.kind==="accessor" && d.get===other.get,"restricted descriptors");
             } else if (k==="constructor") {
-                check(i===0 || i===2 || i===3 || i===5,"supported prototype constructors");
-                const name=i===0?"Object":i===2?"Array":i===3?"Boolean":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
+                check(i===0 || i===2 || i===3 || i===4 || i===5,"supported prototype constructors");
+                const name=i===0?"Object":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
                 desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
-                keys(f,name==="Array"?["name","length","prototype","isArray"]:name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","defineProperty","getOwnPropertyDescriptor"]:["name","length","prototype"]);
+                keys(f,name==="Number"?["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger"]:name==="Array"?["name","length","prototype","isArray"]:name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","defineProperty","getOwnPropertyDescriptor"]:["name","length","prototype"]);
                 if(name==="Array")method(a,f,"isArray","isArray",1);
                 if(name==="Object"){method(a,f,"hasOwn","hasOwn",2);for(const key of ["keys","values","entries","defineProperty","getOwnPropertyDescriptor"])method(a,f,key,key,key==="defineProperty"?3:key==="getOwnPropertyDescriptor"?2:1);}
                 desc(f,"name",{kind:"string",value:name},false,false,true); desc(f,"length",n(1),false,false,true);

@@ -3273,3 +3273,9 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 0de05146, impleme
 
 Implement Script flat/flatMap using an explicit traversal stack, captured lengths, sparse Has/Get, array-only flattening, top-level mapping, default species and bounded deep/cyclic work. Keep custom species explicit, update closed capability codecs and validate both hosts and fixed fixtures.
 
+## TS-095 — Number conversion and construction
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base d7587906.
+
+Upgrade Script Number from namespace to callable constructor with numeric conversion, wrapper slots and prototype behavior; add isInteger/isSafeInteger without coercion. Preserve legacy namespace and constants, validate both hosts, metadata, coercion order and fixed fixtures. Parsing and formatting stay separate.
+

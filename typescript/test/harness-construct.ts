@@ -70,7 +70,7 @@ console.log("PASS C02 C03 C05 C16 C18 strict twins");
  for(const [name,label,value] of [["a","A",7],["b","B",11]] as [string,string,number][] )define(r,name,builtin(r,name,(_t,_a,_c,_l):ValueCompletion=>{log.push(label);return normal(number(value));}));
  const result=run('new o.C(a(),b());',r);check(result.type==="normal" && sameValue(result.value,received)&&object(received)!==o && o.getOwnProperty("x")===undefined,"C07");check(log.join(",")==="G,A,B,C","C08 order");
  log.length=0;define(r,"choose",builtin(r,"choose",(_t,_a,_c,_l):ValueCompletion=>{log.push("choose");return normal(c);}));run('new (choose())(a(),b());',r);check(log.join(",")==="choose,A,B,C","C09");
- for(const v of [number(7),builtin(r,"f",(_t,_a,_c,_l):ValueCompletion=>{throw new Error("body forbidden");}),obj(r.functionPrototype),own(r,"Number"),obj(new GuestObject())]){if(v.kind==="object")property(r,v.object,"prototype",{value:obj(new GuestObject()),configurable:true});define(r,"f",v);log.length=0;throws(run('new f(a());',r),"TypeError");check(log.join(",")==="A","C10/C11 arguments first");}
+ for(const v of [number(7),builtin(r,"f",(_t,_a,_c,_l):ValueCompletion=>{throw new Error("body forbidden");}),obj(r.functionPrototype),own(r,"Math"),obj(new GuestObject())]){if(v.kind==="object")property(r,v.object,"prototype",{value:obj(new GuestObject()),configurable:true});define(r,"f",v);log.length=0;throws(run('new f(a());',r),"TypeError");check(log.join(",")==="A","C10/C11 arguments first");}
 }
 console.log("PASS C07-C11");
 {

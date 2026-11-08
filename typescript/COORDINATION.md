@@ -1774,3 +1774,5 @@ The owner authorized continued development and frequent commits. Defer the prove
 2026-11-08 TS-094 claimed by Codex catch-up chat. Scope: iterative flat/flatMap, semantic driver, species capability codecs and inventories.
 
 2026-11-08 TS-094 accepted, implementation f2ea5f14. Both guest suites pass 581/581, full tooling 290/290, runner 31/31 and all ten probes pass. All 94 native entries pass build and static coverage in one invocation; flatten driver 6084/6084 static. All 225 complete fixture results agree: 82 reported successes, 30 unchecked completions, 53 parse errors, 59 runtime errors and one reported failure. Both phase-three array fixtures now report success; all 110 previously completed outcomes remain. Reports: build/legacy-suite-node-RqpMDg/report.json and build/legacy-suite-native-WfGp6h/report.json. Logs: build/array-flat-*. Next: Script Number conversion/construction and integer predicates, preserving the legacy namespace.
+
+2026-11-08 TS-095 claimed by Codex catch-up chat. Scope: Script Number conversion/construction, integer predicates, semantic driver and current inventories.
