@@ -90,5 +90,32 @@ export function registerMath(realm: Realm): void {
             return normal({kind: "number", value});
         });
     }
+    realm.registerBuiltin(object, "hypot", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const values: number[] = [];
+        let largest = 0, hasNaN = false;
+        for (const arg of args) {
+            const number = numericArgument(arg, context, loc);
+            if (number.type === "throw") return number;
+            const value = Math.abs(number.value);
+            values.push(value);
+            if (value > largest) largest = value;
+            if (value !== value) hasNaN = true;
+        }
+        if (largest === Infinity) return normal({kind: "number", value: Infinity});
+        if (hasNaN) return normal({kind: "number", value: NaN});
+        if (largest === 0) return normal({kind: "number", value: 0});
+        // Scale before squaring, then compensate for rounding in the sum.
+        let sum = 0, correction = 0;
+        for (const value of values) {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+            const scaled = value / largest;
+            const term = scaled * scaled - correction;
+            const next = sum + term;
+            correction = (next - sum) - term;
+            sum = next;
+        }
+        return normal({kind: "number", value: largest * Math.sqrt(sum)});
+    });
     realm.defineScriptGlobal("Math", {value: {kind: "object", object}, writable: true, configurable: true});
 }

@@ -227,4 +227,45 @@ for (const entry of widthCases) {
     const actual = run(fresh(), entry.source + ";");
     check(actual.type === "normal" && sameValue(actual.value, {kind: "number", value: entry.value}), "Math numeric width " + entry.source);
 }
+const hypotCases = [
+    {source: "Math.hypot()", value: 0}, {source: "Math.hypot(-0,-0)", value: 0},
+    {source: "Math.hypot(-5)", value: 5}, {source: "Math.hypot(3,4)", value: 5},
+    {source: "Math.hypot(3,4,12)", value: 13}, {source: "Math.hypot(NaN,1)", value: NaN},
+    {source: "Math.hypot(NaN,Infinity)", value: Infinity}, {source: "Math.hypot(-Infinity,NaN)", value: Infinity},
+    {source: "Math.hypot(undefined)", value: NaN}, {source: "Math.hypot(5e-324)", value: 5e-324},
+];
+for (const entry of hypotCases) {
+    const actual = run(fresh(), entry.source + ";");
+    check(actual.type === "normal" && sameValue(actual.value, {kind: "number", value: entry.value}), "hypot special value " + entry.source);
+}
+for (const exponent of [300, -300]) {
+    const actual = run(fresh(), "Math.hypot(3e" + exponent + ",4e" + exponent + ",12e" + exponent + ");");
+    const expectedValue = exponent === 300 ? 13e300 : 13e-300;
+    check(actual.type === "normal" && actual.value.kind === "number" && Math.abs(actual.value.value / expectedValue - 1) < 1e-15, "hypot avoids intermediate overflow and underflow");
+}
+{
+    const actual = run(fresh(), "let a=[1];let i=0;while(i<1000){a.push(1e-8);i++;}Math.hypot.apply(null,a);", 100000);
+    check(actual.type === "normal" && sameValue(actual.value, {kind: "number", value: 1.00000000000005}), "hypot preserves accumulated small terms");
+    const order = run(fresh(), "let trace='';let a={valueOf:function(){trace+='a';return Infinity;}};let b={valueOf:function(){trace+='b';return NaN;}};Math.hypot(a,b);trace;");
+    check(order.type === "normal" && order.value.kind === "string" && order.value.value === "ab", "hypot converts once after infinity");
+    const thrown = run(fresh(), "let marker={};let n=0;let a={valueOf:function(){throw marker;}};let b={valueOf:function(){n++;return 1;}};try{Math.hypot(Infinity,a,b);}catch(e){e===marker && n===0;}");
+    check(thrown.type === "normal" && thrown.value.kind === "boolean" && thrown.value.value, "hypot conversion throw beats infinity and stops traversal");
+    const owner = fresh(), caller = fresh();
+    caller.defineScriptGlobal("method", {value: own(math(owner), "hypot")});
+    caller.defineScriptGlobal("symbol", {value: {kind: "symbol", value: wellKnownSpecies}});
+    const bad = run(caller, "method(Infinity,symbol);");
+    check(bad.type === "throw" && bad.value.kind === "object" && bad.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"), "hypot error Realm");
+    let interrupted = false, completed = false;
+    for (let steps = 0; steps < 45; steps++) {
+        const result = run(fresh(), "Math.hypot(3,4,12);", steps);
+        if (result.type === "throw") {
+            check(result.origin.kind === "resource-limit", "hypot budget");
+            interrupted = true;
+        } else {
+            check(sameValue(result.value, {kind: "number", value: 13}), "hypot bounded result");
+            completed = true;
+        }
+    }
+    check(interrupted && completed, "hypot budget boundary");
+}
 console.log("Math unary passed");

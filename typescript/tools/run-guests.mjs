@@ -48,6 +48,11 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["math-hypot-values","console.log(Math.hypot(),Math.hypot(-5),Math.hypot(3,4),Math.hypot(3,4,12),1/Math.hypot(-0));",0,"","0 5 5 13 Infinity\n"],
+    ["math-hypot-special","console.log(Math.hypot(NaN,Infinity),Math.hypot(-Infinity,NaN),Math.hypot(NaN,1));",0,"","Infinity Infinity NaN\n"],
+    ["math-hypot-scale","console.log(Math.abs(Math.hypot(3e300,4e300,12e300)/13e300-1)<1e-15,Math.abs(Math.hypot(3e-300,4e-300,12e-300)/13e-300-1)<1e-15);",0,"","true true\n"],
+    ["math-hypot-coercion","let n=0;let a={valueOf:function(){n++;return '3';}};console.log(Math.hypot(a,'4',null),n);",0,"","5 1\n"],
+    ["math-hypot-metadata","console.log(Math.hypot.name,Math.hypot.length);let d=Object.getOwnPropertyDescriptor(Math,'hypot');console.log(d.writable,d.enumerable,d.configurable);try{new Math.hypot();}catch(e){console.log(e.name);}",0,"","hypot 2\ntrue false true\nTypeError\n"],
     ["math-clz32","console.log(Math.clz32(),Math.clz32(1),Math.clz32(1000),Math.clz32(-1),Math.clz32(4294967297));",0,"","32 31 22 0 31\n"],
     ["math-fround","console.log(Math.fround(1.337),Math.fround(16777217),Math.fround(16777219),1/Math.fround(-1e-50));",0,"","1.3370000123977661 16777216 16777220 -Infinity\n"],
     ["math-width-metadata","console.log(Math.clz32.name,Math.clz32.length,Math.fround.name,Math.fround.length);let d=Object.getOwnPropertyDescriptor(Math,'fround');console.log(d.writable,d.enumerable,d.configurable);try{new Math.clz32();}catch(e){console.log(e.name);}",0,"","clz32 1 fround 1\ntrue false true\nTypeError\n"],
