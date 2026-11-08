@@ -18,4 +18,4 @@ uses its existing ToPropertyKey and ToObject operations.
 
 Tests cover descriptor presence without getter invocation, key-conversion
 effects and throw identity, symbol keys, Realm ownership, boxing, metadata and
-resource limits. Native and regression acceptance is pending.
+resource limits. Both guest suites pass 355/355, full tooling 290/290, runner30 and probes10 pass. All 78 native entries pass build and static coverage in one invocation; predicate driver4363/4363 static. All 225 C++ fixture results agree across hosts: 51 reported successes, 22 unchecked completions, 67 parse errors, 84 runtime errors and one reported failure. Both hasOwnProperty fixtures now complete, without regressing the 71 previously completed files. Logs: build/own-property-*.
