@@ -77,5 +77,31 @@ export function registerMap(realm: Realm): void {
             if (called.type === "throw") return called;
         }
     });
+    for (const name of ["getOrInsert", "getOrInsertComputed"] as const) {
+        realm.registerBuiltin(realm.mapPrototype, name, 2, (receiver, args, context, loc): ValueCompletion => {
+            const map = mapReceiver(receiver, context, loc);
+            if (map.type === "throw") return map;
+            let key = args.length === 0 ? UNDEFINED : args[0];
+            const supplied = args.length < 2 ? UNDEFINED : args[1];
+            if (name === "getOrInsertComputed" && (supplied.kind !== "object" || supplied.object.callable === null))
+                return languageFailure(context.realm, "TypeError", "Map callback is not callable", loc);
+            if (key.kind === "number" && key.value === 0) key = {kind: "number", value: 0};
+            const lookup = context.tick(loc);
+            if (lookup.type === "throw") return lookup;
+            const existing = map.value.data.get(key);
+            if (existing !== undefined) return normal(existing);
+            let value = supplied;
+            if (name === "getOrInsertComputed") {
+                const called = context.call(supplied, UNDEFINED, [key], loc);
+                if (called.type === "throw") return called;
+                value = called.value;
+            }
+            const insertion = context.tick(loc);
+            if (insertion.type === "throw") return insertion;
+            // set looks up the key again: the callback may have changed the Map.
+            map.value.data.set(key, value);
+            return normal(value);
+        });
+    }
     realm.defineScriptGlobal("Map", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
