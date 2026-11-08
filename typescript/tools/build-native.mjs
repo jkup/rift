@@ -22,6 +22,7 @@ const entries = [
     ["test/symbol-factory.ts", "symbol-factory"],
     ["test/symbol-registry.ts", "symbol-registry"],
     ["test/symbol-well-known.ts", "symbol-well-known"],
+    ["test/array-iterator.ts", "array-iterator"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

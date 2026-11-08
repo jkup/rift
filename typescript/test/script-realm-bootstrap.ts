@@ -6,7 +6,7 @@ import { run } from "../src/interpreter.js";
 import { observe } from "../src/observation.js";
 import { resolveStrictGlobalBinding, getStrictGlobalBinding, putStrictGlobalBinding } from "../src/global-environment.js";
 import { Environment, GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type Completion, type ValueCompletion, type OperationContext, type PropertyKey } from "../src/runtime.js";
-import { wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasInstance } from "../src/symbols.js";
+import { wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasInstance, wellKnownIterator } from "../src/symbols.js";
 import { toPrimitive } from "../src/primitive-conversion.js";
 import { mapObjectDefaultArray } from "../src/array-map.js";
 const loc = { line: 1, column: 1 };
@@ -54,7 +54,7 @@ function inventory(a: Realm): void {
         ["name","length","caller","arguments","call","apply","toString",wellKnownHasInstance],
         ["length","join","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with",
             "flat","flatMap","at","indexOf","includes","lastIndexOf",
-            "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter"],
+            "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownIterator],
         ["toString","valueOf","constructor"],
         ["toString","valueOf","toFixed","toExponential","toPrecision","constructor"],
         ["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
@@ -114,6 +114,8 @@ function inventory(a: Realm): void {
     desc(hasInstanceFunction,"name",{kind:"string",value:"[Symbol.hasInstance]"},false,false,true);
     desc(hasInstanceFunction,"length",n(1),false,false,true);
     desc(a.arrayPrototype,"length",n(0),true,false,false); desc(a.stringPrototype,"length",n(0),false,false,false);
+    method(a, a.arrayPrototype, wellKnownIterator, "values", 0);
+    check(sameValue(own(a.arrayPrototype, wellKnownIterator), own(a.arrayPrototype, "values")), "Array iterator alias");
     method(a,a.symbolPrototype,wellKnownToPrimitive,"[Symbol.toPrimitive]",1,false); desc(a.symbolPrototype,wellKnownToStringTag,{kind:"string",value:"Symbol"},false,false,true);
     check(!a.objectPrototype.setPrototypeOf(a.createObject()).value,"immutable object root");
     check(!a.booleanPrototype.booleanData && a.numberPrototype.numberData===0 && a.stringPrototype.stringData==="","primitive slots");

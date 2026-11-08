@@ -1,0 +1,13 @@
+# Live Array iterators
+
+TS-107 adds Script Array.prototype.keys, values and entries; Symbol.iterator is the same function object as values. GuestArrayIterator stores its source, next index and iteration kind. Exhaustion releases the source and is permanent. Holes use ordinary Get, so inherited values are visible; keys avoids element access. Length is read on each active next call, not at creation.
+
+The index is captured before reading length and incremented before reading an element. A length failure leaves that invocation's index unchanged; an element failure occurs after advancement. Reentrant getters can independently change state, including exhausting the iterator while an outer call still returns its captured element. These transitions follow [ECMA-262 CreateArrayIterator and next](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-createarrayiterator), consulted 2026-11-08. [V8 Array iterator builtins](https://github.com/v8/v8/blob/main/src/builtins/builtins-array-gen.cc), consulted the same day, corroborates capture/advance ordering and ordinary lookup. Rift uses a direct state object and no host generators or copied V8 code.
+
+Each Realm owns its iterator and Array iterator prototypes. The minimal iterator prototype has the self-returning Symbol.iterator method. Array iterator next validates the genuine class brand, which survives prototype changes and works across Realms. Result objects and entry pairs allocate in the invoked next builtin's Realm; iterator creation belongs to the factory builtin's Realm. Result fields are ordinary writable/enumerable/configurable value and done properties.
+
+Each next operation and result allocation charges a tick. Entry pairs use the existing metered arrayFromList helper, extracted unchanged from Object enumeration except for its host invariant message. Resource interruption may occur after an observable getter or index advancement; completed effects are not rolled back. There is no length-proportional allocation or iteration inside next.
+
+Typed arrays, String iteration, global Iterator/helpers, disposal, for-of/spread and iterable consumers are outside this milestone. Generic Array iteration over a boxed string visits UTF-16 code units. Legacy Realm Array methods remain unchanged.
+
+The dedicated driver covers live growth/shrinkage, holes/inheritance, lazy length access, coercion, permanent exhaustion, fresh result/pair objects, metadata, abrupt and reentrant getters, prototype mutation/freeze, primitive receivers, forged brands, cross-Realm allocation/errors and bounded huge lengths. Existing Object enumeration tests retain their metering behavior.

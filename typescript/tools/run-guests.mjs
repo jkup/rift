@@ -556,6 +556,7 @@ executeDriver("object-assign", { stdout: "Object assignment passed\n" });
 executeDriver("symbol-factory", { stdout: "Symbol factory passed\n" });
 executeDriver("symbol-registry", { stdout: "Symbol registry passed\n" });
 executeDriver("symbol-well-known", { stdout: "Well-known symbols passed\n" });
+executeDriver("array-iterator", { stdout: "Array iterators passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

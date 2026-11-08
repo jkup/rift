@@ -1822,3 +1822,5 @@ The owner authorized continued development and frequent commits. Defer the prove
 2026-11-08 TS-106 claimed by Codex catch-up chat. Scope: complete well-known symbol identities, metadata tests and current inventory; no new protocol consumers.
 
 2026-11-08 TS-106 accepted, implementation 7caab3e7. Both guest suites pass 592/592, tooling 290/290, runner 31/31 and all ten probes pass. All 105 native entries pass fresh build and static coverage checks; well-known-symbol driver 6451/6451 static. All 225 complete fixture results agree: 84 reported successes, 37 unchecked completions, 53 parse errors, 50 runtime errors and one reported failure. symbol-wellknown.js now completes with ten true values without recognized check markers; all 120 previous completions remain. Reports: build/legacy-suite-node-Cyqawt/report.json and build/legacy-suite-native-c9RsWH/report.json. Logs: build/symbol-well-known-*. Next: Array iterator objects and keys/values/entries.
+
+2026-11-08 TS-107 claimed by Codex catch-up chat. Scope: live Array iterators, minimal iterator prototype, shared list-array allocation, current inventory and semantic tests.
