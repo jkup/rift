@@ -51,4 +51,4 @@ reference values with a small absolute tolerance for finite nonzero results,
 and exact checks for NaN, infinities and signed zero. Shared conversion tests
 cover numeric hints, ignored extra arguments, errors and defining-Realm ownership.
 C++ implementations were consulted. Binary, integer-specific and random methods
-remain separate work. Acceptance pending.
+remain separate work. Both guest suites pass 511/511, full tooling290/290, runner30 and probes10 pass. All 88 native entries pass build and static coverage in one invocation; Math driver5127/5127 static. The twenty-operation compiler probe also passes static coverage and both executions without a workaround. All 225 C++ fixture results agree across hosts: 67 reported successes, 30 unchecked completions, 53 parse errors, 73 runtime errors and two reported failures. All 97 previously successful or unchecked files retain their outcomes. The Math fixture reaches missing global isNaN. Reports: build/legacy-suite-node-QX5Wq5/report.json and build/legacy-suite-native-YyZgy7/report.json. Logs: build/math-transcendental-*.
