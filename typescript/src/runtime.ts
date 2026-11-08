@@ -357,6 +357,12 @@ export function equal(left: Value, right: Value): boolean {
         case "object": return right.kind === "object" && left.object === right.object;
     }
 }
+export function sameValueZero(left: Value, right: Value): boolean {
+    if (left.kind === "number" && right.kind === "number" && Number.isNaN(left.value))
+        return Number.isNaN(right.value);
+    return equal(left, right);
+}
+
 // SameValue differs from strict equality only for NaN and signed zero.
 export function sameValue(left: Value, right: Value): boolean {
     if (left.kind === "number" && right.kind === "number") {

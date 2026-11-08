@@ -372,7 +372,7 @@ const realms = [a, b, c];
 for (let r = 0; r < roots.length; r++) {
     const root = roots[r];
     const keys = root.ownPropertyKeys();
-    check(keys.length === 5 && keys[0] === "length" && keys[1] === "join" && keys[2] === "toString" && keys[3] === "push" && keys[4] === "pop", "R1 key order");
+    check(keys.length === 7 && keys[0] === "length" && keys[1] === "join" && keys[2] === "toString" && keys[3] === "push" && keys[4] === "pop" && keys[5] === "indexOf" && keys[6] === "includes", "R1 key order");
     const length = root.getOwnProperty("length");
     check(length !== undefined && length.kind === "data" && sameValue(length.value, num(0)) && length.writable && !length.enumerable && !length.configurable, "R1 root length");
     for (const name of ["join", "toString"]) {
@@ -397,7 +397,7 @@ frozen.preventExtensions();
 frozenRealm.arrayPrototype.preventExtensions();
 expect(j(obj(frozen)), str("1"), "R2 nonextensible receiver");
 expect(t(obj(frozen)), str("1"), "R2 nonextensible root");
-check(frozen.ownPropertyKeys().length === 2 && frozenRealm.arrayPrototype.ownPropertyKeys().length === 5, "R2 no writes");
+check(frozen.ownPropertyKeys().length === 2 && frozenRealm.arrayPrototype.ownPropertyKeys().length === 7, "R2 no writes");
 const transitions = new CallObserver(a);
 const foreign = c.createObject();
 put(foreign, "join", fn(c, (_receiver, _args, context, _at) => {

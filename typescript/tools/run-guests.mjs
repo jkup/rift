@@ -97,6 +97,15 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("array-search-equality", "let a=[NaN,0,undefined,'7',7]; console.log(a.indexOf(NaN),a.includes(NaN),a.indexOf(-0),a.includes(-0),a.indexOf(7),a.indexOf('7'));", {stdout:"-1 true 1 true 4 3\n"});
+lineCase("array-search-identity", "let x={}; let y={}; let a=[x]; console.log(a.indexOf(x),a.includes(y),a.indexOf(y));", {stdout:"0 false -1\n"});
+lineCase("array-search-offset", "let a=[7,11,7]; console.log(a.indexOf(7,1),a.indexOf(7,-2),a.indexOf(7,1.9),a.includes(11,-1),a.includes(7,Infinity),a.indexOf(7,-Infinity),a.indexOf(7,NaN));", {stdout:"2 2 2 false false 0 0\n"});
+lineCase("array-search-primitives", "console.log([].indexOf.call('abc','b'),[].includes.call('abc','bc'),[].indexOf.call(7,7));", {stdout:"1 false -1\n"});
+lineCase("array-search-missing", "let a=[,undefined]; console.log(a.indexOf(),a.includes(),[,].indexOf(undefined),[,].includes(undefined));", {stdout:"1 true -1 true\n"});
+lineCase("array-search-safe-limit", "let o={length:Infinity}; o[9007199254740990]=7; console.log([].indexOf.call(o,7,-1),[].includes.call(o,7,-1));", {stdout:"9007199254740990 true\n"});
+lineCase("array-search-abrupt-offset", "let f={valueOf:function(){throw 'from';}}; console.log([].indexOf(7,f),[].includes(7,f)); try{[7].indexOf(7,f);}catch(e){console.log(e);} try{[7].includes(7,f);}catch(e){console.log(e);}", {stdout:"-1 false\nfrom\nfrom\n"});
+lineCase("array-search-nullish", "try{[].indexOf.call(null,7);}catch(e){console.log(e.name);} try{[].includes.call(undefined,7);}catch(e){console.log(e.name);}", {stdout:"TypeError\nTypeError\n"});
+lineCase("array-search-metadata", "console.log([].indexOf.name,[].indexOf.length,[].includes.name,[].includes.length);", {stdout:"indexOf 1 includes 1\n"});
 lineCase("array-push-pop", "let a=[7]; console.log(a.push(11,13),a.pop(),a.length,a.pop(),a.pop(),a.pop(),a.push());", {stdout:"3 13 2 11 7 undefined 0\n"});
 lineCase("array-pop-hole", "let a=[,,]; console.log(a.pop(),a.length,0 in a);", {stdout:"undefined 1 false\n"});
 lineCase("array-mutation-coercion", "let o={length:{valueOf:function(){console.log('length'); return 1.9;}}}; console.log([].push.call(o,7),o[1],o.length);", {stdout:"length\n2 7 2\n"});
@@ -242,6 +251,18 @@ execute("io", command, [...prefix, "build/nonexistent-guest.js"], { status: 66, 
 const realmCommand = lane === "node" ? process.execPath : join(root, "build/native/realms" + suffix);
 const realmPrefix = lane === "node" ? [join(root, "build/node/test/realms.js")] : [];
 execute("realms", realmCommand, [...realmPrefix, "test/fixtures/realm-setup.js", "test/fixtures/realm-check.js"], { stdout: "a 41\nb 7 undefined\na 42\na 23\nrealms independent\n" });
+const bootstrapCommand = lane === "node" ? process.execPath : join(root, "build/native/script-realm-bootstrap" + suffix);
+const bootstrapPrefix = lane === "node" ? [join(root, "build/node/test/script-realm-bootstrap.js")] : [];
+const bootstrapRows = readFileSync(join(root, "fixtures/script-realm-bootstrap/rows.txt"), "utf8");
+const bootstrapExpected = Array.from({ length: 18 }, (_, index) => `B${String(index + 1).padStart(2, "0")} PASS\n`).join("");
+for (const [name, text] of [["seed", bootstrapRows], ["other", bootstrapRows.replaceAll("|seed|7", "|other|11")]]) {
+    const file = join(root, "build/guest-fixtures/script-realm-bootstrap-" + name + ".txt");
+    writeFileSync(file, text);
+    execute("script-realm-bootstrap-" + name, bootstrapCommand, [...bootstrapPrefix, file], { stdout: bootstrapExpected });
+}
+const searchCommand = lane === "node" ? process.execPath : join(root, "build/native/array-search" + suffix);
+const searchArgs = lane === "node" ? [join(root, "build/node/test/array-search.js")] : [];
+execute("array-search", searchCommand, searchArgs, { stdout: "array search passed\n" });
 const mutationCommand = lane === "node" ? process.execPath : join(root, "build/native/array-mutation" + suffix);
 const mutationArgs = lane === "node" ? [join(root, "build/node/test/array-mutation.js")] : [];
 execute("array-mutation", mutationCommand, mutationArgs, { stdout: "array mutation passed\n" });

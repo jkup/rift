@@ -2954,3 +2954,9 @@ Redirect the remaining parser-dispatch reports, capability isolation files and S
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; follows TS-037 and TS-039. Verified named interfaces against current source and checked local document links; documentation only.
 
 Put the current Script execution path and runtime model ahead of the historical TS-001 architecture notes. Correct the README build-driver description. Preserve milestone history, verify named interfaces against source, and make the remaining legacy migration explicit. Documentation only.
+
+## TS-042 — Array indexOf and includes
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `051e02d5`.
+
+Implement generic indexOf/includes through existing guest object operations. Preserve captured length, fromIndex coercion and clamping, inherited values, holes, strict equality versus SameValueZero, abrupt completion, and bounded iteration. Add expected-result checks in Node and fresh native builds; keep unsupported reflection/proxy features explicit. Consult ECMA-262 and engine262 at18cdeb03c363eb31d775648a0d070bdc8a26ced1.

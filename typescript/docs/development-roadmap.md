@@ -49,6 +49,7 @@ Script architecture guide ahead of the historical foundation notes.
 
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
+| P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |
 | P1 | Repair the normal test command | `script-execution-inputs.test.mjs`, introduced in `7f887deb`, requires positional arguments absent under `node --test`. Add no-argument setup without dropping its assertions; retain the explicit invocation. |
 | P1 | Stop tests overwriting historical reports | Running `npm run test:test262` changed five initially clean tracked reports in TS-035C/E2A. Write fresh reports under `build/`; restore the old bytes and retain the new run separately. |
 | P1 | Separate historical acceptance from regression testing | `script-ledger-checkpoint.test.mjs` invokes an old full-tree preservation check that currently fails on `Claude Roadmap.md`. A routine roadmap edit must not invalidate checkpoint behavior. Keep the historical verifier available, and run current checkpoint API/fault assertions independently. Do not update old hashes to manufacture acceptance. |
