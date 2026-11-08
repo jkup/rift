@@ -57,6 +57,13 @@ for (const [driver, directory, count, variants] of [
   const rows = json(`docs/validation/${directory}/semantic-matrix.json`).rows;
   assert.equal(rows.length, count);
   if (driver === 'script-assignment-target-audit') {
+    const exponent = rows.find(row => row.id === 'G0');
+    assert.equal(exponent.text, '1e2=7;');
+    exponent.expected = {kind: 'eligible', sourceUnits: 6, consumedUnits: 6, candidates: [{
+      ruleCode: 'assignment-target',
+      target: {text: '1e2', start: 0, end: 3, loc: {line: 1, column: 1}},
+      operator: {text: '=', start: 3, end: 4, loc: {line: 1, column: 4}},
+    }]};
     const prefix = rows.find(row => row.id === 'U14');
     assert.equal(prefix.text, '++42;');
     prefix.expected = {
