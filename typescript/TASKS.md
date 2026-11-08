@@ -3005,6 +3005,6 @@ Consolidate repeated Node/native executable selection in the guest runner. Prese
 
 ## TS-050 — Generic Array reverse
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `da6cec84`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `da6cec84`, implementation `4f4748ab`. Node/native guest suites pass 290/290 each, full tooling 290/290, runner 20/20 and all ten probes. All 73 native entries build statically; mutation driver coverage is 4368/4368. No skips; logs under build/array-reverse-*.
 
 Implement Array.prototype.reverse with captured array-like length, inherited and missing properties, specified Has/Get/Set/Delete order, strict failures, retained partial mutations and iteration budgets. Extend existing mutation and CLI tests, verify both hosts and fresh static native coverage, and update feature scope.

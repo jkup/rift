@@ -54,4 +54,7 @@ The mutation driver checks all four presence combinations, inherited values,
 accessor receivers, length changes during a getter, strict write/delete failures,
 partial mutations and interruption between pairs. CLI tests cover dense and
 sparse arrays, generic receivers, coercion, primitive boxing and method metadata.
-Native acceptance is pending the fresh full build.
+Validation: both guest suites pass 290/290, the full tooling suite passes
+290/290, and the 20 runner tests and ten compiler probes pass. All 73 native
+entries build with full static coverage; the expanded mutation driver has
+4368/4368 static statements. Logs are under `build/array-reverse-*`.

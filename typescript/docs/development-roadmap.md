@@ -76,6 +76,13 @@ driver entry points, not every historical mode or full ECMAScript coverage.
 The combined tooling run passes all 290 tests with zero skips
 (`build/current-tooling.log`), using the current Node and native builds.
 
+TS-049 simplifies guest driver selection while preserving all 284 complete
+results per host. TS-050 adds generic Array `reverse`, including sparse and
+inherited elements, accessors, strict failures, partial mutations and budgets.
+The expanded guest suites and full tooling suite each pass 290/290 with no
+skips. All 73 native entries were rebuilt with full static coverage; runner20
+and all ten compiler probes pass. See [array mutation](array-mutation.md).
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |
