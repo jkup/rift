@@ -23,6 +23,13 @@ drivers on registered controls in both hosts. These are regression and
 observation results, not a test262 conformance score. A published corpus
 conformance baseline remains roadmap work.
 
+`parser-audits.test.mjs` runs the five standalone parser-audit drivers in both
+hosts. It preserves 36 return sources, 62 block-function cases, 77 strict-parameter
+cases, 102 assignment-target cases and 140 lexical-statement cases, including
+both runtime input orders where supported (1318 child runs). It checks complete
+audit outputs and internal driver invariants. Historical replay scripts also
+compare whole-parser snapshots from their own milestones; those remain archival.
+
 Start with `input.mjs` for pinned input validation, `script-plan.mjs` for Script
 selection, `script-observe.mjs` for observation launches, and `script-result.mjs`
 for result decoding. `test-support/` contains live test helpers; files under

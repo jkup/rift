@@ -54,6 +54,13 @@ pass 270/270 in both hosts; all 73 native entries compile with full static
 coverage, and the runner/probe checks pass. The initial entry-point scan still
 flags five standalone parser-audit drivers for review.
 
+TS-045 adds those five audit drivers to ordinary tooling tests: all five tests
+pass, covering 1318 Node/native child runs with preserved audit matrices and
+runtime input orders. The historical whole-parser replay scripts remain intact.
+A more precise command-path scan also flags ten earlier Script/global-environment,
+bundle and observation-inspection drivers for verification; broad substring
+matches in the initial scan were insufficient evidence that a driver ran.
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |

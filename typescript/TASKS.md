@@ -2972,3 +2972,9 @@ Audit compiled drivers absent from ordinary validation and bring a bounded first
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `7fe90f9c`. All nine drivers pass both committed inputs in Node and fresh native binaries; expanded guest suites270/270 each, no skips. Accepted historical transcripts are read-only expected output; driver assertions are unchanged.
 
 Bring the existing catch, switch, for/update, nonstrict, construct, error, map and formatting host checks into the ordinary guest runner with their two committed runtime inputs. Preserve internal assertions and independent output expectations. Validate both hosts; keep parser audit and other uncovered drivers tracked separately.
+
+## TS-045 — Current non-emitting parser audit regressions
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `84b530d2`. All5 new tests pass, covering1318 Node/native child runs, no skips. Historical replay scripts and fixtures are unchanged. The current preceding full tooling run also passes281/281.
+
+Add ordinary Node/native regression entry points for the five standalone parser-audit drivers. Preserve their internal assertions, original audit-output matrices and runtime input orders. Keep historical whole-parser snapshots and replay scripts intact; the new tests cover audit results and driver invariants, not acceptance of obsolete surrounding parser behavior. Generate sources and concise failure reports only under build/.
