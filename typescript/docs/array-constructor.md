@@ -24,4 +24,4 @@ array-like property heuristic is replaced by the existing TypeScript array brand
 Host tests cover length boundaries, sparse storage, property descriptors, every
 supported value kind, poisoned conversion hooks, Realm identity and budgets.
 CLI tests cover construction, holes, invalid lengths, identity and metadata.
-Node guests pass 346/346; native and regression acceptance is pending.
+Both guest suites pass 346/346, full tooling 290/290, runner30 and probes10 pass. All 77 native entries pass build and static coverage in one invocation; Array driver4425/4425 static. All 225 C++ fixture results agree across hosts: 50 reported successes, 21 unchecked completions, 67 parse errors, 86 runtime errors and one reported failure. Array.isArray improves one file without regressing any of the 70 previously completed files. Logs: build/array-*.

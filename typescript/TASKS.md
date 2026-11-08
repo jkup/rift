@@ -3053,6 +3053,6 @@ Expose Boolean as a Script builtin constructor: calls return primitive truthines
 
 ## TS-058 — Array construction and brand checking
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `f61cefef`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `f61cefef`, implementation `3347767a`. Both guest suites pass 346/346, full tooling 290/290, runner30 and probes10 pass. All 77 native entries pass build and static coverage in one invocation; Array driver4425/4425 static. All 225 C++ fixture results agree across hosts: 50 reported successes, 21 unchecked completions, 67 parse errors, 86 runtime errors and one reported failure. Array.isArray improves one file without regressing any of the 70 previously completed files. Logs: build/array-*.
 
 Add Array call/construct semantics and Array.isArray in Script Realms using existing sparse array storage. Distinguish a single numeric length from element arguments without coercing objects; validate lengths, holes, descriptors, intrinsic metadata, Realm ownership and budgets. Preserve C++ fixtures and rerun the fixed selection in both hosts. Require fresh native static coverage and current regression checks.
