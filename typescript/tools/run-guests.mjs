@@ -554,6 +554,7 @@ executeDriver("string-split", { stdout: "String split passed\n" });
 executeDriver("array-flat", { stdout: "Array flattening passed\n" });
 executeDriver("object-assign", { stdout: "Object assignment passed\n" });
 executeDriver("symbol-factory", { stdout: "Symbol factory passed\n" });
+executeDriver("symbol-registry", { stdout: "Symbol registry passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

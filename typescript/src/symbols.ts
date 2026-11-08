@@ -5,6 +5,23 @@ export class GuestSymbol {
     constructor(readonly description: GuestString | undefined) {}
 }
 
+// This runtime module represents one agent. Its registry shares primitives,
+// never guest objects, across Realms just like the well-known identities below.
+const symbolRegistry = new Map<GuestString, GuestSymbol>();
+
+export function symbolFor(key: GuestString): GuestSymbol {
+    const existing = symbolRegistry.get(key);
+    if (existing !== undefined) return existing;
+    const symbol = new GuestSymbol(key);
+    symbolRegistry.set(key, symbol);
+    return symbol;
+}
+
+export function keyForSymbol(symbol: GuestSymbol): GuestString | undefined {
+    const key = symbol.description;
+    return key !== undefined && symbolRegistry.get(key) === symbol ? key : undefined;
+}
+
 // Shared semantic identity across every Realm in this runtime module instance.
 export const wellKnownHasInstance = new GuestSymbol("Symbol.hasInstance");
 export const wellKnownIsConcatSpreadable = new GuestSymbol("Symbol.isConcatSpreadable");

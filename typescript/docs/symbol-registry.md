@@ -1,0 +1,11 @@
+# Shared Symbol registry
+
+TS-105 implements Symbol.for and Symbol.keyFor. Symbol.for converts its key with the string hint, propagates abrupt completion, checks the operation budget, and interns the resulting string. Repeated calls return the same primitive identity, including across Script Realms. Symbol.keyFor rejects all nonsymbol values without coercion or unboxing, then returns the registry key or undefined. Errors come from the builtin's defining Realm; the methods themselves remain distinct Realm-owned objects.
+
+One private Map in symbols.ts is shared by this runtime module instance. This is a deliberate exception to Realm-local mutable guest state: the single-agent runtime must share registered symbol primitives across its Realms, just as it shares well-known symbol identities. The map stores no guest objects. Introducing multiple agents or workers will require moving this table into the corresponding explicit agent lifetime; a separate registry for each Realm would be observably wrong.
+
+The immutable description supplies a candidate reverse-lookup key. Checking that the map contains the exact same symbol prevents ordinary symbols and well-known symbols with equal descriptions from impersonating registered symbols. This uses one map rather than a linear scan or a second mutable index. Both methods charge a tick before registry access; lookup does not invoke guest code. Interned symbols remain retained for the runtime lifetime, as the registry requires.
+
+Semantic sources: [ECMA-262 Symbol.for](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-symbol.for), [Symbol.keyFor](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-symbol.keyfor), and [V8 Symbol builtins](https://github.com/v8/v8/blob/main/src/builtins/builtins-symbol.cc), consulted 2026-11-08. The specification explicitly places the registry on the surrounding agent. V8's public symbol table and identity validation support the chosen scope; no implementation code is copied.
+
+The dedicated driver covers coercion and reentrancy, absent/empty/UTF-16 keys, identity collisions, unboxed-only reverse lookup, inherited and detached calls, metadata, cross-Realm identities/errors and bounded allocation/lookup loops. Existing Symbol protocols and legacy bootstrap remain unchanged.

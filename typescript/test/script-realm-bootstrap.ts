@@ -77,7 +77,9 @@ function inventory(a: Realm): void {
                 desc(f, "prototype", obj(p), false, false, false);
                 desc(f, "name", {kind:"string",value:"Symbol"}, false, false, true);
                 desc(f, "length", n(0), false, false, true);
-                keys(f, ["name","length","prototype","hasInstance","isConcatSpreadable","species","split","toPrimitive","toStringTag"]);
+                keys(f, ["name","length","prototype","for","keyFor","hasInstance","isConcatSpreadable","species","split","toPrimitive","toStringTag"]);
+                method(a, f, "for", "for", 1);
+                method(a, f, "keyFor", "keyFor", 1);
                 const slot = f.constructorSlot;
                 check(f.getPrototypeOf() === a.functionPrototype && f.callable !== null && f.callable.realm === a && slot !== null && slot.kind === "builtin-constructor" && slot.realm === a && slot.callable === f.callable, "Symbol callable and rejecting construct slot");
             } else if (k==="constructor") {

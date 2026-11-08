@@ -1,7 +1,7 @@
 import type { Realm } from "../realm.js";
 import { GuestSymbolObject } from "../primitive-objects.js";
 import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
-import { GuestSymbol, symbolDescriptiveString, wellKnownHasInstance, wellKnownIsConcatSpreadable, wellKnownSpecies, wellKnownSplit, wellKnownToPrimitive, wellKnownToStringTag } from "../symbols.js";
+import { GuestSymbol, symbolFor, keyForSymbol, symbolDescriptiveString, wellKnownHasInstance, wellKnownIsConcatSpreadable, wellKnownSpecies, wellKnownSplit, wellKnownToPrimitive, wellKnownToStringTag } from "../symbols.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString } from "../conversion.js";
 import type { Location } from "../syntax.js";
@@ -24,6 +24,23 @@ export function registerSymbol(realm: Realm): void {
         return normal({ kind: "symbol", value: new GuestSymbol(description) });
     }, (_callee, _args, context, loc) => languageFailure(context.realm, "TypeError", "Symbol cannot be constructed", loc));
     factory.bootstrapDefine("prototype", { value: { kind: "object", object: realm.symbolPrototype }, writable: false, enumerable: false, configurable: false });
+    realm.registerBuiltin(factory, "for", 1, (_receiver, args, context, loc) => {
+        const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);
+        if (primitive.type === "throw") return primitive;
+        const key = toString(primitive.value, loc, context.realm);
+        if (key.type === "throw") return key;
+        const budget = context.tick(loc);
+        if (budget.type === "throw") return budget;
+        return normal({ kind: "symbol", value: symbolFor(key.value) });
+    });
+    realm.registerBuiltin(factory, "keyFor", 1, (_receiver, args, context, loc) => {
+        const symbol = args.length === 0 ? UNDEFINED : args[0];
+        if (symbol.kind !== "symbol") return languageFailure(context.realm, "TypeError", "Symbol.keyFor requires a symbol", loc);
+        const budget = context.tick(loc);
+        if (budget.type === "throw") return budget;
+        const key = keyForSymbol(symbol.value);
+        return normal(key === undefined ? UNDEFINED : { kind: "string", value: key });
+    });
     for (const entry of [
         { name: "hasInstance", symbol: wellKnownHasInstance },
         { name: "isConcatSpreadable", symbol: wellKnownIsConcatSpreadable },
