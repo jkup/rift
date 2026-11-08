@@ -3261,3 +3261,9 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 8f54e950, impleme
 
 Implement Script split with RequireObjectCoercible before custom split lookup, original callback arguments, receiver/limit/separator coercion order, UTF-16 units, bounded dense results and builtin Realm allocation. RegExp/public Symbol installation remain separate. Validate both hosts and fixed fixtures.
 
+## TS-093 — Unicode case conversion backend check
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 3f1e6c48.
+
+Probe Unicode default case conversion across Node/native with literal expectations, expansions, contextual sigma, supplementary characters and lone surrogates. Expose Script toLowerCase/toUpperCase only if backend semantics are adequate; otherwise record a concrete follow-up and preserve the current surface.
+

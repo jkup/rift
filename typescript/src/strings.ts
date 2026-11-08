@@ -42,3 +42,6 @@ export function isStringWhitespace(code: number): boolean {
         || code === 0x202f || code === 0x205f || code === 0x3000 || code === 0xfeff
         || code === 0x0a || code === 0x0d || code === 0x2028 || code === 0x2029;
 }
+
+export function stringLowerCase(value: GuestString): GuestString { return value.toLowerCase(); }
+export function stringUpperCase(value: GuestString): GuestString { return value.toUpperCase(); }

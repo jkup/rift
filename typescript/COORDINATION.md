@@ -1766,3 +1766,5 @@ The owner authorized continued development and frequent commits. Defer the prove
 2026-11-08 TS-092 claimed by Codex catch-up chat. Scope: string split, internal well-known split identity, dedicated semantic driver and inventories.
 
 2026-11-08 TS-092 accepted, implementation 1076759f. Both guest suites pass 580/580, full tooling 290/290, runner 31/31 and all ten probes pass. All 93 native entries pass build and static coverage in one invocation; split driver 5994/5994 static. All 225 complete fixture results agree: 80 reported successes, 28 unchecked completions, 53 parse errors, 63 runtime errors and one reported failure. The simple split fixture completes without check markers; all 107 previously completed outcomes remain. Comprehensive strings now reach toLowerCase. Reports: build/legacy-suite-node-7700Xi/report.json and build/legacy-suite-native-BpKNyo/report.json. Logs: build/string-split-*. Next: verify Unicode case-conversion backend before exposing lower/upper methods.
+
+2026-11-08 TS-093 claimed by Codex catch-up chat. Scope: case-conversion backend validation, followed by methods only if evidence supports them.

@@ -272,4 +272,43 @@ for (const method of ["trim","trimStart","trimEnd"]) {
     const bounded = run(fixture(str(spaces)),method,"",40);
     check(bounded.type === "throw" && bounded.origin.kind === "resource-limit",method + " bounded whitespace scan");
 }
+
+
+const caseRows: string[][] = [
+["Hello","hello","HELLO"],
+["stra\u00dfe","stra\u00dfe","STRASSE"],
+["\u0130","i\u0307","\u0130"],
+["\u039f\u03a3","\u03bf\u03c2","\u039f\u03a3"],
+["\u039f\u03a3\u0391","\u03bf\u03c3\u03b1","\u039f\u03a3\u0391"],
+["\u039f\u03a3\u0301","\u03bf\u03c2\u0301","\u039f\u03a3\u0301"],
+["\u039f\u03a3\u0301\u0391","\u03bf\u03c3\u0301\u03b1","\u039f\u03a3\u0301\u0391"],
+["\u03a3","\u03c3","\u03a3"],
+["\ud801\udc00","\ud801\udc28","\ud801\udc00"],
+["\ud801\udc28","\ud801\udc28","\ud801\udc00"],
+["\ufb03","\ufb03","FFI"],
+["\ud800A\udfff","\ud800a\udfff","\ud800A\udfff"]
+];
+
+for (const row of caseRows) {
+    const realm = fixture(str(row[0]));
+    result(run(realm,"toLowerCase"),str(row[1]));
+    result(run(realm,"toUpperCase"),str(row[2]));
+}
+for (const method of ["toLowerCase","toUpperCase"]) {
+    result(run(fixture(str("")),method),str(""));
+    result(run(fixture(num(17)),method),str("17"));
+    const realm = fixture(str("")), target = realm.createObject(), unused = realm.createObject();let calls = 0;
+    target.bootstrapDefine(wellKnownToPrimitive,{value:obj(realm.createBuiltin("convert",1,(_receiver,args,_context,_loc): ValueCompletion => {
+        calls++;check(args[0].kind === "string" && args[0].value === "string","case conversion string hint");return normal(str("AbC"));
+    })),configurable:true});
+    unused.bootstrapDefine(wellKnownToPrimitive,{value:obj(realm.createBuiltin("unused",1,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("case argument converted");}))});
+    define(realm,"target",obj(target));define(realm,"unused",obj(unused));
+    result(run(realm,method,"unused"),str(method === "toLowerCase" ? "abc" : "ABC"));check(calls === 1,"case receiver converted once");
+    target.bootstrapDefine(wellKnownToPrimitive,{value:obj(realm.createBuiltin("failure",1,(_receiver,_args,context,loc): ValueCompletion => languageFailure(context.realm,"TypeError","case sentinel",loc))),configurable:true});
+    const failed = run(realm,method);check(failed.type === "throw" && failed.diagnostic.message === "case sentinel","case conversion failure");
+    for (const input of [{kind:"null"} as Value,{kind:"undefined"} as Value,{kind:"symbol",value:wellKnownToPrimitive} as Value]) {
+        const invalid = run(fixture(input),method);check(invalid.type === "throw" && invalid.diagnostic.name === "TypeError","case invalid receiver");
+    }
+    const bounded = run(fixture(str("ABC")),method,"",0);check(bounded.type === "throw" && bounded.origin.kind === "resource-limit","case resource entry guard");
+}
 console.log("string methods passed");

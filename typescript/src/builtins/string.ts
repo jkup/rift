@@ -1,7 +1,7 @@
 import type { Realm } from "../realm.js";
 import { GuestStringObject } from "../primitive-objects.js";
 import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
-import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, isStringWhitespace, type GuestString } from "../strings.js";
+import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, isStringWhitespace, stringLowerCase, stringUpperCase, type GuestString } from "../strings.js";
 import type { Location } from "../syntax.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString, toNumber, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
@@ -115,6 +115,14 @@ export function registerStringMethods(realm: Realm): void {
         registerStringTrim(realm, "trim", "both");
         registerStringTrim(realm, "trimStart", "start");
         registerStringTrim(realm, "trimEnd", "end");
+        realm.registerBuiltin(realm.stringPrototype, "toLowerCase", 0, (receiver, _args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            return text.type === "throw" ? text : normal({ kind: "string", value: stringLowerCase(text.value) });
+        });
+        realm.registerBuiltin(realm.stringPrototype, "toUpperCase", 0, (receiver, _args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            return text.type === "throw" ? text : normal({ kind: "string", value: stringUpperCase(text.value) });
+        });
         realm.registerBuiltin(realm.stringPrototype, "concat", 1, (receiver, args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);
             if (text.type === "throw") return text;
