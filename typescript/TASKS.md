@@ -3249,3 +3249,9 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 4b2a4b26, impleme
 
 Implement String.concat and lastIndexOf with ordered coercion, UTF-16 semantics, NaN position handling, metadata and resource guards. Validate both hosts, native gates and fixed fixtures.
 
+## TS-091 — ECMAScript string trimming
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 31525b3d.
+
+Add Script trim/trimStart/trimEnd with shared numeric-conversion whitespace classification, ordered generic receiver coercion, bounded scanning and UTF-16 preservation. Validate both hosts and existing gates; aliases remain separate.
+

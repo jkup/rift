@@ -456,7 +456,7 @@ for(const cross of [false,true]){
 }
 for(const r of [fresh(),fresh()]){
  keys(r.globalObject,["undefined","NaN","Infinity","console","Number","Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object","Array","Math","isNaN","isFinite","JSON"]);
- keys(r.stringPrototype,["length","toString","valueOf","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","constructor"]);keys(r.objectPrototype,["valueOf","toString","constructor","hasOwnProperty"]);
+ keys(r.stringPrototype,["length","toString","valueOf","trim","trimStart","trimEnd","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","constructor"]);keys(r.objectPrototype,["valueOf","toString","constructor","hasOwnProperty"]);
  for(const name of ["String","Object"]){const cv=own(r.globalObject,name),ctor=object(cv),proto=name==="String"?r.stringPrototype:r.objectPrototype;
   descriptor(r.globalObject,name,cv,true,false,true);descriptor(ctor,"name",str(name),false,false,true);descriptor(ctor,"length",num(1),false,false,true);descriptor(ctor,"prototype",obj(proto),false,false,false);descriptor(proto,"constructor",cv,true,false,true);keys(ctor,name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","defineProperty","getOwnPropertyDescriptor"]:["name","length","prototype"]);check(ctor.getPrototypeOf()===r.functionPrototype,"F10 Function link");
   const c=ctor.callable,k=ctor.constructorSlot;check(c!==null&&c.kind==="builtin"&&c.realm===r&&k!==null&&k.kind==="builtin-constructor"&&k.realm===r&&k.callable===c,"F10 exact guard graph");

@@ -1,7 +1,7 @@
 import type { Realm } from "../realm.js";
 import { GuestStringObject } from "../primitive-objects.js";
 import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
-import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, type GuestString } from "../strings.js";
+import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, isStringWhitespace, type GuestString } from "../strings.js";
 import type { Location } from "../syntax.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString, toNumber, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
@@ -86,8 +86,35 @@ function sliceIndex(index: number, length: number): number {
     return Math.min(Math.max(index < 0 ? length + index : index, 0), length);
 }
 
+function registerStringTrim(realm: Realm, name: string, where: "start" | "end" | "both"): void {
+    realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
+        const text = stringReceiver(receiver, context, loc);
+        if (text.type === "throw") return text;
+        let start = 0;
+        let end = stringLength(text.value);
+        if (where !== "end") {
+            while (start < end && isStringWhitespace(stringCodeUnit(text.value, start))) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") return tick;
+                start++;
+            }
+        }
+        if (where !== "start") {
+            while (end > start && isStringWhitespace(stringCodeUnit(text.value, end - 1))) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") return tick;
+                end--;
+            }
+        }
+        return normal({ kind: "string", value: stringSlice(text.value, start, end) });
+    });
+}
+
 export function registerStringMethods(realm: Realm): void {
     if (realm.profile === "script") {
+        registerStringTrim(realm, "trim", "both");
+        registerStringTrim(realm, "trimStart", "start");
+        registerStringTrim(realm, "trimEnd", "end");
         realm.registerBuiltin(realm.stringPrototype, "concat", 1, (receiver, args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);
             if (text.type === "throw") return text;

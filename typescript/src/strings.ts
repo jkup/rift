@@ -35,3 +35,10 @@ export function stringLastIndexOf(value: GuestString, search: GuestString, start
 }
 
 export function stringJoin(parts: GuestString[]): GuestString { return parts.join(""); }
+
+export function isStringWhitespace(code: number): boolean {
+    return code === 0x09 || code === 0x0b || code === 0x0c || code === 0x20
+        || code === 0xa0 || code === 0x1680 || (code >= 0x2000 && code <= 0x200a)
+        || code === 0x202f || code === 0x205f || code === 0x3000 || code === 0xfeff
+        || code === 0x0a || code === 0x0d || code === 0x2028 || code === 0x2029;
+}

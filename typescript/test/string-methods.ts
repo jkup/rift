@@ -235,4 +235,41 @@ for (const failure of ["", "R", "A", "B"]) {
     }
     check(interrupted && completed,"concat bounded argument loop");
 }
+
+
+const whitespace = ["\u0009","\u000a","\u000b","\u000c","\u000d","\u0020","\u00a0","\u1680","\u2000","\u2001","\u2002","\u2003","\u2004","\u2005","\u2006","\u2007","\u2008","\u2009","\u200a","\u2028","\u2029","\u202f","\u205f","\u3000","\ufeff"];
+for (const space of whitespace) {
+    const realm = fixture(str(space + "x" + space));
+    result(run(realm,"trim"),str("x"));
+    result(run(realm,"trimStart"),str("x"+space));
+    result(run(realm,"trimEnd"),str(space+"x"));
+}
+for (const kept of ["\u0085","\u180e","\u200b","\u2060","\ud800","\udfff","😀","\u0000"]) {
+    const realm = fixture(str(" " + kept + " "));
+    result(run(realm,"trim"),str(kept));
+    result(run(realm,"trimStart"),str(kept+" "));
+    result(run(realm,"trimEnd"),str(" "+kept));
+}
+for (const method of ["trim","trimStart","trimEnd"]) {
+    result(run(fixture(str("")),method),str(""));
+    result(run(fixture(str(" \t\r\n")),method),str(""));
+    result(run(fixture(str("a b")),method),str("a b"));
+    result(run(fixture(num(17)),method),str("17"));
+    const realm = fixture(str("x"));
+    const unused = realm.createObject();
+    unused.bootstrapDefine(wellKnownToPrimitive,{value:obj(realm.createBuiltin("unused",1,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("trim argument converted");}))});
+    define(realm,"unused",obj(unused));result(run(realm,method,"unused"),str("x"));
+    for (const input of [{kind:"null"} as Value,{kind:"undefined"} as Value,{kind:"symbol",value:wellKnownToPrimitive} as Value]) {
+        const bad = run(fixture(input),method);
+        check(bad.type === "throw" && bad.diagnostic.name === "TypeError",method + " rejected receiver");
+    }
+    const target = realm.createObject();let calls = 0;
+    target.bootstrapDefine(wellKnownToPrimitive,{value:obj(realm.createBuiltin("trimReceiver",1,(_receiver,args,_context,_loc): ValueCompletion => {
+        calls++;check(args[0].kind === "string" && args[0].value === "string","trim coercion hint");return normal(str(" x "));
+    }))});
+    define(realm,"target",obj(target));result(run(realm,method),str(method === "trim" ? "x" : method === "trimStart" ? "x " : " x"));check(calls === 1,"trim converts receiver once");
+    const spaces = " ".repeat(200);
+    const bounded = run(fixture(str(spaces)),method,"",40);
+    check(bounded.type === "throw" && bounded.origin.kind === "resource-limit",method + " bounded whitespace scan");
+}
 console.log("string methods passed");

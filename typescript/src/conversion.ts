@@ -3,16 +3,10 @@ import { toPrimitive } from "./primitive-conversion.js";
 import { languageFailure, unsupportedFailure } from "./runtime.js";
 import type { Value, ThrowCompletion, PropertyKey, OperationContext } from "./runtime.js";
 import type { Location } from "./syntax.js";
-import type { GuestString } from "./strings.js";
+import { isStringWhitespace, type GuestString } from "./strings.js";
 
 export type NumberCompletion = { type: "normal"; value: number } | ThrowCompletion;
 
-function numericWhitespace(code: number): boolean {
-    return code === 0x09 || code === 0x0b || code === 0x0c || code === 0x20
-        || code === 0xa0 || code === 0x1680 || (code >= 0x2000 && code <= 0x200a)
-        || code === 0x202f || code === 0x205f || code === 0x3000 || code === 0xfeff
-        || code === 0x0a || code === 0x0d || code === 0x2028 || code === 0x2029;
-}
 function digit(code: number): number {
     if (code >= 48 && code <= 57) return code - 48;
     if (code >= 65 && code <= 70) return code - 65 + 10;
@@ -30,8 +24,8 @@ function validatedNumber(token: string): number { return Number(token); }
 export function stringToNumber(value: GuestString): number {
     let start = 0;
     let end = value.length;
-    while (start < end && numericWhitespace(value.charCodeAt(start))) start++;
-    while (end > start && numericWhitespace(value.charCodeAt(end - 1))) end--;
+    while (start < end && isStringWhitespace(value.charCodeAt(start))) start++;
+    while (end > start && isStringWhitespace(value.charCodeAt(end - 1))) end--;
     if (start === end) return 0;
     const token = value.slice(start, end);
     let radix = 0;
