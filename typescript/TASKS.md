@@ -2978,3 +2978,9 @@ Bring the existing catch, switch, for/update, nonstrict, construct, error, map a
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `84b530d2`. All5 new tests pass, covering1318 Node/native child runs, no skips. Historical replay scripts and fixtures are unchanged. The current preceding full tooling run also passes281/281.
 
 Add ordinary Node/native regression entry points for the five standalone parser-audit drivers. Preserve their internal assertions, original audit-output matrices and runtime input orders. Keep historical whole-parser snapshots and replay scripts intact; the new tests cover audit results and driver invariants, not acceptance of obsolete surrounding parser behavior. Generate sources and concise failure reports only under build/.
+
+## TS-046 — Restore Script environment and inspection checks
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `4b6b62e2`. All seven drivers pass both runtime inputs in Node/native; guest suites284/284 each with no skips. No engine or driver assertions changed.
+
+Restore ordinary execution of global-environment, Script global declarations, records, environments, execution, normal harness-bundle controls and throw-inspection drivers. Preserve the two runtime inputs and accepted expected output; keep archival timeout/replay checks intact. Metadata/declaration JSON and synthetic serializer drivers remain a separate follow-up. Validate both hosts with the current native build.

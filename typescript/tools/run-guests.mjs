@@ -360,7 +360,8 @@ execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-
 const outcomesCommand = lane === "node" ? process.execPath : join(root, "build/native/structured-outcomes" + suffix);
 const outcomesArgs = lane === "node" ? [join(root, "build/node/test/structured-outcomes.js")] : [];
 execute("structured-outcomes", outcomesCommand, outcomesArgs, { stdout: "structured-outcomes ok\n" });
-for (const { driver, variant, fixture, stdout } of scriptHostCases) {
+for (const { driver, variant, fixture, stdout, source } of scriptHostCases) {
+    if (source !== undefined) writeFileSync(join(root, fixture), source);
     const executable = lane === "node" ? process.execPath : join(root, "build/native", driver + suffix);
     const args = lane === "node" ? [join(root, "build/node/test", driver + ".js"), fixture] : [fixture];
     execute(driver + "/" + variant, executable, args, { stdout });
