@@ -12,6 +12,7 @@ mkdirSync(join(root, "build/native"), { recursive: true });
 const run = args => runNativeCommand(scriptc, args, { cwd: root });
 const entries = [
     ["test/number-constructor.ts", "number-constructor"],
+    ["test/number-parse.ts", "number-parse"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

@@ -3279,3 +3279,9 @@ Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base d7587906, impleme
 
 Upgrade Script Number from namespace to callable constructor with numeric conversion, wrapper slots and prototype behavior; add isInteger/isSafeInteger without coercion. Preserve legacy namespace and constants, validate both hosts, metadata, coercion order and fixed fixtures. Parsing and formatting stay separate.
 
+## TS-096 — Numeric prefix parsing
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base be4618cb.
+
+Implement Script parseInt/parseFloat with shared Number aliases, ordered string/radix coercion, explicit prefix grammar, bounded scanning and validated native rounding. Probe host primitives before choosing a backend; keep legacy behavior and fixed fixtures intact.
+

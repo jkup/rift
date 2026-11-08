@@ -43,7 +43,7 @@ function inventory(a: Realm): void {
     keys(c,["log"]); method(a,c,"log","log",0);
     const names=["NaN","POSITIVE_INFINITY","NEGATIVE_INFINITY","MAX_VALUE","MIN_VALUE","EPSILON","MAX_SAFE_INTEGER","MIN_SAFE_INTEGER"];
     const values=[NaN,Infinity,-Infinity,1.7976931348623157e308,5e-324,2.220446049250313e-16,9007199254740991,-9007199254740991];
-    keys(num,["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
+    keys(num,["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger","parseInt","parseFloat"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
     method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1); method(a,num,"isInteger","isInteger",1); method(a,num,"isSafeInteger","isSafeInteger",1);
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
     const lists: PropertyKey[][]=[["valueOf","toString","constructor","hasOwnProperty"],["name","length","caller","arguments","call","apply","toString",wellKnownHasInstance],["length","join","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with","flat","flatMap","at","indexOf","includes","lastIndexOf","every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter"],["toString","valueOf","constructor"],["toString","valueOf","constructor"],["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase","concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","constructor"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
@@ -57,7 +57,7 @@ function inventory(a: Realm): void {
                 check(i===0 || i===2 || i===3 || i===4 || i===5,"supported prototype constructors");
                 const name=i===0?"Object":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
                 desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
-                keys(f,name==="Number"?["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger"]:name==="Array"?["name","length","prototype","isArray"]:name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","defineProperty","getOwnPropertyDescriptor"]:["name","length","prototype"]);
+                keys(f,name==="Number"?["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger","parseInt","parseFloat"]:name==="Array"?["name","length","prototype","isArray"]:name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","defineProperty","getOwnPropertyDescriptor"]:["name","length","prototype"]);
                 if(name==="Array")method(a,f,"isArray","isArray",1);
                 if(name==="Object"){method(a,f,"hasOwn","hasOwn",2);for(const key of ["keys","values","entries","defineProperty","getOwnPropertyDescriptor"])method(a,f,key,key,key==="defineProperty"?3:key==="getOwnPropertyDescriptor"?2:1);}
                 desc(f,"name",{kind:"string",value:name},false,false,true); desc(f,"length",n(1),false,false,true);
@@ -88,7 +88,7 @@ function row(id: string,name: string,initial: number): void {
     const x=new Realm((line:string)=>{output+=line; outputCalls++;}), y=new Realm((line:string)=>{output+=line; outputCalls++;},"legacy");
     const e=new Evaluator(x), context=stub(a), first=n(initial), next=n(initial===7?11:7);
     const legacyGlobals=["undefined","NaN","Infinity","console","Number"];
-    const globals=[...legacyGlobals,"Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object","Array","Math","isNaN","isFinite","JSON"];
+    const globals=[...legacyGlobals,"parseInt","parseFloat","Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Boolean","Object","Array","Math","isNaN","isFinite","JSON"];
     switch(id) {
     case "B01": {
         for(const l of [x,y]) check(l.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,"legacy hasInstance absent");

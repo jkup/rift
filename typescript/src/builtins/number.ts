@@ -1,4 +1,5 @@
 import { GuestNumber } from "../primitive-objects.js";
+import { registerNumericParsing } from "./number-parse.js";
 import { numberToString, toIntegerOrInfinity, toNumber, type NumberCompletion } from "../conversion.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { numberToStringRadix } from "../number-radix.js";
@@ -36,6 +37,7 @@ export function registerNumber(realm: Realm): void {
         });
     }
     realm.installGlobal("Number", { kind: "object", object: namespace }, true);
+    if (realm.profile === "script") registerNumericParsing(realm, namespace);
 }
 
 function numberArgument(args: Value[], context: OperationContext, loc: Location): NumberCompletion {
