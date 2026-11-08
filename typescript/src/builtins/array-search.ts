@@ -75,4 +75,35 @@ export function registerArraySearch(realm: Realm): void {
         }
         return normal({ kind: "boolean", value: false });
     });
+    realm.registerBuiltin(realm.arrayPrototype, "lastIndexOf", 1, (receiver, args, context, loc) => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        if (length.value === 0) return normal({ kind: "number", value: -1 });
+        let start = length.value - 1;
+        if (args.length > 1) {
+            const primitive = toPrimitive(args[1], "number", context, loc);
+            if (primitive.type === "throw") return primitive;
+            const relative = toIntegerOrInfinity(primitive.value, loc, context.realm);
+            if (relative.type === "throw") return relative;
+            start = relative.value < 0 ? length.value + relative.value : Math.min(relative.value, start);
+        }
+        const search = args.length > 0 ? args[0] : UNDEFINED;
+        const object: Value = { kind: "object", object: boxed.value };
+        for (let index = start; index >= 0; index--) {
+            const iteration = context.tick(loc);
+            if (iteration.type === "throw") return iteration;
+            const key = numberToString(index);
+            const present = boxed.value.internalHasProperty(key, loc);
+            if (present.type === "throw") return present;
+            if (!present.value) continue;
+            const element = boxed.value.internalGet(key, object, context, loc);
+            if (element.type === "throw") return element;
+            if (equal(search, element.value)) return normal({ kind: "number", value: index });
+        }
+        return normal({ kind: "number", value: -1 });
+    });
 }

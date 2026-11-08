@@ -30,3 +30,19 @@ ten compiler probes pass. Logs are under `build/array-search-*` and
 `build/harness-host-*`.
 
 These methods do not introduce proxies, reflection or `Symbol.unscopables` support.
+# Reverse search (TS-067)
+
+`lastIndexOf` boxes its receiver and captures length. Empty inputs return -1
+before converting `fromIndex`. Omitted starting indices use the last element;
+explicit undefined uses zero. Number-hint coercion, truncation, negative offsets
+and infinities determine the starting point. Descending Has/Get traversal skips
+holes, includes inherited elements and uses strict equality. Values and presence
+remain live after coercion or getters. Each iteration consumes the operation
+budget, and abrupt completions propagate immediately.
+
+This follows [Array.prototype.lastIndexOf](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.lastindexof).
+The C++ `src/builtins/array/array_accessors.cpp` reference ignores `fromIndex`
+and reads holes as undefined; those shortcuts are not preserved. Tests cover
+coercion order and mutation, missing versus undefined, empty inputs, NaN,
+negative zero, identity, holes, inherited matches, primitives and budgets.
+Native acceptance pending.

@@ -175,4 +175,50 @@ for (const index of ["3", "-4", "Infinity", "-Infinity", "99999999999999999999"]
     }
     check(interrupted && completed, "at budget boundary");
 }
+{
+    const { realm, target } = fixture();
+    result(run(realm, "lastIndexOf", "11", "Infinity"), num(0));
+    check(target.trace === "get:length;has:2;get:2;has:1;has:0;get:0;", "reverse search Has/Get order");
+    target.trace = "";
+    result(run(realm, "lastIndexOf", "undefined", "Infinity"), num(-1));
+    check(!target.trace.includes("get:1;"), "reverse search skips holes");
+    data(realm.objectPrototype, "1", 11);
+    target.trace = "";
+    result(run(realm, "lastIndexOf", "11", "Infinity"), num(1));
+    check(!target.trace.includes("has:0;"), "reverse search inherited match stops");
+}
+{
+    const { realm, target } = fixture();
+    const from = realm.createObject();
+    const conversion = realm.createBuiltin("fromIndex", 1, (_receiver, args, _context, _loc): ValueCompletion => {
+        check(args[0].kind === "string" && args[0].value === "number", "reverse search numeric hint");
+        target.trace += "convert;";
+        data(target, "length", 0);
+        data(target, "2", 23);
+        return normal(num(Infinity));
+    });
+    from.bootstrapDefine(wellKnownToPrimitive, { value: obj(conversion) });
+    realm.defineScriptGlobal("from", { value: obj(from) });
+    result(run(realm, "lastIndexOf", "23", "from"), num(2));
+    check(target.trace === "get:length;convert;has:2;get:2;", "reverse search captures length before conversion");
+    target.trace = "";
+    result(run(realm, "lastIndexOf", "23", "from"), num(-1));
+    check(target.trace === "get:length;", "empty reverse search avoids conversion");
+}
+for (const failure of ["length", "2", "has"]) {
+    const { realm, target } = fixture();
+    target.failGet = failure; target.failHas = failure === "has";
+    const actual = run(realm, "lastIndexOf", "11", "Infinity");
+    check(actual.type === "throw" && actual.diagnostic.message === (failure === "has" ? "has sentinel" : "get sentinel"), "reverse search abrupt propagation");
+    check(!target.trace.includes("has:1;"), "reverse search stops after failure");
+}
+{
+    let interrupted = false, completed = false;
+    for (let steps = 0; steps < 40; steps++) {
+        const { realm } = fixture(), actual = run(realm, "lastIndexOf", "11", "Infinity", steps);
+        if (actual.type === "throw") { check(actual.origin.kind === "resource-limit", "reverse search budget"); interrupted = true; }
+        else { result(actual, num(0)); completed = true; }
+    }
+    check(interrupted && completed, "reverse search budget boundary");
+}
 console.log("array search passed");

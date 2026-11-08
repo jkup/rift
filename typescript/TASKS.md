@@ -3104,3 +3104,9 @@ Expose map in Script Realms by boxing receivers and reusing mapObjectDefaultArra
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `8ff1bac8`, implementation `916ebe34`. Both guest suites pass 425/425, full tooling 290/290, runner30 and probes10 pass. All 82 native entries pass build and static coverage; predicate driver4844/4844 static. All 225 C++ fixture results agree across hosts: 58 reported successes, 23 unchecked completions, 67 parse errors, 75 runtime errors and two reported failures. All 81 previously successful or unchecked files retain their outcomes. The phase-two array fixture advances to missing lastIndexOf. Reports: build/legacy-suite-node-E4Y7Cs/report.json and build/legacy-suite-native-tiVcNn/report.json. Logs: build/array-find-*.
 
 Add find, findIndex, findLast and findLastIndex with shared directional traversal. Preserve length-before-validation order, unconditional reads of holes, captured length, live mutation, saved matched values, callback receiver/tuple, abrupt completions and budgets. Validate both hosts, static compilation and the fixed C++ fixture selection.
+
+## TS-067 — Array reverse value search
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `d7054c16`.
+
+Add generic lastIndexOf with omitted versus explicit fromIndex, length-before-index conversion, empty early return, strict equality, descending Has/Get traversal, inherited elements, abrupt completions and resource bounds. Validate both hosts and the fixed C++ fixture selection.

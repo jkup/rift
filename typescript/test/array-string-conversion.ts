@@ -372,7 +372,7 @@ const realms = [a, b, c];
 for (let r = 0; r < roots.length; r++) {
     const root = roots[r];
     const keys = root.ownPropertyKeys();
-    check(keys.length === 19 && keys[0] === "length" && keys[1] === "join" && keys[2] === "toString" && keys[3] === "push" && keys[4] === "pop" && keys[5] === "shift" && keys[6] === "unshift" && keys[7] === "reverse" && keys[8] === "at" && keys[9] === "indexOf" && keys[10] === "includes" && keys[11] === "every" && keys[12] === "some" && keys[13] === "find" && keys[14] === "findIndex" && keys[15] === "findLast" && keys[16] === "findLastIndex" && keys[17] === "reduce" && keys[18] === "reduceRight", "R1 key order");
+    check(keys.length === 20 && keys[0] === "length" && keys[1] === "join" && keys[2] === "toString" && keys[3] === "push" && keys[4] === "pop" && keys[5] === "shift" && keys[6] === "unshift" && keys[7] === "reverse" && keys[8] === "at" && keys[9] === "indexOf" && keys[10] === "includes" && keys[11] === "lastIndexOf" && keys[12] === "every" && keys[13] === "some" && keys[14] === "find" && keys[15] === "findIndex" && keys[16] === "findLast" && keys[17] === "findLastIndex" && keys[18] === "reduce" && keys[19] === "reduceRight", "R1 key order");
     const length = root.getOwnProperty("length");
     check(length !== undefined && length.kind === "data" && sameValue(length.value, num(0)) && length.writable && !length.enumerable && !length.configurable, "R1 root length");
     for (const name of ["join", "toString"]) {
@@ -397,7 +397,7 @@ frozen.preventExtensions();
 frozenRealm.arrayPrototype.preventExtensions();
 expect(j(obj(frozen)), str("1"), "R2 nonextensible receiver");
 expect(t(obj(frozen)), str("1"), "R2 nonextensible root");
-check(frozen.ownPropertyKeys().length === 2 && frozenRealm.arrayPrototype.ownPropertyKeys().length === 19, "R2 no writes");
+check(frozen.ownPropertyKeys().length === 2 && frozenRealm.arrayPrototype.ownPropertyKeys().length === 20, "R2 no writes");
 const transitions = new CallObserver(a);
 const foreign = c.createObject();
 put(foreign, "join", fn(c, (_receiver, _args, context, _at) => {

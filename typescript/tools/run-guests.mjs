@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["lastindex-start","let a=[1,2,1]; console.log(a.lastIndexOf(1),a.lastIndexOf(1,undefined),a.lastIndexOf(1,NaN),a.lastIndexOf(1,1),a.lastIndexOf(1,-1),a.lastIndexOf(1,-2),a.lastIndexOf(1,Infinity),a.lastIndexOf(1,-Infinity));",0,"","2 0 0 0 2 0 2 -1\n"],
+    ["lastindex-fraction","let a=[1,2,1]; console.log(a.lastIndexOf(1,1.9),a.lastIndexOf(1,-1.9),a.lastIndexOf(1,-4),a.lastIndexOf(1,-0),1/a.lastIndexOf(1,-0));",0,"","0 2 -1 0 Infinity\n"],
+    ["lastindex-equality","let x={}; let a=[NaN,0,x,'1',1]; console.log(a.lastIndexOf(NaN),a.lastIndexOf(-0),a.lastIndexOf(x),a.lastIndexOf({}),a.lastIndexOf('1'));",0,"","-1 1 2 -1 3\n"],
+    ["lastindex-holes","let a=[,undefined,,]; console.log(a.lastIndexOf(),a.lastIndexOf(undefined),[,].lastIndexOf(undefined)); Array.prototype[2]=7; console.log(a.lastIndexOf(7));",0,"","1 1 -1\n2\n"],
+    ["lastindex-generic","console.log(Array.prototype.lastIndexOf.call('abca','a'),Array.prototype.lastIndexOf.call({0:7,2:7,length:2.9},7));",0,"","3 0\n"],
+    ["lastindex-effects","let o={0:1,2:1,length:3}; let from={valueOf:function(){o.length=0;o[2]=7;return 99;}}; console.log(Array.prototype.lastIndexOf.call(o,7,from));",0,"","2\n"],
+    ["lastindex-empty","let n=0; let from={valueOf:function(){n++;throw 7;}}; console.log([].lastIndexOf(1,from),n); try{[1].lastIndexOf(1,from);}catch(e){console.log(e,n);}",0,"","-1 0\n7 1\n"],
+    ["lastindex-null-metadata","try{Array.prototype.lastIndexOf.call(null,1);}catch(e){console.log(e.name);} console.log(Array.prototype.lastIndexOf.length,Object.keys(Array.prototype).length);",0,"","TypeError\n1 0\n"],
     ["find-basic","let a=[1,4,3,6]; function even(x){return x%2===0;} console.log(a.find(even),a.findIndex(even),a.findLast(even),a.findLastIndex(even));",0,"","4 1 6 3\n"],
     ["find-missing","function no(){return false;} let a=[1,2]; console.log(a.find(no),a.findIndex(no),a.findLast(no),a.findLastIndex(no),[].find(no),[].findLastIndex(no));",0,"","undefined -1 undefined -1 undefined -1\n"],
     ["find-holes","let a=[,,]; let n=0; function hole(x){n++;return x===undefined;} console.log(a.findIndex(hole),a.findLastIndex(hole),n);",0,"","0 1 2\n"],
