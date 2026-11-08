@@ -18,6 +18,12 @@ Put generated reports in ignored `build/` directories. Do not copy the entire
 repository's hash inventory for each task. Preserve old evidence until an explicit
 archive migration can keep it retrievable; do not rewrite Git history.
 
+The owner clarified the main loop: close the C++ feature/test gap through small,
+readable changes. [The C++ fixture baseline](legacy-fixture-baseline.md) now
+provides a fixed 225-file diagnostic selection in both hosts. Use its concrete
+failures alongside semantic tests to prioritize work; existing C++ runner counts
+are not an authoritative conformance score.
+
 ## Findings and next work
 
 Completed in this catch-up: ordinary input-test invocation, the five tracked report

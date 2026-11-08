@@ -3032,3 +3032,9 @@ Measure a two-worker native build against the completed 483-second sequential ru
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `ad1953fc`, implementation `75a0e359`. Node/native guest suites pass 317/317 each, full tooling 290/290, runner 27/27 and all ten compiler probes. All 75 native entries pass build and static coverage; the string driver covers 4340/4340 statements. Logs: build/string-methods-*. Initial tooling run passed 287/290; stale planner/checkpoint input identities were repaired in `68c3b018`, then all 290 passed in one invocation.
 
 Implement generic charAt, charCodeAt and slice with UTF-16 code-unit behavior, nullish rejection, receiver-before-position coercion, integer/infinity bounds and abrupt completion. Test surrogate halves, lone surrogates, primitive/boxed receivers, hooks and budgets in both hosts. Preserve String constructor/conversion behavior and exact prototype inventories; require a fresh static native build.
+
+## TS-055 — C++ fixture coverage baseline
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `56e195bd`. Both hosts agree on all 225 fixture results: 43 reported-success, 21 unchecked completions, 1 reported failure, 71 parse errors and 89 runtime errors; 15 exclusions retained. Runner30 passes, including subprocess and selection controls. No engine changes or conformance claim; see docs/legacy-fixture-baseline.md.
+
+Run the existing C++ regression fixtures unchanged through both TypeScript hosts. Preserve the original runner's selection rules, record excluded files, retain complete process output, and distinguish reported checks from mere completion, assertion failures, parse/runtime failures, timeouts and host faults. Do not claim test262 conformance or verified C++ pass counts. Use the resulting failure groups to choose the next small semantic fix; keep source fixtures unchanged and reports under build/.
