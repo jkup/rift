@@ -3281,7 +3281,7 @@ Upgrade Script Number from namespace to callable constructor with numeric conver
 
 ## TS-096 — Numeric prefix parsing
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base be4618cb.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base be4618cb, implementation e35fa25e. Both guest suites pass 583/583, full tooling 290/290, runner 31/31 and all ten probes pass. All 96 native entries pass build and static coverage in the corrected invocation; parsing driver 6144/6144 static. Initial Node checks exposed two stale global-inventory expectations; the initial native build was stopped before correcting them and retained. All 225 complete fixture results agree: 82 reported successes, 31 unchecked completions, 53 parse errors, 58 runtime errors and one reported failure. All 112 previously completed outcomes remain; exception-handling-fix-test.js now completes without check markers and the number fixture reaches formatting. Reports: build/legacy-suite-node-GK5iCZ/report.json and build/legacy-suite-native-L6u409/report.json. Logs: build/number-parse-*.
 
 Implement Script parseInt/parseFloat with shared Number aliases, ordered string/radix coercion, explicit prefix grammar, bounded scanning and validated native rounding. Probe host primitives before choosing a backend; keep legacy behavior and fixed fixtures intact.
 
