@@ -3,6 +3,10 @@ import type { Diagnostic, Location } from "./syntax.js";
 export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly cooked?: string };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
+function digitValue(c: string): number {
+    const code = c.charCodeAt(0);
+    return code >= 48 && code <= 57 ? code - 48 : code >= 65 && code <= 70 ? code - 55 : code >= 97 && code <= 102 ? code - 87 : -1;
+}
 function letter(c: string): boolean {
     return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";
 }
@@ -35,8 +39,7 @@ export function lex(source: string, script = false): LexResult {
     function hexDigits(count: number, braced: boolean, loc: Location): number {
         let value = 0, digits = 0;
         while (i < source.length && (braced ? source.charAt(i) !== "}" : digits < count)) {
-            const code = source.charCodeAt(i);
-            const digit = code >= 48 && code <= 57 ? code - 48 : code >= 65 && code <= 70 ? code - 55 : code >= 97 && code <= 102 ? code - 87 : -1;
+            const digit = digitValue(source.charAt(i));
             if (digit < 0) break;
             advance(); digits++; value = value * 16 + digit;
             if (value > 0x10ffff) break;
@@ -130,6 +133,26 @@ export function lex(source: string, script = false): LexResult {
         }
         if (digit(c) || (script && c === "." && digit(source.charAt(i + 1)))) {
             let text = advance();
+            const prefix = source.charAt(i);
+            let radix = 0;
+            if (script && c === "0") {
+                if (prefix === "x" || prefix === "X") radix = 16;
+                else if (prefix === "o" || prefix === "O") radix = 8;
+                else if (prefix === "b" || prefix === "B") radix = 2;
+            }
+            if (radix !== 0) {
+                text += advance();
+                const digitsStart = i;
+                while (true) {
+                    const value = digitValue(source.charAt(i));
+                    if (value < 0 || value >= radix) break;
+                    text += advance();
+                }
+                if (i === digitsStart || digit(source.charAt(i)) || letter(source.charAt(i)))
+                    fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "invalid radix numeric literal", loc);
+                tokens.push({ kind: "number", text, loc, start, end: i });
+                continue;
+            }
             while (digit(source.charAt(i))) text += advance();
             if (text.length > 1 && text.charAt(0) === "0") fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
             if (c !== "." && source.charAt(i) === ".") {

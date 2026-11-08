@@ -48,6 +48,14 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["radix-values","console.log(0xFF,0XfF,0b101,0B101,0o777,0O777);",0,"","255 255 5 5 511 511\n"],
+    ["radix-keys","let o={0x10:'a',16:'b',0b11:'c',0o7:'d'};console.log(o[16],o[3],o[7],Object.keys(o).join(','));",0,"","b c d 3,7,16\n"],
+    ["radix-members","console.log(0xFF.toString(),0b10.toString(),0o7.toString(),0xE+1,0xF-1,1/(-0x0));",0,"","255 2 7 15 14 -Infinity\n"],
+    ["radix-rounding","console.log(0x20000000000001,0x20000000000003);",0,"","9007199254740992 9007199254740996\n"],
+    ["radix-invalid-binary","console.log('must not run');0b102;",2,"parse SyntaxError: invalid radix numeric literal",""],
+    ["radix-invalid-octal","0o78;",2,"parse SyntaxError: invalid radix numeric literal",""],
+    ["radix-missing-digits","0x;",2,"parse SyntaxError: invalid radix numeric literal",""],
+    ["radix-bigint","0x1n;",2,"parse SyntaxError: invalid radix numeric literal",""],
     ["decimal-exponents","console.log(1e2,1E+2,1e-2,1.e2,.5e2,.5);",0,"","100 100 0.01 100 50 0.5\n"],
     ["decimal-boundaries","console.log(1e999,1e-999,1/(-1e-999),5e-324,9007199254740993e0);",0,"","Infinity 0 -Infinity 5e-324 9007199254740992\n"],
     ["decimal-keys","let o={1e2:'a',100:'b',.5:'c'};console.log(o[100],o[.5],Object.keys(o).join(','));",0,"","b c 100,0.5\n"],
@@ -468,6 +476,7 @@ executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
 executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
 executeDriver("object-descriptor-reflection", { stdout: "Property descriptor reflection passed\n" });
 executeDriver("function-apply", { stdout: "Function apply passed\n" });
+executeDriver("radix-literals", { stdout: "Radix literals passed\n" });
 executeDriver("decimal-literals", { stdout: "Decimal literals passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });
 executeDriver("do-while", { stdout: "Do-while passed\n" });

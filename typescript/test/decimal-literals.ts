@@ -17,7 +17,7 @@ for (let i = 0; i < sources.length; i++) {
     check(result.type === "normal" && sameValue(result.value, {kind: "number", value: expected[i]}), "decimal value " + sources[i]);
     check(session.inspect().active === null && session.inspect().calls === 0, "decimal session restored");
 }
-for (const text of ["1e", "1e+", "1e-", "1e+x", "1e 2", "1e\n2", ".5e-", "1e2foo", "1e2_3", "01e2", "0x10", "1_000", "1n"]) {
+for (const text of ["1e", "1e+", "1e-", "1e+x", "1e 2", "1e\n2", ".5e-", "1e2foo", "1e2_3", "01e2", "0xG", "1_000", "1n"]) {
     const result = lex(text, true);
     check(result.error !== null && result.error.phase === "parse", "reject decimal " + text);
 }

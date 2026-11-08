@@ -80,6 +80,8 @@ TS-071 adds Math constants and six unary numeric methods; see [Math](math-unary.
 
 TS-072 adds Function.prototype.apply; see [argument-list calls](function-apply.md).
 
+TS-075 adds Script binary, octal and hexadecimal integer literals; see [radix literals](radix-literals.md).
+
 TS-074 adds Script decimal exponents and leading-dot fractions; see [decimal literals](decimal-literals.md).
 
 TS-073 adds variadic Math min/max with ordered coercion and signed-zero selection;

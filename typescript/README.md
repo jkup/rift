@@ -11,6 +11,7 @@ unless they contain a `"use strict"` directive. Unsupported syntax, including
 `const`, arrows and general automatic semicolon insertion, still fails explicitly.
 Object literals accept identifier, string and numeric property names.
 Script numbers include decimal exponents and leading-dot fractions; see [decimal literals](docs/decimal-literals.md).
+Binary, octal and hexadecimal prefixes are supported; see [radix literals](docs/radix-literals.md).
 Ordinary template literals support nested interpolation and cooked text; see
 [template behavior](docs/template-literals.md). Tagged templates remain unsupported.
 See the [current development roadmap](docs/development-roadmap.md).

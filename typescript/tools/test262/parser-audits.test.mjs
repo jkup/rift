@@ -57,7 +57,7 @@ for (const [driver, directory, count, variants] of [
   const rows = json(`docs/validation/${directory}/semantic-matrix.json`).rows;
   assert.equal(rows.length, count);
   if (driver === 'script-assignment-target-audit') {
-    for (const literal of ['1e2', '.5']) {
+    for (const literal of ['1e2', '.5', '0x2']) {
       const row = rows.find(row => row.text === literal + '=7;');
       assert.ok(row);
       const end = literal.length;
