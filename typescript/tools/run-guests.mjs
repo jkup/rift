@@ -48,6 +48,12 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["math-extrema-basic","console.log(Math.min(),Math.max(),Math.min(3,-2,7),Math.max(3,-2,7));",0,"","Infinity -Infinity -2 7\n"],
+    ["math-extrema-zeros","console.log(1/Math.min(0,-0),1/Math.min(-0,0),1/Math.max(0,-0),1/Math.max(-0,0));",0,"","-Infinity -Infinity Infinity Infinity\n"],
+    ["math-extrema-coercion","let trace='';let a={valueOf:function(){trace+='a';return NaN;}};let b={valueOf:function(){trace+='b';return 4;}};console.log(Math.min(a,b),trace);trace='';console.log(Math.max(a,b),trace);",0,"","NaN ab\nNaN ab\n"],
+    ["math-extrema-throw","let marker={};let trace='';let a={valueOf:function(){trace+='a';throw marker;}};let b={valueOf:function(){trace+='b';return 4;}};try{Math.max(NaN,a,b);}catch(e){console.log(e===marker,trace);}",0,"","true a\n"],
+    ["math-extrema-snapshot","let n=0;let a={valueOf:function(){n=9;return 3;}};console.log(Math.min(a,n),n);",0,"","0 9\n"],
+    ["math-extrema-metadata","console.log(Math.min.name,Math.min.length,Math.max.name,Math.max.length,Object.keys(Math).length);let d=Object.getOwnPropertyDescriptor(Math,'min');console.log(d.writable,d.enumerable,d.configurable);try{new Math.max();}catch(e){console.log(e.name);}",0,"","min 2 max 2 0\ntrue false true\nTypeError\n"],
     ["apply-basic","function f(a,b){return this.n+a+b;}console.log(f.apply({n:7},[2,3]));",0,"","12\n"],
     ["apply-empty","function f(a){'use strict';return typeof this+':'+a;}console.log(f.apply(),f.apply(null,null),f.apply(7,undefined));",0,"","undefined:undefined object:undefined number:undefined\n"],
     ["apply-arraylike","function f(a,b){return a+':'+b;}console.log(f.apply(null,{0:'a',1:'b',2:'c',length:'2.9'}),f.apply(null,new String('xy')));",0,"","a:b x:y\n"],

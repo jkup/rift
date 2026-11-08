@@ -89,4 +89,32 @@ for (const name of methods) {
     check(interrupted && completed, "Math budget boundary");
     check(new Realm((_line: string) => {}).global.bindings.has("Math") === false, "legacy globals unchanged");
 }
+for (const name of ["min", "max"]) {
+    const minimum = name === "min";
+    const expressions = ["", "0", "-0", "0,-0", "-0,0", "3,-2,7", "Infinity,-Infinity", "NaN,3", "3,NaN", "undefined", "null,true,'-4'"];
+    const results = minimum
+        ? [Infinity, 0, -0, -0, -0, -2, -Infinity, NaN, NaN, NaN, -4]
+        : [-Infinity, 0, -0, 0, 0, 7, Infinity, NaN, NaN, NaN, 1];
+    for (let i = 0; i < expressions.length; i++) {
+        const actual = run(fresh(), "Math." + name + "(" + expressions[i] + ");");
+        check(actual.type === "normal" && sameValue(actual.value, {kind: "number", value: results[i]}), "Math extrema edges " + name);
+    }
+    const owner = fresh(), caller = fresh(), method = own(math(owner), name);
+    caller.defineScriptGlobal("method", {value: method});
+    caller.defineScriptGlobal("symbol", {value: {kind: "symbol", value: wellKnownSpecies}});
+    const bad = run(caller, "method(NaN,symbol);");
+    check(bad.type === "throw" && bad.value.kind === "object" && bad.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"), "extrema convert after NaN in owner Realm");
+    let interrupted = false, completed = false;
+    for (let steps = 0; steps < 45; steps++) {
+        const actual = run(fresh(), "Math." + name + "(3,1,2);", steps);
+        if (actual.type === "throw") {
+            check(actual.origin.kind === "resource-limit", "extrema budget");
+            interrupted = true;
+        } else {
+            check(sameValue(actual.value, {kind: "number", value: minimum ? 1 : 3}), "extrema budget result");
+            completed = true;
+        }
+    }
+    check(interrupted && completed, "extrema budget boundary");
+}
 console.log("Math unary passed");

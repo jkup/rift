@@ -3140,3 +3140,9 @@ Add a per-Realm Script Math object, eight standard constants and abs/ceil/floor/
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `c3e9a86d`, implementation `ec2232ad`. Both guest suites pass 481/481, full tooling290/290, runner30 and probes10 pass. Native acceptance covers 85 initial passes plus a successful isolated array-literals retry after a Zig cache file-open error; all 86 entries pass static coverage. Apply driver4996/4996 static. All 225 C++ fixture results agree across hosts: 66 reported successes, 30 unchecked completions, 55 parse errors, 72 runtime errors and two reported failures. All 96 previously successful or unchecked files retain their outcomes. The call/apply/bind fixture now reaches missing bind. Reports: build/legacy-suite-node-fVzKVO/report.json and build/legacy-suite-native-Ef21Cn/report.json. Logs: build/function-apply-*.
 
 Add Function.prototype.apply using existing call machinery and array-like operations. Validate the target before argument-list access, treat null/undefined as empty lists, require objects otherwise, read length and values in order, preserve holes/inheritance/live mutation, Realm behavior, abrupt completion and budgets. Bound functions remain separate.
+
+## TS-073 — Math min and max
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base 7a5a67c4.
+
+Add variadic Math min/max with ordered number conversion, continued coercion after NaN, abrupt completion, signed-zero selection, empty inputs, descriptors, Realm ownership and budgets. Validate both hosts and fixed fixtures.

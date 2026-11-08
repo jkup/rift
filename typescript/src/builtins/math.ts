@@ -32,5 +32,25 @@ export function registerMath(realm: Realm): void {
             return normal({kind: "number", value});
         });
     }
+    for (const name of ["min", "max"]) {
+        realm.registerBuiltin(object, name, 2, (_receiver, args, context, loc): ValueCompletion => {
+            const minimum = name === "min";
+            let value = minimum ? Infinity : -Infinity;
+            for (const arg of args) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") return tick;
+                const primitive = toPrimitive(arg, "number", context, loc);
+                if (primitive.type === "throw") return primitive;
+                const number = toNumber(primitive.value, loc, context.realm);
+                if (number.type === "throw") return number;
+                const next = number.value;
+                // NaN is sticky, but later arguments must still be converted.
+                if (next !== next) value = next;
+                else if (minimum ? next < value : next > value) value = next;
+                else if (next === 0 && value === 0 && (minimum ? 1 / next < 0 : 1 / next > 0)) value = next;
+            }
+            return normal({kind: "number", value});
+        });
+    }
     realm.defineScriptGlobal("Math", {value: {kind: "object", object}, writable: true, configurable: true});
 }

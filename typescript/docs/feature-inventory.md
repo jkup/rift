@@ -80,6 +80,9 @@ TS-071 adds Math constants and six unary numeric methods; see [Math](math-unary.
 
 TS-072 adds Function.prototype.apply; see [argument-list calls](function-apply.md).
 
+TS-073 adds variadic Math min/max with ordered coercion and signed-zero selection;
+see [Math](math-unary.md#min-and-max-ts-073).
+
 TS-063 adds generic `shift` and `unshift`, preserving holes and partial mutations;
 see [array mutation](array-mutation.md).
 
