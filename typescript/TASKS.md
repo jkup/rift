@@ -3239,7 +3239,7 @@ Implement toReversed and toSorted with dense copies, ordered reads, no species l
 
 ## TS-089 — Array spliced and replaced copies
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 0676c82e.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 0676c82e, implementation 2fc868f7. Both guest suites pass 579/579 with expanded copy assertions, full tooling 290/290, runner 31/31 and all ten probes pass. Native acceptance covers 91 initial passes plus a successful isolated sort-driver retry after a Zig cache file-open failure; all 92 entries pass static coverage, copy driver 5991/5991 and sort driver 5887/5887. All 225 complete fixture results agree: 79 reported successes, 27 unchecked completions, 53 parse errors, 65 runtime errors and one reported failure. The original copy-method fixture passes all 17 checks; all 105 previously completed outcomes remain. Reports: build/legacy-suite-node-QgxKmb/report.json and build/legacy-suite-native-7jHIxZ/report.json. Initial/retry evidence: build/array-copy-replace-native-initial-results.json and build/array-copy-replace-native-retry-results.json. Logs: build/array-copy-replace-*.
 
 Add toSpliced and with using dense own data copies, ordered index/count coercion, omitted argument distinctions, skipped getters, builtin Realm allocation and bounded loops. Validate both hosts, fixed fixtures and native/tooling gates.
 
