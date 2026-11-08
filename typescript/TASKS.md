@@ -3305,6 +3305,6 @@ Implement Script Object.defineProperties and Object.create using shared two-phas
 
 ## TS-100 — Own-property reflection
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 368c7133.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 368c7133, implementation b93a67c9. Both guest suites pass 587/587, full tooling 290/290, runner 31/31 and all ten probes pass. All 100 native entries pass build and static coverage in one invocation; reflection driver 6337/6337 static. Initial Node 586/587 exposed concurrent TypeScript emission by the probe runner during guest module loading; a no-source-change rerun after emission passed. The original log is retained and compiler-contract.md now requires emission/Node-reader serialization. All 225 complete fixture results agree: 84 reported successes, 32 unchecked completions, 53 parse errors, 55 runtime errors and one reported failure. All 116 previously completed outcomes remain; the function-descriptor fixture reaches getPrototypeOf. Reports: build/legacy-suite-node-9Uf30A/report.json and build/legacy-suite-native-eF9skc/report.json. Logs: build/object-reflection-*.
 
 Implement Script Object.getOwnPropertyNames, getOwnPropertySymbols and getOwnPropertyDescriptors using existing key order, array construction and descriptor conversion. Preserve symbols, nonenumerable properties, primitive boxing, accessor identity without invocation, builtin Realm allocation and resource bounds.
