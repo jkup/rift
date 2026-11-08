@@ -1,0 +1,25 @@
+# Array concat
+
+TS-085 adds Script Array.prototype.concat. It boxes the receiver, creates the
+default species result, then visits the receiver and arguments in order. Arrays
+spread by default; ordinary objects remain single elements. IsConcatSpreadable
+reads the internal well-known symbol first and uses ToBoolean without invoking
+conversion hooks. The public Symbol global remains separate work.
+
+Each spread source captures its length once, then performs live HasProperty/Get
+reads. Holes remain holes, inherited entries are copied, and result properties
+are own data. Nonspread values retain identity. The final length write preserves
+trailing holes. Every argument and source index consumes the step budget; safe
+integer overflow is checked before copying that source.
+
+Results belong to the builtin's Realm. Foreign intrinsic Array constructors use
+the default array path. Custom species remains explicit unsupported behavior
+(runtime.concat-species), checked before any spreadability reads. Invalid species
+is a language TypeError. Legacy Realms retain their previous public surface.
+
+The implementation follows [Array.prototype.concat and IsConcatSpreadable](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.concat).
+The C++ reference in src/builtins/array/array_accessors.cpp at base 7d7a687a spreads
+all objects and fills holes; those shortcuts were not retained. Tests cover
+ordinary objects, explicit spreadability overrides, sparse and inherited copies,
+ordered mutation, coercion-free truthiness, safe length limits, resource guards,
+Realm ownership, species precedence, getter throws and metadata.

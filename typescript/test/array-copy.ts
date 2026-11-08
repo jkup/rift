@@ -3,7 +3,7 @@ import { GuestArray } from "../src/array-object.js";
 import { GuestObject, normal, sameValue, type Value, type ValueCompletion, type OperationContext, type PropertyKey, type InternalBooleanCompletion } from "../src/runtime.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { wellKnownSpecies } from "../src/symbols.js";
+import { wellKnownSpecies, wellKnownIsConcatSpreadable } from "../src/symbols.js";
 import type { Location } from "../src/syntax.js";
 
 function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
@@ -30,11 +30,11 @@ function array(completion: ValueCompletion): GuestObject {
 class Observed extends GuestObject {
     trace = "";
     internalHasProperty(key: PropertyKey, loc: Location): InternalBooleanCompletion {
-        this.trace += "has:" + key + ";";
+        this.trace += "has:" + (typeof key === "string" ? key : "symbol") + ";";
         return super.internalHasProperty(key,loc);
     }
     internalGet(key: PropertyKey, receiver: Value, context: OperationContext, loc: Location): ValueCompletion {
-        this.trace += "get:" + key + ";";
+        this.trace += "get:" + (typeof key === "string" ? key : "symbol") + ";";
         return super.internalGet(key,receiver,context,loc);
     }
 }
@@ -104,4 +104,79 @@ for (const source of ["let marker={};let input={};Object.defineProperty(input,'l
 }
 const legacy = new Realm((_line: string) => {});
 check(legacy.arrayPrototype.getOwnProperty("slice") === undefined,"slice Script only");
+{
+    const realm = fresh(), target = new Observed(realm.objectPrototype);
+    target.bootstrapDefine("length",{get:obj(realm.createBuiltin("lengthGetter",0,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("nonspread length read");}))});
+    realm.defineScriptGlobal("target",{value:obj(target)});
+    const result = array(run(realm,"[].concat(target);"));
+    check(sameValue(own(result,"0"),obj(target)) && sameValue(own(result,"length"),num(1)) && target.trace === "get:symbol;","ordinary objects stay single elements without length reads");
+}
+{
+    const realm = fresh(), target = new Observed(realm.objectPrototype);
+    target.bootstrapDefine(wellKnownIsConcatSpreadable,{value:{kind:"boolean",value:true}});
+    data(target,"length",3.9); data(target,"1",7); data(realm.objectPrototype,"2",9);
+    realm.defineScriptGlobal("target",{value:obj(target)});
+    const result = array(run(realm,"[].concat(target);"));
+    check(target.trace === "get:symbol;get:length;has:0;has:1;get:1;has:2;get:2;","spreadability precedes captured length and sparse reads");
+    check(sameValue(own(result,"length"),num(3)) && result.getOwnProperty("0") === undefined && sameValue(own(result,"1"),num(7)) && sameValue(own(result,"2"),num(9)),"spread holes and inherited entries");
+}
+{
+    const realm = fresh(), input = realm.createArray();
+    data(input,"0",7); input.bootstrapDefine(wellKnownIsConcatSpreadable,{value:{kind:"boolean",value:false}});
+    realm.defineScriptGlobal("input",{value:obj(input)});
+    const result = array(run(realm,"input.concat(input,9);"));
+    check(sameValue(own(result,"0"),obj(input)) && sameValue(own(result,"1"),obj(input)) && sameValue(own(result,"2"),num(9)),"explicit false overrides array spreading including receiver");
+}
+{
+    const realm = fresh(), target = new Observed(realm.objectPrototype), flag = realm.createObject();
+    flag.bootstrapDefine("valueOf",{value:obj(realm.createBuiltin("convert",0,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("spread flag coerced");}))});
+    target.bootstrapDefine(wellKnownIsConcatSpreadable,{value:obj(flag)});
+    data(target,"length",3); data(target,"1",11);
+    target.bootstrapDefine("0",{get:obj(realm.createBuiltin("first",0,(_receiver,_args,_context,_loc): ValueCompletion => {
+        data(target,"length",0); target.internalDelete("1"); data(target,"2",17); return normal(num(7));
+    }))});
+    realm.defineScriptGlobal("target",{value:obj(target)});
+    const result = array(run(realm,"[].concat(target);"));
+    check(sameValue(own(result,"length"),num(3)) && result.getOwnProperty("1") === undefined && sameValue(own(result,"2"),num(17)),"truthy flag without conversion, captured length and live elements");
+}
+{
+    const realm = fresh(), target = new Observed(realm.objectPrototype);
+    target.bootstrapDefine(wellKnownIsConcatSpreadable,{value:{kind:"boolean",value:true}});
+    data(target,"length",9007199254740991);
+    realm.defineScriptGlobal("target",{value:obj(target)});
+    const overflow = run(realm,"[1].concat(target);",40);
+    check(overflow.type === "throw" && overflow.origin.kind === "engine-diagnostic" && overflow.diagnostic.name === "TypeError" && target.trace === "get:symbol;get:length;","concat safe length guard before traversal");
+    const bounded = run(realm,"[].concat(target);",40);
+    check(bounded.type === "throw" && bounded.origin.kind === "resource-limit","concat huge holes bounded");
+}
+{
+    const owner = fresh(), caller = fresh(), input = caller.createArray();
+    data(input,"1",7); caller.defineScriptGlobal("input",{value:obj(input)});
+    caller.defineScriptGlobal("concat",{value:own(owner.arrayPrototype,"concat")});
+    const result = array(run(caller,"concat.call(input,9);"));
+    check(result.getPrototypeOf() === owner.arrayPrototype && result.getOwnProperty("0") === undefined && sameValue(own(result,"1"),num(7)) && sameValue(own(result,"2"),num(9)),"concat foreign intrinsic result ownership");
+}
+{
+    const realm = fresh(), input = realm.createArray(), holder = realm.createObject();
+    const custom = realm.createBuiltinConstructor("custom",1,
+        (_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("concat species call");},
+        (_callee,_args,_context,_loc): ValueCompletion => {throw new Error("concat species construct");});
+    holder.bootstrapDefine(wellKnownSpecies,{value:obj(custom)});
+    input.bootstrapDefine("constructor",{value:obj(holder)});
+    input.bootstrapDefine(wellKnownIsConcatSpreadable,{get:obj(realm.createBuiltin("spread",0,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("spread before species");}))});
+    realm.defineScriptGlobal("input",{value:obj(input)});
+    const result = run(realm,"input.concat();");
+    check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.concat-species","concat species before spreadability");
+}
+{
+    const realm = fresh(), target = realm.createObject(), marker = realm.createObject();
+    const getter = realm.createBuiltin("spread",0,(_receiver,_args,_context,loc): ValueCompletion => {
+        return {type:"throw",value:obj(marker),diagnostic:{phase:"runtime",name:"Error",message:"marker",loc},origin:{kind:"guest"}};
+    });
+    target.bootstrapDefine(wellKnownIsConcatSpreadable,{get:obj(getter)});
+    realm.defineScriptGlobal("target",{value:obj(target)});
+    const result = run(realm,"[].concat(target);");
+    check(result.type === "throw" && sameValue(result.value,obj(marker)),"concat spread getter throw identity");
+}
+check(legacy.arrayPrototype.getOwnProperty("concat") === undefined,"concat Script only");
 console.log("Array copy passed");
