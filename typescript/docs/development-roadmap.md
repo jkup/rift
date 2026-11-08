@@ -64,7 +64,11 @@ now reach concat; classifications are unchanged. TS-085 accepts concat with
 563/563 guest tests on each host, all 91 native static gates and all 290 tooling
 checks. Array-gc-success gains reported success: the fixed baseline now has 74
 reported successes, 27 unchecked completions, 53 parse errors, 70 runtime errors
-and one reported failure. Next: filter, now reached by array-gc-tracking. Callable JSON revivers and custom Array species construction
+and one reported failure. TS-086 accepts filter with 570/570 guest tests on both
+hosts and all native/tooling gates passing. Array-gc-tracking gains reported
+success: the baseline is now 75 successes, 27 unchecked completions, 53 parse
+errors, 69 runtime errors and one reported failure. Next: stable Array.sort,
+including the dedicated comparator regression fixture. Callable JSON revivers and custom Array species construction
 remain explicit unsupported behavior; JSON.stringify remains absent.
 
 Two additional baseline outcomes need interpretation before feature work:
