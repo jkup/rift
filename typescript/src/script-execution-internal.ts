@@ -758,7 +758,8 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
-            case "for": case "do-while": throw new Error("Script loop AST requires Script execution");
+            case "for": throw new Error("Script for AST requires Script execution");
+            case "do-while": throw new Error("Script do-while AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "switch": throw new Error("Script switch AST requires Script execution");
             case "try-catch": throw new Error("Script try-catch AST requires Script execution");

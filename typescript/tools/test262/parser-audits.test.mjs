@@ -75,7 +75,7 @@ for (const [driver, directory, count, variants] of [
   if (driver === 'script-lexical-statement-audit') {
     const loop = rows.find(row => row.id === 'excluded-do');
     assert.equal(loop.text, 'do let x; while(false);');
-    loop.expected = {kind: 'eligible', sourceUnits: 22, consumedUnits: 22, candidates: [{
+    loop.expected = {kind: 'eligible', sourceUnits: 23, consumedUnits: 23, candidates: [{
       ruleCode: 'lexical-declaration-statement', context: 'do-while-body',
       keyword: {text: 'let', start: 3, end: 6, loc: {line: 1, column: 4}},
     }]};
