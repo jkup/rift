@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import {readFileSync, writeFileSync, mkdirSync, copyFileSync, unlinkSync, linkSync} from 'node:fs';
+import {readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, unlinkSync, linkSync} from 'node:fs';
+import {tmpdir} from 'node:os';
 import {resolve, dirname} from 'node:path';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {pathToFileURL} from 'node:url';
@@ -7,9 +8,15 @@ import * as inputs from './script-execution-inputs.mjs';
 import * as policy from './script-plan.mjs';
 import * as ledger from './script-ledger.mjs';
 import {frozenManifest, REVISION, sha256, metadata, harnessPaths, transform} from './input.mjs';
-const corpus=process.argv[2],out=process.argv[3];
-assert(corpus&&out,'explicit corpus and fresh output directory required');
-mkdirSync(out,{recursive:false});
+// The node:test runner supplies no positional arguments. Keep the historical
+// explicit invocation, but also run the same assertions in the normal suite.
+assert(process.argv.length===2 || process.argv.length===4,
+ 'usage: script-execution-inputs.test.mjs [corpus fresh-output-directory]');
+const corpus=process.argv[2] ?? process.env.RIFT_TEST262_ROOT ??
+ resolve(tmpdir(),'rift-ts031a-test262-91c7075');
+mkdirSync(resolve('build'),{recursive:true});
+const out=process.argv[3] ?? mkdtempSync(resolve('build/script-execution-inputs-'));
+if(process.argv[3])mkdirSync(out,{recursive:false});
 const save=(name,value)=>writeFileSync(resolve(out,name+'.gz'),gzipSync(Buffer.from(JSON.stringify(value,null,2)+'\n')),{flag:'wx'});
 const {manifest}=await frozenManifest(),paths=manifest.entries.map(e=>e.path);
 const reports=JSON.parse(readFileSync(resolve(process.cwd(),'docs/validation/ts-035e2-p/report-literals.json'),'utf8'));

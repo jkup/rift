@@ -12,7 +12,7 @@ const archiveRoot=resolve('build/script-observations-lifecycle');await mkdir(arc
 const options=(lane='node',more={})=>({mode:'script-observation',control:'S03-valid',input:'alpha',lane,variant:'raw',action:'parse-only',archiveRoot,...more});
 async function hook(wrapper,body){const original=childProcess.spawn;childProcess.spawn=(exe,args,opts)=>wrapper(original,exe,args,opts);syncBuiltinESMExports();try{return await body();}finally{childProcess.spawn=original;syncBuiltinESMExports();}}
 const recorded=[];
-async function record(name,p,r){recorded.push({name,plan:p.directory,result:r});await writeFile('docs/validation/ts-035c/lifecycle-latest.json',JSON.stringify(recorded,null,2)+'\n');}
+async function record(name,p,r){recorded.push({name,plan:p.directory,result:r});await writeFile(join(archiveRoot,'lifecycle-latest.json'),JSON.stringify(recorded,null,2)+'\n');}
 for(const lane of ['node','native'])test(lane+' real process transport priorities and authenticated cap archive',async()=>{
  for(const mode of ['exit70','stdout','malformed','cap','crashcap']){
   const p=await prepareScriptObservation(options(lane,{limits:{outputBytes:['cap','crashcap'].includes(mode)?20000:1048576}}));

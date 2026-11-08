@@ -22,7 +22,7 @@ for(const lane of ['node','native'])test(lane+' actual pinned S01/S02 original m
   assert.ok(p.binding.preflightId);assert.notEqual(p.binding.preflightId,previous);previous=p.binding.preflightId;
   const pre=JSON.parse(await readFile(join(p.directory,'preflight.json')));assert.equal(pre.rows.length,19);assert.ok(pre.rows.every(r=>r.valid));assert.equal(pre.preflightId,p.binding.preflightId);
   const r=await launchScriptObservation(p);assert.equal(r.state,'complete');assert.equal(r.record.observation.kind,'throw');assert.equal(r.record.observation.constructor.name,'ReferenceError');assert.equal(r.record.evidence.stage,'test');assert.equal(r.record.evidence.harnessValidated,true);assert.deepEqual(r.record.evidence.completedUnits,['u0','u1']);assert.ok(!Object.hasOwn(r.record,'classification'));
-  assert.throws(()=>parseEnvelope(JSON.stringify(r.record)));results.push({lane,id:entry.id,directory:p.directory,record:r.record});await writeFile('docs/validation/ts-035c/pinned-results.json',JSON.stringify(results,null,2)+'\n');
+  assert.throws(()=>parseEnvelope(JSON.stringify(r.record)));results.push({lane,id:entry.id,directory:p.directory,record:r.record});await writeFile(join(archiveRoot,'pinned-results.json'),JSON.stringify(results,null,2)+'\n');
  }
 });
 test('pinned selection, corrupted source/metadata/UTF8 and parse-negative execute reject before test launch',async()=>{
@@ -44,6 +44,6 @@ for(const lane of ['node','native'])test(lane+' pinned positive harness assertio
   const entry=manifest.entries.find(e=>e.id===id);
   const p=await prepareScriptObservation({mode:'script-observation',corpusRoot,revision:REVISION,path:entry.path,variant:'strict',lane,action:'execute',archiveRoot});
   const r=await launchScriptObservation(p);assert.equal(r.state,'complete');assert.deepEqual(r.record.observation,{kind:'normal'});assert.equal(r.record.evidence.testBodyEvaluated,true);assert.equal(r.record.evidence.harnessValidated,true);assert.deepEqual(r.record.evidence.completedUnits,['u0','u1']);assert.ok(p.context.blockers.length>0);assert.ok(!Object.hasOwn(r.record,'classification'));
-  results.push({lane,id,directory:p.directory,record:r.record});await writeFile('docs/validation/ts-035c/pinned-results.json',JSON.stringify(results,null,2)+'\n');
+  results.push({lane,id,directory:p.directory,record:r.record});await writeFile(join(archiveRoot,'pinned-results.json'),JSON.stringify(results,null,2)+'\n');
  }
 });
