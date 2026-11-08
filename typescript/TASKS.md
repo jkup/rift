@@ -2930,3 +2930,9 @@ Review recent changes and PR #82, repair ordinary test invocation and tracked-ev
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; implementation `e88fc9d7`. Node/native guest suites 222/222 each; fresh CLI static coverage 3996/3996.
 
 Use the existing Script preparation/session API from the CLI. Cover loops, constructors, catch, strict/sloppy receivers, rejection before effects and existing diagnostics. Migrate legacy CLI expectations explicitly; preserve host tests and the legacy observation path until their separate migration. Require Node and fresh native CLI validation with static coverage. Do not delete the legacy engine in this slice.
+
+## TS-038 — Portable test corpus and scratch directories
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; commits `feae65e2` and `bf16e72e`. Full tooling suite281/281, zero skips, with freshly downloaded corpus and overridden scratch root; historical evidence unchanged.
+
+Give active tests a configurable pinned corpus under build/, provide a verified preparation command, and separate live test helpers from immutable historical evidence. Keep all behavior assertions and expected literals. Validate with the corpus outside the original user-specific temporary path and require no tracked-report writes.

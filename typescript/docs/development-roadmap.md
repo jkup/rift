@@ -26,6 +26,14 @@ migration. CLI validation is 222/222 in each host with fresh native CLI compilat
 and full static coverage. The table retains review findings and their acceptance
 criteria; portability, legacy removal and the later items remain open.
 
+TS-038 follow-up: active tests now share configurable corpus/scratch paths, and
+the planner/ledger/checkpoint helpers write under `build/`. Both offline and
+downloaded setup verify all 36 pinned blobs. The full tooling suite passes
+281/281 with a separately downloaded corpus and overridden output root, zero
+skips, and no historical-evidence changes (`build/portable-full-tests.log`).
+Native build prerequisites and historical literal fixtures remain explicit;
+only Windows execution has been validated.
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Repair the normal test command | `script-execution-inputs.test.mjs`, introduced in `7f887deb`, requires positional arguments absent under `node --test`. Add no-argument setup without dropping its assertions; retain the explicit invocation. |
