@@ -161,4 +161,51 @@ for (const name of ["min", "max"]) {
     }
     check(interrupted && completed, "extrema budget boundary");
 }
+const binaryCases = [
+    {source: "Math.pow(NaN,0)", value: 1}, {source: "Math.pow(1,NaN)", value: NaN},
+    {source: "Math.pow(1,Infinity)", value: NaN}, {source: "Math.pow(-1,-Infinity)", value: NaN},
+    {source: "Math.pow(-0,3)", value: -0}, {source: "Math.pow(-0,2)", value: 0},
+    {source: "Math.pow(-0,-3)", value: -Infinity}, {source: "Math.pow(-0,-2)", value: Infinity},
+    {source: "Math.pow(-Infinity,3)", value: -Infinity}, {source: "Math.pow(-Infinity,-3)", value: -0},
+    {source: "Math.pow(-2,.5)", value: NaN}, {source: "Math.pow(2,-3)", value: 0.125},
+    {source: "Math.pow()", value: NaN}, {source: "Math.pow(2)", value: NaN},
+    {source: "Math.atan2(0,0)", value: 0}, {source: "Math.atan2(-0,0)", value: -0},
+    {source: "Math.atan2(0,-0)", value: 3.141592653589793}, {source: "Math.atan2(-0,-0)", value: -3.141592653589793},
+    {source: "Math.atan2(Infinity,Infinity)", value: 0.7853981633974483},
+    {source: "Math.atan2(Infinity,-Infinity)", value: 2.356194490192345},
+    {source: "Math.atan2(-Infinity,Infinity)", value: -0.7853981633974483},
+    {source: "Math.atan2(-Infinity,-Infinity)", value: -2.356194490192345},
+    {source: "Math.atan2()", value: NaN}, {source: "Math.atan2(1)", value: NaN},
+    {source: "Math.imul(0xffffffff,5)", value: -5}, {source: "Math.imul(0x80000000,2)", value: 0},
+    {source: "Math.imul(4294967297,3)", value: 3}, {source: "Math.imul(3.9,-2.9)", value: -6},
+    {source: "Math.imul(Infinity,7)", value: 0}, {source: "Math.imul(NaN,7)", value: 0},
+    {source: "Math.imul()", value: 0}, {source: "Math.imul(7)", value: 0},
+];
+for (const entry of binaryCases) {
+    const actual = run(fresh(), entry.source + ";");
+    check(actual.type === "normal" && sameValue(actual.value, {kind: "number", value: entry.value}), "binary Math edge " + entry.source);
+}
+for (const name of ["atan2", "pow", "imul"]) {
+    const owner = fresh(), caller = fresh();
+    caller.defineScriptGlobal("method", {value: own(math(owner), name)});
+    caller.defineScriptGlobal("symbol", {value: {kind: "symbol", value: wellKnownSpecies}});
+    const bad = run(caller, "method(NaN,symbol);");
+    check(bad.type === "throw" && bad.value.kind === "object" && bad.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"), "binary Math error Realm and second conversion");
+    const order = run(fresh(), "let trace='';let a={valueOf:function(){trace+='a';return 2;}};let b={valueOf:function(){trace+='b';return 3;}};Math." + name + "(a,b,{valueOf:function(){throw 7;}});trace;");
+    check(order.type === "normal" && order.value.kind === "string" && order.value.value === "ab", "binary Math conversion order and ignored extras");
+    const thrown = run(fresh(), "let marker={};let n=0;let a={valueOf:function(){throw marker;}};let b={valueOf:function(){n++;return 3;}};try{Math." + name + "(a,b);}catch(e){e===marker && n===0;}");
+    check(thrown.type === "normal" && thrown.value.kind === "boolean" && thrown.value.value, "binary Math abrupt first conversion");
+    let interrupted = false, completed = false;
+    for (let steps = 0; steps < 45; steps++) {
+        const actual = run(fresh(), "Math." + name + "(0,1);", steps);
+        if (actual.type === "throw") {
+            check(actual.origin.kind === "resource-limit", "binary Math budget");
+            interrupted = true;
+        } else {
+            check(sameValue(actual.value, {kind: "number", value: 0}), "binary Math bounded result");
+            completed = true;
+        }
+    }
+    check(interrupted && completed, "binary Math budget boundary");
+}
 console.log("Math unary passed");

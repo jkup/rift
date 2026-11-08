@@ -48,6 +48,12 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["math-binary-values","console.log(Math.pow(2,10),Math.imul(0xffffffff,5),Math.abs(Math.atan2(1,1)-Math.PI/4)<1e-14);",0,"","1024 -5 true\n"],
+    ["math-pow-special","console.log(Math.pow(NaN,0),Math.pow(1,Infinity),Math.pow(-1,Infinity),Math.pow(-0,-3),1/Math.pow(-0,3));",0,"","1 NaN NaN -Infinity -Infinity\n"],
+    ["math-atan2-zeros","console.log(1/Math.atan2(-0,1),1/Math.atan2(0,1),Math.atan2(0,-0)===Math.PI,Math.atan2(-0,-0)===-Math.PI);",0,"","-Infinity Infinity true true\n"],
+    ["math-binary-metadata","console.log(Math.atan2.name,Math.atan2.length,Math.pow.name,Math.pow.length,Math.imul.name,Math.imul.length);let d=Object.getOwnPropertyDescriptor(Math,'pow');console.log(d.writable,d.enumerable,d.configurable);try{new Math.pow();}catch(e){console.log(e.name);}",0,"","atan2 2 pow 2 imul 2\ntrue false true\nTypeError\n"],
+    ["math-binary-missing","let n=0;let x={valueOf:function(){n++;return 2;}};console.log(Math.pow(x),n);",0,"","NaN 1\n"],
+    ["math-binary-second-throw","let marker={};let x={valueOf:function(){throw marker;}};try{Math.atan2(NaN,x);}catch(e){console.log(e===marker);}try{Math.imul(0,x);}catch(e){console.log(e===marker);}",0,"","true\ntrue\n"],
     ["global-isnan","console.log(isNaN(),isNaN(undefined),isNaN(null),isNaN(true),isNaN(''),isNaN('4'),isNaN('x'),isNaN(NaN),isNaN(Infinity));",0,"","true true false false false false true true false\n"],
     ["global-isfinite","console.log(isFinite(),isFinite(null),isFinite(false),isFinite(''),isFinite('4'),isFinite('x'),isFinite(NaN),isFinite(Infinity),isFinite(-Infinity));",0,"","false true true true true false false false false\n"],
     ["global-predicate-objects","console.log(isNaN({}),isNaN([]),isNaN([1]),isNaN([1,2]),isFinite(new String('7')),Number.isFinite('7'),Number.isNaN('x'));",0,"","true false false true true false false\n"],

@@ -80,6 +80,8 @@ TS-071 adds Math constants and six unary numeric methods; see [Math](math-unary.
 
 TS-072 adds Function.prototype.apply; see [argument-list calls](function-apply.md).
 
+TS-078 adds Math atan2/pow/imul; see [binary Math](math-binary.md).
+
 TS-077 adds coercing global isNaN/isFinite; see [numeric predicates](global-numeric-predicates.md).
 
 TS-076 adds twenty transcendental unary Math methods; see [Math](math-unary.md#transcendental-unary-methods-ts-076).

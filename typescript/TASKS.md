@@ -3170,3 +3170,9 @@ Add trigonometric, hyperbolic, exponential, logarithmic, square-root and cube-ro
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `c82257d0`, implementation `59f8bb04`. Both guest suites pass 518/518, full tooling290/290, runner30 and probes10 pass. All 89 native entries pass build and static coverage in one invocation; predicate driver5070/5070 static. All 225 C++ fixture results agree across hosts: 67 reported successes, 30 unchecked completions, 53 parse errors, 73 runtime errors and two reported failures. All 97 previously successful or unchecked files retain their outcomes. The Math fixture reaches missing atan2. Reports: build/legacy-suite-node-rVVmDT/report.json and build/legacy-suite-native-vatwWb/report.json. Logs: build/global-numeric-*.
 
 Add Script global isNaN/isFinite with ordered number coercion, ignored extra arguments, abrupt propagation, descriptors, Realm ownership and budgets. Preserve non-coercing Number predicates and legacy globals. Validate both hosts and fixed fixtures.
+
+## TS-078 — Binary Math operations
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `8bc45037`.
+
+Add Math atan2/pow/imul with ordered conversion of both arguments, missing and ignored arguments, numeric edge cases, metadata, Realm ownership and budgets. Probe native backends first, preserve explicit completions, and validate both hosts and fixed fixtures.

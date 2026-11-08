@@ -1,8 +1,17 @@
 import type {Realm} from "../realm.js";
 import {toPrimitive} from "../primitive-conversion.js";
-import {toNumber} from "../conversion.js";
-import {normal, UNDEFINED, type ValueCompletion} from "../runtime.js";
+import {toNumber, type NumberCompletion} from "../conversion.js";
+import {normal, UNDEFINED, type Value, type OperationContext, type ValueCompletion} from "../runtime.js";
+import type {Location} from "../syntax.js";
 import {wellKnownToStringTag} from "../symbols.js";
+
+function numericArgument(value: Value, context: OperationContext, loc: Location): NumberCompletion {
+    const tick = context.tick(loc);
+    if (tick.type === "throw") return tick;
+    const primitive = toPrimitive(value, "number", context, loc);
+    if (primitive.type === "throw") return primitive;
+    return toNumber(primitive.value, loc, context.realm);
+}
 
 export function registerMath(realm: Realm): void {
     const object = realm.createObject();
@@ -18,11 +27,7 @@ export function registerMath(realm: Realm): void {
         "acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh",
         "cosh", "sinh", "tanh", "exp", "expm1", "log", "log1p", "log2", "log10", "sqrt", "cbrt"]) {
         realm.registerBuiltin(object, name, 1, (_receiver, args, context, loc): ValueCompletion => {
-            const tick = context.tick(loc);
-            if (tick.type === "throw") return tick;
-            const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
-            if (primitive.type === "throw") return primitive;
-            const number = toNumber(primitive.value, loc, context.realm);
+            const number = numericArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
             if (number.type === "throw") return number;
             let value = number.value;
             switch (name) {
@@ -56,16 +61,23 @@ export function registerMath(realm: Realm): void {
             return normal({kind: "number", value});
         });
     }
+    for (const name of ["atan2", "pow", "imul"]) {
+        realm.registerBuiltin(object, name, 2, (_receiver, args, context, loc): ValueCompletion => {
+            const left = numericArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
+            if (left.type === "throw") return left;
+            const right = numericArgument(args.length < 2 ? UNDEFINED : args[1], context, loc);
+            if (right.type === "throw") return right;
+            const value = name === "atan2" ? Math.atan2(left.value, right.value)
+                : name === "pow" ? Math.pow(left.value, right.value) : Math.imul(left.value, right.value);
+            return normal({kind: "number", value});
+        });
+    }
     for (const name of ["min", "max"]) {
         realm.registerBuiltin(object, name, 2, (_receiver, args, context, loc): ValueCompletion => {
             const minimum = name === "min";
             let value = minimum ? Infinity : -Infinity;
             for (const arg of args) {
-                const tick = context.tick(loc);
-                if (tick.type === "throw") return tick;
-                const primitive = toPrimitive(arg, "number", context, loc);
-                if (primitive.type === "throw") return primitive;
-                const number = toNumber(primitive.value, loc, context.realm);
+                const number = numericArgument(arg, context, loc);
                 if (number.type === "throw") return number;
                 const next = number.value;
                 // NaN is sticky, but later arguments must still be converted.
