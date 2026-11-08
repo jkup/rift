@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, unlinkSync, linkSync} from 'node:fs';
-import {tmpdir} from 'node:os';
+import {corpusRoot} from './test-support/environment.mjs';
 import {resolve, dirname} from 'node:path';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {pathToFileURL} from 'node:url';
@@ -12,8 +12,7 @@ import {frozenManifest, REVISION, sha256, metadata, harnessPaths, transform} fro
 // explicit invocation, but also run the same assertions in the normal suite.
 assert(process.argv.length===2 || process.argv.length===4,
  'usage: script-execution-inputs.test.mjs [corpus fresh-output-directory]');
-const corpus=process.argv[2] ?? process.env.RIFT_TEST262_ROOT ??
- resolve(tmpdir(),'rift-ts031a-test262-91c7075');
+const corpus=process.argv[2] ?? corpusRoot;
 mkdirSync(resolve('build'),{recursive:true});
 const out=process.argv[3] ?? mkdtempSync(resolve('build/script-execution-inputs-'));
 if(process.argv[3])mkdirSync(out,{recursive:false});

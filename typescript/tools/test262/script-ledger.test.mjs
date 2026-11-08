@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {planner,ledgerModule,read,save,checkFrozen,error} from '../../docs/validation/ts-035e2b/support.mjs';
+import {planner,ledgerModule,read,save,checkFrozen,error} from './test-support/ledger-support.mjs';
 const clone=structuredClone, rows=[...read('design-selections.json').rows,...read('supplemental-literals.json').rows];
 const statuses=['pass','fail','unsupported-feature','unsupported-profile','harness-error','resource-limit','timeout','host-fault'];
 const log=[];let checks=0;

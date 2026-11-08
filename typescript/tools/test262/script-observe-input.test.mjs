@@ -7,7 +7,7 @@ import {resolve,join,dirname} from 'node:path';
 import {prepareScriptObservation,launchScriptObservation} from './script-observe.mjs';
 import {REVISION,frozenManifest,planCorpus,transform,sha256,verifyBytes} from './input.mjs';
 import {parseEnvelope} from './result.mjs';
-const corpusRoot='C:/Users/jonku/AppData/Local/Temp/rift-ts031a-test262-91c7075';
+import {corpusRoot} from './test-support/environment.mjs';
 const archiveRoot=resolve('build/script-observations-pinned');await mkdir(archiveRoot,{recursive:true});
 const {manifest}=await frozenManifest();const s1=manifest.entries.find(e=>e.id==='S01'),s2=manifest.entries.find(e=>e.id==='S02'),u1=manifest.entries.find(e=>e.id==='U01');
 const results=[];
@@ -36,7 +36,7 @@ test('pinned selection, corrupted source/metadata/UTF8 and parse-negative execut
  await assert.rejects(()=>prepareScriptObservation({...o,corpusRoot,path:u1.path}),/parse-negative-action/);
 });
 test('all 33 original files and 60 variants remain blocked in each lane',async()=>{
- const rows=[];for(const lane of ['node','native']){const s=await planCorpus({root:corpusRoot,revision:REVISION,lane,paths:manifest.entries.map(e=>e.path)});assert.equal(s.files.length,33);assert.ok(s.files.every(f=>f.inputError===null));const variants=s.files.flatMap(f=>f.variants);assert.equal(variants.length,60);assert.ok(variants.every(v=>v.blockers.length>0));rows.push({lane,files:33,variants:60,blocked:60});}await writeFile('docs/validation/ts-035c/blocked-results.json',JSON.stringify(rows,null,2)+'\n');
+ const rows=[];for(const lane of ['node','native']){const s=await planCorpus({root:corpusRoot,revision:REVISION,lane,paths:manifest.entries.map(e=>e.path)});assert.equal(s.files.length,33);assert.ok(s.files.every(f=>f.inputError===null));const variants=s.files.flatMap(f=>f.variants);assert.equal(variants.length,60);assert.ok(variants.every(v=>v.blockers.length>0));rows.push({lane,files:33,variants:60,blocked:60});}await writeFile(join(archiveRoot,'blocked-results.json'),JSON.stringify(rows,null,2)+'\n');
 });
 
 for(const lane of ['node','native'])test(lane+' pinned positive harness assertions run after complete discard and reload',async()=>{

@@ -5,7 +5,7 @@ import { resolve, dirname, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import * as api from './script-plan.mjs';
 import { frozenManifest, REVISION, sha256, blobHash } from './input.mjs';
-import { evidence, corpusRoot, json, frozen, sandbox } from '../../docs/validation/ts-035e2a/support.mjs';
+import { evidence, scratchRoot, corpusRoot, json, frozen, sandbox } from './test-support/plan-support.mjs';
 const reportRoot=resolve('build/script-plan-tests');
 await mkdir(reportRoot,{recursive:true});
 const save=(name,value)=>writeFile(resolve(reportRoot,name),JSON.stringify(value,null,2)+'\n');
@@ -41,7 +41,7 @@ async function ledgerPolicyLiteral(selection) {
 }
 
 async function cleanup(root) {
-  assert(resolve(root).startsWith(evidence + sep + 'scratch-'));
+  assert(resolve(root).startsWith(scratchRoot + sep + 'plan-'));
   await rm(root, { recursive:true, force:true });
 }
 

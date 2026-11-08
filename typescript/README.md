@@ -48,6 +48,20 @@ Only Windows x64 has been validated.
 
 ## Validation
 
+Prepare the pinned 36-file test262 selection before running tooling tests:
+
+```sh
+node tools/test262/prepare-corpus.mjs
+```
+
+This downloads from the manifest's exact upstream revision and verifies each Git
+blob hash. For offline setup, pass an existing test262 checkout as the argument.
+Files go under `build/test262-corpus`; set `RIFT_TEST262_ROOT` to use another
+location. Existing differing files are rejected rather than overwritten. Test
+scratch output goes under `build/test262-tests` (`RIFT_TEST_OUTPUT_ROOT` overrides
+it). The tooling tests still require built Node and native drivers; run the build
+commands above before `npm run test:test262` on a fresh checkout.
+
 ```sh
 npm run typecheck
 npm run test:runner
@@ -77,7 +91,7 @@ include filename and one-based line/UTF-16 column. The CLI's console adapter emi
 one line per `console.log` call; the semantic core has no filesystem/process I/O.
 
 Start reading at [architecture decisions](docs/architecture-decisions.md), then
-follow `src/interpreter.ts` into the parser and evaluator. See the
+follow `src/cli.ts` into Script preparation and execution. See the
 [feature inventory](docs/feature-inventory.md) before writing guest programs.
 
 TS-016A supplies per-Realm Object, Function and Array prototype roots and explicit
