@@ -96,7 +96,7 @@ console.log("PASS A02");
             check(e.getOwnProperty(key) === undefined, "absent instance " + key);
         const ctor = r.getErrorConstructor(name), link = p.getOwnProperty("constructor");
         check(link !== undefined && link.kind === "data" && link.value.kind === "object" && link.value.object === ctor && link.writable && !link.enumerable && link.configurable, "prototype constructor identity/flags");
-        check(keysEqual(ctor, ["name", "length", "prototype"]), "constructor keys");
+        check(keysEqual(ctor, name === "Error" ? ["name", "length", "prototype", "isError"] : ["name", "length", "prototype"]), "constructor keys");
         const cp = ctor.getOwnProperty("prototype"), cn = ctor.getOwnProperty("name"), cl = ctor.getOwnProperty("length");
         check(cp !== undefined && cp.kind === "data" && cp.value.kind === "object" && cp.value.object === p && !cp.writable && !cp.enumerable && !cp.configurable, "constructor prototype identity/flags");
         check(cn !== undefined && cn.kind === "data" && sameValue(cn.value, string(name)) && !cn.writable && !cn.enumerable && cn.configurable, "constructor name");

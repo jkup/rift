@@ -51,7 +51,7 @@ export function createErrorConstructor(realm: Realm, name: ErrorName): GuestObje
 }
 
 export function registerErrors(realm: Realm): void {
-    const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"];
+    const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError"];
     let errorConstructor: GuestObject | null = null;
     for (const name of names) {
         const constructor = realm.getErrorConstructor(name);
@@ -62,6 +62,10 @@ export function registerErrors(realm: Realm): void {
         proto.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
         realm.defineScriptGlobal(name, { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     }
+    realm.registerBuiltin(realm.getErrorConstructor("Error"), "isError", 1, (_receiver, args, _context, _loc) => {
+        const value = args.length === 0 ? UNDEFINED : args[0];
+        return normal({kind: "boolean", value: value.kind === "object" && value.object instanceof GuestError});
+    });
     realm.registerBuiltin(realm.getErrorPrototype("Error"), "toString", 0, (receiver, _args, context, loc) => {
         if (receiver.kind !== "object") return languageFailure(context.realm, "TypeError", "Error.prototype.toString receiver is not an object", loc);
         const nameBudget = context.tick(loc);

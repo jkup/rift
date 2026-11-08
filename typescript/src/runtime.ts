@@ -15,7 +15,7 @@ export type Value =
     | { kind: "string"; value: GuestString } | { kind: "object"; object: GuestObject };
 export const UNDEFINED: Value = { kind: "undefined" };
 export type PropertyKey = GuestString | GuestSymbol;
-export type ErrorName = "Error" | "TypeError" | "ReferenceError" | "RangeError" | "SyntaxError";
+export type ErrorName = "Error" | "TypeError" | "ReferenceError" | "RangeError" | "SyntaxError" | "EvalError" | "URIError";
 // Host undefined means absent; guest undefined is the present Value UNDEFINED.
 export type DataDescriptorUpdate = { value?: Value; writable?: boolean; enumerable?: boolean; configurable?: boolean };
 export type BooleanCompletion = { type: "normal"; value: boolean };

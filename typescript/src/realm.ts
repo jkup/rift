@@ -70,7 +70,7 @@ export class Realm {
         this.objectPrototype = new GuestObject(null, true);
         if (profile === "script") {
             const errorPrototype = new GuestObject(this.objectPrototype);
-            const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"];
+            const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError"];
             for (const name of names) {
                 const proto = name === "Error" ? errorPrototype : new GuestObject(errorPrototype);
                 proto.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: true, enumerable: false, configurable: true });
@@ -138,7 +138,7 @@ export class Realm {
         this.installGlobal("console", { kind: "object", object: consoleObject }, true);
         registerNumber(this);
         if (profile === "script") {
-            const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"];
+            const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError"];
             for (const name of names) this.errorConstructors.set(name, createErrorConstructor(this, name));
             registerErrors(this);
             registerString(this);
