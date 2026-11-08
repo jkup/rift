@@ -2984,3 +2984,9 @@ Add ordinary Node/native regression entry points for the five standalone parser-
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `4b6b62e2`. All seven drivers pass both runtime inputs in Node/native; guest suites284/284 each with no skips. No engine or driver assertions changed.
 
 Restore ordinary execution of global-environment, Script global declarations, records, environments, execution, normal harness-bundle controls and throw-inspection drivers. Preserve the two runtime inputs and accepted expected output; keep archival timeout/replay checks intact. Metadata/declaration JSON and synthetic serializer drivers remain a separate follow-up. Validate both hosts with the current native build.
+
+## TS-047 — Restore metadata, declaration and serialization driver checks
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `0944c8d0`. Three inspection tests pass:136 metadata snapshots,135 declaration plans/winners and154 ASCII serializer records in both hosts. The shared runner also passes all5 parser-audit tests. The initial declaration mismatch was the documented H1 catchParameter schema migration; the test now uses its accepted replay, with old fixtures unchanged.
+
+Execute the three remaining inspection/serialization drivers in ordinary tooling tests. Compare metadata snapshots, declaration-plan literals and winners, and all frozen ASCII serializer rows in both hosts. Preserve current driver assertions and historical fixtures, keep reports in build/, and distinguish these regressions from conformance or replay of obsolete parser snapshots.

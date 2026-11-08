@@ -14,3 +14,8 @@ are ignored directories under `typescript/build/`.
 `dispatch-driver.mjs` runs assignment-target and lexical-statement wire checks
 against the current drivers. It retains their historical literal inputs while
 writing runtime sources, reports and failure diagnostics to shared scratch.
+
+`driver-runner.mjs` provides runtime input files, bounded child execution and
+failure transcripts for parser and inspection regressions. Each suite retains
+its own expected data and assertions; successful runs produce a concise process
+summary under a fresh scratch directory.

@@ -30,6 +30,12 @@ both runtime input orders where supported (1318 child runs). It checks complete
 audit outputs and internal driver invariants. Historical replay scripts also
 compare whole-parser snapshots from their own milestones; those remain archival.
 
+`script-inspection-drivers.test.mjs` exercises 136 metadata snapshots, 135
+declaration plans and function winners, and 154 frozen serializer records in both
+hosts. The declaration expectations use the accepted catch-scope schema. All
+136/135 inputs are read after compilation; serializer checks cover both runtime
+input files and exact ASCII bytes.
+
 Start with `input.mjs` for pinned input validation, `script-plan.mjs` for Script
 selection, `script-observe.mjs` for observation launches, and `script-result.mjs`
 for result decoding. `test-support/` contains live test helpers; files under
