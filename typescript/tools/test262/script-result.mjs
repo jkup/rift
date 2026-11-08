@@ -31,7 +31,7 @@ const syntaxCodes = ['lex.indeterminate-comment','lex.leading-zero','lex.numeric
   'parse.return-context','parse.line-terminator','parse.throw-expression','parse.loop-context','parse.duplicate-parameter',
   'parse.property-name','parse.assignment-target','parse.delete-identifier','parse.array-spread','parse.object-key',
   'parse.prototype-literal','parse.unexpected','script.uncertified-conflict'];
-const runtimeCodes = ['runtime.object-to-number','runtime.object-to-string','runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species'];
+const runtimeCodes = ['runtime.object-to-number','runtime.object-to-string','runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species'];
 const limitsShape = x => record(x,Object.fromEntries(['sourceUnits','parseDepth','steps','calls','evaluationDepth','wallMs','outputBytes'].map(k=>[k,integer])));
 const unitShape = x => record(x,{id,ordinal:integer,role:one(['harness','test']),path,blob:hash(40),sourceSha256:sha,transformedSha256:sha,byteLength:integer,sourceUnits:integer});
 const realmShape = x => record(x,{id,profile:one(['script'])});

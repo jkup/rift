@@ -25,7 +25,7 @@ export type SyntaxCapability =
     | "parse.object-key"
     | "parse.prototype-literal"
     | "parse.unexpected";
-export type RuntimeCapability = "runtime.object-to-number" | "runtime.object-to-string" | "runtime.map-species" | "runtime.splice-species" | "runtime.json-reviver" | "runtime.slice-species" | "runtime.concat-species";
+export type RuntimeCapability = "runtime.object-to-number" | "runtime.object-to-string" | "runtime.map-species" | "runtime.splice-species" | "runtime.json-reviver" | "runtime.slice-species" | "runtime.concat-species" | "runtime.filter-species";
 export type SyntaxRule = "assignment-target" | "lexical-declaration-statement" | "return-outside-function" | "duplicate-strict-parameter" | "duplicate-block-lexical-function";
 export type ResourceOrigin = { readonly kind: "resource-limit"; readonly guardCode: Guard; readonly count: number; readonly limit: number };
 export type Rejection =

@@ -23,7 +23,7 @@ function run(r: Realm, text: string, steps = 10000): ValueCompletion {
     check(session.inspect().active === null && session.inspect().calls === 0, "iteration restores session");
     return completion;
 }
-for (const method of ["map", "forEach"]) {
+for (const method of ["map", "forEach", "filter"]) {
     const owner = fresh(), caller = fresh(), callbackRealm = fresh(), input = caller.createArray(), receiver = caller.createObject();
     input.bootstrapDefine("0", {value: num(7), writable: true, enumerable: true, configurable: true});
     input.bootstrapDefine("2", {value: num(11), writable: true, enumerable: true, configurable: true});
@@ -45,6 +45,11 @@ for (const method of ["map", "forEach"]) {
         check(value.kind === "object" && value.object instanceof GuestArray && value.object !== input && value.object.getPrototypeOf() === owner.arrayPrototype, "foreign intrinsic map result Realm");
         if (value.kind !== "object") throw new Error("map result");
         check(sameValue(own(value.object, "length"), num(3)) && sameValue(own(value.object, "0"), num(14)) && sameValue(own(value.object, "2"), num(22)) && value.object.getOwnProperty("1") === undefined, "map preserves result holes");
+    } else if (method === "filter") {
+        const value = completion.value;
+        check(value.kind === "object" && value.object instanceof GuestArray && value.object.getPrototypeOf() === owner.arrayPrototype, "filter foreign result Realm");
+        if (value.kind !== "object") throw new Error("filter result");
+        check(sameValue(own(value.object,"length"),num(2)) && sameValue(own(value.object,"0"),num(7)) && sameValue(own(value.object,"1"),num(11)), "filter selects original values densely");
     } else check(completion.value.kind === "undefined", "forEach discards callback result");
 }
 {
@@ -59,13 +64,15 @@ for (const method of ["map", "forEach"]) {
     seed(r, "input", obj(input));
     const unsupported = run(r, "input.map(function(){throw 'callback';});");
     check(unsupported.type === "throw" && unsupported.origin.kind === "unsupported-operation" && !constructed, "custom map species remains explicit and uninvoked");
+    const unsupportedFilter = run(r,"input.filter(function(){throw 'callback';});");
+    check(unsupportedFilter.type === "throw" && unsupportedFilter.origin.kind === "unsupported-operation" && unsupportedFilter.origin.capabilityCode === "runtime.filter-species" && !constructed,"custom filter species uninvoked");
     holder.bootstrapDefine(wellKnownSpecies, {value: num(7)});
     const invalid = run(r, "input.map(function(){throw 'callback';});");
     check(invalid.type === "throw" && invalid.origin.kind === "engine-diagnostic" && invalid.diagnostic.name === "TypeError", "nonconstructor species is language TypeError");
     const ignored = run(r, "input.forEach(function(){});");
     check(ignored.type === "normal" && ignored.value.kind === "undefined", "forEach ignores constructors and species");
 }
-for (const method of ["map", "forEach"]) {
+for (const method of ["map", "forEach", "filter"]) {
     const r = fresh();
     const completion = run(r, "let input=[1,2]; input." + method + "(function(){throw input;});");
     check(completion.type === "throw" && completion.origin.kind === "guest" && completion.value.kind === "object" && completion.value.object instanceof GuestArray, "exact callback throw");
@@ -118,4 +125,29 @@ check(legacy.arrayPrototype.getOwnProperty("map") === undefined && legacy.arrayP
     check(fallback.type === "normal" && fallback.value.kind === "object" && fallback.value.object.getPrototypeOf() === r.arrayPrototype, "null splice species default");
 }
 check(legacy.arrayPrototype.getOwnProperty("splice") === undefined, "splice is a Script surface");
+{
+    const r = fresh();
+    const bounded = run(r,"[].filter.call({length:Infinity},function(){return false;});",40);
+    check(bounded.type === "throw" && bounded.origin.kind === "resource-limit","filter huge holes bounded without preallocating source length");
+    const result = run(r,"let a=[1,2,3];a.filter(function(v,i){if(i===0){a[0]=99;delete a[1];a[2]=7;a[3]=9;}return true;}).join(',');");
+    check(result.type === "normal" && sameValue(result.value,{kind:"string",value:"1,7"}),"filter saved values, live presence and captured limit");
+    const truthy = run(fresh(),"[1].filter(function(){return {valueOf:function(){throw 7;}};})[0];");
+    check(truthy.type === "normal" && sameValue(truthy.value,num(1)),"filter truthiness does not coerce objects");
+}
+{
+    const r = fresh();
+    r.arrayPrototype.bootstrapDefine("1",{value:num(7),writable:true,configurable:true});
+    const inherited = run(r,"let a=[1,,3];a.filter(function(v){return v>2;}).join(',');");
+    check(inherited.type === "normal" && sameValue(inherited.value,{kind:"string",value:"7,3"}),"filter includes inherited values");
+}
+{
+    const r = fresh();
+    r.arrayPrototype.bootstrapDefine("0",{set:obj(r.createBuiltin("setter",1,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("filter inherited result setter");})),configurable:true});
+    const result = run(r,"[].filter.call({length:1,0:7},function(){return true;});");
+    check(result.type === "normal" && result.value.kind === "object","filter result own data");
+    if(result.type !== "normal" || result.value.kind !== "object")throw new Error("filter result");
+    const d=result.value.object.getOwnProperty("0");
+    check(d !== undefined && d.kind === "data" && sameValue(d.value,num(7)) && d.writable && d.enumerable && d.configurable,"filter defines data without inherited setter");
+}
+check(legacy.arrayPrototype.getOwnProperty("filter") === undefined,"filter Script only");
 console.log("Public array iteration passed");

@@ -3218,3 +3218,9 @@ Add Script Array.prototype.slice with ordered start/end coercion, captured lengt
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `7d7a687a`, implementation `80bd16df`. Both guest suites pass 563/563, full tooling 290/290, runner 31/31 and all ten probes pass. All 91 native entries pass build and static coverage in one invocation; array-copy driver 5623/5623 static. All 225 complete fixture results agree: 74 reported successes, 27 unchecked completions, 53 parse errors, 70 runtime errors and one reported failure. Array-gc-success now reports success; array-gc-tracking reaches filter. All 100 previously completed outcomes remain. Reports: build/legacy-suite-node-u0cNMZ/report.json and build/legacy-suite-native-s2Vl0S/report.json. Logs: build/array-concat-*.
 
 Add Script Array.prototype.concat with default species, IsConcatSpreadable, sparse and inherited copying, ordered effects, safe length checks and bounded work. Preserve object identity for nonspread arguments and receiver boxing. Add internal well-known spreadability identity; public Symbol installation remains separate. Validate both hosts, fixed fixtures and relevant tooling; keep custom species explicit.
+
+## TS-086 — Generic Array filter
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base `98c9df33`.
+
+Add Script Array.prototype.filter with length-before-callback validation, default species, sparse source traversal, dense selected results, live mutations, callback this/arguments/Realm behavior and bounded work. Preserve exact throws and selected original values. Custom species stays explicit. Validate both hosts, native gates, tooling and the fixed C++ fixtures.
