@@ -18,4 +18,4 @@ C++ integer cast for large indices.
 Tests extend the existing array-search driver with access traces, captured length,
 conversion on empty input, symbols, abrupt identity, the maximum safe length and
 resource bounds. CLI cases exercise arrays, array-like objects and strings.
-Native and regression acceptance is pending.
+Both guest suites pass 371/371, full tooling 290/290, runner30 and probes10 pass. All 79 native entries pass build and static coverage; both corrected inventory drivers were explicitly rebuilt before execution. Array-search driver4510/4510 static. All 225 C++ fixture results agree across hosts: 54 reported successes, 22 unchecked completions, 67 parse errors, 80 runtime errors and two reported failures. The Array.at fixture improves and all 75 previously completed files retain their outcomes. Initial Node failures were stale exact prototype inventories; original logs are retained. Logs: build/array-at-*.

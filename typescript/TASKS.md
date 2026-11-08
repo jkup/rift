@@ -3071,6 +3071,6 @@ Add Script Object.keys, Object.values and Object.entries with shared enumeration
 
 ## TS-061 — Array relative indexing
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `8a48f4bd`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `8a48f4bd`, implementation `af194cf2`. Both guest suites pass 371/371, full tooling 290/290, runner30 and probes10 pass. All 79 native entries pass build and static coverage; both corrected inventory drivers were explicitly rebuilt before execution. Array-search driver4510/4510 static. All 225 C++ fixture results agree across hosts: 54 reported successes, 22 unchecked completions, 67 parse errors, 80 runtime errors and two reported failures. The Array.at fixture improves and all 75 previously completed files retain their outcomes. Initial Node failures were stale exact prototype inventories; original logs are retained. Logs: build/array-at-*.
 
 Add generic Array.prototype.at using existing length and integer conversions. Preserve length-before-index order, captured length, conversion on empty inputs, inherited reads, out-of-bounds early return and abrupt completions. Extend array-search controls and CLI expectations; validate both hosts, static coverage and the unchanged C++ fixture selection.
