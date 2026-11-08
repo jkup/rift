@@ -566,6 +566,7 @@ executeDriver("group-by", { stdout: "Object and Map grouping passed\n" });
 executeDriver("string-search", { stdout: "String search predicates passed\n" });
 executeDriver("map-upsert", { stdout: "Map insert-if-absent methods passed\n" });
 executeDriver("set-object", { stdout: "Set ordinary methods passed\n" });
+executeDriver("set-iterator", { stdout: "Set iterators passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

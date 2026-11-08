@@ -5,6 +5,7 @@ import { registerStringSearch } from "./builtins/string-search.js";
 import { registerMap } from "./builtins/map.js";
 import { registerMapIterators } from "./builtins/map-iterator.js";
 import { registerSet } from "./builtins/set.js";
+import { registerSetIterators } from "./builtins/set-iterator.js";
 import { registerStringSplit } from "./builtins/string-split.js";
 import { registerArraySort, registerArrayToSorted } from "./builtins/array-sort.js";
 import { registerArraySlice, registerArrayConcat, registerArrayToReversed, registerArrayToSpliced, registerArrayWith } from "./builtins/array-copy.js";
@@ -57,6 +58,7 @@ export class Realm {
     readonly mapPrototype: GuestObject;
     readonly mapIteratorPrototype: GuestObject;
     readonly setPrototype: GuestObject;
+    readonly setIteratorPrototype: GuestObject;
     readonly arrayConstructor: GuestObject | null = null;
     readonly booleanPrototype: GuestBoolean;
     readonly numberPrototype: GuestNumber;
@@ -88,6 +90,7 @@ export class Realm {
         this.mapPrototype = new GuestObject(this.objectPrototype);
         this.mapIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.setPrototype = new GuestObject(this.objectPrototype);
+        this.setIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.booleanPrototype = new GuestBoolean(false, this.objectPrototype);
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);
@@ -153,6 +156,7 @@ export class Realm {
             registerMap(this);
             registerMapIterators(this);
             registerSet(this);
+            registerSetIterators(this);
         }
     }
     get global(): Environment {
