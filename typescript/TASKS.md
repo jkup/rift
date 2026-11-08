@@ -3359,6 +3359,6 @@ Implement String Symbol.iterator and branded code-point iteration, preserving lo
 
 ## TS-109 — Object.fromEntries and synchronous iterator consumption
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 3b68f770.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 3b68f770, implementation bcdfef3f. Both guest suites pass 595/595 with no skips, tooling 290/290, runner 31/31 and all ten probes pass. All 108 native entries pass fresh build and static coverage checks; fromEntries driver 6665/6665 static. Ordered reads, saved next methods, cleanup precedence, foreign Realms and uncatchable engine stops pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 37 unchecked completions, 53 parse errors, 50 runtime errors and one reported failure; all 121 previous completions remain. The newer-Object fixture passes array fromEntries checks and now stops at missing Map. Reports: build/legacy-suite-node-046LIb/report.json and build/legacy-suite-native-nWKdUN/report.json. Logs: build/object-from-entries-*.
 
 Implement Object.fromEntries using reusable synchronous iterator acquisition/step and throw cleanup operations. Preserve primitive receivers, saved next methods, entry read/key conversion order, own data properties, original guest throws and uncatchable engine stop conditions. Own iterator.ts, Object builtin registration, current inventory, dedicated semantic tests/manifests and scope documentation. No async iteration, Map, for-of/spread or general iterator helpers.
