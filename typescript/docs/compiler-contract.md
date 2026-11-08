@@ -174,3 +174,13 @@ though static-only build succeeded. Explicit instanceof Error narrowing preserve
 same-instance assertion and removes the dynamic operation. Eight-statement
 before/after reductions, both executions, coverage and the rejected initial gate
 are retained in [TS-027A evidence](validation/ts-027a/README.md).
+
+## Short callback adapters (TS-056)
+
+A two-statement probe shows that a callback with fewer declared parameters than
+its contextual function type can introduce a dynamic adapter (`dyn.this`), even
+with an explicit Completion return type. Declaring the full four-parameter
+Builtin signature removes it. The affected update-expression host tests use
+that signature; no semantic-core workaround is needed. Reductions and coverage:
+`build/update-callback-probe-{short,full}.{ts,log}`. The short version has one
+dynamic statement; the full version has none.

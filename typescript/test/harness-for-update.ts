@@ -606,13 +606,13 @@ for (const expression of ["base()[key]++", "++base()[key]", "base()[key]--", "--
     const r = fresh();
     let trace = "", stored = 0;
     const target = r.createObject(), key = r.createObject(), value = r.createObject();
-    define(r, "base", builtin(r, "base", () => { trace += "B"; return normal({kind: "object", object: target}); }));
-    key.bootstrapDefine("toString", {value: builtin(r, "key", () => { trace += "K"; return normal({kind: "string", value: "p"}); })});
-    value.bootstrapDefine("valueOf", {value: builtin(r, "number", () => { trace += "C"; return normal({kind: "number", value: 7}); })});
+    define(r, "base", builtin(r, "base", (_receiver, _args, _context, _loc): ValueCompletion => { trace += "B"; return normal({kind: "object", object: target}); }));
+    key.bootstrapDefine("toString", {value: builtin(r, "key", (_receiver, _args, _context, _loc): ValueCompletion => { trace += "K"; return normal({kind: "string", value: "p"}); })});
+    value.bootstrapDefine("valueOf", {value: builtin(r, "number", (_receiver, _args, _context, _loc): ValueCompletion => { trace += "C"; return normal({kind: "number", value: 7}); })});
     define(r, "key", {kind: "object", object: key});
     property(r, target, "p", {
-        get: builtin(r, "get", () => { trace += "G"; return normal({kind: "object", object: value}); }),
-        set: builtin(r, "set", (_receiver, args) => {
+        get: builtin(r, "get", (_receiver, _args, _context, _loc): ValueCompletion => { trace += "G"; return normal({kind: "object", object: value}); }),
+        set: builtin(r, "set", (_receiver, args, _context, _loc): ValueCompletion => {
             trace += "S"; check(args[0].kind === "number", "numeric update write");
             if (args[0].kind === "number") stored = args[0].value;
             return normal();
