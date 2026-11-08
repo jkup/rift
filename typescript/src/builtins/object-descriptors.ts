@@ -118,4 +118,23 @@ export function registerObjectDescriptors(realm: Realm, constructor: GuestObject
         const properties = args.length < 2 ? UNDEFINED : args[1];
         return properties.kind === "undefined" ? normal({kind: "object", object}) : defineProperties(object, properties, context, loc);
     });
+    realm.registerBuiltin(constructor, "getOwnPropertyDescriptors", 1, (_receiver, args, context, loc): ValueCompletion => {
+        const boxed = toObject(args.length === 0 ? UNDEFINED : args[0], context, loc);
+        if (boxed.type === "throw") return boxed;
+        const keys = boxed.value.ownPropertyKeys();
+        const allocation = context.tick(loc);
+        if (allocation.type === "throw") return allocation;
+        const result = context.realm.createObject();
+        for (const key of keys) {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+            const descriptor = descriptorObject(boxed.value.getOwnProperty(key), context, loc);
+            if (descriptor.type === "throw") return descriptor;
+            if (descriptor.value.kind === "undefined") continue;
+            const defined = result.defineOwnProperty(key, {value: descriptor.value, writable: true, enumerable: true, configurable: true}, context, loc);
+            if (defined.type === "throw") return defined;
+            if (!defined.value) throw new Error("fresh descriptor map definition failed");
+        }
+        return normal({kind: "object", object: result});
+    });
 }

@@ -3302,3 +3302,9 @@ Implement Script preventExtensions/isExtensible, seal/isSealed and freeze/isFroz
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base ba9cbef3, implementation f94f6ff9. Both guest suites pass 586/586, full tooling 290/290, runner 31/31 and all ten probes pass. All 99 native entries pass build and static coverage in one invocation; creation driver 6298/6298 static. All 225 complete fixture results agree: 84 reported successes, 32 unchecked completions, 53 parse errors, 55 runtime errors and one reported failure. test-object-defineProperties.js now completes without check markers; all 115 previously completed outcomes remain. Reports: build/legacy-suite-node-GiKYPd/report.json and build/legacy-suite-native-2JEM2M/report.json. Logs: build/object-create-*.
 
 Implement Script Object.defineProperties and Object.create using shared two-phase descriptor collection/application. Preserve observable field/key order, symbol and inherited descriptor fields, enumerable own-property filtering, allocation/prototype semantics, abrupt completion and resource bounds.
+
+## TS-100 — Own-property reflection
+
+Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 368c7133.
+
+Implement Script Object.getOwnPropertyNames, getOwnPropertySymbols and getOwnPropertyDescriptors using existing key order, array construction and descriptor conversion. Preserve symbols, nonenumerable properties, primitive boxing, accessor identity without invocation, builtin Realm allocation and resource bounds.

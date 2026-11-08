@@ -184,3 +184,7 @@ Builtin signature removes it. The affected update-expression host tests use
 that signature; no semantic-core workaround is needed. Reductions and coverage:
 `build/update-callback-probe-{short,full}.{ts,log}`. The short version has one
 dynamic statement; the full version has none.
+
+### Shared Node emission directory
+
+run-probes.mjs invokes TypeScript with tsconfig.json and rewrites build/node. Do not overlap it, typecheck or build:node with a Node guest or Node fixture run. Finish emission first; Node guest/fixture runs may then overlap a native build on frozen source. TS-100 initially overlapped probes and Node guests: one module import reported a missing registerMath export during emission (build/object-reflection-node.log). With no source change, the serialized rerun passed 587/587 (build/object-reflection-node-corrected.log); retain the initial failure and avoid the race rather than adding automatic retries.

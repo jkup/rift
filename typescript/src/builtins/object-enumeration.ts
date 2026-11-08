@@ -52,4 +52,19 @@ export function registerObjectEnumeration(realm: Realm, constructor: GuestObject
         realm.registerBuiltin(constructor, kind, 1, (_receiver, args, context, loc) =>
             enumerate(args.length === 0 ? UNDEFINED : args[0], kind, context, loc));
     }
+    for (const name of ["getOwnPropertyNames", "getOwnPropertySymbols"]) {
+        realm.registerBuiltin(constructor, name, 1, (_receiver, args, context, loc): ValueCompletion => {
+            const boxed = toObject(args.length === 0 ? UNDEFINED : args[0], context, loc);
+            if (boxed.type === "throw") return boxed;
+            const values: Value[] = [];
+            for (const key of boxed.value.ownPropertyKeys()) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") return tick;
+                if (typeof key === "string") {
+                    if (name === "getOwnPropertyNames") values.push({kind: "string", value: key});
+                } else if (name === "getOwnPropertySymbols") values.push({kind: "symbol", value: key});
+            }
+            return arrayFromList(values, context, loc);
+        });
+    }
 }
