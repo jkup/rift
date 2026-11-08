@@ -49,7 +49,8 @@ for (const text of ["", " ", "undefined", "NaN", "Infinity", "+1", "01", "-01", 
     check(completion.type === "normal" && completion.value.kind === "object", "JSON object result");
     if (completion.type !== "normal" || completion.value.kind !== "object") throw new Error("JSON object");
     const object = completion.value.object;
-    check(object.getPrototypeOf() === realm.objectPrototype && object.ownPropertyKeys().join(",") === "__proto__,a,b", "JSON duplicate order and prototype");
+    const keys = object.ownPropertyKeys();
+    check(object.getPrototypeOf() === realm.objectPrototype && keys.length === 3 && keys[0] === "__proto__" && keys[1] === "a" && keys[2] === "b", "JSON duplicate order and prototype");
     check(sameValue(own(object,"a"),num(3)), "duplicate last value");
     const descriptor = object.getOwnProperty("__proto__");
     check(descriptor !== undefined && descriptor.kind === "data" && descriptor.writable && descriptor.enumerable && descriptor.configurable,"proto ordinary data");
