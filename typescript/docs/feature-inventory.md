@@ -8,8 +8,8 @@ writes no longer inherit the legacy engine's always-strict behavior. Source,
 parse, step, call and evaluation-depth limits remain enforced.
 
 TS-039 adds generic Array `push` and `pop`, including array-like receivers,
-inherited elements and strict mutation failures. Native acceptance is pending;
-see [array mutation](array-mutation.md).
+inherited elements and strict mutation failures. Both guest lanes pass 232/232;
+see [array mutation](array-mutation.md) for scope and validation.
 
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is

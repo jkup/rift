@@ -25,5 +25,11 @@ accessors, abrupt completion, partial mutation and interruption. CLI cases cover
 arrays, holes, generic receivers, length coercion, strings, nullish values and
 the array length boundary. Existing bootstrap tests retain exact inventories.
 
-Validation is pending the full native build. Guest accessor syntax, reflection,
-proxies and other missing Array methods remain outside this change.
+Validation: typecheck, 20 runner tests and all ten compiler probes pass. All 72
+native entries build with full static coverage. The guest suites pass 232/232
+in both Node and native hosts, with no skips. The expanded mutation driver was
+also rebuilt separately: 4132/4132 statements compile statically. Logs are under
+`build/array-mutation-*`.
+
+Guest accessor syntax, reflection, proxies and other missing Array methods
+remain outside this change.

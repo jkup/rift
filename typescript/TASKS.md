@@ -2939,6 +2939,18 @@ Give active tests a configurable pinned corpus under build/, provide a verified 
 
 ## TS-039 — Array push and pop
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `d254e757`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; implementation `185c2cfb`. Node/native guest suites232/232 each, all72 native entries compile with full static coverage, runner20 and all10 probes pass. Full tooling281/281 also passes.
 
 Implement generic Array.prototype.push/pop using existing property operations. Cover argument and length coercion order, inherited values, holes, strict failures even in sloppy code, partial mutations, array and array-like length limits, method metadata and budgets. Validate expected results in Node and freshly built native lanes; keep unsupported features explicit.
+
+## TS-040 — Keep remaining test reports out of historical evidence
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `185c2cfb`.
+
+Redirect the remaining parser-dispatch reports, capability isolation files and Script observation integration report to the shared scratch directory. Replace active historical dispatch helpers without changing their literal inputs. Preserve assertions and historical fixtures, inspect other test writes, and update the tooling entry point to distinguish current commands from its original TS-031A description. Validate the affected suites and check that historical files remain unchanged.
+
+## TS-041 — Current architecture reading guide
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; follows TS-037 and TS-039. Verified named interfaces against current source and checked local document links; documentation only.
+
+Put the current Script execution path and runtime model ahead of the historical TS-001 architecture notes. Correct the README build-driver description. Preserve milestone history, verify named interfaces against source, and make the remaining legacy migration explicit. Documentation only.

@@ -24,7 +24,7 @@ Completed in this catch-up: ordinary input-test invocation, the five tracked rep
 overwrites, separation of the historical checkpoint gate, and the CLI Script
 migration. CLI validation is 222/222 in each host with fresh native CLI compilation
 and full static coverage. The table retains review findings and their acceptance
-criteria; portability, legacy removal and the later items remain open.
+criteria; legacy removal and the later items remain open.
 
 TS-038 follow-up: active tests now share configurable corpus/scratch paths, and
 the planner/ledger/checkpoint helpers write under `build/`. Both offline and
@@ -33,6 +33,12 @@ downloaded setup verify all 36 pinned blobs. The full tooling suite passes
 skips, and no historical-evidence changes (`build/portable-full-tests.log`).
 Native build prerequisites and historical literal fixtures remain explicit;
 only Windows execution has been validated.
+
+TS-039 adds generic Array `push` and `pop` in `185c2cfb`. Both guest lanes pass
+232/232, all 72 native entries pass static compilation and coverage, and the
+expanded mutation driver covers ordering, accessors, partial failures and budgets.
+See [array mutation](array-mutation.md). The shared Realm change preserves the
+existing behavior checks while updating exact prototype inventories.
 
 | Priority | Work | Evidence and completion condition |
 |---|---|---|

@@ -70,10 +70,10 @@ npm run test:guest:node
 npm run test:guest:native
 ```
 
-Each guest command builds its lane before testing. `build:native` compiles the CLI
-and the independent-realm host test driver with `--tier static-only`, then checks
-the separate coverage report with the same fail-closed gate as the probes.
-Both drivers read guest files at runtime. The generated negative and resource
+Each guest command builds its lane before testing. `build:native` compiles the CLI,
+host test drivers and observation drivers with `--tier static-only`, then checks
+each coverage report with the same fail-closed gate as the probes.
+Guest source is read at runtime. The generated negative and resource
 fixtures in `build/guest-fixtures/` are identical across lanes and never passed to
 scriptc. Cases assert expected stdout, error phase/name/location where fixed, and
 exit status independently; matching two wrong implementations cannot pass.
@@ -93,6 +93,11 @@ one line per `console.log` call; the semantic core has no filesystem/process I/O
 Start reading at [architecture decisions](docs/architecture-decisions.md), then
 follow `src/cli.ts` into Script preparation and execution. See the
 [feature inventory](docs/feature-inventory.md) before writing guest programs.
+
+## Historical milestones
+
+The notes below describe earlier scopes. Use the current reading guide and
+feature inventory above for today's CLI behavior.
 
 TS-016A supplies per-Realm Object, Function and Array prototype roots and explicit
 allocation factories. Builtin name/length metadata is centralized. These are
