@@ -3287,6 +3287,6 @@ Implement Script parseInt/parseFloat with shared Number aliases, ordered string/
 
 ## TS-097 — Number decimal formatting
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 2f31d8bb.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 2f31d8bb, implementation b7c67fed. Both guest suites pass 584/584, full tooling 290/290, runner 31/31 and all ten probes pass. All 97 native entries pass build and static coverage in one invocation; formatting driver 6190/6190 static. The corrected runtime-input formatting probe is 6/6 static with zero dynamic operations; the initial direct Number conversion probe exposed a dynamic operation and remains retained. All 225 complete fixture results agree: 83 reported successes, 31 unchecked completions, 53 parse errors, 57 runtime errors and one reported failure. number-quick-test.js now reports success; all 113 previously completed outcomes remain. Reports: build/legacy-suite-node-36NZ2v/report.json and build/legacy-suite-native-tYKaSA/report.json. Logs: build/number-format-*.
 
 Probe native binary64 formatting with literal expectations before implementing Script toFixed/toExponential/toPrecision. Preserve receiver-slot checks, coercion order, digit ranges and signed zero; isolate backend limitations instead of silently accepting divergent output.
