@@ -2957,7 +2957,7 @@ Put the current Script execution path and runtime model ahead of the historical 
 
 ## TS-042 — Array indexOf and includes
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-08; base `051e02d5`.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; implementation `ddeb51d0`. Guest suites270/270 in both hosts after restoring additional checks; all73 native entries pass full static coverage, new search driver4162/4162. Typecheck, runner20 and probes10 pass.
 
 Implement generic indexOf/includes through existing guest object operations. Preserve captured length, fromIndex coercion and clamping, inherited values, holes, strict equality versus SameValueZero, abrupt completion, and bounded iteration. Add expected-result checks in Node and fresh native builds; keep unsupported reflection/proxy features explicit. Consult ECMA-262 and engine262 at18cdeb03c363eb31d775648a0d070bdc8a26ced1.
 
@@ -2966,3 +2966,9 @@ Implement generic indexOf/includes through existing guest object operations. Pre
 Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `ddeb51d0`. All four drivers pass both committed inputs under Node and fresh native binaries. Expanded guest suites252/252 each, zero skips. Remaining audit candidates stay on the roadmap.
 
 Audit compiled drivers absent from ordinary validation and bring a bounded first group (function materialization/setup, property accessors and restricted properties) into the guest runner in both hosts. Reuse committed runtime inputs and independent expected output, preserve all assertions, and write only to build/. Keep the broader driver audit on the roadmap rather than claiming complete coverage.
+
+## TS-044 — Restore routine execution of harness semantic checks
+
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base `7fe90f9c`. All nine drivers pass both committed inputs in Node and fresh native binaries; expanded guest suites270/270 each, no skips. Accepted historical transcripts are read-only expected output; driver assertions are unchanged.
+
+Bring the existing catch, switch, for/update, nonstrict, construct, error, map and formatting host checks into the ordinary guest runner with their two committed runtime inputs. Preserve internal assertions and independent output expectations. Validate both hosts; keep parser audit and other uncovered drivers tracked separately.

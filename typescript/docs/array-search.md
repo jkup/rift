@@ -23,5 +23,10 @@ receivers, offsets, safe-integer bounds, identity, `NaN`, zero and method metada
 The existing Script Realm bootstrap checks now run on two inputs in the ordinary
 guest suite, instead of requiring a historical replay script.
 
-Node guest checks pass 244/244. Native acceptance is pending. These methods do
-not introduce proxies, reflection or `Symbol.unscopables` support.
+The guest suites pass 270/270 in both hosts, including the restored Script and
+harness checks. All 73 native entries build with full static coverage; the new
+search driver is 4162/4162 static statements. Typecheck, 20 runner tests and all
+ten compiler probes pass. Logs are under `build/array-search-*` and
+`build/harness-host-*`.
+
+These methods do not introduce proxies, reflection or `Symbol.unscopables` support.

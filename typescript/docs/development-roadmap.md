@@ -47,6 +47,13 @@ passes 133 focused checks. Script integration passes all four groups, covering
 172 controls in both hosts. No historical content changed. TS-041 puts a current
 Script architecture guide ahead of the historical foundation notes.
 
+TS-042 adds generic Array `indexOf` and `includes` in `ddeb51d0`. TS-043/044
+restore routine execution of four Script host drivers and nine harness drivers,
+each with two runtime inputs and preserved assertions. The current guest suites
+pass 270/270 in both hosts; all 73 native entries compile with full static
+coverage, and the runner/probe checks pass. The initial entry-point scan still
+flags five standalone parser-audit drivers for review.
+
 | Priority | Work | Evidence and completion condition |
 |---|---|---|
 | P1 | Audit which compiled test drivers run in ordinary commands | The Script Realm bootstrap driver was built but only exercised by historical replay scripts. TS-042 adds its 18 checks with two runtime inputs to the regular guest suite. Map remaining native build entries to current test commands and restore missing behavioral checks without invoking historical report writers. A successful build is not a runtime test. |

@@ -12,7 +12,8 @@ inherited elements and strict mutation failures. Both guest lanes pass 232/232;
 see [array mutation](array-mutation.md) for scope and validation.
 
 TS-042 adds generic Array `indexOf` and `includes`, with distinct handling of
-holes and `NaN`. Node checks pass; native acceptance is pending. See
+holes and `NaN`. Both guest lanes pass 270/270; all 73 native build entries pass
+static coverage. See
 [array search](array-search.md).
 
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.

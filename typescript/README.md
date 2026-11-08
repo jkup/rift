@@ -84,10 +84,12 @@ The runner distinguishes timeout, crash, harness, exit-status, output and diagno
 failures. Unsupported-syntax tests expect rejection and count in the denominator;
 there are no skipped cases and no test262 conformance claim.
 
-The guest runner also executes the Script Realm bootstrap and the first group of
-Script host checks on two committed runtime inputs. Their expected output lives
-in `tools/script-host-cases.mjs`. Other compiled drivers still need an entry-point
-audit; see the roadmap. Building a test executable alone does not exercise it.
+The guest runner also executes Script Realm bootstrap, function/accessor checks
+and the catch, loop, constructor, error, map and formatting harness checks on two
+committed runtime inputs. `tools/script-host-cases.mjs` holds their expectations
+or reads accepted transcripts without rewriting them. Each driver retains its
+semantic assertions. Other compiled drivers still need an entry-point audit;
+see the roadmap. Building a test executable alone does not exercise it.
 
 CLI exit statuses: **0** success, **1** guest runtime failure/uncaught throw,
 **2** parse failure (including syntax/source limits), **64** invalid invocation,
