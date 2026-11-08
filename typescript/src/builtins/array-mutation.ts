@@ -1,6 +1,6 @@
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
-import { lengthOfArrayLike } from "../array-like.js";
+import { lengthOfArrayLike, toClampedIndex } from "../array-like.js";
 import { numberToString, toIntegerOrInfinity } from "../conversion.js";
 import { languageFailure, normal, UNDEFINED, type Value, type GuestObject, type OperationContext, type ValueCompletion } from "../runtime.js";
 import { toPrimitive } from "../primitive-conversion.js";
@@ -181,11 +181,9 @@ export function registerArraySplice(realm: Realm): void {
         const object = boxed.value;
         const length = lengthOfArrayLike(object, context, loc);
         if (length.type === "throw") return length;
-        const primitiveStart = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
-        if (primitiveStart.type === "throw") return primitiveStart;
-        const relative = toIntegerOrInfinity(primitiveStart.value, loc, context.realm);
-        if (relative.type === "throw") return relative;
-        const start = relative.value < 0 ? Math.max(length.value + relative.value, 0) : Math.min(relative.value, length.value);
+        const clamped = toClampedIndex(args.length === 0 ? UNDEFINED : args[0], length.value, context, loc);
+        if (clamped.type === "throw") return clamped;
+        const start = clamped.value;
         let deleteCount = args.length === 0 ? 0 : length.value - start;
         if (args.length > 1) {
             const primitive = toPrimitive(args[1], "number", context, loc);

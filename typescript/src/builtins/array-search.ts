@@ -1,19 +1,10 @@
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
-import { lengthOfArrayLike } from "../array-like.js";
+import { lengthOfArrayLike, toClampedIndex } from "../array-like.js";
 import { toPrimitive } from "../primitive-conversion.js";
-import { numberToString, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
-import { equal, sameValueZero, normal, UNDEFINED, type Value, type OperationContext } from "../runtime.js";
-import type { Location } from "../syntax.js";
+import { numberToString, toIntegerOrInfinity } from "../conversion.js";
+import { equal, sameValueZero, normal, UNDEFINED, type Value } from "../runtime.js";
 
-function toClampedIndex(value: Value, length: number, context: OperationContext, loc: Location): NumberCompletion {
-    const primitive = toPrimitive(value, "number", context, loc);
-    if (primitive.type === "throw") return primitive;
-    const integer = toIntegerOrInfinity(primitive.value, loc, context.realm);
-    if (integer.type === "throw") return integer;
-    const index = integer.value < 0 ? length + integer.value : integer.value;
-    return { type: "normal", value: Math.min(Math.max(index, 0), length) };
-}
 
 export function registerArraySearch(realm: Realm): void {
     realm.registerBuiltin(realm.arrayPrototype, "at", 1, (receiver, args, context, loc) => {

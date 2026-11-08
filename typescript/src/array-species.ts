@@ -5,9 +5,9 @@ import { wellKnownSpecies } from "./symbols.js";
 
 type ArrayCompletion = { type: "normal"; value: GuestArray } | ThrowCompletion;
 
-export function createDefaultSpeciesArray(object: GuestObject, length: number, method: "map" | "splice", context: OperationContext, loc: Location): ArrayCompletion {
+export function createDefaultSpeciesArray(object: GuestObject, length: number, method: "map" | "splice" | "slice", context: OperationContext, loc: Location): ArrayCompletion {
     const input: Value = { kind: "object", object };
-    const capability = method === "map" ? "runtime.map-species" : "runtime.splice-species";
+    const capability = method === "map" ? "runtime.map-species" : method === "splice" ? "runtime.splice-species" : "runtime.slice-species";
     if (object instanceof GuestArray) {
         const constructor = object.internalGet("constructor", input, context, loc);
         if (constructor.type === "throw") return constructor;

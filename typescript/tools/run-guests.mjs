@@ -188,6 +188,13 @@ const generated = [
     ["json-coercion","console.log(JSON.parse(7),JSON.parse(null),JSON.parse(true),JSON.parse({toString:function(){return '[3]';}})[0],JSON.parse('2',false));",0,"","7 null true 3 2\n"],
     ["json-invalid","try{JSON.parse('[1,]');}catch(e){console.log(e.name);}try{JSON.parse('01');}catch(e){console.log(e.name);}try{JSON.parse();}catch(e){console.log(e.name);}",0,"","SyntaxError\nSyntaxError\nSyntaxError\n"],
     ["json-metadata","let d=Object.getOwnPropertyDescriptor(JSON,'parse');console.log(d.value.name,d.value.length,d.writable,d.enumerable,d.configurable,Object.prototype.toString.call(JSON));",0,"","parse 2 true false true [object JSON]\n"],
+    ["slice-basic","let a=[1,2,3,4];console.log(a.slice(1,3).join(','),a.slice(-2).join(','),a.slice().join(','),a.join(','));",0,"","2,3 3,4 1,2,3,4 1,2,3,4\n"],
+    ["slice-limits","let a=[1,2,3];console.log(a.slice(-1.9).join(','),a.slice(0,NaN).length,a.slice(0,undefined).length,a.slice(Infinity).length,a.slice(-Infinity,Infinity).join(','),a.slice(2,1).length);",0,"","3 0 3 0 1,2,3 0\n"],
+    ["slice-generic","let a=Array.prototype.slice.call('abc',1);console.log(a.join(','),a.length,Array.prototype.slice.call({length:2,1:'x',constructor:7}).join(','));",0,"","b,c 2 ,x\n"],
+    ["slice-holes","let a=[,1,,3];let b=a.slice(0,3);console.log(b.length,0 in b,b[1],2 in b,a.length);",0,"","3 false 1 false 4\n"],
+    ["slice-order","let log='';let a=[1,2,3];Object.defineProperty(a,'constructor',{get:function(){log=log+'c';return undefined;}});let start={valueOf:function(){log=log+'s';a[1]=7;return 1;}};let end={valueOf:function(){log=log+'e';a.length=2;return 3;}};let b=a.slice(start,end);console.log(log,b.length,b[0],1 in b);",0,"","sec 2 7 false\n"],
+    ["slice-errors","try{Array.prototype.slice.call(undefined);}catch(e){console.log(e.name);}let a=[1];a.constructor=7;try{a.slice(0,0);}catch(e){console.log(e.name);}",0,"","TypeError\nTypeError\n"],
+    ["slice-metadata","let d=Object.getOwnPropertyDescriptor(Array.prototype,'slice');let o={};console.log(d.value.name,d.value.length,d.writable,d.enumerable,d.configurable,[o].slice()[0]===o);",0,"","slice 2 true false true true\n"],
     ["splice-basic","let a=[1,2,3,4]; let d=a.splice(1,2,7); console.log(a.join(','),d.join(','),d.length);",0,"","1,7,4 2,3 2\n"],
     ["splice-omission","let a=[1,2,3]; console.log(a.splice().length,a.length,a.splice(1,undefined).length,a.length,a.splice(1).join(','),a.join(','));",0,"","0 3 0 3 2,3 1\n"],
     ["splice-coercion","let a=[1,2,3,4]; console.log(a.splice(-2.8,1.9,7,8).join(','),a.join(',')); console.log(a.splice(-Infinity,NaN).length,a.splice(Infinity,99,9).length,a.join(','));",0,"","3 1,2,7,8,4\n0 0 1,2,7,8,4,9\n"],
@@ -520,6 +527,7 @@ executeDriver("function-apply", { stdout: "Function apply passed\n" });
 executeDriver("radix-literals", { stdout: "Radix literals passed\n" });
 executeDriver("decimal-literals", { stdout: "Decimal literals passed\n" });
 executeDriver("global-numeric-predicates", { stdout: "Global numeric predicates passed\n" });
+executeDriver("array-copy", { stdout: "Array copy passed\n" });
 executeDriver("json-parse", { stdout: "JSON parse passed\n" });
 executeDriver("math-unary", { stdout: "Math unary passed\n" });
 executeDriver("do-while", { stdout: "Do-while passed\n" });
