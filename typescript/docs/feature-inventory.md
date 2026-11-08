@@ -44,6 +44,9 @@ code units and observable conversion order. See [string methods](string-methods.
 TS-056 adds prefix/postfix increment and decrement to Script execution; see
 [update expressions](update-expressions.md) for evaluation order and validation.
 
+TS-057 adds Boolean call and construction, with genuine private slots and no
+coercion hooks; see [Boolean construction](boolean-constructor.md).
+
 `const`, arrows, templates and automatic semicolon insertion remain unsupported.
 The legacy `interpreter.run` and observation API still exist; their migration is
 separate work. The milestone sections below record historical behavior, not a

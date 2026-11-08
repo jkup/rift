@@ -17,4 +17,6 @@ ordinary `value` property. Classes and alternate `newTarget` remain unsupported.
 Host tests cover every supported primitive kind, object truthiness, poisoned
 conversion hooks, genuine slots, Realm ownership and allocation budgets. CLI
 tests cover call/construct results, extra argument effects, metadata and borrowed
-methods. Node guests pass 336/336; native acceptance is pending.
+methods.
+
+Both guest suites pass 336/336, full tooling 290/290, runner30 and probes10 pass. All 76 native entries pass build and static coverage in one invocation; Boolean driver4308/4308 static. Both C++ fixture lanes agree on all 225 results: 49 reported successes, 21 unchecked completions, 67 parse errors, 87 runtime errors and one reported failure. The three Boolean files improve without regressing previously completed files. Logs: build/boolean-*.

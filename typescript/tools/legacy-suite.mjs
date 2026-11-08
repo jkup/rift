@@ -56,7 +56,7 @@ export async function selectFixtures(directory) {
 async function main(lane) {
   if (!['node', 'native'].includes(lane) || process.argv.length !== 3)
     throw new Error('usage: node tools/legacy-suite.mjs node|native');
-  const entry = resolve(root, lane === 'node' ? 'build/node/src/cli.js' : 'build/native/rift.exe');
+  const entry = resolve(root, lane === 'node' ? 'build/node/src/cli.js' : 'build/native/rift' + (process.platform === 'win32' ? '.exe' : ''));
   const entrySha256 = hash(await readFile(entry));
   const testRoot = resolve(root, '../test');
   const selection = await selectFixtures(testRoot);

@@ -5,7 +5,7 @@ source is read **at runtime** by Rift; scriptc compiles the interpreter, never t
 guest programs. No host eval, Function, vm, or dynamic compiler fallback is used.
 The original C++ engine remains intact.
 
-The CLI uses the Script evaluator: `var`, `for` with `++`, `try`/`catch`, and
+The CLI uses the Script evaluator: `var`, `for`, prefix/postfix `++` and `--`, `try`/`catch`, and
 ordinary `new` calls work alongside the existing subset. Scripts are non-strict
 unless they contain a `"use strict"` directive. Unsupported syntax, including
 `const`, arrows and automatic semicolon insertion, still fails explicitly.
@@ -19,6 +19,10 @@ for scope and validation.
 
 Strings support `charAt`, `charCodeAt` and `slice` with UTF-16 indexing; see
 [string methods](docs/string-methods.md).
+
+Boolean calls and construction preserve primitive versus boxed values; see
+[Boolean behavior](docs/boolean-constructor.md). The
+[C++ fixture baseline](docs/legacy-fixture-baseline.md) tracks concrete coverage gaps.
 
 ## Build and run
 

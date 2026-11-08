@@ -60,3 +60,12 @@ from the C++ fixture into the engine.
 Reports: `build/legacy-suite-node-RomWqv/report.json` and
 `build/legacy-suite-native-wSqNPO/report.json`; all complete results agree after
 diagnostic path normalization.
+
+## Boolean follow-up (TS-057)
+
+Both hosts report 49 successes, 21 unchecked completions, 67 parse errors,
+87 runtime errors and one reported failure. The three Boolean files now succeed;
+all previously completed files retain their outcomes. All 225 results agree
+after diagnostic path normalization. Reports:
+`build/legacy-suite-node-wYAtgS/report.json` and
+`build/legacy-suite-native-rmFt3P/report.json`.
