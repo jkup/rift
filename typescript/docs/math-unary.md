@@ -35,4 +35,4 @@ This follows [Math.max](https://tc39.es/ecma262/multipage/numbers-and-dates.html
 and [Math.min](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-math.min).
 The C++ implementation's early NaN return and order-dependent zero selection are
 not copied. Tests cover both zero orders, conversion effects and throws, captured
-arguments, Realm ownership, descriptors and resource boundaries. Acceptance pending.
+arguments, Realm ownership, descriptors and resource boundaries. Both guest suites pass 487/487, full tooling290/290, runner30 and probes10 pass. All 86 native entries pass build and static coverage in one invocation; Math driver5035/5035 static. All 225 C++ fixture results agree across hosts: 66 reported successes, 30 unchecked completions, 55 parse errors, 72 runtime errors and two reported failures. All 96 previously successful or unchecked files retain their outcomes. Reports: build/legacy-suite-node-oyIREB/report.json and build/legacy-suite-native-6EfKPQ/report.json. Logs: build/math-extrema-*.
