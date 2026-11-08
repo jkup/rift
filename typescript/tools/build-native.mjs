@@ -14,6 +14,7 @@ const entries = [
     ["test/number-constructor.ts", "number-constructor"],
     ["test/number-parse.ts", "number-parse"],
     ["test/number-format.ts", "number-format"],
+    ["test/object-integrity.ts", "object-integrity"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

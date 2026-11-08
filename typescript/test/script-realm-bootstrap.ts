@@ -57,9 +57,9 @@ function inventory(a: Realm): void {
                 check(i===0 || i===2 || i===3 || i===4 || i===5,"supported prototype constructors");
                 const name=i===0?"Object":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
                 desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
-                keys(f,name==="Number"?["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger","parseInt","parseFloat"]:name==="Array"?["name","length","prototype","isArray"]:name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","defineProperty","getOwnPropertyDescriptor"]:["name","length","prototype"]);
+                keys(f,name==="Number"?["name","length","prototype",...names,"isNaN","isFinite","isInteger","isSafeInteger","parseInt","parseFloat"]:name==="Array"?["name","length","prototype","isArray"]:name==="Object"?["name","length","prototype","hasOwn","keys","values","entries","defineProperty","getOwnPropertyDescriptor","preventExtensions","seal","freeze","isExtensible","isSealed","isFrozen"]:["name","length","prototype"]);
                 if(name==="Array")method(a,f,"isArray","isArray",1);
-                if(name==="Object"){method(a,f,"hasOwn","hasOwn",2);for(const key of ["keys","values","entries","defineProperty","getOwnPropertyDescriptor"])method(a,f,key,key,key==="defineProperty"?3:key==="getOwnPropertyDescriptor"?2:1);}
+                if(name==="Object"){method(a,f,"hasOwn","hasOwn",2);for(const key of ["keys","values","entries","defineProperty","getOwnPropertyDescriptor","preventExtensions","seal","freeze","isExtensible","isSealed","isFrozen"])method(a,f,key,key,key==="defineProperty"?3:key==="getOwnPropertyDescriptor"?2:1);}
                 desc(f,"name",{kind:"string",value:name},false,false,true); desc(f,"length",n(1),false,false,true);
                 desc(f,"prototype",obj(p),false,false,false);
                 check(f.getPrototypeOf()===a.functionPrototype && callable!==null && callable.kind==="builtin" && callable.realm===a && slot!==null && slot.kind==="builtin-constructor" && slot.realm===a && slot.callable===callable,"formatting constructor graph and matching slots");
