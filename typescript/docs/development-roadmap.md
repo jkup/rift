@@ -398,6 +398,15 @@ forEach with cached adder lookup and iterator cleanup. Follow with values/keys
 aliasing, entries pairs and Symbol.iterator, including captured-Realm results and
 permanent exhaustion. Set algebra and weak collections remain separate work.
 
+### Error family follow-up
+
+After Set iterators, inspect Error.isError and the missing EvalError/URIError
+constructors together: the fixed error-iserror.js fixture requires all three.
+Use the existing internal GuestError brand, not prototype/name inspection. Audit
+ErrorName consumers and closed observation contracts before extending public
+constructors; preserve foreign-Realm errors, cause/message order and all existing
+diagnostic classifications.
+
 ### TS-112 checkpoint
 
 Both guest suites pass 598/598 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 111 native entries pass fresh static-only builds and separate coverage gates; Map iterator driver 6845/6845 static. Live mutation/exhaustion, captured-Realm results/pairs, next-Realm completion and bounded deleted-node traversal pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 38 unchecked completions, 53 parse errors, 49 runtime errors and one reported failure. test-object-new-methods.js now completes with 32 true results and no recognized check markers; all 121 previous completions remain. Reports: build/legacy-suite-node-11V5PM/report.json and build/legacy-suite-native-Av1AdA/report.json. Logs: build/map-iterator-*.
@@ -413,3 +422,7 @@ Both guest suites pass 600/600 with no skips, tooling 290/290, runner 31/31 and 
 ### TS-115 checkpoint
 
 Both guest suites pass 601/601 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 114 native entries pass fresh static-only builds and separate coverage gates; Map upsert driver 6943/6943 static. Stored undefined, callback validation/mutation, signed zero, live order, foreign errors and resource limits pass on both hosts. An initial resource test used unsupported named function-expression syntax; the corrected test uses a supported declaration. All 225 complete fixture results agree: 84 reported successes, 39 unchecked completions, 53 parse errors, 48 runtime errors and one reported failure; all 123 prior completions remain. The upsert fixture passes its Map assertions and reaches missing WeakMap. Reports: build/legacy-suite-node-KGSKKu/report.json and build/legacy-suite-native-g17HnD/report.json. Logs: build/map-upsert-*.
+
+### TS-116 checkpoint
+
+Both guest suites pass 602/602 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. Native acceptance covers 114 initial passes plus a successful isolated object-descriptors retry after a Zig cache file-open failure; all 115 entries pass static coverage, Set driver 7028/7028. Initial focused test syntax used unsupported comma-separated declarations and was corrected before native builds. Identity, saved adders, cleanup, live forEach, brands, foreign Realms and bounds pass on both hosts. All 225 complete fixture results agree: 84 reported successes, 39 unchecked completions, 53 parse errors, 48 runtime errors and one reported failure; all 123 prior completions remain. The Set fixture passes 33 checks before missing values(). Reports: build/legacy-suite-node-VMESjM/report.json and build/legacy-suite-native-BCxurx/report.json. Initial/retry evidence: build/set-object-native-initial-results.json and build/set-object-native-retry-results.json. Logs: build/set-object-*.
