@@ -13,4 +13,4 @@ The C++ global functions were consulted. Tests cover primitive and object inputs
 conversion hints and order, abrupt values, Realm ownership, descriptors,
 nonconstructibility, ignored extra arguments and budget boundaries.
 
-Acceptance pending.
+Both guest suites pass 518/518, full tooling290/290, runner30 and probes10 pass. All 89 native entries pass build and static coverage in one invocation; predicate driver5070/5070 static. All 225 C++ fixture results agree across hosts: 67 reported successes, 30 unchecked completions, 53 parse errors, 73 runtime errors and two reported failures. All 97 previously successful or unchecked files retain their outcomes. The Math fixture reaches missing atan2. Reports: build/legacy-suite-node-rVVmDT/report.json and build/legacy-suite-native-vatwWb/report.json. Logs: build/global-numeric-*.
