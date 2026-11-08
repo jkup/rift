@@ -48,6 +48,16 @@ cases.push(
     { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
+    ["reduce-basic", "function sum(a,b){return a+b;} console.log([1,2,3].reduce(sum),[1,2,3].reduce(sum,10),[1,2,3].reduceRight(sum),[1,2,3].reduceRight(sum,10));", 0, "", "6 16 6 16\n"],
+    ["reduce-order", "function f(a,b,i){return a+i+':'+b+';';} console.log([1,2,3].reduce(f,''),[1,2,3].reduceRight(f,''));", 0, "", "0:1;1:2;2:3; 2:3;1:2;0:1;\n"],
+    ["reduce-empty", "function f(){throw 'bad';} console.log([].reduce(f,42),[].reduceRight(f,undefined),[7].reduce(f),[8].reduceRight(f));", 0, "", "42 undefined 7 8\n"],
+    ["reduce-missing-initial", "function f(a,b){return b;} try{[].reduce(f);}catch(e){console.log(e.name);} try{Array(3).reduceRight(f);}catch(e){console.log(e.name);}", 0, "", "TypeError\nTypeError\n"],
+    ["reduce-holes", "function f(a,b){return a+b;} console.log([,2,,3].reduce(f),[,2,,3].reduceRight(f));", 0, "", "5 5\n"],
+    ["reduce-explicit-undefined", "console.log([3].reduce(function(a,b){return typeof a+':'+b;},undefined),[3].reduceRight(function(a,b){return typeof a+':'+b;},undefined));", 0, "", "undefined:3 undefined:3\n"],
+    ["reduce-generic", "function f(a,b){return a+b;} console.log(Array.prototype.reduce.call('abc',f,''),Array.prototype.reduceRight.call({length:3,0:'a',2:'c'},f,''));", 0, "", "abc ca\n"],
+    ["reduce-invalid-callback", "try{[].reduce();}catch(e){console.log(e.name);} try{[].reduceRight(0,7);}catch(e){console.log(e.name);}", 0, "", "TypeError\nTypeError\n"],
+    ["reduce-this", "var marker=7; console.log([1].reduce(function(){'use strict';return this;},0),[1].reduceRight(function(){return this.marker;},0));", 0, "", "undefined 7\n"],
+    ["reduce-metadata", "console.log(Array.prototype.reduce.name,Array.prototype.reduce.length,Array.prototype.reduceRight.name,Array.prototype.reduceRight.length,Object.keys(Array.prototype).length);", 0, "", "reduce 1 reduceRight 1 0\n"],
     ["array-at-basic", "let a=[10,20,30]; console.log(a.at(),a.at(1),a.at(-1),a.at(-3),a.at(3),a.at(-4));", 0, "", "10 20 30 10 undefined undefined\n"],
     ["array-at-conversion", "let a=[10,20,30]; console.log(a.at('1'),a.at(1.9),a.at(-1.9),a.at(NaN),a.at(-0),a.at(Infinity),a.at(-Infinity));", 0, "", "20 20 30 10 10 undefined undefined\n"],
     ["array-at-generic", "console.log(Array.prototype.at.call('abc',-1),Array.prototype.at.call({length:2,1:7},-1),Array.prototype.at.call(true,0));", 0, "", "c 7 undefined\n"],
@@ -348,6 +358,7 @@ executeDriver("boolean-constructor", { stdout: "Boolean constructor passed\n" })
 executeDriver("array-constructor", { stdout: "Array constructor passed\n" });
 executeDriver("own-property-predicates", { stdout: "Own-property predicates passed\n" });
 executeDriver("object-enumeration", { stdout: "Object enumeration passed\n" });
+executeDriver("array-reduce", { stdout: "Array reduction passed\n" });
 executeDriver("array-predicate", { stdout: "array predicates passed\n" });
 executeDriver("array-search", { stdout: "array search passed\n" });
 executeDriver("array-mutation", { stdout: "array mutation passed\n" });

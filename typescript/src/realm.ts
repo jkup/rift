@@ -14,6 +14,7 @@ import { registerArray, registerArrayConversions } from "./builtins/array.js";
 import { registerArrayMutators } from "./builtins/array-mutation.js";
 import { registerArraySearch } from "./builtins/array-search.js";
 import { registerArrayPredicates } from "./builtins/array-predicate.js";
+import { registerArrayReduction } from "./builtins/array-reduce.js";
 import { GlobalEnvironment } from "./global-environment.js";
 import type { Stmt, FunctionSource, Location } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
@@ -72,6 +73,7 @@ export class Realm {
         registerArrayMutators(this);
         registerArraySearch(this);
         registerArrayPredicates(this);
+        registerArrayReduction(this);
         registerFunction(this);
         registerSymbolConversions(this);
         registerBooleanConversions(this);
