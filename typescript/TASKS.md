@@ -3257,7 +3257,7 @@ Add Script trim/trimStart/trimEnd with shared numeric-conversion whitespace clas
 
 ## TS-092 — String split and custom split protocol
 
-Status: **active**. Owner: Codex catch-up chat, 2026-11-08; base 8f54e950.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-08; base 8f54e950, implementation 1076759f. Both guest suites pass 580/580, full tooling 290/290, runner 31/31 and all ten probes pass. All 93 native entries pass build and static coverage in one invocation; split driver 5994/5994 static. All 225 complete fixture results agree: 80 reported successes, 28 unchecked completions, 53 parse errors, 63 runtime errors and one reported failure. The simple split fixture completes without check markers; all 107 previously completed outcomes remain. Comprehensive strings now reach toLowerCase. Reports: build/legacy-suite-node-7700Xi/report.json and build/legacy-suite-native-BpKNyo/report.json. Logs: build/string-split-*.
 
 Implement Script split with RequireObjectCoercible before custom split lookup, original callback arguments, receiver/limit/separator coercion order, UTF-16 units, bounded dense results and builtin Realm allocation. RegExp/public Symbol installation remain separate. Validate both hosts and fixed fixtures.
 
