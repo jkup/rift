@@ -33,3 +33,15 @@ their undefined effect() call instead of rejecting **=. Their sources remain
 unchanged and expect the runtime ReferenceError. Added CLI cases verify a
 successful compound assignment after effects and unary-base rejection before
 effects. Existing legacy-parser operator rejections remain valid.
+
+The initial tooling run passed 289/290. Historical assignment-audit row G4
+(42**=7;) now reaches invalid-assignment-target rejection rather than lexical
+operator rejection. Its explicit current expectation preserves the frozen record
+and keeps exponentiation outside the audit candidate allowlist. No production
+change or native rebuild is needed for this expectation migration.
+
+Acceptance: 611/611 guest cases on each host; all 121 native entries pass
+static-only build and parsed coverage (7243/7243 statements in this driver).
+Corrected tooling passes 290/290; runner 31/31 and ten probes pass. All 225
+fixture results agree, with 133 completions including all 132 prior completions
+and the exponentiation fixture reporting 12 checks passed.

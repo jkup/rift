@@ -493,3 +493,12 @@ right associativity, unary-base rejection, numeric coercion order and single
 compound-reference evaluation explicit. Preserve the legacy parser boundary and
 fixed C++ fixture sources. The exponentiation fixture supplies 12 literal checks;
 native edge cases and full regression gates are required before acceptance.
+
+### TS-122 checkpoint
+
+Exponentiation is accepted: 611/611 guest cases on both hosts, 121 native entries
+passing build/coverage, tooling 290/290, runner 31/31 and ten probes. All 225
+fixture results agree; exponentiation-test.js adds 12 passing checks and raises
+completions to 133. Initial expectation failures and their narrow migrations are
+recorded in [exponentiation](exponentiation.md). Next: Number bitwise and shift
+operators, with precedence, integer conversion and compound-reference tests.
