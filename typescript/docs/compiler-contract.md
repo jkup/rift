@@ -192,3 +192,7 @@ run-probes.mjs invokes TypeScript with tsconfig.json and rewrites build/node. Do
 ### Initializer predicate callback (TS-143)
 
 The complete default-parameter driver built and executed, but coverage reported one dyn.this adapter at the initializer-detection Array.some callback. Declaring all three callback parameters did not remove it. Replacing the repeated predicate with a shared direct-loop helper produces 7984/7984 static statements and zero dynamic operations. Small constant, runtime-input, recursive-type and private-method probes did not reproduce the adapter, so this is evidence about this complete entry rather than a general Array.some restriction. Original/corrected coverage and probe sources/results are retained in build/default-parameters-*-coverage.log, build/default-parameters-dynamic.log and build/default-initializer-*.
+
+### Temporary record projection (TS-154)
+
+A reduced class method returning a record with an array gives an incorrect native result when the caller immediately selects an array element through the temporary return value. The Node execution passes; retaining the returned record in a named local also passes natively. The initial full duplicate-parameter driver crashed in this path despite fully static coverage. Its final collector returns the candidate array directly and retains it before indexing. See [the original reduction and passing variant](validation/ts-154/README.md); this is an execution failure, so static coverage alone cannot detect it.
