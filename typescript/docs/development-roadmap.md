@@ -580,3 +580,7 @@ Bound functions are accepted: 625/625 guests on both hosts (plus the final argum
 ### TS-138 checkpoint
 
 Numeric separators are accepted: 626/626 guests on both hosts, all 136 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 144 previous completions remain. The separator fixture now reaches unsupported eval during preparation. See [numeric separators](numeric-separators.md). Next: comma expressions, with GetValue semantics and AssignmentExpression boundaries. Clarification to the previous checkpoint: multiple var declarations are already supported; the comma fixture also needs eval and destructuring.
+
+### TS-139 checkpoint
+
+Comma expressions are accepted: 627/627 guests on both hosts, all 137 native entries static, runner 32/32 and ten probes. Tooling covers all 290 checks after one explicit historical diagnostic migration and a passing full assignment-audit rerun on both hosts. All 225 fixture results agree and all 144 prior completions remain; the comma fixture now reaches unsupported eval. See [comma expressions](comma-expressions.md). Next: bounded Function construction through Rift parsing and global Realm environments, retaining active budgets and explicit unsupported-source boundaries.

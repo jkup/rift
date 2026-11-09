@@ -104,6 +104,13 @@ for (const [driver, directory, count, variants] of [
       diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'invalid assignment target', loc: {line: 1, column: 1}},
       rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.assignment-target'},
     };
+    const sequence = rows.find(row => row.id === 'G15');
+    assert.equal(sequence.text, '(42,43)=7;');
+    sequence.expected = {
+      kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'invalid assignment target', loc: {line: 1, column: 1}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.assignment-target'},
+    };
     const template = rows.find(row => row.id === 'G6');
     assert.equal(template.text, '42=7;`late`;');
     template.expected = {kind: 'eligible', sourceUnits: 12, consumedUnits: 12, candidates: [{
