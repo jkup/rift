@@ -1,6 +1,6 @@
 import { GuestArguments, createArgumentsObject } from "../src/arguments-object.js";
 import { Realm } from "../src/realm.js";
-import { sameValue, type Value, type ValueCompletion } from "../src/runtime.js";
+import { normal, resourceFailure, sameValue, type OperationContext, type Value, type ValueCompletion } from "../src/runtime.js";
 import type { ScriptBindingCell } from "../src/script-environment.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
@@ -111,5 +111,20 @@ for (const mapped of [false, true]) {
     passes(realm, "input[Symbol.toStringTag]='Custom';Object.prototype.toString.call(input)==='[object Custom]';");
     const limited = run(realm, "make(1,2,3,4,5,6,7,8);", 12);
     check(limited.type === "throw" && limited.origin.kind === "resource-limit", "bounded arguments allocation");
+}
+{
+    const realm = new Realm((_line: string) => {}, "script");
+    const loc = { line: 1, column: 1 };
+    for (const limit of [0, 1, 2, 9]) {
+        let ticks = 0;
+        const stopped = resourceFailure("steps", limit + 1, limit, "arguments allocation budget", loc);
+        const context: OperationContext = { realm,
+            call: (_f, _t, _a, _l): ValueCompletion => { throw new Error("copying arguments must not call guest code"); },
+            tick: (_l): ValueCompletion => ++ticks > limit ? stopped : normal() };
+        const result = createArgumentsObject(realm, [number(1), number(2), number(3), number(4), number(5), number(6), number(7), number(8)],
+            null, [], context, loc);
+        if (limit < 9) check(result === stopped && ticks === limit + 1, "allocation/copy preserves exact budget failure");
+        else check(result.type === "normal" && ticks === 9, "allocation plus one tick per copied argument");
+    }
 }
 console.log("Arguments storage passed");

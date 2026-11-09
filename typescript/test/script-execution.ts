@@ -864,7 +864,7 @@ for(const source of [
     if (source === '"use strict";function f(){return arguments;}') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "arguments prepares without execution");
         scalar(run(source+'f(7,8).length;',r,s),2);
-        scalar(run('f(7)[0];',r,s),7);
+        scalar(run('"use strict";f(7)[0];',r,s),7);
         continue;
     }
     if (source === '"use strict";1,2;') {
