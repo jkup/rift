@@ -1147,7 +1147,7 @@ class ExecutionEngine {
             if (b.type === "throw") return b;
             return normal({ kind: "number", value: a.value + b.value });
         }
-        if (op === "-" || op === "*" || op === "/" || op === "%") {
+        if (op === "-" || op === "*" || op === "/" || op === "%" || op === "**") {
             // Both operand evaluations/GetValue have finished. Conversion is
             // left-to-right, so an abrupt RHS evaluation precedes either conversion.
             const leftPrimitive = toPrimitive(left, "number", this.context, loc);
@@ -1163,6 +1163,7 @@ class ExecutionEngine {
                 case "*": return normal({ kind: "number", value: a.value * b.value });
                 case "/": return normal({ kind: "number", value: a.value / b.value });
                 case "%": return normal({ kind: "number", value: a.value % b.value });
+                case "**": return normal({ kind: "number", value: Math.pow(a.value, b.value) });
             }
         }
         if (op === "==" || op === "!=") {

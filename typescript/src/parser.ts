@@ -479,6 +479,7 @@ class Parser {
         return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end } };
     }
     precedence(op: string): number {
+        if (this.structuralPlan() && op === "**=") return 1;
         if (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=") return 1;
         if (op === "?") return 2;
         if (op === "||") return 3;
@@ -487,6 +488,7 @@ class Parser {
         if (op === "<" || op === ">" || op === "<=" || op === ">=" || op === "in" || op === "instanceof") return 6;
         if (op === "+" || op === "-") return 7;
         if (op === "*" || op === "/" || op === "%") return 8;
+        if (this.structuralPlan() && op === "**") return 9;
         return 0;
     }
     expression(min: number, allowIn = true): Expr {
@@ -554,7 +556,9 @@ class Parser {
                 left = { kind: "conditional", loc, test: left, consequent, alternate };
                 continue;
             }
-            const right = this.expression(precedence === 1 ? precedence : precedence + 1, allowIn);
+            if (op === "**" && left.kind === "unary" && !this.parenthesized.has(left))
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unparenthesized unary exponentiation base", left.loc);
+            const right = this.expression(precedence === 1 || op === "**" ? precedence : precedence + 1, allowIn);
             if (precedence === 1) {
                 if (left.kind !== "identifier" && left.kind !== "member") {
                     const numeric = this.numericTokens.get(left);
@@ -575,11 +579,12 @@ class Parser {
                     if (this.structuralPlan()) this.assignmentNameEligible.set(left, eligible);
                 }
                 else {
-                    let binaryOp: "+" | "-" | "*" | "/" | "%" = "+";
+                    let binaryOp: "+" | "-" | "*" | "/" | "%" | "**" = "+";
                     if (op === "-=") binaryOp = "-";
                     else if (op === "*=") binaryOp = "*";
                     else if (op === "/=") binaryOp = "/";
                     else if (op === "%=") binaryOp = "%";
+                    else if (op === "**=") binaryOp = "**";
                     left = { kind: "compound", loc, target: left, value: right, op: binaryOp };
                 }
             } else left = { kind: "binary", loc, op, left, right };
@@ -656,12 +661,12 @@ class Parser {
             return expr;
         }
         if (t.kind === "punct" && (t.text === "++" || t.text === "--") && this.structuralPlan()) {
-            const target = this.expression(9, allowIn);
+            const target = this.expression(10, allowIn);
             if (target.kind !== "identifier" && target.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid update target", loc);
             return { kind: "update", loc, target, op: t.text, prefix: true };
         }
         if (t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {
-            const operand = this.expression(9, allowIn);
+            const operand = this.expression(10, allowIn);
             // Parentheses preserve identifiers. The bounded collector validates
             // their inherited mode after whole-source grammar coverage.
             if (t.text === "delete" && operand.kind === "identifier" && !this.boundedPlan()) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);

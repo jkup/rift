@@ -26,7 +26,7 @@ cases.push(
     { file: "test/fixtures/primitive-reads-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
     { file: "test/fixtures/primitive-reads-write.js", status: 1, error: "2:1: runtime TypeError: property is not writable: 0" },
     { file: "test/fixtures/primitive-reads-effects.js", stdout: "2 1\n" },
-    { file: "test/fixtures/primitive-reads-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: **" },
+    { file: "test/fixtures/primitive-reads-parse.js", status: 1, error: "1:1: runtime ReferenceError: effect is not defined" },
 );
 // TS-029A C1-C6: frozen independent CLI expectations.
 cases.push(
@@ -35,7 +35,7 @@ cases.push(
     { file: "test/fixtures/property-assignment-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
     { file: "test/fixtures/property-assignment-effects.js", stdout: "rhs\nkey\n", status: 1, error: "3:1: runtime TypeError: property is not writable: x" },
     { file: "test/fixtures/property-assignment-rhs-wins.js", status: 1, error: "1:10: runtime ReferenceError: missing is not defined" },
-    { file: "test/fixtures/property-assignment-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: **" },
+    { file: "test/fixtures/property-assignment-parse.js", status: 1, error: "1:1: runtime ReferenceError: effect is not defined" },
 );
 // TS-030A: committed files are read by the CLI in both lanes.
 cases.push(
@@ -399,6 +399,8 @@ lineCase("script-strict-this", "'use strict'; function f(){return this;} let o={
 lineCase("script-sloppy-writes", "missing=7; Number.NaN=2; 'ab'[0]='z'; console.log(this.missing, Number.isNaN(Number.NaN), 'ab'[0]);", { stdout: "7 true a\n" });
 lineCase("script-sloppy-delete", "var x=1; console.log(delete x, delete absent, delete Number.NaN);", { stdout: "false true false\n" });
 lineCase("script-strict-early-error", "'use strict'; console.log('no'); delete x;", { status: 2, errorContains: "parse SyntaxError: delete of an identifier is not allowed" });
+lineCase("exponentiation-after-effects", "function effect(){console.log('effect');}var p={x:2};effect();p.x **= 3;console.log(p.x);", { stdout: "effect\n8\n" });
+lineCase("exponentiation-parse-before-effects", "console.log('no'); -2 ** 3;", { status: 2, errorContains: "parse SyntaxError: unparenthesized unary exponentiation base" });
 lineCase("script-conflict-before-effects", "console.log('no'); let x; var x;", { status: 2, errorContains: "parse SyntaxError: lexical-var: x" });
 lineCase("script-loop-limit", "for(;;){}", { status: 1, errorPattern: "1:\\d+: runtime RangeError: execution step limit exceeded" });
 lineCase("typeof-void-success", "console.log(typeof missing, typeof null, void 0);", { stdout: "undefined object undefined\n" });
@@ -572,6 +574,7 @@ executeDriver("error-family", { stdout: "Error family and brand predicate passed
 executeDriver("for-of", { stdout: "Synchronous for-of passed\n" });
 executeDriver("const-bindings", { stdout: "Const bindings passed\n" });
 executeDriver("for-of-lexical", { stdout: "Lexical for-of passed\n" });
+executeDriver("exponentiation", { stdout: "Exponentiation passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

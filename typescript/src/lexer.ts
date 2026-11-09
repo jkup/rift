@@ -195,12 +195,12 @@ export function lex(source: string, script = false): LexResult {
         }
         const three = source.slice(i, i + 3);
         const two = source.slice(i, i + 2);
-        if (three === "===" || three === "!==") {
+        if (three === "===" || three === "!==" || (script && three === "**=")) {
             advance();
             advance();
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
-        } else if (script && (two === "++" || two === "--")) {
+        } else if (script && (two === "++" || two === "--" || two === "**")) {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });

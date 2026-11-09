@@ -476,3 +476,20 @@ After TS-120, add one identifier let/const head to for-of with an explicit decla
 ### TS-120 checkpoint
 
 Both guest suites pass 607/607 with no skips, tooling 290/290, runner 31/31 and all ten probes pass; typechecking passes. All 119 native entries pass a fresh corrected static-only build and parsed coverage gates in one run; const driver 7183/7183 static. TDZ-before-mutability, assignment/coercion ordering, global/function/block/switch bindings, closures, foreign errors and budgets pass on both hosts. Historical sources and case counts remain: seven declaration plans and six lexical-audit rows have explicit current expectations. Initial Node failures identified obsolete const rejections; the first tooling run passed 289/290 and exposed a changed bare-statement rejection code. Correction ee191396 preserves that boundary; initial evidence is retained. All 225 complete fixture results agree: 87 reported successes, 44 unchecked completions, 46 parse errors, 47 runtime errors and one reported failure; all 129 prior completions remain. let-const-loops-test.js and let-const-parser-test.js now report success. Reports: build/legacy-suite-node-5td0ma/report.json and build/legacy-suite-native-lrzfXP/report.json. Final native evidence: build/const-boundary-native-results.json. Logs: build/const-boundary-*; earlier build/const-* records remain.
+
+### TS-121 checkpoint
+
+Lexical for-of is accepted at 7633ceb0: both hosts pass 608/608 guest cases,
+all 120 native entries pass static build/coverage gates, and tooling 290/290,
+runner 31/31 and ten probes pass. All 225 fixture results agree, retaining 131
+completions and adding for-of-basic.js (132 total). The targets above are covered;
+traditional lexical for loops remain separate. See [lexical for-of](for-of-lexical.md)
+and TS-121 in TASKS.md for scope and initial/rebuild evidence.
+
+### Next operator work
+
+TS-122 adds Number exponentiation to the existing Script arithmetic path. Keep
+right associativity, unary-base rejection, numeric coercion order and single
+compound-reference evaluation explicit. Preserve the legacy parser boundary and
+fixed C++ fixture sources. The exponentiation fixture supplies 12 literal checks;
+native edge cases and full regression gates are required before acceptance.

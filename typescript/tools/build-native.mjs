@@ -37,6 +37,7 @@ const entries = [
     ["test/for-of.ts", "for-of"],
     ["test/const-bindings.ts", "const-bindings"],
     ["test/for-of-lexical.ts", "for-of-lexical"],
+    ["test/exponentiation.ts", "exponentiation"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],
