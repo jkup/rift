@@ -806,6 +806,7 @@ class ExecutionEngine {
             case "var": throw new Error("Script var AST requires Script execution");
             case "const": throw new Error("Script const AST requires Script execution");
             case "switch": throw new Error("Script switch AST requires Script execution");
+            case "try-finally": throw new Error("Script try-finally AST requires Script execution");
             case "try-catch": throw new Error("Script try-catch AST requires Script execution");
             case "empty": case "function": return normal();
             case "expression": return this.evaluate(stmt.expression, env, receiver);
@@ -1421,6 +1422,19 @@ class ExecutionEngine {
                     }
                     return { type: "normal", payload: value };
                 } finally { this.#frame = saved; }
+            }
+            case "try-finally": {
+                const result = this.#statement(stmt.body);
+                if (result.type === "throw" && result.origin.kind !== "guest" && result.origin.kind !== "engine-diagnostic") return result;
+                const savedAbrupt = this.#abrupt, savedSource = this.#lastAbrupt;
+                this.#abrupt = null;
+                const final = this.#statement(stmt.finalizer);
+                if (final.type !== "normal") return updateScriptEmpty(final, { kind: "value", value: UNDEFINED });
+                if (result.type === "throw") {
+                    this.#abrupt = savedAbrupt;
+                    this.#lastAbrupt = savedSource;
+                }
+                return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
             }
             case "try-catch": {
                 const result = this.#statement(stmt.block);

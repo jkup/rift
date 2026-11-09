@@ -346,6 +346,10 @@ class DeclarationCollector {
                 this.work.push({ kind: "switch", node, scope, variableScope });
                 this.expression(node.discriminant, scope, variableScope);
                 break;
+            case "try-finally":
+                this.statement(node.finalizer, scope, variableScope);
+                this.statement(node.body, scope, variableScope);
+                break;
             case "try-catch":
                 this.work.push({ kind: "catch", node, scope, variableScope });
                 this.statement(node.block, scope, variableScope);

@@ -40,6 +40,7 @@ const entries = [
     ["test/exponentiation.ts", "exponentiation"],
     ["test/bitwise.ts", "bitwise"],
     ["test/uri.ts", "uri"],
+    ["test/finally.ts", "finally"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

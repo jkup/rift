@@ -8,6 +8,7 @@ export type CaseBlock = { loc: Location; start: number; end: number; clauses: Sw
 export type SwitchStmt = { kind: "switch"; loc: Location; discriminant: Expr; caseBlock: CaseBlock };
 export type TryCatchStmt = { kind: "try-catch"; loc: Location; block: BlockStmt; parameter: DeclarationSite;
     catchLoc: Location; catchStart: number; catchEnd: number; handler: BlockStmt };
+export type TryFinallyStmt = { kind: "try-finally"; loc: Location; body: BlockStmt | TryCatchStmt; finalizer: BlockStmt };
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
 export type Expr =
     | { kind: "array"; loc: Location; elements: (Expr | null)[] }
@@ -42,6 +43,7 @@ export type Stmt =
     | BlockStmt
     | SwitchStmt
     | TryCatchStmt
+    | TryFinallyStmt
     | { kind: "if"; loc: Location; test: Expr; consequent: Stmt; alternate: Stmt | null }
     | { kind: "while" | "do-while"; loc: Location; test: Expr; body: Stmt }
     | { kind: "return" | "throw"; loc: Location; value: Expr | null }

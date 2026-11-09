@@ -3,7 +3,7 @@ export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatement
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForOfStmt } from "./syntax.js";
+import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForOfStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -298,6 +298,7 @@ class Parser {
         }
         if (this.structuralPlan() && this.eat("try")) {
             const block = this.statement();
+            if (this.at("finally") && block.kind === "block") return this.finishTry(loc, block);
             const catchToken = this.current();
             this.expect("catch");
             this.expect("(");
@@ -309,9 +310,9 @@ class Parser {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "try/catch requires blocks", loc);
                 return { kind: "empty", loc };
             }
-            return { kind: "try-catch", loc, block, handler,
+            return this.finishTry(loc, { kind: "try-catch", loc, block, handler,
                 parameter: { name, start: token.start, end: token.end, loc: token.loc },
-                catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.tokens[this.index - 1].end };
+                catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.tokens[this.index - 1].end });
         }
         if (this.structuralPlan() && this.eat("const")) {
             const binding = this.binding(0);
@@ -427,6 +428,15 @@ class Parser {
         const expression = this.expression(0);
         this.expect(";");
         return { kind: "expression", loc, expression };
+    }
+    finishTry(loc: Location, body: TryFinallyStmt["body"]): Stmt {
+        if (!this.eat("finally")) return body;
+        const finalizer = this.statement();
+        if (finalizer.kind !== "block") {
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "finally requires a block", finalizer.loc);
+            return { kind: "empty", loc };
+        }
+        return { kind: "try-finally", loc, body, finalizer };
     }
     forOf(loc: Location, start: number, head: ForOfStmt["head"]): ForOfStmt {
         const iterable = this.expression(1);

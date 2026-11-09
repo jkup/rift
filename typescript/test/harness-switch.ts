@@ -367,6 +367,11 @@ const rejects = [
 for (const row of rejects) {
     const r = fresh(), session = createScriptSession();
     const result = prepareStrictScript({ id: row.id, text: (row.id === "N10" ? "" : '"use strict";') + row.source }, r);
+    if (row.source === "switch(1){case 1:try{}finally{}}") {
+        check(result.kind === "ready" && session.inspect().steps === 0, "finally prepares in switch");
+        check(run('"use strict";' + row.source,r).type === "normal", "finally executes in switch");
+        continue;
+    }
     if (row.source === "switch(1){case 1:++x;}") {
         check(result.kind === "ready" && session.inspect().steps === 0, "prefix update prepares in switch");
         const completion = run('"use strict";' + row.source, r);

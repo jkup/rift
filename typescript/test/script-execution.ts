@@ -866,6 +866,11 @@ for(const source of [
         check(run(source, r, s).type === "normal", "const executes in branch and switch");
         continue;
     }
+    if (source === '"use strict";try{}catch(e){}finally{}') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "finally prepares without execution");
+        check(run(source,r,s).type === "normal", "finally executes");
+        continue;
+    }
     if (source === '"use strict";++x;') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "prefix update prepares without execution");
         thrown(run(source, r, s), "ReferenceError");

@@ -69,7 +69,16 @@ const rejects = [
     'try 1;catch(e){}', 'try{}catch(e)1;'
 ];
 for (const source of rejects) {
-    const p = prepareStrictScript({ id: "reject", text: '"use strict";' + source }, fresh());
+    const r = fresh(), log: string[] = [];
+    define(r, "out", {kind:"object",object:r.createBuiltin("out",1,(_r,args,_c,_l):ValueCompletion=>{log.push(scalar(args[0]));return normal();})});
+    const p = prepareStrictScript({ id: "reject", text: '"use strict";' + source }, r);
+    if (source === "try { throw 7; } finally { out(9); }" || source === "try{}catch(e){}finally{}") {
+        check(p.kind === "ready" && log.length === 0, "finally preparation is inert");
+        const result = run('"use strict";' + source, r);
+        if (source.includes("throw 7")) check(result.type === "throw" && scalar(result.value) === "7" && log.join(",") === "9", "finally runs before rethrow");
+        else check(result.type === "normal" && log.length === 0, "empty finally executes");
+        continue;
+    }
     check(p.kind === "blocked" || p.kind === "conflict", "whole-unit reject " + source);
     if (p.kind === "blocked") check(p.rejection.kind === "unsupported-syntax", "no certification");
 }

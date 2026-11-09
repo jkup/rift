@@ -106,6 +106,9 @@ for (const source of negatives) for (const strict of [false, true]) {
     if (source === "new C(function(){const x=1;});") {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "const constructor argument prepares");
         check(run(prefix+"function C(f){f();}"+source,r,s).type === "normal", "const constructor argument executes");
+    } else if (source === "new C();try{}finally{}") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "finally after constructor prepares");
+        check(run(prefix+"function C(){}"+source,r,s).type === "normal", "finally after constructor executes");
     } else check(p.kind !== "ready" && out.length === 0 && s.inspect().steps === 0, "negative "+source);
 }
 check(prepareStrictScript({id:"strict",text:'new C();'},fresh()).kind!=="ready","strict entry");
