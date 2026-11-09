@@ -57,7 +57,7 @@ for (const [driver, directory, count] of [
   expected.set(duplicateDefault.id, {
     kind: 'blocked', reason: 'grammar-or-resource',
     diagnostic: {phase: 'parse', name: 'SyntaxError',
-      message: driver === 'script-strict-rule-audit' ? 'duplicate parameter: a' : 'duplicate default parameter list',
+      message: 'duplicate default parameter list',
       loc: {line: 1, column: 15}},
     rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
   });
@@ -66,7 +66,7 @@ for (const [driver, directory, count] of [
   expected.set(duplicateRest.id, {
     kind: 'blocked', reason: 'grammar-or-resource',
     diagnostic: {phase: 'parse', name: 'SyntaxError',
-      message: driver === 'script-strict-rule-audit' ? 'duplicate parameter: a' : 'duplicate rest parameter list',
+      message: 'duplicate rest parameter list',
       loc: {line: 1, column: 15}},
     rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
   });
@@ -103,13 +103,6 @@ for (const [driver, directory, count] of [
       rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'},
     });
   }
-  const escapedParameters = rows.find(row => row.id === 'P09');
-  assert.equal(escapedParameters.text, 'function f(a,a){"use\\x20strict";}');
-  expected.set(escapedParameters.id, {
-    kind: 'blocked', reason: driver === 'script-strict-rule-audit' ? 'grammar-or-resource' : 'scope-restriction',
-    diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate parameter: a', loc: {line: 1, column: driver === 'script-strict-rule-audit' ? 1 : 14}},
-    rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
-  });
   if (driver === 'script-strict-parameter-audit') {
     const implicit = rows.find(row => row.id === 'E22');
     assert.equal(implicit.text, 'function f(a,a){"use strict"\n}');
@@ -167,6 +160,63 @@ for (const [driver, directory, count] of [
       second: {name: 'a', start: first + 2, end: first + 3, loc: {line: 1, column: first + 3}},
     }]});
   }
+  for (const [id, text] of [
+    ['P04', 'function f(a,a){}'], ['P06', 'function f(a,a){("use strict");}'],
+    ['P07', 'function f(a,a){0; "use strict";}'], ['P09', 'function f(a,a){"use\\x20strict";}'],
+  ]) {
+    assert.equal(rows.find(row => row.id === id).text, text);
+    expected.set(id, {kind: 'none', sourceUnits: text.length, consumedUnits: text.length});
+  }
+  if (driver === 'script-strict-rule-audit') {
+    for (const [id, text, name, column] of [
+      ['P01', '"use strict"; function f(a,a){}', 'a', 28],
+      ['P02', 'function f(a,a){"use strict";}', 'a', 14],
+      ['P03', '"use strict"; function o(){function f(a,a){}}', 'a', 41],
+      ['P08', '"use strict"; var f=function(a,a){};', 'a', 32],
+      ['P12', '"use strict"; function f(a,a){} function g(){class C {}}', 'a', 28],
+      ['P14', '"use strict"; function f(a,a){} function g(b,b){}', 'a', 28],
+      ['P15', 'function f(a,a){} function g(b,b){"use strict";}', 'b', 32],
+      ['X09', '"use strict"; {function f(){} function f(){}} function g(a,a){}', 'a', 60],
+    ]) {
+      assert.equal(rows.find(row => row.id === id).text, text);
+      expected.set(id, {kind: 'blocked', reason: 'scope-restriction',
+        diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate parameter: ' + name, loc: {line: 1, column}},
+        rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'}});
+    }
+    assert.equal(rows.find(row => row.id === 'P13').text, 'function f(a,a){"use strict";');
+    expected.set('P13', {kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: "expected '}', found '<eof>'", loc: {line: 1, column: 30}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.expected-token'}});
+    expected.set('L06', {kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'syntax nesting limit exceeded', loc: {line: 1, column: 159}},
+      rejection: {kind: 'resource-limit', guardCode: 'parse-depth', count: 129, limit: 128}});
+    expected.set('S21', {kind: 'blocked', reason: 'scope-restriction',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate parameter: param', loc: {line: 23, column: 29}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'}});
+  } else {
+    for (const [id, text] of [
+      ['E21', 'function f(a,a){; "use strict";}'], ['E23', 'function f(a,a){{"use strict";}}'],
+      ['E50', 'function f(a,a){"use\\nstrict";}'],
+    ]) {
+      assert.equal(rows.find(row => row.id === id).text, text);
+      expected.set(id, {kind: 'none', sourceUnits: text.length, consumedUnits: text.length});
+    }
+    expected.set('S21-raw', {kind: 'none', sourceUnits: 655, consumedUnits: 655});
+    for (const [id, text, start, end, first, name] of [
+      ['P15', 'function f(a,a){} function g(b,b){"use strict";}', 18, 48, 29, 'b'],
+      ['E12', 'function f(a,a){"use strict";} function g(b,b){}', 0, 30, 11, 'a'],
+      ['E13', 'var f=function(a,a){}; function g(b,b){"use strict";}', 23, 53, 34, 'b'],
+      ['E14', 'function f(a,a){"use strict";} var g=function(b,b){};', 0, 30, 11, 'a'],
+      ['E15', 'function outer(){function f(a,a){} function g(b,b){"use strict";}}', 35, 65, 46, 'b'],
+    ]) {
+      assert.equal(rows.find(row => row.id === id).text, text);
+      expected.set(id, {kind: 'eligible', sourceUnits: text.length, consumedUnits: text.length, candidates: [{
+        ruleCode: 'duplicate-strict-parameter', functionStart: start, functionEnd: end,
+        first: {name, start: first, end: first + 1, loc: {line: 1, column: first + 1}},
+        second: {name, start: first + 2, end: first + 3, loc: {line: 1, column: first + 3}},
+      }]});
+    }
+  }
   for (const lane of ['node', 'native']) for (const row of rows) {
     const file = row.id === 'R0' ? `test/fixtures/${driver}/a.js` : row.id === 'R1' ? `test/fixtures/${driver}/b.js` : undefined;
     run(driver, lane, {...row, file}, [], (stdout, label) => assert.deepEqual(JSON.parse(stdout).audit, expected.get(row.id), label));
@@ -187,6 +237,21 @@ for (const [driver, directory, count, variants] of [
         ruleCode: 'assignment-target', target: {text: '42', start: 0, end: 2, loc: {line: 1, column: 1}},
         operator: {text: '=', start: 2, end: 3, loc: {line: 1, column: 3}},
       }]};
+    }
+    for (const [id, text] of [['SL0', '42=7;function f(a,a){}'], ['SL1', 'function f(a,a){}42=7;']]) {
+      const row = rows.find(row => row.id === id), start = text.indexOf('42');
+      assert.equal(row.text, text);
+      row.expected = {kind: 'eligible', sourceUnits: text.length, consumedUnits: text.length, candidates: [{
+        ruleCode: 'assignment-target', target: {text: '42', start, end: start + 2, loc: {line: 1, column: start + 1}},
+        operator: {text: '=', start: start + 2, end: start + 3, loc: {line: 1, column: start + 3}},
+      }]};
+    }
+    for (const [id, text] of [['M7-0', '"use strict";42=7;function f(a,a){}'], ['M7-1', '"use strict";function f(a,a){}42=7;']]) {
+      const row = rows.find(row => row.id === id);
+      assert.equal(row.text, text);
+      row.expected = {kind: 'blocked', reason: 'scope-restriction',
+        diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate parameter: a', loc: {line: 1, column: text.indexOf('(a,a)') + 4}},
+        rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'}};
     }
     const pattern = rows.find(row => row.id === 'U8');
     assert.equal(pattern.text, '[a]=b;');
@@ -243,6 +308,20 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    for (const [id, text] of [
+      ['mixed-parameter-true-false', '"use strict"; while(false) let x; function f(a,a){}'],
+      ['mixed-parameter-true-true', '"use strict"; function f(a,a){} while(false) let x;'],
+      ['mixed-strict-parameter-false-false', 'while(false) let x; function f(a,a){"use strict";}'],
+      ['mixed-strict-parameter-false-true', 'function f(a,a){"use strict";} while(false) let x;'],
+      ['mixed-strict-parameter-true-false', '"use strict"; while(false) let x; function f(a,a){"use strict";}'],
+      ['mixed-strict-parameter-true-true', '"use strict"; function f(a,a){"use strict";} while(false) let x;'],
+    ]) {
+      const row = rows.find(row => row.id === id);
+      assert.equal(row.text, text);
+      row.expected = {kind: 'blocked', reason: 'scope-restriction',
+        diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate parameter: a', loc: {line: 1, column: text.indexOf('(a,a)') + 4}},
+        rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'}};
+    }
     const classStatement = rows.find(row => row.id === 'excluded-class');
     assert.equal(classStatement.text, 'if(false) class C{}');
     classStatement.expected = {kind: 'blocked', reason: 'grammar-or-resource',
@@ -301,6 +380,8 @@ for (const [driver, directory, count, variants] of [
       ['mixed-template-false-true', '`x`; while(false) let x;', 18],
       ['mixed-template-true-false', '"use strict"; while(false) let x; `x`;', 27],
       ['mixed-template-true-true', '"use strict"; `x`; while(false) let x;', 32],
+      ['mixed-parameter-false-false', 'while(false) let x; function f(a,a){}', 13],
+      ['mixed-parameter-false-true', 'function f(a,a){} while(false) let x;', 31],
       ['mixed-class-false-false', 'while(false) let x; class C{}', 13],
       ['mixed-class-false-true', 'class C{} while(false) let x;', 23],
       ['mixed-class-true-false', '"use strict"; while(false) let x; class C{}', 27],
