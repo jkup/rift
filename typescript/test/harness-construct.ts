@@ -106,6 +106,9 @@ for (const source of negatives) for (const strict of [false, true]) {
     if (source === "new C(...a);") {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "spread constructor prepares");
         check(run(prefix+"function C(x){}var a=[7];"+source,r,s).type === "normal", "spread constructor executes");
+    } else if (source === "new C(7,);") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "trailing constructor comma prepares");
+        check(run(prefix+"function C(x){out(x);}"+source,r,s).type === "normal" && out.length === 1 && sameValue(out[0],number(7)), "trailing constructor comma executes");
     } else if (source === "new C(function(){const x=1;});") {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "const constructor argument prepares");
         check(run(prefix+"function C(f){f();}"+source,r,s).type === "normal", "const constructor argument executes");

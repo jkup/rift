@@ -552,3 +552,7 @@ Fixed-key object methods and accessors are accepted: 619/619 guests on both host
 ### TS-131 checkpoint
 
 The fixture reporter recognizes anchored hyphenated PASS/FAIL lines. All 225 raw results remain unchanged across both hosts; the getter/setter fixture is now correctly counted as 17 checks and a reported success. Counts are 94 reported successes and 47 unchecked completions, with 141 total completions unchanged. Runner 32/32 passes. Next: trailing commas in object literals and call/constructor argument lists.
+
+### TS-132 checkpoint
+
+Trailing object and call/constructor commas are accepted: 620/620 guests on both hosts, all 130 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 141 previous completions remain; property-descriptors-test.js newly completes without counted markers, raising completions to 142. See [trailing commas](trailing-commas.md) for grammar scope and retained initial failures. Next: Annex B String HTML methods, sharing receiver/attribute coercion and quote escaping; the HTML-method fixture has 15 concrete checks.
