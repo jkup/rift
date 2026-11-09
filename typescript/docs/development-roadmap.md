@@ -591,7 +591,9 @@ Function construction, arrows, rest/default parameters, arguments objects, slopp
 
 ### Remaining corpus review priorities
 
-Eval is now a substantial shared blocker, but its fixture uses implicit statement terminators and both local and global execution. TS-149 addresses semicolon insertion first; TS-150 remains blocked on that milestone and a review of eval environment/instantiation semantics. Optional eval calls must remain indirect. Unsupported input must not be converted indiscriminately into catchable SyntaxError merely to satisfy negative fixtures.
+TS-149 supplies the statement terminators needed by the eval fixture, and TS-150 implements its local and global execution semantics. Optional eval calls remain indirect. Unsupported input must not be converted indiscriminately into catchable SyntaxError merely to satisfy negative fixtures.
+
+TS-150 completes the original eval fixture on both hosts while preserving all 158 earlier completions. The comma fixture proceeds past eval admission to unsupported destructuring. Numeric separators now execute seven positive checks before the first malformed separator remains an explicit unsupported outcome. Review source-backed certification for malformed separators next, followed by shared array/object destructuring patterns across declarations, assignments and loop heads. Certification must reject valid-but-unsupported alternatives such as BigInt and regexp contexts; do not make all lexical rejections catchable. Destructuring needs iterator closing, nested/default/rest patterns, TDZ and assignment-reference ordering, rather than array-index shortcuts.
 
 The unchanged string-escape-sequences-test.js has malformed quoting at line 14: its escaped backslashes leave a quote terminating the string before `world`. Node's syntax-only check also rejects that original source (build/optional-chain-fixture-syntax-audit.log). Preserve this parse-error outcome and the fixture bytes; do not weaken string lexing to make the file complete. This is separate from supported Script hex/Unicode string escapes. The baseline still does not measure C++ execution, and nonstandard injected GC helpers remain excluded from this runner.
 
@@ -599,3 +601,7 @@ The unchanged string-escape-sequences-test.js has malformed quoting at line 14: 
 ### TS-149 checkpoint
 
 Script semicolon insertion is accepted: 638/638 guests on each host, 148 native static/coverage gates, runner 32/32 and ten probes. All 290 tooling checks are covered after one explicit declaration-plan migration and a passing full plan rerun on both hosts. All 225 corpus records match and all 158 completed fixtures remain complete. See [semicolon insertion](semicolon-insertion.md) for restricted productions, directive detection and retained failures. Next: review eval environments and instantiation, including deletable local bindings, arguments visibility, inherited strictness and nested-source restoration, before admitting eval syntax.
+
+### TS-150 checkpoint
+
+Eval is accepted with direct/indirect scope, inherited strictness, deletable bindings, arguments/default interactions and nested state restoration. Both hosts pass 640/640 guests, tooling 290/290, runner 32/32 and ten probes. All 150 native entries have passing static-only build/coverage evidence after one explicit URI rebuild for a retained Zig cache failure. All 225 corpus records match, with 159 completions: 104 reported successes and 55 unchecked completions. See [eval design and validation](eval-design.md). Next: source-backed malformed numeric separator certification, preserving unsupported grammar boundaries.
