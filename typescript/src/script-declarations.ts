@@ -174,6 +174,34 @@ export type NumericAssignmentSite = {
     readonly text: string; readonly start: number; readonly end: number;
     readonly loc: Location;
 };
+export type NumericSeparatorAudit =
+    | { readonly kind: "eligible"; readonly sourceUnits: number; readonly consumedUnits: number;
+        readonly candidates: readonly NumericAssignmentSite[] }
+    | { readonly kind: "none"; readonly sourceUnits: number; readonly consumedUnits: number }
+    | { readonly kind: "blocked"; readonly reason: "grammar-or-resource" | "scope-restriction" | "other-conflict";
+        readonly diagnostic: Diagnostic; readonly rejection: Rejection | null };
+
+export function collectNumericSeparatorAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, inheritedStrict: boolean): NumericSeparatorAudit {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true, inheritedStrict);
+    analysis.collect(body);
+    const veto = analysis.audit();
+    if (veto.kind === "blocked") return veto;
+    if (veto.kind === "eligible") {
+        const second = veto.candidates[0].second;
+        return { kind: "blocked", reason: "other-conflict", rejection: null,
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate-lexical: " + second.name, loc: second.loc } };
+    }
+    const candidates: NumericAssignmentSite[] = [];
+    for (const token of tokens) {
+        if (token.kind !== "invalid-number") continue;
+        if (unit.text.slice(token.start, token.end) !== token.text || !token.text.includes("_"))
+            throw new Error("invalid numeric separator token evidence");
+        candidates.push({ text: token.text, start: token.start, end: token.end,
+            loc: { line: token.loc.line, column: token.loc.column } });
+    }
+    return candidates.length === 0 ? { kind: "none", sourceUnits: unit.text.length, consumedUnits: unit.text.length }
+        : { kind: "eligible", sourceUnits: unit.text.length, consumedUnits: unit.text.length, candidates };
+}
 export type NumericAssignmentCandidate = {
     readonly ruleCode: "assignment-target";
     readonly target: NumericAssignmentSite;

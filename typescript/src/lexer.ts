@@ -14,6 +14,13 @@ function lineTerminator(c: string): boolean {
     return c === "\r" || c === "\n" || c === "\u2028" || c === "\u2029";
 }
 export function lex(source: string, script = false): LexResult {
+    return lexSource(source, script, false);
+}
+// Invalid tokens are usable only by the parser's rejection-only continuation.
+export function lexNumericSeparatorAudit(source: string): LexResult {
+    return lexSource(source, true, true);
+}
+function lexSource(source: string, script: boolean, separatorAudit: boolean): LexResult {
     const tokens: Token[] = [];
     let i = 0;
     let line = 1;
@@ -21,6 +28,7 @@ export function lex(source: string, script = false): LexResult {
     let error: Diagnostic | null = null;
     let rejection: Rejection | null = null;
     const templates: number[] = [];
+    let invalidSeparator = false;
     function advance(): string {
         const c = source.charAt(i++);
         if (lineTerminator(c)) {
@@ -46,6 +54,12 @@ export function lex(source: string, script = false): LexResult {
                 continue;
             }
             const next = digitValue(source.charAt(i + 1));
+            if (separatorAudit && source.charAt(i) === "_") {
+                if (!separators || !hasDigit || next < 0 || next >= radix) invalidSeparator = true;
+                advance();
+                hasDigit = false;
+                continue;
+            }
             if (script && separators && hasDigit && source.charAt(i) === "_" && next >= 0 && next < radix) {
                 advance();
                 hasDigit = false;
@@ -153,6 +167,7 @@ export function lex(source: string, script = false): LexResult {
             continue;
         }
         if (digit(c) || (script && c === "." && digit(source.charAt(i + 1)))) {
+            invalidSeparator = false;
             let text = advance();
             const prefix = source.charAt(i);
             let radix = 0;
@@ -167,11 +182,11 @@ export function lex(source: string, script = false): LexResult {
                 text += numericDigits(radix, false, true);
                 if (i === digitsStart || digit(source.charAt(i)) || letter(source.charAt(i)))
                     fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "invalid radix numeric literal", loc);
-                tokens.push({ kind: "number", text, loc, start, end: i });
+                tokens.push({ kind: invalidSeparator ? "invalid-number" : "number", text, loc, start, end: i });
                 continue;
             }
             text += numericDigits(10, c !== ".", c !== "0");
-            if (text.length > 1 && text.charAt(0) === "0") fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
+            if (text.length > 1 && text.charAt(0) === "0" && !invalidSeparator) fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
             if (c !== "." && source.charAt(i) === ".") {
                 text += advance();
                 text += numericDigits(10, false, true);
@@ -179,11 +194,11 @@ export function lex(source: string, script = false): LexResult {
             if (script && (source.charAt(i) === "e" || source.charAt(i) === "E")) {
                 text += advance();
                 if (source.charAt(i) === "+" || source.charAt(i) === "-") text += advance();
-                if (!digit(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "decimal exponent requires digits", loc);
+                if (!digit(source.charAt(i)) && !(separatorAudit && source.charAt(i) === "_")) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "decimal exponent requires digits", loc);
                 text += numericDigits(10, false, true);
             }
             if (letter(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
-            tokens.push({ kind: "number", text, loc, start, end: i });
+            tokens.push({ kind: invalidSeparator ? "invalid-number" : "number", text, loc, start, end: i });
             continue;
         }
         if (c === "'" || c === '"') {

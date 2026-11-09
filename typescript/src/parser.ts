@@ -1,9 +1,10 @@
+import { collectNumericSeparatorAudit, type NumericSeparatorAudit } from "./script-declarations.js";
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatementContext, NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import { scriptPrologue, lineTerminatorBetween } from "./script-prologue.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
-import { lex, type Token } from "./lexer.js";
+import { lex, lexNumericSeparatorAudit, type Token } from "./lexer.js";
 import type { Diagnostic, Expr, ChainLink, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, FormalParameter, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
@@ -56,6 +57,14 @@ export function auditScriptReturns(source: string): ReturnCoverage {
     return { kind: "complete", goal: "Script", sourceUnits: source.length,
         consumedUnits: end.end, candidates: parser.returnCandidates };
 }
+export function auditBoundedScriptNumericSeparators(source: string, inheritedStrict = false): NumericSeparatorAudit {
+    const unit = { id: "", text: source };
+    const parsed = parseStructuralSource(unit, null, true, false, false, false, true);
+    if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
+        diagnostic: parsed.diagnostic, rejection: parsed.rejection };
+    return collectNumericSeparatorAudit(unit, parsed.body, parsed.tokens, parsed.bindings, inheritedStrict);
+}
+
 // Internal handoff: only a fresh parse can populate retained nodes.
 // The public planner supplies no retention object.
 export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
@@ -149,18 +158,19 @@ type StructuralSource =
     | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]>; numericCandidates: readonly NumericAssignmentCandidate[]; lexicalCandidates: readonly LexicalStatementCandidate[] }
     | { kind: "blocked"; goal: "Script"; unit: ScriptSourceUnit; rejection: Rejection; diagnostic: Diagnostic };
 // One lexical/parser path for both public plans and non-emitting audit evidence.
-function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, parameterAudit = false, numericAudit = false, lexicalAudit = false): StructuralSource {
+function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, parameterAudit = false, numericAudit = false, lexicalAudit = false, separatorAudit = false): StructuralSource {
     if (parameterAudit && (!bounded || nodes !== null)) throw new Error("invalid parameter audit purpose");
     if (numericAudit && (!bounded || nodes !== null || parameterAudit)) throw new Error("invalid numeric audit purpose");
     if (lexicalAudit && (!bounded || nodes !== null || parameterAudit || numericAudit)) throw new Error("invalid lexical audit purpose");
-    const lexical = lex(source.text, true);
+    if (separatorAudit && (!bounded || nodes !== null || parameterAudit || numericAudit || lexicalAudit)) throw new Error("invalid numeric separator audit purpose");
+    const lexical = separatorAudit ? lexNumericSeparatorAudit(source.text) : lex(source.text, true);
     if (lexical.error !== null) {
         if (lexical.rejection === null) throw new Error("missing lexer rejection");
         return { kind: "blocked", goal: "Script", unit: source, rejection: lexical.rejection, diagnostic: lexical.error };
     }
     const parserSource: SourceText = { text: source.text };
     if (nodes !== null) nodes.source = parserSource;
-    const parser = new Parser(lexical.tokens, parserSource, lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan");
+    const parser = new Parser(lexical.tokens, parserSource, separatorAudit ? "bounded-numeric-separator-audit" : lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan");
     const parsed = parser.program();
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parser rejection");
@@ -186,9 +196,9 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
-    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" = "legacy") {}
-    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit"; }
-    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit"; }
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" | "bounded-numeric-separator-audit" = "legacy") {}
+    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit"; }
+    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit"; }
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
         const t = this.current();
@@ -810,6 +820,8 @@ class Parser {
             }
             return { kind: "new", loc, callee, args };
         }
+        if (t.kind === "invalid-number" && this.purpose === "bounded-numeric-separator-audit")
+            return { kind: "literal", loc, value: 0 };
         if (t.kind === "number") {
             const literal: Expr = { kind: "literal", loc, value: Number(t.text.replaceAll("_", "")) };
             if (this.purpose === "bounded-numeric-assignment-audit") this.numericTokens.set(literal, t);
