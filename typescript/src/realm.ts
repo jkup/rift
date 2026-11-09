@@ -23,6 +23,7 @@ import { registerObject, registerObjectValueOf, registerObjectToString } from ".
 import { registerSymbol, registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBoolean, registerBooleanConversions } from "./builtins/boolean.js";
 import { registerString, registerStringConversions, registerStringMethods } from "./builtins/string.js";
+import { registerStringHTML } from "./builtins/string-html.js";
 import { registerArray, registerArrayConversions } from "./builtins/array.js";
 import { registerArrayMutators, registerArraySplice } from "./builtins/array-mutation.js";
 import { registerArraySearch } from "./builtins/array-search.js";
@@ -119,7 +120,10 @@ export class Realm {
         registerBooleanConversions(this);
         registerStringConversions(this);
         registerStringMethods(this);
-        if (profile === "script") registerStringSplit(this);
+        if (profile === "script") {
+            registerStringSplit(this);
+            registerStringHTML(this);
+        }
         registerNumberConversions(this);
         if (profile === "legacy") this.legacyGlobal = new Environment(null);
         else {

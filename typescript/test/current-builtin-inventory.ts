@@ -41,7 +41,7 @@ export function prototypeMethodLength(name: string, numberPrototype: boolean): n
     if (name === "toString") return numberPrototype ? 1 : 0;
     if (["split", "toSpliced", "with", "slice", "apply", "splice"].includes(name)) return 2;
     if ([
-        "toFixed", "toExponential", "toPrecision", "flatMap", "toSorted", "sort",
+        "toFixed", "toExponential", "toPrecision", "flatMap", "toSorted", "sort", "anchor", "fontcolor", "fontsize", "link",
         "concat", "propertyIsEnumerable", "isPrototypeOf", "hasOwnProperty", "call",
         "join", "push", "unshift", "at", "lastIndexOf", "indexOf", "includes",
         "filter", "map", "forEach", "reduce", "reduceRight", "find", "findIndex",
@@ -50,6 +50,7 @@ export function prototypeMethodLength(name: string, numberPrototype: boolean): n
     if ([
         "valueOf", "pop", "shift", "reverse", "toReversed", "flat", "trim",
         "trimStart", "trimEnd", "toLowerCase", "toUpperCase", "keys", "values", "entries",
+        "big", "blink", "bold", "fixed", "italics", "small", "strike", "sub", "sup",
     ].includes(name)) return 0;
     throw new Error("missing expected prototype arity: " + name);
 }
