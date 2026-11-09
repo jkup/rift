@@ -5,19 +5,23 @@ Updated 2026-11-09. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted Promise milestone passes 666/666 guests on each host, 291/291 tooling
-checks, and all 173 native static gates. The unchanged 225-file C++ corpus has
-172 completions: 111 reported successes and 61 unchecked completions. Remaining
-outcomes are 14 parse errors, 38 runtime errors and one reported failure. These
+The accepted Promise aggregation milestone passes 670/670 guests on each host,
+291/291 tooling checks, and all 177 native static gates. One host audit subclass
+needed a scope-only compiler compatibility fix; its assertions are unchanged.
+The unchanged 225-file C++ corpus has 175 completions: 114 reported successes and
+61 unchecked completions. Remaining outcomes are 14 parse errors, 35 runtime
+errors and one reported failure. These
 are diagnostic fixture results, not a Test262 conformance score.
 
 Bounded classes now include inheritance, explicit derived constructors, new.target
 and super properties. Promise construction, resolution, then/catch/finally, try,
-withResolvers and explicit CLI checkpoints are accepted. Reviewed all/race,
-AggregateError and allSettled/any drafts are next for integration and full validation.
+withResolvers and explicit CLI checkpoints are accepted, along with all/race,
+AggregateError and allSettled/any.
 
 RegExp backend probes exposed dynamic metadata and flag limits; proceed with a
-bounded pattern parser and matching machine before guest object/protocol admission.
+bounded pattern parser (accepted) and matching machine. Reviewed matcher,
+construction and exec/test drafts are next for integration and full validation;
+symbol protocols and literal syntax follow separately.
 Generators/async, Temporal, weak-reference facilities, class fields and remaining
 destructuring contexts are separate gaps. Preserve the known malformed or
 nonstandard-helper C++ fixtures and the classified disagreements below.

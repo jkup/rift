@@ -14,7 +14,10 @@ Array and object assignments, including for-in/of heads, and standalone or
 for-in/of bindings support nesting, defaults and rest; arrays also support
 elisions. Mixed declaration lists, classic-for, parameter and catch patterns
 remain in progress. See [destructuring](docs/destructuring-design.md).
-Classes, generators and async execution remain unsupported.
+Bounded classes support inheritance, explicit derived constructors, new.target
+and super properties. Promise construction, reactions, finally, capability helpers
+and aggregation run with explicit CLI job checkpoints. Generators and async syntax
+remain unsupported.
 Object literals accept identifier, string and numeric property names.
 Script numbers include decimal exponents and leading-dot fractions; see [decimal literals](docs/decimal-literals.md).
 Binary, octal and hexadecimal prefixes are supported; see [radix literals](docs/radix-literals.md).
