@@ -60,6 +60,7 @@ const entries = [
     ["test/comma-expressions.ts", "comma-expressions"],
     ["test/function-apply.ts", "function-apply"],
     ["test/function-bind.ts", "function-bind"],
+    ["test/function-constructor.ts", "function-constructor"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],
     ["test/json-parse.ts", "json-parse"],

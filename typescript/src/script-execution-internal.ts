@@ -7,7 +7,7 @@ import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
 import type { Expr, Argument, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
-import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
+import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
 import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
@@ -633,6 +633,44 @@ function copySite(site: DeclarationSite): DeclarationSite {
 }
 export function prepareBoundedScript(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {
     return ExecutableScript.prepare(unit, realm, true);
+}
+function dynamicFunctionRecord(source: string, parametersOnly: boolean, context: OperationContext, loc: Location):
+    { type: "normal"; record: ExecutableScript; scope: number } | ThrowCompletion {
+    for (let i = 0; i < source.length; i++) {
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+    }
+    const prepared = prepareBoundedScript({ id: "<Function>", text: source }, context.realm);
+    if (prepared.kind === "profile-rejected") throw new Error("invalid dynamic function Realm");
+    if (prepared.kind === "conflict") return languageFailure(context.realm, "SyntaxError", prepared.diagnostic.message, loc);
+    if (prepared.kind === "blocked") {
+        const rejection = prepared.rejection;
+        if (rejection.kind === "resource-limit")
+            return resourceFailure(rejection.guardCode, rejection.count, rejection.limit, prepared.diagnostic.message, loc);
+        if (rejection.kind === "syntax-error") return languageFailure(context.realm, "SyntaxError", prepared.diagnostic.message, loc);
+        return unsupportedFailure("runtime.dynamic-function-source", "SyntaxError", prepared.diagnostic.message, loc);
+    }
+    const state = ExecutableScript.state(prepared.record, executionKey);
+    const node = state.nodes.body[0];
+    if (state.nodes.body.length !== 1 || node.kind !== "function" || node.name !== "anonymous" || node.source === null ||
+        node.source.start !== 0 || node.source.end !== source.length || (parametersOnly && node.body.length !== 0))
+        return languageFailure(context.realm, "SyntaxError", "invalid dynamic function source boundary", loc);
+    return { type: "normal", record: prepared.record, scope: ExecutableScript.scopeOfNode(prepared.record, node, executionKey) };
+}
+export function createDynamicFunction(parameters: string[], body: string, context: OperationContext, loc: Location): ValueCompletion {
+    const prefix = "function anonymous(", middle = "\n) {\n", suffix = "\n}";
+    let length = prefix.length + middle.length + body.length + suffix.length + Math.max(parameters.length - 1, 0);
+    for (const parameter of parameters) length += parameter.length;
+    if (length > 100000) return resourceFailure("source-units", length, 100000, "dynamic function source exceeds 100000 UTF-16 units", loc);
+    const params = parameters.join(",");
+    const parameterRecord = dynamicFunctionRecord(prefix + params + middle + suffix, true, context, loc);
+    if (parameterRecord.type === "throw") return parameterRecord;
+    const bodyRecord = dynamicFunctionRecord(prefix + middle + body + suffix, false, context, loc);
+    if (bodyRecord.type === "throw") return bodyRecord;
+    const complete = dynamicFunctionRecord(prefix + params + middle + body + suffix, false, context, loc);
+    if (complete.type === "throw") return complete;
+    // Materialize the declaration without instantiating an anonymous global binding.
+    return complete.record.materializeFunction(complete.scope, { kind: "global", record: context.realm.globalEnvironment }, null, context);
 }
 function copyStrictness(strictness: StrictnessMetadata): StrictnessMetadata {
     return { ownStrict: strictness.ownStrict, inheritedStrict: strictness.inheritedStrict, strict: strictness.strict,

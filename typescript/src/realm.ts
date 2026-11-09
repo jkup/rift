@@ -1,3 +1,4 @@
+import { registerFunctionConstructor } from "./builtins/function-constructor.js";
 import { registerURI } from "./builtins/uri.js";
 import { registerArrayFlat } from "./builtins/array-flat.js";
 import { registerArrayIterators } from "./builtins/array-iterator.js";
@@ -143,6 +144,7 @@ export class Realm {
             return normal();
         });
         this.installGlobal("console", { kind: "object", object: consoleObject }, true);
+        if (profile === "script") registerFunctionConstructor(this);
         registerNumber(this);
         if (profile === "script") {
             const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError"];

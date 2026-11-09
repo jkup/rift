@@ -51,7 +51,7 @@ function inventory(a: Realm): void {
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
     const lists: PropertyKey[][] = [
         ["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf"],
-        ["name","length","caller","arguments","bind","call","apply","toString",wellKnownHasInstance],
+        ["name","length","caller","arguments","bind","call","apply","toString","constructor",wellKnownHasInstance],
         ["length","join","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with",
             "flat","flatMap","at","indexOf","includes","lastIndexOf",
             "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownIterator],
@@ -87,8 +87,8 @@ function inventory(a: Realm): void {
                 const slot = f.constructorSlot;
                 check(f.getPrototypeOf() === a.functionPrototype && f.callable !== null && f.callable.realm === a && slot !== null && slot.kind === "builtin-constructor" && slot.realm === a && slot.callable === f.callable, "Symbol callable and rejecting construct slot");
             } else if (k==="constructor") {
-                check(i===0 || i===2 || i===3 || i===4 || i===5,"supported prototype constructors");
-                const name=i===0?"Object":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
+                check(i===0 || i===1 || i===2 || i===3 || i===4 || i===5,"supported prototype constructors");
+                const name=i===0?"Object":i===1?"Function":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
                 desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
                 if (name === "Number") keys(f, numberKeys);
                 else if (name === "Array") keys(f, ["name", "length", "prototype", "isArray"]);
