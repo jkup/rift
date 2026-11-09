@@ -1,0 +1,60 @@
+[
+  {
+    "entry": "docs/validation/ts-168/backend.ts",
+    "status": "OUTPUT-DIFF",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\regexp-evaluation\\backend-recorded.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-168\\backend.ts\n\n  statements analyzed   26\n  compile statically    26  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    },
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "0 a 2 0 a ab 1 undefined\n1 aaa 2 1 xaaay 4 aaa\n2 b 1 1 ab 2 undefined\n3 aa 2 0 aa 2 a\n4 abc 1 2 AZabc 5 undefined\n5 � 1 0 😀 1 undefined\n6  1 0 a 0 undefined\nflag   1 0\nflag u u 2 0\nflag y y 1 1\nflag uy uy 2 2\nflag s s 1 0\nflag m m 1 0\nflag i i 1 0\nflag d d 1 0\nflag v v 2 0\nsource SyntaxError\nsource SyntaxError\nsource \\u{1F600} 0 2\nsource � 2 1\nsource \u0000 3 1\nsource (?:) 0 0\nsticky true 2 false 0\nglobal true 2 false 0\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "0 a 2 0 a ab 1 undefined\n1 aaa 2 1 xaaay 4 aaa\n2 b 1 1 ab 2 undefined\n3 aa 2 0 aa 2 a\n4 abc 1 2 AZabc 5 undefined\n5 � 1 0 😀 1 undefined\n6  1 0 a 0 undefined\nflag   1 0\nflag u u 2 0\nflag y y 1 1\nflag uy uy 2 2\nflag s s 1 0\nflag m m 1 0\nflag i i 1 0\nflag d Error\nflag v v 2 0\nsource SyntaxError\nsource SyntaxError\nsource \\u{1F600} 0 2\nsource � 2 1\nsource \u0000 3 1\nsource (?:) 0 0\nsticky true 2 false 0\nglobal true 2 false 0\n",
+      "stderr": ""
+    }
+  },
+  {
+    "entry": "docs/validation/ts-168/details.ts",
+    "status": "BUILD-FAIL",
+    "build": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-168/details.ts:14:28 - error SC2020: 'RegExpExecArray.groups' is part of the standard library types but has no scriptc lowering yet\n\n  13 |             console.log(\"match\", units(source), units(match[0]), match.index, match.length);\n  14 |             const groups = match.groups;\n     |                            ^~~~~~~~~~~~\n  15 |             if (groups !== undefined) for (const name of Object.keys(groups)) {\n\n  hint: '.groups' lowers when the match's regex is STATICALLY known — a regex literal, or a const initialized with one (the group-name table is built at compile time) — and the match comes from exec, match, a for-of over matchAll, or the element parameter of an array-method callback over matchAll rows\n\nC:/Users/jonku/code/rift/typescript/docs/validation/ts-168/details.ts:22:23 - error SC1120: the regex 'd' flag (match indices) is not supported yet\n\n  21 | }\n  22 | try { new RegExp(\"a\", \"d\"); console.log(\"indices supported\"); }\n     |                       ^~~\n  23 | catch (error) { console.log(\"indices\", error instanceof Error ? error.name + \":\" + error.message : \"unknown\"); }\n\n  hint: supported: literal regexes with the g/i/m/s/u/v/y flags — .test(), .exec()/.match()/.matchAll(), named capture groups (.groups, $<name> templates, \\k<name>), .source/.flags, and string replace/replaceAll/split with string replacement templates\n\n2 errors.\n"
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-168\\details.ts\n\n  statements analyzed   22\n  compile statically    20  (90%)\n\n  blockers:\n      ×1  SC1120  the regex 'd' flag (match indices)\n          at C:/Users/jonku/code/rift/typescript/docs/validation/ts-168/details.ts:22:23\n          hint: supported: literal regexes with the g/i/m/s/u/v/y flags — .test(), .exec()/.match()/.matchAll(), named capture groups (.groups, $<name> templates, \\k<name>), .source/.flags, and string replace/replaceAll/split with string replacement templates\n      ×1  SC2020  'RegExpExecArray.groups' is part of the standard library types but has no scriptc lowering yet\n          at C:/Users/jonku/code/rift/typescript/docs/validation/ts-168/details.ts:14:28\n          hint: '.groups' lowers when the match's regex is STATICALLY known — a regex literal, or a const initialized with one (the group-name table is built at compile time) — and the match comes from exec, match, a for-of over matchAll, or the element parameter of an array-method callback over matchAll rows\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    2 demotion requests (refusals and fences the dynamic tier would replace)\n    function <top level>  C:/Users/jonku/code/rift/typescript/docs/validation/ts-168/details.ts:1:1 (1 request, 2 sites inside)\n      <- SC1120 operation at C:/Users/jonku/code/rift/typescript/docs/validation/ts-168/details.ts:22:23: the regex 'd' flag (match indices) is not supported yet\n    binding match  C:/Users/jonku/code/rift/typescript/docs/validation/ts-168/details.ts:10:15 (1 request)\n      <- SC2020 operation at C:/Users/jonku/code/rift/typescript/docs/validation/ts-168/details.ts:14:28: 'RegExpExecArray.groups' is part of the standard library types but has no scriptc lowering yet\n      -> function <top level> turns dynamic\n",
+      "stderr": ""
+    },
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "match 46 55357,56832 0 1\nmatch 92,117,123,49,70,54,48,48,125 55357,56832 0 1\nmatch 55296 55296 2 1\nmatch 0 0 3 1\nmatch 40,63,60,119,111,114,100,62,97,43,41,40,98,41,63 97,97,97 4 3\ngroup word 97,97,97\nmatch 91,92,112,123,65,83,67,73,73,125,38,38,92,112,123,76,101,116,116,101,114,125,93,43 97,97,97,99,100,97,98 4 1\nmatch 91,92,113,123,97,98,124,99,100,125,93 99,100 7 1\nindices supported\n",
+      "stderr": ""
+    },
+    "native": null
+  }
+]

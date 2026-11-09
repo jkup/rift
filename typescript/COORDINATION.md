@@ -2129,3 +2129,5 @@ Super properties and Script checkpoints accepted (8905c5ec, 6de4b230): both gues
 2026-11-09 TS-163 promoted after Promise core implementation a337c48a with all four changed-file baselines verified. The 665-guest Node draft and three native drivers pass; the original finally fixture has eight asynchronous checks. TS-164 capability helpers remain isolated pending focused review.
 
 2026-11-09 TS-164 promoted after finally implementation c935de54 with all three changed-file baselines verified. The 666-guest Node draft and native helper/CLI checks pass. Canonical TS-162/163/164 now freeze for full combined validation. TS-165 all/race remains isolated.
+
+2026-11-09 TS-168 backend review completed independently of the frozen Promise sources. Native regex has dynamic groups/d limitations; exact UTF-16 controls pass. Evidence and the bounded-matcher direction are retained in docs/validation/ts-168. TS-165/166/167 drafts pass 667/668/669 Node guests and focused native checks; promotion waits for canonical Promise acceptance.
