@@ -31,6 +31,7 @@ const entries = [
     ["test/class-planning.ts", "class-planning"],
     ["test/base-classes.ts", "base-classes"],
     ["test/duplicate-parameters.ts", "duplicate-parameters"],
+    ["test/catch-var.ts", "catch-var"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

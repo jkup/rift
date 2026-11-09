@@ -102,7 +102,11 @@ for (const source of negatives) {
     const r=fresh(), out:Value[]=[]; recorder(r,out);
     const p=prepareBoundedScript({id:"N",text:source},r);
     check(out.length === 0 && r.globalObject.getOwnProperty("f") === undefined, "preparation is inert");
-    if (source === "function f(a,a){}") {
+    if (source === "try{}catch(e){var e;}") {
+        check(p.kind === "ready", "catch var prepares");
+        expect(run(source,r),UNDEFINED,"original catch var source executes");
+        expect(run("e;",r),UNDEFINED,"unentered handler still hoists var");
+    } else if (source === "function f(a,a){}") {
         check(p.kind === "ready", "sloppy duplicate parameters prepare");
         expect(run(source,r),UNDEFINED,"original duplicate function executes");
         expect(run("f(1,7);",r),UNDEFINED,"empty duplicate function returns undefined");

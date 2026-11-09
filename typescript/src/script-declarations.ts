@@ -690,7 +690,7 @@ class DeclarationCollector {
                 const parameter = scope.catchParameter;
                 const handler = this.scopes[scope.id + 1];
                 if (parameter === null || handler.parent !== scope.id) throw new Error("invalid catch scope");
-                if ((!this.bounded && !scope.strict) || handler.lexicalNames.includes(parameter.name) || handler.varNames.includes(parameter.name))
+                if ((!this.bounded && !scope.strict) || handler.lexicalNames.includes(parameter.name) || (!this.bounded && handler.varNames.includes(parameter.name)))
                     return { kind: "blocked", goal: "Script", unit: this.unit,
                         rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
                         diagnostic: { phase: "parse", name: "SyntaxError", message: "unsupported catch binding conflict or non-strict catch", loc: parameter.loc } };
@@ -814,7 +814,7 @@ class DeclarationCollector {
             const parameter = scope.catchParameter;
             const handler = this.scopes[scope.id + 1];
             if (parameter === null || handler.parent !== scope.id) throw new Error("invalid catch scope");
-            if (handler.lexicalNames.includes(parameter.name) || handler.varNames.includes(parameter.name)) {
+            if (handler.lexicalNames.includes(parameter.name)) {
                 return { kind: "blocked", reason: "scope-restriction",
                     rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
                     diagnostic: { phase: "parse", name: "SyntaxError", message: "unsupported catch binding conflict or non-strict catch", loc: parameter.loc } };
