@@ -337,7 +337,7 @@ class DeclarationCollector {
             }
             index++;
             while (this.tokens[index].text !== ")") {
-                if (this.tokens[index].text !== ",") formals.push(this.site(this.tokens[index]));
+                if (this.tokens[index].text !== "," && this.tokens[index].text !== "...") formals.push(this.site(this.tokens[index]));
                 index++;
             }
             index++;

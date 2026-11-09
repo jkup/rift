@@ -389,7 +389,7 @@ class ExecutableScript {
         const constructable = entry.source.method !== true && entry.source.arrow !== true;
         const object = new GuestObject(state.realm.functionPrototype, false, callable, constructable ? callable : null);
         const value: Value = { kind: "object", object };
-        object.bootstrapDefine("length", { value: { kind: "number", value: entry.node.params.length }, writable: false, enumerable: false, configurable: true });
+        object.bootstrapDefine("length", { value: { kind: "number", value: entry.node.params.length - (entry.source.rest === true ? 1 : 0) }, writable: false, enumerable: false, configurable: true });
         object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
         if (constructable) {
             const prototypeObject = new GuestObject(state.realm.objectPrototype);
@@ -465,7 +465,21 @@ class ExecutableScript {
             const formal = entry.scope.formals[i];
             const tick = this.#setupTick(context, formal.loc);
             if (tick.type === "throw") return tick;
-            const initialized = environment.initializeBinding(formal.name, i < argumentsList.length ? argumentsList[i] : UNDEFINED, context, formal.loc);
+            let value = i < argumentsList.length ? argumentsList[i] : UNDEFINED;
+            if (entry.source.rest === true && i === entry.scope.formals.length - 1) {
+                const array = state.realm.createArray();
+                for (let j = i; j < argumentsList.length; j++) {
+                    const copyTick = this.#setupTick(context, formal.loc);
+                    if (copyTick.type === "throw") return copyTick;
+                    const defined = array.defineOwnProperty(String(j - i), {
+                        value: argumentsList[j], writable: true, enumerable: true, configurable: true,
+                    }, context, formal.loc);
+                    if (defined.type === "throw") return defined;
+                    if (!defined.value) throw new Error("fresh rest array element invariant");
+                }
+                value = { kind: "object", object: array };
+            }
+            const initialized = environment.initializeBinding(formal.name, value, context, formal.loc);
             if (initialized.type === "throw") return initialized;
         }
         for (const id of entry.scope.varDeclarations) {

@@ -217,7 +217,12 @@ console.log("N04 PASS");
 for (const text of ["let x=function named(){};", "function f(a=1){}", "function f(...a){}", "let x=()=>1;", "let x={m(){}};", "let x={[k]:1};", "function f(a,a){}"]) {
     for (const prefix of ["", "if(false){"]) {
         const p = prepareStrictScript({ id: "blocked", text: '"use strict";' + prefix + text + (prefix === "" ? "" : "}") }, A);
-        check(p.kind === (text === "let x={m(){}};" || text === "let x=()=>1;" ? "ready" : "blocked"), "N05 current boundary " + text);
+        check(p.kind === (text === "let x={m(){}};" || text === "let x=()=>1;" || text === "function f(...a){}" ? "ready" : "blocked"), "N05 current boundary " + text);
+        if (p.kind === "ready" && text === "function f(...a){}") {
+            const f = object(p.record.materializeFunction(p.record.inspect().functions[0].scope, global, null, new Budget(A).context));
+            const length = f.getOwnProperty("length");
+            check(length?.kind === "data" && length.value.kind === "number" && length.value.value === 0 && callable(f).inspectFormals().join() === "a", "N05 rest metadata");
+        }
         if (p.kind === "ready" && text === "let x=()=>1;") {
             const f = object(p.record.materializeFunction(p.record.inspect().functions[0].scope, global, "x", new Budget(A).context));
             check(callable(f).thisMode === "lexical" && f.constructorSlot === null && callable(f).sourceText() === "()=>1", "N05 arrow metadata");

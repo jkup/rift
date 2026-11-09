@@ -1,6 +1,6 @@
 export type SourceText = { readonly text: string };
 export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number; readonly method?: boolean;
-    readonly arrow?: boolean; readonly expressionBody?: boolean };
+    readonly arrow?: boolean; readonly expressionBody?: boolean; readonly rest?: boolean };
 export type Location = { line: number; column: number };
 export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
 export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };

@@ -55,7 +55,7 @@ passes("var ok=false;try{Function('let x;let x;');}catch(e){ok=e instanceof Synt
 passes("Function('a//comment','return a;')(7)===7&&Function('return 8;//comment')()===8;");
 
 for (const args of [
-    "'a=1','return a;'", "'...a','return 1;'", "'/*','*/return 1;'", "'a){}function injected(b','return 1;'", "'return 1;} var injected=7; function tail(){'",
+    "'a=1','return a;'", "'/*','*/return 1;'", "'a){}function injected(b','return 1;'", "'return 1;} var injected=7; function tail(){'",
 ]) {
     const realm = fresh();
     check(run("var caught=false;var after=false;", realm).type === "normal", "setup source rejection");
@@ -95,5 +95,6 @@ for (const args of [
 }
 const legacy = new Realm((_line: string) => {});
 passes("Function('return ()=>1;')()()===1;");
+passes("Function('...a','return 1;')(2,3)===1;");
 check(legacy.functionPrototype.getOwnProperty("constructor") === undefined && !legacy.global.bindings.has("Function"), "legacy unchanged");
 console.log("Function constructor passed");

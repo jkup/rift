@@ -42,6 +42,7 @@ for(const prefix of ['',"'use strict';"]){
 }
 for(const text of ['f(...);','f(...[],);','new C(...[],);','f(,...[]);','function f(...x){}','({...x});']){
     if(text==='f(...[],);'||text==='new C(...[],);')passes('function f(){return 7;}function C(){this.x=7;}'+text+(text[0]==='f'?'f(...[],)===7;':'new C(...[],).x===7;'));
+    else if(text==='function f(...x){}')passes(text+'f.length===0&&f(1,2)===undefined;');
     else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind!=='ready','reject '+text);
 }
 check(parse('f(...x);').error!==null,'legacy parser unchanged');

@@ -1,6 +1,7 @@
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatementContext, NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
+import { scriptPrologue } from "./script-prologue.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
 import type { Diagnostic, Expr, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
@@ -476,18 +477,33 @@ class Parser {
         }
         return { site: { name, start: token.start, end: token.end, loc: token.loc }, init, initializer };
     }
-    functionTail(loc: Location, start: number): { params: string[]; body: Stmt[]; source: FunctionSource } {
+    formalParameters(loc: Location, arrow: boolean): { params: string[]; rest: boolean } {
         this.expect("(");
         const params: string[] = [];
+        let rest = false;
         if (!this.at(")")) {
             do {
+                rest = this.structuralPlan() && this.eat("...");
                 const name = this.name();
-                if (params.includes(name) && this.purpose !== "bounded-parameter-audit") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate parameter: " + name, loc);
+                if (params.includes(name) && (arrow || this.purpose !== "bounded-parameter-audit"))
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, (arrow ? "duplicate arrow parameter: " : "duplicate parameter: ") + name, loc);
                 params.push(name);
-            } while (this.error === null && this.eat(","));
+                if (rest) break;
+            } while (this.error === null && this.eat(",") && !(arrow && this.at(")")));
         }
         this.expect(")");
+        if (rest && new Set(params).size !== params.length)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate rest parameter list", loc);
+        return { params, rest };
+    }
+    checkRestDirective(rest: boolean, bodyIndex: number, loc: Location): void {
+        if (rest && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with rest parameters", loc);
+    }
+    functionTail(loc: Location, start: number): { params: string[]; body: Stmt[]; source: FunctionSource } {
+        const { params, rest } = this.formalParameters(loc, false);
         this.expect("{");
+        const bodyIndex = this.index;
         const loops = this.loops;
         const switches = this.switches;
         this.loops = 0;
@@ -497,14 +513,17 @@ class Parser {
         this.functions--;
         this.loops = loops;
         this.switches = switches;
-        return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end } };
+        this.checkRestDirective(rest, bodyIndex, loc);
+        return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end, rest } };
     }
     arrowAhead(): boolean {
         let index = this.index;
         if (this.tokens[index].kind === "word") return this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
         if (this.tokens[index].kind !== "punct" || this.tokens[index].text !== "(") return false;
         index++;
-        while (this.tokens[index].kind === "word") {
+        while (this.tokens[index].kind === "word" || this.tokens[index].text === "...") {
+            if (this.tokens[index].text === "...") index++;
+            if (this.tokens[index].kind !== "word") return false;
             index++;
             if (this.tokens[index].text !== ",") break;
             index++;
@@ -513,17 +532,8 @@ class Parser {
             this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
     }
     arrow(allowIn: boolean): Expr {
-        const first = this.current(), params: string[] = [];
-        if (this.eat("(")) {
-            if (!this.at(")")) {
-                do {
-                    const name = this.name();
-                    if (params.includes(name)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate arrow parameter: " + name, first.loc);
-                    params.push(name);
-                } while (this.error === null && this.eat(",") && !this.at(")"));
-            }
-            this.expect(")");
-        } else params.push(this.name());
+        const first = this.current();
+        const { params, rest } = this.at("(") ? this.formalParameters(first.loc, true) : { params: [this.name()], rest: false };
         if (this.current().loc.line !== this.tokens[this.index - 1].loc.line)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "line terminator before arrow", this.current().loc);
         this.expect("=>");
@@ -532,14 +542,16 @@ class Parser {
         this.switches = 0;
         this.functions++;
         const expressionBody = !this.eat("{");
+        const bodyIndex = this.index;
         const body: Stmt[] = expressionBody
             ? [{ kind: "return", loc: this.current().loc, value: this.expression(1, allowIn) }]
             : this.list(true, params);
         this.functions--;
         this.loops = loops;
         this.switches = switches;
+        if (!expressionBody) this.checkRestDirective(rest, bodyIndex, first.loc);
         return { kind: "function", loc: first.loc, params, body,
-            source: { source: this.source, start: first.start, end: this.tokens[this.index - 1].end, arrow: true, expressionBody } };
+            source: { source: this.source, start: first.start, end: this.tokens[this.index - 1].end, arrow: true, expressionBody, rest } };
     }
     precedence(op: string): number {
         if (this.structuralPlan() && ["**=", "&=", "|=", "^=", "<<=", ">>=", ">>>="].includes(op)) return 1;
@@ -794,12 +806,12 @@ class Parser {
                     const name = key.kind === "number" ? String(Number(key.text.replaceAll("_", ""))) : key.text;
                     if (this.structuralPlan() && this.at("(")) {
                         const fn = this.functionTail(first.loc, first.start);
-                        if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && fn.params.length !== 1))
+                        if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
                             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
                         if (new Set(fn.params).size !== fn.params.length)
                             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate method parameter", first.loc);
                         properties.push({ kind, key: name, value: { kind: "function", loc: first.loc, params: fn.params, body: fn.body,
-                            source: { source: fn.source.source, start: fn.source.start, end: fn.source.end, method: true } } });
+                            source: { source: fn.source.source, start: fn.source.start, end: fn.source.end, method: true, rest: fn.source.rest } } });
                     } else {
                         if (kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
                         if (key.text === "__proto__") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, "prototype literal syntax is unsupported", key.loc);

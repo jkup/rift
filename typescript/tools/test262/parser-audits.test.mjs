@@ -35,6 +35,15 @@ for (const [driver, directory, count] of [
     else expected.set(snapshot.id, audit);
   }
   assert.equal(expected.size, count);
+  const duplicateRest = rows.find(row => row.id === 'P11');
+  assert.equal(duplicateRest.text, '"use strict"; function f(a,...a){}');
+  expected.set(duplicateRest.id, {
+    kind: 'blocked', reason: 'grammar-or-resource',
+    diagnostic: {phase: 'parse', name: 'SyntaxError',
+      message: driver === 'script-strict-rule-audit' ? 'duplicate parameter: a' : 'duplicate rest parameter list',
+      loc: {line: 1, column: 15}},
+    rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
+  });
   if (driver === 'script-strict-rule-audit') {
     const row = rows.find(row => row.id === 'X02');
     assert.equal(row.text, '"use strict"; {function f(){} function f(){}} `tail`;');

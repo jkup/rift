@@ -56,7 +56,7 @@ expect(run("var f=()=> 'use strict';f();implicit=3;implicit===3;"), { kind: "boo
 passes("var f=(x /* comment */)=>\nx;f(3)===3;");
 
 for (const text of [
-    "x\n=>x;", "(x)/*\n*/=>x;", "(a,a)=>a;", "(a=1)=>a;", "(...a)=>a;", "({a})=>a;",
+    "x\n=>x;", "(x)/*\n*/=>x;", "(a,a)=>a;", "(a=1)=>a;", "({a})=>a;",
     "async x=>x;", "var f=()=>arguments;", "()=>super.x;", "()=>new.target;", "1+x=>x;",
     "new ()=>1;", "()=>{}.x;", "()=>{}();", "()=>{}+1;", "((x))=>x;", "(x+y)=>x;",
     "while(true){var f=()=>{break;};}", "while(true){var f=()=>{continue;};}",
@@ -78,6 +78,9 @@ for (const text of [
     check(result.type === "throw" && result.value.kind === "object" && result.value.object.getPrototypeOf() === owner.getErrorPrototype("ReferenceError"), "arrow error Realm");
 }
 const exhausted = run("var f=()=>f();f();", fresh(), 5000);
+const rest = run("(...a)=>a;");
+check(rest.type === "normal" && rest.value.kind === "object" && rest.value.object.callable?.kind === "script-guest", "rest arrow prepares and materializes");
+passes("var f=(...a)=>a;Array.isArray(f())&&f(1,2).join(',')==='1,2';");
 check(exhausted.type === "throw" && exhausted.origin.kind === "resource-limit", "recursive arrows bounded");
 const loop = run("var f=()=>{while(true){}};f();", fresh(), 500);
 check(loop.type === "throw" && loop.origin.kind === "resource-limit", "arrow loop bounded");
