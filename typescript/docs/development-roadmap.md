@@ -576,3 +576,7 @@ String code-point access and construction are accepted: 624/624 guests on both h
 ### TS-137 checkpoint
 
 Bound functions are accepted: 625/625 guests on both hosts (plus the final argument-copy budget case in a focused Node rerun), all 135 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 144 prior completions remain. The bind fixture now reaches missing Function. See [bound functions](function-bind.md). Next: numeric separators and comma expressions. Their fixtures also depend on eval, multiple declarations and destructuring; first-failure removal will not alone complete them. Function constructor support needs a separate design for parsed source, active budgets and global Realm scope.
+
+### TS-138 checkpoint
+
+Numeric separators are accepted: 626/626 guests on both hosts, all 136 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 144 previous completions remain. The separator fixture now reaches unsupported eval during preparation. See [numeric separators](numeric-separators.md). Next: comma expressions, with GetValue semantics and AssignmentExpression boundaries. Clarification to the previous checkpoint: multiple var declarations are already supported; the comma fixture also needs eval and destructuring.
