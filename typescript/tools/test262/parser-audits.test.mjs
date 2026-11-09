@@ -205,6 +205,7 @@ for (const [driver, directory, count] of [
     for (const [id, text, start, end, first, name] of [
       ['P15', 'function f(a,a){} function g(b,b){"use strict";}', 18, 48, 29, 'b'],
       ['E12', 'function f(a,a){"use strict";} function g(b,b){}', 0, 30, 11, 'a'],
+      ['E33', 'function f(a,a){"use strict";} try{}catch(e){var e;}', 0, 30, 11, 'a'],
       ['E13', 'var f=function(a,a){}; function g(b,b){"use strict";}', 23, 53, 34, 'b'],
       ['E14', 'function f(a,a){"use strict";} var g=function(b,b){};', 0, 30, 11, 'a'],
       ['E15', 'function outer(){function f(a,a){} function g(b,b){"use strict";}}', 35, 65, 46, 'b'],
