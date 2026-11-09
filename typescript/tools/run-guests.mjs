@@ -576,6 +576,7 @@ executeDriver("const-bindings", { stdout: "Const bindings passed\n" });
 executeDriver("for-of-lexical", { stdout: "Lexical for-of passed\n" });
 executeDriver("exponentiation", { stdout: "Exponentiation passed\n" });
 executeDriver("bitwise", { stdout: "Bitwise operators passed\n" });
+executeDriver("uri", { stdout: "URI codecs passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

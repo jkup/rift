@@ -1,3 +1,4 @@
+import { registerURI } from "./builtins/uri.js";
 import { registerArrayFlat } from "./builtins/array-flat.js";
 import { registerArrayIterators } from "./builtins/array-iterator.js";
 import { registerStringIterator } from "./builtins/string-iterator.js";
@@ -147,6 +148,7 @@ export class Realm {
             this.arrayConstructor = registerArray(this);
             registerMath(this);
             registerGlobalNumericPredicates(this);
+            registerURI(this);
             registerJSON(this);
             registerSymbol(this);
             registerScriptArrayIteration(this);
