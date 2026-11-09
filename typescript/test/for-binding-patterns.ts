@@ -39,7 +39,10 @@ for(const text of [
     "for(let [a,a] of []){}", "for(const {a:x,b:x} of []){}", "for(let [a] of []){var a;}",
     "for(let [a]=[] of []){}", "for(var [a]=[] in {}){}", "for(let [a],b of []){}",
     "for(let [a];false;){}", "for([a] of []){}", "'use strict';for(let [eval] of []){}"
-]) check(prepareBoundedScript({id:'invalid-for-pattern',text},new Realm((_line:string)=>{},'script')).kind!=='ready','reject '+text);
+]) {
+    if(text === "for([a] of []){}") check(run(text).type==='normal','original empty assignment loop admitted');
+    else check(prepareBoundedScript({id:'invalid-for-pattern',text},new Realm((_line:string)=>{},'script')).kind!=='ready','reject '+text);
+}
 check(parse('for(let [a] of []){}').error!==null,'legacy loop parser boundary');
 const plan=parseDeclarationPlan({id:'loop-pattern-plan',text:'for(let [first,second=()=>first] of [[1]]){}'});
 check(plan.kind==='complete','pattern loop declaration plan');

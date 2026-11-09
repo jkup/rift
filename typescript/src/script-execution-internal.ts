@@ -2182,7 +2182,7 @@ class ExecutionEngine {
                     if (acquired.type === "throw") return acquired;
                     iterator = acquired.value;
                 }
-                const target: Expr | null = stmt.head.kind === "lexical" || stmt.head.kind === "pattern" ? null : stmt.head.kind === "var"
+                const target: Expr | null = stmt.head.kind === "lexical" || stmt.head.kind === "pattern" || stmt.head.kind === "assignment-pattern" ? null : stmt.head.kind === "var"
                     ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name } : stmt.head;
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
                 while (true) {
@@ -2203,7 +2203,7 @@ class ExecutionEngine {
                             if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; result = abrupt; }
                             else result = this.#statement(stmt.body);
                         } finally { this.#frame = saved; }
-                    } else if (stmt.head.kind === "pattern") {
+                    } else if (stmt.head.kind === "pattern" || stmt.head.kind === "assignment-pattern") {
                         const initialized = this.#initializePattern(stmt.head.pattern, null, next.value, null, null);
                         if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; result = abrupt; }
                         else result = this.#statement(stmt.body);

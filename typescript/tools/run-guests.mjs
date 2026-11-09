@@ -608,6 +608,7 @@ executeDriver("array-assignment-patterns", { stdout: "Array assignment patterns 
 executeDriver("array-binding-patterns", { stdout: "Array binding patterns passed\n" });
 executeDriver("object-binding-patterns", { stdout: "Object binding patterns passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
+executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
 executeDriver("numeric-separator-audit", { stdout: "Numeric separator audit passed\n" });
 executeDriver("numeric-separator-errors", { stdout: "Numeric separator errors passed\n" });

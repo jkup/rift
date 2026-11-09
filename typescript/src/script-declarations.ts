@@ -463,6 +463,7 @@ class DeclarationCollector {
                 this.statement(node.body, scope, variableScope);
                 this.expression(node.iterable, scope, variableScope);
                 if (node.head.kind === "var") this.statement(node.head, scope, variableScope);
+                else if (node.head.kind === "assignment-pattern") this.pattern(node.head.pattern, scope, variableScope);
                 else this.expression(node.head, scope, variableScope);
                 break;
             }

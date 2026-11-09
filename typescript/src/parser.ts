@@ -450,6 +450,10 @@ class Parser {
                 if (initializer.kind === "var") {
                     if (initializer.declarations.length !== 1 || initializer.declarations[0].init !== null)
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, kind + " requires one uninitialized binding", initializer.loc);
+                } else if (initializer.kind === "array" && !this.isParenthesized(initializer)) {
+                    const pattern = this.assignmentPattern(initializer);
+                    if (pattern.kind !== "array-pattern") throw new Error("array loop pattern invariant");
+                    return this.forEach(kind, loc, start, { kind: "assignment-pattern", loc: initializer.loc, pattern });
                 } else if (initializer.kind !== "identifier" && initializer.kind !== "member") {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + kind + " assignment target", initializer.loc);
                 }
