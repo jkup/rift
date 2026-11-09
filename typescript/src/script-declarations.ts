@@ -577,12 +577,12 @@ class DeclarationCollector {
                 }
                 this.expression(node.base, scope, variableScope); break;
             case "member": this.expression(node.key, scope, variableScope); this.expression(node.base, scope, variableScope); break;
-            case "new": case "call":
+            case "new": case "call": case "super-call":
                 for (let i = node.args.length - 1; i >= 0; i--) {
                     const arg = node.args[i];
                     this.expression(arg.kind === "spread" ? arg.expression : arg, scope, variableScope);
                 }
-                this.expression(node.callee, scope, variableScope); break;
+                if (node.kind !== "super-call") this.expression(node.callee, scope, variableScope); break;
             case "identifier": {
                 if ((node.name !== "arguments" && node.name !== "eval") || this.nodes === null || this.nodes.argumentsScopes === undefined) break;
                 let current: number | null = scope;

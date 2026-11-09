@@ -34,6 +34,7 @@ export type Expr =
     | { kind: "identifier"; loc: Location; name: string }
     | { kind: "this"; loc: Location }
     | { kind: "new-target"; loc: Location }
+    | { kind: "super-call"; loc: Location; args: Argument[] }
     | { kind: "unary"; loc: Location; op: string; operand: Expr }
     | { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr }
     | { kind: "assign"; loc: Location; target: Expr; value: Expr }

@@ -51,7 +51,9 @@ for (const text of [
     "class B{}class D extends (class extends B{}){}new D() instanceof B",
     "class B{}class D extends B{['constructor'](){return 7}}new D().constructor()===7"
 ]) truth(text);
-for (const text of ["class B{}class D extends B{constructor(){}}", "class B{}class D extends B{constructor(){super()}}", "class B{}class D extends B{m(){return super.x}}", "class D extends -1{}", "class D extends (function(){})++{}"])
+for (const text of ["class B{}class D extends B{constructor(){}}", "class B{}class D extends B{constructor(){super()}}"])
+    check(run(text).type === "normal", "explicit constructor preparation: " + text);
+for (const text of ["class B{}class D extends B{m(){return super.x}}", "class D extends -1{}", "class D extends (function(){})++{}"])
     check(prepareBoundedScript({ id: "derived-boundary", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
 const owner = new Realm((_line: string) => {}, "script"), caller = new Realm((_line: string) => {}, "script");
 for (const [name, source] of [["Base", "class B{constructor(){this.nt=new.target}}B"], ["NullDerived", "class D extends null{}D"], ["ForeignTypeError", "TypeError"]]) {

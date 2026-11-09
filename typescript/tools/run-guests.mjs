@@ -616,6 +616,7 @@ executeDriver("new-target", { stdout: "New target passed\n" });
 executeDriver("constructor-prototype", { stdout: "Constructor prototype selection passed\n" });
 executeDriver("construct-target", { stdout: "Distinct constructor targets passed\n" });
 executeDriver("default-derived", { stdout: "Default derived classes passed\n" });
+executeDriver("explicit-derived", { stdout: "Explicit derived constructors passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
