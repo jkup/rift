@@ -1,4 +1,5 @@
 import { registerPromise } from "./builtins/promise.js";
+import { registerRegExp } from "./builtins/regexp.js";
 import { registerReflect } from "./builtins/reflect.js";
 import { registerFunctionConstructor } from "./builtins/function-constructor.js";
 import { registerURI } from "./builtins/uri.js";
@@ -62,6 +63,7 @@ export class Realm {
     readonly arrayIteratorPrototype: GuestObject;
     readonly stringIteratorPrototype: GuestObject;
     readonly promisePrototype: GuestObject;
+    readonly regexpPrototype: GuestObject;
     readonly mapPrototype: GuestObject;
     readonly mapIteratorPrototype: GuestObject;
     readonly setPrototype: GuestObject;
@@ -98,6 +100,7 @@ export class Realm {
         this.arrayIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.stringIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.promisePrototype = new GuestObject(this.objectPrototype);
+        this.regexpPrototype = new GuestObject(this.objectPrototype);
         this.mapPrototype = new GuestObject(this.objectPrototype);
         this.mapIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.setPrototype = new GuestObject(this.objectPrototype);
@@ -155,6 +158,7 @@ export class Realm {
             registerFunctionConstructor(this);
             registerReflect(this);
             registerPromise(this);
+            registerRegExp(this);
             this.evalIntrinsic = createEvalIntrinsic(this);
             this.defineScriptGlobal("eval", { value: { kind: "object", object: this.evalIntrinsic }, writable: true, enumerable: false, configurable: true });
         }

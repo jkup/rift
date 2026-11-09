@@ -12,6 +12,7 @@ import { registerObjectPrototypes } from "./object-prototypes.js";
 import { registerObjectFromEntries } from "./object-from-entries.js";
 import { registerGroupBy } from "./group-by.js";
 import { GuestArray } from "../array-object.js";
+import { GuestRegExp } from "../regexp-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import type { OperationContext, ValueCompletion } from "../runtime.js";
@@ -97,6 +98,7 @@ export function registerObjectToString(realm: Realm): Value {
         else if (object instanceof GuestArguments) tag = "Arguments";
         else if (object.callable !== null) tag = "Function";
         else if (object instanceof GuestError) tag = "Error";
+        else if (object instanceof GuestRegExp) tag = "RegExp";
         else if (object instanceof GuestBoolean) tag = "Boolean";
         else if (object instanceof GuestNumber) tag = "Number";
         else if (object instanceof GuestStringObject) tag = "String";

@@ -632,6 +632,7 @@ executeDriver("aggregate-error", { stdout: "AggregateError passed\n" });
 executeDriver("promise-settlement", { stdout: "Promise settlement passed\n" });
 executeDriver("regexp-pattern", { stdout: "RegExp patterns passed\n" });
 executeDriver("regexp-matcher", { stdout: "RegExp matcher passed\n" });
+executeDriver("regexp-construction", { stdout: "RegExp construction passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

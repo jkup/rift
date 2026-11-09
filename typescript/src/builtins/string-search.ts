@@ -1,19 +1,10 @@
 import type { Realm } from "../realm.js";
-import { languageFailure, normal, truthy, UNDEFINED, type InternalBooleanCompletion, type OperationContext, type Value, type ValueCompletion } from "../runtime.js";
+import { languageFailure, normal, UNDEFINED, type ValueCompletion } from "../runtime.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toIntegerOrInfinity, toString } from "../conversion.js";
 import { stringEndsWith, stringIndexOf, stringLength, stringStartsWith } from "../strings.js";
-import { wellKnownMatch } from "../symbols.js";
-import type { Location } from "../syntax.js";
+import { isRegExp } from "../regexp-object.js";
 import { stringReceiver } from "./string.js";
-
-function isRegExp(value: Value, context: OperationContext, loc: Location): InternalBooleanCompletion {
-    if (value.kind !== "object") return {type: "normal", value: false};
-    const matcher = value.object.internalGet(wellKnownMatch, value, context, loc);
-    if (matcher.type === "throw") return matcher;
-    // No guest RegExp brand exists yet; add its fallback when RegExp is implemented.
-    return {type: "normal", value: matcher.value.kind !== "undefined" && truthy(matcher.value)};
-}
 
 export function registerStringSearch(realm: Realm): void {
     for (const name of ["includes", "startsWith", "endsWith"] as const) {

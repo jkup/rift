@@ -26,7 +26,7 @@ test('T07 mode, body, stage and location must describe a possible driver operati
     { kind: 'throw', phase: 'runtime', valueKind: 'number', constructor: { outcome: 'absent', name: null, realmId: null, secondary: null } },
     ...[['steps',100001,100000],['calls',64,64],['evaluation-depth',257,256]]
       .map(([guardCode,count,limit]) => ({ kind: 'resource-limit', guardCode, count, limit })),
-    ...['runtime.object-to-number','runtime.object-to-string','runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species','runtime.flat-species','runtime.flatmap-species','runtime.dynamic-function-source','runtime.eval-source'].map(capabilityCode => ({ kind: 'unsupported-syntax', capabilityCode })),
+    ...['runtime.object-to-number','runtime.object-to-string','runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species','runtime.flat-species','runtime.flatmap-species','runtime.dynamic-function-source','runtime.eval-source','runtime.regexp-pattern'].map(capabilityCode => ({ kind: 'unsupported-syntax', capabilityCode })),
   ];
   const parsing = [
     { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'return-outside-function' },
