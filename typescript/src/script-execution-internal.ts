@@ -12,7 +12,7 @@ import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
 import type { Expr, ChainExpr, Argument, Stmt, FunctionSource, FormalParameter, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
-import { GuestObject, UNDEFINED, normal, type Value, type PropertyKey, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, getValue, putValue, truthy } from "./runtime.js";
+import { GuestObject, UNDEFINED, normal, type Value, type PropertyKey, type ValueCompletion, type ThrowCompletion, type OperationContext, type ScriptJob, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
 import type { ScriptBindingCell } from "./script-environment.js";
@@ -1112,6 +1112,9 @@ type EngineReference = Reference | { kind: "script"; binding: ScriptBindingRefer
     | { kind: "script-super"; reference: Reference; strict: boolean; receiver: Value };
 type EngineReferenceResult = { type: "reference"; reference: EngineReference } | { type: "abrupt"; completion: Completion };
 type EngineExpressionResult = EngineReferenceResult | { type: "value"; value: Value };
+export type ScriptJobFailure = { readonly completion: ThrowCompletion; readonly source: ScriptSourceSnapshot };
+export type ScriptJobDrain = { readonly completed: number; readonly failures: ScriptJobFailure[]; readonly fatal: boolean };
+type QueuedScriptJob = { readonly realm: Realm; readonly run: (context: OperationContext) => ValueCompletion; readonly source: ScriptSourceSnapshot };
 export type ScriptLimits = { readonly maxSteps: number; readonly maxCalls: number };
 export type ScriptEvaluation = { phase: "body"; completion: ValueCompletion } | { phase: "instantiation"; completion: ThrowCompletion };
 export type ScriptSourceSnapshot = { readonly realm: Realm; readonly record: ExecutableScript; readonly unitId: string; readonly loc: Location };
@@ -1174,6 +1177,10 @@ class ScriptSession {
         if (session.#engine === null) session.#engine = new ExecutionEngine(state.realm, session.#limits.maxSteps, session.#limits.maxCalls, executionKey);
         return session.#engine.runScript(record, executionKey, true);
     }
+    static drainJobs(session: ScriptSession): ScriptJobDrain {
+        if (!(session instanceof ScriptSession) || !(#engine in session)) throw new Error("invalid Script session");
+        return session.#engine === null ? { completed: 0, failures: [], fatal: false } : session.#engine.drainJobs(executionKey);
+    }
     inspect(): ScriptSessionSnapshot {
         if (!(#engine in this)) throw new Error("invalid Script session");
         return this.#engine === null ? { steps: 0, calls: 0, depth: 0, active: null, lastAbrupt: null } : this.#engine.inspectScript(executionKey);
@@ -1185,6 +1192,7 @@ export function createScriptSession(limits: ScriptLimits = { maxSteps: 100000, m
         throw new Error("invalid Script limits");
     return new ScriptSession(executionKey, limits);
 }
+export function drainScriptJobs(session: ScriptSession): ScriptJobDrain { return ScriptSession.drainJobs(session); }
 export function evaluateScript(session: ScriptSession, record: ExecutableScript): ScriptEvaluation {
     return ScriptSession.evaluate(session, record);
 }
@@ -1198,11 +1206,13 @@ type ActiveOperationContext = {
     realm: Realm;
     call: (callee: Value, receiver: Value, args: Value[], loc: Location) => ValueCompletion;
     tick: (loc: Location) => ValueCompletion;
+    enqueueJob?: (job: ScriptJob, loc: Location) => ValueCompletion;
     construct?: (callee: Value, args: Value[], newTarget: Value, loc: Location) => ValueCompletion;
 };
 
 class ExecutionEngine {
     #frame: ScriptFrameSnapshot | null = null;
+    #jobs: (QueuedScriptJob | null)[] = [];
     #legacyGlobalFunctions: Set<number> = new Set();
     #abrupt: ThrowCompletion | null = null;
     #lastAbrupt: ScriptSourceSnapshot | null = null;
@@ -1222,9 +1232,64 @@ class ExecutionEngine {
             realm,
             call: (callee, receiver, args, loc) => this.call(callee, receiver, args, loc),
             tick: (loc) => this.tick(loc),
+            enqueueJob: (job, loc) => this.#enqueueJob(job, loc),
             construct: (callee, args, newTarget, loc) => this.#construct(callee, args, loc, newTarget),
         };
         this.context = this.activeContext;
+    }
+    #enqueueJob(job: ScriptJob, loc: Location): ValueCompletion {
+        if (!this.#script) throw new Error("Script jobs require a Script session");
+        const frame = this.#active();
+        const realm = job.realm === null ? frame.realm : job.realm;
+        if (realm.profile !== "script") throw new Error("invalid Script job Realm");
+        const budget = this.tick(loc);
+        if (budget.type === "throw") return budget;
+        this.#jobs.push({ realm, run: job.run, source: { realm: frame.realm, record: frame.record,
+            unitId: ExecutableScript.state(frame.record, executionKey).plan.unit.id, loc: { line: loc.line, column: loc.column } } });
+        return normal();
+    }
+    drainJobs(key: ExecutionKey): ScriptJobDrain {
+        if (key !== executionKey || !this.#script) throw new Error("invalid Script checkpoint");
+        if (this.#frame !== null) throw new Error("Script checkpoint requires an idle session");
+        const savedRealm = this.activeContext.realm, savedAbrupt = this.#abrupt, savedSource = this.#lastAbrupt;
+        const savedInspection = this.#inspectionSource;
+        const failures: ScriptJobFailure[] = [];
+        let completed = 0, fatal = false;
+        try {
+            for (let index = 0; index < this.#jobs.length; index++) {
+                const job = this.#jobs[index];
+                if (job === null) throw new Error("consumed Script job");
+                this.#jobs[index] = null;
+                const global: ScriptEnvironment = { kind: "global", record: job.realm.globalEnvironment };
+                this.#frame = { realm: job.realm, record: job.source.record, scopeId: 0, lexical: global, variable: global,
+                    strict: false, thisValue: job.realm.globalThisValue, function: null, privateEnvironment: null, phase: "body" };
+                this.activeContext.realm = job.realm;
+                this.#abrupt = null;
+                this.#lastAbrupt = null;
+                this.#inspectionSource = { record: job.source.record, unitId: job.source.unitId, loc: job.source.loc };
+                const budget = this.tick(job.source.loc);
+                const result = budget.type === "throw" ? budget : job.run(this.context);
+                if (budget.type !== "throw") completed++;
+                if (result.type === "throw") {
+                    this.#capture(result);
+                    const source = this.#sourceSnapshot();
+                    if (source === null) throw new Error("missing Script job source");
+                    failures.push({ completion: result, source });
+                    fatal = result.origin.kind === "resource-limit" || result.origin.kind === "unsupported-operation";
+                    if (fatal) break;
+                } else if (result.type !== "normal") throw new Error("invalid Script job completion");
+            }
+            return { completed, failures, fatal };
+        } finally {
+            this.#jobs = [];
+            this.#frame = null;
+            this.activeContext.realm = savedRealm;
+            this.#inspectionSource = savedInspection;
+            const last = failures.length === 0 ? null : failures[failures.length - 1];
+            this.#abrupt = last === null ? savedAbrupt : last.completion;
+            this.#lastAbrupt = last === null ? savedSource : { realm: last.source.realm, record: last.source.record,
+                unitId: last.source.unitId, loc: { line: last.source.loc.line, column: last.source.loc.column } };
+        }
     }
     tick(loc: Location): ValueCompletion {
         if (this.#script) this.#active();
@@ -1834,6 +1899,7 @@ class ExecutionEngine {
     }
     #observeEvaluation(evaluation: ScriptEvaluation, observed: boolean): ObservedScriptEvaluation {
         const completion = evaluation.completion;
+        if (completion.type === "throw" && (completion.origin.kind === "resource-limit" || completion.origin.kind === "unsupported-operation")) this.#jobs = [];
         const source = completion.type === "throw" ? this.#sourceSnapshot() : null;
         if (!observed || completion.type !== "throw" ||
             (completion.origin.kind !== "guest" && completion.origin.kind !== "engine-diagnostic"))
@@ -1878,6 +1944,9 @@ class ExecutionEngine {
             if (result.type === "throw") { this.#capture(result); return this.#observeEvaluation({ phase: "body", completion: result }, observed); }
             if (result.type !== "normal") throw new Error("invalid Script root completion");
             return this.#observeEvaluation({ phase: "body", completion: normal(result.payload.kind === "empty" ? UNDEFINED : result.payload.value) }, observed);
+        } catch (error) {
+            this.#jobs = [];
+            throw error;
         } finally {
             this.#frame = null;
             this.#legacyGlobalFunctions.clear();

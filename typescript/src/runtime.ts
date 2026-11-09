@@ -100,10 +100,12 @@ export function unsupportedFailure(capabilityCode: RuntimeCapability, name: stri
     const result = failure(name, message, loc);
     return { type: "throw", value: result.value, diagnostic: result.diagnostic, origin: { kind: "unsupported-operation", capabilityCode } };
 }
+export type ScriptJob = { readonly realm: Realm | null; readonly run: (context: OperationContext) => ValueCompletion };
 export type OperationContext = {
     readonly realm: Realm;
     call: (callee: Value, receiver: Value, args: Value[], loc: Location) => ValueCompletion;
     tick: (loc: Location) => ValueCompletion;
+    enqueueJob?: (job: ScriptJob, loc: Location) => ValueCompletion;
     construct?: (callee: Value, args: Value[], newTarget: Value, loc: Location) => ValueCompletion;
 };
 export type Builtin = (receiver: Value, args: Value[], context: OperationContext, loc: Location) => Completion;

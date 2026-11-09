@@ -618,6 +618,7 @@ executeDriver("construct-target", { stdout: "Distinct constructor targets passed
 executeDriver("default-derived", { stdout: "Default derived classes passed\n" });
 executeDriver("explicit-derived", { stdout: "Explicit derived constructors passed\n" });
 executeDriver("super-properties", { stdout: "Super properties passed\n" });
+executeDriver("script-jobs", { stdout: "Script jobs passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

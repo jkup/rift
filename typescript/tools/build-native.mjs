@@ -38,6 +38,7 @@ const entries = [
     ["test/default-derived.ts", "default-derived"],
     ["test/explicit-derived.ts", "explicit-derived"],
     ["test/super-properties.ts", "super-properties"],
+    ["test/script-jobs.ts", "script-jobs"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
