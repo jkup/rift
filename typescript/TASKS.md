@@ -3515,6 +3515,6 @@ Extend ordinary Script string literals with standard simple, identity, hexadecim
 
 ## TS-135 — String well-formedness methods
 
-Status: **in progress**. Owner: Codex catch-up chat, 2026-11-09; base 56792169.
+Status: **done**. Owner: Codex catch-up chat, 2026-11-09; base 56792169, implementation 5d78e246. Both guest suites pass 623/623 with no skips, tooling 290/290, runner 32/32, all ten probes and typechecking. All 133 native entries pass a fresh static-only build and parsed coverage in one run; well-formedness driver 7589/7589 static. Surrogate pairing/replacement, generic coercion, metadata, defining-Realm errors and resource bounds pass on both hosts. All 225 complete fixture results match: 96 reported successes, 48 unchecked completions, 35 parse errors, 45 runtime errors and one reported failure; all 143 prior completions remain. string-wellformed-test.js adds 23 passing checks, raising total completions to 144. Reports: build/legacy-suite-node-l155J4/report.json and build/legacy-suite-native-JT4MNT/report.json. Native evidence: build/string-wellformed-native-results.json. Logs: build/string-wellformed-*.
 
 Add Script String.prototype.isWellFormed and toWellFormed with UTF-16 surrogate pairing and replacement, generic receiver coercion, metadata, defining-Realm errors and bounded scanning. Preserve legacy bootstrap and return original well-formed content. Own builtin module/registration, focused tests, inventory migrations, manifests and docs. Validate both hosts, native static coverage, tooling and fixed corpus.

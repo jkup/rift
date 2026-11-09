@@ -564,3 +564,7 @@ String HTML methods are accepted: 621/621 guests on both hosts, all 131 native e
 ### TS-134 checkpoint
 
 Script string escapes are accepted: 622/622 guests on both hosts, all 132 native entries static after one isolated Zig link-cache failure rebuild, all 290 tooling checks covered after four explicit historical-row migrations, runner 32/32 and ten probes. All 225 fixture results agree and all 143 previous completions remain. The well-formedness fixture now reaches its missing builtin. See [string escapes](string-escapes.md) for raw-directive and retained-failure evidence. Next: String isWellFormed/toWellFormed, with surrogate pairing, replacement, coercion and bounded scanning.
+
+### TS-135 checkpoint
+
+String well-formedness is accepted: 623/623 guests on both hosts, all 133 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 143 previous completions remain; the well-formedness fixture adds 23 passing checks, raising completions to 144. See [String well-formedness](string-wellformed.md). Next: String.fromCharCode, String.fromCodePoint and String.prototype.codePointAt; locale-sensitive methods remain a separate design task.
