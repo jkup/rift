@@ -303,6 +303,13 @@ class ExecutableScript {
     static assignmentMayName(record: ExecutableScript, node: Expr, key: ExecutionKey): boolean {
         return ExecutableScript.state(record, key).nodes.assignmentNameEligible.get(node) === true;
     }
+    static legacyDeclaration(record: ExecutableScript, node: Stmt, key: ExecutionKey): Declaration | null {
+        const state = ExecutableScript.state(record, key);
+        if (state.plan.legacyBlockFunctions === undefined) return null;
+        const scope = ExecutableScript.scopeOfNode(record, node, key);
+        const id = record.#function(scope).fn.declaration;
+        return id !== null && state.plan.legacyBlockFunctions.includes(id) ? state.plan.declarations[id] : null;
+    }
     static activateLoop(record: ExecutableScript, node: ForEachStmt | ForLexicalStmt, outer: ScriptEnvironment, value: Value | null,
         context: OperationContext, key: ExecutionKey): ScriptBlockEnvironmentCompletion {
         const state = ExecutableScript.state(record, key);
@@ -379,7 +386,12 @@ class ExecutableScript {
     }
     #needsArguments(scopeId: number): boolean {
         const state = this.#readState();
-        if (state.nodes.argumentsScopes === undefined || !state.nodes.argumentsScopes.has(scopeId)) return false;
+        let used = state.nodes.argumentsScopes !== undefined && state.nodes.argumentsScopes.has(scopeId);
+        if (!used && state.plan.legacyBlockFunctions !== undefined) for (const id of state.plan.legacyBlockFunctions) {
+            const declaration = state.plan.declarations[id];
+            if (declaration.variableScope === scopeId && declaration.site.name === "arguments") used = true;
+        }
+        if (!used) return false;
         const entry = this.#function(scopeId);
         if (entry.source.arrow === true) return false;
         for (const formal of entry.scope.formals) if (formal.name === "arguments") return false;
@@ -596,6 +608,20 @@ class ExecutableScript {
             const initialized = variableEnvironment.initializeBinding(site.name, initialValue, context, site.loc);
             if (initialized.type === "throw") return initialized;
         }
+        if (state.plan.legacyBlockFunctions !== undefined) for (const id of state.plan.legacyBlockFunctions) {
+            const declaration = state.plan.declarations[id];
+            if (declaration.variableScope !== metadata.scopeId || declaration.site.name === "arguments") continue;
+            const site = declaration.site;
+            const tick = this.#setupTick(context, site.loc);
+            if (tick.type === "throw") return tick;
+            const present = variableEnvironment.hasBinding(site.name, site.loc);
+            if (present.type === "throw") return present;
+            if (present.value) continue;
+            const created = variableEnvironment.createMutableBinding(site.name, site.loc);
+            if (created.type === "throw") return created;
+            const initialized = variableEnvironment.initializeBinding(site.name, UNDEFINED, context, site.loc);
+            if (initialized.type === "throw") return initialized;
+        }
         // Sloppy functions separate body lexicals from parameter/var bindings,
         // even when empty. Hoisted functions capture this body environment.
         let lexicalEnvironment: ScriptEnvironment = variableEnvironment;
@@ -699,9 +725,9 @@ class ExecutableScript {
             return this.materializeFunction(fn.scope, { kind: "global", record: environment }, null, context);
         };
     }
-    instantiateGlobals(environment: GlobalEnvironment, context: OperationContext): ValueCompletion {
+    instantiateGlobals(environment: GlobalEnvironment, context: OperationContext, enabledLegacyFunctions: Set<number> | null = null): ValueCompletion {
         const materialize = this.createGlobalMaterializer(environment, context);
-        return instantiateBoundedGlobalDeclarations(this.#readState().plan, environment, context, materialize);
+        return instantiateBoundedGlobalDeclarations(this.#readState().plan, environment, context, materialize, enabledLegacyFunctions);
     }
     inspectMaterializations(): { completed: number } { return { completed: this.#completedMaterializations }; }
     inspectNamingSites(): { loc: Location; eligible: boolean }[] {
@@ -713,7 +739,7 @@ class ExecutableScript {
     }
     inspect(): ScriptDeclarationPlan {
         const plan = this.#readState().plan;
-        return { kind: "complete", goal: "Script", unit: { id: plan.unit.id, text: plan.unit.text },
+        const result: ScriptDeclarationPlan = { kind: "complete", goal: "Script", unit: { id: plan.unit.id, text: plan.unit.text },
             consumedUnits: plan.consumedUnits, strictness: copyStrictness(plan.strictness),
             scopes: plan.scopes.map(scope => ({ id: scope.id, kind: scope.kind, parent: scope.parent,
                 catchParameter: scope.catchParameter === null ? null : copySite(scope.catchParameter),
@@ -726,6 +752,7 @@ class ExecutableScript {
                     { start: declaration.initializer.start, end: declaration.initializer.end } })),
             functions: plan.functions.map(fn => ({ scope: fn.scope, declaration: fn.declaration,
                 start: fn.start, end: fn.end, strictness: copyStrictness(fn.strictness) })) };
+        return plan.legacyBlockFunctions === undefined ? result : { ...result, legacyBlockFunctions: plan.legacyBlockFunctions.slice() };
     }
     inspectNodes(): ScriptNodeInspection {
         const state = this.#readState();
@@ -911,6 +938,7 @@ type ActiveOperationContext = {
 
 class ExecutionEngine {
     #frame: ScriptFrameSnapshot | null = null;
+    #legacyGlobalFunctions: Set<number> = new Set();
     #abrupt: ThrowCompletion | null = null;
     #lastAbrupt: ScriptSourceSnapshot | null = null;
     // Synthetic inspection Gets have an original source anchor, but execute in
@@ -1524,7 +1552,8 @@ class ExecutionEngine {
             strict: state.plan.strictness.strict, thisValue: realm.globalThisValue, function: null, privateEnvironment: null, phase: "instantiation" };
         this.activeContext.realm = realm;
         try {
-            const setup = record.instantiateGlobals(realm.globalEnvironment, this.context);
+            this.#legacyGlobalFunctions.clear();
+            const setup = record.instantiateGlobals(realm.globalEnvironment, this.context, this.#legacyGlobalFunctions);
             if (setup.type === "throw") { this.#capture(setup); return this.#observeEvaluation({ phase: "instantiation", completion: setup }, observed); }
             const f = this.#active();
             this.#frame = { ...f, phase: "body" };
@@ -1534,6 +1563,7 @@ class ExecutionEngine {
             return this.#observeEvaluation({ phase: "body", completion: normal(result.payload.kind === "empty" ? UNDEFINED : result.payload.value) }, observed);
         } finally {
             this.#frame = null;
+            this.#legacyGlobalFunctions.clear();
             this.activeContext.realm = savedRealm;
             this.calls = savedCalls;
             this.depth = savedDepth;
@@ -1635,6 +1665,27 @@ class ExecutionEngine {
             if (result.payload.kind !== "empty") value = result.payload;
         }
     }
+    #copyLegacyFunction(stmt: Stmt): ValueCompletion {
+        const frame = this.#active();
+        const declaration = ExecutableScript.legacyDeclaration(frame.record, stmt, executionKey);
+        if (declaration === null || (declaration.variableScope === 0 && !this.#legacyGlobalFunctions.has(declaration.id))) return normal();
+        const lexical = frame.lexical, variable = frame.variable;
+        if (lexical.kind === "global") throw new Error("legacy function missing block environment");
+        const name = declaration.site.name;
+        const value = lexical.getBindingValue(name, this.context, stmt.loc);
+        if (value.type === "throw") return value;
+        if (variable.kind !== "global" && name === "arguments") {
+            const present = variable.hasBinding(name, stmt.loc);
+            if (present.type === "throw") return present;
+            if (!present.value) {
+                const created = variable.createMutableBinding(name, stmt.loc);
+                if (created.type === "throw") return created;
+                return variable.initializeBinding(name, value.value, this.context, stmt.loc);
+            }
+        }
+        return variable.kind === "global" ? variable.record.setMutableBinding(name, value.value, this.context, stmt.loc, false)
+            : variable.setMutableBinding(name, value.value, this.context, stmt.loc);
+    }
     #scriptStatement(stmt: Stmt): ScriptStatementCompletion {
         switch (stmt.kind) {
             case "switch": {
@@ -1698,7 +1749,12 @@ class ExecutionEngine {
                     return updateScriptEmpty(this.#statement(stmt.handler), { kind: "value", value: UNDEFINED });
                 } finally { this.#frame = saved; }
             }
-            case "empty": case "function": return { type: "normal", payload: { kind: "empty" } };
+            case "empty": return { type: "normal", payload: { kind: "empty" } };
+            case "function": {
+                const copied = this.#copyLegacyFunction(stmt);
+                if (copied.type === "throw") { const abrupt: ThrowCompletion = copied; return abrupt; }
+                return { type: "normal", payload: { kind: "empty" } };
+            }
             case "expression": return scriptExpressionCompletion(this.#value(stmt.expression));
             case "let": case "const": {
                 const result = stmt.init === null ? normal() : this.#value(stmt.init, stmt.name);

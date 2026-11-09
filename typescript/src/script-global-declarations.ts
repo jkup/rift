@@ -40,6 +40,16 @@ function validatePlan(plan: ScriptDeclarationPlan): Map<number, PlannedFunction>
         if (d === undefined || d.kind === "let" || d.kind === "const" || d.variableScope !== 0 || d.site.name !== root.varNames[i]) invalid();
         if (d.kind === "function" && (d.scope !== 0 || !functions.has(d.id))) invalid();
     }
+    if (plan.legacyBlockFunctions !== undefined) {
+        const seen = new Set<number>();
+        for (const id of plan.legacyBlockFunctions) {
+            const declaration = plan.declarations[id];
+            if (declaration === undefined || declaration.kind !== "function" || seen.has(id) || !functions.has(id)) invalid();
+            const scope = plan.scopes[declaration.scope];
+            if (scope.strict || (scope.kind !== "block" && scope.kind !== "switch") || !scope.lexicalDeclarations.includes(id)) invalid();
+            seen.add(id);
+        }
+    }
     return functions;
 }
 
@@ -55,14 +65,14 @@ export function instantiateGlobalDeclarations(
 }
 export function instantiateBoundedGlobalDeclarations(
     plan: ScriptDeclarationPlan, environment: GlobalEnvironment,
-    context: OperationContext, materialize: DeclarationMaterializer
+    context: OperationContext, materialize: DeclarationMaterializer, enabledLegacyFunctions: Set<number> | null = null
 ): ValueCompletion {
     if (context.realm.profile !== "script") throw new Error("Script Realm required");
-    return instantiateDeclarations(plan, environment, context, materialize);
+    return instantiateDeclarations(plan, environment, context, materialize, enabledLegacyFunctions);
 }
 function instantiateDeclarations(
     plan: ScriptDeclarationPlan, environment: GlobalEnvironment,
-    context: OperationContext, materialize: DeclarationMaterializer
+    context: OperationContext, materialize: DeclarationMaterializer, enabledLegacyFunctions: Set<number> | null = null
 ): ValueCompletion {
     const functions = validatePlan(plan);
     const root = plan.scopes[0];
@@ -106,6 +116,23 @@ function instantiateDeclarations(
         if (allowed.type !== "normal") return allowed;
         if (!allowed.value) return languageFailure(context.realm, "TypeError", "cannot declare global var: " + d.site.name, d.site.loc);
         if (!varNames.has(d.site.name)) { varNames.set(d.site.name, true); vars.push(d); }
+    }
+    if (plan.legacyBlockFunctions !== undefined) for (const id of plan.legacyBlockFunctions) {
+        const declaration = plan.declarations[id];
+        if (declaration.variableScope !== 0) continue;
+        const site = declaration.site;
+        const tick = context.tick(site.loc);
+        if (tick.type === "throw") return tick;
+        if (environment.hasLexicalDeclaration(site.name)) continue;
+        const allowed = environment.canDeclareGlobalVar(site.name);
+        if (allowed.type === "throw") return allowed;
+        if (!allowed.value) continue;
+        if (!selected.has(site.name) && !varNames.has(site.name)) {
+            const created = environment.createGlobalVarBinding(site.name, context, site.loc);
+            if (created.type === "throw") return created;
+            varNames.set(site.name, true);
+        }
+        if (enabledLegacyFunctions !== null) enabledLegacyFunctions.add(id);
     }
     for (const id of root.lexicalDeclarations) {
         const declaration = plan.declarations[id];

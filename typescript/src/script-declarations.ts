@@ -38,6 +38,7 @@ export type DeclarationConflict = {
   readonly first: DeclarationSite; readonly second: DeclarationSite;
 };
 export type ScriptDeclarationPlan = {
+  readonly legacyBlockFunctions?: readonly number[];
   readonly kind: "complete"; readonly goal: "Script";
   readonly unit: ScriptSourceUnit; readonly consumedUnits: number;
   readonly strictness: StrictnessMetadata;
@@ -268,7 +269,6 @@ class DeclarationCollector {
     readonly tokenLocations = new Map<string, number>();
     readonly closingBraces = new Map<number, number>();
     readonly strictness: StrictnessMetadata;
-    unsupportedBlock: Location | null = null;
     readonly identifierDeletes: { scope: number; loc: Location }[] = [];
 
     constructor(readonly unit: ScriptSourceUnit, readonly tokens: Token[], readonly bindings: Map<number, ParsedBinding[]>, readonly nodes: DeclarationNodes | null, readonly bounded: boolean) {
@@ -369,7 +369,6 @@ class DeclarationCollector {
             case "function": {
                 const bindings = this.bindings.get(this.tokens[this.tokenIndex(node.loc)].start);
                 if (bindings === undefined) throw new Error("missing function name span");
-                if ((this.scopes[scope].kind === "block" || this.scopes[scope].kind === "switch") && !this.scopes[scope].strict && this.unsupportedBlock === null) this.unsupportedBlock = node.loc;
                 const declaration = this.declare("function", bindings[0], scope, variableScope, this.scopes.length);
                 if (this.nodes !== null) this.nodes.declarations.set(declaration, { node, initializer: null });
                 this.functionBody(node.source, node.loc, node.body, scope, declaration, node);
@@ -551,10 +550,18 @@ class DeclarationCollector {
                 rejection: { kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" },
                 diagnostic: { phase: "parse", name: "SyntaxError", message: "delete of an identifier is not allowed", loc: site.loc } };
         }
-        if (this.unsupportedBlock !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
-            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
-            diagnostic: { phase: "parse", name: "SyntaxError", message: "non-strict block function planning is unsupported", loc: this.unsupportedBlock } };
         for (const scope of this.scopes) {
+            if (!scope.strict) {
+                const functions = new Set<string>();
+                for (const id of scope.lexicalDeclarations) {
+                    const declaration = this.declarations[id];
+                    if (declaration.kind !== "function") continue;
+                    if (functions.has(declaration.site.name)) return { kind: "blocked", goal: "Script", unit: this.unit,
+                        rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
+                        diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate sloppy block functions are unsupported", loc: declaration.site.loc } };
+                    functions.add(declaration.site.name);
+                }
+            }
             if (scope.kind === "catch") {
                 const parameter = scope.catchParameter;
                 const handler = this.scopes[scope.id + 1];
@@ -572,8 +579,33 @@ class DeclarationCollector {
                         loc: { line: later.loc.line, column: later.loc.column } } };
             }
         }
-        return { kind: "complete", goal: "Script", unit: this.unit, consumedUnits: this.unit.text.length,
+        const plan: ScriptDeclarationPlan = { kind: "complete", goal: "Script", unit: this.unit, consumedUnits: this.unit.text.length,
             strictness: this.strictness, scopes: this.scopes, declarations: this.declarations, functions: this.functions };
+        const legacyBlockFunctions = this.legacyBlockFunctions();
+        return legacyBlockFunctions.length === 0 ? plan : { ...plan, legacyBlockFunctions };
+    }
+    private legacyBlockFunctions(): number[] {
+        const result: number[] = [];
+        for (const declaration of this.declarations) {
+            const scope = this.scopes[declaration.scope];
+            if (declaration.kind !== "function" || scope.strict || (scope.kind !== "block" && scope.kind !== "switch")) continue;
+            const name = declaration.site.name;
+            const variableScope = this.scopes[declaration.variableScope];
+            let eligible = true;
+            for (const formal of variableScope.formals) if (formal.name === name) eligible = false;
+            let parent = scope.parent;
+            while (eligible && parent !== null) {
+                const enclosing: MutableScope = this.scopes[parent];
+                for (const id of enclosing.lexicalDeclarations) {
+                    const other = this.declarations[id];
+                    if (other.site.name === name && other.kind !== "function") eligible = false;
+                }
+                if (parent === variableScope.id) break;
+                parent = enclosing.parent;
+            }
+            if (eligible) result.push(declaration.id);
+        }
+        return result;
     }
     private restrictedArguments(): Location | null {
         for (const site of this.argumentsAssignments) if (this.scopes[site.scope].strict) return site.loc;
