@@ -3720,7 +3720,9 @@ Draft review: 666/666 Node guests pass. Helpers and CLI pass both hosts at 9828 
 
 ## TS-165 — Promise all and race
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-09. Add generic all/race through the existing iterator and capability operations. Capture constructor resolve once before iterator acquisition; preserve per-element ordering, synchronous custom then behavior, once-only all element resolution, empty iterable behavior and abrupt iterator closing. Keep resource/unsupported failures fatal. Own bounded combinator builtin, focused tests/manifests and design notes. No allSettled/any/AggregateError or async syntax. Review ECMAScript 2025 27.2.4.1/5 and pinned engine262 algorithms. Preserve original fixtures and require post-checkpoint expected values on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-09. Add generic all/race through the existing iterator and capability operations. Capture constructor resolve once before iterator acquisition; preserve per-element ordering, synchronous custom then behavior, once-only all element resolution, empty iterable behavior and abrupt iterator closing. Keep resource/unsupported failures fatal. Own bounded combinator builtin, focused tests/manifests and design notes. No allSettled/any/AggregateError or async syntax. Review ECMAScript 2025 27.2.4.1/5 and pinned engine262 algorithms. Preserve original fixtures and require post-checkpoint expected values on both hosts.
+
+Draft review: 667/667 Node guests pass. Focused combinators and CLI pass both hosts at 9904/9898 static statements, zero dynamic. Original all/race fixtures verify six/four asynchronous outcomes. Evidence: build/promise-combinators-draft/build/combinators-reviewed.json and combinators-node-reviewed.log.
 
 ## TS-166 — AggregateError construction
 

@@ -42,6 +42,7 @@ const entries = [
     ["test/promise-core.ts", "promise-core"],
     ["test/promise-finally.ts", "promise-finally"],
     ["test/promise-helpers.ts", "promise-helpers"],
+    ["test/promise-combinators.ts", "promise-combinators"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
