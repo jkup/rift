@@ -83,6 +83,11 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    for (const [id, text] of [['excluded-const-list', 'const x=1;'], ['excluded-const-block', '{const x=1;}']]) {
+      const row = rows.find(row => row.id === id);
+      assert.equal(row.text, text);
+      row.expected = {kind: 'none', sourceUnits: text.length, consumedUnits: text.length};
+    }
     const loop = rows.find(row => row.id === 'excluded-do');
     assert.equal(loop.text, 'do let x; while(false);');
     loop.expected = {kind: 'eligible', sourceUnits: 23, consumedUnits: 23, candidates: [{
@@ -94,6 +99,10 @@ for (const [driver, directory, count, variants] of [
       ['mixed-template-false-true', '`x`; while(false) let x;', 18],
       ['mixed-template-true-false', '"use strict"; while(false) let x; `x`;', 27],
       ['mixed-template-true-true', '"use strict"; `x`; while(false) let x;', 32],
+      ['mixed-const-false-false', 'while(false) let x; const y=1;', 13],
+      ['mixed-const-false-true', 'const y=1; while(false) let x;', 24],
+      ['mixed-const-true-false', '"use strict"; while(false) let x; const y=1;', 27],
+      ['mixed-const-true-true', '"use strict"; const y=1; while(false) let x;', 38],
     ]) {
       const row = rows.find(row => row.id === id);
       assert.equal(row.text, text);

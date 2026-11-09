@@ -82,4 +82,6 @@ check(bounded.type === "throw" && bounded.origin.kind === "resource-limit", "ini
 const plan=parseDeclarationPlan({id:"plan",text:"const x=function(){const y=2;return y;};"});
 check(plan.kind === "complete" && plan.declarations.length === 2 && plan.declarations[0].kind === "const" && plan.declarations[1].kind === "const", "const declaration plan");
 check(parse("const x=1;").error !== null, "legacy parser unchanged");
+const branch = parse("if(true)const x=1;");
+check(branch.rejection?.kind === "unsupported-syntax" && branch.rejection.capabilityCode === "parse.unexpected", "legacy const branch rejection unchanged");
 console.log("Const bindings passed");

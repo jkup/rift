@@ -248,7 +248,8 @@ class Parser {
     branch(context: LexicalStatementContext): Stmt {
         const keyword = this.current();
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
-        if ((this.at("let") && !auditLet) || this.at("const") || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
+        if (this.at("const")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: const", keyword.loc);
+        if ((this.at("let") && !auditLet) || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
         const result = this.statement();
         // Only a complete supported declaration in this exact Statement slot is evidence.
         if (auditLet && this.error === null && result.kind === "let") {

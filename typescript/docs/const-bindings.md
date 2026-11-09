@@ -24,6 +24,10 @@ Legacy parsing remains unchanged. Multiple lexical declarations, destructuring
 and lexical loop heads remain unsupported. The existing closed syntax-error
 classification is not widened: malformed/unsupported const forms conservatively
 use existing parse capability rejections.
+In bare Statement positions, const retains its existing parse.unexpected
+rejection. The frozen lexical-statement audit caught an initial change to that
+code; the correction preserves this boundary without widening its let-only
+syntax-error certification.
 
 Historical tests retain their sources and case counts. Newly valid const tails
 now prepare/execute, or reveal pre-existing duplicate-binding/strict-delete errors;
@@ -32,6 +36,10 @@ Seven declaration-plan snapshots have explicit current expectations in
 `tools/test262/test-support/const-plan-migrations.mjs`. The original 135 records
 and 71 literal plans remain unchanged and checked. A malformed-const CLI case
 continues to verify that parsing rejects the whole input before any output.
+The lexical-statement audit also has six explicit migrations: two valid const
+lists contain no candidates, and four valid const tails allow the existing let
+statement-position rule to be certified. Const itself remains excluded from
+that certification.
 
 Sources consulted 2026-11-09:
 [Declarative Environment Records](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-declarative-environment-records),
