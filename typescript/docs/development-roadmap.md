@@ -556,3 +556,7 @@ The fixture reporter recognizes anchored hyphenated PASS/FAIL lines. All 225 raw
 ### TS-132 checkpoint
 
 Trailing object and call/constructor commas are accepted: 620/620 guests on both hosts, all 130 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 141 previous completions remain; property-descriptors-test.js newly completes without counted markers, raising completions to 142. See [trailing commas](trailing-commas.md) for grammar scope and retained initial failures. Next: Annex B String HTML methods, sharing receiver/attribute coercion and quote escaping; the HTML-method fixture has 15 concrete checks.
+
+### TS-133 checkpoint
+
+String HTML methods are accepted: 621/621 guests on both hosts, all 131 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 142 previous completions remain; the HTML-method fixture adds 15 passing checks and raises completions to 143. See [String HTML](string-html.md) for CreateHTML semantics and validation. Next: ordinary Script string escape coverage, reusing the template hex/Unicode scanner while preserving raw source and directive recognition; then String well-formedness methods.
