@@ -59,6 +59,13 @@ for (const [driver, directory, count] of [
     rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
   });
   if (driver === 'script-strict-parameter-audit') {
+    const arrow = rows.find(row => row.id === 'E39');
+    assert.equal(arrow.text, 'let f=(a,a)=>a;');
+    expected.set(arrow.id, {
+      kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate arrow parameter: a', loc: {line: 1, column: 7}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
+    });
     const row = rows.find(row => row.id === 'E40');
     assert.equal(row.text, 'let f={m(a,a){"use strict";}};');
     expected.set(row.id, {
