@@ -50,13 +50,13 @@ function inventory(a: Realm): void {
     method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1); method(a,num,"isInteger","isInteger",1); method(a,num,"isSafeInteger","isSafeInteger",1);
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
     const lists: PropertyKey[][] = [
-        ["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf"],
+        ["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf","toLocaleString"],
         ["name","length","caller","arguments","bind","call","apply","toString","constructor",wellKnownHasInstance],
-        ["length","join","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with",
+        ["length","join","toLocaleString","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with",
             "flat","flatMap","at","indexOf","includes","lastIndexOf",
             "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownIterator],
         ["toString","valueOf","constructor"],
-        ["toString","valueOf","toFixed","toExponential","toPrecision","constructor"],
+        ["toString","valueOf","toLocaleString","toFixed","toExponential","toPrecision","constructor"],
         ["length","toString","valueOf","codePointAt","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
             "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","anchor","big","blink","bold","fixed","fontcolor","fontsize","italics","link","small","strike","sub","sup","isWellFormed","toWellFormed","constructor","includes","startsWith","endsWith",wellKnownIterator],
         ["toString","valueOf","constructor","description",wellKnownToPrimitive,wellKnownToStringTag],
