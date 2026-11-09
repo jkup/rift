@@ -8,10 +8,11 @@ export type ScriptEnvironment = ScriptDeclarativeEnvironment | ScriptFunctionEnv
     | { readonly kind: "global"; readonly record: GlobalEnvironment };
 
 // Immutable bindings here are const bindings: writes throw even in sloppy code.
-// Absence is a caller error; an uninitialized binding produces guest TDZ.
+// Mapped arguments retain these cells even if a binding is later deleted.
 export type ScriptBindingCell = { initialized: boolean; mutable: boolean; value: Value };
 class ScriptLocalBindings {
     private readonly bindings: Map<string, ScriptBindingCell> = new Map();
+    private readonly deletableNames: Set<string> = new Set();
     constructor(readonly outer: ScriptEnvironment) {}
     parameterCell(name: string): ScriptBindingCell {
         const binding = this.bindings.get(name);
@@ -21,9 +22,10 @@ class ScriptLocalBindings {
     hasBinding(name: string, _loc: Location): InternalBooleanCompletion {
         return { type: "normal", value: this.bindings.has(name) };
     }
-    createMutableBinding(name: string, _loc: Location): ValueCompletion {
+    createMutableBinding(name: string, _loc: Location, deletable = false): ValueCompletion {
         if (this.bindings.has(name)) throw new Error("binding already exists: " + name);
         this.bindings.set(name, { initialized: false, mutable: true, value: UNDEFINED });
+        if (deletable) this.deletableNames.add(name);
         return normal();
     }
     createImmutableBinding(name: string, _loc: Location): ValueCompletion {
@@ -45,13 +47,24 @@ class ScriptLocalBindings {
         if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
         return normal(binding.value);
     }
-    setMutableBinding(name: string, value: Value, context: OperationContext, loc: Location): ValueCompletion {
+    setMutableBinding(name: string, value: Value, context: OperationContext, loc: Location, strict = true): ValueCompletion {
         const binding = this.bindings.get(name);
-        if (binding === undefined) throw new Error("missing binding: " + name);
+        if (binding === undefined) {
+            if (strict) return languageFailure(context.realm, "ReferenceError", name + " is not defined", loc);
+            this.createMutableBinding(name, loc, true);
+            return this.initializeBinding(name, value, context, loc);
+        }
         if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
         if (!binding.mutable) return languageFailure(context.realm, "TypeError", name + " is immutable", loc);
         binding.value = value;
         return normal();
+    }
+    deleteBinding(name: string): InternalBooleanCompletion {
+        if (!this.bindings.has(name)) return { type: "normal", value: true };
+        if (!this.deletableNames.has(name)) return { type: "normal", value: false };
+        this.bindings.delete(name);
+        this.deletableNames.delete(name);
+        return { type: "normal", value: true };
     }
 }
 export class ScriptDeclarativeEnvironment extends ScriptLocalBindings {
@@ -90,7 +103,7 @@ export function putScriptBinding(reference: ScriptBindingReference, value: Value
     if (base === null) return reference.strict ? languageFailure(context.realm, "ReferenceError", reference.name + " is not defined", reference.loc)
         : context.realm.globalEnvironment.setUnresolvableBinding(reference.name, value, context, reference.loc);
     return base.kind === "global" ? base.record.setMutableBinding(reference.name, value, context, reference.loc, reference.strict)
-        : base.setMutableBinding(reference.name, value, context, reference.loc);
+        : base.setMutableBinding(reference.name, value, context, reference.loc, reference.strict);
 }
 export function scriptIdentifierReceiver(_reference: ScriptBindingReference): Value { return UNDEFINED; }
 
@@ -98,8 +111,8 @@ export function deleteScriptBinding(reference: ScriptBindingReference, context: 
     if (reference.strict) throw new Error("strict identifier deletion");
     const base = reference.base;
     if (base === null) return normal({ kind: "boolean", value: true });
-    if (base.kind !== "global") return normal({ kind: "boolean", value: false });
-    const result = base.record.deleteBinding(reference.name, context, reference.loc);
+    const result = base.kind === "global" ? base.record.deleteBinding(reference.name, context, reference.loc)
+        : base.deleteBinding(reference.name);
     if (result.type === "throw") return result;
     return normal({ kind: "boolean", value: result.value });
 }

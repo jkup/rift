@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { GlobalEnvironment } from "../src/global-environment.js";
-import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, scriptIdentifierReceiver, type ScriptEnvironment, type ScriptBindingReference } from "../src/script-environment.js";
+import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, scriptIdentifierReceiver, type ScriptEnvironment, type ScriptBindingReference } from "../src/script-environment.js";
 import { updateScriptEmpty, scriptExpressionCompletion, type ScriptStatementCompletion, type ScriptStatementPayload } from "../src/script-completion.js";
 import { GuestObject, UNDEFINED, normal, failure, resourceFailure, sameValue, type Value, type ValueCompletion, type InternalBooleanCompletion, type OperationContext, type PropertyKey, type ThrowCompletion } from "../src/runtime.js";
 import { Realm } from "../src/realm.js";
@@ -36,7 +36,27 @@ invariant(() => { local.createMutableBinding("x", loc); }, "binding already exis
 invariant(() => { local.initializeBinding("x", num(0), context, loc); }, "binding already initialized: x");
 invariant(() => { local.initializeBinding("missing", num(0), context, loc); }, "missing binding: missing");
 invariant(() => { local.getBindingValue("missing", context, loc); }, "missing binding: missing");
-invariant(() => { local.setMutableBinding("missing", num(0), context, loc); }, "missing binding: missing");
+error(local.setMutableBinding("missing", num(0), context, loc), "ReferenceError");
+{
+    const scope = new ScriptDeclarativeEnvironment(local);
+    value(scope.createMutableBinding("x", loc, true), UNDEFINED);
+    value(scope.initializeBinding("x", num(1), context, loc), UNDEFINED);
+    const resolved = resolveScriptBinding(scope, "x", loc, false);
+    if (resolved.type !== "normal") throw new Error("temporary binding reference");
+    const strict = capture(scope, "x"), cell = scope.parameterCell("x");
+    value(deleteScriptBinding(resolved.reference, context), { kind: "boolean", value: true });
+    value(getScriptBinding(capture(scope, "x"), context), num(11));
+    error(putScriptBinding(strict, num(2), context), "ReferenceError");
+    // A reference captured before deletion still targets its original record.
+    value(putScriptBinding(resolved.reference, num(3), context), UNDEFINED);
+    value(getScriptBinding(capture(scope, "x"), context), num(3));
+    check(scope.parameterCell("x") !== cell && sameValue(cell.value, num(1)), "deleted cell identity");
+    value(deleteScriptBinding(resolved.reference, context), { kind: "boolean", value: true });
+    value(deleteScriptBinding(resolved.reference, context), { kind: "boolean", value: true });
+    value(scope.createMutableBinding("x", loc), UNDEFINED);
+    value(deleteScriptBinding(resolved.reference, context), { kind: "boolean", value: false });
+    error(getScriptBinding(capture(scope, "x"), context), "ReferenceError");
+}
 console.log("L01 PASS");
 value(putScriptBinding(x, num(7), context), UNDEFINED);
 const child = new ScriptDeclarativeEnvironment(local), sibling = new ScriptDeclarativeEnvironment(local);
