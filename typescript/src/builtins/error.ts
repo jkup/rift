@@ -46,7 +46,7 @@ function createPublicError(name: ErrorName, callee: GuestObject, args: Value[], 
 export function createErrorConstructor(realm: Realm, name: ErrorName): GuestObject {
     const constructor = realm.createBuiltinConstructor(name, 1,
         (_receiver, args, context, loc) => createPublicError(name, constructor, args, context, loc),
-        (callee, args, context, loc) => createPublicError(name, callee, args, context, loc));
+        (_callee, newTarget, args, context, loc) => createPublicError(name, newTarget, args, context, loc));
     return constructor;
 }
 

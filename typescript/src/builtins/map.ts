@@ -16,8 +16,8 @@ function mapReceiver(receiver: Value, context: OperationContext, loc: Location):
 export function registerMap(realm: Realm): void {
     const constructor = realm.createBuiltinConstructor("Map", 0,
         (_receiver, _args, context, loc): ValueCompletion => languageFailure(context.realm, "TypeError", "Map requires new", loc),
-        (callee, args, context, loc): ValueCompletion => {
-            const prototype = getPrototypeFromConstructor(callee, "Map", context, loc);
+        (_callee, newTarget, args, context, loc): ValueCompletion => {
+            const prototype = getPrototypeFromConstructor(newTarget, "Map", context, loc);
             if (prototype.type === "throw") return prototype;
             const allocation = context.tick(loc);
             if (allocation.type === "throw") return allocation;

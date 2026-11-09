@@ -104,9 +104,10 @@ export type OperationContext = {
     readonly realm: Realm;
     call: (callee: Value, receiver: Value, args: Value[], loc: Location) => ValueCompletion;
     tick: (loc: Location) => ValueCompletion;
+    construct?: (callee: Value, args: Value[], newTarget: Value, loc: Location) => ValueCompletion;
 };
 export type Builtin = (receiver: Value, args: Value[], context: OperationContext, loc: Location) => Completion;
-export type ConstructBuiltin = (callee: GuestObject, args: Value[], context: OperationContext, loc: Location) => ValueCompletion;
+export type ConstructBuiltin = (callee: GuestObject, newTarget: GuestObject, args: Value[], context: OperationContext, loc: Location) => ValueCompletion;
 export type BuiltinConstructor = { readonly kind: "builtin-constructor"; readonly realm: Realm;
     readonly callable: Callable; readonly invoke: ConstructBuiltin };
 export type BoundCallable = { readonly kind: "bound"; readonly realm: Realm;

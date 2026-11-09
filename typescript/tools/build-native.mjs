@@ -34,6 +34,7 @@ const entries = [
     ["test/catch-var.ts", "catch-var"],
     ["test/new-target.ts", "new-target"],
     ["test/constructor-prototype.ts", "constructor-prototype"],
+    ["test/construct-target.ts", "construct-target"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -55,10 +55,10 @@ function createNumberConstructor(realm: Realm): GuestObject {
             const converted = numberArgument(args, context, loc);
             return converted.type === "throw" ? converted : normal({ kind: "number", value: converted.value });
         },
-        (callee, args, context, loc): ValueCompletion => {
+        (_callee, newTarget, args, context, loc): ValueCompletion => {
             const converted = numberArgument(args, context, loc);
             if (converted.type === "throw") return converted;
-            const prototype = getPrototypeFromConstructor(callee, "Number", context, loc);
+            const prototype = getPrototypeFromConstructor(newTarget, "Number", context, loc);
             if (prototype.type === "throw") return prototype;
             const proto = prototype.value;
             const allocation = context.tick(loc);

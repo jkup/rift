@@ -515,7 +515,7 @@ class ExecutableScript {
         record.#completedMaterializations++;
         return normal(value);
     }
-    materializeFunction(scopeId: number, environment: ScriptEnvironment, inferredName: string | null, context: OperationContext): ValueCompletion {
+    materializeFunction(scopeId: number, environment: ScriptEnvironment, inferredName: string | null, context: OperationContext, prototype: GuestObject | null = null): ValueCompletion {
         this.#validateEnvironment(environment, context);
         const state = this.#readState();
         const entry = this.#function(scopeId);
@@ -530,7 +530,7 @@ class ExecutableScript {
             unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
         const constructable = entry.source.method !== true && entry.source.arrow !== true;
-        const object = new GuestObject(state.realm.functionPrototype, false, callable, constructable ? callable : null);
+        const object = new GuestObject(prototype === null ? state.realm.functionPrototype : prototype, false, callable, constructable ? callable : null);
         const value: Value = { kind: "object", object };
         let length = entry.node.params.length - (entry.source.rest === true ? 1 : 0);
         if (entry.node.parameters !== undefined) {
@@ -1044,7 +1044,7 @@ function dynamicFunctionRecord(source: string, parametersOnly: boolean, context:
         return languageFailure(context.realm, "SyntaxError", "invalid dynamic function source boundary", loc);
     return { type: "normal", record: prepared.record, scope: ExecutableScript.scopeOfNode(prepared.record, node, executionKey) };
 }
-export function createDynamicFunction(parameters: string[], body: string, context: OperationContext, loc: Location): ValueCompletion {
+export function createDynamicFunction(parameters: string[], body: string, context: OperationContext, loc: Location, newTarget: GuestObject): ValueCompletion {
     const prefix = "function anonymous(", middle = "\n) {\n", suffix = "\n}";
     let length = prefix.length + middle.length + body.length + suffix.length + Math.max(parameters.length - 1, 0);
     for (const parameter of parameters) length += parameter.length;
@@ -1056,8 +1056,10 @@ export function createDynamicFunction(parameters: string[], body: string, contex
     if (bodyRecord.type === "throw") return bodyRecord;
     const complete = dynamicFunctionRecord(prefix + params + middle + body + suffix, false, context, loc);
     if (complete.type === "throw") return complete;
+    const prototype = getPrototypeFromConstructor(newTarget, "Function", context, loc);
+    if (prototype.type === "throw") return prototype;
     // Materialize the declaration without instantiating an anonymous global binding.
-    return complete.record.materializeFunction(complete.scope, { kind: "global", record: context.realm.globalEnvironment }, null, context);
+    return complete.record.materializeFunction(complete.scope, { kind: "global", record: context.realm.globalEnvironment }, null, context, prototype.value);
 }
 function copyStrictness(strictness: StrictnessMetadata): StrictnessMetadata {
     return { ownStrict: strictness.ownStrict, inheritedStrict: strictness.inheritedStrict, strict: strictness.strict,
@@ -1102,7 +1104,7 @@ export type ScriptSessionSnapshot = { steps: number; calls: number; depth: numbe
     active: ScriptFrameSnapshot | null; lastAbrupt: ScriptSourceSnapshot | null };
 type BuiltinPermit = { kind: "call"; context: OperationContext; realm: Realm; invoke: Builtin; receiver: Value;
     args: Value[]; loc: Location; used: boolean } |
-    { kind: "construct"; context: OperationContext; realm: Realm; invoke: ConstructBuiltin; callee: GuestObject;
+    { kind: "construct"; context: OperationContext; realm: Realm; invoke: ConstructBuiltin; callee: GuestObject; newTarget: GuestObject;
     args: Value[]; loc: Location; used: boolean };
 let pendingBuiltin: BuiltinPermit | null = null;
 // Consume-only: possessing a context never creates dispatcher authority. This
@@ -1116,10 +1118,10 @@ export function consumeScriptBuiltinPermit(context: OperationContext, realm: Rea
     return true;
 }
 export function consumeScriptConstructorPermit(context: OperationContext, realm: Realm, invoke: ConstructBuiltin,
-    callee: GuestObject, args: Value[], loc: Location): boolean {
+    callee: GuestObject, newTarget: GuestObject, args: Value[], loc: Location): boolean {
     const permit = pendingBuiltin;
     if (permit === null || permit.kind !== "construct" || permit.used || permit.context !== context || permit.realm !== realm ||
-        permit.invoke !== invoke || permit.callee !== callee || permit.args !== args || permit.loc !== loc) return false;
+        permit.invoke !== invoke || permit.callee !== callee || permit.newTarget !== newTarget || permit.args !== args || permit.loc !== loc) return false;
     permit.used = true;
     return true;
 }
@@ -1169,6 +1171,7 @@ type ActiveOperationContext = {
     realm: Realm;
     call: (callee: Value, receiver: Value, args: Value[], loc: Location) => ValueCompletion;
     tick: (loc: Location) => ValueCompletion;
+    construct?: (callee: Value, args: Value[], newTarget: Value, loc: Location) => ValueCompletion;
 };
 
 class ExecutionEngine {
@@ -1192,6 +1195,7 @@ class ExecutionEngine {
             realm,
             call: (callee, receiver, args, loc) => this.call(callee, receiver, args, loc),
             tick: (loc) => this.tick(loc),
+            construct: (callee, args, newTarget, loc) => this.#construct(callee, args, loc, newTarget),
         };
         this.context = this.activeContext;
     }
@@ -2437,9 +2441,10 @@ class ExecutionEngine {
                 : { type: stmt.kind, payload: { kind: "empty" }, target: stmt.target };
         }
     }
-    #construct(callee: Value, args: Value[], loc: Location): ValueCompletion {
+    #construct(callee: Value, args: Value[], loc: Location, newTarget: Value = callee): ValueCompletion {
         const saved = this.#active();
         if (callee.kind !== "object" || callee.object.constructorSlot === null) return languageFailure(this.context.realm, "TypeError", "value is not a constructor", loc);
+        if (newTarget.kind !== "object" || newTarget.object.constructorSlot === null) return languageFailure(this.context.realm, "TypeError", "newTarget is not a constructor", loc);
         const fn = callee.object.constructorSlot;
         if (fn.kind === "bound") {
             if (fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile || fn.target.constructorSlot === null)
@@ -2453,11 +2458,11 @@ class ExecutionEngine {
             try {
                 const combined = this.#boundArguments(fn, args, loc);
                 if (combined.type === "throw") return combined;
-                // The current new expression always uses the callee as newTarget.
-                return this.#construct({ kind: "object", object: fn.target }, combined.args, loc);
+                const target: Value = { kind: "object", object: fn.target };
+                return this.#construct(target, combined.args, loc, newTarget.object === callee.object ? target : newTarget);
             } finally { this.calls--; }
         }
-        if (fn.kind === "builtin-constructor") return this.#constructBuiltin(callee.object, fn, args, loc);
+        if (fn.kind === "builtin-constructor") return this.#constructBuiltin(callee.object, fn, args, loc, newTarget.object);
         if (fn.kind !== "script-guest" || fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile)
             throw new Error("invalid Script constructor metadata");
         if (fn.isClassConstructor) ExecutableScript.validateClassConstructor(fn.record, fn, executionKey);
@@ -2472,7 +2477,7 @@ class ExecutionEngine {
         try {
             // Reserve constructor depth before getters; prototype/allocation
             // failures still belong to the caller frame and Realm.
-            const prototype = getPrototypeFromConstructor(callee.object, "Object", this.context, loc);
+            const prototype = getPrototypeFromConstructor(newTarget.object, "Object", this.context, loc);
             if (prototype.type === "throw") { this.#capture(prototype); return prototype; }
             const proto = prototype.value;
             const budget = this.tick(loc);
@@ -2480,7 +2485,7 @@ class ExecutionEngine {
             const receiver: Value = { kind: "object", object: new GuestObject(proto) };
             this.activeContext.realm = fn.realm;
             if (fn.isDefaultClassConstructor) return normal(receiver);
-            const result = this.#executeScriptFunction(callee.object, fn, receiver, args, callee);
+            const result = this.#executeScriptFunction(callee.object, fn, receiver, args, newTarget);
             if (result.type === "throw") return result;
             return result.value.kind === "object" ? result : normal(receiver);
         } finally {
@@ -2489,7 +2494,7 @@ class ExecutionEngine {
             this.calls = savedCalls;
         }
     }
-    #constructBuiltin(callee: GuestObject, fn: BuiltinConstructor, args: Value[], loc: Location): ValueCompletion {
+    #constructBuiltin(callee: GuestObject, fn: BuiltinConstructor, args: Value[], loc: Location, newTarget: GuestObject): ValueCompletion {
         const saved = this.#active();
         if (fn.realm.profile !== saved.realm.profile) throw new Error("cross-profile callable invocation");
         const callable = callee.callable;
@@ -2504,9 +2509,9 @@ class ExecutionEngine {
         this.calls++;
         this.activeContext.realm = fn.realm;
         this.#frame = { ...saved, realm: fn.realm };
-        pendingBuiltin = { kind: "construct", context: this.context, realm: fn.realm, invoke: fn.invoke, callee, args, loc, used: false };
+        pendingBuiltin = { kind: "construct", context: this.context, realm: fn.realm, invoke: fn.invoke, callee, newTarget, args, loc, used: false };
         try {
-            const result = fn.invoke(callee, args, this.context, loc);
+            const result = fn.invoke(callee, newTarget, args, this.context, loc);
             if (result.type === "throw") { this.#capture(result); return result; }
             if (result.type !== "normal" || result.value.kind !== "object") throw new Error("invalid builtin constructor completion");
             return result;

@@ -37,7 +37,7 @@ export function registerString(realm: Realm): void {
         const converted = stringArgument(args, context, loc);
         if (converted.type === "throw") return converted;
         return normal({ kind: "string", value: converted.value });
-    }, (callee, args, context, loc) => constructString(callee, args, context, loc));
+    }, (_callee, newTarget, args, context, loc) => constructString(newTarget, args, context, loc));
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.stringPrototype }, writable: false, enumerable: false, configurable: false });
     realm.stringPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     realm.defineScriptGlobal("String", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });

@@ -59,7 +59,7 @@ for (const method of ["map", "forEach", "filter"]) {
     let constructed = false;
     const custom = r.createBuiltinConstructor("species", 1,
         (_receiver, _args, _context, _loc): ValueCompletion => { throw new Error("species call"); },
-        (_callee, _args, _context, _loc): ValueCompletion => { constructed = true; return normal(obj(r.createObject())); });
+        (_callee, _newTarget, _args, _context, _loc): ValueCompletion => { constructed = true; return normal(obj(r.createObject())); });
     holder.bootstrapDefine(wellKnownSpecies, {value: obj(custom), writable: true});
     seed(r, "input", obj(input));
     const unsupported = run(r, "input.map(function(){throw 'callback';});");
@@ -109,7 +109,7 @@ check(legacy.arrayPrototype.getOwnProperty("map") === undefined && legacy.arrayP
     let trace = "";
     const custom = r.createBuiltinConstructor("species", 1,
         (_receiver, _args, _context, _loc): ValueCompletion => { throw new Error("splice species called"); },
-        (_callee, _args, _context, _loc): ValueCompletion => { throw new Error("splice species constructed"); });
+        (_callee, _newTarget, _args, _context, _loc): ValueCompletion => { throw new Error("splice species constructed"); });
     holder.bootstrapDefine(wellKnownSpecies, {get:obj(r.createBuiltin("speciesGetter",0,(_receiver,_args,_context,_loc): ValueCompletion => {
         trace += "species;"; return normal(obj(custom));
     })), configurable:true});

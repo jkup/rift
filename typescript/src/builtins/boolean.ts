@@ -9,9 +9,9 @@ export type BooleanCompletion = { type: "normal"; value: boolean } | ThrowComple
 export function registerBoolean(realm: Realm): void {
     const constructor = realm.createBuiltinConstructor("Boolean", 1,
         (_receiver, args, _context, _loc) => normal({ kind: "boolean", value: truthy(args.length === 0 ? UNDEFINED : args[0]) }),
-        (callee, args, context, loc) => {
+        (_callee, newTarget, args, context, loc) => {
             const value = truthy(args.length === 0 ? UNDEFINED : args[0]);
-            const prototype = getPrototypeFromConstructor(callee, "Boolean", context, loc);
+            const prototype = getPrototypeFromConstructor(newTarget, "Boolean", context, loc);
             if (prototype.type === "throw") return prototype;
             const proto = prototype.value;
             const allocation = context.tick(loc);

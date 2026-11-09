@@ -1,3 +1,4 @@
+import { registerReflect } from "./builtins/reflect.js";
 import { registerFunctionConstructor } from "./builtins/function-constructor.js";
 import { registerURI } from "./builtins/uri.js";
 import { registerArrayFlat } from "./builtins/array-flat.js";
@@ -149,6 +150,7 @@ export class Realm {
         this.installGlobal("console", { kind: "object", object: consoleObject }, true);
         if (profile === "script") {
             registerFunctionConstructor(this);
+            registerReflect(this);
             this.evalIntrinsic = createEvalIntrinsic(this);
             this.defineScriptGlobal("eval", { value: { kind: "object", object: this.evalIntrinsic }, writable: true, enumerable: false, configurable: true });
         }
@@ -259,12 +261,12 @@ export class Realm {
         if (this.profile !== "script") throw new Error("Script Realm required");
         nativeFunctionString(name);
         const callable: Callable = { kind: "builtin", initialName: name, realm: this, invoke: this.guardBuiltin(call) };
-        const guarded: ConstructBuiltin = (callee, args, context, loc) => {
+        const guarded: ConstructBuiltin = (callee, newTarget, args, context, loc) => {
             if (context.realm.profile !== this.profile) throw new Error("cross-profile callable invocation");
             if (callee !== object) throw new Error("invalid builtin constructor metadata");
-            if (!consumeScriptConstructorPermit(context, this, guarded, callee, args, loc))
+            if (!consumeScriptConstructorPermit(context, this, guarded, callee, newTarget, args, loc))
                 throw new Error("Script execution unavailable");
-            return construct(callee, args, context, loc);
+            return construct(callee, newTarget, args, context, loc);
         };
         const object = new GuestObject(this.functionPrototype, false, callable,
             { kind: "builtin-constructor", realm: this, callable, invoke: guarded });

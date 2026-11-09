@@ -69,7 +69,7 @@ for(const method of ["flat","flatMap"]) {
     });caller.defineScriptGlobal("mapper",{value:obj(callback)});
     const result=array(run(caller,method==="flat"?"method.call(input);":"method.call(input,mapper,self);"));check(result.getPrototypeOf()===owner.arrayPrototype&&sameValue(own(result,"0"),num(method==="flat"?7:9)),"foreign default species and result Realm");
     const realm=fresh(),source=realm.createArray(),holder=realm.createObject();
-    const custom=realm.createBuiltinConstructor("custom",0,(_receiver,_args,_context,_loc): ValueCompletion=>{throw new Error("species called");},(_callee,_args,_context,_loc): ValueCompletion=>{throw new Error("species constructed");});
+    const custom=realm.createBuiltinConstructor("custom",0,(_receiver,_args,_context,_loc): ValueCompletion=>{throw new Error("species called");},(_callee,_newTarget,_args,_context,_loc): ValueCompletion=>{throw new Error("species constructed");});
     holder.bootstrapDefine(wellKnownSpecies,{value:obj(custom)});source.bootstrapDefine("constructor",{value:obj(holder)});realm.defineScriptGlobal("input",{value:obj(source)});
     const unsupported=run(realm,method==="flat"?"input.flat();":"input.flatMap(function(v){return v;});");
     check(unsupported.type==="throw"&&unsupported.origin.kind==="unsupported-operation"&&unsupported.origin.capabilityCode===(method==="flat"?"runtime.flat-species":"runtime.flatmap-species"),"custom species explicit even for empty input");

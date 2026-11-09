@@ -1,8 +1,9 @@
+import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestArguments } from "../arguments-object.js";
 import { toObject } from "../object-conversion.js";
 import { invoke } from "../invoke.js";
-import { GuestError, normal, UNDEFINED, type Value } from "../runtime.js";
+import { GuestError, GuestObject, normal, UNDEFINED, type Value } from "../runtime.js";
 import { toPropertyKey } from "../conversion.js";
 import { registerObjectEnumeration } from "./object-enumeration.js";
 import { registerObjectDescriptors } from "./object-descriptors.js";
@@ -32,7 +33,13 @@ function objectArgument(args: Value[], context: OperationContext, loc: Location)
 export function registerObject(realm: Realm): void {
     const constructor = realm.createBuiltinConstructor("Object", 1,
         (_receiver, args, context, loc) => objectArgument(args, context, loc),
-        (_callee, args, context, loc) => objectArgument(args, context, loc));
+        (callee, newTarget, args, context, loc): ValueCompletion => {
+            if (callee === newTarget) return objectArgument(args, context, loc);
+            const prototype = getPrototypeFromConstructor(newTarget, "Object", context, loc);
+            if (prototype.type === "throw") return prototype;
+            const allocation = context.tick(loc);
+            return allocation.type === "throw" ? allocation : normal({ kind: "object", object: new GuestObject(prototype.value) });
+        });
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.objectPrototype }, writable: false, enumerable: false, configurable: false });
     realm.registerBuiltin(constructor, "hasOwn", 2, (_receiver, args, context, loc) => {
         const object = toObject(args.length === 0 ? UNDEFINED : args[0], context, loc);

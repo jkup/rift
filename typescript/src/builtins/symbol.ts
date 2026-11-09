@@ -29,7 +29,7 @@ export function registerSymbol(realm: Realm): void {
         const allocation = context.tick(loc);
         if (allocation.type === "throw") return allocation;
         return normal({ kind: "symbol", value: new GuestSymbol(description) });
-    }, (_callee, _args, context, loc) => languageFailure(context.realm, "TypeError", "Symbol cannot be constructed", loc));
+    }, (_callee, _newTarget, _args, context, loc) => languageFailure(context.realm, "TypeError", "Symbol cannot be constructed", loc));
     factory.bootstrapDefine("prototype", { value: { kind: "object", object: realm.symbolPrototype }, writable: false, enumerable: false, configurable: false });
     realm.registerBuiltin(factory, "for", 1, (_receiver, args, context, loc) => {
         const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);

@@ -614,6 +614,7 @@ executeDriver("duplicate-parameters", { stdout: "Duplicate parameters passed\n" 
 executeDriver("catch-var", { stdout: "Catch var declarations passed\n" });
 executeDriver("new-target", { stdout: "New target passed\n" });
 executeDriver("constructor-prototype", { stdout: "Constructor prototype selection passed\n" });
+executeDriver("construct-target", { stdout: "Distinct constructor targets passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

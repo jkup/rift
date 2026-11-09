@@ -1,0 +1,6 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\build\construct-target-draft\test\construct-target.ts
+
+  statements analyzed   9378
+  compile statically    9378  (100%)
+
+  fully static — all analyzed statements compile to native code.

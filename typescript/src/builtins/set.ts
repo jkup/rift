@@ -15,8 +15,8 @@ function setReceiver(receiver: Value, context: OperationContext, loc: Location):
 export function registerSet(realm: Realm): void {
     const constructor = realm.createBuiltinConstructor("Set", 0,
         (_receiver, _args, context, loc): ValueCompletion => languageFailure(context.realm, "TypeError", "Set requires new", loc),
-        (callee, args, context, loc): ValueCompletion => {
-            const prototype = getPrototypeFromConstructor(callee, "Set", context, loc);
+        (_callee, newTarget, args, context, loc): ValueCompletion => {
+            const prototype = getPrototypeFromConstructor(newTarget, "Set", context, loc);
             if (prototype.type === "throw") return prototype;
             const allocation = context.tick(loc);
             if (allocation.type === "throw") return allocation;

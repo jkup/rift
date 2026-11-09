@@ -196,3 +196,7 @@ The complete default-parameter driver built and executed, but coverage reported 
 ### Temporary record projection (TS-154)
 
 A reduced class method returning a record with an array gives an incorrect native result when the caller immediately selects an array element through the temporary return value. The Node execution passes; retaining the returned record in a named local also passes natively. The initial full duplicate-parameter driver crashed in this path despite fully static coverage. Its final collector returns the candidate array directly and retains it before indexing. See [the original reduction and passing variant](validation/ts-154/README.md); this is an execution failure, so static coverage alone cannot detect it.
+
+## Shared context projection (TS-157)
+
+A structural projection from a required callback property to an optional callback property copies the accompanying mutable Realm field in the pinned native compiler. Node retains the object alias. Matching optional declarations in the writable context and its readonly public view preserves the alias on both hosts. Keep those field shapes aligned; do not treat static coverage as proof of alias semantics. The six-statement original and matched probes, outputs and static-only build/coverage logs are retained in [ts-157](validation/ts-157/README.md).

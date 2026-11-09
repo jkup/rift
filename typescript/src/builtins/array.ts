@@ -37,7 +37,7 @@ function arrayArguments(callee: GuestObject, args: Value[], context: OperationCo
 export function registerArray(realm: Realm): GuestObject {
     const constructor: GuestObject = realm.createBuiltinConstructor("Array", 1,
         (_receiver, args, context, loc) => arrayArguments(constructor, args, context, loc),
-        (callee, args, context, loc) => arrayArguments(callee, args, context, loc));
+        (_callee, newTarget, args, context, loc) => arrayArguments(newTarget, args, context, loc));
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.arrayPrototype }, writable: false, enumerable: false, configurable: false });
     realm.registerBuiltin(constructor, "isArray", 1, (_receiver, args, _context, _loc) => {
         const value = args.length === 0 ? UNDEFINED : args[0];

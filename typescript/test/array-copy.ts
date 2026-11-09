@@ -71,7 +71,7 @@ class Observed extends GuestObject {
     data(input,"0",7); input.bootstrapDefine("constructor",{value:obj(holder)});
     const custom = realm.createBuiltinConstructor("custom",1,
         (_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("species call");},
-        (_callee,_args,_context,_loc): ValueCompletion => {throw new Error("species construct");});
+        (_callee,_newTarget,_args,_context,_loc): ValueCompletion => {throw new Error("species construct");});
     holder.bootstrapDefine(wellKnownSpecies,{value:obj(custom),configurable:true});
     realm.defineScriptGlobal("input",{value:obj(input)});
     const result = run(realm,"input.slice(0,0);");
@@ -160,7 +160,7 @@ check(legacy.arrayPrototype.getOwnProperty("slice") === undefined,"slice Script 
     const realm = fresh(), input = realm.createArray(), holder = realm.createObject();
     const custom = realm.createBuiltinConstructor("custom",1,
         (_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("concat species call");},
-        (_callee,_args,_context,_loc): ValueCompletion => {throw new Error("concat species construct");});
+        (_callee,_newTarget,_args,_context,_loc): ValueCompletion => {throw new Error("concat species construct");});
     holder.bootstrapDefine(wellKnownSpecies,{value:obj(custom)});
     input.bootstrapDefine("constructor",{value:obj(holder)});
     input.bootstrapDefine(wellKnownIsConcatSpreadable,{get:obj(realm.createBuiltin("spread",0,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("spread before species");}))});

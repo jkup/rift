@@ -3670,7 +3670,7 @@ Constructor prototype selection accepted (7ac9fb4b): both guest suites pass 655/
 
 ## TS-157 — Distinct constructor targets
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-09. Build on the reviewed TS-156 draft while canonical TS-153 validation runs. Thread distinct newTarget through Script and bound construction, builtin constructor permits and allocation. Add bounded Reflect.construct as the observable entry point, with constructor checks before array-like argument reads, explicit present-undefined rejection, budgets and cross-Realm tests. Preserve Symbol rejecting construction, builtin internal slots, Object distinct-target behavior and Function parsing/prototype order. Own runtime/context/Realm constructor integration, affected builtin factories, focused tests/manifests and design notes; no inheritance or super yet.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-09. Build on the reviewed TS-156 draft while canonical TS-153 validation runs. Thread distinct newTarget through Script and bound construction, builtin constructor permits and allocation. Add bounded Reflect.construct as the observable entry point, with constructor checks before array-like argument reads, explicit present-undefined rejection, budgets and cross-Realm tests. Preserve Symbol rejecting construction, builtin internal slots, Object distinct-target behavior and Function parsing/prototype order. Own runtime/context/Realm constructor integration, affected builtin factories, focused tests/manifests and design notes; no inheritance or super yet.
 
 ## TS-158 — Default derived class constructors
 

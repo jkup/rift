@@ -490,7 +490,7 @@ for(const constructing of [false,true])for(const mode of [0,1,2,3,4,5,6]){
  const a=fresh(),b=fresh(),h=fresh(),outer=createScriptSession(),inner=createScriptSession({maxSteps:mode===5?0:100000,maxCalls:mode===6?0:64}),sentinel=new Error("inner host"),marker=obj(h.createError("Error","inner"));let restored=0,innerCalls=0;
  let retained:OperationContext|null=null;
  const ctor=object(own(a.globalObject,"String")),objectCtor=object(own(a.globalObject,"Object")),m=a.createObject();
- const deny=(c:OperationContext):void=>{for(const k of [ctor,objectCtor]){hostFault(()=>{callSlot(k)(UNDEFINED,[],c,loc);});hostFault(()=>{constructSlot(k)(k,[],c,loc);});}};
+ const deny=(c:OperationContext):void=>{for(const k of [ctor,objectCtor]){hostFault(()=>{callSlot(k)(UNDEFINED,[],c,loc);});hostFault(()=>{constructSlot(k)(k,k,[],c,loc);});}};
  define(b,"String",obj(ctor));define(b,"m",obj(m));
  define(h,"inner",obj(h.createBuiltin("inner",0,(_r,_args,c,l):ValueCompletion=>{innerCalls++;deny(c);if(mode===4)throw sentinel;if(mode===3)return unsupportedFailure("runtime.object-to-string","TypeError","inner",l);if(mode===1||mode===2)return {type:"throw",value:mode===1?num(7):marker,diagnostic:{phase:"runtime",name:"Uncaught",message:"inner",loc:l},origin:{kind:"guest"}};return normal(str(payload));})));
  const hook=h.createBuiltin("method",0,(_r,_args,c,_l):ValueCompletion=>{
@@ -524,7 +524,7 @@ console.log("PASS separate-session reentries="+reentries+" finally BOTH original
 // C constructors use the unchanged tagged B authority; copied slots cannot Get.
 for(const name of ["String","Object"]){
  const a=fresh(),b=fresh(),legacy=new Realm((_line:string)=>{}),ctor=object(own(a.globalObject,name));let gets=0,ticks=0;
- for(const r of [a,b,legacy]){const c:OperationContext={realm:r,call:(_f,_r,_args,_l):ValueCompletion=>{throw new Error("unexpected call");},tick:(_l)=>{ticks++;return normal();}};hostFault(()=>{callSlot(ctor)(UNDEFINED,[],c,loc);});hostFault(()=>{constructSlot(ctor)(ctor,[],c,loc);});}
+ for(const r of [a,b,legacy]){const c:OperationContext={realm:r,call:(_f,_r,_args,_l):ValueCompletion=>{throw new Error("unexpected call");},tick:(_l)=>{ticks++;return normal();}};hostFault(()=>{callSlot(ctor)(UNDEFINED,[],c,loc);});hostFault(()=>{constructSlot(ctor)(ctor,ctor,[],c,loc);});}
  const shell=new GuestObject(a.functionPrototype,false,ctor.callable,ctor.constructorSlot);shell.bootstrapDefine("prototype",{get:obj(a.createBuiltin("poison",0,(_r,_args,_c,_l)=>{gets++;return normal();})),configurable:true});define(a,"K",obj(shell));const s=createScriptSession();hostFault(()=>{run("new K();",a,s);});idle(s);check(s.inspect().steps===3&&gets===0&&ticks===0,"copied slot denial before Get/effects");
  const other=object(own(a.globalObject,name==="String"?"Object":"String"));define(a,"K",obj(new GuestObject(a.functionPrototype,false,other.callable,ctor.constructorSlot)));hostFault(()=>{run("new K();",a);});check(gets===0&&ticks===0,"mismatched constructor/callable");
 }
