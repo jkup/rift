@@ -19,6 +19,7 @@ for (let i = 0; i < sources.length; i++) {
 }
 for (const text of ["1e", "1e+", "1e-", "1e+x", "1e 2", "1e\n2", ".5e-", "1e2foo", "1e2_3", "01e2", "0xG", "1_000", "1n"]) {
     const result = lex(text, true);
+    if (text === "1e2_3" || text === "1_000") { check(result.error === null, "separator now supported " + text); continue; }
     check(result.error !== null && result.error.phase === "parse", "reject decimal " + text);
 }
 for (const text of ["1e2;", ".5;", ".5e2;"]) {

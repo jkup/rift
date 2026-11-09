@@ -662,7 +662,7 @@ class Parser {
             return { kind: "new", loc, callee, args };
         }
         if (t.kind === "number") {
-            const literal: Expr = { kind: "literal", loc, value: Number(t.text) };
+            const literal: Expr = { kind: "literal", loc, value: Number(t.text.replaceAll("_", "")) };
             if (this.purpose === "bounded-numeric-assignment-audit") this.numericTokens.set(literal, t);
             return literal;
         }
@@ -742,7 +742,7 @@ class Parser {
                         key = this.take();
                     }
                     if (key.kind !== "word" && key.kind !== "string" && key.kind !== "number") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", key.loc);
-                    const name = key.kind === "number" ? String(Number(key.text)) : key.text;
+                    const name = key.kind === "number" ? String(Number(key.text.replaceAll("_", ""))) : key.text;
                     if (this.structuralPlan() && this.at("(")) {
                         const fn = this.functionTail(first.loc, first.start);
                         if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && fn.params.length !== 1))

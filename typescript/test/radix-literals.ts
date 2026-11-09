@@ -18,6 +18,7 @@ for (let i = 0; i < sources.length; i++) {
     check(session.inspect().active === null && session.inspect().calls === 0, "radix session restored");
 }
 for (const text of ["0x", "0X", "0b", "0o", "0xG", "0b2", "0b102", "0o8", "0o78", "0x1g", "0b1e2", "0x1n", "0x1_2", "0b_1", "0o7$", "00x1"]) {
+    if (text === "0x1_2") { check(lex(text, true).error === null, "separator now supported " + text); continue; }
     check(lex(text, true).error !== null, "reject radix " + text);
 }
 for (const text of ["0xFF;", "0b10;", "0o77;"]) {

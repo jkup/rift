@@ -56,6 +56,7 @@ const entries = [
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],
     ["test/radix-literals.ts", "radix-literals"],
     ["test/decimal-literals.ts", "decimal-literals"],
+    ["test/numeric-separators.ts", "numeric-separators"],
     ["test/function-apply.ts", "function-apply"],
     ["test/function-bind.ts", "function-bind"],
     ["test/array-sort.ts", "array-sort"],

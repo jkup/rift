@@ -36,6 +36,25 @@ export function lex(source: string, script = false): LexResult {
         rejection = reason;
         error = { phase: "parse", name: "SyntaxError", message, loc };
     }
+    function numericDigits(radix: number, hasDigit: boolean, separators: boolean): string {
+        const start = i;
+        while (i < source.length) {
+            const value = digitValue(source.charAt(i));
+            if (value >= 0 && value < radix) {
+                advance();
+                hasDigit = true;
+                continue;
+            }
+            const next = digitValue(source.charAt(i + 1));
+            if (script && separators && hasDigit && source.charAt(i) === "_" && next >= 0 && next < radix) {
+                advance();
+                hasDigit = false;
+                continue;
+            }
+            break;
+        }
+        return source.slice(start, i);
+    }
     function hexDigits(count: number, braced: boolean, loc: Location, message: string): number {
         let value = 0, digits = 0;
         while (i < source.length && (braced ? source.charAt(i) !== "}" : digits < count)) {
@@ -145,27 +164,23 @@ export function lex(source: string, script = false): LexResult {
             if (radix !== 0) {
                 text += advance();
                 const digitsStart = i;
-                while (true) {
-                    const value = digitValue(source.charAt(i));
-                    if (value < 0 || value >= radix) break;
-                    text += advance();
-                }
+                text += numericDigits(radix, false, true);
                 if (i === digitsStart || digit(source.charAt(i)) || letter(source.charAt(i)))
                     fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "invalid radix numeric literal", loc);
                 tokens.push({ kind: "number", text, loc, start, end: i });
                 continue;
             }
-            while (digit(source.charAt(i))) text += advance();
+            text += numericDigits(10, c !== ".", c !== "0");
             if (text.length > 1 && text.charAt(0) === "0") fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
             if (c !== "." && source.charAt(i) === ".") {
                 text += advance();
-                while (digit(source.charAt(i))) text += advance();
+                text += numericDigits(10, false, true);
             }
             if (script && (source.charAt(i) === "e" || source.charAt(i) === "E")) {
                 text += advance();
                 if (source.charAt(i) === "+" || source.charAt(i) === "-") text += advance();
                 if (!digit(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "decimal exponent requires digits", loc);
-                while (digit(source.charAt(i))) text += advance();
+                text += numericDigits(10, false, true);
             }
             if (letter(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
             tokens.push({ kind: "number", text, loc, start, end: i });
