@@ -540,3 +540,7 @@ For-in is accepted: 616/616 guests on each host, all 126 native entries static, 
 ### TS-128 checkpoint
 
 Array literal spread is accepted: 617/617 guests on each host, all 127 native entries static, tooling 290/290, runner 31/31 and ten probes. All 225 fixture results agree, all 139 prior completions remain, and the sparse-array fixture adds 11 passing checks for 140 completed fixtures. See [array spread](array-spread.md) for iterator and elision semantics. Next: call and constructor argument spread, preserving callee/receiver capture and argument evaluation order.
+
+### TS-129 checkpoint
+
+Call and constructor spread are accepted: 618/618 guests on each host, all 128 native entries static (one isolated Zig cache-failure rebuild), tooling 290/290, runner 31/31 and ten probes. All 225 fixture results agree and all 140 prior completions remain; no fixture completion increase in this slice. See [argument spread](argument-spread.md) for evaluation-order and build evidence. Next: object literal method shorthand and accessors; the getter/setter fixture requires both forms, correct callable metadata and non-constructability.
