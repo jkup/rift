@@ -98,6 +98,15 @@ throw-comprehensive-test.js:8 deliberately throws an uncaught string and says th
 following statement must not run. Preserve both fixtures and their runtime-error
 classifications; these first failures are not missing interpreter features.
 
+Promise follow-up review: `promise-try.js` expects `Promise.try(42)` to throw
+synchronously. ECMAScript 2025 [Promise.try](https://262.ecma-international.org/16.0/#sec-promise.try)
+instead creates the capability first, calls the callback, and rejects the returned
+promise when the callback is not callable. Preserve the fixture and flag this
+expectation when Promise support reaches it. This is a specification review, not
+a newly executed fixture result. The pinned engine262 implementation also differs
+from the published 2025 allocation order here; follow the specification rather
+than copying that implementation.
+
 ## Catch-up review and historical checkpoints
 
 Completed in this catch-up: ordinary input-test invocation, the five tracked report
@@ -667,3 +676,8 @@ Constructor prototype selection accepted (7ac9fb4b): both guest suites pass 655/
 ### TS-157/TS-158 construction checkpoint
 
 Distinct constructor targets and default derived classes accepted (3bf2df23, 29cd9ae8; host callback correction 416f3a97): both guest suites pass 657/657 without skips; tooling 291/291, runner 32/32, ten probes and typechecking pass. The 167-entry native matrix passed 166 entries in 1124208ms; harness-map-default correctly failed the gate for one dynamic callback adapter. Two host constructor callbacks now declare the newTarget parameter. The corrected driver passes both original runtime inputs on Node/native at 10235/10235 static, zero dynamic; all 167 entries have passing static-only build and parsed coverage evidence. Production source remained fixed. Initial, corrected-entry and accepted reports are retained separately in build/derived-construction-native-{initial,retry,results}.json. All 225 normalized corpus records agree between Node s6iVhq and native LoC36m, preserving hashes and all 164 prior completions. The unchanged test-class-getter-setter.js adds ten passing checks, raising completions to 165 (108 reported successes, 57 unchecked; 15 parse errors, 44 runtime errors, one reported failure). Evidence: build/derived-construction-corpus-comparison.json and build/derived-construction-*. The earlier native 5OHKvb run used the prior CLI before its matrix rebuild and is excluded. Next: reviewed TS-159 explicit constructors, then TS-160 super properties.
+
+
+### TS-159 explicit constructor checkpoint
+
+Explicit derived constructors accepted (8c7186be): both guest suites pass 658/658 without skips; tooling 291/291, runner 32/32, ten probes and typechecking pass. All 168 native entries pass static-only builds and parsed coverage on unchanged source in 1158688ms, without retries. Focused coverage is 9489/9489 static, zero dynamic. All 225 normalized corpus records agree between Node C4Lt8q and native lH3Dj1, preserving hashes and all 165 prior completions (108 reported successes, 57 unchecked; 15 parse errors, 44 runtime errors, one reported failure). class-test.js advances to super-property syntax; no completion is added yet. Evidence: build/explicit-derived-native-results.json, build/explicit-derived-corpus-comparison.json and build/explicit-derived-*. Next: separate TS-160 super-property and TS-161 job-checkpoint commits followed by combined canonical validation.
