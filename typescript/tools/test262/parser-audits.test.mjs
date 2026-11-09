@@ -61,6 +61,13 @@ for (const [driver, directory, count] of [
     rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
   });
   if (driver === 'script-strict-rule-audit') {
+    const implicit = rows.find(row => row.id === 'D06');
+    assert.equal(implicit.text, '"use strict"\n{function f(){} function f(){}}');
+    expected.set(implicit.id, {kind: 'eligible', sourceUnits: 44, consumedUnits: 44, candidates: [{
+      ruleCode: 'duplicate-block-lexical-function', scopeStart: 13, scopeEnd: 44,
+      first: {name: 'f', start: 23, end: 24, loc: {line: 2, column: 11}},
+      second: {name: 'f', start: 38, end: 39, loc: {line: 2, column: 26}},
+    }]});
     for (const [id, text] of [
       ['B03', '{function f(){} function f(){}}'],
       ['B04', '{"use strict"; function f(){} function f(){}}'],
@@ -94,6 +101,13 @@ for (const [driver, directory, count] of [
     rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
   });
   if (driver === 'script-strict-parameter-audit') {
+    const implicit = rows.find(row => row.id === 'E22');
+    assert.equal(implicit.text, 'function f(a,a){"use strict"\n}');
+    expected.set(implicit.id, {kind: 'eligible', sourceUnits: 30, consumedUnits: 30, candidates: [{
+      ruleCode: 'duplicate-strict-parameter', functionStart: 0, functionEnd: 30,
+      first: {name: 'a', start: 11, end: 12, loc: {line: 1, column: 12}},
+      second: {name: 'a', start: 13, end: 14, loc: {line: 1, column: 14}},
+    }]});
     const block = rows.find(row => row.id === 'E27');
     assert.equal(block.text, 'function f(a,a){"use strict";} {function g(){}}');
     expected.set(block.id, {kind: 'eligible', sourceUnits: 47, consumedUnits: 47, candidates: [{
@@ -136,6 +150,11 @@ for (const [driver, directory, count, variants] of [
   const rows = json(`docs/validation/${directory}/semantic-matrix.json`).rows;
   assert.equal(rows.length, count);
   if (driver === 'script-assignment-target-audit') {
+    const newline = rows.find(row => row.id === 'U13');
+    assert.equal(newline.text, '42\n++;');
+    newline.expected = {kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'unsupported or unexpected syntax: ;', loc: {line: 2, column: 3}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.unexpected'}};
     const block = rows.find(row => row.id === 'SL2');
     assert.equal(block.text, '42=7;{function single(){}}');
     block.expected = {kind: 'eligible', sourceUnits: 26, consumedUnits: 26, candidates: [{
@@ -183,6 +202,12 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    const implicit = rows.find(row => row.id === 'excluded-missing-semicolon');
+    assert.equal(implicit.text, 'if(false) let x');
+    implicit.expected = {kind: 'eligible', sourceUnits: 15, consumedUnits: 15, candidates: [{
+      ruleCode: 'lexical-declaration-statement', context: 'if-consequent',
+      keyword: {text: 'let', start: 10, end: 13, loc: {line: 1, column: 11}},
+    }]};
     const labelled = rows.find(row => row.id === 'excluded-label');
     assert.equal(labelled.text, 'label: let x;');
     labelled.expected = {kind: 'blocked', reason: 'grammar-or-resource',

@@ -81,6 +81,19 @@ function blockFunctionPlanExpectation(record) {
     functions: [{scope: 2, declaration: 0, start, end: end - 1, strictness}], legacyBlockFunctions: [0]}, winners: [[], [], []]};
 }
 
+function semicolonPlanExpectation(record) {
+  const {unit} = record.plan;
+  if (unit.id !== 'var-no-semicolon') return record;
+  assert.equal(unit.text, '"use strict";var x');
+  return {plan: {kind: 'complete', goal: 'Script', unit, consumedUnits: 18,
+    strictness: {ownStrict: true, inheritedStrict: false, strict: true,
+      directives: [{start: 0, end: 12, statementEnd: 13, loc: {line: 1, column: 1}, raw: '"use strict"', useStrict: true}]},
+    scopes: [{id: 0, kind: 'script', parent: null, start: 0, end: 18, strict: true,
+      formals: [], catchParameter: null, lexicalDeclarations: [], varDeclarations: [0], lexicalNames: [], varNames: ['x']}],
+    declarations: [{id: 0, kind: 'var', site: {name: 'x', start: 17, end: 18, loc: {line: 1, column: 18}},
+      scope: 0, variableScope: 0, functionScope: null, initializer: null}], functions: []}, winners: [[]]};
+}
+
 test('Script declarations: 135 plans and 71 historical literals with explicit feature migrations in both hosts', () => {
   const snapshots = json('docs/validation/ts-034h6-c/replays/plans-results.json');
   const literals = json('fixtures/script-declarations/literal.json');
@@ -109,11 +122,12 @@ test('Script declarations: 135 plans and 71 historical literals with explicit fe
   assert.equal([...expected.values()].filter(record => constPlanExpectation(record) !== record).length, 7);
   assert.equal([...expected.values()].filter(record => defaultPlanExpectation(record) !== record).length, 1);
   assert.equal([...expected.values()].filter(record => argumentsPlanExpectation(record) !== record).length, 1);
+  assert.equal([...expected.values()].filter(record => semicolonPlanExpectation(record) !== record).length, 1);
   assert.equal([...expected.values()].filter(record => blockFunctionPlanExpectation(record) !== record).length, 3);
   for (const lane of ['node', 'native']) for (const record of expected.values()) {
     run('script-declarations', lane, record.plan.unit, [], (stdout, label) => {
       const {plan, winners} = JSON.parse(stdout);
-      assert.deepEqual({plan, winners}, blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record)))), label);
+      assert.deepEqual({plan, winners}, semicolonPlanExpectation(blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record))))), label);
     });
   }
 });
