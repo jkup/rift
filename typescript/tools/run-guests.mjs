@@ -280,7 +280,7 @@ const generated = [
     ["delete-fixed", "'use strict';\ndelete Number.NaN;", 1, "2:1: runtime TypeError: property is not configurable: NaN"],
     ["delete-null", "delete null.x;", 1, "1:8: runtime TypeError: cannot convert null or undefined to object"],
     ["duplicate", "let x; let x;", 2, "parse SyntaxError: duplicate-lexical: x"],
-    ["duplicate-param", "function f(x,x) {}", 2, "parse SyntaxError: duplicate parameter: x"],
+    ["duplicate-param", "function f(x,x) {}", 0, ""],
     ["param-let", "function f(x) { let x; }", 2, "parse SyntaxError: formal-lexical: x"],
     ["const", "const x = 1;", 0, ""],
     ["increment", "let x=1; console.log(x++ + 2, x);", 0, "", "3 2\n"],
@@ -610,6 +610,7 @@ executeDriver("object-binding-patterns", { stdout: "Object binding patterns pass
 executeDriver("object-assignment-patterns", { stdout: "Object assignment patterns passed\n" });
 executeDriver("class-planning", { stdout: "Class planning passed\n" });
 executeDriver("base-classes", { stdout: "Base classes passed\n" });
+executeDriver("duplicate-parameters", { stdout: "Duplicate parameters passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

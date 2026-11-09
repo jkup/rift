@@ -652,7 +652,7 @@ class DeclarationCollector {
             }
         }
     }
-    project(): DeclarationPlanResult {
+    project(ignoreStrictParameters = false): DeclarationPlanResult {
         const restricted = this.restrictedBinding();
         if (restricted !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
@@ -665,6 +665,14 @@ class DeclarationCollector {
             if (this.scopes[site.scope].strict) return { kind: "blocked", goal: "Script", unit: this.unit,
                 rejection: { kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" },
                 diagnostic: { phase: "parse", name: "SyntaxError", message: "delete of an identifier is not allowed", loc: site.loc } };
+        }
+        if (!ignoreStrictParameters) {
+            const candidates = this.strictParameterCandidates();
+            const duplicate = candidates[0];
+            if (duplicate !== undefined) return { kind: "blocked", goal: "Script", unit: this.unit,
+                rejection: { kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" },
+                diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate parameter: " + duplicate.second.name,
+                    loc: duplicate.second.loc } };
         }
         for (const scope of this.scopes) {
             if (!scope.strict) {
@@ -738,7 +746,7 @@ class DeclarationCollector {
         return null;
     }
     auditStrictParameters(): StrictParameterAudit {
-        const blocks = this.audit();
+        const blocks = this.audit(true);
         if (blocks.kind === "blocked") return { kind: "blocked", reason: blocks.reason,
             diagnostic: blocks.diagnostic, rejection: blocks.rejection };
         if (blocks.kind === "eligible") {
@@ -747,45 +755,36 @@ class DeclarationCollector {
                 diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate-lexical: " + site.name,
                     loc: { line: site.loc.line, column: site.loc.column } } };
         }
-        const { candidates, sloppy } = this.parameterPairs();
-        // A sloppy duplicate anywhere vetoes all strict candidates, even earlier ones.
-        if (sloppy !== null) return { kind: "blocked", reason: "scope-restriction",
-            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" },
-            diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate parameter: " + sloppy.second.name,
-                loc: sloppy.second.loc } };
+        const candidates = this.strictParameterCandidates();
 
         const sourceUnits = this.unit.text.length;
         if (candidates.length === 0) return { kind: "none", sourceUnits, consumedUnits: sourceUnits };
         return { kind: "eligible", sourceUnits, consumedUnits: sourceUnits, candidates };
     }
-    private parameterPairs(): { candidates: StrictParameterCandidate[]; sloppy: StrictParameterCandidate | null } {
+    private strictParameterCandidates(): StrictParameterCandidate[] {
         const candidates: StrictParameterCandidate[] = [];
-        let sloppy: StrictParameterCandidate | null = null;
         for (const fn of this.functions) {
             const scope = this.scopes[fn.scope];
+            if (!scope.strict) continue;
             const firsts = new Map<string, DeclarationSite>();
             for (const second of scope.formals) {
                 const first = firsts.get(second.name);
                 if (first === undefined) { firsts.set(second.name, second); continue; }
                 const pair: StrictParameterCandidate = { ruleCode: "duplicate-strict-parameter",
                     functionStart: fn.start, functionEnd: fn.end, first: copySite(first), second: copySite(second) };
-                if (scope.strict) candidates.push(pair);
-                else if (sloppy === null || second.start < sloppy.second.start ||
-                    (second.start === sloppy.second.start && first.start < sloppy.first.start)) sloppy = pair;
+                candidates.push(pair);
             }
         }
         candidates.sort((a, b) => a.second.start - b.second.start || a.first.start - b.first.start);
-        return { candidates, sloppy };
+        return candidates;
     }
     certifyParameterPreparation(): CertifiedParameterPreparationRejection | null {
-        const blocks = this.audit();
+        const blocks = this.audit(true);
         if (blocks.kind === "blocked") return null;
-        const pairs = this.parameterPairs();
-        // Every sloppy duplicate vetoes both rules, including earlier candidates.
-        if (pairs.sloppy !== null) return null;
-        if (pairs.candidates.length === 0 || blocks.sourceUnits !== this.unit.text.length ||
+        const candidates = this.strictParameterCandidates();
+        if (candidates.length === 0 || blocks.sourceUnits !== this.unit.text.length ||
             blocks.consumedUnits !== this.unit.text.length) throw new Error("invalid parameter rule certification");
-        const parameter = pairs.candidates[0];
+        const parameter = candidates[0];
         let first = parameter.first;
         let second = parameter.second;
         let ruleCode: "duplicate-block-lexical-function" | "duplicate-strict-parameter" = "duplicate-strict-parameter";
@@ -805,8 +804,8 @@ class DeclarationCollector {
             diagnostic: { phase: "parse", name: "SyntaxError", message: message + second.name,
                 loc: { line: second.loc.line, column: second.loc.column } } };
     }
-    audit(): BlockFunctionAudit {
-        const ordinary = this.project();
+    audit(ignoreStrictParameters = false): BlockFunctionAudit {
+        const ordinary = this.project(ignoreStrictParameters);
         if (ordinary.kind === "blocked") return { kind: "blocked", reason: "scope-restriction",
             diagnostic: ordinary.diagnostic, rejection: ordinary.rejection };
         // An earlier ordinary conflict must not hide a later catch restriction.

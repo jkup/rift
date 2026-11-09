@@ -6,7 +6,7 @@ import type { Realm } from "./realm.js";
 import { wellKnownIterator } from "./symbols.js";
 
 export function createArgumentsObject(realm: Realm, args: Value[], callee: GuestObject | null,
-    parameters: ScriptBindingCell[], context: OperationContext, loc: Location): ValueCompletion {
+    parameters: (ScriptBindingCell | null)[], context: OperationContext, loc: Location): ValueCompletion {
     if (realm.profile !== "script" || realm.arrayValues.kind !== "object" || realm.restrictedFunctionThrower.kind !== "object" ||
         (callee === null && parameters.length !== 0)) throw new Error("invalid arguments object setup");
     const allocation = context.tick(loc);
@@ -18,7 +18,8 @@ export function createArgumentsObject(realm: Realm, args: Value[], callee: Guest
         if (tick.type === "throw") return tick;
         const key = String(i);
         object.bootstrapDefine(key, { value: args[i], writable: true, enumerable: true, configurable: true });
-        if (i < parameters.length) object.mapParameter(key, parameters[i]);
+        const parameter = i < parameters.length ? parameters[i] : null;
+        if (parameter !== null) object.mapParameter(key, parameter);
     }
     object.bootstrapDefine(wellKnownIterator, { value: realm.arrayValues, writable: true, configurable: true });
     if (callee === null) object.bootstrapDefine("callee", {

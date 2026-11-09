@@ -40,11 +40,11 @@ const block = "{function f(){} function f(){}}";
 rejection(block, false, "unsupported-syntax", "parse.declaration-statement");
 rejection(block, true, "syntax-error", "duplicate-block-lexical-function");
 const parameters = "\nfunction f(a,a){}";
-rejection(parameters, false, "unsupported-syntax", "parse.duplicate-parameter");
+check(prepare(parameters, false).plan.kind === "complete", "sloppy duplicate parameters admitted");
 rejection(parameters, true, "syntax-error", "duplicate-strict-parameter");
 const duplicate = prepare(parameters, true).plan;
 check(duplicate.kind === "blocked" && duplicate.diagnostic.loc.line === 2 && duplicate.diagnostic.loc.column === 14, "duplicate parameter offset");
-rejection("function f(a,a){} var arguments;", true, "unsupported-syntax", "parse.duplicate-parameter");
+rejection("function f(a,a){} var arguments;", true, "unsupported-syntax", "parse.binding-identifier");
 
 for (const text of ["var arguments;", "arguments=1;", "function f(arguments){}", "try{}catch(arguments){}"]) {
     check(prepare(text).plan.kind === "complete", "sloppy arguments accepted");

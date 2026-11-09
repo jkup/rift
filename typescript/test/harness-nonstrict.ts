@@ -102,7 +102,12 @@ for (const source of negatives) {
     const r=fresh(), out:Value[]=[]; recorder(r,out);
     const p=prepareBoundedScript({id:"N",text:source},r);
     check(out.length === 0 && r.globalObject.getOwnProperty("f") === undefined, "preparation is inert");
-    if (source === "eval('1');") {
+    if (source === "function f(a,a){}") {
+        check(p.kind === "ready", "sloppy duplicate parameters prepare");
+        expect(run(source,r),UNDEFINED,"original duplicate function executes");
+        expect(run("f(1,7);",r),UNDEFINED,"empty duplicate function returns undefined");
+        expect(run("f.length;",r),{kind:"number",value:2},"duplicate function length");
+    } else if (source === "eval('1');") {
         check(p.kind === "ready", "eval prepares");
         expect(run(source,r),{kind:"number",value:1},"eval executes");
     } else if (source === "{function f(){}}" || source === "switch(1){case 1:function f(){}}") {

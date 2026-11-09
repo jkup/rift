@@ -3647,7 +3647,7 @@ Base classes accepted (c450aa43, audit migrations df68b62e): both guest suites p
 
 ## TS-154 — Sloppy duplicate simple parameters
 
-Status: **in progress — isolated draft during TS-153 validation**. Owner: Codex catch-up chat, 2026-11-09. Admit duplicate simple parameters only in bounded non-strict ordinary functions; preserve strict certification, non-simple/arrow/method rejection and the legacy parser boundary. Create one binding per name, assign actuals in order, and map only the last formal occurrence to arguments, including missing actuals. Review FunctionDeclarationInstantiation and CreateMappedArgumentsObject against ECMAScript 2025 and pinned engine262. Cover alias descriptors, eval/Function, closures, budgets and original scoping corpus on both hosts. Canonical production remains frozen until TS-153 acceptance.
+Status: **in progress — integrated; canonical validation pending**. Owner: Codex catch-up chat, 2026-11-09. Admit duplicate simple parameters only in bounded non-strict ordinary functions; preserve strict certification, non-simple/arrow/method rejection and the legacy parser boundary. Create one binding per name, assign actuals in order, and map only the last formal occurrence to arguments, including missing actuals. Review FunctionDeclarationInstantiation and CreateMappedArgumentsObject against ECMAScript 2025 and pinned engine262. Cover alias descriptors, eval/Function, closures, budgets and original scoping corpus on both hosts. Canonical production remains frozen until TS-153 acceptance.
 
 ## TS-155 — Simple catch parameter and var declarations
 

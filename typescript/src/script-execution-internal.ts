@@ -620,17 +620,35 @@ class ExecutableScript {
             parameterEnvironment = new ScriptDeclarativeEnvironment(environment);
         }
         if (hasInitializers && execution !== null) execution.enter(parameterEnvironment);
+        const parameterNames = new Set(entry.scope.formals.map(formal => formal.name));
+        const hasDuplicates = parameterNames.size !== entry.scope.formals.length;
+        if (hasDuplicates && (metadata.strict || hasInitializers || entry.source.rest === true))
+            throw new Error("invalid duplicate parameter activation");
         for (const formal of entry.scope.formals) {
             const tick = this.#setupTick(context, formal.loc);
             if (tick.type === "throw") return tick;
+            const present = parameterEnvironment.hasBinding(formal.name, formal.loc);
+            if (present.type === "throw") return present;
+            if (present.value) continue;
             const created = parameterEnvironment.createMutableBinding(formal.name, formal.loc);
             if (created.type === "throw") return created;
+            if (hasDuplicates) {
+                const initialized = parameterEnvironment.initializeBinding(formal.name, UNDEFINED, context, formal.loc);
+                if (initialized.type === "throw") return initialized;
+            }
         }
         if (needsArguments) {
             if (execution === null) throw new Error("missing arguments execution");
             const mapped = !metadata.strict && !hasInitializers && entry.source.rest !== true;
-            const cells: ScriptBindingCell[] = [];
-            if (mapped) for (const formal of entry.scope.formals) cells.push(parameterEnvironment.parameterCell(formal.name));
+            const cells: (ScriptBindingCell | null)[] = [];
+            if (mapped) {
+                const last = new Map<string, number>();
+                for (let i = 0; i < entry.scope.formals.length; i++) last.set(entry.scope.formals[i].name, i);
+                for (let i = 0; i < entry.scope.formals.length; i++) {
+                    const name = entry.scope.formals[i].name;
+                    cells.push(last.get(name) === i ? parameterEnvironment.parameterCell(name) : null);
+                }
+            }
             const object = createArgumentsObject(state.realm, argumentsList, mapped ? execution.callee : null, cells, context, entry.node.loc);
             if (object.type === "throw") return object;
             const created = metadata.strict ? parameterEnvironment.createImmutableBinding("arguments", entry.node.loc)
@@ -664,7 +682,9 @@ class ExecutableScript {
                 }
                 value = { kind: "object", object: array };
             }
-            const initialized = parameterEnvironment.initializeBinding(formal.name, value, context, formal.loc);
+            const initialized = hasDuplicates
+                ? parameterEnvironment.setMutableBinding(formal.name, value, context, formal.loc, false)
+                : parameterEnvironment.initializeBinding(formal.name, value, context, formal.loc);
             if (initialized.type === "throw") return initialized;
         }
         let variableEnvironment: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment = parameterEnvironment;

@@ -663,7 +663,7 @@ class Parser {
                 rest = this.structuralPlan() && this.eat("...");
                 const token = this.current();
                 const name = this.name();
-                if (params.includes(name) && (arrow || this.purpose !== "bounded-parameter-audit"))
+                if (params.includes(name) && (arrow || !this.boundedPlan()))
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, (arrow ? "duplicate arrow parameter: " : "duplicate parameter: ") + name, loc);
                 params.push(name);
                 let initializer: Expr | null = null;

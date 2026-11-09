@@ -1,0 +1,3 @@
+# Temporary result projection in scriptc 0.4.7
+
+The duplicate-parameter draft crashed natively in strict-parameter preparation while its Node tests passed. A reduced class method returning a record containing an array reproduces wrong native output when immediately projected through the temporary. Node prints temporary passed; native throws temporary result. Retaining the record in a local passes both hosts. Original reductions and outputs are retained here. The final collector returns the candidates array directly and keeps it in a local before selecting a candidate, removing the obsolete wrapper and sloppy-candidate field. No toolchain change or dynamic tier is used. Full draft crash/trace logs remain under build/duplicate-parameter-draft.
