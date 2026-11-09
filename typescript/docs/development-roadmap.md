@@ -594,3 +594,8 @@ Function construction, arrows, rest/default parameters, arguments objects, slopp
 Eval is now a substantial shared blocker, but its fixture uses implicit statement terminators and both local and global execution. TS-149 addresses semicolon insertion first; TS-150 remains blocked on that milestone and a review of eval environment/instantiation semantics. Optional eval calls must remain indirect. Unsupported input must not be converted indiscriminately into catchable SyntaxError merely to satisfy negative fixtures.
 
 The unchanged string-escape-sequences-test.js has malformed quoting at line 14: its escaped backslashes leave a quote terminating the string before `world`. Node's syntax-only check also rejects that original source (build/optional-chain-fixture-syntax-audit.log). Preserve this parse-error outcome and the fixture bytes; do not weaken string lexing to make the file complete. This is separate from supported Script hex/Unicode string escapes. The baseline still does not measure C++ execution, and nonstandard injected GC helpers remain excluded from this runner.
+
+
+### TS-149 checkpoint
+
+Script semicolon insertion is accepted: 638/638 guests on each host, 148 native static/coverage gates, runner 32/32 and ten probes. All 290 tooling checks are covered after one explicit declaration-plan migration and a passing full plan rerun on both hosts. All 225 corpus records match and all 158 completed fixtures remain complete. See [semicolon insertion](semicolon-insertion.md) for restricted productions, directive detection and retained failures. Next: review eval environments and instantiation, including deletable local bindings, arguments visibility, inherited strictness and nested-source restoration, before admitting eval syntax.
