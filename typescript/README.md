@@ -10,10 +10,10 @@ functions and arrows, loops and labels, try/catch/finally, ordinary construction
 optional chaining and automatic semicolon insertion. Scripts are non-strict
 unless they contain a "use strict" directive. Bounded eval and Function construction
 use Rift's own parser and execution machinery; see [eval](docs/eval-design.md).
-Array assignment and standalone or for-in/of array and object bindings support
-nesting, defaults and rest; arrays also support elisions. Assignment-pattern loop
-heads, object assignment, mixed declaration lists and classic-for patterns remain
-in progress. See [destructuring](docs/destructuring-design.md).
+Array assignment, including for-in/of heads, and standalone or for-in/of array
+and object bindings support nesting, defaults and rest; arrays also support
+elisions. Object assignment, mixed declaration lists and classic-for patterns
+remain in progress. See [destructuring](docs/destructuring-design.md).
 Classes, generators and async execution remain unsupported.
 Object literals accept identifier, string and numeric property names.
 Script numbers include decimal exponents and leading-dot fractions; see [decimal literals](docs/decimal-literals.md).
