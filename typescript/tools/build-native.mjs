@@ -71,6 +71,7 @@ const entries = [
     ["test/labels.ts", "labels"],
     ["test/optional-chain.ts", "optional-chain"],
     ["test/semicolon-insertion.ts", "semicolon-insertion"],
+    ["test/inherited-strictness.ts", "inherited-strictness"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],
     ["test/json-parse.ts", "json-parse"],

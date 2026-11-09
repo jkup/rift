@@ -85,15 +85,15 @@ type Work =
     | { kind: "expression"; node: Expr; scope: number; variableScope: number }
     | { kind: "binding"; binding: ParsedBinding; node: Stmt; declarationKind: "let" | "const" | "var"; scope: number; variableScope: number };
 
-export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes | null = null, bounded = false): DeclarationPlanResult {
-    const analysis = new DeclarationCollector(unit, tokens, bindings, nodes, bounded);
+export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes | null = null, bounded = false, inheritedStrict = false): DeclarationPlanResult {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, nodes, bounded, inheritedStrict);
     analysis.collect(body);
     return analysis.project();
 }
 
 // One traversal supplies both the unchanged ordinary result and global veto audit.
-export function collectBoundedScriptPreparation(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes): DeclarationPlanResult {
-    const analysis = new DeclarationCollector(unit, tokens, bindings, nodes, true);
+export function collectBoundedScriptPreparation(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes, inheritedStrict = false): DeclarationPlanResult {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, nodes, true, inheritedStrict);
     analysis.collect(body);
     const ordinary = analysis.project();
     const audit = analysis.audit();
@@ -121,7 +121,7 @@ export type BlockFunctionAudit =
 
 // Internal source-parser bridge, never consumed by preparation or execution.
 export function collectBlockFunctionAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): BlockFunctionAudit {
-    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true, false);
     analysis.collect(body);
     return analysis.audit();
 }
@@ -140,8 +140,8 @@ export type LexicalStatementAudit =
         readonly diagnostic: Diagnostic; readonly rejection: Rejection | null };
 
 // Same-parse evidence only. The disposable continuation never supplies executable nodes.
-export function collectLexicalStatementAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, candidates: readonly LexicalStatementCandidate[]): LexicalStatementAudit {
-    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+export function collectLexicalStatementAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, candidates: readonly LexicalStatementCandidate[], inheritedStrict = false): LexicalStatementAudit {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true, inheritedStrict);
     analysis.collect(body);
     const veto = analysis.audit();
     if (veto.kind === "blocked") return veto;
@@ -190,8 +190,8 @@ export type NumericAssignmentAudit =
         readonly diagnostic: Diagnostic; readonly rejection: Rejection | null };
 
 // Internal full-parser handoff, never an execution or preparation authority.
-export function collectNumericAssignmentAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, candidates: readonly NumericAssignmentCandidate[]): NumericAssignmentAudit {
-    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+export function collectNumericAssignmentAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, candidates: readonly NumericAssignmentCandidate[], inheritedStrict = false): NumericAssignmentAudit {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true, inheritedStrict);
     analysis.collect(body);
     const veto = analysis.audit();
     if (veto.kind === "blocked") return veto;
@@ -236,7 +236,7 @@ export type StrictParameterAudit =
 
 // Internal source-only audit bridge; never returns retained execution nodes.
 export function collectStrictParameterAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): StrictParameterAudit {
-    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true, false);
     analysis.collect(body);
     return analysis.auditStrictParameters();
 }
@@ -248,8 +248,8 @@ export type CertifiedParameterPreparationRejection = {
         readonly ruleCode: "duplicate-block-lexical-function" | "duplicate-strict-parameter" };
     readonly diagnostic: Diagnostic;
 };
-export function collectBoundedScriptParameterRejection(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): CertifiedParameterPreparationRejection | null {
-    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+export function collectBoundedScriptParameterRejection(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, inheritedStrict = false): CertifiedParameterPreparationRejection | null {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true, inheritedStrict);
     analysis.collect(body);
     return analysis.certifyParameterPreparation();
 }
@@ -271,7 +271,7 @@ class DeclarationCollector {
     readonly strictness: StrictnessMetadata;
     readonly identifierDeletes: { scope: number; loc: Location }[] = [];
 
-    constructor(readonly unit: ScriptSourceUnit, readonly tokens: Token[], readonly bindings: Map<number, ParsedBinding[]>, readonly nodes: DeclarationNodes | null, readonly bounded: boolean) {
+    constructor(readonly unit: ScriptSourceUnit, readonly tokens: Token[], readonly bindings: Map<number, ParsedBinding[]>, readonly nodes: DeclarationNodes | null, readonly bounded: boolean, inheritedStrict: boolean) {
         const braces: number[] = [];
         for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i];
@@ -284,7 +284,7 @@ class DeclarationCollector {
                 this.closingBraces.set(open, token.end);
             }
         }
-        this.strictness = scriptPrologue(unit.text, tokens, 0, false);
+        this.strictness = scriptPrologue(unit.text, tokens, 0, inheritedStrict);
         this.scope("script", null, 0, unit.text.length, this.strictness.strict, []);
     }
     scope(kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {

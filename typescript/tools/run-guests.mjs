@@ -603,6 +603,7 @@ executeDriver("locale-string", { stdout: "Locale string conversions passed\n" })
 executeDriver("labels", { stdout: "Labelled statements passed\n" });
 executeDriver("optional-chain", { stdout: "Optional chaining passed\n" });
 executeDriver("semicolon-insertion", { stdout: "Semicolon insertion passed\n" });
+executeDriver("inherited-strictness", { stdout: "Inherited strictness passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });
