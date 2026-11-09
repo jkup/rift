@@ -46,6 +46,16 @@ function defaultPlanExpectation(record) {
       strictness: {ownStrict: false, inheritedStrict: true, strict: true, directives: []}}]}, winners: [[0], []]};
 }
 
+function argumentsPlanExpectation(record) {
+  const {unit} = record.plan;
+  if (unit.id !== 'reserved') return record;
+  assert.equal(unit.text, '"use strict";var arguments;');
+  return {plan: {kind: 'blocked', goal: 'Script', unit,
+    rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.binding-identifier'},
+    diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'arguments binding or assignment in strict code',
+      loc: {line: 1, column: 18}}}, winners: []};
+}
+
 test('Script declarations: 135 plans, 71 historical literals, seven const and one default migration in both hosts', () => {
   const snapshots = json('docs/validation/ts-034h6-c/replays/plans-results.json');
   const literals = json('fixtures/script-declarations/literal.json');
@@ -73,10 +83,11 @@ test('Script declarations: 135 plans, 71 historical literals, seven const and on
   }
   assert.equal([...expected.values()].filter(record => constPlanExpectation(record) !== record).length, 7);
   assert.equal([...expected.values()].filter(record => defaultPlanExpectation(record) !== record).length, 1);
+  assert.equal([...expected.values()].filter(record => argumentsPlanExpectation(record) !== record).length, 1);
   for (const lane of ['node', 'native']) for (const record of expected.values()) {
     run('script-declarations', lane, record.plan.unit, [], (stdout, label) => {
       const {plan, winners} = JSON.parse(stdout);
-      assert.deepEqual({plan, winners}, defaultPlanExpectation(constPlanExpectation(record)), label);
+      assert.deepEqual({plan, winners}, argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record))), label);
     });
   }
 });

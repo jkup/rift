@@ -1,4 +1,5 @@
 import { instanceofOperator } from "./builtins/function.js";
+import { createArgumentsObject } from "./arguments-object.js";
 import { getIterator, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow, type IteratorRecord } from "./iterator.js";
 import { ForInEnumerator } from "./for-in.js";
 import type { ConstructBuiltin, BuiltinConstructor, BoundCallable } from "./runtime.js";
@@ -10,6 +11,7 @@ import type { Expr, Argument, Stmt, FunctionSource, FormalParameter, Location, T
 import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
+import type { ScriptBindingCell } from "./script-environment.js";
 import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
 
 class ActivationKey {}
@@ -18,7 +20,8 @@ function hasParameterInitializers(parameters: readonly FormalParameter[] | undef
     for (const parameter of parameters) if (parameter.initializer !== null) return true;
     return false;
 }
-type ParameterExecution = {
+type FunctionExecution = {
+    callee: GuestObject;
     enter: (environment: ScriptEnvironment) => void;
     evaluate: (initializer: Expr, name: string) => ValueCompletion;
 };
@@ -153,7 +156,7 @@ class ExecutableScript {
     private constructor() {}
     static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean): ScriptPreparation {
         if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
-        const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map() };
+        const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map(), argumentsScopes: new Set() };
         const plan = bounded ? parseBoundedScriptPreparation(unit, nodes) : parseDeclarationPlan(unit, nodes);
         if (plan.kind !== "complete") return plan;
         if (!bounded && !plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
@@ -280,15 +283,15 @@ class ExecutableScript {
     static readRoot(record: ExecutableScript, key: ExecutionKey): Stmt[] {
         return ExecutableScript.state(record, key).nodes.body;
     }
-    static readFunction(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): { scopeId: number; body: Stmt[]; hasInitializers: boolean } {
+    static readFunction(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): { scopeId: number; body: Stmt[]; hasInitializers: boolean; needsArguments: boolean } {
         ExecutableScript.state(record, key);
         const metadata = ScriptGuestCallable.check(callable, record.#activationKey, record);
         const entry = record.#function(metadata.scopeId);
         return { scopeId: metadata.scopeId, body: entry.node.body,
-            hasInitializers: hasParameterInitializers(entry.node.parameters) };
+            hasInitializers: hasParameterInitializers(entry.node.parameters), needsArguments: record.#needsArguments(metadata.scopeId) };
     }
-    static instantiateFunctionWithInitializers(record: ExecutableScript, environment: ScriptFunctionEnvironment,
-        args: Value[], context: OperationContext, execution: ParameterExecution, key: ExecutionKey): ValueCompletion {
+    static instantiateFunctionForExecution(record: ExecutableScript, environment: ScriptFunctionEnvironment,
+        args: Value[], context: OperationContext, execution: FunctionExecution, key: ExecutionKey): ValueCompletion {
         ExecutableScript.state(record, key);
         return record.#instantiateFunction(environment, args, context, execution);
     }
@@ -373,6 +376,21 @@ class ExecutableScript {
                 throw new Error("invalid Script environment tag");
             current = current.outer;
         }
+    }
+    #needsArguments(scopeId: number): boolean {
+        const state = this.#readState();
+        if (state.nodes.argumentsScopes === undefined || !state.nodes.argumentsScopes.has(scopeId)) return false;
+        const entry = this.#function(scopeId);
+        if (entry.source.arrow === true) return false;
+        for (const formal of entry.scope.formals) if (formal.name === "arguments") return false;
+        if (!hasParameterInitializers(entry.node.parameters)) {
+            if (entry.scope.lexicalNames.includes("arguments")) return false;
+            for (const id of entry.scope.varDeclarations) {
+                const declaration = state.plan.declarations[id];
+                if (declaration.kind === "function" && declaration.site.name === "arguments") return false;
+            }
+        }
+        return true;
     }
     #function(scopeId: number) {
         const state = this.#readState();
@@ -462,7 +480,7 @@ class ExecutableScript {
     instantiateFunction(environment: ScriptFunctionEnvironment, args: Value[], context: OperationContext): ValueCompletion {
         return this.#instantiateFunction(environment, args, context, null);
     }
-    #instantiateFunction(environment: ScriptFunctionEnvironment, args: Value[], context: OperationContext, execution: ParameterExecution | null): ValueCompletion {
+    #instantiateFunction(environment: ScriptFunctionEnvironment, args: Value[], context: OperationContext, execution: FunctionExecution | null): ValueCompletion {
         if (!(environment instanceof FunctionActivation)) throw new Error("invalid Script function activation");
         const metadata = ScriptGuestCallable.check(environment.callable, this.#activationKey, this);
         this.#validateEnvironment(environment, context);
@@ -471,6 +489,9 @@ class ExecutableScript {
         const parameters = entry.node.parameters;
         const hasInitializers = hasParameterInitializers(parameters);
         if (hasInitializers && execution === null) throw new Error("default parameter initialization requires Script execution");
+        const needsArguments = this.#needsArguments(metadata.scopeId);
+        if (needsArguments && (execution === null || execution.callee.callable !== environment.callable))
+            throw new Error("arguments initialization requires Script execution");
         if (environment.outer !== metadata.environment || metadata.realm !== state.realm || metadata.unit !== state.plan.unit ||
             metadata.start !== entry.source.start || metadata.end !== entry.source.end)
             throw new Error("invalid Script function activation metadata");
@@ -501,6 +522,19 @@ class ExecutableScript {
             if (tick.type === "throw") return tick;
             const created = parameterEnvironment.createMutableBinding(formal.name, formal.loc);
             if (created.type === "throw") return created;
+        }
+        if (needsArguments) {
+            if (execution === null) throw new Error("missing arguments execution");
+            const mapped = !metadata.strict && !hasInitializers && entry.source.rest !== true;
+            const cells: ScriptBindingCell[] = [];
+            if (mapped) for (const formal of entry.scope.formals) cells.push(parameterEnvironment.parameterCell(formal.name));
+            const object = createArgumentsObject(state.realm, argumentsList, mapped ? execution.callee : null, cells, context, entry.node.loc);
+            if (object.type === "throw") return object;
+            const created = metadata.strict ? parameterEnvironment.createImmutableBinding("arguments", entry.node.loc)
+                : parameterEnvironment.createMutableBinding("arguments", entry.node.loc);
+            if (created.type === "throw") return created;
+            const initialized = parameterEnvironment.initializeBinding("arguments", object.value, context, entry.node.loc);
+            if (initialized.type === "throw") return initialized;
         }
         for (let i = 0; i < entry.scope.formals.length; i++) {
             const formal = entry.scope.formals[i];
@@ -1869,7 +1903,7 @@ class ExecutionEngine {
             if (budget.type === "throw") { this.#capture(budget); return budget; }
             const receiver: Value = { kind: "object", object: new GuestObject(proto) };
             this.activeContext.realm = fn.realm;
-            const result = this.#executeScriptFunction(fn, receiver, args);
+            const result = this.#executeScriptFunction(callee.object, fn, receiver, args);
             if (result.type === "throw") return result;
             return result.value.kind === "object" ? result : normal(receiver);
         } finally {
@@ -1906,7 +1940,7 @@ class ExecutionEngine {
             this.calls = savedCalls;
         }
     }
-    #executeScriptFunction(fn: ScriptGuestCallable, receiver: Value, args: Value[]): ValueCompletion {
+    #executeScriptFunction(callee: GuestObject, fn: ScriptGuestCallable, receiver: Value, args: Value[]): ValueCompletion {
         const savedInspectionSource = this.#inspectionSource;
         this.#inspectionSource = null;
         try {
@@ -1919,8 +1953,9 @@ class ExecutionEngine {
             const created = record.createFunctionEnvironment(fn, receiver, this.context);
             if (created.type === "throw") { this.#capture(created); return created; }
             this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
-            const setup = source.hasInitializers
-                ? ExecutableScript.instantiateFunctionWithInitializers(record, created.environment, args, this.context, {
+            const setup = source.hasInitializers || source.needsArguments
+                ? ExecutableScript.instantiateFunctionForExecution(record, created.environment, args, this.context, {
+                    callee,
                     enter: (environment: ScriptEnvironment): void => { this.#frame = { ...this.#active(), lexical: environment }; },
                     evaluate: (initializer: Expr, name: string): ValueCompletion => this.#value(initializer, name),
                 }, executionKey)
@@ -1968,7 +2003,7 @@ class ExecutionEngine {
                     throw new Error("invalid completion escaped call boundary: " + result.type);
                 } finally { pendingBuiltin = previous; }
             }
-            return this.#executeScriptFunction(fn, receiver, args);
+            return this.#executeScriptFunction(callee.object, fn, receiver, args);
         } finally {
             this.#frame = saved;
             this.activeContext.realm = savedRealm;

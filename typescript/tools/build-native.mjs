@@ -65,6 +65,7 @@ const entries = [
     ["test/rest-parameters.ts", "rest-parameters"],
     ["test/default-parameters.ts", "default-parameters"],
     ["test/arguments-storage.ts", "arguments-storage"],
+    ["test/arguments.ts", "arguments"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],
     ["test/json-parse.ts", "json-parse"],

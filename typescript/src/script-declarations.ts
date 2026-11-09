@@ -58,6 +58,7 @@ export function planScriptDeclarations(unit: ScriptSourceUnit): DeclarationPlanR
 
 // Internal parser/collector bridge. Ordinary plan callers receive no nodes.
 export type DeclarationNodes = {
+    argumentsScopes?: Set<number>;
     assignmentNameEligible: Map<Expr, boolean>;
     source: SourceText;
     body: Stmt[];
@@ -258,6 +259,8 @@ function copySite(site: DeclarationSite): DeclarationSite {
 }
 
 class DeclarationCollector {
+    readonly arrowScopes = new Set<number>();
+    readonly argumentsAssignments: { scope: number; loc: Location }[] = [];
     readonly scopes: MutableScope[] = [];
     readonly declarations: Declaration[] = [];
     readonly functions: PlannedFunction[] = [];
@@ -334,6 +337,7 @@ class DeclarationCollector {
             ? { ownStrict: false, inheritedStrict, strict: inheritedStrict, directives: [] }
             : scriptPrologue(this.unit.text, this.tokens, index + 1, inheritedStrict);
         const id = this.scope("function", scope, hasInitializers ? source.start : this.tokens[index].start, source.end, strictness.strict, formals);
+        if (source.arrow === true) this.arrowScopes.add(id);
         if (this.nodes !== null) this.nodes.scopes.set(id, { node, body });
         this.functions.push({ scope: id, declaration, start: source.start, end: source.end, strictness });
         this.statements(body, id, id);
@@ -436,6 +440,9 @@ class DeclarationCollector {
         }
     }
     visitExpression(node: Expr, scope: number, variableScope: number): void {
+        if ((node.kind === "assign" || node.kind === "compound" || node.kind === "update") &&
+            node.target.kind === "identifier" && node.target.name === "arguments")
+            this.argumentsAssignments.push({ scope, loc: node.target.loc });
         switch (node.kind) {
             case "function": this.functionBody(node.source, node.loc, node.body, scope, null, node); break;
             case "array":
@@ -460,7 +467,20 @@ class DeclarationCollector {
                     this.expression(arg.kind === "spread" ? arg.expression : arg, scope, variableScope);
                 }
                 this.expression(node.callee, scope, variableScope); break;
-            case "literal": case "identifier": case "this": break;
+            case "identifier": {
+                if (node.name !== "arguments" || this.nodes === null || this.nodes.argumentsScopes === undefined) break;
+                let current: number | null = scope;
+                while (current !== null) {
+                    const parent: MutableScope = this.scopes[current];
+                    if (parent.kind === "function" && !this.arrowScopes.has(current)) {
+                        this.nodes.argumentsScopes.add(current);
+                        break;
+                    }
+                    current = parent.parent;
+                }
+                break;
+            }
+            case "literal": case "this": break;
         }
     }
     collect(body: Stmt[]): void {
@@ -518,6 +538,10 @@ class DeclarationCollector {
         }
     }
     project(): DeclarationPlanResult {
+        const restricted = this.restrictedArguments();
+        if (restricted !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
+            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "arguments binding or assignment in strict code", loc: restricted } };
         // Preserve the ordinary first-failure projection, including interleaved
         // catch/conflict checks. The audit below has a separate global veto.
         // No conflicts are reported until all grammar/resource checks and every
@@ -550,6 +574,20 @@ class DeclarationCollector {
         }
         return { kind: "complete", goal: "Script", unit: this.unit, consumedUnits: this.unit.text.length,
             strictness: this.strictness, scopes: this.scopes, declarations: this.declarations, functions: this.functions };
+    }
+    private restrictedArguments(): Location | null {
+        for (const site of this.argumentsAssignments) if (this.scopes[site.scope].strict) return site.loc;
+        for (const scope of this.scopes) {
+            if (!scope.strict) continue;
+            for (const formal of scope.formals) if (formal.name === "arguments") return formal.loc;
+            if (scope.catchParameter !== null && scope.catchParameter.name === "arguments") return scope.catchParameter.loc;
+        }
+        for (const declaration of this.declarations) {
+            if (declaration.site.name !== "arguments") continue;
+            if (this.scopes[declaration.scope].strict ||
+                (declaration.functionScope !== null && this.scopes[declaration.functionScope].strict)) return declaration.site.loc;
+        }
+        return null;
     }
     auditStrictParameters(): StrictParameterAudit {
         const blocks = this.audit();

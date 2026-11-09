@@ -64,6 +64,13 @@ for (const text of [
 ]) {
     const realm = fresh();
     const prepared = prepareBoundedScript({ id: "invalid-arrow", text: "var effect=1;" + text }, realm);
+    if (text === "var f=()=>arguments;") {
+        check(prepared.kind === "ready", "arguments arrow prepares");
+        expect(run("typeof effect;", realm), { kind: "string", value: "undefined" }, "arguments preparation is inert");
+        expect(run(text + "var caught=false;try{f();}catch(e){caught=e instanceof ReferenceError;}caught;", realm),
+            { kind: "boolean", value: true }, "top-level arrow has no implicit arguments");
+        continue;
+    }
     check(prepared.kind !== "ready", "rejected whole source: " + text);
     expect(run("typeof effect;", realm), { kind: "string", value: "undefined" }, "no preparation execution");
 }
