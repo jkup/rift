@@ -24,8 +24,8 @@ export function runFixture(command, args, timeoutMs = 5000) {
 
 export function classifyFixture(result) {
   const lines = result.stdout.split(/\r?\n/);
-  let failures = lines.filter(line => line.includes('FAIL:') || line.includes('❌')).length;
-  let checks = lines.filter(line => line.includes('PASS:') || line.includes('✅')).length;
+  let failures = lines.filter(line => line.includes('FAIL:') || line.includes('❌') || /^FAIL - \S/.test(line)).length;
+  let checks = lines.filter(line => line.includes('PASS:') || line.includes('✅') || /^PASS - \S/.test(line)).length;
   for (let i = 0; i < lines.length; i++) {
     const summary = /^.+\btests?: (\d+) passed, (\d+) failed$/i.exec(lines[i]);
     if (summary) {

@@ -40,6 +40,23 @@ test('explicit summary counts retain failures without double counting markers', 
   assert.equal(classifyFixture({...result('Passed: 7/7\n'), deadlineExpired: true}).outcome, 'timeout');
 });
 
+test('hyphenated check markers require exact prefixes and preserve failure precedence', () => {
+  const result = stdout => ({stdout, status: 0, signal: null, error: null, deadlineExpired: false});
+  for (const [stdout, expected] of [
+    ['PASS - basic getter\r\nPASS - basic setter\r\n', {outcome: 'reported-success', checks: 2, failures: 0}],
+    ['PASS - getter\nFAIL - setter\n', {outcome: 'reported-failure', checks: 1, failures: 1}],
+    ['PASS - getter ✅\nFAIL - setter ❌\n', {outcome: 'reported-failure', checks: 1, failures: 1}],
+    ['PASS - one\nSuite tests: 1 passed, 0 failed\n', {outcome: 'reported-success', checks: 1, failures: 0}],
+    ['FAIL - one\nSuite tests: 9 passed, 0 failed\n', {outcome: 'reported-failure', checks: 9, failures: 1}],
+    ['example PASS - label\nexample FAIL - label\nPASS - \nFAIL - \nPASS -\nFAIL -\nPASS-like\nfail - lower\n',
+      {outcome: 'completed-without-checks', checks: 0, failures: 0}],
+  ]) assert.deepEqual(classifyFixture(result(stdout)), expected, stdout);
+  for (const [status, outcome] of [[1, 'runtime-error'], [2, 'parse-error'], [70, 'host-fault']])
+    assert.equal(classifyFixture({...result('PASS - one\nFAIL - two\n'), status}).outcome, outcome);
+  assert.equal(classifyFixture({...result('PASS - one\n'), deadlineExpired: true}).outcome, 'timeout');
+  assert.equal(classifyFixture({...result('PASS - one\n'), error: {code: 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER'}}).outcome, 'output-limit');
+});
+
 test('legacy selection includes nested fixtures and records original exclusions', async () => {
   await mkdir('build', {recursive: true});
   const root = await mkdtemp(resolve('build/legacy-selection-'));

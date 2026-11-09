@@ -548,3 +548,7 @@ Call and constructor spread are accepted: 618/618 guests on each host, all 128 n
 ### TS-130 checkpoint
 
 Fixed-key object methods and accessors are accepted: 619/619 guests on both hosts, all 129 native entries static, all 290 tooling checks covered after one explicit historical diagnostic migration, runner 31/31 and ten probes. All 225 fixture outputs agree; the getter/setter fixture prints 17 passing checks and raises completed files to 141. Its PASS - format is not recognized by the reporter, so it remains an unchecked completion. See [object methods](object-methods.md) for scope and retained failure evidence. Next: correct that reporter gap with anchored marker tests, then support trailing commas in object literals and call/constructor arguments. The property-descriptor fixture requires both comma forms.
+
+### TS-131 checkpoint
+
+The fixture reporter recognizes anchored hyphenated PASS/FAIL lines. All 225 raw results remain unchanged across both hosts; the getter/setter fixture is now correctly counted as 17 checks and a reported success. Counts are 94 reported successes and 47 unchecked completions, with 141 total completions unchanged. Runner 32/32 passes. Next: trailing commas in object literals and call/constructor argument lists.
