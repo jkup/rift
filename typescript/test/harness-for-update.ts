@@ -346,6 +346,15 @@ const negatives = [
 ];
 for(const row of negatives) {
  const r=fresh(), session=createScriptSession(); const result=prepareStrictScript({id:row.id,text:(row.id === "N14" ? "" : '"use strict";')+row.source},r);
+ if (row.source === "for(x=0,y=0;false;);") {
+  check(result.kind === "ready" && session.inspect().steps === 0, "comma initializer prepares without effects");
+  define(r,"x",{kind:"number",value:9});define(r,"y",{kind:"number",value:8});
+  if (result.kind !== "ready") throw new Error("missing comma for record");
+  check(evaluateScript(session,result.record).completion.type === "normal", "comma initializer executes");
+  check(scalar(own(r,"x") ?? UNDEFINED) === "0" && scalar(own(r,"y") ?? UNDEFINED) === "0", "both initializers assign");
+  idle(session);
+  continue;
+ }
  if (row.id === "N01") {
   check(result.kind === "ready" && session.inspect().steps === 0, "lexical for prepares without effects");
   if (result.kind !== "ready") throw new Error("missing lexical for record");

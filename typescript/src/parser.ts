@@ -315,7 +315,7 @@ class Parser {
                 catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.tokens[this.index - 1].end });
         }
         if (this.structuralPlan() && this.eat("const")) {
-            const binding = this.binding(0);
+            const binding = this.binding(1);
             this.expect(";");
             if (binding.init === null) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", loc);
@@ -325,7 +325,7 @@ class Parser {
             return { kind: "const", loc, name: binding.site.name, init: binding.init };
         }
         if (this.eat("let")) {
-            const binding = this.binding(0);
+            const binding = this.binding(1);
             this.expect(";");
             if (this.structuralPlan()) this.bindings.set(start, [binding]);
             return { kind: "let", loc, name: binding.site.name, init: binding.init };
@@ -450,7 +450,7 @@ class Parser {
         return { kind: "try-finally", loc, body, finalizer };
     }
     forEach(kind: "for-of" | "for-in", loc: Location, start: number, head: ForEachStmt["head"]): ForEachStmt {
-        const iterable = this.expression(1);
+        const iterable = this.expression(kind === "for-in" ? 0 : 1);
         this.expect(")");
         this.loops++;
         const body = this.branch("for-body");
@@ -567,6 +567,11 @@ class Parser {
                 continue;
             }
             const op = this.current().text;
+            if (op === "," && this.current().kind === "punct" && this.structuralPlan() && min === 0) {
+                this.take();
+                left = { kind: "binary", loc, op, left, right: this.expression(1, allowIn) };
+                continue;
+            }
             if (!allowIn && op === "in") break;
             const operator = this.current().kind === "punct" || (this.current().kind === "word" && (op === "in" || (this.structuralPlan() && op === "instanceof")));
             const precedence = operator ? this.precedence(op) : 0;
@@ -755,7 +760,7 @@ class Parser {
                         if (kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
                         if (key.text === "__proto__") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, "prototype literal syntax is unsupported", key.loc);
                         this.expect(":");
-                        properties.push({ kind: "data", key: name, value: this.expression(0) });
+                        properties.push({ kind: "data", key: name, value: this.expression(1) });
                     }
                 } while (this.error === null && this.eat(",") && !(this.structuralPlan() && this.at("}")));
             }

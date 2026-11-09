@@ -1121,7 +1121,7 @@ class ExecutionEngine {
                 if (expr.op === "||" && truthy(left.value)) return left;
                 const right = this.#eval(expr.right, env, receiver);
                 if (right.type !== "normal") return right;
-                if (expr.op === "&&" || expr.op === "||") return right;
+                if (expr.op === "&&" || expr.op === "||" || expr.op === ",") return right;
                 if (expr.op === "instanceof") return instanceofOperator(left.value, right.value, this.context, expr.loc);
                 return this.binary(expr.op, left.value, right.value, expr.loc);
             }

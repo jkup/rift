@@ -416,7 +416,7 @@ for (const [name, source, expected] of [
     ["spread", "let a = [...x];", { status: 1, error: "1:13: runtime ReferenceError: x is not defined" }],
     ["binding-pattern", "let [x] = [1];", { status: 2, error: "1:5: parse SyntaxError: expected binding identifier" }],
     ["assignment-pattern", "[x] = [1];", { status: 2, error: "1:1: parse SyntaxError: invalid assignment target" }],
-    ["comma-operator", "let a = [(1, 2)];", { status: 2, error: "1:12: parse SyntaxError: expected ')', found ','" }],
+    ["comma-operator", "let a = [(1, 2)];", { stdout: "" }],
     ["numeric-key", "let a = [1]; console.log(a[0]);", { stdout: "1\n" }],
     ["deep", "[".repeat(200) + "0" + "]".repeat(200) + ";", { status: 2, errorPattern: "1:\\d+: parse SyntaxError: syntax nesting limit exceeded" }],
     ["nested-success", "console.log(" + "[".repeat(30) + "1" + "]".repeat(30) + ".length);", { stdout: "1\n" }],
@@ -590,6 +590,7 @@ executeDriver("string-wellformed", { stdout: "String well-formedness passed\n" }
 executeDriver("string-codepoints", { stdout: "String code points passed\n" });
 executeDriver("function-bind", { stdout: "Function bind passed\n" });
 executeDriver("numeric-separators", { stdout: "Numeric separators passed\n" });
+executeDriver("comma-expressions", { stdout: "Comma expressions passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

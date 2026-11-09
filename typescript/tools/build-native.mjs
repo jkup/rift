@@ -57,6 +57,7 @@ const entries = [
     ["test/radix-literals.ts", "radix-literals"],
     ["test/decimal-literals.ts", "decimal-literals"],
     ["test/numeric-separators.ts", "numeric-separators"],
+    ["test/comma-expressions.ts", "comma-expressions"],
     ["test/function-apply.ts", "function-apply"],
     ["test/function-bind.ts", "function-bind"],
     ["test/array-sort.ts", "array-sort"],
