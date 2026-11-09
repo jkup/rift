@@ -604,6 +604,7 @@ executeDriver("labels", { stdout: "Labelled statements passed\n" });
 executeDriver("optional-chain", { stdout: "Optional chaining passed\n" });
 executeDriver("semicolon-insertion", { stdout: "Semicolon insertion passed\n" });
 executeDriver("inherited-strictness", { stdout: "Inherited strictness passed\n" });
+executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
 executeDriver("numeric-separator-audit", { stdout: "Numeric separator audit passed\n" });
 executeDriver("numeric-separator-errors", { stdout: "Numeric separator errors passed\n" });
 executeDriver("eval", { stdout: "Eval passed\n" });

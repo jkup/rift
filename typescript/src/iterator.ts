@@ -6,6 +6,7 @@ import type { Location } from "./syntax.js";
 
 export type IteratorRecord = { iterator: GuestObject; nextMethod: Value; done: boolean };
 type IteratorCompletion = { type: "normal"; value: IteratorRecord } | ThrowCompletion;
+type IteratorResultCompletion = { type: "normal"; value: GuestObject | null } | ThrowCompletion;
 type IteratorStepCompletion = { type: "normal"; done: boolean; value: Value } | ThrowCompletion;
 
 export function getIterator(input: Value, context: OperationContext, loc: Location): IteratorCompletion {
@@ -25,7 +26,7 @@ export function getIterator(input: Value, context: OperationContext, loc: Locati
     return { type: "normal", value: { iterator, nextMethod: next.value, done: false } };
 }
 
-export function iteratorStepValue(record: IteratorRecord, context: OperationContext, loc: Location): IteratorStepCompletion {
+export function iteratorStep(record: IteratorRecord, context: OperationContext, loc: Location): IteratorResultCompletion {
     const tick = context.tick(loc);
     if (tick.type === "throw") return tick;
     const result = context.call(record.nextMethod, { kind: "object", object: record.iterator }, [], loc);
@@ -45,9 +46,16 @@ export function iteratorStepValue(record: IteratorRecord, context: OperationCont
     }
     if (truthy(done.value)) {
         record.done = true;
-        return { type: "normal", done: true, value: UNDEFINED };
+        return { type: "normal", value: null };
     }
-    const value = object.internalGet("value", result.value, context, loc);
+    return { type: "normal", value: object };
+}
+
+export function iteratorStepValue(record: IteratorRecord, context: OperationContext, loc: Location): IteratorStepCompletion {
+    const result = iteratorStep(record, context, loc);
+    if (result.type === "throw") return result;
+    if (result.value === null) return { type: "normal", done: true, value: UNDEFINED };
+    const value = result.value.internalGet("value", { kind: "object", object: result.value }, context, loc);
     if (value.type === "throw") {
         record.done = true;
         return value;
