@@ -5,18 +5,20 @@ Updated 2026-11-09. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted TS-152 array assignment slice (implementation `366b994b`, audit
-migration `593f6e4a`) passes 644/644 guests on each host, 291/291 tooling checks,
-all 154 native static gates, and 161 completed fixtures in the unchanged 225-file
+The accepted TS-152 array declaration slice (implementation `eb019e06`, audit
+migration `918af409`) passes 645/645 guests on each host, 291/291 tooling checks,
+all 155 native static gates, and 161 completed fixtures in the unchanged 225-file
 selection: 105 reported successes and 56 unchecked completions. The remaining
 outcomes are 19 parse errors, 44 runtime errors and one reported failure. These
 are diagnostic fixture results, not a Test262 conformance score.
 
-Array assignment supports defaults, nesting, rest and elisions. The next work
-is shared declaration/object patterns and loop heads, with iterator/reference
-ordering, TDZ and rest-copy semantics. See [the design](destructuring-design.md)
-and the active TS-152 entry in [TASKS](../TASKS.md). Classes, generators/async,
-Promise, RegExp, Temporal and weak-reference facilities remain larger gaps.
+Array assignment and standalone let/const/var array bindings support defaults,
+nesting, rest and elisions. Next are object bindings, then loop-head integration
+and mixed declaration lists. Object assignment needs a separate cover-grammar
+review. Preserve iterator/reference ordering, TDZ and rest-copy semantics; see
+[the design](destructuring-design.md) and active TS-152 in [TASKS](../TASKS.md).
+Classes, generators/async, Promise, RegExp, Temporal and weak-reference facilities
+remain larger gaps.
 
 ## Direction
 
