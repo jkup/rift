@@ -94,6 +94,19 @@ function semicolonPlanExpectation(record) {
       scope: 0, variableScope: 0, functionScope: null, initializer: null}], functions: []}, winners: [[]]};
 }
 
+function objectBindingPlanExpectation(record) {
+  const {unit} = record.plan;
+  if (unit.id !== 'L08-pattern') return record;
+  assert.equal(unit.text, '"use strict";var {x}=o;');
+  return {plan: {kind: 'complete', goal: 'Script', unit, consumedUnits: 23,
+    strictness: {ownStrict: true, inheritedStrict: false, strict: true,
+      directives: [{start: 0, end: 12, statementEnd: 13, loc: {line: 1, column: 1}, raw: '"use strict"', useStrict: true}]},
+    scopes: [{id: 0, kind: 'script', parent: null, start: 0, end: 23, strict: true,
+      formals: [], catchParameter: null, lexicalDeclarations: [], varDeclarations: [0], lexicalNames: [], varNames: ['x']}],
+    declarations: [{id: 0, kind: 'var', site: {name: 'x', start: 18, end: 19, loc: {line: 1, column: 19}},
+      scope: 0, variableScope: 0, functionScope: null, initializer: {start: 21, end: 22}}], functions: []}, winners: [[]]};
+}
+
 test('Script declarations: 135 plans and 71 historical literals with explicit feature migrations in both hosts', () => {
   const snapshots = json('docs/validation/ts-034h6-c/replays/plans-results.json');
   const literals = json('fixtures/script-declarations/literal.json');
@@ -119,6 +132,7 @@ test('Script declarations: 135 plans and 71 historical literals with explicit fe
       assert.deepEqual(snapshot.winners[0], row.winners, row.id + ' literal winners');
     }
   }
+  assert.equal([...expected.values()].filter(record => objectBindingPlanExpectation(record) !== record).length, 1);
   assert.equal([...expected.values()].filter(record => constPlanExpectation(record) !== record).length, 7);
   assert.equal([...expected.values()].filter(record => defaultPlanExpectation(record) !== record).length, 1);
   assert.equal([...expected.values()].filter(record => argumentsPlanExpectation(record) !== record).length, 1);
@@ -127,7 +141,7 @@ test('Script declarations: 135 plans and 71 historical literals with explicit fe
   for (const lane of ['node', 'native']) for (const record of expected.values()) {
     run('script-declarations', lane, record.plan.unit, [], (stdout, label) => {
       const {plan, winners} = JSON.parse(stdout);
-      assert.deepEqual({plan, winners}, semicolonPlanExpectation(blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record))))), label);
+      assert.deepEqual({plan, winners}, objectBindingPlanExpectation(semicolonPlanExpectation(blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record)))))), label);
     });
   }
 });
