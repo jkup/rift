@@ -354,6 +354,14 @@ for(const row of negatives) {
       : completion.type === "normal" && completion.value.kind === "undefined", "lexical for execution");
   continue;
  }
+ if (row.source === "for(var k in o);") {
+  check(result.kind === "ready" && session.inspect().steps === 0, "for-in prepares without effects");
+  run('"use strict";var o={a:1,b:2};',r,session);
+  if (result.kind !== "ready") throw new Error("missing for-in record");
+  check(evaluateScript(session,result.record).completion.type === "normal" && scalar(own(r,"k") ?? UNDEFINED) === "b", "for-in assigns keys");
+  idle(session);
+  continue;
+ }
  if (row.source === "for(k of o);") {
   check(result.kind === "ready" && session.inspect().steps === 0, "for-of prepares without effects");
   define(r, "k", {kind: "number", value: 0});

@@ -579,6 +579,7 @@ executeDriver("bitwise", { stdout: "Bitwise operators passed\n" });
 executeDriver("uri", { stdout: "URI codecs passed\n" });
 executeDriver("finally", { stdout: "Finally passed\n" });
 executeDriver("for-lexical", { stdout: "Lexical for passed\n" });
+executeDriver("for-in", { stdout: "For-in passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

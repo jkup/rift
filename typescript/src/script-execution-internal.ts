@@ -1,11 +1,12 @@
 import { instanceofOperator } from "./builtins/function.js";
-import { getIterator, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow } from "./iterator.js";
+import { getIterator, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow, type IteratorRecord } from "./iterator.js";
+import { ForInEnumerator } from "./for-in.js";
 import type { ConstructBuiltin, BuiltinConstructor } from "./runtime.js";
 import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js";
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, Stmt, FunctionSource, Location, TryCatchStmt, ForOfStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
+import type { Expr, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
@@ -189,8 +190,8 @@ class ExecutableScript {
                 }
                 if (defaults > 1 || offset !== block.body.length) throw new Error("invalid CaseBlock flattening");
                 scopes.set(entry.node, scope.id);
-            } else if (scope.kind === "for-of" || scope.kind === "for-lexical") {
-                if (entry.node === null || (entry.node.kind !== "for-lexical" && (entry.node.kind !== "for-of" || entry.node.head.kind !== "lexical")) || scopes.has(entry.node))
+            } else if (scope.kind === "for-of" || scope.kind === "for-in" || scope.kind === "for-lexical") {
+                if (entry.node === null || (entry.node.kind !== "for-lexical" && ((entry.node.kind !== "for-of" && entry.node.kind !== "for-in") || entry.node.head.kind !== "lexical")) || scopes.has(entry.node))
                     throw new Error("invalid lexical loop owner");
                 const node = entry.node;
                 const head = node.kind === "for-lexical" ? { site: node.binding.site, declarationKind: node.declarationKind }
@@ -277,11 +278,11 @@ class ExecutableScript {
     static assignmentMayName(record: ExecutableScript, node: Expr, key: ExecutionKey): boolean {
         return ExecutableScript.state(record, key).nodes.assignmentNameEligible.get(node) === true;
     }
-    static activateLoop(record: ExecutableScript, node: ForOfStmt | ForLexicalStmt, outer: ScriptEnvironment, value: Value | null,
+    static activateLoop(record: ExecutableScript, node: ForEachStmt | ForLexicalStmt, outer: ScriptEnvironment, value: Value | null,
         context: OperationContext, key: ExecutionKey): ScriptBlockEnvironmentCompletion {
         const state = ExecutableScript.state(record, key);
         const scopeId = ExecutableScript.scopeOfNode(record, node, key);
-        if ((node.kind === "for-of" && node.head.kind !== "lexical") || state.plan.scopes[scopeId].kind !== node.kind)
+        if ((node.kind !== "for-lexical" && node.head.kind !== "lexical") || state.plan.scopes[scopeId].kind !== node.kind)
             throw new Error("invalid lexical loop activation");
         const head = node.kind === "for-lexical" ? { site: node.binding.site, declarationKind: node.declarationKind }
             : node.head.kind === "lexical" ? node.head : null;
@@ -293,7 +294,7 @@ class ExecutableScript {
         const site = head.site;
         const creation = context.tick(site.loc);
         if (creation.type === "throw") { const abrupt: ThrowCompletion = creation; return abrupt; }
-        // A for-of iterable sees an uninitialized mutable binding, including const heads.
+        // A for-in/of RHS sees an uninitialized mutable binding, including const heads.
         const created = (node.kind === "for-lexical" || value !== null) && head.declarationKind === "const"
             ? environment.createImmutableBinding(site.name, site.loc) : environment.createMutableBinding(site.name, site.loc);
         if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
@@ -811,7 +812,7 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
-            case "for": case "for-of": case "for-lexical": throw new Error("Script for AST requires Script execution");
+            case "for": case "for-of": case "for-in": case "for-lexical": throw new Error("Script for AST requires Script execution");
             case "do-while": throw new Error("Script do-while AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "const": throw new Error("Script const AST requires Script execution");
@@ -1533,7 +1534,7 @@ class ExecutionEngine {
                 const result: ScriptStatementCompletion = branch === null ? { type: "normal", payload: { kind: "empty" } } : this.#statement(branch);
                 return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
             }
-            case "for-of": {
+            case "for-of": case "for-in": {
                 const saved = this.#active();
                 const scopeId = stmt.head.kind === "lexical" ? ExecutableScript.scopeOfNode(saved.record, stmt, executionKey) : saved.scopeId;
                 let iterable: ValueCompletion;
@@ -1545,34 +1546,56 @@ class ExecutionEngine {
                     finally { this.#frame = saved; }
                 } else iterable = this.#value(stmt.iterable);
                 if (iterable.type === "throw") { const abrupt: ThrowCompletion = iterable; return abrupt; }
-                const acquired = getIterator(iterable.value, this.context, stmt.loc);
-                if (acquired.type === "throw") return acquired;
-                const iterator = acquired.value;
+                let iterator: IteratorRecord | null = null;
+                let enumerator: ForInEnumerator | null = null;
+                if (stmt.kind === "for-in") {
+                    if (iterable.value.kind === "null" || iterable.value.kind === "undefined")
+                        return { type: "normal", payload: { kind: "value", value: UNDEFINED } };
+                    const boxed = toObject(iterable.value, this.context, stmt.loc);
+                    if (boxed.type === "throw") return boxed;
+                    enumerator = new ForInEnumerator(boxed.value);
+                } else {
+                    const acquired = getIterator(iterable.value, this.context, stmt.loc);
+                    if (acquired.type === "throw") return acquired;
+                    iterator = acquired.value;
+                }
                 const target: Expr | null = stmt.head.kind === "lexical" ? null : stmt.head.kind === "var"
                     ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name } : stmt.head;
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
                 while (true) {
-                    const next = iteratorStepValue(iterator, this.context, stmt.loc);
+                    if (enumerator === null && iterator === null) throw new Error("missing loop iterator");
+                    const next = iterator !== null ? iteratorStepValue(iterator, this.context, stmt.loc) : enumerator!.next(this.context, stmt.loc);
                     if (next.type === "throw") return next;
                     if (next.done) return { type: "normal", payload: value };
                     let result: ScriptStatementCompletion;
                     if (target === null) {
                         const created = ExecutableScript.activateLoop(saved.record, stmt, saved.lexical, next.value, this.context, executionKey);
-                        if (created.type === "throw") return iteratorCloseOnThrow(iterator, created, this.context, stmt.loc);
+                        if (created.type === "throw") {
+                            const abrupt: ThrowCompletion = created;
+                            return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
+                        }
                         this.#frame = { ...saved, scopeId, lexical: created.environment };
                         try { result = this.#statement(stmt.body); }
                         finally { this.#frame = saved; }
                     } else {
                         const reference = this.#reference(target, null, saved.thisValue);
                         const assigned = reference.type === "abrupt" ? reference.completion : this.#put(reference.reference, next.value, target.loc);
-                        if (assigned.type === "throw") return iteratorCloseOnThrow(iterator, assigned, this.context, stmt.loc);
-                        if (assigned.type !== "normal") throw new Error("invalid for-of assignment completion");
+                        if (assigned.type === "throw") {
+                            const abrupt: ThrowCompletion = assigned;
+                            return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
+                        }
+                        if (assigned.type !== "normal") throw new Error("invalid loop assignment completion");
                         result = this.#statement(stmt.body);
                     }
-                    if (result.type === "throw") return iteratorCloseOnThrow(iterator, result, this.context, stmt.loc);
+                    if (result.type === "throw") {
+                        const abrupt: ThrowCompletion = result;
+                        return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
+                    }
                     if (result.type === "break" || result.type === "return") {
-                        const closed = iteratorCloseNormally(iterator, this.context, stmt.loc);
-                        if (closed.type === "throw") { const abrupt: ThrowCompletion = closed; return abrupt; }
+                        if (iterator !== null) {
+                            const closed = iteratorCloseNormally(iterator, this.context, stmt.loc);
+                            if (closed.type === "throw") { const abrupt: ThrowCompletion = closed; return abrupt; }
+                        }
                         if (result.type === "return") return result;
                         return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
                     }

@@ -119,7 +119,9 @@ console.log("PASS E26 E27 E28");
  check(prepared.kind==="ready"&&effects===0,"lexical loop preparation is inert");
  check(run(source,r).type==="normal"&&effects===0,"lexical loop executes");
  const blocked=prepareBoundedScript({id:"blocked",text:"Error('x');for(let x in []){}"},r);
- check(blocked.kind!=="ready"&&effects===0,"whole unit rejection");
+ check(blocked.kind==="ready"&&effects===0,"for-in preparation is inert");
+ check(run("Error('x');for(let x in []){}",r).type==="normal"&&effects===0,"for-in executes");
+ check(prepareBoundedScript({id:"unsupported",text:"Error('x');for(let [x] in []){}"},r).kind!=="ready"&&effects===0,"whole unit rejection");
  const synthetic=failure("TypeError","synthetic",loc),resource=resourceFailure("steps",1,0,"step limit exceeded",loc),unsupported=unsupportedFailure("runtime.object-to-string","TypeError","unsupported",loc),t=thrown(run("missing;",r));for(const result of [t,synthetic]){const observation=projectThrow(result);check(observation.kind==="throw"&&observation.constructor.name===null&&observation.constructor.realmId===null&&observation.constructor.secondary===null&&observation.constructor.outcome===(result===t?"unsupported":"absent"),"projection");}check(projectThrow(resource).kind==="resource-limit"&&projectThrow(unsupported).kind==="unsupported-syntax","origin projection");
  const e=object(t.value);for(const key of ["name","message","constructor"]){e.bootstrapDefine(key,{get:obj(r.createBuiltin("poison",0,(_r,_a,_c,_l):ValueCompletion=>{effects++;throw new Error("poison");})),enumerable:false,configurable:true});}const before=t.diagnostic.message;check(display(t.value)==="[object Object]"&&projectThrow(t).kind==="throw"&&t.diagnostic.message===before&&effects===0,"diagnostic rendering never coerces");
 }

@@ -90,7 +90,7 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
-    for (const [id, text] of [['excluded-const-list', 'const x=1;'], ['excluded-const-block', '{const x=1;}'], ['excluded-for-const', 'for(const x of a){}'], ['excluded-for-let', 'for(let x=0;x<1;x++){}']]) {
+    for (const [id, text] of [['excluded-const-list', 'const x=1;'], ['excluded-const-block', '{const x=1;}'], ['excluded-for-const', 'for(const x of a){}'], ['excluded-for-let', 'for(let x=0;x<1;x++){}'], ['excluded-for-in', 'for(let x in a){}']]) {
       const row = rows.find(row => row.id === id);
       assert.equal(row.text, text);
       row.expected = {kind: 'none', sourceUnits: text.length, consumedUnits: text.length};

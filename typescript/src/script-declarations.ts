@@ -16,7 +16,7 @@ export type Declaration = {
   readonly initializer: { readonly start: number; readonly end: number } | null;
 };
 export type DeclarationScope = {
-  readonly id: number; readonly kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-lexical";
+  readonly id: number; readonly kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical";
   readonly catchParameter: DeclarationSite | null;
   readonly parent: number | null;
   readonly start: number; readonly end: number;
@@ -69,7 +69,7 @@ export type ParsedBinding = {
     initializer: { start: number; end: number } | null;
 };
 type MutableScope = {
-    id: number; kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-lexical"; parent: number | null;
+    id: number; kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical"; parent: number | null;
     catchParameter: DeclarationSite | null;
     start: number; end: number; strict: boolean; formals: DeclarationSite[];
     lexicalDeclarations: number[]; varDeclarations: number[];
@@ -284,7 +284,7 @@ class DeclarationCollector {
         this.strictness = scriptPrologue(unit.text, tokens, 0, false);
         this.scope("script", null, 0, unit.text.length, this.strictness.strict, []);
     }
-    scope(kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-lexical", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {
+    scope(kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {
         const id = this.scopes.length;
         this.scopes.push({ id, kind, parent, start, end, strict, formals, catchParameter: null,
             lexicalDeclarations: [], varDeclarations: [], lexicalNames: [], varNames: [] });
@@ -385,9 +385,9 @@ class DeclarationCollector {
                 if (node.alternate !== null) this.statement(node.alternate, scope, variableScope);
                 this.statement(node.consequent, scope, variableScope);
                 this.expression(node.test, scope, variableScope); break;
-            case "for-of": {
+            case "for-of": case "for-in": {
                 if (node.head.kind === "lexical") {
-                    const id = this.scope("for-of", scope, node.start, node.end, this.scopes[scope].strict, []);
+                    const id = this.scope(node.kind, scope, node.start, node.end, this.scopes[scope].strict, []);
                     const declaration = this.declare(node.head.declarationKind,
                         { site: node.head.site, init: null, initializer: null }, id, variableScope, null);
                     if (this.nodes !== null) {

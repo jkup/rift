@@ -3,7 +3,7 @@ export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatement
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForOfStmt, TryFinallyStmt } from "./syntax.js";
+import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -352,16 +352,16 @@ class Parser {
         }
         if (this.structuralPlan() && this.eat("for")) {
             this.expect("(");
-            if ((this.at("let") || this.at("const")) && this.tokens[this.index + 2]?.kind === "word" && this.tokens[this.index + 2]?.text === "of") {
+            if ((this.at("let") || this.at("const")) && this.tokens[this.index + 2]?.kind === "word" && (this.tokens[this.index + 2]?.text === "of" || this.tokens[this.index + 2]?.text === "in")) {
                 const declarationKind = this.take().text === "let" ? "let" : "const";
                 const token = this.current();
                 const name = this.name();
-                this.expect("of");
-                return this.forOf(loc, start, { kind: "lexical", declarationKind,
+                const kind = this.take().text === "of" ? "for-of" : "for-in";
+                return this.forEach(kind, loc, start, { kind: "lexical", declarationKind,
                     site: { name, start: token.start, end: token.end, loc: token.loc } });
             }
             let lexical: { declarationKind: "let" | "const"; binding: ParsedBinding } | null = null;
-            if ((this.at("let") || this.at("const")) && this.tokens[this.index + 2]?.text !== "in") {
+            if (this.at("let") || this.at("const")) {
                 const declarationKind = this.take().text === "let" ? "let" : "const";
                 const binding = this.binding(1, false);
                 if (declarationKind === "const" && binding.init === null)
@@ -371,14 +371,15 @@ class Parser {
             let initializer: VarStmt | Expr | null = null;
             if (lexical === null && this.at("var")) initializer = this.varDeclaration(false);
             else if (lexical === null && !this.at(";")) initializer = this.expression(0, false);
-            if (initializer !== null && this.eat("of")) {
+            if (initializer !== null && (this.at("of") || this.at("in"))) {
+                const kind = this.take().text === "of" ? "for-of" : "for-in";
                 if (initializer.kind === "var") {
                     if (initializer.declarations.length !== 1 || initializer.declarations[0].init !== null)
-                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "for-of requires one uninitialized binding", initializer.loc);
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, kind + " requires one uninitialized binding", initializer.loc);
                 } else if (initializer.kind !== "identifier" && initializer.kind !== "member") {
-                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid for-of assignment target", initializer.loc);
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + kind + " assignment target", initializer.loc);
                 }
-                return this.forOf(loc, start, initializer);
+                return this.forEach(kind, loc, start, initializer);
             }
             this.expect(";");
             const test = this.at(";") ? null : this.expression(0);
@@ -448,13 +449,13 @@ class Parser {
         }
         return { kind: "try-finally", loc, body, finalizer };
     }
-    forOf(loc: Location, start: number, head: ForOfStmt["head"]): ForOfStmt {
+    forEach(kind: "for-of" | "for-in", loc: Location, start: number, head: ForEachStmt["head"]): ForEachStmt {
         const iterable = this.expression(1);
         this.expect(")");
         this.loops++;
         const body = this.branch("for-body");
         this.loops--;
-        return { kind: "for-of", loc, start, end: this.tokens[this.index - 1].end, head, iterable, body };
+        return { kind, loc, start, end: this.tokens[this.index - 1].end, head, iterable, body };
     }
     varDeclaration(allowIn: boolean): VarStmt {
         const token = this.take();

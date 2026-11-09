@@ -33,12 +33,12 @@ export type ForLexicalStmt = { kind: "for-lexical"; loc: Location; start: number
     binding: { site: DeclarationSite; init: Expr | null; initializer: { start: number; end: number } | null };
     test: Expr | null; update: Expr | null; body: Stmt };
 export type ForLexicalBinding = { kind: "lexical"; declarationKind: "let" | "const"; site: DeclarationSite };
-export type ForOfStmt = { kind: "for-of"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding; iterable: Expr; body: Stmt };
+export type ForEachStmt = { kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding; iterable: Expr; body: Stmt };
 export type Stmt =
     | VarStmt
     | ForStmt
     | ForLexicalStmt
-    | ForOfStmt
+    | ForEachStmt
     | { kind: "empty"; loc: Location }
     | { kind: "expression"; loc: Location; expression: Expr }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }
