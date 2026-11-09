@@ -109,6 +109,10 @@ for (const source of negatives) for (const strict of [false, true]) {
     } else if (source === "new C();try{}finally{}") {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "finally after constructor prepares");
         check(run(prefix+"function C(){}"+source,r,s).type === "normal", "finally after constructor executes");
+    } else if (source === "new C();for(let i=0;;){}") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "lexical for after constructor prepares");
+        const result=run(prefix+"function C(){}"+source,r,createScriptSession({maxSteps:100,maxCalls:64}));
+        check(result.type === "throw" && result.origin.kind === "resource-limit", "lexical for bounded after construction");
     } else check(p.kind !== "ready" && out.length === 0 && s.inspect().steps === 0, "negative "+source);
 }
 check(prepareStrictScript({id:"strict",text:'new C();'},fresh()).kind!=="ready","strict entry");

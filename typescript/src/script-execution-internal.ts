@@ -5,7 +5,7 @@ import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, Stmt, FunctionSource, Location, TryCatchStmt, ForOfStmt } from "./syntax.js";
+import type { Expr, Stmt, FunctionSource, Location, TryCatchStmt, ForOfStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
@@ -189,18 +189,27 @@ class ExecutableScript {
                 }
                 if (defaults > 1 || offset !== block.body.length) throw new Error("invalid CaseBlock flattening");
                 scopes.set(entry.node, scope.id);
-            } else if (scope.kind === "for-of") {
-                if (entry.node === null || entry.node.kind !== "for-of" || entry.node.head.kind !== "lexical" || scopes.has(entry.node))
+            } else if (scope.kind === "for-of" || scope.kind === "for-lexical") {
+                if (entry.node === null || (entry.node.kind !== "for-lexical" && (entry.node.kind !== "for-of" || entry.node.head.kind !== "lexical")) || scopes.has(entry.node))
                     throw new Error("invalid lexical loop owner");
-                const node = entry.node, head = entry.node.head;
+                const node = entry.node;
+                const head = node.kind === "for-lexical" ? { site: node.binding.site, declarationKind: node.declarationKind }
+                    : node.head.kind === "lexical" ? node.head : null;
+                if (head === null || scope.kind !== node.kind) throw new Error("invalid lexical loop kind");
+                const initializer = node.kind === "for-lexical" ? node.binding.initializer : null;
                 const declaration = plan.declarations[scope.lexicalDeclarations[0]];
+                const association = nodes.declarations.get(scope.lexicalDeclarations[0]);
                 if (entry.body.length !== 1 || entry.body[0] !== node.body || scope.start !== node.start || scope.end !== node.end ||
                     scope.parent === null || scope.parent >= scope.id || scope.strict !== plan.scopes[scope.parent].strict || scope.formals.length !== 0 ||
                     scope.start < plan.scopes[scope.parent].start || scope.end > plan.scopes[scope.parent].end ||
                     scope.lexicalDeclarations.length !== 1 || scope.lexicalNames.length !== 1 || scope.lexicalNames[0] !== head.site.name ||
                     declaration === undefined || declaration.kind !== head.declarationKind || declaration.site.start !== head.site.start ||
                     declaration.site.end !== head.site.end || declaration.site.name !== head.site.name || declaration.scope !== scope.id ||
-                    declaration.functionScope !== null || declaration.initializer !== null || head.site.start <= node.start || head.site.end >= node.end)
+                    declaration.functionScope !== null || (initializer === null ? declaration.initializer !== null
+                        : declaration.initializer === null || declaration.initializer.start !== initializer.start || declaration.initializer.end !== initializer.end) ||
+                    head.site.start <= node.start || head.site.end >= node.end ||
+                    association === undefined || association.node !== node || association.initializer !== (node.kind === "for-lexical" ? node.binding.init : null) ||
+                    (initializer !== null && (initializer.start <= head.site.end || initializer.end >= node.end || initializer.end <= initializer.start)))
                     throw new Error("invalid lexical loop association");
                 scopes.set(node, scope.id);
             } else if (scope.kind === "catch") {
@@ -270,21 +279,24 @@ class ExecutableScript {
     static assignmentMayName(record: ExecutableScript, node: Expr, key: ExecutionKey): boolean {
         return ExecutableScript.state(record, key).nodes.assignmentNameEligible.get(node) === true;
     }
-    static activateLoop(record: ExecutableScript, node: ForOfStmt, outer: ScriptEnvironment, value: Value | null,
+    static activateLoop(record: ExecutableScript, node: ForOfStmt | ForLexicalStmt, outer: ScriptEnvironment, value: Value | null,
         context: OperationContext, key: ExecutionKey): ScriptBlockEnvironmentCompletion {
         const state = ExecutableScript.state(record, key);
         const scopeId = ExecutableScript.scopeOfNode(record, node, key);
-        if (node.head.kind !== "lexical" || state.plan.scopes[scopeId].kind !== "for-of")
+        if ((node.kind === "for-of" && node.head.kind !== "lexical") || state.plan.scopes[scopeId].kind !== node.kind)
             throw new Error("invalid lexical loop activation");
+        const head = node.kind === "for-lexical" ? { site: node.binding.site, declarationKind: node.declarationKind }
+            : node.head.kind === "lexical" ? node.head : null;
+        if (head === null) throw new Error("invalid lexical loop binding");
         record.#validateEnvironment(outer, context);
         const allocation = context.tick(node.loc);
         if (allocation.type === "throw") { const abrupt: ThrowCompletion = allocation; return abrupt; }
         const environment = new ScriptDeclarativeEnvironment(outer);
-        const site = node.head.site;
+        const site = head.site;
         const creation = context.tick(site.loc);
         if (creation.type === "throw") { const abrupt: ThrowCompletion = creation; return abrupt; }
-        // The iterable expression always sees an uninitialized mutable binding.
-        const created = value !== null && node.head.declarationKind === "const"
+        // A for-of iterable sees an uninitialized mutable binding, including const heads.
+        const created = (node.kind === "for-lexical" || value !== null) && head.declarationKind === "const"
             ? environment.createImmutableBinding(site.name, site.loc) : environment.createMutableBinding(site.name, site.loc);
         if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
         if (value !== null) {
@@ -801,7 +813,7 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
-            case "for": case "for-of": throw new Error("Script for AST requires Script execution");
+            case "for": case "for-of": case "for-lexical": throw new Error("Script for AST requires Script execution");
             case "do-while": throw new Error("Script do-while AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "const": throw new Error("Script const AST requires Script execution");
@@ -1388,6 +1400,36 @@ class ExecutionEngine {
             return result;
         } finally { this.depth = savedDepth; }
     }
+    #forBody(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null): ScriptStatementCompletion {
+        let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
+        let first = true;
+        while (true) {
+            if (stmt.kind === "for-lexical" && stmt.declarationKind === "let") {
+                const frame = this.#active();
+                if (!(frame.lexical instanceof ScriptDeclarativeEnvironment) || outer === null)
+                    throw new Error("invalid for iteration environment");
+                const previous = frame.lexical.getBindingValue(stmt.binding.site.name, this.context, stmt.loc);
+                if (previous.type === "throw") { const abrupt: ThrowCompletion = previous; return abrupt; }
+                const created = ExecutableScript.activateLoop(frame.record, stmt, outer, previous.value, this.context, executionKey);
+                if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
+                this.#frame = { ...frame, lexical: created.environment };
+            }
+            if (!first && stmt.update !== null) {
+                const updated = this.#value(stmt.update);
+                if (updated.type === "throw") { const abrupt: ThrowCompletion = updated; return abrupt; }
+            }
+            first = false;
+            if (stmt.test !== null) {
+                const test = this.#value(stmt.test);
+                if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
+                if (!truthy(test.value)) return { type: "normal", payload: value };
+            }
+            const result = this.#statement(stmt.body);
+            if (result.type === "break") return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
+            if (result.type !== "normal" && result.type !== "continue") return updateScriptEmpty(result, value);
+            if (result.payload.kind !== "empty") value = result.payload;
+        }
+    }
     #scriptStatement(stmt: Stmt): ScriptStatementCompletion {
         switch (stmt.kind) {
             case "switch": {
@@ -1549,22 +1591,21 @@ class ExecutionEngine {
                         if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
                     }
                 }
-                let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
-                while (true) {
-                    if (stmt.test !== null) {
-                        const test = this.#value(stmt.test);
-                        if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
-                        if (!truthy(test.value)) return { type: "normal", payload: value };
-                    }
-                    const result = this.#statement(stmt.body);
-                    if (result.type === "break") return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
-                    if (result.type !== "normal" && result.type !== "continue") return updateScriptEmpty(result, value);
-                    if (result.payload.kind !== "empty") value = result.payload;
-                    if (stmt.update !== null) {
-                        const updated = this.#value(stmt.update);
-                        if (updated.type === "throw") { const abrupt: ThrowCompletion = updated; return abrupt; }
-                    }
-                }
+                return this.#forBody(stmt, null);
+            }
+            case "for-lexical": {
+                const saved = this.#active();
+                const created = ExecutableScript.activateLoop(saved.record, stmt, saved.lexical, null, this.context, executionKey);
+                if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
+                this.#frame = { ...saved, lexical: created.environment };
+                try {
+                    const binding = stmt.binding;
+                    const value = binding.init === null ? normal() : this.#value(binding.init, binding.site.name);
+                    if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
+                    const initialized = created.environment.initializeBinding(binding.site.name, value.value, this.context, binding.site.loc);
+                    if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+                    return this.#forBody(stmt, saved.lexical);
+                } finally { this.#frame = saved; }
             }
             case "while": case "do-while": {
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };

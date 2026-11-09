@@ -53,7 +53,8 @@ passes("var a=[];for(let x of [1,2]){a.push(function(){return x;});x+=10;}a[0]()
 passes("var closed=0;var it={next:function(){return {value:1,done:false};},return:function(){closed++;return {};}};var source={};source[Symbol.iterator]=function(){return it;};var ok=false;try{for(const x of source)x=2;}catch(e){ok=e instanceof TypeError;}ok&&closed===1;");
 passes("var f;for(let x of (function(){f=function(){x=2;};return [1];})()){}var ok=false;try{f();}catch(e){ok=e instanceof ReferenceError;}ok;");
 for (const source of ["for(let x=1 of []){}", "for(const x=1 of []){}", "for(let x,y of []){}", "for(let [x] of []){}", "for(const {x} of []){}", "for(let x=0;x<1;x++){}", "for(const x=1;false;){}", "for await(let x of []){}", "for(let x of []) const y=1;"])
-    check(prepareBoundedScript({id:"unsupported",text:source},fresh()).kind !== "ready", "reject " + source);
+    if (source === "for(let x=0;x<1;x++){}" || source === "for(const x=1;false;){}") passes(source+"typeof x==='undefined';");
+    else check(prepareBoundedScript({id:"unsupported",text:source},fresh()).kind !== "ready", "reject " + source);
 const owner=fresh(),caller=fresh();
 const fn=run("var f;for(const x of [1])f=function(){x=2;};f;",owner);
 check(fn.type === "normal", "foreign closure setup");

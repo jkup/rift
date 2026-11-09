@@ -105,6 +105,10 @@ for (const source of negatives) {
     if (source === "function f(){return 7;}const tail=0;") {
         check(p.kind === "ready", "const tail prepares");
         expect(run(source+"f()+tail;",r),{kind:"number",value:7},"const tail executes");
+    } else if (source === "for(let i=0;;){}") {
+        check(p.kind === "ready", "lexical for prepares");
+        const result=run(source,r,createScriptSession({maxSteps:100,maxCalls:64}));
+        check(result.type === "throw" && result.origin.kind === "resource-limit", "lexical loop bounded");
     } else check(p.kind !== "ready", "negative "+source);
 }
 for(const text of [" ".repeat(100001),"(".repeat(129)+"1"+")".repeat(129)+";"]){const p=prepareBoundedScript({id:"N16",text},fresh());check(p.kind==="blocked" && p.rejection.kind==="resource-limit","N16 resource");}

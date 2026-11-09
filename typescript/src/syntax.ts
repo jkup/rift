@@ -29,11 +29,15 @@ export type Expr =
     | { kind: "object"; loc: Location; keys: string[]; values: Expr[] };
 export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };
 export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Expr | null; test: Expr | null; update: Expr | null; body: Stmt };
+export type ForLexicalStmt = { kind: "for-lexical"; loc: Location; start: number; end: number; declarationKind: "let" | "const";
+    binding: { site: DeclarationSite; init: Expr | null; initializer: { start: number; end: number } | null };
+    test: Expr | null; update: Expr | null; body: Stmt };
 export type ForLexicalBinding = { kind: "lexical"; declarationKind: "let" | "const"; site: DeclarationSite };
 export type ForOfStmt = { kind: "for-of"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding; iterable: Expr; body: Stmt };
 export type Stmt =
     | VarStmt
     | ForStmt
+    | ForLexicalStmt
     | ForOfStmt
     | { kind: "empty"; loc: Location }
     | { kind: "expression"; loc: Location; expression: Expr }

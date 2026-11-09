@@ -346,6 +346,14 @@ const negatives = [
 ];
 for(const row of negatives) {
  const r=fresh(), session=createScriptSession(); const result=prepareStrictScript({id:row.id,text:(row.id === "N14" ? "" : '"use strict";')+row.source},r);
+ if (row.id === "N01") {
+  check(result.kind === "ready" && session.inspect().steps === 0, "lexical for prepares without effects");
+  if (result.kind !== "ready") throw new Error("missing lexical for record");
+  const completion=evaluateScript(createScriptSession({maxSteps:100,maxCalls:64}),result.record).completion;
+  check(row.source.includes("const") ? completion.type === "throw" && completion.origin.kind === "resource-limit"
+      : completion.type === "normal" && completion.value.kind === "undefined", "lexical for execution");
+  continue;
+ }
  if (row.source === "for(k of o);") {
   check(result.kind === "ready" && session.inspect().steps === 0, "for-of prepares without effects");
   define(r, "k", {kind: "number", value: 0});

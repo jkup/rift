@@ -866,6 +866,12 @@ for(const source of [
         check(run(source, r, s).type === "normal", "const executes in branch and switch");
         continue;
     }
+    if (source === '"use strict";for(let i=0;;){}') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "lexical for prepares without execution");
+        const completion=run(source,r,createScriptSession({maxSteps:100,maxCalls:64}));
+        check(completion.type === "throw" && completion.origin.kind === "resource-limit", "lexical for is bounded");
+        continue;
+    }
     if (source === '"use strict";try{}catch(e){}finally{}') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "finally prepares without execution");
         check(run(source,r,s).type === "normal", "finally executes");

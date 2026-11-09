@@ -360,9 +360,17 @@ class Parser {
                 return this.forOf(loc, start, { kind: "lexical", declarationKind,
                     site: { name, start: token.start, end: token.end, loc: token.loc } });
             }
+            let lexical: { declarationKind: "let" | "const"; binding: ParsedBinding } | null = null;
+            if ((this.at("let") || this.at("const")) && this.tokens[this.index + 2]?.text !== "in") {
+                const declarationKind = this.take().text === "let" ? "let" : "const";
+                const binding = this.binding(1, false);
+                if (declarationKind === "const" && binding.init === null)
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", loc);
+                lexical = { declarationKind, binding };
+            }
             let initializer: VarStmt | Expr | null = null;
-            if (this.at("var")) initializer = this.varDeclaration(false);
-            else if (!this.at(";")) initializer = this.expression(0, false);
+            if (lexical === null && this.at("var")) initializer = this.varDeclaration(false);
+            else if (lexical === null && !this.at(";")) initializer = this.expression(0, false);
             if (initializer !== null && this.eat("of")) {
                 if (initializer.kind === "var") {
                     if (initializer.declarations.length !== 1 || initializer.declarations[0].init !== null)
@@ -380,6 +388,8 @@ class Parser {
             this.loops++;
             const body = this.branch("for-body");
             this.loops--;
+            if (lexical !== null) return { kind: "for-lexical", loc, start, end: this.tokens[this.index - 1].end,
+                declarationKind: lexical.declarationKind, binding: lexical.binding, test, update, body };
             return { kind: "for", loc, initializer, test, update, body };
         }
         if (this.structuralPlan() && this.eat("do")) {
