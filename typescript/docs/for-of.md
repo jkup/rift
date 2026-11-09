@@ -1,5 +1,7 @@
 # Synchronous for-of
 
+Lexical heads added later are described in [TS-121](for-of-lexical.md).
+
 TS-119 admits one uninitialized `var` binding or an identifier/member assignment
 head in Script execution. `of` remains contextual. Declaration planning visits
 the head, iterable and body, so var bindings exist even when iteration is empty

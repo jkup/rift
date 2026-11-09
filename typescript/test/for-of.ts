@@ -71,6 +71,10 @@ for (const next of ["function(){throw 7;}", "function(){return 1;}", "function()
 }
 for (const value of ["null", "undefined", "1", "{}", "{length:2}"]) passes("var ok=false;try{for(var x of "+value+"){}}catch(e){ok=e instanceof TypeError;}ok;");
 for (const source of ["for(var x=1 of []){}", "for(var x,y of []){}", "for(1 of []){}", "for(let x of []){}", "for(const x of []){}", "for await(var x of []){}", "for(var [x] of []){}", "for(var x of []) let y=1;"]) {
+    if (source === "for(let x of []){}" || source === "for(const x of []){}") {
+        passes(source+"typeof x==='undefined';");
+        continue;
+    }
     check(prepareBoundedScript({id: "unsupported", text: source},fresh()).kind !== "ready", "reject " + source);
 }
 check(parse("for(var x of []){}").error !== null, "legacy parser rejects for-of");

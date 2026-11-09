@@ -51,6 +51,10 @@ for (const prefix of ["", "'use strict';"]) {
 passes("const x=1;delete x===false&&x===1;");
 passes("var ok=false;switch(0){case 0:try{x;}catch(e){ok=e instanceof ReferenceError;}break;case 1:const x=3;}ok;");
 for (const source of ["const x;", "const x=1,y=2;", "const [x]=[1];", "if(true)const x=1;", "while(false)const x=1;", "for(const x of []){}", "for(const x=1;false;){}", "const eval=1;"]) {
+    if (source === "for(const x of []){}") {
+        passes(source+"typeof x==='undefined';");
+        continue;
+    }
     check(prepareBoundedScript({id:"unsupported",text:source},fresh()).kind !== "ready", "reject " + source);
 }
 for (const source of ["const x=1;const x=2;", "const x=1;let x;", "let x;const x=1;", "const x=1;var x;", "const x=1;function x(){}", "function f(x){const x=1;}", "{const x=1;var x;}", "switch(1){case 1:const x=1;break;case 2:const x=2;}"]) {

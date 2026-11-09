@@ -571,6 +571,7 @@ executeDriver("set-iterator", { stdout: "Set iterators passed\n" });
 executeDriver("error-family", { stdout: "Error family and brand predicate passed\n" });
 executeDriver("for-of", { stdout: "Synchronous for-of passed\n" });
 executeDriver("const-bindings", { stdout: "Const bindings passed\n" });
+executeDriver("for-of-lexical", { stdout: "Lexical for-of passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

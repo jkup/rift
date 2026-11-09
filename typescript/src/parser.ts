@@ -3,7 +3,7 @@ export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatement
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt } from "./syntax.js";
+import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForOfStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -351,6 +351,14 @@ class Parser {
         }
         if (this.structuralPlan() && this.eat("for")) {
             this.expect("(");
+            if ((this.at("let") || this.at("const")) && this.tokens[this.index + 2]?.kind === "word" && this.tokens[this.index + 2]?.text === "of") {
+                const declarationKind = this.take().text === "let" ? "let" : "const";
+                const token = this.current();
+                const name = this.name();
+                this.expect("of");
+                return this.forOf(loc, start, { kind: "lexical", declarationKind,
+                    site: { name, start: token.start, end: token.end, loc: token.loc } });
+            }
             let initializer: VarStmt | Expr | null = null;
             if (this.at("var")) initializer = this.varDeclaration(false);
             else if (!this.at(";")) initializer = this.expression(0, false);
@@ -361,12 +369,7 @@ class Parser {
                 } else if (initializer.kind !== "identifier" && initializer.kind !== "member") {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid for-of assignment target", initializer.loc);
                 }
-                const iterable = this.expression(1);
-                this.expect(")");
-                this.loops++;
-                const body = this.branch("for-body");
-                this.loops--;
-                return { kind: "for-of", loc, head: initializer, iterable, body };
+                return this.forOf(loc, start, initializer);
             }
             this.expect(";");
             const test = this.at(";") ? null : this.expression(0);
@@ -424,6 +427,14 @@ class Parser {
         const expression = this.expression(0);
         this.expect(";");
         return { kind: "expression", loc, expression };
+    }
+    forOf(loc: Location, start: number, head: ForOfStmt["head"]): ForOfStmt {
+        const iterable = this.expression(1);
+        this.expect(")");
+        this.loops++;
+        const body = this.branch("for-body");
+        this.loops--;
+        return { kind: "for-of", loc, start, end: this.tokens[this.index - 1].end, head, iterable, body };
     }
     varDeclaration(allowIn: boolean): VarStmt {
         const token = this.take();

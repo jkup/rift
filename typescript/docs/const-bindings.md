@@ -1,5 +1,7 @@
 # Const declarations and immutable bindings
 
+Lexical for-of heads added later are described in [TS-121](for-of-lexical.md).
+
 TS-120 adds ordinary single-identifier const declarations to Script execution.
 An initializer is required. Declaration plans retain const as its own kind and
 include it in lexical-name conflict checks. Global, function, block and switch
