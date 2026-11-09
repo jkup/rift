@@ -49,8 +49,8 @@ class TracedEnvironment extends GlobalEnvironment {
     override canDeclareGlobalFunction(n: string): InternalBooleanCompletion { return this.visit("F?:" + n) ? this.abrupt : super.canDeclareGlobalFunction(n); }
     override canDeclareGlobalVar(n: string): InternalBooleanCompletion { return this.visit("V?:" + n) ? this.abrupt : super.canDeclareGlobalVar(n); }
     override createMutableBinding(n: string, loc: Location, realm: Realm | null): ValueCompletion { return this.visit("L+:" + n) ? this.abrupt : super.createMutableBinding(n, loc, realm); }
-    override createGlobalFunctionBinding(n: string, v: Value, c: OperationContext, loc: Location): ValueCompletion { return this.visit("F+:" + n) ? this.abrupt : super.createGlobalFunctionBinding(n, v, c, loc); }
-    override createGlobalVarBinding(n: string, c: OperationContext, loc: Location): ValueCompletion { return this.visit("V+:" + n) ? this.abrupt : super.createGlobalVarBinding(n, c, loc); }
+    override createGlobalFunctionBinding(n: string, v: Value, c: OperationContext, loc: Location, deletable = false): ValueCompletion { return this.visit("F+:" + n) ? this.abrupt : super.createGlobalFunctionBinding(n, v, c, loc, deletable); }
+    override createGlobalVarBinding(n: string, c: OperationContext, loc: Location, deletable = false): ValueCompletion { return this.visit("V+:" + n) ? this.abrupt : super.createGlobalVarBinding(n, c, loc, deletable); }
 }
 class Harness {
     readonly realm = new Realm((_line: string) => { throw new Error("source output"); }, "script");
@@ -98,6 +98,14 @@ class Harness {
 }
 const fields = readFileSync(process.argv[2], "utf8").trim().split("|");
 const runtimeName = fields[0], payload = Number(fields[1]);
+{
+    const h = new Harness(), loc = { line: 1, column: 1 };
+    unused(h.env.createGlobalVarBinding(runtimeName, h.context, loc, true));
+    // ES2025 permits lexical shadowing of configurable eval-created globals.
+    unused(h.run(plan("let " + runtimeName + ";")));
+    tdz(h.env, runtimeName, h.context);
+    desc(h.env.globalObject, runtimeName, UNDEFINED, true, true, true);
+}
 check((runtimeName === "seed" && payload === 7) || (runtimeName === "other" && payload === 11), "runtime input");
 const duplicate = 'function f(){return 1;} var f; function g(){} function f(){return 2;}';
 

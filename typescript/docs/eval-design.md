@@ -1,0 +1,35 @@
+# Eval execution design
+
+TS-150 is in design review. Eval is not yet exposed. The implementation must use Rift's parser, declaration plan and explicit completions, never a host execution API.
+
+The fixed eval fixture needs both direct and indirect calls, non-string passthrough, expression completion values, global declarations, local reads/writes, strict isolation, nested calls and Function bodies without semicolons. TS-149 supplies the missing statement terminators. Other fixtures also depend on grammar still outside the supported subset; eval must preserve those unsupported outcomes.
+
+## Execution boundary
+
+Use a Realm-owned intrinsic identity and private callable dispatch. A direct call requires an identifier reference named eval and that Realm's captured intrinsic; grouping preserves that reference. Aliases, comma expressions, property calls and optional calls are indirect. Evaluate arguments once before dispatch. Do not extend OperationContext with a source-execution callback or expose a reusable active-frame handle.
+
+A dedicated private eval callable is preferable to a dummy builtin callback intercepted by object identity: normal call/apply/bind dispatch can visibly route to eval while preserving the existing builtin permit boundary. It must be non-constructable, have name eval and length 1, preserve native function stringification, reject cross-profile invocation and use its defining Realm for indirect execution. Direct dispatch uses the caller's current environment and shared resource budget.
+
+Keep original source text and offsets. Add an internal inherited-strictness preparation path rather than prefixing a directive onto eval input. Public Script preparation defaults stay unchanged. Certified syntax errors and declaration conflicts become guest SyntaxError; unsupported grammar remains a fatal runtime.eval-source outcome. Resource limits and host faults retain their existing propagation. Runtime capability codecs must be extended explicitly without expanding syntax-rule certification.
+
+## Environments and declarations
+
+Each eval receives a fresh lexical environment. Direct eval links it to the caller's lexical environment; indirect eval links it to the intrinsic's global environment. Sloppy declarations target the caller variable environment for direct calls and the global environment for indirect calls. Strict eval uses its fresh environment for both. This-value selection remains independent of strictness: direct calls inherit the caller value; indirect calls use the eval Realm's global this.
+
+Implement EvalDeclarationInstantiation as a distinct operation that reuses binding primitives and declaration plans. Do not invoke Script global instantiation and then try to undo its effects. Check collisions and global definability before materializing declarations, retain last-function-wins ordering, and initialize closures against the fresh eval lexical environment. Eval-created variable/function bindings must be deletable; existing bindings keep their attributes. The current local binding storage and global creation methods need explicit support for that distinction.
+
+Do not reintroduce the historical global VarNames list. The project's [ES2025 global instantiation algorithm](https://262.ecma-international.org/16.0/#sec-globaldeclarationinstantiation) checks lexical bindings and non-configurable global properties. A later Script lexical declaration may shadow a configurable eval-created global property. Global var creation retains existing property attributes; function creation uses the requested deletability only for absent or configurable properties. Regression tests cover both distinctions.
+
+Resolve Annex B block-function eligibility against the actual enclosing environments and retain enabled declaration IDs with the eval activation. The current session-wide legacy-function set cannot represent nested eval safely. Save and restore the caller frame, Realm, source provenance, call depth and legacy-function state on every completion and host-fault path. Existing unsupported catch conflicts, labelled functions, classes and super/new.target remain explicit boundaries rather than fabricated guest syntax errors.
+
+## Function interaction
+
+The current arguments-object optimization only sees statically referenced arguments. Any potentially direct eval call must conservatively mark the nearest enclosing ordinary function, including calls inside arrows. Preserve formal/lexical/function shadowing rules and mapped parameter cells.
+
+During default initializers, the current private activation callback updates only the lexical environment. Eval also needs the caller variable environment to refer to the parameter environment at that phase; update that private handoff explicitly before evaluating defaults. Afterward, retain the existing separate body variable/lexical environments and copied parameter values.
+
+## Validation and commit order
+
+First add binding deletion/configurability primitives and inherited strict preparation, with focused tests. Then integrate private eval dispatch and instantiation, followed by parser admission and arguments analysis. Keep these as small commits; publish only after integration acceptance. Test direct/indirect identity, optional calls, cross-Realm intrinsics, local/global deletion, strict and lexical isolation, defaults and arrows, declaration collisions, nested eval, exact abrupt values, source restoration and shared limits. Preserve the fixed corpus and separate counted successes from unchecked completions.
+
+References reviewed 2026-11-09: ECMAScript [PerformEval](https://tc39.es/ecma262/multipage/global-object.html#sec-performeval) and [EvalDeclarationInstantiation](https://tc39.es/ecma262/multipage/global-object.html#sec-evaldeclarationinstantiation), and engine262 [global-object.mts at 18cdeb03](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/abstract-ops/global-object.mts). Rift's private frame and completion architecture determines the integration described above.

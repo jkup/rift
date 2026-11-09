@@ -90,21 +90,21 @@ export class GlobalEnvironment {
         const own = this.globalObject.getOwnProperty(name);
         return { type: "normal", value: own === undefined ? this.globalObject.isExtensible() : own.configurable || (own.kind === "data" && own.writable && own.enumerable) };
     }
-    createGlobalVarBinding(name: string, context: OperationContext, loc: Location): ValueCompletion {
+    createGlobalVarBinding(name: string, context: OperationContext, loc: Location, deletable = false): ValueCompletion {
         const own = this.globalObject.getOwnProperty(name);
         const extensible = this.globalObject.isExtensible();
         if (own === undefined && extensible) {
-            const result = this.defineObjectProperty(name, { value: UNDEFINED, writable: true, enumerable: true, configurable: false }, context, loc);
+            const result = this.defineObjectProperty(name, { value: UNDEFINED, writable: true, enumerable: true, configurable: deletable }, context, loc);
             if (result.type === "throw") return result;
             // ObjectEnvironment initialization, not composite lexical dispatch.
             return this.setObjectBinding(name, UNDEFINED, false, context, loc);
         }
         return normal();
     }
-    createGlobalFunctionBinding(name: string, value: Value, context: OperationContext, loc: Location): ValueCompletion {
+    createGlobalFunctionBinding(name: string, value: Value, context: OperationContext, loc: Location, deletable = false): ValueCompletion {
         const own = this.globalObject.getOwnProperty(name);
         const desc: DataDescriptorUpdate = own === undefined || own.configurable
-            ? { value, writable: true, enumerable: true, configurable: false } : { value };
+            ? { value, writable: true, enumerable: true, configurable: deletable } : { value };
         const defined = this.defineObjectProperty(name, desc, context, loc);
         if (defined.type === "throw") return defined;
         // The spec requires Set(false), even following a successful definition.

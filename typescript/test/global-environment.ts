@@ -111,6 +111,14 @@ for (const line of lines) {
             break;
         }
         case "H02": {
+            const temporary = name + "temporary";
+            unused(env.createGlobalVarBinding(temporary, context, loc, true));
+            descriptor(object, temporary, UNDEFINED, true, true, true);
+            unused(env.setMutableBinding(temporary, input, context, loc));
+            unused(env.createGlobalVarBinding(temporary, context, loc));
+            descriptor(object, temporary, input, true, true, true);
+            bool(env.deleteBinding(temporary, context, loc), true);
+            check(object.getOwnProperty(temporary) === undefined, "temporary var deletion");
             bool(env.canDeclareGlobalVar(name), true);
             unused(env.createGlobalVarBinding(name, context, loc));
             descriptor(object, name, UNDEFINED, true, true, false);
@@ -126,6 +134,17 @@ for (const line of lines) {
         case "H03": {
             const first: Value = { kind: "object", object: realmA.createObject() };
             const second: Value = { kind: "object", object: realmB.createObject() };
+            const temporary = name + "temporary";
+            unused(env.createGlobalFunctionBinding(temporary, first, context, loc, true));
+            descriptor(object, temporary, first, true, true, true);
+            unused(env.createGlobalFunctionBinding(temporary, second, context, loc, true));
+            descriptor(object, temporary, second, true, true, true);
+            bool(env.deleteBinding(temporary, context, loc), true);
+            check(object.getOwnProperty(temporary) === undefined, "temporary function deletion");
+            unused(env.createGlobalFunctionBinding(temporary, first, context, loc));
+            unused(env.createGlobalFunctionBinding(temporary, second, context, loc, true));
+            descriptor(object, temporary, second, true, true, false);
+            bool(env.deleteBinding(temporary, context, loc), false);
             bool(env.canDeclareGlobalFunction(name), true);
             unused(env.createGlobalFunctionBinding(name, first, context, loc));
             descriptor(object, name, first, true, true, false);
