@@ -861,6 +861,12 @@ for(const source of [
     '"use strict";let o={__proto__:null};','"use strict";++x;','"use strict";1,2;'
 ]) {
     const r=fresh(),s=createScriptSession();const prepared=prepareStrictScript({id:"negative",text:source},r);
+    if (source === '"use strict";label: while(true){break label;}') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "labelled loop prepares without execution");
+        const completion=run(source,r,s);
+        check(completion.type === "normal" && completion.value.kind === "undefined", "labelled break exits loop");
+        continue;
+    }
     if (source === '"use strict";function f(){return arguments;}') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "arguments prepares without execution");
         scalar(run(source+'f(7,8).length;',r,s),2);

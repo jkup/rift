@@ -367,6 +367,12 @@ const rejects = [
 for (const row of rejects) {
     const r = fresh(), session = createScriptSession();
     const result = prepareStrictScript({ id: row.id, text: (row.id === "N10" ? "" : '"use strict";') + row.source }, r);
+    if (row.source === "label:switch(1){case 1:break label;}") {
+        check(result.kind === "ready" && session.inspect().steps === 0, "labelled switch prepares without execution");
+        const completion = run('"use strict";' + row.source, r, session);
+        check(completion.type === "normal" && completion.value.kind === "undefined", "labelled break exits switch");
+        continue;
+    }
     if (row.id === "N10") {
         const bounded = prepareBoundedScript({ id: row.id, text: row.source + "typeof f;" }, r);
         check(result.kind !== "ready", "strict-only entry rejects sloppy source");

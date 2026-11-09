@@ -183,6 +183,11 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    const labelled = rows.find(row => row.id === 'excluded-label');
+    assert.equal(labelled.text, 'label: let x;');
+    labelled.expected = {kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'labelled declarations are unsupported', loc: {line: 1, column: 8}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'}};
     for (const [id, text] of [
       ['mixed-strict-block-false-false', 'while(false) let x; {function f(){}function f(){}}'],
       ['mixed-strict-block-false-true', '{function f(){}function f(){}} while(false) let x;'],
