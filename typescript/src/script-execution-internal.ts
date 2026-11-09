@@ -430,10 +430,12 @@ class ExecutableScript {
             lexicalEnvironment = new ScriptDeclarativeEnvironment(environment);
         }
         for (const id of entry.scope.lexicalDeclarations) {
-            const site = state.plan.declarations[id].site;
+            const declaration = state.plan.declarations[id];
+            const site = declaration.site;
             const tick = this.#setupTick(context, site.loc);
             if (tick.type === "throw") return tick;
-            const created = lexicalEnvironment.createMutableBinding(site.name, site.loc);
+            const created = declaration.kind === "const" ? lexicalEnvironment.createImmutableBinding(site.name, site.loc)
+                : lexicalEnvironment.createMutableBinding(site.name, site.loc);
             if (created.type === "throw") return created;
         }
         for (const declaration of winners) {
@@ -489,7 +491,8 @@ class ExecutableScript {
             const declaration = state.plan.declarations[id];
             const tick = this.#setupTick(context, declaration.site.loc);
             if (tick.type === "throw") return tick;
-            const created = environment.createMutableBinding(declaration.site.name, declaration.site.loc);
+            const created = declaration.kind === "const" ? environment.createImmutableBinding(declaration.site.name, declaration.site.loc)
+                : environment.createMutableBinding(declaration.site.name, declaration.site.loc);
             if (created.type === "throw") return created;
             if (declaration.kind === "function") {
                 if (declaration.functionScope === null) throw new Error("missing Script block function scope");
@@ -762,6 +765,7 @@ class ExecutionEngine {
             case "for": case "for-of": throw new Error("Script for AST requires Script execution");
             case "do-while": throw new Error("Script do-while AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
+            case "const": throw new Error("Script const AST requires Script execution");
             case "switch": throw new Error("Script switch AST requires Script execution");
             case "try-catch": throw new Error("Script try-catch AST requires Script execution");
             case "empty": case "function": return normal();
@@ -1388,7 +1392,7 @@ class ExecutionEngine {
             }
             case "empty": case "function": return { type: "normal", payload: { kind: "empty" } };
             case "expression": return scriptExpressionCompletion(this.#value(stmt.expression));
-            case "let": {
+            case "let": case "const": {
                 const result = stmt.init === null ? normal() : this.#value(stmt.init, stmt.name);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 const env = this.#active().lexical;

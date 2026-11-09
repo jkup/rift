@@ -248,7 +248,7 @@ class Parser {
     branch(context: LexicalStatementContext): Stmt {
         const keyword = this.current();
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
-        if ((this.at("let") && !auditLet) || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
+        if ((this.at("let") && !auditLet) || this.at("const") || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
         const result = this.statement();
         // Only a complete supported declaration in this exact Statement slot is evidence.
         if (auditLet && this.error === null && result.kind === "let") {
@@ -311,6 +311,16 @@ class Parser {
             return { kind: "try-catch", loc, block, handler,
                 parameter: { name, start: token.start, end: token.end, loc: token.loc },
                 catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.tokens[this.index - 1].end };
+        }
+        if (this.structuralPlan() && this.eat("const")) {
+            const binding = this.binding(0);
+            this.expect(";");
+            if (binding.init === null) {
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", loc);
+                return { kind: "empty", loc };
+            }
+            this.bindings.set(start, [binding]);
+            return { kind: "const", loc, name: binding.site.name, init: binding.init };
         }
         if (this.eat("let")) {
             const binding = this.binding(0);

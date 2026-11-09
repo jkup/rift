@@ -374,7 +374,7 @@ for (const row of rejects) {
         continue;
     }
     check(result.kind === "blocked" || result.kind === "conflict", row.id + " reject");
-    if (row.id === "N01" || row.id === "N02") check(result.kind === "conflict" && result.conflict.kind === "duplicate-lexical", row.id);
+    if (row.id === "N01" || row.id === "N02" || row.source === "switch(1){case 1:let x;let x;default:const y=0;}") check(result.kind === "conflict" && result.conflict.kind === "duplicate-lexical", row.id);
     else if (row.id === "N03") check(result.kind === "conflict" && result.conflict.kind === "lexical-var", row.id);
     else check(result.kind === "blocked" && result.rejection.kind === "unsupported-syntax", row.id + " unsupported");
     idle(session); check(session.inspect().steps === 0, "reject no ticks");

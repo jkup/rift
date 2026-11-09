@@ -50,7 +50,7 @@ check(cleanNodes.scopes.length === 2 && cleanNodes.scopes[1].parameters[0] === "
 const foreign = prepareStrictScript({id: "A:0", text: clean.unit.text}, b);
 check(foreign.kind === "ready" && foreign.record !== record && foreign.record.belongsTo(b), "P01 foreign");
 console.log("P01 PASS");
-kind('"use strict";var x; function f(){const tail=0;}', "blocked");
+kind('"use strict";var x; function f(){const tail=0;}', "ready");
 ready('"use strict";var x; function f(){}');
 const conflict = prepareStrictScript({id:"conflict",text:'"use strict";let x;var x;'},a);
 check(conflict.kind === "conflict" && conflict.conflict.kind === "lexical-var", "P02 conflict");
@@ -69,7 +69,7 @@ if (init === null) throw new Error("P04 init");
 (init as {start:number}).start = 999;
 check(anonymous.inspect().declarations[0].initializer?.start === 19, "P04 detached init");
 console.log("P04 PASS");
-kind('"use strict";let x;let x;const tail=0;',"blocked");
+kind('"use strict";let x;let x;const tail=0;',"conflict");
 const duplicate = prepareStrictScript({id:"duplicate",text:'"use strict";let x;let x;'},a);
 check(duplicate.kind === "conflict" && duplicate.conflict.kind === "duplicate-lexical","P05 duplicate");
 console.log("P05 PASS");
@@ -118,7 +118,7 @@ for (const bad of ["", "const bad=0;", " ".repeat(100001)]) {
     const r = prepareStrictScript({id:"legacy",text:bad},legacy);
     check(r.kind === "profile-rejected" && r.reason === "realm","BOUNDARY realm");
 }
-kind("var x;","profile-rejected"); kind("let x;var x;","conflict"); kind("let x;let x;const tail=0;","blocked");
+kind("var x;","profile-rejected"); kind("let x;var x;","conflict"); kind("let x;let x;const tail=0;","conflict");
 kind('"use strict";function f(){return arguments;}',"blocked");
 kind('"use strict";function f(){eval("1");}',"blocked");
 ready('"use strict";let o={arguments:1};o.arguments;');

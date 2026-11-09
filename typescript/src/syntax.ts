@@ -35,6 +35,7 @@ export type Stmt =
     | { kind: "empty"; loc: Location }
     | { kind: "expression"; loc: Location; expression: Expr }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }
+    | { kind: "const"; loc: Location; name: string; init: Expr }
     | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
     | BlockStmt
     | SwitchStmt

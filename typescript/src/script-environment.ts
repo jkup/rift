@@ -7,17 +7,22 @@ import type { ScriptGuestCallable } from "./script-record.js";
 export type ScriptEnvironment = ScriptDeclarativeEnvironment | ScriptFunctionEnvironment
     | { readonly kind: "global"; readonly record: GlobalEnvironment };
 
-// Only mutable declarative bindings are admitted. Absence here is an internal
-// caller error; an existing uninitialized binding instead produces guest TDZ.
+// Immutable bindings here are const bindings: writes throw even in sloppy code.
+// Absence is a caller error; an uninitialized binding produces guest TDZ.
 class ScriptLocalBindings {
-    private readonly bindings: Map<string, { initialized: boolean; value: Value }> = new Map();
+    private readonly bindings: Map<string, { initialized: boolean; mutable: boolean; value: Value }> = new Map();
     constructor(readonly outer: ScriptEnvironment) {}
     hasBinding(name: string, _loc: Location): InternalBooleanCompletion {
         return { type: "normal", value: this.bindings.has(name) };
     }
     createMutableBinding(name: string, _loc: Location): ValueCompletion {
         if (this.bindings.has(name)) throw new Error("binding already exists: " + name);
-        this.bindings.set(name, { initialized: false, value: UNDEFINED });
+        this.bindings.set(name, { initialized: false, mutable: true, value: UNDEFINED });
+        return normal();
+    }
+    createImmutableBinding(name: string, _loc: Location): ValueCompletion {
+        if (this.bindings.has(name)) throw new Error("binding already exists: " + name);
+        this.bindings.set(name, { initialized: false, mutable: false, value: UNDEFINED });
         return normal();
     }
     initializeBinding(name: string, value: Value, context: OperationContext, _loc: Location): ValueCompletion {
@@ -38,6 +43,7 @@ class ScriptLocalBindings {
         const binding = this.bindings.get(name);
         if (binding === undefined) throw new Error("missing binding: " + name);
         if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
+        if (!binding.mutable) return languageFailure(context.realm, "TypeError", name + " is immutable", loc);
         binding.value = value;
         return normal();
     }

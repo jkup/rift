@@ -282,7 +282,7 @@ const generated = [
     ["duplicate", "let x; let x;", 2, "parse SyntaxError: duplicate-lexical: x"],
     ["duplicate-param", "function f(x,x) {}", 2, "parse SyntaxError: duplicate parameter: x"],
     ["param-let", "function f(x) { let x; }", 2, "parse SyntaxError: formal-lexical: x"],
-    ["const", "const x = 1;", 2, "parse SyntaxError: unsupported or unexpected syntax: const"],
+    ["const", "const x = 1;", 0, ""],
     ["increment", "let x=1; console.log(x++ + 2, x);", 0, "", "3 2\n"],
     ["updates-basic", "let x=5; console.log(++x,x++,--x,x--,x);", 0, "", "6 6 6 6 5\n"],
     ["updates-coercion", "let x='5'; let y=null; let z; console.log(--x,x,++y,y,z--,z);", 0, "", "4 4 1 1 NaN NaN\n"],
@@ -323,7 +323,8 @@ const generated = [
     ["readonly", "'use strict'; undefined=1;", 1, "runtime TypeError: property is not writable: undefined"],
     ["not-callable", "let x=1; x(console.log('arg'));", 1, "runtime TypeError: value is not callable", "arg\n"],
     ["abrupt-args", "function f(a,b) {} f(missing,console.log('no'));", 1, "runtime ReferenceError: missing is not defined"],
-    ["parse-before-execute", "console.log('no'); const x=1;", 2, "parse SyntaxError: unsupported or unexpected syntax: const"],
+    ["parse-before-execute", "console.log('no'); const x=1;", 0, "", "no\n"],
+    ["const-parse-before-execute", "console.log('no'); const x;", 2, "parse SyntaxError: const requires an initializer"],
     ["syntax-depth", "(".repeat(200) + "1" + ")".repeat(200) + ";", 2, "parse SyntaxError: syntax nesting limit exceeded"],
     ["eval-depth", "1" + "+1".repeat(1000) + ";", 1, "runtime RangeError: evaluation nesting limit exceeded"],
     ["source-limit", " ".repeat(100001), 2, "parse SyntaxError: source exceeds 100000 UTF-16 units"],
@@ -569,6 +570,7 @@ executeDriver("set-object", { stdout: "Set ordinary methods passed\n" });
 executeDriver("set-iterator", { stdout: "Set iterators passed\n" });
 executeDriver("error-family", { stdout: "Error family and brand predicate passed\n" });
 executeDriver("for-of", { stdout: "Synchronous for-of passed\n" });
+executeDriver("const-bindings", { stdout: "Const bindings passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

@@ -6,10 +6,10 @@ import {
 } from "./runtime.js";
 import type { Location } from "./syntax.js";
 
-// Ordinary-object, mutable-let subset of ECMA-262 2025 §9.1.1.4.
-// Declaration conflict checks/order belong to a future instantiation caller.
+// Ordinary-object global environment with let/const declarative bindings.
+// Declaration conflict checks and ordering belong to the instantiation caller.
 export class GlobalEnvironment {
-    private readonly lexicals: Map<string, { initialized: boolean; value: Value }> = new Map();
+    private readonly lexicals: Map<string, { initialized: boolean; mutable: boolean; value: Value }> = new Map();
     constructor(readonly globalObject: GuestObject, private readonly globalThis: GuestObject) {}
 
     hasLexicalDeclaration(name: string): boolean { return this.lexicals.has(name); }
@@ -19,7 +19,12 @@ export class GlobalEnvironment {
     }
     createMutableBinding(name: string, loc: Location, realm: Realm | null): ValueCompletion {
         if (this.lexicals.has(name)) return languageFailure(realm, "TypeError", "binding already exists: " + name, loc);
-        this.lexicals.set(name, { initialized: false, value: UNDEFINED });
+        this.lexicals.set(name, { initialized: false, mutable: true, value: UNDEFINED });
+        return normal();
+    }
+    createImmutableBinding(name: string, loc: Location, realm: Realm | null): ValueCompletion {
+        if (this.lexicals.has(name)) return languageFailure(realm, "TypeError", "binding already exists: " + name, loc);
+        this.lexicals.set(name, { initialized: false, mutable: false, value: UNDEFINED });
         return normal();
     }
     initializeBinding(name: string, value: Value, context: OperationContext, loc: Location): ValueCompletion {
@@ -47,6 +52,7 @@ export class GlobalEnvironment {
         const binding = this.lexicals.get(name);
         if (binding !== undefined) {
             if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
+            if (!binding.mutable) return languageFailure(context.realm, "TypeError", name + " is immutable", loc);
             binding.value = value;
             return normal();
         }

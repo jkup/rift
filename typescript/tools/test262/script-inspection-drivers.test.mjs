@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test, {after} from 'node:test';
 import {readFileSync} from 'node:fs';
 import {createDriverRunner} from './test-support/driver-runner.mjs';
+import {constPlanExpectation} from './test-support/const-plan-migrations.mjs';
 
 const {run, save} = createDriverRunner('script-inspection-');
 const json = path => JSON.parse(readFileSync(path, 'utf8'));
@@ -25,7 +26,7 @@ test('Script metadata: 136 accepted snapshots and detached source invariants in 
   }
 });
 
-test('Script declarations: 135 plans and winners, including all 71 literal plans, in both hosts', () => {
+test('Script declarations: 135 plans, 71 historical literals and seven const migrations in both hosts', () => {
   const snapshots = json('docs/validation/ts-034h6-c/replays/plans-results.json');
   const literals = json('fixtures/script-declarations/literal.json');
   assert.equal(literals.length, 71);
@@ -50,10 +51,11 @@ test('Script declarations: 135 plans and winners, including all 71 literal plans
       assert.deepEqual(snapshot.winners[0], row.winners, row.id + ' literal winners');
     }
   }
+  assert.equal([...expected.values()].filter(record => constPlanExpectation(record) !== record).length, 7);
   for (const lane of ['node', 'native']) for (const record of expected.values()) {
     run('script-declarations', lane, record.plan.unit, [], (stdout, label) => {
       const {plan, winners} = JSON.parse(stdout);
-      assert.deepEqual({plan, winners}, record, label);
+      assert.deepEqual({plan, winners}, constPlanExpectation(record), label);
     });
   }
 });

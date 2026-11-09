@@ -35,6 +35,7 @@ const entries = [
     ["test/set-iterator.ts", "set-iterator"],
     ["test/error-family.ts", "error-family"],
     ["test/for-of.ts", "for-of"],
+    ["test/const-bindings.ts", "const-bindings"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

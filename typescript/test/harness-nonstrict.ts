@@ -98,7 +98,15 @@ for(const strict of [false,true]){
 {const r=fresh(),unit={id:"original",text:"function f(){/*keep*/return this;}"};const p=prepareBoundedScript(unit,r);check(p.kind==="ready","D05 prepare");if(p.kind==="ready"){unit.id="forged";unit.text="forged";evaluateScript(createScriptSession(),p.record);expect(run("f.toString();",r),{kind:"string",value:"function f(){/*keep*/return this;}"},"D05 original source");}}
 console.log("PASS D01-D06");
 const negatives=["function f(a,a){}","function f(){return arguments;}","eval('1');","with(o){}","{function f(){}}","switch(1){case 1:function f(){}}","try{}catch(e){var e;}","try{}catch(e){let e;}",'function f(){"use strict";delete x;}','"use strict";delete x;',"function f(){return 7;}const tail=0;","out(9);function f(a=1){}","function f(){return 7;}new C(...xs);","let x;var x;","for(let i=0;;){}",'"use strict";function f(){(delete (x));}'];
-for(const source of negatives){const r=fresh(),out: Value[]=[];recorder(r,out);const p=prepareBoundedScript({id:"N",text:source},r);check(p.kind!=="ready" && out.length===0 && r.globalObject.getOwnProperty("f")===undefined,"negative "+source);}
+for (const source of negatives) {
+    const r=fresh(), out:Value[]=[]; recorder(r,out);
+    const p=prepareBoundedScript({id:"N",text:source},r);
+    check(out.length === 0 && r.globalObject.getOwnProperty("f") === undefined, "preparation is inert");
+    if (source === "function f(){return 7;}const tail=0;") {
+        check(p.kind === "ready", "const tail prepares");
+        expect(run(source+"f()+tail;",r),{kind:"number",value:7},"const tail executes");
+    } else check(p.kind !== "ready", "negative "+source);
+}
 for(const text of [" ".repeat(100001),"(".repeat(129)+"1"+")".repeat(129)+";"]){const p=prepareBoundedScript({id:"N16",text},fresh());check(p.kind==="blocked" && p.rejection.kind==="resource-limit","N16 resource");}
 logCase("negative neighbors",'try{throw 7;}catch(e){var x=9;out(e);out(x);}let o={arguments:8};out(o.arguments);',"7,9,8");
 check(run('"use strict";{function f(){return 7;}f();}',fresh()).type==="normal","strict block neighbor");
@@ -597,7 +605,7 @@ for(const strict of [false,true]){
  const other=prepare("",r);hostFault(()=>{other.functionBodyEnvironment(created.environment);},"incomplete Script function activation");
 }
 {
- const r=fresh();const p=prepareBoundedScript({id:"precedence",text:'"use strict";delete x;const tail=0;'},r),old=prepareStrictScript({id:"precedence",text:'"use strict";delete x;const tail=0;'},r);check(p.kind==="blocked" && p.rejection.kind==="unsupported-syntax" && p.rejection.capabilityCode!=="parse.delete-identifier","bounded whole-source tail");check(old.kind==="blocked" && old.rejection.kind==="unsupported-syntax" && old.rejection.capabilityCode==="parse.delete-identifier","old precedence");
+ const r=fresh();const p=prepareBoundedScript({id:"precedence",text:'"use strict";delete x;const tail=0;'},r),old=prepareStrictScript({id:"precedence",text:'"use strict";delete x;const tail=0;'},r);check(p.kind==="blocked" && p.rejection.kind==="unsupported-syntax" && p.rejection.capabilityCode==="parse.delete-identifier","const tail exposes strict delete rejection");check(old.kind==="blocked" && old.rejection.kind==="unsupported-syntax" && old.rejection.capabilityCode==="parse.delete-identifier","old precedence");
 }
 console.log("PASS late global effects failed FDI and rejection precedence");
 for(const strict of [false,true])for(const hook of ["key","get","set"]){

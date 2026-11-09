@@ -861,6 +861,11 @@ for(const source of [
     '"use strict";let o={__proto__:null};','"use strict";++x;','"use strict";1,2;'
 ]) {
     const r=fresh(),s=createScriptSession();const prepared=prepareStrictScript({id:"negative",text:source},r);
+    if (source === '"use strict";if(false){const x=1;}' || source === '"use strict";switch(1){default:const x=0;}') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "const prepares without execution");
+        check(run(source, r, s).type === "normal", "const executes in branch and switch");
+        continue;
+    }
     if (source === '"use strict";++x;') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "prefix update prepares without execution");
         thrown(run(source, r, s), "ReferenceError");

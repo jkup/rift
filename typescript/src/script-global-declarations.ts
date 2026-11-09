@@ -33,11 +33,11 @@ function validatePlan(plan: ScriptDeclarationPlan): Map<number, PlannedFunction>
     if (root.lexicalNames.length !== root.lexicalDeclarations.length || root.varNames.length !== root.varDeclarations.length) invalid();
     for (let i = 0; i < root.lexicalDeclarations.length; i++) {
         const d = plan.declarations[root.lexicalDeclarations[i]];
-        if (d === undefined || d.kind !== "let" || d.scope !== 0 || d.variableScope !== 0 || d.site.name !== root.lexicalNames[i]) invalid();
+        if (d === undefined || (d.kind !== "let" && d.kind !== "const") || d.scope !== 0 || d.variableScope !== 0 || d.site.name !== root.lexicalNames[i]) invalid();
     }
     for (let i = 0; i < root.varDeclarations.length; i++) {
         const d = plan.declarations[root.varDeclarations[i]];
-        if (d === undefined || d.kind === "let" || d.variableScope !== 0 || d.site.name !== root.varNames[i]) invalid();
+        if (d === undefined || d.kind === "let" || d.kind === "const" || d.variableScope !== 0 || d.site.name !== root.varNames[i]) invalid();
         if (d.kind === "function" && (d.scope !== 0 || !functions.has(d.id))) invalid();
     }
     return functions;
@@ -108,10 +108,12 @@ function instantiateDeclarations(
         if (!varNames.has(d.site.name)) { varNames.set(d.site.name, true); vars.push(d); }
     }
     for (const id of root.lexicalDeclarations) {
-        const site = plan.declarations[id].site;
+        const declaration = plan.declarations[id];
+        const site = declaration.site;
         const tick = context.tick(site.loc);
         if (tick.type !== "normal") return tick;
-        const created = environment.createMutableBinding(site.name, site.loc, context.realm);
+        const created = declaration.kind === "const" ? environment.createImmutableBinding(site.name, site.loc, context.realm)
+            : environment.createMutableBinding(site.name, site.loc, context.realm);
         if (created.type !== "normal") return created;
     }
     for (const d of winners) {

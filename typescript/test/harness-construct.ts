@@ -98,7 +98,16 @@ console.log("PASS I01-I10 I12");
 }
 console.log("PASS I11 D01-D05");
 const negatives=['class C{}','function C(){new.target;}','new C(...a);','new C(7,);','new C?.();','new new C();','new (function(){return arguments;})();','new C(function(){const x=1;});','new C();try{}finally{}','new C();for(let i=0;;){}','new (function named(){})();','new C();function f(a,a){}','new C();with(o){}',"new C();eval('1');",'new -1;','new C();let f=()=>1;'];
-for(const source of negatives)for(const strict of [false,true]){const r=fresh(),out:Value[]=[];recorder(r,out);const s=createScriptSession(),p=prepareBoundedScript({id:"N",text:(strict?'"use strict";':'')+'out(9);'+source},r);check(p.kind!=="ready"&&out.length===0&&s.inspect().steps===0,"negative "+source);}
+for (const source of negatives) for (const strict of [false, true]) {
+    const r=fresh(), out:Value[]=[]; recorder(r,out);
+    const s=createScriptSession();
+    const prefix=strict ? '"use strict";' : '';
+    const p=prepareBoundedScript({id:"N",text:prefix+'out(9);'+source},r);
+    if (source === "new C(function(){const x=1;});") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "const constructor argument prepares");
+        check(run(prefix+"function C(f){f();}"+source,r,s).type === "normal", "const constructor argument executes");
+    } else check(p.kind !== "ready" && out.length === 0 && s.inspect().steps === 0, "negative "+source);
+}
 check(prepareStrictScript({id:"strict",text:'new C();'},fresh()).kind!=="ready","strict entry");
 for(const source of ['"use strict";new f();','function f(){return 7;}new C();']){const r=fresh();throws(run(source,r),"ReferenceError");if(!source.startsWith('"'))check(object(own(r,"f")).constructorSlot!==null,"original hoisting");}
 console.log("PASS N01-N16 original negative migrations");

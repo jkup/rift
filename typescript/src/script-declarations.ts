@@ -8,7 +8,7 @@ import type { Rejection } from "./outcomes.js";
 export type { DeclarationSite } from "./syntax.js";
 export type Declaration = {
   readonly id: number; // unit-local preorder, starting at 0
-  readonly kind: "let" | "var" | "function";
+  readonly kind: "let" | "const" | "var" | "function";
   readonly site: DeclarationSite;
   readonly scope: number; // immediate syntactic scope
   readonly variableScope: number; // closest Script/function
@@ -81,7 +81,7 @@ type Work =
     | { kind: "block-end"; scope: number }
     | { kind: "statement"; node: Stmt; scope: number; variableScope: number }
     | { kind: "expression"; node: Expr; scope: number; variableScope: number }
-    | { kind: "binding"; binding: ParsedBinding; node: Stmt; declarationKind: "let" | "var"; scope: number; variableScope: number };
+    | { kind: "binding"; binding: ParsedBinding; node: Stmt; declarationKind: "let" | "const" | "var"; scope: number; variableScope: number };
 
 export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes | null = null, bounded = false): DeclarationPlanResult {
     const analysis = new DeclarationCollector(unit, tokens, bindings, nodes, bounded);
@@ -308,13 +308,13 @@ class DeclarationCollector {
     expression(node: Expr, scope: number, variableScope: number): void {
         this.work.push({ kind: "expression", node, scope, variableScope });
     }
-    declare(kind: "let" | "var" | "function", binding: ParsedBinding, scope: number, variableScope: number, functionScope: number | null): number {
+    declare(kind: "let" | "const" | "var" | "function", binding: ParsedBinding, scope: number, variableScope: number, functionScope: number | null): number {
         const id = this.declarations.length;
         const site = binding.site;
         this.declarations.push({ id, kind, site: { name: site.name, start: site.start, end: site.end,
             loc: { line: site.loc.line, column: site.loc.column } }, scope, variableScope, functionScope,
             initializer: binding.initializer === null ? null : { start: binding.initializer.start, end: binding.initializer.end } });
-        if (kind === "let" || (kind === "function" && (this.scopes[scope].kind === "block" || this.scopes[scope].kind === "switch"))) {
+        if (kind === "let" || kind === "const" || (kind === "function" && (this.scopes[scope].kind === "block" || this.scopes[scope].kind === "switch"))) {
             this.scopes[scope].lexicalDeclarations.push(id);
             this.scopes[scope].lexicalNames.push(site.name);
         } else {
@@ -350,7 +350,7 @@ class DeclarationCollector {
                 this.work.push({ kind: "catch", node, scope, variableScope });
                 this.statement(node.block, scope, variableScope);
                 break;
-            case "let": case "var": {
+            case "let": case "const": case "var": {
                 const bindings = this.bindings.get(this.tokens[this.tokenIndex(node.loc)].start);
                 if (bindings === undefined) throw new Error("missing binding spans");
                 for (let i = bindings.length - 1; i >= 0; i--) this.work.push({ kind: "binding", binding: bindings[i], node, declarationKind: node.kind, scope, variableScope });
