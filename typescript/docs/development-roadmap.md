@@ -568,3 +568,7 @@ Script string escapes are accepted: 622/622 guests on both hosts, all 132 native
 ### TS-135 checkpoint
 
 String well-formedness is accepted: 623/623 guests on both hosts, all 133 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 143 previous completions remain; the well-formedness fixture adds 23 passing checks, raising completions to 144. See [String well-formedness](string-wellformed.md). Next: String.fromCharCode, String.fromCodePoint and String.prototype.codePointAt; locale-sensitive methods remain a separate design task.
+
+### TS-136 checkpoint
+
+String code-point access and construction are accepted: 624/624 guests on both hosts, all 134 native entries static, tooling 290/290, runner 32/32 and ten probes. All 225 fixture results agree and all 144 previous completions remain. The additional-string-methods fixture now passes nine code-point checks before reaching locale-sensitive methods. See [String code points](string-codepoints.md). Next: Function.prototype.bind, including constructor and instanceof forwarding; exposing the Function constructor remains a separate task.
