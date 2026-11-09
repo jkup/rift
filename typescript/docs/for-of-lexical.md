@@ -40,3 +40,8 @@ expected an empty lexical for-of tail to reject the whole script. The original
 source now checks inert preparation and successful execution; unsupported for-in
 retains whole-script rejection coverage. Its native driver was rebuilt after the
 full 120-entry build, with both initial and replacement records retained.
+
+Acceptance: 608/608 guest cases on each host; all 120 native entries static,
+including 7243/7243 statements in the lexical loop driver. Tooling 290/290,
+runner 31/31 and ten probes pass. All 225 fixed fixture results agree across
+hosts, retaining 131 previous completions and adding for-of-basic.js (132 total).
