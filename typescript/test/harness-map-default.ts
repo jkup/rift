@@ -176,7 +176,7 @@ for(const cross of [false,true])for(const empty of [false,true])for(let row=1;ro
     if(row===14){data(h,wellKnownSpecies,obj(c.getErrorConstructor("Error")));expected="custom";}
     if(row===15||row===16){data(a,"constructor",obj(row===15?poison:c.getErrorConstructor("Error")));selection="LK";}
     if(row===17||row===18||row===19||row===20){
-        const ctor=c.createBuiltinConstructor(empty?"Object":"Array",1,(_r,_args,_ctx,_l):ValueCompletion=>{throw new Error("custom call");},(_k,_args,_ctx,_l):ValueCompletion=>{throw new Error("custom construct");});
+        const ctor=c.createBuiltinConstructor(empty?"Object":"Array",1,(_r,_args,_ctx,_l):ValueCompletion=>{throw new Error("custom call");},(_k,_newTarget,_args,_ctx,_l):ValueCompletion=>{throw new Error("custom construct");});
         data(ctor,"prototype",obj(c.arrayPrototype));
         if(row===19||row===20){a.internalDelete("constructor");data(f.b.arrayPrototype,"constructor",obj(ctor));}else data(a,"constructor",obj(ctor));selection="LK";
         if(row===18){ctor.bootstrapDefine(wellKnownSpecies,{get:obj(poison),configurable:true});expected="abrupt";}
@@ -387,7 +387,7 @@ console.log("PASS exhaustive primitive controls="+primitiveControls+" length coe
 let objectLinkControls=0;
 for(const cross of [false,true])for(const empty of [false,true])for(const selected of ["undefined","null","invalid","custom","poison"]) {
     const f=fixture(traces[empty?0:1],cross);let invoked=0,gets=0;
-    const ctor=f.c.createBuiltinConstructor("Object",1,(_r,_args,_ctx,_l):ValueCompletion=>{invoked++;throw new Error("Object call forbidden");},(_k,_args,_ctx,_l):ValueCompletion=>{invoked++;throw new Error("Object construct forbidden");});
+    const ctor=f.c.createBuiltinConstructor("Object",1,(_r,_args,_ctx,_l):ValueCompletion=>{invoked++;throw new Error("Object call forbidden");},(_k,_newTarget,_args,_ctx,_l):ValueCompletion=>{invoked++;throw new Error("Object construct forbidden");});
     data(ctor,"prototype",obj(f.b.objectPrototype));f.array.internalDelete("constructor");data(f.b.arrayPrototype,"constructor",obj(ctor));
     if(selected==="undefined")data(ctor,wellKnownSpecies,UNDEFINED);
     if(selected==="null")data(ctor,wellKnownSpecies,{kind:"null"});
