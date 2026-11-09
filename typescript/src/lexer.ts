@@ -202,7 +202,7 @@ export function lex(source: string, script = false): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: four, loc, start, end: i });
-        } else if (three === "===" || three === "!==" || (script && ["**=", "<<=", ">>=", ">>>"].includes(three))) {
+        } else if (three === "===" || three === "!==" || (script && ["**=", "<<=", ">>=", ">>>", "..."].includes(three))) {
             advance();
             advance();
             advance();

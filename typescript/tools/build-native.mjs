@@ -43,6 +43,7 @@ const entries = [
     ["test/finally.ts", "finally"],
     ["test/for-lexical.ts", "for-lexical"],
     ["test/for-in.ts", "for-in"],
+    ["test/array-spread.ts", "array-spread"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

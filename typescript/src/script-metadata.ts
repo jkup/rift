@@ -131,7 +131,7 @@ class MetadataCollector {
             case "array":
                 for (let i = expr.elements.length - 1; i >= 0; i--) {
                     const item = expr.elements[i];
-                    if (item !== null) this.expression(item, strict, parent);
+                    if (item !== null) this.expression(item.kind === "spread" ? item.expression : item, strict, parent);
                 }
                 break;
             case "object": for (let i = expr.values.length - 1; i >= 0; i--) this.expression(expr.values[i], strict, parent); break;

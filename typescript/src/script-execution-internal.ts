@@ -974,15 +974,34 @@ class ExecutionEngine {
             }
             case "array": {
                 const object = this.context.realm.createArray();
+                let index = 0;
                 for (let i = 0; i < expr.elements.length; i++) {
                     // Holes cost a slot tick too; nested elements share this budget.
                     const budget = this.tick(expr.loc);
                     if (budget.type !== "normal") return budget;
                     const element = expr.elements[i];
-                    if (element === null) continue;
+                    if (element === null) { index++; continue; }
+                    if (element.kind === "spread") {
+                        if (env !== null) throw new Error("Script array spread AST requires Script execution");
+                        const input = this.#value(element.expression);
+                        if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
+                        const acquired = getIterator(input.value, this.context, element.loc);
+                        if (acquired.type === "throw") return acquired;
+                        while (true) {
+                            const next = iteratorStepValue(acquired.value, this.context, element.loc);
+                            if (next.type === "throw") return next;
+                            if (next.done) break;
+                            const defined = object.defineOwnProperty(String(index++), {
+                                value: next.value, writable: true, enumerable: true, configurable: true,
+                            }, this.context, element.loc);
+                            if (defined.type === "throw") return defined;
+                            if (!defined.value) throw new Error("fresh array spread element invariant");
+                        }
+                        continue;
+                    }
                     const value = this.#eval(element, env, receiver);
                     if (value.type !== "normal") return value;
-                    const defined = object.defineOwnProperty(String(i), {
+                    const defined = object.defineOwnProperty(String(index++), {
                         value: value.value, writable: true, enumerable: true, configurable: true,
                     }, this.context, expr.loc);
                     if (defined.type === "throw") return defined;
@@ -990,7 +1009,7 @@ class ExecutionEngine {
                 }
                 // Index definitions grow length, but trailing holes do not define keys.
                 const length = object.defineOwnProperty("length", {
-                    value: { kind: "number", value: expr.elements.length },
+                    value: { kind: "number", value: index },
                 }, this.context, expr.loc);
                 if (length.type === "throw") return length;
                 if (!length.value) throw new Error("fresh array literal length invariant");

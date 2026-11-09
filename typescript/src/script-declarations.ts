@@ -439,7 +439,7 @@ class DeclarationCollector {
             case "array":
                 for (let i = node.elements.length - 1; i >= 0; i--) {
                     const item = node.elements[i];
-                    if (item !== null) this.expression(item, scope, variableScope);
+                    if (item !== null) this.expression(item.kind === "spread" ? item.expression : item, scope, variableScope);
                 }
                 break;
             case "object": for (let i = node.values.length - 1; i >= 0; i--) this.expression(node.values[i], scope, variableScope); break;

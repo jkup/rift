@@ -10,8 +10,9 @@ export type TryCatchStmt = { kind: "try-catch"; loc: Location; block: BlockStmt;
     catchLoc: Location; catchStart: number; catchEnd: number; handler: BlockStmt };
 export type TryFinallyStmt = { kind: "try-finally"; loc: Location; body: BlockStmt | TryCatchStmt; finalizer: BlockStmt };
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
+export type ArrayElement = Expr | { kind: "spread"; loc: Location; expression: Expr } | null;
 export type Expr =
-    | { kind: "array"; loc: Location; elements: (Expr | null)[] }
+    | { kind: "array"; loc: Location; elements: ArrayElement[] }
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
     | { kind: "template"; loc: Location; strings: string[]; expressions: Expr[] }
     | { kind: "identifier"; loc: Location; name: string }

@@ -3,7 +3,7 @@ export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatement
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
+import type { Diagnostic, Expr, ArrayElement, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -704,7 +704,7 @@ class Parser {
             return { kind: "unary", loc, op: t.text, operand };
         }
         if (t.text === "[") {
-            const elements: (Expr | null)[] = [];
+            const elements: ArrayElement[] = [];
             while (this.error === null && !this.at("]")) {
                 if (this.eat(",")) {
                     elements.push(null);
@@ -714,7 +714,10 @@ class Parser {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.array-spread" }, "array spread is unsupported", this.current().loc);
                     break;
                 }
-                elements.push(this.expression(1));
+                if (this.structuralPlan() && this.eat("...")) {
+                    const spread = this.tokens[this.index - 1];
+                    elements.push({ kind: "spread", loc: spread.loc, expression: this.expression(1) });
+                } else elements.push(this.expression(1));
                 if (!this.eat(",")) break;
             }
             this.expect("]");

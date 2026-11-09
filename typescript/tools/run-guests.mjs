@@ -413,7 +413,7 @@ for (const [name, source, expected] of [
     ["eof", "let a = [", { status: 2, error: "1:10: parse SyntaxError: unsupported or unexpected syntax: <eof>" }],
     ["separator", "let a = [1 2];", { status: 2, error: "1:12: parse SyntaxError: expected ']', found '2'" }],
     ["delimiter", "let a = [1);", { status: 2, error: "1:11: parse SyntaxError: expected ']', found ')'" }],
-    ["spread", "let a = [...x];", { status: 2, error: "1:10: parse SyntaxError: array spread is unsupported" }],
+    ["spread", "let a = [...x];", { status: 1, error: "1:13: runtime ReferenceError: x is not defined" }],
     ["binding-pattern", "let [x] = [1];", { status: 2, error: "1:5: parse SyntaxError: expected binding identifier" }],
     ["assignment-pattern", "[x] = [1];", { status: 2, error: "1:1: parse SyntaxError: invalid assignment target" }],
     ["comma-operator", "let a = [(1, 2)];", { status: 2, error: "1:12: parse SyntaxError: expected ')', found ','" }],
@@ -580,6 +580,7 @@ executeDriver("uri", { stdout: "URI codecs passed\n" });
 executeDriver("finally", { stdout: "Finally passed\n" });
 executeDriver("for-lexical", { stdout: "Lexical for passed\n" });
 executeDriver("for-in", { stdout: "For-in passed\n" });
+executeDriver("array-spread", { stdout: "Array spread passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });
