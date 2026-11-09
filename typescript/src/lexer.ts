@@ -36,7 +36,7 @@ export function lex(source: string, script = false): LexResult {
         rejection = reason;
         error = { phase: "parse", name: "SyntaxError", message, loc };
     }
-    function hexDigits(count: number, braced: boolean, loc: Location): number {
+    function hexDigits(count: number, braced: boolean, loc: Location, message: string): number {
         let value = 0, digits = 0;
         while (i < source.length && (braced ? source.charAt(i) !== "}" : digits < count)) {
             const digit = digitValue(source.charAt(i));
@@ -45,11 +45,18 @@ export function lex(source: string, script = false): LexResult {
             if (value > 0x10ffff) break;
         }
         if (digits === 0 || value > 0x10ffff || (braced ? source.charAt(i) !== "}" : digits !== count)) {
-            fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "invalid template escape", loc);
+            fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, message, loc);
             return 0;
         }
         if (braced) advance();
         return value;
+    }
+    function hexEscape(unit: string, loc: Location, message: string): string {
+        const braced = unit === "u" && source.charAt(i) === "{";
+        if (braced) advance();
+        const value = hexDigits(unit === "x" ? 2 : 4, braced, loc, message);
+        return value <= 0xffff ? String.fromCharCode(value)
+            : String.fromCharCode(0xd800 + Math.floor((value - 0x10000) / 1024), 0xdc00 + (value - 0x10000) % 1024);
     }
     function templatePart(initial: boolean, start: number, loc: Location): void {
         advance();
@@ -83,12 +90,7 @@ export function lex(source: string, script = false): LexResult {
                 else if (unit === "v") unit = "\v";
                 else if (unit === "0" && !digit(source.charAt(i))) unit = "\0";
                 else if (digit(unit)) fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "invalid template escape", loc);
-                else if (unit === "x" || unit === "u") {
-                    const braced = unit === "u" && source.charAt(i) === "{";
-                    if (braced) advance();
-                    const value = hexDigits(unit === "x" ? 2 : 4, braced, loc);
-                    unit = value <= 0xffff ? String.fromCharCode(value) : String.fromCharCode(0xd800 + Math.floor((value - 0x10000) / 1024), 0xdc00 + (value - 0x10000) % 1024);
-                }
+                else if (unit === "x" || unit === "u") unit = hexEscape(unit, loc, "invalid template escape");
             } else if (unit === "\r") {
                 if (source.charAt(i) === "\n") advance();
                 unit = "\n";
@@ -181,10 +183,20 @@ export function lex(source: string, script = false): LexResult {
                 }
                 if (unit === "\\") {
                     unit = advance();
+                    if (script && lineTerminator(unit)) {
+                        if (unit === "\r" && source.charAt(i) === "\n") advance();
+                        continue;
+                    }
                     if (unit === "n") unit = "\n";
                     else if (unit === "r") unit = "\r";
                     else if (unit === "t") unit = "\t";
-                    else if (unit !== "\\" && unit !== "'" && unit !== '"') fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "unsupported string escape", loc);
+                    else if (script && unit === "b") unit = "\b";
+                    else if (script && unit === "f") unit = "\f";
+                    else if (script && unit === "v") unit = "\v";
+                    else if (script && unit === "0" && !digit(source.charAt(i))) unit = "\0";
+                    else if (script && (unit === "x" || unit === "u")) unit = hexEscape(unit, loc, "invalid string escape");
+                    else if ((script && digit(unit)) || (!script && unit !== "\\" && unit !== "'" && unit !== '"'))
+                        fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "unsupported string escape", loc);
                 }
                 text += unit;
             }

@@ -48,6 +48,7 @@ const entries = [
     ["test/object-methods.ts", "object-methods"],
     ["test/trailing-commas.ts", "trailing-commas"],
     ["test/string-html.ts", "string-html"],
+    ["test/string-escapes.ts", "string-escapes"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

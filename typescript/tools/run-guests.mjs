@@ -585,6 +585,7 @@ executeDriver("argument-spread", { stdout: "Argument spread passed\n" });
 executeDriver("object-methods", { stdout: "Object methods passed\n" });
 executeDriver("trailing-commas", { stdout: "Trailing commas passed\n" });
 executeDriver("string-html", { stdout: "String HTML passed\n" });
+executeDriver("string-escapes", { stdout: "String escapes passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });
