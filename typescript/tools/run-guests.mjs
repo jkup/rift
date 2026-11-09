@@ -452,7 +452,7 @@ for (const [name, source, expected] of [
     ["alternate-eof", "true ? 1 :", { status: 2, error: "1:11: parse SyntaxError: unsupported or unexpected syntax: <eof>" }],
     ["assignment-target", "(true ? a : b) = 1;", { status: 2, error: "1:1: parse SyntaxError: invalid assignment target" }],
     ["unchosen-syntax", "console.log('no'); true ? 1 :;", { status: 2, error: "1:30: parse SyntaxError: unsupported or unexpected syntax: ;" }],
-    ["optional-chain", "true?.x;", { status: 2, error: "1:5: parse SyntaxError: unsupported operator: ?." }],
+    ["optional-chain", "true?.x;", { status: 0, stdout: "" }],
     ["nullish", "true ?? 1;", { status: 2, error: "1:7: parse SyntaxError: unsupported or unexpected syntax: ?" }],
     ["comma", "true ? 1, 2 : 3;", { status: 2, error: "1:9: parse SyntaxError: expected ':', found ','" }],
     ["abrupt-test", "missing ? console.log('no') : console.log('no');", { status: 1, error: "1:1: runtime ReferenceError: missing is not defined" }],
@@ -600,6 +600,7 @@ executeDriver("arguments", { stdout: "Arguments passed\n" });
 executeDriver("sloppy-block-functions", { stdout: "Sloppy block functions passed\n" });
 executeDriver("locale-string", { stdout: "Locale string conversions passed\n" });
 executeDriver("labels", { stdout: "Labelled statements passed\n" });
+executeDriver("optional-chain", { stdout: "Optional chaining passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

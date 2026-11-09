@@ -69,6 +69,7 @@ const entries = [
     ["test/sloppy-block-functions.ts", "sloppy-block-functions"],
     ["test/locale-string.ts", "locale-string"],
     ["test/labels.ts", "labels"],
+    ["test/optional-chain.ts", "optional-chain"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],
     ["test/json-parse.ts", "json-parse"],
