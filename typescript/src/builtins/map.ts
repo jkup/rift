@@ -1,3 +1,4 @@
+import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestMap } from "../map-object.js";
 import { addEntriesFromIterable } from "../iterable-entries.js";
@@ -15,10 +16,12 @@ function mapReceiver(receiver: Value, context: OperationContext, loc: Location):
 export function registerMap(realm: Realm): void {
     const constructor = realm.createBuiltinConstructor("Map", 0,
         (_receiver, _args, context, loc): ValueCompletion => languageFailure(context.realm, "TypeError", "Map requires new", loc),
-        (_callee, args, context, loc): ValueCompletion => {
+        (callee, args, context, loc): ValueCompletion => {
+            const prototype = getPrototypeFromConstructor(callee, "Map", context, loc);
+            if (prototype.type === "throw") return prototype;
             const allocation = context.tick(loc);
             if (allocation.type === "throw") return allocation;
-            const map = new GuestMap(context.realm.mapPrototype);
+            const map = new GuestMap(prototype.value);
             const receiver: Value = { kind: "object", object: map };
             const input = args.length === 0 ? UNDEFINED : args[0];
             if (input.kind === "undefined" || input.kind === "null") return normal(receiver);

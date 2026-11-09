@@ -1,3 +1,4 @@
+import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
 import { invoke } from "../invoke.js";
@@ -10,9 +11,9 @@ import { normal, UNDEFINED, type GuestObject, type Value, type ValueCompletion, 
 import type { Location } from "../syntax.js";
 
 function arrayArguments(callee: GuestObject, args: Value[], context: OperationContext, loc: Location): ValueCompletion {
-    const prototype = callee.internalGet("prototype", { kind: "object", object: callee }, context, loc);
+    const prototype = getPrototypeFromConstructor(callee, "Array", context, loc);
     if (prototype.type === "throw") return prototype;
-    const proto = prototype.value.kind === "object" ? prototype.value.object : context.realm.arrayPrototype;
+    const proto = prototype.value;
     const allocation = context.tick(loc);
     if (allocation.type === "throw") return allocation;
     const array = new GuestArray(proto);

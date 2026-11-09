@@ -1,3 +1,4 @@
+import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
 import { GuestError, GuestObject, UNDEFINED, normal, languageFailure, type ErrorName,
@@ -12,10 +13,9 @@ function messageString(value: Value, context: OperationContext, loc: Location): 
 }
 
 function createPublicError(name: ErrorName, callee: GuestObject, args: Value[], context: OperationContext, loc: Location): ValueCompletion {
-    const target: Value = { kind: "object", object: callee };
-    const prototype = callee.internalGet("prototype", target, context, loc);
+    const prototype = getPrototypeFromConstructor(callee, name, context, loc);
     if (prototype.type === "throw") return prototype;
-    const proto = prototype.value.kind === "object" ? prototype.value.object : context.realm.getErrorPrototype(name);
+    const proto = prototype.value;
     const allocation = context.tick(loc);
     if (allocation.type === "throw") return allocation;
     const error = new GuestError(proto);

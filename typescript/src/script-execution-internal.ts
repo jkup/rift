@@ -1,3 +1,4 @@
+import { getPrototypeFromConstructor } from "./constructor-prototype.js";
 import type { ClassExpr } from "./syntax.js";
 import type { ArrayPattern, ObjectPattern, DestructuringPattern } from "./syntax.js";
 import { instanceofOperator } from "./builtins/function.js";
@@ -2471,9 +2472,9 @@ class ExecutionEngine {
         try {
             // Reserve constructor depth before getters; prototype/allocation
             // failures still belong to the caller frame and Realm.
-            const prototype = callee.object.internalGet("prototype", callee, this.context, loc);
+            const prototype = getPrototypeFromConstructor(callee.object, "Object", this.context, loc);
             if (prototype.type === "throw") { this.#capture(prototype); return prototype; }
-            const proto = prototype.value.kind === "object" ? prototype.value.object : fn.realm.objectPrototype;
+            const proto = prototype.value;
             const budget = this.tick(loc);
             if (budget.type === "throw") { this.#capture(budget); return budget; }
             const receiver: Value = { kind: "object", object: new GuestObject(proto) };

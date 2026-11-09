@@ -1,3 +1,4 @@
+import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestSet } from "../set-object.js";
 import { getIterator, iteratorCloseOnThrow, iteratorStepValue } from "../iterator.js";
@@ -14,10 +15,12 @@ function setReceiver(receiver: Value, context: OperationContext, loc: Location):
 export function registerSet(realm: Realm): void {
     const constructor = realm.createBuiltinConstructor("Set", 0,
         (_receiver, _args, context, loc): ValueCompletion => languageFailure(context.realm, "TypeError", "Set requires new", loc),
-        (_callee, args, context, loc): ValueCompletion => {
+        (callee, args, context, loc): ValueCompletion => {
+            const prototype = getPrototypeFromConstructor(callee, "Set", context, loc);
+            if (prototype.type === "throw") return prototype;
             const allocation = context.tick(loc);
             if (allocation.type === "throw") return allocation;
-            const set = new GuestSet(context.realm.setPrototype);
+            const set = new GuestSet(prototype.value);
             const receiver: Value = {kind: "object", object: set};
             const input = args.length === 0 ? UNDEFINED : args[0];
             if (input.kind === "undefined" || input.kind === "null") return normal(receiver);

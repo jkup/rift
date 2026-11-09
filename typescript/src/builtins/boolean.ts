@@ -1,3 +1,4 @@
+import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestBoolean } from "../primitive-objects.js";
 import { languageFailure, normal, truthy, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
@@ -10,9 +11,9 @@ export function registerBoolean(realm: Realm): void {
         (_receiver, args, _context, _loc) => normal({ kind: "boolean", value: truthy(args.length === 0 ? UNDEFINED : args[0]) }),
         (callee, args, context, loc) => {
             const value = truthy(args.length === 0 ? UNDEFINED : args[0]);
-            const prototype = callee.internalGet("prototype", { kind: "object", object: callee }, context, loc);
+            const prototype = getPrototypeFromConstructor(callee, "Boolean", context, loc);
             if (prototype.type === "throw") return prototype;
-            const proto = prototype.value.kind === "object" ? prototype.value.object : context.realm.booleanPrototype;
+            const proto = prototype.value;
             const allocation = context.tick(loc);
             if (allocation.type === "throw") return allocation;
             return normal({ kind: "object", object: new GuestBoolean(value, proto) });

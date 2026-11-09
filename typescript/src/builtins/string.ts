@@ -1,3 +1,4 @@
+import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestStringObject } from "../primitive-objects.js";
 import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
@@ -20,9 +21,9 @@ function constructString(callee: GuestObject, args: Value[], context: OperationC
     const converted = stringArgument(args, context, loc);
     if (converted.type === "throw") return converted;
     // Conversion completes before prototype lookup or any allocation charge.
-    const prototype = callee.internalGet("prototype", { kind: "object", object: callee }, context, loc);
+    const prototype = getPrototypeFromConstructor(callee, "String", context, loc);
     if (prototype.type === "throw") return prototype;
-    const proto = prototype.value.kind === "object" ? prototype.value.object : context.realm.stringPrototype;
+    const proto = prototype.value;
     const allocation = context.tick(loc);
     if (allocation.type === "throw") return allocation;
     return normal({ kind: "object", object: new GuestStringObject(converted.value, proto) });

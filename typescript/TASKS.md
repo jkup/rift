@@ -3663,7 +3663,7 @@ Simple catch-var declarations accepted (c62d55a4, audit migration 7620d5b6): bot
 
 ## TS-156 — Constructor prototype selection
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-09. Extract GetPrototypeFromConstructor-style selection shared by current Script constructors, with prototype getter order and fallback intrinsics from the supplied constructor Realm. Preserve equal-target behavior and exact allocation/coercion ordering. Cover cross-Realm and bound constructor metadata directly before threading distinct newTarget through runtime and builtins. Own a new constructor-prototype helper/test, existing constructor allocation callers, manifests and design notes. Canonical new.target source stays fixed during its validation. No Reflect or inheritance admission in this increment.
+Status: **in progress — integrated; canonical validation pending**. Owner: Codex catch-up chat, 2026-11-09. Extract GetPrototypeFromConstructor-style selection shared by current Script constructors, with prototype getter order and fallback intrinsics from the supplied constructor Realm. Preserve equal-target behavior and exact allocation/coercion ordering. Cover cross-Realm and bound constructor metadata directly before threading distinct newTarget through runtime and builtins. Own a new constructor-prototype helper/test, existing constructor allocation callers, manifests and design notes. Canonical new.target source stays fixed during its validation. No Reflect or inheritance admission in this increment.
 
 ## TS-157 — Distinct constructor targets
 
