@@ -544,3 +544,7 @@ Array literal spread is accepted: 617/617 guests on each host, all 127 native en
 ### TS-129 checkpoint
 
 Call and constructor spread are accepted: 618/618 guests on each host, all 128 native entries static (one isolated Zig cache-failure rebuild), tooling 290/290, runner 31/31 and ten probes. All 225 fixture results agree and all 140 prior completions remain; no fixture completion increase in this slice. See [argument spread](argument-spread.md) for evaluation-order and build evidence. Next: object literal method shorthand and accessors; the getter/setter fixture requires both forms, correct callable metadata and non-constructability.
+
+### TS-130 checkpoint
+
+Fixed-key object methods and accessors are accepted: 619/619 guests on both hosts, all 129 native entries static, all 290 tooling checks covered after one explicit historical diagnostic migration, runner 31/31 and ten probes. All 225 fixture outputs agree; the getter/setter fixture prints 17 passing checks and raises completed files to 141. Its PASS - format is not recognized by the reporter, so it remains an unchecked completion. See [object methods](object-methods.md) for scope and retained failure evidence. Next: correct that reporter gap with anchored marker tests, then support trailing commas in object literals and call/constructor arguments. The property-descriptor fixture requires both comma forms.

@@ -44,6 +44,15 @@ for (const [driver, directory, count] of [
       second: {name: 'f', start: 39, end: 40, loc: {line: 1, column: 40}},
     }]});
   }
+  if (driver === 'script-strict-parameter-audit') {
+    const row = rows.find(row => row.id === 'E40');
+    assert.equal(row.text, 'let f={m(a,a){"use strict";}};');
+    expected.set(row.id, {
+      kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate method parameter', loc: {line: 1, column: 8}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
+    });
+  }
   for (const lane of ['node', 'native']) for (const row of rows) {
     const file = row.id === 'R0' ? `test/fixtures/${driver}/a.js` : row.id === 'R1' ? `test/fixtures/${driver}/b.js` : undefined;
     run(driver, lane, {...row, file}, [], (stdout, label) => assert.deepEqual(JSON.parse(stdout).audit, expected.get(row.id), label));
