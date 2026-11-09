@@ -607,6 +607,7 @@ executeDriver("inherited-strictness", { stdout: "Inherited strictness passed\n" 
 executeDriver("array-assignment-patterns", { stdout: "Array assignment patterns passed\n" });
 executeDriver("array-binding-patterns", { stdout: "Array binding patterns passed\n" });
 executeDriver("object-binding-patterns", { stdout: "Object binding patterns passed\n" });
+executeDriver("object-assignment-patterns", { stdout: "Object assignment patterns passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

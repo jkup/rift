@@ -1310,7 +1310,7 @@ class ExecutionEngine {
                 if (env !== null) throw new Error("Script pattern requires Script execution");
                 const input = this.#value(expr.value);
                 if (input.type === "throw") return input;
-                const assigned = this.#arrayPattern(expr.pattern, input.value);
+                const assigned = this.#initializePattern(expr.pattern, null, input.value, null, null);
                 return assigned.type === "throw" ? assigned : input;
             }
             case "assign": {

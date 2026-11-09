@@ -24,7 +24,7 @@ export type ObjectPattern = { kind: "object-pattern"; loc: Location; properties:
 export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "binding"; loc: Location; site: DeclarationSite } | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
 export type Expr =
     | ChainExpr
-    | { kind: "destructure"; loc: Location; pattern: ArrayPattern; value: Expr }
+    | { kind: "destructure"; loc: Location; pattern: ArrayPattern | ObjectPattern; value: Expr }
     | { kind: "array"; loc: Location; elements: ArrayElement[] }
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
     | { kind: "template"; loc: Location; strings: string[]; expressions: Expr[] }
@@ -48,7 +48,7 @@ export type ForLexicalStmt = { kind: "for-lexical"; loc: Location; start: number
     test: Expr | null; update: Expr | null; body: Stmt };
 export type ForLexicalBinding = { kind: "lexical"; declarationKind: "let" | "const"; site: DeclarationSite };
 export type ForPatternBinding = { kind: "pattern"; declarationKind: "let" | "const" | "var"; pattern: ArrayPattern | ObjectPattern; sites: DeclarationSite[] };
-export type ForAssignmentPattern = { kind: "assignment-pattern"; loc: Location; pattern: ArrayPattern };
+export type ForAssignmentPattern = { kind: "assignment-pattern"; loc: Location; pattern: ArrayPattern | ObjectPattern };
 export type ForEachStmt = { kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding | ForPatternBinding | ForAssignmentPattern; iterable: Expr; body: Stmt };
 export type Stmt =
     | VarStmt

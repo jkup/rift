@@ -194,7 +194,10 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
     return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates, lexicalCandidates: parser.lexicalCandidates };
 }
+type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; value: Expr } | { kind: "rest"; value: Expr };
+type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupported: { reason: Rejection; message: string; loc: Location } | null };
 class Parser {
+    private readonly objectCovers = new Map<Expr, ObjectCover>();
     private readonly arrayTrailingCommas = new Set<Expr>();
     readonly lexicalCandidates: LexicalStatementCandidate[] = [];
     readonly numericCandidates: NumericAssignmentCandidate[] = [];
@@ -251,6 +254,9 @@ class Parser {
     }
     program(): ParseResult {
         const body = this.list(false, []);
+        for (const cover of this.objectCovers.values()) {
+            if (cover.unsupported !== null) this.fail(cover.unsupported.reason, cover.unsupported.message, cover.unsupported.loc);
+        }
         return { body, error: this.error, rejection: this.rejection };
     }
     list(braced: boolean, parameters: string[]): Stmt[] {
@@ -450,9 +456,9 @@ class Parser {
                 if (initializer.kind === "var") {
                     if (initializer.declarations.length !== 1 || initializer.declarations[0].init !== null)
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, kind + " requires one uninitialized binding", initializer.loc);
-                } else if (initializer.kind === "array" && !this.isParenthesized(initializer)) {
+                } else if ((initializer.kind === "array" || initializer.kind === "object") && !this.isParenthesized(initializer)) {
                     const pattern = this.assignmentPattern(initializer);
-                    if (pattern.kind !== "array-pattern") throw new Error("array loop pattern invariant");
+                    if (pattern.kind !== "array-pattern" && pattern.kind !== "object-pattern") throw new Error("loop pattern invariant");
                     return this.forEach(kind, loc, start, { kind: "assignment-pattern", loc: initializer.loc, pattern });
                 } else if (initializer.kind !== "identifier" && initializer.kind !== "member") {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + kind + " assignment target", initializer.loc);
@@ -859,9 +865,9 @@ class Parser {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unparenthesized unary exponentiation base", left.loc);
             const right = this.expression(precedence === 1 || op === "**" ? precedence : precedence + 1, allowIn);
             if (precedence === 1) {
-                if (op === "=" && left.kind === "array" && this.structuralPlan() && !this.parenthesized.has(left)) {
+                if (op === "=" && (left.kind === "array" || left.kind === "object") && this.structuralPlan() && !this.isParenthesized(left)) {
                     const pattern = this.assignmentPattern(left);
-                    if (pattern.kind !== "array-pattern") throw new Error("array pattern invariant");
+                    if (pattern.kind !== "array-pattern" && pattern.kind !== "object-pattern") throw new Error("assignment pattern invariant");
                     left = { kind: "destructure", loc, pattern, value: right };
                     continue;
                 }
@@ -903,9 +909,98 @@ class Parser {
         this.depth--;
         return left;
     }
+    private objectExpression(loc: Location): Expr {
+        const properties: ObjectProperty[] = [];
+        const cover: ObjectCover = { entries: [], trailingComma: false, unsupported: null };
+        while (!this.at("}") && this.error === null) {
+            if (this.at("...")) {
+                const spread = this.take();
+                const value = this.expression(1);
+                cover.entries.push({ kind: "rest", value });
+                cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, message: "expected literal property name", loc: spread.loc };
+            } else {
+                const first = this.current();
+                let kind: "data" | "get" | "set" = "data";
+                let key: Expr;
+                let name = "";
+                let shorthand = false;
+                if (this.eat("[")) {
+                    key = this.expression(1);
+                    this.expect("]");
+                    cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, message: "expected literal property name", loc: first.loc };
+                } else {
+                    let token = this.take();
+                    if (token.kind === "word" && (token.text === "get" || token.text === "set") && !this.at(":") && !this.at("(") && !this.at("=") && !this.at(",") && !this.at("}")) {
+                        kind = token.text;
+                        token = this.take();
+                    }
+                    if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number")
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", token.loc);
+                    name = token.kind === "number" ? String(Number(token.text.replaceAll("_", ""))) : token.text;
+                    key = { kind: "literal", loc: token.loc, value: name };
+                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval");
+                }
+                if (this.at("(")) {
+                    const fn = this.functionTail(first.loc, first.start);
+                    if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
+                    if (new Set(fn.params).size !== fn.params.length)
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate method parameter", first.loc);
+                    const value: Expr = { kind: "function", loc: first.loc, params: fn.params, parameters: fn.parameters, body: fn.body,
+                        source: { source: fn.source.source, start: fn.source.start, end: fn.source.end, method: true, rest: fn.source.rest, bodyLoc: fn.source.bodyLoc } };
+                    properties.push({ kind, key: name, value });
+                    cover.entries.push({ kind: "method", key, value });
+                } else {
+                    if (kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
+                    let value: Expr;
+                    if (this.eat(":")) {
+                        value = this.expression(1);
+                        if (name === "__proto__") cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, message: "prototype literal syntax is unsupported", loc: key.loc };
+                    } else {
+                        if (!shorthand) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected property value", first.loc);
+                        cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, message: "expected ':', found '" + this.current().text + "'", loc: this.current().loc };
+                        value = { kind: "identifier", loc: first.loc, name };
+                        if (this.eat("=")) value = { kind: "assign", loc: first.loc, target: value, value: this.expression(1) };
+                    }
+                    properties.push({ kind: "data", key: name, value });
+                    cover.entries.push({ kind: "data", key, value });
+                }
+            }
+            if (!this.eat(",")) break;
+            cover.trailingComma = this.at("}");
+        }
+        this.expect("}");
+        return this.retainObjectCover({ kind: "object", loc, properties }, cover);
+    }
     // Keep the collection key at its declared Expr type for scriptc (TS-152 reduction).
     private isParenthesized(expr: Expr): boolean { return this.parenthesized.has(expr); }
+    private objectCover(expr: Expr): ObjectCover | undefined { return this.objectCovers.get(expr); }
+    private consumeObjectCover(expr: Expr): void { this.objectCovers.delete(expr); }
+    private retainObjectCover(expr: Expr, cover: ObjectCover): Expr { this.objectCovers.set(expr, cover); return expr; }
+    private assignmentElement(expr: Expr): PatternElement {
+        if ((expr.kind === "assign" || expr.kind === "destructure") && !this.isParenthesized(expr))
+            return { pattern: expr.kind === "assign" ? this.assignmentPattern(expr.target) : expr.pattern, initializer: expr.value };
+        return { pattern: this.assignmentPattern(expr), initializer: null };
+    }
     assignmentPattern(expr: Expr): DestructuringPattern {
+        if (expr.kind === "object" && !this.isParenthesized(expr)) {
+            const cover = this.objectCover(expr);
+            if (cover === undefined) throw new Error("object cover invariant");
+            this.consumeObjectCover(expr);
+            const pattern: ObjectPattern = { kind: "object-pattern", loc: expr.loc, properties: [], rest: null };
+            for (let i = 0; i < cover.entries.length; i++) {
+                const entry = cover.entries[i];
+                if (entry.kind === "rest") {
+                    if (i !== cover.entries.length - 1 || cover.trailingComma || (entry.value.kind !== "identifier" && entry.value.kind !== "member"))
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid object rest target", entry.value.loc);
+                    pattern.rest = this.assignmentPattern(entry.value);
+                } else {
+                    if (entry.kind === "method") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "method in assignment pattern", entry.value.loc);
+                    pattern.properties.push({ key: entry.key, element: this.assignmentElement(entry.value) });
+                }
+            }
+            return pattern;
+        }
         if (expr.kind === "array" && !this.parenthesized.has(expr)) {
             const elements: (PatternElement | null)[] = [];
             let rest: DestructuringPattern | null = null;
@@ -916,9 +1011,7 @@ class Parser {
                     if (i !== expr.elements.length - 1 || this.arrayTrailingCommas.has(expr))
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "rest must end an assignment pattern", item.loc);
                     rest = this.assignmentPattern(item.expression);
-                } else if ((item.kind === "assign" || item.kind === "destructure") && !this.isParenthesized(item)) {
-                    elements.push({ pattern: item.kind === "assign" ? this.assignmentPattern(item.target) : item.pattern, initializer: item.value });
-                } else elements.push({ pattern: this.assignmentPattern(item), initializer: null });
+                } else elements.push(this.assignmentElement(item));
             }
             return { kind: "array-pattern", loc: expr.loc, elements, rest };
         }
@@ -1041,6 +1134,7 @@ class Parser {
             if (trailingComma) this.arrayTrailingCommas.add(array);
             return array;
         }
+        if (t.text === "{" && this.structuralPlan()) return this.objectExpression(loc);
         if (t.text === "{") {
             const properties: ObjectProperty[] = [];
             if (!this.at("}")) {
