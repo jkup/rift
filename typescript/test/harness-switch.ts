@@ -394,6 +394,11 @@ for (const row of rejects) {
         check(completion.type === "throw" && completion.diagnostic.name === "ReferenceError", "switch update resolves missing target");
         continue;
     }
+    if (row.source === "switch(1){case 1:break;default:class X{}}") {
+        check(result.kind === "ready" && session.inspect().steps === 0, "class switch preparation is inert");
+        check(run('"use strict";' + row.source,r,session).type === "normal", "original unentered class switch executes");
+        continue;
+    }
     check(result.kind === "blocked" || result.kind === "conflict", row.id + " reject");
     if (row.id === "N01" || row.id === "N02" || row.source === "switch(1){case 1:let x;let x;default:const y=0;}") check(result.kind === "conflict" && result.conflict.kind === "duplicate-lexical", row.id);
     else if (row.id === "N03") check(result.kind === "conflict" && result.conflict.kind === "lexical-var", row.id);

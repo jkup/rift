@@ -80,7 +80,9 @@ expect("let temporary=8;temporary===8&&this.temporary===7", undefined, realm);
 
 for (const text of ["try{eval('class C{}')}catch(e){true}", "try{eval('return 1')}catch(e){true}", "try{eval('(function f(){return 7})')}catch(e){true}"]) {
     const result = run(text);
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.eval-source", "unsupported eval stays fatal");
+    if (text === "try{eval('class C{}')}catch(e){true}")
+        check(result.type === "normal" && result.value.kind === "undefined", "original base class eval executes");
+    else check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.eval-source", "unsupported eval stays fatal");
 }
 const limited = run("eval('while(true){}')", undefined, 100);
 check(limited.type === "throw" && limited.origin.kind === "resource-limit", "shared step limit");

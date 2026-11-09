@@ -861,6 +861,12 @@ for(const source of [
     '"use strict";let o={__proto__:null};','"use strict";++x;','"use strict";1,2;'
 ]) {
     const r=fresh(),s=createScriptSession();const prepared=prepareStrictScript({id:"negative",text:source},r);
+    if (source === '"use strict";class C{}') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "class preparation is inert");
+        check(run(source,r,s).type === "normal", "original class source executes");
+        scalar(run('"use strict";new C() instanceof C ? 7 : 0;',r,s),7);
+        continue;
+    }
     if (source === '"use strict";let {x}=o;') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "object binding prepares without execution");
         run('"use strict";var o={x:7};',r,s);

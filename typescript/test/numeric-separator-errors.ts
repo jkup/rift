@@ -30,7 +30,11 @@ for (const text of [
 for (const source of ["1_;class C{}", "1_0n", "/1_/", "1_;let x;let x;", "1_;42=1;"]) {
     for (const call of ["eval", "Function"]) {
         const result = run("try{" + call + "(" + JSON.stringify(source) + ")}catch(e){true}");
-        check(result.type === "throw" && result.origin.kind === "unsupported-operation", "uncertified input stays fatal: " + source);
+        if (source === "1_;class C{}") {
+            check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original class source permits numeric certification");
+            const typed = run("try{" + call + "(" + JSON.stringify(source) + ")}catch(e){e instanceof SyntaxError}");
+            check(typed.type === "normal" && typed.value.kind === "boolean" && typed.value.value, "class numeric error is SyntaxError");
+        } else check(result.type === "throw" && result.origin.kind === "unsupported-operation", "uncertified input stays fatal: " + source);
     }
 }
 const strict = run("function f(){'use strict';try{eval('var arguments;1_')}catch(e){true}}f()");

@@ -28,6 +28,8 @@ const entries = [
     ["test/array-binding-patterns.ts", "array-binding-patterns"],
     ["test/object-binding-patterns.ts", "object-binding-patterns"],
     ["test/object-assignment-patterns.ts", "object-assignment-patterns"],
+    ["test/class-planning.ts", "class-planning"],
+    ["test/base-classes.ts", "base-classes"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

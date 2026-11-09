@@ -33,7 +33,10 @@ for (const text of ["1_0n;", "0xA_Bn;", "/1_/;", "var r=/10__0/;", "1_; class C{
     "1_;let x;let x;", "1_;let x;var x;", "1_;function f(a,a){'use strict';}", "1_;if(true)let x;",
     "1_;42=2;", "1_;return 2;", "1_;'unterminated", "1_;/* unterminated", "1_; 01;", "1_foo;",
     "0b1_2;", "1_;1e;", "({1_: 2});", "1_;var r=/a/;"]) {
-    check(auditBoundedScriptNumericSeparators(text).kind === "blocked", "veto: " + text);
+    if (text === "1_; class C{}" || text === "class C{};1_;") {
+        const audit = auditBoundedScriptNumericSeparators(text);
+        check(audit.kind === "eligible" && audit.candidates.length === 1, "base class preserves numeric candidate");
+    } else check(auditBoundedScriptNumericSeparators(text).kind === "blocked", "veto: " + text);
 }
 for (const text of ["1_;var arguments;", "1_;delete x;", "1_;var eval;"]) {
     check(auditBoundedScriptNumericSeparators(text).kind === "eligible", "sloppy: " + text);

@@ -1,3 +1,4 @@
+import type { ClassExpr } from "./syntax.js";
 import type { ArrayPattern, ObjectPattern, DestructuringPattern } from "./syntax.js";
 import { instanceofOperator } from "./builtins/function.js";
 import { createArgumentsObject } from "./arguments-object.js";
@@ -51,7 +52,7 @@ type FunctionExecution = {
     enter: (environment: ScriptEnvironment) => void;
     evaluate: (initializer: Expr, name: string) => ValueCompletion;
 };
-type CallableState = { strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+type CallableState = { classConstructor: { scope: number; bodyScope: number | null } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
 class ScriptGuestCallable {
@@ -63,6 +64,8 @@ class ScriptGuestCallable {
             throw new Error("invalid Script callable brand");
         return callable.#state;
     }
+    get isClassConstructor(): boolean { return this.#state.classConstructor !== null; }
+    get isDefaultClassConstructor(): boolean { return this.#state.classConstructor !== null && this.#state.classConstructor.bodyScope === null; }
     get kind(): "script-guest" { return "script-guest"; }
     get realm(): Realm { return this.#state.realm; }
     get record(): ExecutableScript { return this.#state.record; }
@@ -213,6 +216,19 @@ class ExecutableScript {
             if (entry === undefined) throw new Error("missing Script scope association");
             if (scope.id === 0) {
                 if (scope.kind !== "script" || entry.node !== null || entry.body !== nodes.body) throw new Error("invalid Script root");
+            } else if (scope.kind === "class") {
+                const node = entry.node;
+                if (node === null || node.kind !== "class" || scopes.has(node) || !scope.strict ||
+                    node.source !== nodes.source || node.start !== scope.start || node.end !== scope.end || entry.body.length !== 0 ||
+                    scope.parent === null || scope.formals.length !== 0 || scope.lexicalDeclarations.length !== 0 || scope.varDeclarations.length !== 0 || scope.varNames.length !== 0 ||
+                    scope.lexicalNames.length !== (node.name === null ? 0 : 1) || (node.name !== null && scope.lexicalNames[0] !== node.name.name))
+                    throw new Error("invalid class scope association");
+                const parent = plan.scopes[scope.parent];
+                if (scope.parent >= scope.id || scope.start < parent.start || scope.end > parent.end ||
+                    (node.name !== null && node.source.text.slice(node.name.start, node.name.end) !== node.name.name) ||
+                    (node.constructorMethod !== null && node.elements.filter(element => element.value === node.constructorMethod && !element.isStatic && element.kind === "method").length !== 1))
+                    throw new Error("invalid class source range");
+                scopes.set(node, scope.id);
             } else if (scope.kind === "switch") {
                 if (entry.node === null || entry.node.kind !== "switch" || scopes.has(entry.node))
                     throw new Error("invalid switch owner");
@@ -280,7 +296,7 @@ class ExecutableScript {
                 const parent = plan.scopes[scope.parent];
                 if (scope.kind === "switch" || parent.kind === "switch") {
                     if (scope.parent >= scope.id || scope.start < parent.start || scope.end > parent.end ||
-                        (scope.kind !== "function" && scope.strict !== parent.strict))
+                        (scope.kind !== "function" && scope.kind !== "class" && scope.strict !== parent.strict))
                         throw new Error("invalid CaseBlock child scope");
                 }
             }
@@ -452,6 +468,52 @@ class ExecutableScript {
             throw new Error("invalid Script function provenance");
         return { scope, fn, node, source };
     }
+    #classDefinition(scopeId: number): ClassExpr {
+        const state = this.#readState();
+        const scope = state.plan.scopes[scopeId], entry = state.nodes.scopes.get(scopeId);
+        if (scope === undefined || scope.kind !== "class" || entry === undefined || entry.node === null || entry.node.kind !== "class")
+            throw new Error("invalid class definition association");
+        return entry.node;
+    }
+    static validateClassConstructor(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): void {
+        const state = ExecutableScript.state(record, key);
+        const metadata = ScriptGuestCallable.check(callable, record.#activationKey, record);
+        const info = metadata.classConstructor;
+        if (info === null) throw new Error("class constructor metadata required");
+        const node = record.#classDefinition(info.scope);
+        const expectedBody = node.constructorMethod === null ? null : state.scopes.get(node.constructorMethod);
+        if (expectedBody === undefined || info.bodyScope !== expectedBody || metadata.scopeId !== (info.bodyScope ?? info.scope) ||
+            metadata.text !== node.source.text.slice(node.start, node.end) || !metadata.strict || metadata.lexicalThis)
+            throw new Error("invalid class constructor provenance");
+    }
+    static materializeClassConstructor(record: ExecutableScript, scopeId: number, environment: ScriptEnvironment, name: string,
+        prototypeObject: GuestObject, context: OperationContext, key: ExecutionKey): ValueCompletion {
+        const state = ExecutableScript.state(record, key);
+        record.#validateEnvironment(environment, context);
+        const node = record.#classDefinition(scopeId);
+        const bodyScope = node.constructorMethod === null ? null : state.scopes.get(node.constructorMethod);
+        if (bodyScope === undefined) throw new Error("missing constructor body scope");
+        const entry = bodyScope === null ? null : record.#function(bodyScope);
+        const budget = context.tick(node.loc);
+        if (budget.type === "throw") return budget;
+        const callable = ScriptGuestCallable.create({ key: record.#activationKey, record, realm: state.realm,
+            scopeId: bodyScope ?? scopeId, environment, strict: true, lexicalThis: false,
+            classConstructor: { scope: scopeId, bodyScope }, unit: state.plan.unit,
+            start: entry === null ? node.start : entry.source.start, end: entry === null ? node.end : entry.source.end,
+            text: node.source.text.slice(node.start, node.end), formals: entry === null ? [] : entry.node.params.slice() });
+        const object = new GuestObject(state.realm.functionPrototype, false, callable, callable);
+        const value: Value = { kind: "object", object };
+        let length = entry === null ? 0 : entry.node.params.length - (entry.source.rest === true ? 1 : 0);
+        if (entry !== null && entry.node.parameters !== undefined) {
+            for (let i = 0; i < entry.node.parameters.length; i++) if (entry.node.parameters[i].initializer !== null) { length = i; break; }
+        }
+        object.bootstrapDefine("length", { value: { kind: "number", value: length }, writable: false, enumerable: false, configurable: true });
+        object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
+        object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: false, enumerable: false, configurable: false });
+        prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
+        record.#completedMaterializations++;
+        return normal(value);
+    }
     materializeFunction(scopeId: number, environment: ScriptEnvironment, inferredName: string | null, context: OperationContext): ValueCompletion {
         this.#validateEnvironment(environment, context);
         const state = this.#readState();
@@ -462,7 +524,7 @@ class ExecutableScript {
             : state.plan.declarations[entry.fn.declaration].site.name;
         const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
         if (budget.type === "throw") return budget;
-        const callable = ScriptGuestCallable.create({ key: this.#activationKey, record: this, realm: state.realm,
+        const callable = ScriptGuestCallable.create({ classConstructor: null, key: this.#activationKey, record: this, realm: state.realm,
             scopeId, environment, strict: entry.scope.strict, lexicalThis: entry.source.arrow === true,
             unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
@@ -487,6 +549,7 @@ class ExecutableScript {
     }
     createFunctionEnvironment(callable: ScriptGuestCallable, receiver: Value, context: OperationContext): ScriptFunctionEnvironmentCompletion {
         const metadata = ScriptGuestCallable.check(callable, this.#activationKey, this);
+        if (metadata.classConstructor !== null) ExecutableScript.validateClassConstructor(this, callable, executionKey);
         this.#validateEnvironment(metadata.environment, context);
         const state = this.#readState();
         const entry = this.#function(metadata.scopeId);
@@ -1156,6 +1219,7 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
+            case "class-declaration": throw new Error("Script class AST requires Script execution");
             case "for": case "for-of": case "for-in": case "for-lexical": throw new Error("Script for AST requires Script execution");
             case "do-while": throw new Error("Script do-while AST requires Script execution");
             case "labelled": throw new Error("Script labelled AST requires Script execution");
@@ -1276,6 +1340,10 @@ class ExecutionEngine {
     }
     #expression(expr: Expr, env: Environment | null, receiver: Value, name: string | null): Completion {
         switch (expr.kind) {
+            case "class": {
+                if (env !== null) throw new Error("class requires Script execution");
+                return this.#classExpression(expr, name);
+            }
             case "literal": {
                 const value = expr.value;
                 if (value === null) return normal({ kind: "null" });
@@ -1896,6 +1964,46 @@ class ExecutionEngine {
         if (assigned.type !== "normal") throw new Error("invalid pattern assignment completion");
         return normal();
     }
+    #classExpression(expr: ClassExpr, inferredName: string | null): ValueCompletion {
+        const saved = this.#active();
+        const scopeId = ExecutableScript.scopeOfNode(saved.record, expr, executionKey);
+        const environment = new ScriptDeclarativeEnvironment(saved.lexical);
+        if (expr.name !== null) {
+            const created = environment.createImmutableBinding(expr.name.name, expr.name.loc);
+            if (created.type === "throw") return created;
+        }
+        this.#frame = { ...saved, scopeId, lexical: environment, strict: true };
+        try {
+            const prototype = new GuestObject(saved.realm.objectPrototype);
+            const constructor = ExecutableScript.materializeClassConstructor(saved.record, scopeId, environment,
+                expr.name === null ? (inferredName ?? "") : expr.name.name, prototype, this.context, executionKey);
+            if (constructor.type === "throw") return constructor;
+            if (constructor.value.kind !== "object") throw new Error("class constructor result invariant");
+            for (const element of expr.elements) {
+                if (element.value === expr.constructorMethod) continue;
+                const keyValue = this.#value(element.key);
+                if (keyValue.type === "throw") return keyValue;
+                const key = toPropertyKey(keyValue.value, this.context, element.key.loc);
+                if (key.type === "throw") return key;
+                const propertyName = typeof key.value === "string" ? key.value : key.value.description === undefined ? "" : "[" + key.value.description + "]";
+                const name = element.kind === "method" ? propertyName : element.kind + " " + propertyName;
+                const method = this.#value(element.value, name);
+                if (method.type === "throw") return method;
+                const object = element.isStatic ? constructor.value.object : prototype;
+                const descriptor = element.kind === "get" ? { get: method.value, enumerable: false, configurable: true }
+                    : element.kind === "set" ? { set: method.value, enumerable: false, configurable: true }
+                    : { value: method.value, writable: true, enumerable: false, configurable: true };
+                const defined = object.defineOwnProperty(key.value, descriptor, this.context, element.value.loc);
+                if (defined.type === "throw") return defined;
+                if (!defined.value) return languageFailure(saved.realm, "TypeError", "cannot define class method", element.value.loc);
+            }
+            if (expr.name !== null) {
+                const initialized = environment.initializeBinding(expr.name.name, constructor.value, this.context, expr.name.loc);
+                if (initialized.type === "throw") return initialized;
+            }
+            return constructor;
+        } finally { this.#frame = saved; }
+    }
     #objectPattern(pattern: ObjectPattern, input: Value, environment: ScriptEnvironment | null): ValueCompletion {
         if (++this.depth > 256) {
             this.depth--;
@@ -2035,6 +2143,16 @@ class ExecutionEngine {
     }
     #scriptStatement(stmt: Stmt, labels: readonly string[] | null): ScriptStatementCompletion {
         switch (stmt.kind) {
+            case "class-declaration": {
+                if (stmt.value.name === null) throw new Error("class declaration name missing");
+                const result = this.#value(stmt.value);
+                if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
+                const env = this.#active().lexical, name = stmt.value.name.name;
+                const initialized = env.kind === "global" ? env.record.initializeBinding(name, result.value, this.context, stmt.loc)
+                    : env.initializeBinding(name, result.value, this.context, stmt.loc);
+                if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+                return { type: "normal", payload: { kind: "empty" } };
+            }
             case "labelled": {
                 const current = labels === null ? [stmt.name] : [...labels, stmt.name];
                 const result = this.#statement(stmt.body, current);
@@ -2313,7 +2431,8 @@ class ExecutionEngine {
         if (fn.kind === "builtin-constructor") return this.#constructBuiltin(callee.object, fn, args, loc);
         if (fn.kind !== "script-guest" || fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile)
             throw new Error("invalid Script constructor metadata");
-        ExecutableScript.readFunction(fn.record, fn, executionKey);
+        if (fn.isClassConstructor) ExecutableScript.validateClassConstructor(fn.record, fn, executionKey);
+        else ExecutableScript.readFunction(fn.record, fn, executionKey);
         if (this.calls >= this.maxCalls) {
             const result = resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
             this.#capture(result);
@@ -2331,6 +2450,7 @@ class ExecutionEngine {
             if (budget.type === "throw") { this.#capture(budget); return budget; }
             const receiver: Value = { kind: "object", object: new GuestObject(proto) };
             this.activeContext.realm = fn.realm;
+            if (fn.isDefaultClassConstructor) return normal(receiver);
             const result = this.#executeScriptFunction(callee.object, fn, receiver, args);
             if (result.type === "throw") return result;
             return result.value.kind === "object" ? result : normal(receiver);
@@ -2476,6 +2596,10 @@ class ExecutionEngine {
                     if (result.type === "normal") return normal(result.value);
                     throw new Error("invalid completion escaped call boundary: " + result.type);
                 } finally { pendingBuiltin = previous; }
+            }
+            if (fn.isClassConstructor) {
+                ExecutableScript.validateClassConstructor(fn.record, fn, executionKey);
+                return languageFailure(fn.realm, "TypeError", "class constructor requires new", loc);
             }
             return this.#executeScriptFunction(callee.object, fn, receiver, args);
         } finally {

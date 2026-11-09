@@ -131,6 +131,10 @@ for (const source of negatives) for (const strict of [false, true]) {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "lexical for after constructor prepares");
         const result=run(prefix+"function C(){}"+source,r,createScriptSession({maxSteps:100,maxCalls:64}));
         check(result.type === "throw" && result.origin.kind === "resource-limit", "lexical for bounded after construction");
+    } else if (source === "class C{}") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "class construction preparation is inert");
+        check(run(prefix+source,r,s).type === "normal", "original base class executes");
+        expect(run("new C() instanceof C;",r,s),{kind:"boolean",value:true},"class construction");
     } else check(p.kind !== "ready" && out.length === 0 && s.inspect().steps === 0, "negative "+source);
 }
 check(prepareStrictScript({id:"strict",text:'new C();'},fresh()).kind!=="ready","strict entry");

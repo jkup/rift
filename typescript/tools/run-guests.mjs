@@ -608,6 +608,8 @@ executeDriver("array-assignment-patterns", { stdout: "Array assignment patterns 
 executeDriver("array-binding-patterns", { stdout: "Array binding patterns passed\n" });
 executeDriver("object-binding-patterns", { stdout: "Object binding patterns passed\n" });
 executeDriver("object-assignment-patterns", { stdout: "Object assignment patterns passed\n" });
+executeDriver("class-planning", { stdout: "Class planning passed\n" });
+executeDriver("base-classes", { stdout: "Base classes passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

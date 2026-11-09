@@ -33,11 +33,11 @@ function validatePlan(plan: ScriptDeclarationPlan): Map<number, PlannedFunction>
     if (root.lexicalNames.length !== root.lexicalDeclarations.length || root.varNames.length !== root.varDeclarations.length) invalid();
     for (let i = 0; i < root.lexicalDeclarations.length; i++) {
         const d = plan.declarations[root.lexicalDeclarations[i]];
-        if (d === undefined || (d.kind !== "let" && d.kind !== "const") || d.scope !== 0 || d.variableScope !== 0 || d.site.name !== root.lexicalNames[i]) invalid();
+        if (d === undefined || (d.kind !== "let" && d.kind !== "const" && d.kind !== "class") || d.scope !== 0 || d.variableScope !== 0 || d.site.name !== root.lexicalNames[i]) invalid();
     }
     for (let i = 0; i < root.varDeclarations.length; i++) {
         const d = plan.declarations[root.varDeclarations[i]];
-        if (d === undefined || d.kind === "let" || d.kind === "const" || d.variableScope !== 0 || d.site.name !== root.varNames[i]) invalid();
+        if (d === undefined || d.kind === "let" || d.kind === "const" || d.kind === "class" || d.variableScope !== 0 || d.site.name !== root.varNames[i]) invalid();
         if (d.kind === "function" && (d.scope !== 0 || !functions.has(d.id))) invalid();
     }
     if (plan.legacyBlockFunctions !== undefined) {

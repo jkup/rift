@@ -1,6 +1,6 @@
 # Class definition and construction
 
-TS-153 is in design. Classes remain unsupported while TS-152 object assignments validate. The first implementation boundary is base class declarations/expressions, ordinary methods, accessors and static methods. Inheritance follows after newTarget and derived-this state are designed; fields, private elements, static blocks, async methods and generators remain separate.
+TS-153 base classes are implemented and undergoing canonical validation. The first implementation boundary is base class declarations/expressions, ordinary methods, accessors and static methods. Inheritance follows after newTarget and derived-this state are designed; fields, private elements, static blocks, async methods and generators remain separate.
 
 ## Source and scope
 
@@ -22,4 +22,6 @@ The original class-test.js needs inheritance, explicit super calls and super pro
 
 ## References
 
-Review [ECMAScript 2025 class definitions](https://262.ecma-international.org/16.0/#sec-class-definitions), especially early errors and ClassDefinitionEvaluation. The initial design also uses engine262 [ClassDefinitionEvaluation.mts](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/runtime-semantics/ClassDefinitionEvaluation.mts) and [MethodDefinitionEvaluation.mts](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/runtime-semantics/MethodDefinitionEvaluation.mts), pinned at 18cdeb03c363eb31d775648a0d070bdc8a26ced1. The engine's optional decorator branches are outside this design. Complete the early-error and constructor algorithm review before implementation.
+Review [ECMAScript 2025 class definitions](https://262.ecma-international.org/16.0/#sec-class-definitions), especially early errors and ClassDefinitionEvaluation. The initial design also uses engine262 [ClassDefinitionEvaluation.mts](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/runtime-semantics/ClassDefinitionEvaluation.mts) and [MethodDefinitionEvaluation.mts](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/runtime-semantics/MethodDefinitionEvaluation.mts), pinned at 18cdeb03c363eb31d775648a0d070bdc8a26ced1. The engine's optional decorator branches are outside this design. The base-class early errors and constructor algorithms were reviewed before implementation.
+
+The implementation uses explicit class-constructor metadata with an optional real body scope, retaining original whole-class text without a synthetic function. Historical sources remain unchanged in eight guest drivers with explicit positive/certification expectations. Final draft validation passes 649 existing guests and focused Node/native tests, with 9283/9283 static coverage and zero dynamic operations. Canonical acceptance is pending. The scoping fixture next reaches unsupported sloppy duplicate simple parameters; track that separately from inheritance.

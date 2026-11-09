@@ -79,6 +79,11 @@ for (const source of rejects) {
         else check(result.type === "normal" && log.length === 0, "empty finally executes");
         continue;
     }
+    if (source === "try{}catch(e){class X{}}") {
+        check(p.kind === "ready" && log.length === 0, "class catch preparation is inert");
+        check(run('"use strict";' + source,r).type === "normal" && log.length === 0, "original unentered class catch executes");
+        continue;
+    }
     check(p.kind === "blocked" || p.kind === "conflict", "whole-unit reject " + source);
     if (p.kind === "blocked") check(p.rejection.kind === "unsupported-syntax", "no certification");
 }

@@ -9,7 +9,7 @@ import type { Rejection } from "./outcomes.js";
 export type { DeclarationSite } from "./syntax.js";
 export type Declaration = {
   readonly id: number; // unit-local preorder, starting at 0
-  readonly kind: "let" | "const" | "var" | "function";
+  readonly kind: "let" | "const" | "var" | "function" | "class";
   readonly site: DeclarationSite;
   readonly scope: number; // immediate syntactic scope
   readonly variableScope: number; // closest Script/function
@@ -17,7 +17,7 @@ export type Declaration = {
   readonly initializer: { readonly start: number; readonly end: number } | null;
 };
 export type DeclarationScope = {
-  readonly id: number; readonly kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical";
+  readonly id: number; readonly kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class";
   readonly catchParameter: DeclarationSite | null;
   readonly parent: number | null;
   readonly start: number; readonly end: number;
@@ -72,7 +72,7 @@ export type ParsedBinding = {
     initializer: { start: number; end: number } | null;
 };
 type MutableScope = {
-    id: number; kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical"; parent: number | null;
+    id: number; kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class"; parent: number | null;
     catchParameter: DeclarationSite | null;
     start: number; end: number; strict: boolean; formals: DeclarationSite[];
     lexicalDeclarations: number[]; varDeclarations: number[];
@@ -316,7 +316,7 @@ class DeclarationCollector {
         this.strictness = scriptPrologue(unit.text, tokens, 0, inheritedStrict);
         this.scope("script", null, 0, unit.text.length, this.strictness.strict, []);
     }
-    scope(kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {
+    scope(kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {
         const id = this.scopes.length;
         this.scopes.push({ id, kind, parent, start, end, strict, formals, catchParameter: null,
             lexicalDeclarations: [], varDeclarations: [], lexicalNames: [], varNames: [] });
@@ -340,13 +340,13 @@ class DeclarationCollector {
     expression(node: Expr, scope: number, variableScope: number): void {
         this.work.push({ kind: "expression", node, scope, variableScope });
     }
-    declare(kind: "let" | "const" | "var" | "function", binding: ParsedBinding, scope: number, variableScope: number, functionScope: number | null): number {
+    declare(kind: "let" | "const" | "var" | "function" | "class", binding: ParsedBinding, scope: number, variableScope: number, functionScope: number | null): number {
         const id = this.declarations.length;
         const site = binding.site;
         this.declarations.push({ id, kind, site: { name: site.name, start: site.start, end: site.end,
             loc: { line: site.loc.line, column: site.loc.column } }, scope, variableScope, functionScope,
             initializer: binding.initializer === null ? null : { start: binding.initializer.start, end: binding.initializer.end } });
-        if (kind === "let" || kind === "const" || (kind === "function" && (this.scopes[scope].kind === "block" || this.scopes[scope].kind === "switch"))) {
+        if (kind === "let" || kind === "const" || kind === "class" || (kind === "function" && (this.scopes[scope].kind === "block" || this.scopes[scope].kind === "switch"))) {
             this.scopes[scope].lexicalDeclarations.push(id);
             this.scopes[scope].lexicalNames.push(site.name);
         } else {
@@ -377,6 +377,14 @@ class DeclarationCollector {
     }
     visitStatement(node: Stmt, scope: number, variableScope: number): void {
         switch (node.kind) {
+            case "class-declaration": {
+                const site = node.value.name;
+                if (site === null) throw new Error("class declaration name missing");
+                const id = this.declare("class", { site, init: node.value, initializer: { start: node.value.start, end: node.value.end } }, scope, variableScope, null);
+                if (this.nodes !== null) this.nodes.declarations.set(id, { node, initializer: node.value });
+                this.expression(node.value, scope, variableScope);
+                break;
+            }
             case "switch":
                 this.work.push({ kind: "switch", node, scope, variableScope });
                 this.expression(node.discriminant, scope, variableScope);
@@ -527,6 +535,19 @@ class DeclarationCollector {
             node.target.kind === "identifier" && (node.target.name === "arguments" || node.target.name === "eval"))
             this.restrictedAssignments.push({ name: node.target.name, scope, loc: node.target.loc });
         switch (node.kind) {
+            case "class": {
+                const id = this.scope("class", scope, node.start, node.end, true, []);
+                if (node.name !== null) {
+                    this.scopes[id].lexicalNames.push(node.name.name);
+                    if (node.name.name === "eval" || node.name.name === "arguments") this.restrictedAssignments.push({ name: node.name.name, loc: node.name.loc, scope: id });
+                }
+                if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: [] });
+                for (let i = node.elements.length - 1; i >= 0; i--) {
+                    this.expression(node.elements[i].value, id, variableScope);
+                    this.expression(node.elements[i].key, id, variableScope);
+                }
+                break;
+            }
             case "function": this.functionBody(node.source, node.loc, node.body, scope, null, node); break;
             case "destructure": this.expression(node.value, scope, variableScope); this.pattern(node.pattern, scope, variableScope); break;
             case "array":

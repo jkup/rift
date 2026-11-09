@@ -1,3 +1,4 @@
+import type { ClassExpr, ClassElement } from "./syntax.js";
 import type { DestructuringPattern, ArrayPattern, ObjectPattern, PatternElement } from "./syntax.js";
 import { collectNumericSeparatorAudit, type NumericSeparatorAudit } from "./script-declarations.js";
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
@@ -6,7 +7,7 @@ import type { ScriptSourceUnit } from "./script-metadata.js";
 import { scriptPrologue, lineTerminatorBetween } from "./script-prologue.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, lexNumericSeparatorAudit, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, ChainLink, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, FormalParameter, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
+import type { Diagnostic, Expr, ChainLink, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, FormalParameter, DeclarationSite, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -288,7 +289,7 @@ class Parser {
         const keyword = this.current();
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
         if (this.at("const")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: const", keyword.loc);
-        if ((this.at("let") && !auditLet) || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
+        if ((this.at("let") && !auditLet) || this.at("function") || (this.structuralPlan() && this.at("class"))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
         if (auditLet && (this.tokens[this.index + 1]?.text === "[" || this.tokens[this.index + 1]?.text === "{"))
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "pattern declarations require a block", keyword.loc);
         const result = this.statement();
@@ -313,11 +314,15 @@ class Parser {
             const token = this.tokens[index];
             const iteration = token.kind === "word" && (token.text === "for" || token.text === "while" || token.text === "do");
             this.labels.push({ name, iteration });
-            if (this.at("let") || this.at("const") || this.at("function"))
+            if (this.at("let") || this.at("const") || this.at("function") || this.at("class"))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "labelled declarations are unsupported", this.current().loc);
             const body = this.statement();
             this.labels.pop();
             return { kind: "labelled", loc, name, body };
+        }
+        if (this.structuralPlan() && this.at("class")) {
+            this.take();
+            return { kind: "class-declaration", loc, value: this.classDefinition(loc, start, true) };
         }
         if (this.eat(";")) return { kind: "empty", loc };
         if (this.eat("{")) return { kind: "block", loc, body: this.list(true, []) };
@@ -909,6 +914,53 @@ class Parser {
         this.depth--;
         return left;
     }
+    private classDefinition(loc: Location, start: number, declaration: boolean): ClassExpr {
+        let name: DeclarationSite | null = null;
+        if (!this.at("{") && !this.at("extends")) {
+            const token = this.current();
+            const text = this.name();
+            name = { name: text, start: token.start, end: token.end, loc: token.loc };
+        }
+        if (declaration && name === null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "class declaration requires a name", loc);
+        if (this.at("extends")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class inheritance is unsupported", this.current().loc);
+        this.expect("{");
+        const elements: ClassElement[] = [];
+        let constructorMethod: Extract<Expr, { kind: "function" }> | null = null;
+        while (!this.at("}") && this.error === null) {
+            if (this.eat(";")) continue;
+            let isStatic = false;
+            if (this.at("static") && this.tokens[this.index + 1]?.text !== "(") { this.take(); isStatic = true; }
+            const first = this.current();
+            let kind: "method" | "get" | "set" = "method";
+            if ((this.at("get") || this.at("set")) && this.tokens[this.index + 1]?.text !== "(") kind = this.take().text === "get" ? "get" : "set";
+            const token = this.current();
+            let key: Expr;
+            let literalName: string | null = null;
+            if (this.eat("[")) { key = this.expression(1); this.expect("]"); }
+            else {
+                this.take();
+                if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number")
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected class method name", token.loc);
+                literalName = token.kind === "number" ? String(Number(token.text.replaceAll("_", ""))) : token.text;
+                key = { kind: "literal", loc: token.loc, value: literalName };
+            }
+            if (!this.at("(")) { this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class fields and static blocks are unsupported", this.current().loc); break; }
+            const fn = this.functionTail(first.loc, first.start);
+            if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid class accessor parameters", first.loc);
+            if (new Set(fn.params).size !== fn.params.length)
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate class method parameter", first.loc);
+            const value: Extract<Expr, { kind: "function" }> = { kind: "function", loc: first.loc, params: fn.params, parameters: fn.parameters, body: fn.body,
+                source: { ...fn.source, method: true } };
+            if (!isStatic && literalName === "constructor") {
+                if (kind !== "method" || constructorMethod !== null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid or duplicate constructor", first.loc);
+                constructorMethod = value;
+            } else if (isStatic && literalName === "prototype") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "static prototype method is invalid", first.loc);
+            elements.push({ kind, isStatic, key, value });
+        }
+        this.expect("}");
+        return { kind: "class", loc, source: this.source, start, end: this.tokens[this.index - 1].end, name, constructorMethod, elements };
+    }
     private objectExpression(loc: Location): Expr {
         const properties: ObjectProperty[] = [];
         const cover: ObjectCover = { entries: [], trailingComma: false, unsupported: null };
@@ -1134,6 +1186,7 @@ class Parser {
             if (trailingComma) this.arrayTrailingCommas.add(array);
             return array;
         }
+        if (t.text === "class" && this.structuralPlan()) return this.classDefinition(loc, t.start, false);
         if (t.text === "{" && this.structuralPlan()) return this.objectExpression(loc);
         if (t.text === "{") {
             const properties: ObjectProperty[] = [];

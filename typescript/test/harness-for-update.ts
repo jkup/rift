@@ -389,6 +389,11 @@ for(const row of negatives) {
   check(scalar(own(r, "x") ?? UNDEFINED) === (row.source === "++x;" ? "8" : "6"), "new update stores result");
   continue;
  }
+ if (row.source === "for(;;){break;class X{}}") {
+  check(result.kind === "ready" && session.inspect().steps === 0,"class loop preparation is inert");
+  check(run('"use strict";'+row.source,r,session).type === "normal","original unreachable class executes");
+  continue;
+ }
  check(result.kind !== "ready",row.id+" rejected: "+row.source); check(session.inspect().steps===0,"no prepare ticks");idle(session);
 }
 console.log("PASS N01-N14 frozen negatives");
