@@ -5,6 +5,7 @@ import { UNDEFINED, languageFailure, normal, type Value, type Callable, type Ope
 import { stringSlice, type GuestString } from "../strings.js";
 import {lengthOfArrayLike} from "../array-like.js";
 import {numberToString} from "../conversion.js";
+import { registerFunctionBind } from "./function-bind.js";
 
 export function nativeFunctionString(initialName: string | null): GuestString {
     const name = initialName === null ? "" : initialName;
@@ -28,12 +29,15 @@ export function functionSourceString(callable: Callable): string {
             return source === null ? nativeFunctionString(null) : stringSlice(source.source.text, source.start, source.end);
         }
         case "builtin": return nativeFunctionString(callable.initialName);
+        case "bound": return nativeFunctionString(null);
         case "script-guest": return callable.sourceText();
     }
 }
 export function ordinaryHasInstance(callee: Value, value: Value, context: OperationContext, loc: Location): ValueCompletion {
     if (callee.kind !== "object" || callee.object.callable === null) return normal({ kind: "boolean", value: false });
     if (callee.object.callable.realm.profile !== context.realm.profile) throw new Error("cross-profile callable invocation");
+    if (callee.object.callable.kind === "bound")
+        return instanceofOperator(value, { kind: "object", object: callee.object.callable.target }, context, loc);
     if (value.kind !== "object") return normal({ kind: "boolean", value: false });
     const prototype = callee.object.internalGet("prototype", callee, context, loc);
     if (prototype.type === "throw") return prototype;
@@ -49,22 +53,29 @@ export function ordinaryHasInstance(callee: Value, value: Value, context: Operat
     }
 }
 export function instanceofOperator(value: Value, target: Value, context: OperationContext, loc: Location): ValueCompletion {
-    if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "instanceof target is not an object", loc);
-    if (target.object.callable !== null && target.object.callable.realm.profile !== context.realm.profile)
-        throw new Error("cross-profile callable invocation");
-    const method = target.object.internalGet(wellKnownHasInstance, target, context, loc);
-    if (method.type === "throw") return method;
-    if (method.value.kind !== "undefined" && method.value.kind !== "null") {
-        if (method.value.kind !== "object" || method.value.object.callable === null) return languageFailure(context.realm, "TypeError", "hasInstance method is not callable", loc);
-        const result = context.call(method.value, target, [value], loc);
-        if (result.type === "throw") return result;
-        return normal({ kind: "boolean", value: truthy(result.value) });
+    while (true) {
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "instanceof target is not an object", loc);
+        const callable = target.object.callable;
+        if (callable !== null && callable.realm.profile !== context.realm.profile)
+            throw new Error("cross-profile callable invocation");
+        const method = target.object.internalGet(wellKnownHasInstance, target, context, loc);
+        if (method.type === "throw") return method;
+        if (method.value.kind !== "undefined" && method.value.kind !== "null") {
+            if (method.value.kind !== "object" || method.value.object.callable === null) return languageFailure(context.realm, "TypeError", "hasInstance method is not callable", loc);
+            const result = context.call(method.value, target, [value], loc);
+            if (result.type === "throw") return result;
+            return normal({ kind: "boolean", value: truthy(result.value) });
+        }
+        if (callable === null) return languageFailure(context.realm, "TypeError", "instanceof target is not callable", loc);
+        if (callable.kind !== "bound") return ordinaryHasInstance(target, value, context, loc);
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        target = { kind: "object", object: callable.target };
     }
-    if (target.object.callable === null) return languageFailure(context.realm, "TypeError", "instanceof target is not callable", loc);
-    return ordinaryHasInstance(target, value, context, loc);
 }
 export function registerFunction(realm: Realm): void {
     if (realm.profile === "script") {
+        registerFunctionBind(realm);
         const method = realm.createBuiltin("[Symbol.hasInstance]", 1, (receiver, args, context, loc) =>
             ordinaryHasInstance(receiver, args.length === 0 ? UNDEFINED : args[0], context, loc));
         realm.functionPrototype.bootstrapDefine(wellKnownHasInstance, {

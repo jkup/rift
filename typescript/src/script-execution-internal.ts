@@ -1,7 +1,7 @@
 import { instanceofOperator } from "./builtins/function.js";
 import { getIterator, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow, type IteratorRecord } from "./iterator.js";
 import { ForInEnumerator } from "./for-in.js";
-import type { ConstructBuiltin, BuiltinConstructor } from "./runtime.js";
+import type { ConstructBuiltin, BuiltinConstructor, BoundCallable } from "./runtime.js";
 import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js";
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
@@ -1134,7 +1134,7 @@ class ExecutionEngine {
         if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
         if (this.#script) return this.#callScript(callee, receiver, args, loc);
         if (this.context.realm.profile !== "legacy") throw new Error("Script execution unavailable");
-        if (fn.kind === "script-guest") throw new Error("Script execution unavailable");
+        if (fn.kind === "script-guest" || fn.kind === "bound") throw new Error("Script execution unavailable");
         if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
         const callerRealm = this.activeContext.realm;
         this.calls++;
@@ -1702,6 +1702,22 @@ class ExecutionEngine {
         const saved = this.#active();
         if (callee.kind !== "object" || callee.object.constructorSlot === null) return languageFailure(this.context.realm, "TypeError", "value is not a constructor", loc);
         const fn = callee.object.constructorSlot;
+        if (fn.kind === "bound") {
+            if (fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile || fn.target.constructorSlot === null)
+                throw new Error("invalid bound constructor metadata");
+            if (this.calls >= this.maxCalls) {
+                const result = resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
+                this.#capture(result);
+                return result;
+            }
+            this.calls++;
+            try {
+                const combined = this.#boundArguments(fn, args, loc);
+                if (combined.type === "throw") return combined;
+                // The current new expression always uses the callee as newTarget.
+                return this.#construct({ kind: "object", object: fn.target }, combined.args, loc);
+            } finally { this.calls--; }
+        }
         if (fn.kind === "builtin-constructor") return this.#constructBuiltin(callee.object, fn, args, loc);
         if (fn.kind !== "script-guest" || fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile)
             throw new Error("invalid Script constructor metadata");
@@ -1800,6 +1816,11 @@ class ExecutionEngine {
         this.activeContext.realm = fn.realm;
         this.#frame = { ...saved, realm: fn.realm };
         try {
+            if (fn.kind === "bound") {
+                const combined = this.#boundArguments(fn, args, loc);
+                if (combined.type === "throw") return combined;
+                return this.call({ kind: "object", object: fn.target }, fn.receiver, combined.args, loc);
+            }
             if (fn.kind === "builtin") {
                 const previous = pendingBuiltin;
                 pendingBuiltin = { kind: "call", context: this.context, realm: fn.realm, invoke: fn.invoke, receiver, args, loc, used: false };
@@ -1817,6 +1838,18 @@ class ExecutionEngine {
             this.activeContext.realm = savedRealm;
             this.calls = savedCalls;
         }
+    }
+
+    #boundArguments(fn: BoundCallable, args: Value[], loc: Location): { type: "normal"; args: Value[] } | ThrowCompletion {
+        const combined: Value[] = [];
+        for (const source of [fn.args, args]) {
+            for (const value of source) {
+                const tick = this.tick(loc);
+                if (tick.type === "throw") { this.#capture(tick); return tick; }
+                combined.push(value);
+            }
+        }
+        return { type: "normal", args: combined };
     }
 
 }

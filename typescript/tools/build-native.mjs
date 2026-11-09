@@ -57,6 +57,7 @@ const entries = [
     ["test/radix-literals.ts", "radix-literals"],
     ["test/decimal-literals.ts", "decimal-literals"],
     ["test/function-apply.ts", "function-apply"],
+    ["test/function-bind.ts", "function-bind"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],
     ["test/json-parse.ts", "json-parse"],

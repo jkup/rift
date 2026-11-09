@@ -588,6 +588,7 @@ executeDriver("string-html", { stdout: "String HTML passed\n" });
 executeDriver("string-escapes", { stdout: "String escapes passed\n" });
 executeDriver("string-wellformed", { stdout: "String well-formedness passed\n" });
 executeDriver("string-codepoints", { stdout: "String code points passed\n" });
+executeDriver("function-bind", { stdout: "Function bind passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

@@ -108,8 +108,11 @@ export type Builtin = (receiver: Value, args: Value[], context: OperationContext
 export type ConstructBuiltin = (callee: GuestObject, args: Value[], context: OperationContext, loc: Location) => ValueCompletion;
 export type BuiltinConstructor = { readonly kind: "builtin-constructor"; readonly realm: Realm;
     readonly callable: Callable; readonly invoke: ConstructBuiltin };
+export type BoundCallable = { readonly kind: "bound"; readonly realm: Realm;
+    readonly target: GuestObject; readonly receiver: Value; readonly args: Value[] };
 export type Callable =
     | ScriptGuestCallable
+    | BoundCallable
     | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment; readonly source: FunctionSource | null }
     | { readonly kind: "builtin"; readonly realm: Realm; readonly invoke: Builtin; readonly initialName: string | null };
 export class GuestObject {
@@ -117,7 +120,7 @@ export class GuestObject {
     private extensible = true;
     private prototypeSlot: GuestObject | null;
     private readonly immutablePrototypeSlot: boolean;
-    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null, readonly constructorSlot: ScriptGuestCallable | BuiltinConstructor | null = null) {
+    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null, readonly constructorSlot: ScriptGuestCallable | BuiltinConstructor | BoundCallable | null = null) {
         this.prototypeSlot = proto;
         this.immutablePrototypeSlot = immutablePrototype;
     }

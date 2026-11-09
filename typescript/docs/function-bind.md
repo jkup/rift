@@ -1,0 +1,9 @@
+# Bound functions
+
+TS-137 adds Script Function.prototype.bind. Bound callable records capture the target, receiver and argument values. Their prototype comes from the target; their Realm follows the target. Binding reads an own length before the name, without coercing nonnumeric lengths or nonstring names, and defines configurable nonwritable metadata. Bound functions have no own prototype property and stringify as native functions.
+
+Script dispatch prepends bound arguments on every call or construction. Constructors ignore the bound receiver and forward to the target; current new expressions always use the callee as newTarget. Constructor authority stays inside the evaluator rather than being added to OperationContext. Call-depth and step budgets bound chains and argument copying, and frame restoration uses the existing finally boundaries. instanceof forwards to the target's current Symbol.hasInstance; chains lacking that method are traversed iteratively with budget checks.
+
+References consulted 2026-11-09: ECMAScript [bind](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-function.prototype.bind), [bound function exotic objects](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-bound-function-exotic-objects), and V8 [DoFunctionBind](https://github.com/v8/v8/blob/main/src/builtins/builtins-function.cc). Rift uses explicit records and ordinary property access rather than V8's optimized function representations. Function constructor exposure and alternate newTarget support are separate work; legacy bootstrap is unchanged.
+
+Acceptance pending. The initial focused native build executes successfully but coverage identifies one dynamic test callback. Its throwing callback now explicitly declares ValueCompletion; initial evidence is retained in build/function-bind-focused-dynamic.log.
