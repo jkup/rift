@@ -43,7 +43,8 @@ for(const prefix of ['',"'use strict';"]) {
     passes(prefix+"var n=0;var it={next:function(){return {done:true};}};Object.defineProperty(it,'return',{get:function(){n++;throw 7;}});var source={};source[Symbol.iterator]=function(){return it;};[...source].length===0&&n===0;");
 }
 for(const text of ['[...];','[. . .[]];','[..[]];','[...[],...];','f(...[]);','new C(...[]);','({...x});','let [...x]=[];','[...x]=[];'])
-    check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
+    if (text === 'f(...[]);' || text === 'new C(...[]);') passes('function f(){}function C(){}'+text+'true;');
+    else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
 check(parse('[...[1]];').error !== null,'legacy parser unchanged');
 const owner=fresh(),caller=fresh();
 const f=run('function f(x){return [...x];}f;',owner);check(f.type==='normal','foreign setup');if(f.type==='normal')caller.defineScriptGlobal('f',{value:f.value});

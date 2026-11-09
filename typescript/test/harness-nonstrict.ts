@@ -102,7 +102,10 @@ for (const source of negatives) {
     const r=fresh(), out:Value[]=[]; recorder(r,out);
     const p=prepareBoundedScript({id:"N",text:source},r);
     check(out.length === 0 && r.globalObject.getOwnProperty("f") === undefined, "preparation is inert");
-    if (source === "function f(){return 7;}const tail=0;") {
+    if (source === "function f(){return 7;}new C(...xs);") {
+        check(p.kind === "ready", "spread constructor prepares");
+        check(run("function C(){}var xs=[];"+source,r).type === "normal", "spread constructor executes");
+    } else if (source === "function f(){return 7;}const tail=0;") {
         check(p.kind === "ready", "const tail prepares");
         expect(run(source+"f()+tail;",r),{kind:"number",value:7},"const tail executes");
     } else if (source === "for(let i=0;;){}") {

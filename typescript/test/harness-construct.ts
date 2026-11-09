@@ -103,7 +103,10 @@ for (const source of negatives) for (const strict of [false, true]) {
     const s=createScriptSession();
     const prefix=strict ? '"use strict";' : '';
     const p=prepareBoundedScript({id:"N",text:prefix+'out(9);'+source},r);
-    if (source === "new C(function(){const x=1;});") {
+    if (source === "new C(...a);") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "spread constructor prepares");
+        check(run(prefix+"function C(x){}var a=[7];"+source,r,s).type === "normal", "spread constructor executes");
+    } else if (source === "new C(function(){const x=1;});") {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "const constructor argument prepares");
         check(run(prefix+"function C(f){f();}"+source,r,s).type === "normal", "const constructor argument executes");
     } else if (source === "new C();try{}finally{}") {

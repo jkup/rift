@@ -10,7 +10,8 @@ export type TryCatchStmt = { kind: "try-catch"; loc: Location; block: BlockStmt;
     catchLoc: Location; catchStart: number; catchEnd: number; handler: BlockStmt };
 export type TryFinallyStmt = { kind: "try-finally"; loc: Location; body: BlockStmt | TryCatchStmt; finalizer: BlockStmt };
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
-export type ArrayElement = Expr | { kind: "spread"; loc: Location; expression: Expr } | null;
+export type Argument = Expr | { kind: "spread"; loc: Location; expression: Expr };
+export type ArrayElement = Argument | null;
 export type Expr =
     | { kind: "array"; loc: Location; elements: ArrayElement[] }
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
@@ -24,8 +25,8 @@ export type Expr =
     | { kind: "compound"; loc: Location; target: Expr; value: Expr; op: "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "<<" | ">>" | ">>>" }
     | { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr }
     | { kind: "member"; loc: Location; base: Expr; key: Expr }
-    | { kind: "new"; loc: Location; callee: Expr; args: Expr[] }
-    | { kind: "call"; loc: Location; callee: Expr; args: Expr[] }
+    | { kind: "new"; loc: Location; callee: Expr; args: Argument[] }
+    | { kind: "call"; loc: Location; callee: Expr; args: Argument[] }
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
     | { kind: "object"; loc: Location; keys: string[]; values: Expr[] };
 export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };

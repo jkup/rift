@@ -6,7 +6,7 @@ import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
+import type { Expr, Argument, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
@@ -904,6 +904,30 @@ class ExecutionEngine {
             this.depth--;
         }
     }
+    #arguments(argumentsList: Argument[], env: Environment | null, receiver: Value): { type: "normal"; values: Value[] } | ThrowCompletion {
+        const values: Value[] = [];
+        for (const arg of argumentsList) {
+            if (arg.kind === "spread") {
+                if (env !== null) throw new Error("Script argument spread AST requires Script execution");
+                const input = this.#value(arg.expression);
+                if (input.type === "throw") return input;
+                const acquired = getIterator(input.value, this.context, arg.loc);
+                if (acquired.type === "throw") return acquired;
+                while (true) {
+                    const next = iteratorStepValue(acquired.value, this.context, arg.loc);
+                    if (next.type === "throw") return next;
+                    if (next.done) break;
+                    values.push(next.value);
+                }
+            } else {
+                const value = this.#eval(arg, env, receiver);
+                if (value.type === "throw") return value;
+                if (value.type !== "normal") throw new Error("invalid argument completion");
+                values.push(value.value);
+            }
+        }
+        return { type: "normal", values };
+    }
     #expression(expr: Expr, env: Environment | null, receiver: Value, name: string | null): Completion {
         switch (expr.kind) {
             case "literal": {
@@ -1030,13 +1054,9 @@ class ExecutionEngine {
                 if (!this.#script) throw new Error("Script construction unavailable");
                 const callee = this.#eval(expr.callee, env, receiver);
                 if (callee.type !== "normal") return callee;
-                const args: Value[] = [];
-                for (const arg of expr.args) {
-                    const value = this.#eval(arg, env, receiver);
-                    if (value.type !== "normal") return value;
-                    args.push(value.value);
-                }
-                return this.#construct(callee.value, args, expr.loc);
+                const args = this.#arguments(expr.args, env, receiver);
+                if (args.type === "throw") return args;
+                return this.#construct(callee.value, args.values, expr.loc);
             }
             case "call": {
                 let thisValue = UNDEFINED;
@@ -1049,13 +1069,9 @@ class ExecutionEngine {
                     if (ref.reference.kind === "script-property" && ref.reference.reference.kind === "property") thisValue = ref.reference.reference.base;
                 } else callee = this.#eval(expr.callee, env, receiver);
                 if (callee.type !== "normal") return callee;
-                const args: Value[] = [];
-                for (const arg of expr.args) {
-                    const value = this.#eval(arg, env, receiver);
-                    if (value.type !== "normal") return value;
-                    args.push(value.value);
-                }
-                return this.call(callee.value, thisValue, args, expr.loc);
+                const args = this.#arguments(expr.args, env, receiver);
+                if (args.type === "throw") return args;
+                return this.call(callee.value, thisValue, args.values, expr.loc);
             }
             case "unary": {
                 if (expr.op === "delete") {

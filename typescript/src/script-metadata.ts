@@ -143,7 +143,10 @@ class MetadataCollector {
                 this.expression(expr.alternate, strict, parent); this.expression(expr.consequent, strict, parent); this.expression(expr.test, strict, parent); break;
             case "member": this.expression(expr.key, strict, parent); this.expression(expr.base, strict, parent); break;
             case "call":
-                for (let i = expr.args.length - 1; i >= 0; i--) this.expression(expr.args[i], strict, parent);
+                for (let i = expr.args.length - 1; i >= 0; i--) {
+                    const arg = expr.args[i];
+                    this.expression(arg.kind === "spread" ? arg.expression : arg, strict, parent);
+                }
                 this.expression(expr.callee, strict, parent);
                 break;
             case "literal": case "identifier": case "this": break;

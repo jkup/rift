@@ -453,7 +453,10 @@ class DeclarationCollector {
             case "conditional": this.expression(node.alternate, scope, variableScope); this.expression(node.consequent, scope, variableScope); this.expression(node.test, scope, variableScope); break;
             case "member": this.expression(node.key, scope, variableScope); this.expression(node.base, scope, variableScope); break;
             case "new": case "call":
-                for (let i = node.args.length - 1; i >= 0; i--) this.expression(node.args[i], scope, variableScope);
+                for (let i = node.args.length - 1; i >= 0; i--) {
+                    const arg = node.args[i];
+                    this.expression(arg.kind === "spread" ? arg.expression : arg, scope, variableScope);
+                }
                 this.expression(node.callee, scope, variableScope); break;
             case "literal": case "identifier": case "this": break;
         }

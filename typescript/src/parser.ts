@@ -3,7 +3,7 @@ export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatement
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, ArrayElement, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
+import type { Diagnostic, Expr, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -546,10 +546,10 @@ class Parser {
                 continue;
             }
             if (!updated && this.eat("(")) {
-                const args: Expr[] = [];
+                const args: Argument[] = [];
                 if (!this.at(")")) {
                     do {
-                        args.push(this.expression(0));
+                        args.push(this.argument());
                     } while (this.error === null && this.eat(","));
                 }
                 this.expect(")");
@@ -623,6 +623,13 @@ class Parser {
         this.depth--;
         return left;
     }
+    argument(): Argument {
+        if (this.structuralPlan() && this.eat("...")) {
+            const spread = this.tokens[this.index - 1];
+            return { kind: "spread", loc: spread.loc, expression: this.expression(1) };
+        }
+        return this.expression(1);
+    }
     primary(allowIn: boolean): Expr {
         const t = this.take();
         const loc = t.loc;
@@ -645,10 +652,10 @@ class Parser {
                     callee = { kind: "member", loc: first.loc, base: callee, key };
                 } else break;
             }
-            const args: Expr[] = [];
+            const args: Argument[] = [];
             if (this.eat("(")) {
                 if (!this.at(")")) {
-                    do { args.push(this.expression(0)); } while (this.error === null && this.eat(","));
+                    do { args.push(this.argument()); } while (this.error === null && this.eat(","));
                 }
                 this.expect(")");
             }

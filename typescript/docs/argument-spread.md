@@ -1,0 +1,11 @@
+# Call and constructor argument spread
+
+TS-129 supports spread in Script call and constructor argument lists, including multiple and non-final spreads. Calls still capture the callee and receiver before evaluating arguments. Constructors capture their target before arguments and perform constructor validation and prototype lookup afterward. Argument evaluation runs in the caller's Realm; invocation and construction retain the existing callee-Realm behavior.
+
+A shared evaluator appends ordinary arguments and synchronous iterator values to one Value list in source order. It reuses cached-next and done-before-value handling, propagates iterator faults without IteratorClose, skips later arguments on failure and charges each iterator step. No host variadic invocation or host guest-source execution is used. Non-callable/non-constructor checks occur after argument evaluation, so an argument fault can take precedence. Unresolvable callees still fail before arguments.
+
+Array spread and argument spread share an AST element shape; declaration and metadata visitors traverse the operand. Legacy parsing, rest parameters, object spread, binding patterns and trailing argument commas remain outside this feature.
+
+References consulted on 2026-11-09: [ArgumentListEvaluation](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-runtime-semantics-argumentlistevaluation), [EvaluateCall](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-evaluatecall), and V8's [VisitCall / VisitCallNew](https://github.com/v8/v8/blob/main/src/interpreter/bytecode-generator.cc). V8 uses distinct paths for final and non-final spreads; Rift keeps one explicit list evaluator for readability and bounded allocation.
+
+Validation is in progress. The focused Node/native driver passes with 7492/7492 statements static. Tests cover mixed arguments, empty/sparse/string/Set spreads, callee/receiver/constructor mutation, getter order, fault precedence, no iterator cleanup, guest and builtin constructors, function scope associations, foreign Realms and infinite iterators. Historical constructor-spread rejection sources remain as inert preparation and positive execution checks, with unchanged case counts. Logs: `build/argument-spread-*`.

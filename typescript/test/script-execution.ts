@@ -866,6 +866,11 @@ for(const source of [
         check(run(source, r, s).type === "normal", "const executes in branch and switch");
         continue;
     }
+    if (source === '"use strict";new f(...xs);') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "spread constructor prepares");
+        check(run('"use strict";function f(){}var xs=[];new f(...xs);',r,s).type === "normal", "spread constructor executes");
+        continue;
+    }
     if (source === '"use strict";for(let i=0;;){}') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "lexical for prepares without execution");
         const completion=run(source,r,createScriptSession({maxSteps:100,maxCalls:64}));
