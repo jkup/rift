@@ -1,4 +1,5 @@
 import { registerPromiseFinally } from "./promise-finally.js";
+import { registerPromiseHelpers } from "./promise-helpers.js";
 import type { Realm } from "../realm.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import { toObject } from "../object-conversion.js";
@@ -58,5 +59,6 @@ export function registerPromise(realm: Realm): void {
         });
     }
     registerPromiseFinally(realm, constructor);
+    registerPromiseHelpers(realm, constructor);
     realm.defineScriptGlobal("Promise", { value: { kind: "object", object: constructor }, writable: true, configurable: true });
 }

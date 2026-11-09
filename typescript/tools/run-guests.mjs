@@ -626,6 +626,7 @@ executeDriver("super-properties", { stdout: "Super properties passed\n" });
 executeDriver("script-jobs", { stdout: "Script jobs passed\n" });
 executeDriver("promise-core", { stdout: "Promise core passed\n" });
 executeDriver("promise-finally", { stdout: "Promise finally passed\n" });
+executeDriver("promise-helpers", { stdout: "Promise helpers passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

@@ -2127,3 +2127,5 @@ Super properties and Script checkpoints accepted (8905c5ec, 6de4b230): both gues
 2026-11-09 TS-162 promoted after super/checkpoint acceptance 23fb6118 with all six changed-file baselines verified. Promise core and explicit CLI checkpoints pass focused both-host checks and 664 Node guests. TS-163 finally will follow separately before combined canonical validation.
 
 2026-11-09 TS-163 promoted after Promise core implementation a337c48a with all four changed-file baselines verified. The 665-guest Node draft and three native drivers pass; the original finally fixture has eight asynchronous checks. TS-164 capability helpers remain isolated pending focused review.
+
+2026-11-09 TS-164 promoted after finally implementation c935de54 with all three changed-file baselines verified. The 666-guest Node draft and native helper/CLI checks pass. Canonical TS-162/163/164 now freeze for full combined validation. TS-165 all/race remains isolated.
