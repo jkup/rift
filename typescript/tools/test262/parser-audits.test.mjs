@@ -43,7 +43,21 @@ for (const [driver, directory, count] of [
       first: {name: 'f', start: 24, end: 25, loc: {line: 1, column: 25}},
       second: {name: 'f', start: 39, end: 40, loc: {line: 1, column: 40}},
     }]});
+    const escaped = rows.find(row => row.id === 'D05');
+    assert.equal(escaped.text, '"use\\x20strict"; {function f(){} function f(){}}');
+    expected.set(escaped.id, {
+      kind: 'blocked', reason: 'scope-restriction',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'non-strict block function planning is unsupported', loc: {line: 1, column: 19}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'},
+    });
   }
+  const escapedParameters = rows.find(row => row.id === 'P09');
+  assert.equal(escapedParameters.text, 'function f(a,a){"use\\x20strict";}');
+  expected.set(escapedParameters.id, {
+    kind: 'blocked', reason: driver === 'script-strict-rule-audit' ? 'grammar-or-resource' : 'scope-restriction',
+    diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate parameter: a', loc: {line: 1, column: driver === 'script-strict-rule-audit' ? 1 : 14}},
+    rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
+  });
   if (driver === 'script-strict-parameter-audit') {
     const row = rows.find(row => row.id === 'E40');
     assert.equal(row.text, 'let f={m(a,a){"use strict";}};');
@@ -99,6 +113,12 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    const escaped = rows.find(row => row.id === 'directive-escaped');
+    assert.equal(escaped.text, '"use\\x20strict"; while(false) let x;');
+    escaped.expected = {kind: 'eligible', sourceUnits: 36, consumedUnits: 36, candidates: [{
+      ruleCode: 'lexical-declaration-statement', context: 'while-body',
+      keyword: {text: 'let', start: 30, end: 33, loc: {line: 1, column: 31}},
+    }]};
     for (const [id, text] of [['excluded-const-list', 'const x=1;'], ['excluded-const-block', '{const x=1;}'], ['excluded-for-const', 'for(const x of a){}'], ['excluded-for-let', 'for(let x=0;x<1;x++){}'], ['excluded-for-in', 'for(let x in a){}']]) {
       const row = rows.find(row => row.id === id);
       assert.equal(row.text, text);
