@@ -120,4 +120,3 @@ for (const source of ["Promise(()=>{})", "new Promise(1)", "Promise.resolve.call
     string("out", "next", realm, session);
 }
 console.log("Promise core passed");
-

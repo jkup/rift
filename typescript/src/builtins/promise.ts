@@ -1,8 +1,9 @@
+import { registerPromiseFinally } from "./promise-finally.js";
 import type { Realm } from "../realm.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import { toObject } from "../object-conversion.js";
-import { GuestPromise, createResolvingFunctions, newPromiseCapability, promiseSpecies, isCallable, fatalPromiseCompletion } from "../promise.js";
-import { normal, languageFailure, sameValue, UNDEFINED, type Value, type ValueCompletion } from "../runtime.js";
+import { GuestPromise, createResolvingFunctions, newPromiseCapability, promiseSpecies, promiseResolve, isCallable, fatalPromiseCompletion } from "../promise.js";
+import { normal, languageFailure, UNDEFINED, type Value, type ValueCompletion } from "../runtime.js";
 import { wellKnownSpecies, wellKnownToStringTag } from "../symbols.js";
 
 export function registerPromise(realm: Realm): void {
@@ -49,19 +50,13 @@ export function registerPromise(realm: Realm): void {
     for (const name of ["resolve", "reject"] as const) {
         realm.registerBuiltin(constructor, name, 1, (receiver, args, context, loc): ValueCompletion => {
             const value = args.length === 0 ? UNDEFINED : args[0];
-            if (name === "resolve") {
-                if (receiver.kind !== "object") return languageFailure(context.realm, "TypeError", "Promise constructor is not an object", loc);
-                if (value.kind === "object" && value.object instanceof GuestPromise) {
-                    const actualConstructor = value.object.internalGet("constructor", value, context, loc);
-                    if (actualConstructor.type === "throw") return actualConstructor;
-                    if (sameValue(actualConstructor.value, receiver)) return normal(value);
-                }
-            }
+            if (name === "resolve") return promiseResolve(receiver, value, context, loc);
             const capability = newPromiseCapability(receiver, context, loc);
             if (capability.type === "throw") return capability;
-            const result = context.call(name === "resolve" ? capability.value.resolve : capability.value.reject, UNDEFINED, [value], loc);
+            const result = context.call(capability.value.reject, UNDEFINED, [value], loc);
             return result.type === "throw" ? result : normal(capability.value.promise);
         });
     }
+    registerPromiseFinally(realm, constructor);
     realm.defineScriptGlobal("Promise", { value: { kind: "object", object: constructor }, writable: true, configurable: true });
 }

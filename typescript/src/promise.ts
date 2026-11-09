@@ -1,4 +1,4 @@
-import { GuestObject, UNDEFINED, normal, languageFailure, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext } from "./runtime.js";
+import { GuestObject, UNDEFINED, normal, languageFailure, sameValue, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext } from "./runtime.js";
 import type { Realm } from "./realm.js";
 import type { Location } from "./syntax.js";
 import { wellKnownSpecies } from "./symbols.js";
@@ -123,4 +123,17 @@ export function promiseSpecies(promise: Value, defaultConstructor: GuestObject, 
     if (species.value.kind !== "object" || species.value.object.constructorSlot === null)
         return languageFailure(context.realm, "TypeError", "Promise species is not a constructor", loc);
     return species;
+}
+
+export function promiseResolve(constructor: Value, value: Value, context: OperationContext, loc: Location): ValueCompletion {
+    if (constructor.kind !== "object") return languageFailure(context.realm, "TypeError", "Promise constructor is not an object", loc);
+    if (value.kind === "object" && value.object instanceof GuestPromise) {
+        const actualConstructor = value.object.internalGet("constructor", value, context, loc);
+        if (actualConstructor.type === "throw") return actualConstructor;
+        if (sameValue(actualConstructor.value, constructor)) return normal(value);
+    }
+    const capability = newPromiseCapability(constructor, context, loc);
+    if (capability.type === "throw") return capability;
+    const result = context.call(capability.value.resolve, UNDEFINED, [value], loc);
+    return result.type === "throw" ? result : normal(capability.value.promise);
 }

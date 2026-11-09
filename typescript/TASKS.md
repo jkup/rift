@@ -3706,7 +3706,9 @@ Draft review: 664/664 Node guests pass. Focused Promise and CLI checkpoint tests
 
 ## TS-163 — Promise finally
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-09. Build on the reviewed TS-162 candidate while canonical validation stays fixed. Add generic finally with species lookup before then access, callable cleanup handlers, PromiseResolve adoption and original fulfillment/rejection propagation. Preserve overridden then behavior, handler Realm and fatal completions. Own a bounded builtin module, shared PromiseResolve operation, focused tests/manifests and scope notes. No combinators or async syntax. Validate post-checkpoint values and unchanged original finally fixture on both hosts. Reviewed ECMAScript 2025 27.2.5.3 and pinned engine262 PromisePrototype.mts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-09. Build on the reviewed TS-162 candidate while canonical validation stays fixed. Add generic finally with species lookup before then access, callable cleanup handlers, PromiseResolve adoption and original fulfillment/rejection propagation. Preserve overridden then behavior, handler Realm and fatal completions. Own a bounded builtin module, shared PromiseResolve operation, focused tests/manifests and scope notes. No combinators or async syntax. Validate post-checkpoint values and unchanged original finally fixture on both hosts. Reviewed ECMAScript 2025 27.2.5.3 and pinned engine262 PromisePrototype.mts.
+
+Draft review: 665/665 Node guests pass. Finally, shared Promise core and CLI pass both hosts at 9813, 9836 and 9806 static statements, zero dynamic. The unchanged original finally fixture passes all eight asynchronous checks. Evidence: build/promise-finally-draft/build/finally-reviewed.json and finally-node-reviewed.log.
 
 ## TS-164 — Promise capability helpers
 

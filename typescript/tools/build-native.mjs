@@ -40,6 +40,7 @@ const entries = [
     ["test/super-properties.ts", "super-properties"],
     ["test/script-jobs.ts", "script-jobs"],
     ["test/promise-core.ts", "promise-core"],
+    ["test/promise-finally.ts", "promise-finally"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
