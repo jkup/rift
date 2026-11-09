@@ -32,7 +32,9 @@ export function constPlanExpectation(record) {
   }
   if (id === 'non-strict-tail') {
     assert.equal(text, 'let x;let x;{function f(){}}const y=1;');
-    return blocked('parse.declaration-statement', 'non-strict block function planning is unsupported', text.indexOf('function'));
+    return {plan: {kind: 'conflict', goal: 'Script', unit, consumedUnits: text.length,
+      conflict: {kind: 'duplicate-lexical', scope: 0, first: site(4), second: site(10)},
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate-lexical: x', loc: loc(10)}}, winners: []};
   }
   if (['R04-binary-unsupported', 'R04-member-unsupported', 'R04-call-unsupported'].includes(id)) {
     assert.ok(text.includes('function(){const tail;}'));

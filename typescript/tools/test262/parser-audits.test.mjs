@@ -8,6 +8,13 @@ const {run, save} = createDriverRunner('parser-audits-');
 const json = path => JSON.parse(readFileSync(path, 'utf8'));
 after(save);
 
+function duplicateSloppyFunction(text) {
+  return {kind: 'blocked', reason: 'scope-restriction',
+    diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate sloppy block functions are unsupported',
+      loc: {line: 1, column: text.lastIndexOf('function') + 10}},
+    rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'}};
+}
+
 test('return audit: all 36 literal sources, both hosts', () => {
   assert.equal(returns.length, 36);
   for (const lane of ['node', 'native']) for (const [id, text, candidates, loc] of returns) {
@@ -54,6 +61,16 @@ for (const [driver, directory, count] of [
     rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
   });
   if (driver === 'script-strict-rule-audit') {
+    for (const [id, text] of [
+      ['B03', '{function f(){} function f(){}}'],
+      ['B04', '{"use strict"; function f(){} function f(){}}'],
+      ['D02', '("use strict"); {function f(){} function f(){}}'],
+      ['D03', '0; "use strict"; {function f(){} function f(){}}'],
+      ['D04', '; "use strict"; {function f(){} function f(){}}'],
+    ]) {
+      assert.equal(rows.find(row => row.id === id).text, text);
+      expected.set(id, duplicateSloppyFunction(text));
+    }
     const row = rows.find(row => row.id === 'X02');
     assert.equal(row.text, '"use strict"; {function f(){} function f(){}} `tail`;');
     expected.set(row.id, {kind: 'eligible', sourceUnits: 53, consumedUnits: 53, candidates: [{
@@ -65,7 +82,7 @@ for (const [driver, directory, count] of [
     assert.equal(escaped.text, '"use\\x20strict"; {function f(){} function f(){}}');
     expected.set(escaped.id, {
       kind: 'blocked', reason: 'scope-restriction',
-      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'non-strict block function planning is unsupported', loc: {line: 1, column: 19}},
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate sloppy block functions are unsupported', loc: {line: 1, column: 43}},
       rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'},
     });
   }
@@ -77,6 +94,13 @@ for (const [driver, directory, count] of [
     rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
   });
   if (driver === 'script-strict-parameter-audit') {
+    const block = rows.find(row => row.id === 'E27');
+    assert.equal(block.text, 'function f(a,a){"use strict";} {function g(){}}');
+    expected.set(block.id, {kind: 'eligible', sourceUnits: 47, consumedUnits: 47, candidates: [{
+      ruleCode: 'duplicate-strict-parameter', functionStart: 0, functionEnd: 30,
+      first: {name: 'a', start: 11, end: 12, loc: {line: 1, column: 12}},
+      second: {name: 'a', start: 13, end: 14, loc: {line: 1, column: 14}},
+    }]});
     const defaultBody = rows.find(row => row.id === 'E10');
     assert.equal(defaultBody.text, 'function f(a,a=1){"use strict";}');
     expected.set(defaultBody.id, {
@@ -112,6 +136,13 @@ for (const [driver, directory, count, variants] of [
   const rows = json(`docs/validation/${directory}/semantic-matrix.json`).rows;
   assert.equal(rows.length, count);
   if (driver === 'script-assignment-target-audit') {
+    const block = rows.find(row => row.id === 'SL2');
+    assert.equal(block.text, '42=7;{function single(){}}');
+    block.expected = {kind: 'eligible', sourceUnits: 26, consumedUnits: 26, candidates: [{
+      ruleCode: 'assignment-target',
+      target: {text: '42', start: 0, end: 2, loc: {line: 1, column: 1}},
+      operator: {text: '=', start: 2, end: 3, loc: {line: 1, column: 3}},
+    }]};
     for (const literal of ['1e2', '.5', '0x2']) {
       const row = rows.find(row => row.text === literal + '=7;');
       assert.ok(row);
@@ -152,6 +183,14 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    for (const [id, text] of [
+      ['mixed-strict-block-false-false', 'while(false) let x; {function f(){}function f(){}}'],
+      ['mixed-strict-block-false-true', '{function f(){}function f(){}} while(false) let x;'],
+    ]) {
+      const row = rows.find(row => row.id === id);
+      assert.equal(row.text, text);
+      row.expected = duplicateSloppyFunction(text);
+    }
     const escaped = rows.find(row => row.id === 'directive-escaped');
     assert.equal(escaped.text, '"use\\x20strict"; while(false) let x;');
     escaped.expected = {kind: 'eligible', sourceUnits: 36, consumedUnits: 36, candidates: [{
@@ -170,6 +209,8 @@ for (const [driver, directory, count, variants] of [
       keyword: {text: 'let', start: 3, end: 6, loc: {line: 1, column: 4}},
     }]};
     for (const [id, text, start] of [
+      ['mixed-sloppy-block-false-false', 'while(false) let x; {function f(){}}', 13],
+      ['mixed-sloppy-block-false-true', '{function f(){}} while(false) let x;', 30],
       ['mixed-template-false-false', 'while(false) let x; `x`;', 13],
       ['mixed-template-false-true', '`x`; while(false) let x;', 18],
       ['mixed-template-true-false', '"use strict"; while(false) let x; `x`;', 27],

@@ -56,7 +56,32 @@ function argumentsPlanExpectation(record) {
       loc: {line: 1, column: 18}}}, winners: []};
 }
 
-test('Script declarations: 135 plans, 71 historical literals, seven const and one default migration in both hosts', () => {
+function blockFunctionPlanExpectation(record) {
+  const {unit} = record.plan;
+  if (unit.id === 'non-strict-veto') {
+    assert.equal(unit.text, 'let x;let x;{function f(){}}');
+    const site = start => ({name: 'x', start, end: start + 1, loc: {line: 1, column: start + 1}});
+    return {plan: {kind: 'conflict', goal: 'Script', unit, consumedUnits: unit.text.length,
+      conflict: {kind: 'duplicate-lexical', scope: 0, first: site(4), second: site(10)},
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate-lexical: x', loc: {line: 1, column: 11}}}, winners: []};
+  }
+  if (unit.id !== 'L10' && unit.id !== 'block-directive') return record;
+  assert.equal(unit.text, unit.id === 'L10' ? '{function f(){}}' : '{"use strict";function f(){}}');
+  const start = unit.id === 'L10' ? 1 : 14, end = unit.text.length;
+  const strictness = {ownStrict: false, inheritedStrict: false, strict: false, directives: []};
+  const scope = {strict: false, formals: [], catchParameter: null, varDeclarations: [], varNames: []};
+  return {plan: {kind: 'complete', goal: 'Script', unit, consumedUnits: end, strictness,
+    scopes: [
+      {...scope, id: 0, kind: 'script', parent: null, start: 0, end, lexicalDeclarations: [], lexicalNames: []},
+      {...scope, id: 1, kind: 'block', parent: 0, start: 0, end, lexicalDeclarations: [0], lexicalNames: ['f']},
+      {...scope, id: 2, kind: 'function', parent: 1, start: start + 12, end: end - 1, lexicalDeclarations: [], lexicalNames: []},
+    ],
+    declarations: [{id: 0, kind: 'function', site: {name: 'f', start: start + 9, end: start + 10,
+      loc: {line: 1, column: start + 10}}, scope: 1, variableScope: 0, functionScope: 2, initializer: null}],
+    functions: [{scope: 2, declaration: 0, start, end: end - 1, strictness}], legacyBlockFunctions: [0]}, winners: [[], [], []]};
+}
+
+test('Script declarations: 135 plans and 71 historical literals with explicit feature migrations in both hosts', () => {
   const snapshots = json('docs/validation/ts-034h6-c/replays/plans-results.json');
   const literals = json('fixtures/script-declarations/literal.json');
   assert.equal(literals.length, 71);
@@ -84,10 +109,11 @@ test('Script declarations: 135 plans, 71 historical literals, seven const and on
   assert.equal([...expected.values()].filter(record => constPlanExpectation(record) !== record).length, 7);
   assert.equal([...expected.values()].filter(record => defaultPlanExpectation(record) !== record).length, 1);
   assert.equal([...expected.values()].filter(record => argumentsPlanExpectation(record) !== record).length, 1);
+  assert.equal([...expected.values()].filter(record => blockFunctionPlanExpectation(record) !== record).length, 3);
   for (const lane of ['node', 'native']) for (const record of expected.values()) {
     run('script-declarations', lane, record.plan.unit, [], (stdout, label) => {
       const {plan, winners} = JSON.parse(stdout);
-      assert.deepEqual({plan, winners}, argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record))), label);
+      assert.deepEqual({plan, winners}, blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record)))), label);
     });
   }
 });
