@@ -13,7 +13,7 @@ import type { GlobalEnvironment } from "./global-environment.js";
 import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
 
 class ActivationKey {}
-type CallableState = { strict: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+type CallableState = { strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
 class ScriptGuestCallable {
@@ -31,7 +31,7 @@ class ScriptGuestCallable {
     get scopeId(): number { return this.#state.scopeId; }
     get environment(): ScriptEnvironment { return this.#state.environment; }
     get strict(): boolean { return this.#state.strict; }
-    get thisMode(): "strict" | "global" { return this.#state.strict ? "strict" : "global"; }
+    get thisMode(): "lexical" | "strict" | "global" { return this.#state.lexicalThis ? "lexical" : this.#state.strict ? "strict" : "global"; }
     get privateEnvironment(): null { return null; }
     sourceText(): string { return this.#state.text; }
     inspectFormals(): string[] { return this.#state.formals.slice(); }
@@ -383,14 +383,15 @@ class ExecutableScript {
         const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
         if (budget.type === "throw") return budget;
         const callable = ScriptGuestCallable.create({ key: this.#activationKey, record: this, realm: state.realm,
-            scopeId, environment, strict: entry.scope.strict, unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
+            scopeId, environment, strict: entry.scope.strict, lexicalThis: entry.source.arrow === true,
+            unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
-        const method = entry.source.method === true;
-        const object = new GuestObject(state.realm.functionPrototype, false, callable, method ? null : callable);
+        const constructable = entry.source.method !== true && entry.source.arrow !== true;
+        const object = new GuestObject(state.realm.functionPrototype, false, callable, constructable ? callable : null);
         const value: Value = { kind: "object", object };
         object.bootstrapDefine("length", { value: { kind: "number", value: entry.node.params.length }, writable: false, enumerable: false, configurable: true });
         object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
-        if (!method) {
+        if (constructable) {
             const prototypeObject = new GuestObject(state.realm.objectPrototype);
             prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
             object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: true, enumerable: false, configurable: false });
@@ -406,12 +407,21 @@ class ExecutableScript {
         if (metadata.unit !== state.plan.unit || metadata.start !== entry.source.start || metadata.end !== entry.source.end ||
             callable.record !== this || callable.realm !== state.realm || callable.scopeId !== metadata.scopeId || callable.environment !== metadata.environment ||
             callable.kind !== "script-guest" || metadata.strict !== entry.scope.strict || callable.strict !== metadata.strict ||
-            callable.thisMode !== (metadata.strict ? "strict" : "global") || callable.privateEnvironment !== null)
+            metadata.lexicalThis !== (entry.source.arrow === true) ||
+            callable.thisMode !== (metadata.lexicalThis ? "lexical" : metadata.strict ? "strict" : "global") || callable.privateEnvironment !== null)
             throw new Error("invalid Script callable metadata");
         const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
         if (budget.type === "throw") { const abrupt: ThrowCompletion = budget; return abrupt; }
         let boundThis = receiver;
-        if (!metadata.strict) {
+        if (metadata.lexicalThis) {
+            let outer = metadata.environment;
+            while (outer.kind === "declarative") {
+                const tick = context.tick(entry.node.loc);
+                if (tick.type === "throw") return tick;
+                outer = outer.outer;
+            }
+            boundThis = outer.kind === "function" ? outer.thisValue : state.realm.globalThisValue;
+        } else if (!metadata.strict) {
             if (receiver.kind === "null" || receiver.kind === "undefined") boundThis = state.realm.globalThisValue;
             else if (receiver.kind !== "object") {
                 const boxed = toObject(receiver, context, entry.node.loc);

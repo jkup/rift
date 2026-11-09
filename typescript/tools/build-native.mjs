@@ -61,6 +61,7 @@ const entries = [
     ["test/function-apply.ts", "function-apply"],
     ["test/function-bind.ts", "function-bind"],
     ["test/function-constructor.ts", "function-constructor"],
+    ["test/arrows.ts", "arrows"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],
     ["test/json-parse.ts", "json-parse"],

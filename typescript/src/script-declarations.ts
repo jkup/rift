@@ -325,17 +325,29 @@ class DeclarationCollector {
     }
     functionBody(source: FunctionSource | null, loc: Location, body: Stmt[], scope: number, declaration: number | null, node: Stmt | Expr): void {
         if (source === null) throw new Error("parsed function missing source");
-        let index = this.tokenIndex(loc) + 1;
-        if (this.tokens[index].text !== "(") index++;
-        index++;
+        let index = this.tokenIndex(loc);
         const formals: DeclarationSite[] = [];
-        while (this.tokens[index].text !== ")") {
-            if (this.tokens[index].text !== ",") formals.push(this.site(this.tokens[index]));
+        if (source.arrow === true && this.tokens[index].kind === "word") {
+            formals.push(this.site(this.tokens[index]));
+            index++;
+        } else {
+            if (source.arrow !== true) {
+                index++;
+                if (this.tokens[index].text !== "(") index++;
+            }
+            index++;
+            while (this.tokens[index].text !== ")") {
+                if (this.tokens[index].text !== ",") formals.push(this.site(this.tokens[index]));
+                index++;
+            }
             index++;
         }
-        const brace = index + 1;
-        const strictness = scriptPrologue(this.unit.text, this.tokens, brace + 1, this.scopes[scope].strict);
-        const id = this.scope("function", scope, this.tokens[brace].start, source.end, strictness.strict, formals);
+        if (source.arrow === true) index++;
+        const inheritedStrict = this.scopes[scope].strict;
+        const strictness: StrictnessMetadata = source.expressionBody === true
+            ? { ownStrict: false, inheritedStrict, strict: inheritedStrict, directives: [] }
+            : scriptPrologue(this.unit.text, this.tokens, index + 1, inheritedStrict);
+        const id = this.scope("function", scope, this.tokens[index].start, source.end, strictness.strict, formals);
         if (this.nodes !== null) this.nodes.scopes.set(id, { node, body });
         this.functions.push({ scope: id, declaration, start: source.start, end: source.end, strictness });
         this.statements(body, id, id);

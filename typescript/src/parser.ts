@@ -499,6 +499,48 @@ class Parser {
         this.switches = switches;
         return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end } };
     }
+    arrowAhead(): boolean {
+        let index = this.index;
+        if (this.tokens[index].kind === "word") return this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
+        if (this.tokens[index].kind !== "punct" || this.tokens[index].text !== "(") return false;
+        index++;
+        while (this.tokens[index].kind === "word") {
+            index++;
+            if (this.tokens[index].text !== ",") break;
+            index++;
+        }
+        return this.tokens[index].kind === "punct" && this.tokens[index].text === ")" &&
+            this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
+    }
+    arrow(allowIn: boolean): Expr {
+        const first = this.current(), params: string[] = [];
+        if (this.eat("(")) {
+            if (!this.at(")")) {
+                do {
+                    const name = this.name();
+                    if (params.includes(name)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate arrow parameter: " + name, first.loc);
+                    params.push(name);
+                } while (this.error === null && this.eat(",") && !this.at(")"));
+            }
+            this.expect(")");
+        } else params.push(this.name());
+        if (this.current().loc.line !== this.tokens[this.index - 1].loc.line)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "line terminator before arrow", this.current().loc);
+        this.expect("=>");
+        const loops = this.loops, switches = this.switches;
+        this.loops = 0;
+        this.switches = 0;
+        this.functions++;
+        const expressionBody = !this.eat("{");
+        const body: Stmt[] = expressionBody
+            ? [{ kind: "return", loc: this.current().loc, value: this.expression(1, allowIn) }]
+            : this.list(true, params);
+        this.functions--;
+        this.loops = loops;
+        this.switches = switches;
+        return { kind: "function", loc: first.loc, params, body,
+            source: { source: this.source, start: first.start, end: this.tokens[this.index - 1].end, arrow: true, expressionBody } };
+    }
     precedence(op: string): number {
         if (this.structuralPlan() && ["**=", "&=", "|=", "^=", "<<=", ">>=", ">>>="].includes(op)) return 1;
         if (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=") return 1;
@@ -523,12 +565,14 @@ class Parser {
             this.depth--;
             return { kind: "literal", loc, value: null };
         }
-        let left = this.primary(allowIn);
+        const arrow = this.structuralPlan() && min <= 1 && this.arrowAhead();
+        let left = arrow ? this.arrow(allowIn) : this.primary(allowIn);
         // A unary operand may already have consumed the postfix token. Its
         // enclosing expression must not reopen the member/call suffix chain.
         const lastPrimaryToken = this.tokens[this.index - 1];
         let updated = lastPrimaryToken.kind === "punct" && (lastPrimaryToken.text === "++" || lastPrimaryToken.text === "--");
         while (this.error === null) {
+            if (arrow && !(min === 0 && this.at(","))) break;
             if (this.current().kind === "template" || this.current().kind === "template-head") {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "tagged templates are unsupported", this.current().loc);
                 break;

@@ -592,6 +592,7 @@ executeDriver("function-bind", { stdout: "Function bind passed\n" });
 executeDriver("numeric-separators", { stdout: "Numeric separators passed\n" });
 executeDriver("comma-expressions", { stdout: "Comma expressions passed\n" });
 executeDriver("function-constructor", { stdout: "Function constructor passed\n" });
+executeDriver("arrows", { stdout: "Arrow functions passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

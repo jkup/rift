@@ -234,7 +234,7 @@ export function lex(source: string, script = false): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
-        } else if (script && ["++", "--", "**", "<<", ">>", "&=", "|=", "^="].includes(two)) {
+        } else if (script && ["++", "--", "**", "<<", ">>", "&=", "|=", "^=", "=>"].includes(two)) {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });

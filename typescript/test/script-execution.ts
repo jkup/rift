@@ -893,6 +893,12 @@ for(const source of [
         scalar(run(source.includes("get x") ? '"use strict";o.x===undefined?1:0;' : '"use strict";o.m()===undefined?1:0;',r,s),1);
         continue;
     }
+    if (source === '"use strict";let f=()=>1;') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "arrow prepares without execution");
+        check(run(source,r,s).type === "normal", "arrow executes");
+        scalar(run('"use strict";f();',r,s),1);
+        continue;
+    }
     if (source === '"use strict";++x;') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "prefix update prepares without execution");
         thrown(run(source, r, s), "ReferenceError");
