@@ -1,7 +1,7 @@
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatementContext, NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
-import { scriptPrologue } from "./script-prologue.js";
+import { scriptPrologue, lineTerminatorBetween } from "./script-prologue.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
 import type { Diagnostic, Expr, ChainLink, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, FormalParameter, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
@@ -213,6 +213,12 @@ class Parser {
     expect(text: string): void {
         if (!this.eat(text)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "expected '" + text + "', found '" + this.current().text + "'", this.current().loc);
     }
+    statementTerminator(): void {
+        if (this.eat(";")) return;
+        if (this.structuralPlan() && (this.current().kind === "eof" || this.at("}") ||
+            lineTerminatorBetween(this.source.text, this.tokens[this.index - 1], this.current()))) return;
+        this.expect(";");
+    }
     name(): string {
         const t = this.take();
         if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && t.text === "arguments"))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
@@ -334,7 +340,7 @@ class Parser {
         }
         if (this.structuralPlan() && this.eat("const")) {
             const binding = this.binding(1);
-            this.expect(";");
+            this.statementTerminator();
             if (binding.init === null) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", loc);
                 return { kind: "empty", loc };
@@ -344,13 +350,13 @@ class Parser {
         }
         if (this.eat("let")) {
             const binding = this.binding(1);
-            this.expect(";");
+            this.statementTerminator();
             if (this.structuralPlan()) this.bindings.set(start, [binding]);
             return { kind: "let", loc, name: binding.site.name, init: binding.init };
         }
         if (this.structuralPlan() && this.at("var")) {
             const declaration = this.varDeclaration(true);
-            this.expect(";");
+            this.statementTerminator();
             return declaration;
         }
         if (this.eat("function")) {
@@ -440,12 +446,14 @@ class Parser {
                 } else this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.return-context" }, "return outside function", loc);
             }
             // Token locations include line terminators hidden inside comments.
-            if (this.current().loc.line !== loc.line && !this.at(";")) {
+            const newline = lineTerminatorBetween(this.source.text, keyword, this.current());
+            if (newline && !this.at(";") && !(this.structuralPlan() && kind === "return")) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.line-terminator" }, "newline after return/throw is unsupported", loc);
             }
-            const value = this.at(";") ? null : this.expression(0);
+            const emptyReturn = this.structuralPlan() && kind === "return" && (newline || this.at("}") || this.current().kind === "eof");
+            const value = this.at(";") || emptyReturn ? null : this.expression(0);
             if (kind === "throw" && value === null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.throw-expression" }, "throw requires an expression", loc);
-            this.expect(";");
+            this.statementTerminator();
             return { kind, loc, value };
         }
         if (this.at("break") || this.at("continue")) {
@@ -459,11 +467,11 @@ class Parser {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, "invalid " + kind + " target: " + target, loc);
             } else if (this.loops === 0 && (kind === "continue" || this.switches === 0))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, kind + " outside loop", loc);
-            this.expect(";");
+            this.statementTerminator();
             return target === undefined ? { kind, loc } : { kind, loc, target };
         }
         const expression = this.expression(0);
-        this.expect(";");
+        this.statementTerminator();
         return { kind: "expression", loc, expression };
     }
     private labelIdentifier(token: Token): boolean {
@@ -693,9 +701,9 @@ class Parser {
             }
             if (!updated && this.structuralPlan() && (this.at("++") || this.at("--"))) {
                 const previous = this.tokens[this.index - 1];
+                if (lineTerminatorBetween(this.source.text, previous, this.current())) break;
                 const increment = this.take();
                 const operation = increment.text === "++" ? "increment" : "decrement";
-                if (increment.loc.line !== previous.loc.line) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.line-terminator" }, "newline before postfix " + operation + " is unsupported", increment.loc);
                 if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + operation + " target", left.loc);
                 left = { kind: "update", loc: left.loc, target: left, op: increment.text === "++" ? "++" : "--", prefix: false };
                 updated = true;
