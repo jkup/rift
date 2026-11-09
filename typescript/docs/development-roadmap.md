@@ -502,3 +502,12 @@ fixture results agree; exponentiation-test.js adds 12 passing checks and raises
 completions to 133. Initial expectation failures and their narrow migrations are
 recorded in [exponentiation](exponentiation.md). Next: Number bitwise and shift
 operators, with precedence, integer conversion and compound-reference tests.
+
+### TS-123 checkpoint
+
+Number bitwise and shift operators are accepted: 612/612 guest cases on both
+hosts, all 122 native entries static, tooling 290/290, runner 31/31 and ten probes.
+All 225 fixture results agree; bitwise and unary fixtures add 39 and 28 passing
+checks, raising completions to 135. No expectation migration was needed. See
+[bitwise operators](bitwise.md). Next investigate URI encoding/decoding, including
+native primitive support, malformed sequences, coercion and Realm errors.

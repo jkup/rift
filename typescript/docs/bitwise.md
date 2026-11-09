@@ -28,3 +28,8 @@ Sources consulted 2026-11-09:
 and [V8 token precedence](https://github.com/v8/v8/blob/main/src/parsing/token.h).
 Rift keeps its existing precedence parser and explicit completion records.
 No engine source was copied.
+
+Acceptance: 612/612 guest cases on each host, all 122 native entries passing
+static build/coverage, tooling 290/290, runner 31/31 and ten probes. All 225
+fixture results agree across hosts; 135 complete, retaining all 133 previous
+completions. Bitwise and unary fixtures report 39 and 28 passing checks.
