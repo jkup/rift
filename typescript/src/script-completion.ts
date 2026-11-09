@@ -3,7 +3,7 @@ import type { Value, ValueCompletion, ThrowCompletion } from "./runtime.js";
 // Empty is statement bookkeeping, never a guest Value or legacy undefined.
 export type ScriptStatementPayload = { readonly kind: "empty" } | { readonly kind: "value"; readonly value: Value };
 export type ScriptStatementCompletion =
-    | { readonly type: "normal" | "break" | "continue"; readonly payload: ScriptStatementPayload }
+    | { readonly type: "normal" | "break" | "continue"; readonly payload: ScriptStatementPayload; readonly target?: string }
     | { readonly type: "return"; readonly value: Value }
     | ThrowCompletion;
 
@@ -11,7 +11,8 @@ export type ScriptStatementCompletion =
 // break/continue, but preserve every already-valued or throwing record.
 export function updateScriptEmpty(completion: ScriptStatementCompletion, previous: ScriptStatementPayload): ScriptStatementCompletion {
     if (completion.type === "throw" || completion.type === "return" || completion.payload.kind === "value") return completion;
-    return { type: completion.type, payload: previous };
+    return completion.target === undefined ? { type: completion.type, payload: previous }
+        : { type: completion.type, payload: previous, target: completion.target };
 }
 export function scriptExpressionCompletion(completion: ValueCompletion): ScriptStatementCompletion {
     if (completion.type === "throw") {

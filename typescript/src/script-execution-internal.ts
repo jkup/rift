@@ -1009,6 +1009,7 @@ class ExecutionEngine {
         switch (stmt.kind) {
             case "for": case "for-of": case "for-in": case "for-lexical": throw new Error("Script for AST requires Script execution");
             case "do-while": throw new Error("Script do-while AST requires Script execution");
+            case "labelled": throw new Error("Script labelled AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "const": throw new Error("Script const AST requires Script execution");
             case "switch": throw new Error("Script switch AST requires Script execution");
@@ -1617,7 +1618,7 @@ class ExecutionEngine {
         }
         return { type: "normal", payload: previous };
     }
-    #statement(stmt: Stmt): ScriptStatementCompletion {
+    #statement(stmt: Stmt, labels: readonly string[] | null = null): ScriptStatementCompletion {
         // Explicit throw-arm locals retain identity and the accepted E2 static
         // union lowering (see script-completion.ts); they do not wrap failures.
         const budget = this.tick(stmt.loc);
@@ -1630,12 +1631,12 @@ class ExecutionEngine {
                 this.#capture(result);
                 const abrupt: ThrowCompletion = result; return abrupt;
             }
-            const result = this.#scriptStatement(stmt);
+            const result = this.#scriptStatement(stmt, labels);
             if (result.type === "throw") this.#capture(result);
             return result;
         } finally { this.depth = savedDepth; }
     }
-    #forBody(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null): ScriptStatementCompletion {
+    #forBody(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null, labels: readonly string[] | null): ScriptStatementCompletion {
         let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
         let first = true;
         while (true) {
@@ -1660,8 +1661,8 @@ class ExecutionEngine {
                 if (!truthy(test.value)) return { type: "normal", payload: value };
             }
             const result = this.#statement(stmt.body);
-            if (result.type === "break") return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
-            if (result.type !== "normal" && result.type !== "continue") return updateScriptEmpty(result, value);
+            if (result.type === "break" && result.target === undefined) return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
+            if (result.type !== "normal" && (result.type !== "continue" || !this.#continueTarget(result.target, labels))) return updateScriptEmpty(result, value);
             if (result.payload.kind !== "empty") value = result.payload;
         }
     }
@@ -1686,8 +1687,17 @@ class ExecutionEngine {
         return variable.kind === "global" ? variable.record.setMutableBinding(name, value.value, this.context, stmt.loc, false)
             : variable.setMutableBinding(name, value.value, this.context, stmt.loc);
     }
-    #scriptStatement(stmt: Stmt): ScriptStatementCompletion {
+    #continueTarget(target: string | undefined, labels: readonly string[] | null): boolean {
+        return target === undefined || (labels !== null && labels.includes(target));
+    }
+    #scriptStatement(stmt: Stmt, labels: readonly string[] | null): ScriptStatementCompletion {
         switch (stmt.kind) {
+            case "labelled": {
+                const current = labels === null ? [stmt.name] : [...labels, stmt.name];
+                const result = this.#statement(stmt.body, current);
+                if (result.type === "break" && result.target === stmt.name) return { type: "normal", payload: result.payload };
+                return result;
+            }
             case "switch": {
                 // The discriminant belongs to the surrounding environment; all
                 // selectors and clause bodies share one initialized CaseBlock.
@@ -1714,7 +1724,7 @@ class ExecutionEngine {
                     let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
                     if (selected >= 0) for (let i = selected; i < clauses.length; i++) {
                         const result = updateScriptEmpty(this.#list(clauses[i].body), value);
-                        if (result.type === "break") return { type: "normal", payload: result.payload };
+                        if (result.type === "break" && result.target === undefined) return { type: "normal", payload: result.payload };
                         if (result.type !== "normal") return result;
                         if (result.payload.kind !== "empty") value = result.payload;
                     }
@@ -1853,13 +1863,15 @@ class ExecutionEngine {
                         const abrupt: ThrowCompletion = result;
                         return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
                     }
-                    if (result.type === "break" || result.type === "return") {
+                    if (result.type === "break" || result.type === "return" ||
+                        (result.type === "continue" && !this.#continueTarget(result.target, labels))) {
                         if (iterator !== null) {
                             const closed = iteratorCloseNormally(iterator, this.context, stmt.loc);
                             if (closed.type === "throw") { const abrupt: ThrowCompletion = closed; return abrupt; }
                         }
-                        if (result.type === "return") return result;
-                        return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
+                        if (result.type === "break" && result.target === undefined)
+                            return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
+                        return updateScriptEmpty(result, value);
                     }
                     if (result.payload.kind !== "empty") value = result.payload;
                 }
@@ -1874,7 +1886,7 @@ class ExecutionEngine {
                         if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
                     }
                 }
-                return this.#forBody(stmt, null);
+                return this.#forBody(stmt, null, labels);
             }
             case "for-lexical": {
                 const saved = this.#active();
@@ -1887,7 +1899,7 @@ class ExecutionEngine {
                     if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
                     const initialized = created.environment.initializeBinding(binding.site.name, value.value, this.context, binding.site.loc);
                     if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
-                    return this.#forBody(stmt, saved.lexical);
+                    return this.#forBody(stmt, saved.lexical, labels);
                 } finally { this.#frame = saved; }
             }
             case "while": case "do-while": {
@@ -1901,10 +1913,10 @@ class ExecutionEngine {
                     }
                     first = false;
                     const result = this.#statement(stmt.body);
-                    if (result.type === "break") {
+                    if (result.type === "break" && result.target === undefined) {
                         return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
                     }
-                    if (result.type !== "normal" && result.type !== "continue") return updateScriptEmpty(result, value);
+                    if (result.type !== "normal" && (result.type !== "continue" || !this.#continueTarget(result.target, labels))) return updateScriptEmpty(result, value);
                     if (result.payload.kind !== "empty") value = result.payload;
                 }
             }
@@ -1915,7 +1927,8 @@ class ExecutionEngine {
                 return { type: "throw", origin: { kind: "guest" }, value: result.value,
                     diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: stmt.loc } };
             }
-            case "break": case "continue": return { type: stmt.kind, payload: { kind: "empty" } };
+            case "break": case "continue": return stmt.target === undefined ? { type: stmt.kind, payload: { kind: "empty" } }
+                : { type: stmt.kind, payload: { kind: "empty" }, target: stmt.target };
         }
     }
     #construct(callee: Value, args: Value[], loc: Location): ValueCompletion {

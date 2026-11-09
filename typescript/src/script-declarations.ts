@@ -435,6 +435,7 @@ class DeclarationCollector {
                 break;
             case "while": this.statement(node.body, scope, variableScope); this.expression(node.test, scope, variableScope); break;
             case "do-while": this.expression(node.test, scope, variableScope); this.statement(node.body, scope, variableScope); break;
+            case "labelled": this.statement(node.body, scope, variableScope); break;
             case "empty": case "break": case "continue": break;
         }
     }

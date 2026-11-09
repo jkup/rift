@@ -182,6 +182,7 @@ class Parser {
     functions = 0;
     loops = 0;
     switches = 0;
+    private labels: { name: string; iteration: boolean }[] = [];
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
@@ -263,6 +264,22 @@ class Parser {
     statementInner(): Stmt {
         const start = this.current().start;
         const loc = this.current().loc;
+        if (this.structuralPlan() && this.labelAhead(this.index)) {
+            const name = this.take().text;
+            this.expect(":");
+            for (const label of this.labels) if (label.name === name)
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, "duplicate label: " + name, loc);
+            let index = this.index;
+            while (this.labelAhead(index)) index += 2;
+            const token = this.tokens[index];
+            const iteration = token.kind === "word" && (token.text === "for" || token.text === "while" || token.text === "do");
+            this.labels.push({ name, iteration });
+            if (this.at("let") || this.at("const") || this.at("function"))
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "labelled declarations are unsupported", this.current().loc);
+            const body = this.statement();
+            this.labels.pop();
+            return { kind: "labelled", loc, name, body };
+        }
         if (this.eat(";")) return { kind: "empty", loc };
         if (this.eat("{")) return { kind: "block", loc, body: this.list(true, []) };
         if (this.structuralPlan() && this.eat("switch")) {
@@ -433,13 +450,27 @@ class Parser {
         }
         if (this.at("break") || this.at("continue")) {
             const kind = this.take().text === "break" ? "break" : "continue";
-            if (this.loops === 0 && (kind === "continue" || this.switches === 0)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, kind + " outside loop", loc);
+            let target: string | undefined;
+            if (this.structuralPlan() && this.current().loc.line === loc.line && this.labelIdentifier(this.current())) {
+                target = this.take().text;
+                let valid = false;
+                for (const label of this.labels) if (label.name === target && (kind === "break" || label.iteration)) valid = true;
+                if (!valid)
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, "invalid " + kind + " target: " + target, loc);
+            } else if (this.loops === 0 && (kind === "continue" || this.switches === 0))
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, kind + " outside loop", loc);
             this.expect(";");
-            return { kind, loc };
+            return target === undefined ? { kind, loc } : { kind, loc, target };
         }
         const expression = this.expression(0);
         this.expect(";");
         return { kind: "expression", loc, expression };
+    }
+    private labelIdentifier(token: Token): boolean {
+        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval");
+    }
+    private labelAhead(index: number): boolean {
+        return this.labelIdentifier(this.tokens[index]) && this.tokens[index + 1]?.kind === "punct" && this.tokens[index + 1]?.text === ":";
     }
     finishTry(loc: Location, body: TryFinallyStmt["body"]): Stmt {
         if (!this.eat("finally")) return body;
@@ -517,13 +548,16 @@ class Parser {
         const bodyIndex = this.index;
         const loops = this.loops;
         const switches = this.switches;
+        const labels = this.labels;
         this.loops = 0;
         this.switches = 0;
+        this.labels = [];
         this.functions++;
         const body = this.list(true, params);
         this.functions--;
         this.loops = loops;
         this.switches = switches;
+        this.labels = labels;
         this.checkParameterDirective(rest, parameters, bodyIndex, loc);
         return { params, parameters, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end, rest, bodyLoc } };
     }
@@ -549,8 +583,10 @@ class Parser {
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "line terminator before arrow", this.current().loc);
         this.expect("=>");
         const loops = this.loops, switches = this.switches;
+        const labels = this.labels;
         this.loops = 0;
         this.switches = 0;
+        this.labels = [];
         this.functions++;
         const bodyLoc = this.current().loc;
         const expressionBody = !this.eat("{");
@@ -561,6 +597,7 @@ class Parser {
         this.functions--;
         this.loops = loops;
         this.switches = switches;
+        this.labels = labels;
         if (!expressionBody) this.checkParameterDirective(rest, parameters, bodyIndex, first.loc);
         return { kind: "function", loc: first.loc, params, parameters, body,
             source: { source: this.source, start: first.start, end: this.tokens[this.index - 1].end, arrow: true, expressionBody, rest, bodyLoc } };

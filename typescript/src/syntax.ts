@@ -46,6 +46,7 @@ export type Stmt =
     | ForEachStmt
     | { kind: "empty"; loc: Location }
     | { kind: "expression"; loc: Location; expression: Expr }
+    | { kind: "labelled"; loc: Location; name: string; body: Stmt }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }
     | { kind: "const"; loc: Location; name: string; init: Expr }
     | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[]; readonly source: FunctionSource | null; readonly parameters?: readonly FormalParameter[] }
@@ -56,4 +57,4 @@ export type Stmt =
     | { kind: "if"; loc: Location; test: Expr; consequent: Stmt; alternate: Stmt | null }
     | { kind: "while" | "do-while"; loc: Location; test: Expr; body: Stmt }
     | { kind: "return" | "throw"; loc: Location; value: Expr | null }
-    | { kind: "break" | "continue"; loc: Location };
+    | { kind: "break" | "continue"; loc: Location; readonly target?: string };

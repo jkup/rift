@@ -109,6 +109,7 @@ class MetadataCollector {
     visitStatement(stmt: Stmt, strict: boolean, parent: number | null): void {
         switch (stmt.kind) {
             case "var": throw new Error("Script var AST requires Script execution");
+            case "labelled": throw new Error("Script labelled AST requires Script execution");
             case "const": throw new Error("Script const AST requires Script execution");
             case "function": this.functionBody(stmt.source, stmt.loc, stmt.body, strict, parent); break;
             case "block": this.statements(stmt.body, strict, parent); break;
