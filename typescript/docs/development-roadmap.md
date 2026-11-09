@@ -5,20 +5,20 @@ Updated 2026-11-09. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted TS-152 array declaration slice (implementation `eb019e06`, audit
-migration `918af409`) passes 645/645 guests on each host, 291/291 tooling checks,
-all 155 native static gates, and 161 completed fixtures in the unchanged 225-file
-selection: 105 reported successes and 56 unchecked completions. The remaining
-outcomes are 19 parse errors, 44 runtime errors and one reported failure. These
+The accepted TS-152 object binding slice (implementation `6d534ff7`, historical
+plan migration `ad4dd9b4`) passes 646/646 guests on each host, 291/291 tooling checks,
+all 156 native static gates, and 162 completed fixtures in the unchanged 225-file
+selection: 105 reported successes and 57 unchecked completions. The remaining
+outcomes are 18 parse errors, 44 runtime errors and one reported failure. These
 are diagnostic fixture results, not a Test262 conformance score.
 
-Array assignment and standalone let/const/var array bindings support defaults,
-nesting, rest and elisions. Next are object bindings, then loop-head integration
-and mixed declaration lists. Object assignment needs a separate cover-grammar
-review. Preserve iterator/reference ordering, TDZ and rest-copy semantics; see
-[the design](destructuring-design.md) and active TS-152 in [TASKS](../TASKS.md).
-Classes, generators/async, Promise, RegExp, Temporal and weak-reference facilities
-remain larger gaps.
+Array assignment and standalone array/object bindings support defaults, nesting
+and rest; arrays also support elisions. Next are for-in/of binding patterns,
+then mixed declaration lists and classic-for patterns. Object assignment needs
+a separate cover-grammar review. Preserve iterator/reference ordering, TDZ and
+rest-copy semantics; see [the design](destructuring-design.md) and TS-152 in
+[TASKS](../TASKS.md). Classes, generators/async, Promise, RegExp, Temporal and
+weak-reference facilities remain larger gaps.
 
 ## Direction
 
