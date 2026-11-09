@@ -33,3 +33,8 @@ Sources consulted 2026-11-09:
 and [V8 URI implementation](https://github.com/v8/v8/blob/main/src/strings/uri.cc).
 The tested host primitive supplies UTF encoding/validation; Rift owns guest
 conversion, errors and budgets. No engine source was copied.
+
+Acceptance: 613/613 guest cases on each host, all 123 native entries passing
+static build/coverage (7322/7322 statements in this driver), tooling 290/290,
+runner 31/31 and ten probes. All 225 fixture results agree; 136 complete,
+retaining all 135 previous completions and adding uri-encoding.js.

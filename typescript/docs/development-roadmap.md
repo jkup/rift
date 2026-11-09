@@ -511,3 +511,11 @@ All 225 fixture results agree; bitwise and unary fixtures add 39 and 28 passing
 checks, raising completions to 135. No expectation migration was needed. See
 [bitwise operators](bitwise.md). Next investigate URI encoding/decoding, including
 native primitive support, malformed sequences, coercion and Realm errors.
+
+### TS-124 checkpoint
+
+URI globals are accepted: 613/613 guest cases on both hosts, all 123 native
+entries static, tooling 290/290, runner 31/31 and ten probes. All 225 fixture
+results agree; uri-encoding.js raises completions to 136. See [URI codecs](uri-codecs.md)
+for primitive evidence and resource boundaries. Next: try/finally, including
+completion replacement, lexical restoration and fatal-engine-stop behavior.
