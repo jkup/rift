@@ -3764,7 +3764,7 @@ Draft review: 672/672 Node guests and focused construction tests in both hosts p
 
 ## TS-172 — RegExp exec and test
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-09. Add branded RegExpBuiltinExec, generic RegExpExec and prototype exec/test using the bounded matcher. Preserve receiver/coercion order, observable lastIndex conversion and strict writes, global/sticky behavior, result/capture metadata, d indices, method-Realm arrays, overridden exec and abrupt/resource completions. Own execution module, registration, focused tests/manifests/docs. Exclude string symbol protocols, named groups, Unicode modes and literals; preserve the original C++ fixtures and verify their outcomes independently.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-09. Add branded RegExpBuiltinExec, generic RegExpExec and prototype exec/test using the bounded matcher. Preserve receiver/coercion order, observable lastIndex conversion and strict writes, global/sticky behavior, result/capture metadata, d indices, method-Realm arrays, overridden exec and abrupt/resource completions. Own execution module, registration, focused tests/manifests/docs. Exclude string symbol protocols, named groups, Unicode modes and literals; preserve the original C++ fixtures and verify their outcomes independently.
 
 ## TS-173 — Native formatting-audit override compatibility
 

@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { registerRegExpExecution } from "./regexp-execution.js";
 import { GuestObject, normal, languageFailure, unsupportedFailure, truthy, UNDEFINED, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import { GuestRegExp, isRegExp } from "../regexp-object.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
@@ -134,5 +135,6 @@ export function registerRegExp(realm: Realm): void {
         const options = regExpString(flags.value, context, loc);
         return options.type === "throw" ? options : normal({ kind: "string", value: "/" + text.value + "/" + options.value });
     });
+    registerRegExpExecution(realm);
     realm.defineScriptGlobal("RegExp", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
