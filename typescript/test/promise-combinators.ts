@@ -42,7 +42,7 @@ for (const test of cases) {
     check(!drained.fatal && drained.failures.length === 0, "checkpoint: " + test.source);
     string("out", test.after, realm, session);
 }
-for (const method of ["all", "race"]) {
+for (const method of ["all", "allSettled", "any", "race"]) {
     const samples: { setup: string; before: string; after: string }[] = [
         { setup: "var input={};Object.defineProperty(input,Symbol.iterator,{get(){out+='wrong'}});Object.defineProperty(Promise,'resolve',{get(){out+='r';throw 7}});", before: "r", after: "r7" },
         { setup: "var input={};Promise.resolve=1;", before: "", after: "TypeError" },
@@ -82,7 +82,7 @@ for (const method of ["all", "race"]) {
     const result = run("result", realm, session);
     check(result.type === "normal" && result.value.kind === "object" && result.value.object.getPrototypeOf() === foreign.arrayPrototype, "all result array belongs to resolve-element Realm");
 }
-for (const method of ["all", "race"]) {
+for (const method of ["all", "allSettled", "any", "race"]) {
     const realm = fresh(), session = createScriptSession({ maxSteps: 300, maxCalls: 32 });
     const result = run("var out='',input={};input[Symbol.iterator]=()=>({next(){return {done:false,value:1}},return(){out+='wrong'}});Promise." + method + "(input)", realm, session);
     check(result.type === "throw" && result.origin.kind === "resource-limit", method + " infinite input bounded");

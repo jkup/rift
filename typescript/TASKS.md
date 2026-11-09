@@ -3732,7 +3732,9 @@ Draft review: 668/668 Node guests pass. Focused AggregateError and existing erro
 
 ## TS-167 — Promise allSettled and any
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-09. Extend the reviewed combinator iteration path with allSettled snapshots and any rejection aggregation. Share each allSettled element guard across fulfillment/rejection, preserve input-order records/errors and method-Realm allocation, and create intrinsic AggregateErrors without invoking the replaceable global. Empty any must throw internally into the outer rejection path so a throwing custom reject callback runs only once. Preserve generic iterator/resolve/then ordering, descriptors and fatal bounds. Own combinator module, focused/shared tests/manifests and notes. Review ECMAScript 2025 27.2.4.2/3 and pinned engine262; retain its older empty-any algorithm difference as a regression. No async syntax.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-09. Extend the reviewed combinator iteration path with allSettled snapshots and any rejection aggregation. Share each allSettled element guard across fulfillment/rejection, preserve input-order records/errors and method-Realm allocation, and create intrinsic AggregateErrors without invoking the replaceable global. Empty any must throw internally into the outer rejection path so a throwing custom reject callback runs only once. Preserve generic iterator/resolve/then ordering, descriptors and fatal bounds. Own combinator module, focused/shared tests/manifests and notes. Review ECMAScript 2025 27.2.4.2/3 and pinned engine262; retain its older empty-any algorithm difference as a regression. No async syntax.
+
+Draft review: 669/669 Node guests pass. Settlement, expanded shared iterator regressions and CLI pass both hosts at 9928/9938/9932 static statements, zero dynamic. The unchanged allSettled/any fixture verifies six asynchronous outcomes. Evidence: build/promise-settlement-draft/build/settlement-reviewed.json and settlement-node-reviewed.log.
 
 ## TS-168 — RegExp backend evaluation
 

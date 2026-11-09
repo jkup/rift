@@ -629,6 +629,7 @@ executeDriver("promise-finally", { stdout: "Promise finally passed\n" });
 executeDriver("promise-helpers", { stdout: "Promise helpers passed\n" });
 executeDriver("promise-combinators", { stdout: "Promise combinators passed\n" });
 executeDriver("aggregate-error", { stdout: "AggregateError passed\n" });
+executeDriver("promise-settlement", { stdout: "Promise settlement passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
