@@ -64,6 +64,8 @@ export class Realm {
     readonly setPrototype: GuestObject;
     readonly setIteratorPrototype: GuestObject;
     readonly arrayConstructor: GuestObject | null = null;
+    readonly arrayValues: Value = UNDEFINED;
+    readonly restrictedFunctionThrower: Value = UNDEFINED;
     readonly booleanPrototype: GuestBoolean;
     readonly numberPrototype: GuestNumber;
     readonly symbolPrototype: GuestObject;
@@ -86,7 +88,7 @@ export class Realm {
             kind: "builtin", initialName: "", realm: this, invoke: this.guardBuiltin((_receiver, _args, _context, _loc) => normal(UNDEFINED)),
         });
         setBuiltinMetadata(this.functionPrototype, "", 0);
-        if (profile === "script") registerRestrictedFunctionProperties(this);
+        if (profile === "script") this.restrictedFunctionThrower = registerRestrictedFunctionProperties(this);
         this.arrayPrototype = new GuestArray(this.objectPrototype);
         this.iteratorPrototype = new GuestObject(this.objectPrototype);
         this.arrayIteratorPrototype = new GuestObject(this.iteratorPrototype);
@@ -160,7 +162,7 @@ export class Realm {
             registerJSON(this);
             registerSymbol(this);
             registerScriptArrayIteration(this);
-            registerArrayIterators(this);
+            this.arrayValues = registerArrayIterators(this);
             registerStringIterator(this);
             registerStringSearch(this);
             registerMap(this);

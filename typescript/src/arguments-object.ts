@@ -1,7 +1,32 @@
-import { GuestObject, type InternalBooleanCompletion, type OperationContext, type PropertyDescriptor,
-    type PropertyDescriptorUpdate, type PropertyKey, type Value } from "./runtime.js";
+import { GuestObject, normal, type InternalBooleanCompletion, type OperationContext, type PropertyDescriptor,
+    type PropertyDescriptorUpdate, type PropertyKey, type Value, type ValueCompletion } from "./runtime.js";
 import type { ScriptBindingCell } from "./script-environment.js";
 import type { Location } from "./syntax.js";
+import type { Realm } from "./realm.js";
+import { wellKnownIterator } from "./symbols.js";
+
+export function createArgumentsObject(realm: Realm, args: Value[], callee: GuestObject | null,
+    parameters: ScriptBindingCell[], context: OperationContext, loc: Location): ValueCompletion {
+    if (realm.profile !== "script" || realm.arrayValues.kind !== "object" || realm.restrictedFunctionThrower.kind !== "object" ||
+        (callee === null && parameters.length !== 0)) throw new Error("invalid arguments object setup");
+    const allocation = context.tick(loc);
+    if (allocation.type === "throw") return allocation;
+    const object = new GuestArguments(realm.objectPrototype);
+    object.bootstrapDefine("length", { value: { kind: "number", value: args.length }, writable: true, configurable: true });
+    for (let i = 0; i < args.length; i++) {
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const key = String(i);
+        object.bootstrapDefine(key, { value: args[i], writable: true, enumerable: true, configurable: true });
+        if (i < parameters.length) object.mapParameter(key, parameters[i]);
+    }
+    object.bootstrapDefine(wellKnownIterator, { value: realm.arrayValues, writable: true, configurable: true });
+    if (callee === null) object.bootstrapDefine("callee", {
+        get: realm.restrictedFunctionThrower, set: realm.restrictedFunctionThrower,
+    });
+    else object.bootstrapDefine("callee", { value: { kind: "object", object: callee }, writable: true, configurable: true });
+    return normal({ kind: "object", object });
+}
 
 export class GuestArguments extends GuestObject {
     private readonly parameterMap: Map<PropertyKey, ScriptBindingCell> = new Map();

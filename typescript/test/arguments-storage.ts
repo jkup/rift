@@ -1,4 +1,4 @@
-import { GuestArguments } from "../src/arguments-object.js";
+import { GuestArguments, createArgumentsObject } from "../src/arguments-object.js";
 import { Realm } from "../src/realm.js";
 import { sameValue, type Value, type ValueCompletion } from "../src/runtime.js";
 import type { ScriptBindingCell } from "../src/script-environment.js";
@@ -7,10 +7,10 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 
 function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
 function number(value: number): Value { return { kind: "number", value }; }
-function run(realm: Realm, text: string): ValueCompletion {
+function run(realm: Realm, text: string, steps = 10000): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "arguments-storage", text }, realm);
     if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({ maxSteps: 10000, maxCalls: 64 }), prepared.record).completion;
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record).completion;
 }
 function passes(realm: Realm, text: string): void {
     const result = run(realm, text);
@@ -88,5 +88,28 @@ function fixture(): { realm: Realm; object: GuestArguments; cell: ScriptBindingC
     check(sameValue(f.cell.value, number(1)), "alternate receiver leaves parameter untouched");
     f.cell.value = number(8);
     passes(f.realm, "var other=Object.create(input);other[0]===8&&Object.getOwnPropertyDescriptor(other,'0')===undefined;");
+}
+for (const mapped of [false, true]) {
+    const realm = new Realm((_line: string) => {}, "script");
+    const cell: ScriptBindingCell = { initialized: true, mutable: true, value: number(1) };
+    const make = realm.createBuiltin("make", 0, (_receiver, args, context, loc): ValueCompletion =>
+        createArgumentsObject(realm, args, mapped ? realm.functionPrototype : null, mapped ? [cell] : [], context, loc));
+    realm.defineScriptGlobal("make", { value: { kind: "object", object: make } });
+    passes(realm, "var originalValues=Array.prototype.values;var originalThrower=Object.getOwnPropertyDescriptor(Function.prototype,'caller').get;Array.prototype.values=function(){throw 1;};Array.prototype[Symbol.iterator]=function(){throw 2;};Object.defineProperty(Function.prototype,'caller',{value:3});var input=make(1,2);input.length===2&&Object.getPrototypeOf(input)===Object.prototype&&!Array.isArray(input)&&Object.prototype.toString.call(input)==='[object Arguments]';");
+    passes(realm, "var iterated='';for(var value of input){iterated+=value;}input[Symbol.iterator]===originalValues&&iterated==='12'&&Object.keys(input).join(',')==='0,1';");
+    passes(realm, "var d=Object.getOwnPropertyDescriptor(input,'length');d.value===2&&d.writable&&!d.enumerable&&d.configurable;");
+    if (mapped) {
+        passes(realm, "var c=Object.getOwnPropertyDescriptor(input,'callee');c.value===Function.prototype&&c.writable&&!c.enumerable&&c.configurable;");
+        cell.value = number(7);
+        passes(realm, "input[0]===7;");
+    } else {
+        passes(realm, "var c=Object.getOwnPropertyDescriptor(input,'callee');c.get===originalThrower&&c.set===originalThrower&&!c.enumerable&&!c.configurable;");
+        passes(realm, "var failures=0;try{input.callee;}catch(e){if(e instanceof TypeError)failures++;}try{input.callee=1;}catch(e){if(e instanceof TypeError)failures++;}failures===2;");
+        cell.value = number(7);
+        passes(realm, "input[0]===1;");
+    }
+    passes(realm, "input[Symbol.toStringTag]='Custom';Object.prototype.toString.call(input)==='[object Custom]';");
+    const limited = run(realm, "make(1,2,3,4,5,6,7,8);", 12);
+    check(limited.type === "throw" && limited.origin.kind === "resource-limit", "bounded arguments allocation");
 }
 console.log("Arguments storage passed");

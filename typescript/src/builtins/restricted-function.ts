@@ -1,7 +1,7 @@
 import type { Realm } from "../realm.js";
 import { languageFailure, type Value } from "../runtime.js";
 
-export function registerRestrictedFunctionProperties(realm: Realm): void {
+export function registerRestrictedFunctionProperties(realm: Realm): Value {
     if (realm.profile !== "script") throw new Error("Script Realm required");
     // Use the ordinary factory so the intrinsic retains the Script execution guard.
     const thrower = realm.createBuiltin("", 0, (_receiver, _args, context, loc) =>
@@ -15,4 +15,5 @@ export function registerRestrictedFunctionProperties(realm: Realm): void {
             get: endpoint, set: endpoint, enumerable: false, configurable: true,
         });
     }
+    return endpoint;
 }

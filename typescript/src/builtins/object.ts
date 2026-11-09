@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { GuestArguments } from "../arguments-object.js";
 import { toObject } from "../object-conversion.js";
 import { GuestError, normal, UNDEFINED, type Value } from "../runtime.js";
 import { toPropertyKey } from "../conversion.js";
@@ -83,6 +84,7 @@ export function registerObjectToString(realm: Realm): Value {
         // its prototype's real symbol property supplies the public tag instead.
         let tag = "Object";
         if (object instanceof GuestArray) tag = "Array";
+        else if (object instanceof GuestArguments) tag = "Arguments";
         else if (object.callable !== null) tag = "Function";
         else if (object instanceof GuestError) tag = "Error";
         else if (object instanceof GuestBoolean) tag = "Boolean";
