@@ -532,3 +532,7 @@ before the first test and before each update, and a shared const loop binding.
 ### TS-126 checkpoint
 
 Traditional lexical for loops are accepted: 615/615 guests on each host, all 125 native entries static, tooling 290/290, runner 31/31 and ten probes. All 225 fixture results agree and all 137 prior completions remain. gc-leak-test.js raises completions to 138, without assertions or proof of collection. See [lexical for](for-lexical.md) for closure timing and the retained initial failures. Next: synchronous for-in, including prototype enumeration, duplicate suppression, mutations, lexical heads and bounded traversal.
+
+### TS-127 checkpoint
+
+For-in is accepted: 616/616 guests on each host, all 126 native entries static, tooling 290/290, runner 31/31 and ten probes. All 225 fixture results agree, all 138 prior completions remain, and for-in-loop-test.js adds 15 passing checks for 139 completed fixtures. See [for-in](for-in.md) for prototype and mutation semantics. Next: array literal spread with iterator semantics and elisions; the sparse-array fixture is blocked on `[1, ...items, , 5]`.
