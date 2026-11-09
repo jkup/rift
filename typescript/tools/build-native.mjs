@@ -45,6 +45,7 @@ const entries = [
     ["test/promise-combinators.ts", "promise-combinators"],
     ["test/aggregate-error.ts", "aggregate-error"],
     ["test/promise-settlement.ts", "promise-settlement"],
+    ["test/regexp-pattern.ts", "regexp-pattern"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
