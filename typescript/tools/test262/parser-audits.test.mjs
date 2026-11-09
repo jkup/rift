@@ -147,6 +147,26 @@ for (const [driver, directory, count] of [
       rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
     });
   }
+  if (driver === 'script-strict-rule-audit') {
+    const row = rows.find(row => row.id === 'X01');
+    assert.equal(row.text, '"use strict"; {function f(){} function f(){}} class C {}');
+    expected.set(row.id, {kind: 'eligible', sourceUnits: 56, consumedUnits: 56, candidates: [{
+      ruleCode: 'duplicate-block-lexical-function', scopeStart: 14, scopeEnd: 45,
+      first: {name: 'f', start: 24, end: 25, loc: {line: 1, column: 25}},
+      second: {name: 'f', start: 39, end: 40, loc: {line: 1, column: 40}},
+    }]});
+  } else for (const [id, text, start, end, first] of [
+    ['P12', '"use strict"; function f(a,a){} function g(){class C {}}', 14, 31, 25],
+    ['E01', 'function f(a,a){"use strict";} class C {}', 0, 30, 11],
+    ['E11', 'function f(a,a){"use strict"; function g(){class C {}}}', 0, null, 11],
+  ]) {
+    assert.equal(rows.find(row => row.id === id).text, text);
+    expected.set(id, {kind: 'eligible', sourceUnits: text.length, consumedUnits: text.length, candidates: [{
+      ruleCode: 'duplicate-strict-parameter', functionStart: start, functionEnd: end ?? text.length,
+      first: {name: 'a', start: first, end: first + 1, loc: {line: 1, column: first + 1}},
+      second: {name: 'a', start: first + 2, end: first + 3, loc: {line: 1, column: first + 3}},
+    }]});
+  }
   for (const lane of ['node', 'native']) for (const row of rows) {
     const file = row.id === 'R0' ? `test/fixtures/${driver}/a.js` : row.id === 'R1' ? `test/fixtures/${driver}/b.js` : undefined;
     run(driver, lane, {...row, file}, [], (stdout, label) => assert.deepEqual(JSON.parse(stdout).audit, expected.get(row.id), label));
@@ -160,6 +180,14 @@ for (const [driver, directory, count, variants] of [
   const rows = json(`docs/validation/${directory}/semantic-matrix.json`).rows;
   assert.equal(rows.length, count);
   if (driver === 'script-assignment-target-audit') {
+    for (const [id, text] of [['G8', '42=7;class C{}'], ['G10', '42=7;function f(){class C{}}']]) {
+      const row = rows.find(row => row.id === id);
+      assert.equal(row.text, text);
+      row.expected = {kind: 'eligible', sourceUnits: text.length, consumedUnits: text.length, candidates: [{
+        ruleCode: 'assignment-target', target: {text: '42', start: 0, end: 2, loc: {line: 1, column: 1}},
+        operator: {text: '=', start: 2, end: 3, loc: {line: 1, column: 3}},
+      }]};
+    }
     const pattern = rows.find(row => row.id === 'U8');
     assert.equal(pattern.text, '[a]=b;');
     pattern.expected = {kind: 'none', sourceUnits: 6, consumedUnits: 6};
@@ -215,6 +243,11 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    const classStatement = rows.find(row => row.id === 'excluded-class');
+    assert.equal(classStatement.text, 'if(false) class C{}');
+    classStatement.expected = {kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'declarations require a block', loc: {line: 1, column: 11}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'}};
     const arrayBinding = rows.find(row => row.id === 'excluded-let-array');
     assert.equal(arrayBinding.text, 'if(false) let [x]=a;');
     arrayBinding.expected = {kind: 'blocked', reason: 'grammar-or-resource',
@@ -268,6 +301,14 @@ for (const [driver, directory, count, variants] of [
       ['mixed-template-false-true', '`x`; while(false) let x;', 18],
       ['mixed-template-true-false', '"use strict"; while(false) let x; `x`;', 27],
       ['mixed-template-true-true', '"use strict"; `x`; while(false) let x;', 32],
+      ['mixed-class-false-false', 'while(false) let x; class C{}', 13],
+      ['mixed-class-false-true', 'class C{} while(false) let x;', 23],
+      ['mixed-class-true-false', '"use strict"; while(false) let x; class C{}', 27],
+      ['mixed-class-true-true', '"use strict"; class C{} while(false) let x;', 37],
+      ['mixed-nested-invalid-false-false', 'while(false) let x; let g=function(){class C{}};', 13],
+      ['mixed-nested-invalid-false-true', 'let g=function(){class C{}}; while(false) let x;', 42],
+      ['mixed-nested-invalid-true-false', '"use strict"; while(false) let x; let g=function(){class C{}};', 27],
+      ['mixed-nested-invalid-true-true', '"use strict"; let g=function(){class C{}}; while(false) let x;', 56],
       ['mixed-const-false-false', 'while(false) let x; const y=1;', 13],
       ['mixed-const-false-true', 'const y=1; while(false) let x;', 24],
       ['mixed-const-true-false', '"use strict"; while(false) let x; const y=1;', 27],
