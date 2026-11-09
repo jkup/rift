@@ -36,3 +36,8 @@ Sources consulted 2026-11-09:
 and [V8 VisitTryFinallyStatement](https://github.com/v8/v8/blob/main/src/interpreter/bytecode-generator.cc).
 V8 also separates try/catch and try/finally nodes; Rift uses its existing explicit
 completions instead of bytecode continuation registers. No engine source was copied.
+
+Acceptance: 614/614 guest cases on each host, all 124 native entries passing
+static build/coverage, tooling 290/290, runner 31/31 and ten probes. All 225
+fixture results agree; 137 complete, retaining all 136 previous completions.
+The try/catch/finally fixture reports three passing checks.

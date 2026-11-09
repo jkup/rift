@@ -519,3 +519,12 @@ entries static, tooling 290/290, runner 31/31 and ten probes. All 225 fixture
 results agree; uri-encoding.js raises completions to 136. See [URI codecs](uri-codecs.md)
 for primitive evidence and resource boundaries. Next: try/finally, including
 completion replacement, lexical restoration and fatal-engine-stop behavior.
+
+### TS-125 checkpoint
+
+Try/finally is accepted: 614/614 guest cases on both hosts, all 124 native entries
+static, tooling 290/290, runner 31/31 and ten probes. All 225 fixture results
+agree; the finally fixture adds three passing checks and raises completions to
+137. See [try/finally](try-finally.md) for completion and fatal-stop semantics.
+Next: traditional single-binding lexical for loops, with fresh let bindings
+before the first test and before each update, and a shared const loop binding.
