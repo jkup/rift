@@ -18,8 +18,12 @@ export type ChainLink = { kind: "member"; loc: Location; optional: boolean; key:
     | { kind: "call"; loc: Location; optional: boolean; args: Argument[] };
 export type ChainExpr = { kind: "chain"; loc: Location; base: Expr; links: ChainLink[] };
 export type ObjectProperty = { kind: "data" | "get" | "set"; key: string; value: Expr };
+export type PatternElement = { pattern: AssignmentPattern; initializer: Expr | null };
+export type ArrayPattern = { kind: "array-pattern"; loc: Location; elements: (PatternElement | null)[]; rest: AssignmentPattern | null };
+export type AssignmentPattern = ArrayPattern | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
 export type Expr =
     | ChainExpr
+    | { kind: "destructure"; loc: Location; pattern: ArrayPattern; value: Expr }
     | { kind: "array"; loc: Location; elements: ArrayElement[] }
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
     | { kind: "template"; loc: Location; strings: string[]; expressions: Expr[] }

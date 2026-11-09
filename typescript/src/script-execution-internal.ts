@@ -1,6 +1,7 @@
+import type { ArrayPattern, AssignmentPattern } from "./syntax.js";
 import { instanceofOperator } from "./builtins/function.js";
 import { createArgumentsObject } from "./arguments-object.js";
-import { getIterator, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow, type IteratorRecord } from "./iterator.js";
+import { getIterator, iteratorStep, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow, type IteratorRecord } from "./iterator.js";
 import { ForInEnumerator } from "./for-in.js";
 import type { ConstructBuiltin, BuiltinConstructor, BoundCallable, InternalBooleanCompletion } from "./runtime.js";
 import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js";
@@ -1295,6 +1296,13 @@ class ExecutionEngine {
                 const ref = this.#reference(expr, env, receiver);
                 return ref.type === "abrupt" ? ref.completion : this.#get(ref.reference, expr.loc);
             }
+            case "destructure": {
+                if (env !== null) throw new Error("Script pattern requires Script execution");
+                const input = this.#value(expr.value);
+                if (input.type === "throw") return input;
+                const assigned = this.#arrayPattern(expr.pattern, input.value);
+                return assigned.type === "throw" ? assigned : input;
+            }
             case "assign": {
                 const ref = this.#reference(expr.target, env, receiver);
                 if (ref.type === "abrupt") return ref.completion;
@@ -1793,6 +1801,76 @@ class ExecutionEngine {
         if (ref.kind === "script") return deleteScriptBinding(ref.binding, this.context);
         if (ref.kind === "script-property") return deleteReference(ref.reference, this.context, loc, ref.strict);
         return deleteReference(ref, this.context, loc);
+    }
+    #arrayPattern(pattern: ArrayPattern, input: Value): ValueCompletion {
+        if (++this.depth > 256) {
+            this.depth--;
+            return resourceFailure("evaluation-depth", 257, 256, "evaluation nesting limit exceeded", pattern.loc);
+        }
+        try {
+            const acquired = getIterator(input, this.context, pattern.loc);
+            if (acquired.type === "throw") return acquired;
+            const iterator = acquired.value;
+            let result: ValueCompletion = normal();
+            for (const element of pattern.elements) {
+                result = this.context.tick(pattern.loc);
+                if (result.type === "throw") break;
+                if (element === null) {
+                    if (!iterator.done) {
+                        const skipped = iteratorStep(iterator, this.context, pattern.loc);
+                        if (skipped.type === "throw") { result = skipped; break; }
+                    }
+                } else {
+                    result = this.#patternElement(element.pattern, element.initializer, iterator, false);
+                    if (result.type === "throw") break;
+                }
+            }
+            if (result.type === "normal" && pattern.rest !== null)
+                result = this.#patternElement(pattern.rest, null, iterator, true);
+            if (iterator.done) return result;
+            return result.type === "throw" ? iteratorCloseOnThrow(iterator, result, this.context, pattern.loc)
+                : iteratorCloseNormally(iterator, this.context, pattern.loc);
+        } finally { this.depth--; }
+    }
+    #patternElement(pattern: AssignmentPattern, initializer: Expr | null, iterator: IteratorRecord, rest: boolean): ValueCompletion {
+        let reference: EngineReference | null = null;
+        if (pattern.kind === "target") {
+            const target = this.#reference(pattern.target, null, this.#active().thisValue);
+            if (target.type === "abrupt") {
+                if (target.completion.type !== "throw") throw new Error("invalid pattern reference completion");
+                return target.completion;
+            }
+            reference = target.reference;
+        }
+        let value: Value = UNDEFINED;
+        if (rest) {
+            const array = this.context.realm.createArray();
+            let index = 0;
+            while (!iterator.done) {
+                const next = iteratorStepValue(iterator, this.context, pattern.loc);
+                if (next.type === "throw") return next;
+                if (next.done) break;
+                const defined = array.defineOwnProperty(String(index++), { value: next.value, writable: true, enumerable: true, configurable: true }, this.context, pattern.loc);
+                if (defined.type === "throw") return defined;
+                if (!defined.value) throw new Error("fresh rest array invariant");
+            }
+            value = { kind: "object", object: array };
+        } else if (!iterator.done) {
+            const next = iteratorStepValue(iterator, this.context, pattern.loc);
+            if (next.type === "throw") return next;
+            value = next.value;
+        }
+        if (value.kind === "undefined" && initializer !== null) {
+            const evaluated = this.#value(initializer, pattern.kind === "target" ? pattern.inferredName : null);
+            if (evaluated.type === "throw") return evaluated;
+            value = evaluated.value;
+        }
+        if (pattern.kind === "array-pattern") return this.#arrayPattern(pattern, value);
+        if (reference === null) throw new Error("missing pattern reference");
+        const assigned = this.#put(reference, value, pattern.loc);
+        if (assigned.type === "throw") return assigned;
+        if (assigned.type !== "normal") throw new Error("invalid pattern assignment completion");
+        return normal();
     }
     #value(expr: Expr, name: string | null = null): ValueCompletion {
         const result = this.#eval(expr, null, this.#active().thisValue, false, name);

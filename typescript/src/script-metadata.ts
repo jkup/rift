@@ -142,6 +142,7 @@ class MetadataCollector {
             case "assign": case "compound": this.expression(expr.value, strict, parent); this.expression(expr.target, strict, parent); break;
             case "conditional":
                 this.expression(expr.alternate, strict, parent); this.expression(expr.consequent, strict, parent); this.expression(expr.test, strict, parent); break;
+            case "destructure": throw new Error("Script pattern AST requires Script metadata");
             case "chain": throw new Error("Script optional chain AST requires Script metadata");
             case "member": this.expression(expr.key, strict, parent); this.expression(expr.base, strict, parent); break;
             case "call":

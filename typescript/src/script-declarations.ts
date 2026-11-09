@@ -1,3 +1,4 @@
+import type { AssignmentPattern } from "./syntax.js";
 import { parseDeclarationPlan } from "./parser.js";
 import { scriptPrologue } from "./script-prologue.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
@@ -467,12 +468,29 @@ class DeclarationCollector {
             case "empty": case "break": case "continue": break;
         }
     }
+    pattern(pattern: AssignmentPattern, scope: number, variableScope: number): void {
+        if (pattern.kind === "target") {
+            const target = pattern.target;
+            if (target.kind === "identifier" && (target.name === "arguments" || target.name === "eval"))
+                this.restrictedAssignments.push({ name: target.name, scope, loc: target.loc });
+            this.expression(target, scope, variableScope);
+            return;
+        }
+        if (pattern.rest !== null) this.pattern(pattern.rest, scope, variableScope);
+        for (let i = pattern.elements.length - 1; i >= 0; i--) {
+            const element = pattern.elements[i];
+            if (element === null) continue;
+            if (element.initializer !== null) this.expression(element.initializer, scope, variableScope);
+            this.pattern(element.pattern, scope, variableScope);
+        }
+    }
     visitExpression(node: Expr, scope: number, variableScope: number): void {
         if ((node.kind === "assign" || node.kind === "compound" || node.kind === "update") &&
             node.target.kind === "identifier" && (node.target.name === "arguments" || node.target.name === "eval"))
             this.restrictedAssignments.push({ name: node.target.name, scope, loc: node.target.loc });
         switch (node.kind) {
             case "function": this.functionBody(node.source, node.loc, node.body, scope, null, node); break;
+            case "destructure": this.expression(node.value, scope, variableScope); this.pattern(node.pattern, scope, variableScope); break;
             case "array":
                 for (let i = node.elements.length - 1; i >= 0; i--) {
                     const item = node.elements[i];

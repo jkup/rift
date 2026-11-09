@@ -44,7 +44,12 @@ for(const prefix of ['',"'use strict';"]) {
 }
 for(const text of ['[...];','[. . .[]];','[..[]];','[...[],...];','f(...[]);','new C(...[]);','({...x});','let [...x]=[];','[...x]=[];'])
     if (text === 'f(...[]);' || text === 'new C(...[]);') passes('function f(){}function C(){}'+text+'true;');
-    else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
+    else if (text === '[...x]=[];') {
+        const realm = fresh();
+        check(run(text, realm).type === 'normal', 'array rest assignment admitted');
+        const assigned = run('Array.isArray(x)&&x.length===0;', realm);
+        check(assigned.type === 'normal' && assigned.value.kind === 'boolean' && assigned.value.value, 'array rest assignment value');
+    } else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
 check(parse('[...[1]];').error !== null,'legacy parser unchanged');
 const owner=fresh(),caller=fresh();
 const f=run('function f(x){return [...x];}f;',owner);check(f.type==='normal','foreign setup');if(f.type==='normal')caller.defineScriptGlobal('f',{value:f.value});

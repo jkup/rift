@@ -24,6 +24,7 @@ const entries = [
     ["test/symbol-well-known.ts", "symbol-well-known"],
     ["test/array-iterator.ts", "array-iterator"],
     ["test/iterator-step.ts", "iterator-step"],
+    ["test/array-assignment-patterns.ts", "array-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
     ["test/object-from-entries.ts", "object-from-entries"],
     ["test/keyed-collection.ts", "keyed-collection"],

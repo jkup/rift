@@ -1,3 +1,4 @@
+import type { AssignmentPattern, PatternElement } from "./syntax.js";
 import { collectNumericSeparatorAudit, type NumericSeparatorAudit } from "./script-declarations.js";
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatementContext, NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
@@ -194,6 +195,7 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates, lexicalCandidates: parser.lexicalCandidates };
 }
 class Parser {
+    private readonly arrayTrailingCommas = new Set<Expr>();
     readonly lexicalCandidates: LexicalStatementCandidate[] = [];
     readonly numericCandidates: NumericAssignmentCandidate[] = [];
     private readonly numericTokens = new Map<Expr, Token>();
@@ -756,6 +758,12 @@ class Parser {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unparenthesized unary exponentiation base", left.loc);
             const right = this.expression(precedence === 1 || op === "**" ? precedence : precedence + 1, allowIn);
             if (precedence === 1) {
+                if (op === "=" && left.kind === "array" && this.structuralPlan() && !this.parenthesized.has(left)) {
+                    const pattern = this.assignmentPattern(left);
+                    if (pattern.kind !== "array-pattern") throw new Error("array pattern invariant");
+                    left = { kind: "destructure", loc, pattern, value: right };
+                    continue;
+                }
                 if (left.kind !== "identifier" && left.kind !== "member") {
                     const numeric = this.numericTokens.get(left);
                     // Defer only this token-backed failure after the RHS succeeds.
@@ -793,6 +801,30 @@ class Parser {
         }
         this.depth--;
         return left;
+    }
+    // Keep the collection key at its declared Expr type for scriptc (TS-152 reduction).
+    private isParenthesized(expr: Expr): boolean { return this.parenthesized.has(expr); }
+    assignmentPattern(expr: Expr): AssignmentPattern {
+        if (expr.kind === "array" && !this.parenthesized.has(expr)) {
+            const elements: (PatternElement | null)[] = [];
+            let rest: AssignmentPattern | null = null;
+            for (let i = 0; i < expr.elements.length; i++) {
+                const item = expr.elements[i];
+                if (item === null) { elements.push(null); continue; }
+                if (item.kind === "spread") {
+                    if (i !== expr.elements.length - 1 || this.arrayTrailingCommas.has(expr))
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "rest must end an assignment pattern", item.loc);
+                    rest = this.assignmentPattern(item.expression);
+                } else if ((item.kind === "assign" || item.kind === "destructure") && !this.isParenthesized(item)) {
+                    elements.push({ pattern: item.kind === "assign" ? this.assignmentPattern(item.target) : item.pattern, initializer: item.value });
+                } else elements.push({ pattern: this.assignmentPattern(item), initializer: null });
+            }
+            return { kind: "array-pattern", loc: expr.loc, elements, rest };
+        }
+        if (expr.kind !== "identifier" && expr.kind !== "member")
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid destructuring target", expr.loc);
+        return { kind: "target", loc: expr.loc, target: expr,
+            inferredName: expr.kind === "identifier" && !this.parenthesized.has(expr) ? expr.name : null };
     }
     argument(): Argument {
         if (this.structuralPlan() && this.eat("...")) {
@@ -886,6 +918,7 @@ class Parser {
         }
         if (t.text === "[") {
             const elements: ArrayElement[] = [];
+            let trailingComma = false;
             while (this.error === null && !this.at("]")) {
                 if (this.eat(",")) {
                     elements.push(null);
@@ -900,9 +933,12 @@ class Parser {
                     elements.push({ kind: "spread", loc: spread.loc, expression: this.expression(1) });
                 } else elements.push(this.expression(1));
                 if (!this.eat(",")) break;
+                trailingComma = this.at("]");
             }
             this.expect("]");
-            return { kind: "array", loc, elements };
+            const array: Expr = { kind: "array", loc, elements };
+            if (trailingComma) this.arrayTrailingCommas.add(array);
+            return array;
         }
         if (t.text === "{") {
             const properties: ObjectProperty[] = [];
