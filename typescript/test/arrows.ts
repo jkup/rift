@@ -56,7 +56,7 @@ expect(run("var f=()=> 'use strict';f();implicit=3;implicit===3;"), { kind: "boo
 passes("var f=(x /* comment */)=>\nx;f(3)===3;");
 
 for (const text of [
-    "x\n=>x;", "(x)/*\n*/=>x;", "(a,a)=>a;", "(a=1)=>a;", "({a})=>a;",
+    "x\n=>x;", "(x)/*\n*/=>x;", "(a,a)=>a;", "({a})=>a;",
     "async x=>x;", "var f=()=>arguments;", "()=>super.x;", "()=>new.target;", "1+x=>x;",
     "new ()=>1;", "()=>{}.x;", "()=>{}();", "()=>{}+1;", "((x))=>x;", "(x+y)=>x;",
     "while(true){var f=()=>{break;};}", "while(true){var f=()=>{continue;};}",
@@ -79,6 +79,9 @@ for (const text of [
 }
 const exhausted = run("var f=()=>f();f();", fresh(), 5000);
 const rest = run("(...a)=>a;");
+const defaulted = run("(a=1)=>a;");
+check(defaulted.type === "normal" && defaulted.value.kind === "object" && defaulted.value.object.callable?.kind === "script-guest", "default arrow materializes");
+passes("var f=(a=1)=>a;f()===1&&f(3)===3&&f.length===0;");
 check(rest.type === "normal" && rest.value.kind === "object" && rest.value.object.callable?.kind === "script-guest", "rest arrow prepares and materializes");
 passes("var f=(...a)=>a;Array.isArray(f())&&f(1,2).join(',')==='1,2';");
 check(exhausted.type === "throw" && exhausted.origin.kind === "resource-limit", "recursive arrows bounded");

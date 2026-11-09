@@ -35,6 +35,15 @@ for (const [driver, directory, count] of [
     else expected.set(snapshot.id, audit);
   }
   assert.equal(expected.size, count);
+  const duplicateDefault = rows.find(row => row.id === 'P10');
+  assert.equal(duplicateDefault.text, '"use strict"; function f(a=1,a){}');
+  expected.set(duplicateDefault.id, {
+    kind: 'blocked', reason: 'grammar-or-resource',
+    diagnostic: {phase: 'parse', name: 'SyntaxError',
+      message: driver === 'script-strict-rule-audit' ? 'duplicate parameter: a' : 'duplicate default parameter list',
+      loc: {line: 1, column: 15}},
+    rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
+  });
   const duplicateRest = rows.find(row => row.id === 'P11');
   assert.equal(duplicateRest.text, '"use strict"; function f(a,...a){}');
   expected.set(duplicateRest.id, {
@@ -68,6 +77,13 @@ for (const [driver, directory, count] of [
     rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
   });
   if (driver === 'script-strict-parameter-audit') {
+    const defaultBody = rows.find(row => row.id === 'E10');
+    assert.equal(defaultBody.text, 'function f(a,a=1){"use strict";}');
+    expected.set(defaultBody.id, {
+      kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate default parameter list', loc: {line: 1, column: 1}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
+    });
     const arrow = rows.find(row => row.id === 'E39');
     assert.equal(arrow.text, 'let f=(a,a)=>a;');
     expected.set(arrow.id, {

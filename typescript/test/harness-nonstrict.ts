@@ -108,6 +108,11 @@ for (const source of negatives) {
     } else if (source === "function f(){return 7;}const tail=0;") {
         check(p.kind === "ready", "const tail prepares");
         expect(run(source+"f()+tail;",r),{kind:"number",value:7},"const tail executes");
+    } else if (source === "out(9);function f(a=1){}") {
+        check(p.kind === "ready", "default parameter prepares");
+        expect(run(source+"f();",r),UNDEFINED,"default parameter function executes");
+        check(out.length === 1 && sameValue(out[0],{kind:"number",value:9}),"default source output retained");
+        expect(run("f.length;",r),{kind:"number",value:0},"default function length");
     } else if (source === "for(let i=0;;){}") {
         check(p.kind === "ready", "lexical for prepares");
         const result=run(source,r,createScriptSession({maxSteps:100,maxCalls:64}));

@@ -4,7 +4,7 @@ import type { ScriptSourceUnit } from "./script-metadata.js";
 import { scriptPrologue } from "./script-prologue.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
+import type { Diagnostic, Expr, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, FormalParameter, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -341,7 +341,7 @@ class Parser {
             const name = this.name();
             if (this.structuralPlan()) this.bindings.set(start, [{ site: { name, start: token.start, end: token.end, loc: token.loc }, init: null, initializer: null }]);
             const fn = this.functionTail(loc, start);
-            return { kind: "function", loc, name, params: fn.params, body: fn.body, source: fn.source };
+            return { kind: "function", loc, name, params: fn.params, parameters: fn.parameters, body: fn.body, source: fn.source };
         }
         if (this.eat("if")) {
             this.expect("(");
@@ -477,31 +477,42 @@ class Parser {
         }
         return { site: { name, start: token.start, end: token.end, loc: token.loc }, init, initializer };
     }
-    formalParameters(loc: Location, arrow: boolean): { params: string[]; rest: boolean } {
+    formalParameters(loc: Location, arrow: boolean): { params: string[]; rest: boolean; parameters: FormalParameter[] } {
         this.expect("(");
         const params: string[] = [];
+        const parameters: FormalParameter[] = [];
         let rest = false;
         if (!this.at(")")) {
             do {
                 rest = this.structuralPlan() && this.eat("...");
+                const token = this.current();
                 const name = this.name();
                 if (params.includes(name) && (arrow || this.purpose !== "bounded-parameter-audit"))
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, (arrow ? "duplicate arrow parameter: " : "duplicate parameter: ") + name, loc);
                 params.push(name);
+                let initializer: Expr | null = null;
+                if (this.structuralPlan() && this.eat("=")) {
+                    if (rest) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "rest parameter cannot have a default", token.loc);
+                    initializer = this.expression(1);
+                }
+                parameters.push({ site: { name, start: token.start, end: token.end, loc: token.loc }, initializer });
                 if (rest) break;
             } while (this.error === null && this.eat(",") && !(arrow && this.at(")")));
         }
         this.expect(")");
         if (rest && new Set(params).size !== params.length)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate rest parameter list", loc);
-        return { params, rest };
+        if (parameters.some(parameter => parameter.initializer !== null) && new Set(params).size !== params.length)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate default parameter list", loc);
+        return { params, rest, parameters };
     }
-    checkRestDirective(rest: boolean, bodyIndex: number, loc: Location): void {
-        if (rest && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
-            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with rest parameters", loc);
+    checkParameterDirective(rest: boolean, parameters: FormalParameter[], bodyIndex: number, loc: Location): void {
+        if ((rest || parameters.some(parameter => parameter.initializer !== null)) && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with non-simple parameters", loc);
     }
-    functionTail(loc: Location, start: number): { params: string[]; body: Stmt[]; source: FunctionSource } {
-        const { params, rest } = this.formalParameters(loc, false);
+    functionTail(loc: Location, start: number): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
+        const { params, rest, parameters } = this.formalParameters(loc, false);
+        const bodyLoc = this.current().loc;
         this.expect("{");
         const bodyIndex = this.index;
         const loops = this.loops;
@@ -513,27 +524,27 @@ class Parser {
         this.functions--;
         this.loops = loops;
         this.switches = switches;
-        this.checkRestDirective(rest, bodyIndex, loc);
-        return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end, rest } };
+        this.checkParameterDirective(rest, parameters, bodyIndex, loc);
+        return { params, parameters, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end, rest, bodyLoc } };
     }
     arrowAhead(): boolean {
         let index = this.index;
         if (this.tokens[index].kind === "word") return this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
         if (this.tokens[index].kind !== "punct" || this.tokens[index].text !== "(") return false;
-        index++;
-        while (this.tokens[index].kind === "word" || this.tokens[index].text === "...") {
-            if (this.tokens[index].text === "...") index++;
-            if (this.tokens[index].kind !== "word") return false;
-            index++;
-            if (this.tokens[index].text !== ",") break;
-            index++;
+        let depth = 0;
+        for (; this.tokens[index].kind !== "eof"; index++) {
+            const token = this.tokens[index];
+            if (token.kind !== "punct") continue;
+            if (token.text === "(") depth++;
+            if (token.text === ")" && --depth === 0)
+                return this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
         }
-        return this.tokens[index].kind === "punct" && this.tokens[index].text === ")" &&
-            this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
+        return false;
     }
     arrow(allowIn: boolean): Expr {
         const first = this.current();
-        const { params, rest } = this.at("(") ? this.formalParameters(first.loc, true) : { params: [this.name()], rest: false };
+        const { params, rest, parameters } = this.at("(") ? this.formalParameters(first.loc, true)
+            : { params: [this.name()], rest: false, parameters: [{ site: { name: first.text, start: first.start, end: first.end, loc: first.loc }, initializer: null }] };
         if (this.current().loc.line !== this.tokens[this.index - 1].loc.line)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "line terminator before arrow", this.current().loc);
         this.expect("=>");
@@ -541,6 +552,7 @@ class Parser {
         this.loops = 0;
         this.switches = 0;
         this.functions++;
+        const bodyLoc = this.current().loc;
         const expressionBody = !this.eat("{");
         const bodyIndex = this.index;
         const body: Stmt[] = expressionBody
@@ -549,9 +561,9 @@ class Parser {
         this.functions--;
         this.loops = loops;
         this.switches = switches;
-        if (!expressionBody) this.checkRestDirective(rest, bodyIndex, first.loc);
-        return { kind: "function", loc: first.loc, params, body,
-            source: { source: this.source, start: first.start, end: this.tokens[this.index - 1].end, arrow: true, expressionBody, rest } };
+        if (!expressionBody) this.checkParameterDirective(rest, parameters, bodyIndex, first.loc);
+        return { kind: "function", loc: first.loc, params, parameters, body,
+            source: { source: this.source, start: first.start, end: this.tokens[this.index - 1].end, arrow: true, expressionBody, rest, bodyLoc } };
     }
     precedence(op: string): number {
         if (this.structuralPlan() && ["**=", "&=", "|=", "^=", "<<=", ">>=", ">>>="].includes(op)) return 1;
@@ -751,7 +763,7 @@ class Parser {
         if (t.text === "this") return { kind: "this", loc };
         if (t.text === "function") {
             const fn = this.functionTail(loc, t.start);
-            return { kind: "function", loc, params: fn.params, body: fn.body, source: fn.source };
+            return { kind: "function", loc, params: fn.params, parameters: fn.parameters, body: fn.body, source: fn.source };
         }
         if (t.text === "(") {
             const expr = this.expression(0);
@@ -810,8 +822,8 @@ class Parser {
                             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
                         if (new Set(fn.params).size !== fn.params.length)
                             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate method parameter", first.loc);
-                        properties.push({ kind, key: name, value: { kind: "function", loc: first.loc, params: fn.params, body: fn.body,
-                            source: { source: fn.source.source, start: fn.source.start, end: fn.source.end, method: true, rest: fn.source.rest } } });
+                        properties.push({ kind, key: name, value: { kind: "function", loc: first.loc, params: fn.params, parameters: fn.parameters, body: fn.body,
+                            source: { source: fn.source.source, start: fn.source.start, end: fn.source.end, method: true, rest: fn.source.rest, bodyLoc: fn.source.bodyLoc } } });
                     } else {
                         if (kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
                         if (key.text === "__proto__") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, "prototype literal syntax is unsupported", key.loc);

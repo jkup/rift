@@ -324,33 +324,23 @@ class DeclarationCollector {
         return id;
     }
     functionBody(source: FunctionSource | null, loc: Location, body: Stmt[], scope: number, declaration: number | null, node: Stmt | Expr): void {
-        if (source === null) throw new Error("parsed function missing source");
-        let index = this.tokenIndex(loc);
-        const formals: DeclarationSite[] = [];
-        if (source.arrow === true && this.tokens[index].kind === "word") {
-            formals.push(this.site(this.tokens[index]));
-            index++;
-        } else {
-            if (source.arrow !== true) {
-                index++;
-                if (this.tokens[index].text !== "(") index++;
-            }
-            index++;
-            while (this.tokens[index].text !== ")") {
-                if (this.tokens[index].text !== "," && this.tokens[index].text !== "...") formals.push(this.site(this.tokens[index]));
-                index++;
-            }
-            index++;
-        }
-        if (source.arrow === true) index++;
+        if (source === null || source.bodyLoc === undefined || node.kind !== "function" || node.parameters === undefined)
+            throw new Error("parsed function missing parameter/source metadata");
+        const index = this.tokenIndex(source.bodyLoc);
+        const formals = node.parameters.map(parameter => parameter.site);
+        const hasInitializers = node.parameters.some(parameter => parameter.initializer !== null);
         const inheritedStrict = this.scopes[scope].strict;
         const strictness: StrictnessMetadata = source.expressionBody === true
             ? { ownStrict: false, inheritedStrict, strict: inheritedStrict, directives: [] }
             : scriptPrologue(this.unit.text, this.tokens, index + 1, inheritedStrict);
-        const id = this.scope("function", scope, this.tokens[index].start, source.end, strictness.strict, formals);
+        const id = this.scope("function", scope, hasInitializers ? source.start : this.tokens[index].start, source.end, strictness.strict, formals);
         if (this.nodes !== null) this.nodes.scopes.set(id, { node, body });
         this.functions.push({ scope: id, declaration, start: source.start, end: source.end, strictness });
         this.statements(body, id, id);
+        for (let i = node.parameters.length - 1; i >= 0; i--) {
+            const initializer = node.parameters[i].initializer;
+            if (initializer !== null) this.expression(initializer, id, id);
+        }
     }
     visitStatement(node: Stmt, scope: number, variableScope: number): void {
         switch (node.kind) {

@@ -893,12 +893,12 @@ for(const source of [
         scalar(run(source.includes("get x") ? '"use strict";o.x===undefined?1:0;' : '"use strict";o.m()===undefined?1:0;',r,s),1);
         continue;
     }
-    if (source === '"use strict";function f(...x){}') {
-        check(prepared.kind === "ready" && s.inspect().steps === 0, "rest prepares without execution");
-        check(run(source,r,s).type === "normal", "rest declaration executes");
+    if (source === '"use strict";function f(...x){}' || source === '"use strict";function f(x=1){}') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "non-simple parameters prepare without execution");
+        check(run(source,r,s).type === "normal", "non-simple parameter declaration executes");
         scalar(run('"use strict";f.length;',r,s),0);
         const called=run('"use strict";f(1,2);',r,s);
-        check(called.type === "normal" && called.value.kind === "undefined", "rest empty body result");
+        check(called.type === "normal" && called.value.kind === "undefined", "non-simple parameter empty body result");
         continue;
     }
     if (source === '"use strict";let f=()=>1;') {

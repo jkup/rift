@@ -3563,6 +3563,6 @@ Support a final identifier rest parameter in Script declarations, expressions, m
 
 ## TS-143 — Default parameter initializers
 
-Status: **ready**. Requires TS-142 acceptance.
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-09; base 06d875b7. TS-142 accepted.
 
 Add identifier parameter defaults to Script functions, methods and arrows. Inspect the activation boundary before implementation: parameter expressions execute left-to-right after all parameter bindings are created, and a separate body var environment must keep initializer closures isolated from body declarations. Preserve this binding, parameter TDZ, default-only-on-undefined, inferred names, function length, Realm ownership, errors and budgets. Keep default-expression evaluation behind the private execution key; public setup APIs must not gain a guest evaluator or expose retained ASTs. Own parser/formal metadata, declaration collection, activation/frame setup, focused tests, explicit migrations, manifests and docs. Destructuring, arguments, eval and new certified syntax rules remain separate. Require tests for later/self parameter references, initializer closures versus body var/function bindings, cross-Realm call/construction, strict directives and fatal/guest abrupt completion, plus both hosts and the fixed corpus.

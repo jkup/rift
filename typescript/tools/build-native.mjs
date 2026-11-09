@@ -63,6 +63,7 @@ const entries = [
     ["test/function-constructor.ts", "function-constructor"],
     ["test/arrows.ts", "arrows"],
     ["test/rest-parameters.ts", "rest-parameters"],
+    ["test/default-parameters.ts", "default-parameters"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],
     ["test/json-parse.ts", "json-parse"],

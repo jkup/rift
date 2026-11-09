@@ -188,3 +188,7 @@ dynamic statement; the full version has none.
 ### Shared Node emission directory
 
 run-probes.mjs invokes TypeScript with tsconfig.json and rewrites build/node. Do not overlap it, typecheck or build:node with a Node guest or Node fixture run. Finish emission first; Node guest/fixture runs may then overlap a native build on frozen source. TS-100 initially overlapped probes and Node guests: one module import reported a missing registerMath export during emission (build/object-reflection-node.log). With no source change, the serialized rerun passed 587/587 (build/object-reflection-node-corrected.log); retain the initial failure and avoid the race rather than adding automatic retries.
+
+### Initializer predicate callback (TS-143)
+
+The complete default-parameter driver built and executed, but coverage reported one dyn.this adapter at the initializer-detection Array.some callback. Declaring all three callback parameters did not remove it. Replacing the repeated predicate with a shared direct-loop helper produces 7984/7984 static statements and zero dynamic operations. Small constant, runtime-input, recursive-type and private-method probes did not reproduce the adapter, so this is evidence about this complete entry rather than a general Array.some restriction. Original/corrected coverage and probe sources/results are retained in build/default-parameters-*-coverage.log, build/default-parameters-dynamic.log and build/default-initializer-*.

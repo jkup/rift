@@ -6,13 +6,22 @@ import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, Argument, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
+import type { Expr, Argument, Stmt, FunctionSource, FormalParameter, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
 import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
 
 class ActivationKey {}
+function hasParameterInitializers(parameters: readonly FormalParameter[] | undefined): boolean {
+    if (parameters === undefined) return false;
+    for (const parameter of parameters) if (parameter.initializer !== null) return true;
+    return false;
+}
+type ParameterExecution = {
+    enter: (environment: ScriptEnvironment) => void;
+    evaluate: (initializer: Expr, name: string) => ValueCompletion;
+};
 type CallableState = { strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
@@ -42,6 +51,7 @@ class FunctionActivation extends ScriptFunctionEnvironment {
     #ownerKey: ActivationKey;
     #scopeId: number;
     #bodyEnvironment: ScriptEnvironment | null = null;
+    #variableEnvironment: ScriptEnvironment | null = null;
     #phase: "fresh" | "started" | "complete" = "fresh";
     constructor(key: ActivationKey, scopeId: number, outer: ScriptEnvironment, callable: ScriptGuestCallable, receiver: Value) {
         super(outer, receiver, callable);
@@ -56,16 +66,22 @@ class FunctionActivation extends ScriptFunctionEnvironment {
         this.checkFresh(key, scopeId);
         this.#phase = "started";
     }
-    complete(key: ActivationKey, scopeId: number, bodyEnvironment: ScriptEnvironment): void {
+    complete(key: ActivationKey, scopeId: number, bodyEnvironment: ScriptEnvironment, variableEnvironment: ScriptEnvironment): void {
         if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.#phase !== "started")
             throw new Error("invalid started Script activation");
         this.#bodyEnvironment = bodyEnvironment;
+        this.#variableEnvironment = variableEnvironment;
         this.#phase = "complete";
     }
     bodyEnvironment(key: ActivationKey): ScriptEnvironment {
         if (key !== this.#ownerKey || this.#phase !== "complete" || this.#bodyEnvironment === null)
             throw new Error("incomplete Script function activation");
         return this.#bodyEnvironment;
+    }
+    variableEnvironment(key: ActivationKey): ScriptEnvironment {
+        if (key !== this.#ownerKey || this.#phase !== "complete" || this.#variableEnvironment === null)
+            throw new Error("incomplete Script function activation");
+        return this.#variableEnvironment;
     }
 }
 export type ScriptFunctionEnvironmentCompletion = { type: "normal"; environment: ScriptFunctionEnvironment } | ThrowCompletion;
@@ -264,11 +280,17 @@ class ExecutableScript {
     static readRoot(record: ExecutableScript, key: ExecutionKey): Stmt[] {
         return ExecutableScript.state(record, key).nodes.body;
     }
-    static readFunction(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): { scopeId: number; body: Stmt[] } {
+    static readFunction(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): { scopeId: number; body: Stmt[]; hasInitializers: boolean } {
         ExecutableScript.state(record, key);
         const metadata = ScriptGuestCallable.check(callable, record.#activationKey, record);
         const entry = record.#function(metadata.scopeId);
-        return { scopeId: metadata.scopeId, body: entry.node.body };
+        return { scopeId: metadata.scopeId, body: entry.node.body,
+            hasInitializers: hasParameterInitializers(entry.node.parameters) };
+    }
+    static instantiateFunctionWithInitializers(record: ExecutableScript, environment: ScriptFunctionEnvironment,
+        args: Value[], context: OperationContext, execution: ParameterExecution, key: ExecutionKey): ValueCompletion {
+        ExecutableScript.state(record, key);
+        return record.#instantiateFunction(environment, args, context, execution);
     }
     static scopeOfNode(record: ExecutableScript, node: Expr | Stmt, key: ExecutionKey): number {
         const scope = ExecutableScript.state(record, key).scopes.get(node);
@@ -389,7 +411,13 @@ class ExecutableScript {
         const constructable = entry.source.method !== true && entry.source.arrow !== true;
         const object = new GuestObject(state.realm.functionPrototype, false, callable, constructable ? callable : null);
         const value: Value = { kind: "object", object };
-        object.bootstrapDefine("length", { value: { kind: "number", value: entry.node.params.length - (entry.source.rest === true ? 1 : 0) }, writable: false, enumerable: false, configurable: true });
+        let length = entry.node.params.length - (entry.source.rest === true ? 1 : 0);
+        if (entry.node.parameters !== undefined) {
+            for (let i = 0; i < entry.node.parameters.length; i++) {
+                if (entry.node.parameters[i].initializer !== null) { length = i; break; }
+            }
+        }
+        object.bootstrapDefine("length", { value: { kind: "number", value: length }, writable: false, enumerable: false, configurable: true });
         object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
         if (constructable) {
             const prototypeObject = new GuestObject(state.realm.objectPrototype);
@@ -432,11 +460,17 @@ class ExecutableScript {
         return { type: "normal", environment: new FunctionActivation(this.#activationKey, metadata.scopeId, metadata.environment, callable, boundThis) };
     }
     instantiateFunction(environment: ScriptFunctionEnvironment, args: Value[], context: OperationContext): ValueCompletion {
+        return this.#instantiateFunction(environment, args, context, null);
+    }
+    #instantiateFunction(environment: ScriptFunctionEnvironment, args: Value[], context: OperationContext, execution: ParameterExecution | null): ValueCompletion {
         if (!(environment instanceof FunctionActivation)) throw new Error("invalid Script function activation");
         const metadata = ScriptGuestCallable.check(environment.callable, this.#activationKey, this);
         this.#validateEnvironment(environment, context);
         const state = this.#readState();
         const entry = this.#function(metadata.scopeId);
+        const parameters = entry.node.parameters;
+        const hasInitializers = hasParameterInitializers(parameters);
+        if (hasInitializers && execution === null) throw new Error("default parameter initialization requires Script execution");
         if (environment.outer !== metadata.environment || metadata.realm !== state.realm || metadata.unit !== state.plan.unit ||
             metadata.start !== entry.source.start || metadata.end !== entry.source.end)
             throw new Error("invalid Script function activation metadata");
@@ -455,10 +489,17 @@ class ExecutableScript {
             }
         }
         winners.reverse();
+        let parameterEnvironment: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment = environment;
+        if (hasInitializers && !metadata.strict) {
+            const tick = this.#setupTick(context, entry.node.loc);
+            if (tick.type === "throw") return tick;
+            parameterEnvironment = new ScriptDeclarativeEnvironment(environment);
+        }
+        if (hasInitializers && execution !== null) execution.enter(parameterEnvironment);
         for (const formal of entry.scope.formals) {
             const tick = this.#setupTick(context, formal.loc);
             if (tick.type === "throw") return tick;
-            const created = environment.createMutableBinding(formal.name, formal.loc);
+            const created = parameterEnvironment.createMutableBinding(formal.name, formal.loc);
             if (created.type === "throw") return created;
         }
         for (let i = 0; i < entry.scope.formals.length; i++) {
@@ -466,6 +507,13 @@ class ExecutableScript {
             const tick = this.#setupTick(context, formal.loc);
             if (tick.type === "throw") return tick;
             let value = i < argumentsList.length ? argumentsList[i] : UNDEFINED;
+            const initializer = parameters === undefined ? null : parameters[i].initializer;
+            if (value.kind === "undefined" && initializer !== null) {
+                if (execution === null) throw new Error("missing parameter execution");
+                const evaluated = execution.evaluate(initializer, formal.name);
+                if (evaluated.type === "throw") return evaluated;
+                value = evaluated.value;
+            }
             if (entry.source.rest === true && i === entry.scope.formals.length - 1) {
                 const array = state.realm.createArray();
                 for (let j = i; j < argumentsList.length; j++) {
@@ -479,32 +527,48 @@ class ExecutableScript {
                 }
                 value = { kind: "object", object: array };
             }
-            const initialized = environment.initializeBinding(formal.name, value, context, formal.loc);
+            const initialized = parameterEnvironment.initializeBinding(formal.name, value, context, formal.loc);
             if (initialized.type === "throw") return initialized;
+        }
+        let variableEnvironment: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment = parameterEnvironment;
+        if (hasInitializers) {
+            const tick = this.#setupTick(context, entry.node.loc);
+            if (tick.type === "throw") return tick;
+            variableEnvironment = new ScriptDeclarativeEnvironment(parameterEnvironment);
         }
         for (const id of entry.scope.varDeclarations) {
             const site = state.plan.declarations[id].site;
             const tick = this.#setupTick(context, site.loc);
             if (tick.type === "throw") return tick;
-            const present = environment.hasBinding(site.name, site.loc);
+            const present = variableEnvironment.hasBinding(site.name, site.loc);
             if (present.type === "throw") return present;
             if (present.value) continue;
             const createTick = this.#setupTick(context, site.loc);
             if (createTick.type === "throw") return createTick;
-            const created = environment.createMutableBinding(site.name, site.loc);
+            const created = variableEnvironment.createMutableBinding(site.name, site.loc);
             if (created.type === "throw") return created;
             const initializeTick = this.#setupTick(context, site.loc);
             if (initializeTick.type === "throw") return initializeTick;
-            const initialized = environment.initializeBinding(site.name, UNDEFINED, context, site.loc);
+            let initialValue = UNDEFINED;
+            if (hasInitializers && !selected.has(site.name)) {
+                const parameter = parameterEnvironment.hasBinding(site.name, site.loc);
+                if (parameter.type === "throw") return parameter;
+                if (parameter.value) {
+                    const value = parameterEnvironment.getBindingValue(site.name, context, site.loc);
+                    if (value.type === "throw") return value;
+                    initialValue = value.value;
+                }
+            }
+            const initialized = variableEnvironment.initializeBinding(site.name, initialValue, context, site.loc);
             if (initialized.type === "throw") return initialized;
         }
         // Sloppy functions separate body lexicals from parameter/var bindings,
         // even when empty. Hoisted functions capture this body environment.
-        let lexicalEnvironment: ScriptEnvironment = environment;
+        let lexicalEnvironment: ScriptEnvironment = variableEnvironment;
         if (!metadata.strict) {
             const tick = this.#setupTick(context, entry.node.loc);
             if (tick.type === "throw") return tick;
-            lexicalEnvironment = new ScriptDeclarativeEnvironment(environment);
+            lexicalEnvironment = new ScriptDeclarativeEnvironment(variableEnvironment);
         }
         for (const id of entry.scope.lexicalDeclarations) {
             const declaration = state.plan.declarations[id];
@@ -521,16 +585,20 @@ class ExecutableScript {
             if (value.type === "throw") return value;
             const tick = this.#setupTick(context, declaration.site.loc);
             if (tick.type === "throw") return tick;
-            const written = environment.setMutableBinding(declaration.site.name, value.value, context, declaration.site.loc);
+            const written = variableEnvironment.setMutableBinding(declaration.site.name, value.value, context, declaration.site.loc);
             if (written.type === "throw") return written;
         }
-        environment.complete(this.#activationKey, metadata.scopeId, lexicalEnvironment);
+        environment.complete(this.#activationKey, metadata.scopeId, lexicalEnvironment, variableEnvironment);
         return normal();
     }
     // Publish only a completed activation's original body environment.
     functionBodyEnvironment(environment: ScriptFunctionEnvironment): ScriptEnvironment {
         if (!(environment instanceof FunctionActivation)) throw new Error("invalid Script function activation");
         return environment.bodyEnvironment(this.#activationKey);
+    }
+    functionVariableEnvironment(environment: ScriptFunctionEnvironment): ScriptEnvironment {
+        if (!(environment instanceof FunctionActivation)) throw new Error("invalid Script function activation");
+        return environment.variableEnvironment(this.#activationKey);
     }
     #setupTick(context: OperationContext, loc: Location): ValueCompletion {
         return context.tick({ line: loc.line, column: loc.column });
@@ -1851,9 +1919,15 @@ class ExecutionEngine {
             const created = record.createFunctionEnvironment(fn, receiver, this.context);
             if (created.type === "throw") { this.#capture(created); return created; }
             this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
-            const setup = record.instantiateFunction(created.environment, args, this.context);
+            const setup = source.hasInitializers
+                ? ExecutableScript.instantiateFunctionWithInitializers(record, created.environment, args, this.context, {
+                    enter: (environment: ScriptEnvironment): void => { this.#frame = { ...this.#active(), lexical: environment }; },
+                    evaluate: (initializer: Expr, name: string): ValueCompletion => this.#value(initializer, name),
+                }, executionKey)
+                : record.instantiateFunction(created.environment, args, this.context);
             if (setup.type === "throw") { this.#capture(setup); return setup; }
-            this.#frame = { ...this.#active(), lexical: record.functionBodyEnvironment(created.environment), phase: "body" };
+            this.#frame = { ...this.#active(), lexical: record.functionBodyEnvironment(created.environment),
+                variable: record.functionVariableEnvironment(created.environment), phase: "body" };
             const result = this.#list(source.body);
             if (result.type === "throw") { this.#capture(result); return result; }
             if (result.type === "return") return normal(result.value);

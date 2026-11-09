@@ -1,8 +1,9 @@
 export type SourceText = { readonly text: string };
 export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number; readonly method?: boolean;
-    readonly arrow?: boolean; readonly expressionBody?: boolean; readonly rest?: boolean };
+    readonly arrow?: boolean; readonly expressionBody?: boolean; readonly rest?: boolean; readonly bodyLoc?: Location };
 export type Location = { line: number; column: number };
 export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
+export type FormalParameter = { readonly site: DeclarationSite; readonly initializer: Expr | null };
 export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
 export type SwitchClause = { loc: Location; start: number; end: number; test: Expr | null; body: Stmt[] };
 export type CaseBlock = { loc: Location; start: number; end: number; clauses: SwitchClause[]; body: Stmt[] };
@@ -29,7 +30,7 @@ export type Expr =
     | { kind: "member"; loc: Location; base: Expr; key: Expr }
     | { kind: "new"; loc: Location; callee: Expr; args: Argument[] }
     | { kind: "call"; loc: Location; callee: Expr; args: Argument[] }
-    | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
+    | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null; readonly parameters?: readonly FormalParameter[] }
     | { kind: "object"; loc: Location; properties: ObjectProperty[] };
 export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };
 export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Expr | null; test: Expr | null; update: Expr | null; body: Stmt };
@@ -47,7 +48,7 @@ export type Stmt =
     | { kind: "expression"; loc: Location; expression: Expr }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }
     | { kind: "const"; loc: Location; name: string; init: Expr }
-    | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
+    | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[]; readonly source: FunctionSource | null; readonly parameters?: readonly FormalParameter[] }
     | BlockStmt
     | SwitchStmt
     | TryCatchStmt
