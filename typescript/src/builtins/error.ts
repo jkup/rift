@@ -1,4 +1,6 @@
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
+import { getIterator, iteratorStepValue } from "../iterator.js";
+import { arrayFromList } from "../array-create.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
 import { GuestError, GuestObject, UNDEFINED, normal, languageFailure, type ErrorName,
@@ -19,13 +21,14 @@ function createPublicError(name: ErrorName, callee: GuestObject, args: Value[], 
     const allocation = context.tick(loc);
     if (allocation.type === "throw") return allocation;
     const error = new GuestError(proto);
-    const message = args.length === 0 ? UNDEFINED : args[0];
+    const messageIndex = name === "AggregateError" ? 1 : 0;
+    const message = args.length <= messageIndex ? UNDEFINED : args[messageIndex];
     if (message.kind !== "undefined") {
         const converted = messageString(message, context, loc);
         if (converted.type === "throw") return converted;
         error.bootstrapDefine("message", { value: { kind: "string", value: converted.value }, writable: true, enumerable: false, configurable: true });
     }
-    const options = args.length < 2 ? UNDEFINED : args[1];
+    const options = args.length <= messageIndex + 1 ? UNDEFINED : args[messageIndex + 1];
     if (options.kind === "object") {
         const hasBudget = context.tick(loc);
         if (hasBudget.type === "throw") return hasBudget;
@@ -39,19 +42,33 @@ function createPublicError(name: ErrorName, callee: GuestObject, args: Value[], 
             error.bootstrapDefine("cause", { value: cause.value, writable: true, enumerable: false, configurable: true });
         }
     }
+    if (name === "AggregateError") {
+        const iterator = getIterator(args.length === 0 ? UNDEFINED : args[0], context, loc);
+        if (iterator.type === "throw") return iterator;
+        const errors: Value[] = [];
+        while (true) {
+            const step = iteratorStepValue(iterator.value, context, loc);
+            if (step.type === "throw") return step;
+            if (step.done) break;
+            errors.push(step.value);
+        }
+        const array = arrayFromList(errors, context, loc);
+        if (array.type === "throw") return array;
+        error.bootstrapDefine("errors", { value: array.value, writable: true, enumerable: false, configurable: true });
+    }
     return normal({ kind: "object", object: error });
 }
 
 // Trusted bootstrap creates intrinsic objects before publishing mutable globals.
 export function createErrorConstructor(realm: Realm, name: ErrorName): GuestObject {
-    const constructor = realm.createBuiltinConstructor(name, 1,
+    const constructor = realm.createBuiltinConstructor(name, name === "AggregateError" ? 2 : 1,
         (_receiver, args, context, loc) => createPublicError(name, constructor, args, context, loc),
         (_callee, newTarget, args, context, loc) => createPublicError(name, newTarget, args, context, loc));
     return constructor;
 }
 
 export function registerErrors(realm: Realm): void {
-    const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError"];
+    const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError", "AggregateError"];
     let errorConstructor: GuestObject | null = null;
     for (const name of names) {
         const constructor = realm.getErrorConstructor(name);

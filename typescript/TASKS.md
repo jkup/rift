@@ -3726,7 +3726,9 @@ Draft review: 667/667 Node guests pass. Focused combinators and CLI pass both ho
 
 ## TS-166 — AggregateError construction
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-09. Add the Realm-local AggregateError constructor/prototype as a prerequisite for Promise.any. Reuse error message/cause handling, preserve prototype-message-cause-iterator ordering, collect errors through IteratorToList semantics without closing on step failures, and create the non-enumerable errors array in the constructor Realm. Cover calls/subclasses/distinct newTarget, descriptors, coercion/iterator failures, cross-Realm fallback and budgets. Own error/runtime/Realm integration, inventory, focused tests/manifests and notes. No Promise.any in this task. Reviewed ECMAScript 2025 20.5.7 and pinned engine262 AggregateError.mts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-09. Add the Realm-local AggregateError constructor/prototype as a prerequisite for Promise.any. Reuse error message/cause handling, preserve prototype-message-cause-iterator ordering, collect errors through IteratorToList semantics without closing on step failures, and create the non-enumerable errors array in the constructor Realm. Cover calls/subclasses/distinct newTarget, descriptors, coercion/iterator failures, cross-Realm fallback and budgets. Own error/runtime/Realm integration, inventory, focused tests/manifests and notes. No Promise.any in this task. Reviewed ECMAScript 2025 20.5.7 and pinned engine262 AggregateError.mts.
+
+Draft review: 668/668 Node guests pass. Focused AggregateError and existing error-family drivers pass both hosts at 9902/9920 static statements, zero dynamic. Evidence: build/aggregate-error-draft/build/aggregate-reviewed.json and aggregate-node-reviewed.log.
 
 ## TS-167 — Promise allSettled and any
 

@@ -1,7 +1,7 @@
 // Literal test expectations, independent of runtime builtin registration.
 export const scriptGlobalKeys = [
     "undefined", "NaN", "Infinity", "console", "Function", "Reflect", "Promise", "eval", "Number", "parseInt", "parseFloat",
-    "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError",
+    "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError", "AggregateError",
     "String", "Boolean", "Object", "Array", "Math", "isNaN", "isFinite", "encodeURI", "encodeURIComponent", "decodeURI", "decodeURIComponent", "JSON", "Symbol", "Map", "Set",
 ];
 
