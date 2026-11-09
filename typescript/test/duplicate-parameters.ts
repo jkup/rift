@@ -39,7 +39,7 @@ for (const text of [
     "var o={m(a,a){}}", "class C{m(a,a){}}", "function f(a,a){let a}"
 ]) check(prepareBoundedScript({id:"invalid-parameters",text},new Realm((_line:string)=>{},"script")).kind!=="ready",text);
 check(auditBoundedScriptNumericAssignments("1=2;function f(a,a){}").kind==="eligible","supported sloppy function permits numeric audit");
-check(auditBoundedScriptNumericSeparators("1_;function f(a,a){class C extends B{}}").kind==="blocked","unsupported nested class veto");
+check(auditBoundedScriptNumericSeparators("1_;function f(a,a){class C extends B{}}").kind==="eligible","default derived class permits numeric certification");
 check(parse("function f(a,a){}").error !== null,"legacy boundary");
 const owner = new Realm((_line:string)=>{},"script"), caller = new Realm((_line:string)=>{},"script");
 const foreign = run("function f(a,a){a=7;return arguments}f",100000,owner);

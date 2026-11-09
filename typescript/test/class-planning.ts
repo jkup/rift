@@ -7,6 +7,9 @@ check(plan.declarations[0].kind==="class"&&plan.declarations[0].site.name==="C",
 check(plan.scopes[1].kind==="class"&&plan.scopes[1].strict&&plan.scopes[1].lexicalNames[0]==="C","strict inner scope");
 check(plan.functions.length===3&&plan.functions.every(fn=>fn.strictness.strict&&fn.strictness.inheritedStrict),"strict methods");
 for(const source of ["class C{};let C;","class C{constructor(){} constructor(){}}","class C{get constructor(){}}","class C{static prototype(){}}","class C{m(a,a){}}","class eval{}","if(true)class C{}","class C extends B{}","class C{x=1}","class C{static{}}"])
-    check(parseBoundedScriptDeclarationPlan({id:"invalid-class",text:source}).kind!=="complete","reject "+source);
+    if (source === "class C extends B{}") {
+        const inherited = parseBoundedScriptDeclarationPlan({id:"derived-class",text:source});
+        check(inherited.kind === "complete" && inherited.declarations[0].kind === "class" && inherited.functions.length === 0, "default derived planning retains original source");
+    } else check(parseBoundedScriptDeclarationPlan({id:"invalid-class",text:source}).kind!=="complete","reject "+source);
 check(parse(text).error!==null,"legacy class boundary");
 console.log("Class planning passed");

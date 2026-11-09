@@ -546,6 +546,7 @@ class DeclarationCollector {
                     this.expression(node.elements[i].value, id, variableScope);
                     this.expression(node.elements[i].key, id, variableScope);
                 }
+                if (node.heritage !== null) this.expression(node.heritage, id, variableScope);
                 break;
             }
             case "function": this.functionBody(node.source, node.loc, node.body, scope, null, node); break;

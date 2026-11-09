@@ -61,10 +61,14 @@ const error=run("Foreign()",100000,caller);
 check(error.type==="throw"&&error.value.kind==="object"&&error.value.object.getPrototypeOf()===owner.getErrorPrototype("TypeError"),"class defining Realm error");
 for (const text of ["class C extends B{}", "class C{field=1}", "class C{static{}}", "class C{#x}", "class C{async m(){}}", "class C{*m(){}}", "class C{m(){super.x}}", "class C{constructor(){super()}}", "class C{constructor(){}constructor(){}}", "class C{get constructor(){}}", "class C{static prototype(){}}", "class C{m(eval){}}", "class C{m(){delete x}}", "class C{m(){var arguments}}", "class C{}var C", "if(true)class C{}", "label:class C{}"]) {
     const prepared=prepareBoundedScript({id:"invalid-class",text},new Realm((_line:string)=>{},"script"));
-    check(prepared.kind!=="ready","reject "+text);
+    if (text === "class C extends B{}") {
+        check(prepared.kind === "ready", "default derived preparation is inert");
+        const missing = run(text);
+        check(missing.type === "throw" && missing.diagnostic.name === "ReferenceError", "original heritage lookup occurs during execution");
+    } else check(prepared.kind!=="ready","reject "+text);
 }
 check(auditBoundedScriptNumericAssignments("1=2;class C{field=1}").kind==="blocked","unsupported class element vetoes assignment certification");
-check(auditBoundedScriptNumericSeparators("1_;class C extends B{}").kind==="blocked","inheritance vetoes numeric certification");
+check(auditBoundedScriptNumericSeparators("1_;class C extends B{}").kind==="eligible","default inheritance permits numeric certification");
 const limitedRealm=new Realm((_line:string)=>{},"script");
 run("var caught=false;",100000,limitedRealm);
 const limited=run("try{class C{[(()=>{while(true){}})()](){}}}catch(e){caught=true}",100,limitedRealm);

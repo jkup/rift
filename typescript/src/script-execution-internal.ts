@@ -53,7 +53,7 @@ type FunctionExecution = {
     enter: (environment: ScriptEnvironment) => void;
     evaluate: (initializer: Expr, name: string) => ValueCompletion;
 };
-type CallableState = { classConstructor: { scope: number; bodyScope: number | null } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+type CallableState = { classConstructor: { scope: number; bodyScope: number | null; derived: boolean } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
 class ScriptGuestCallable {
@@ -66,6 +66,7 @@ class ScriptGuestCallable {
         return callable.#state;
     }
     get isClassConstructor(): boolean { return this.#state.classConstructor !== null; }
+    get isDerivedClassConstructor(): boolean { return this.#state.classConstructor !== null && this.#state.classConstructor.derived; }
     get isDefaultClassConstructor(): boolean { return this.#state.classConstructor !== null && this.#state.classConstructor.bodyScope === null; }
     get kind(): "script-guest" { return "script-guest"; }
     get realm(): Realm { return this.#state.realm; }
@@ -483,12 +484,12 @@ class ExecutableScript {
         if (info === null) throw new Error("class constructor metadata required");
         const node = record.#classDefinition(info.scope);
         const expectedBody = node.constructorMethod === null ? null : state.scopes.get(node.constructorMethod);
-        if (expectedBody === undefined || info.bodyScope !== expectedBody || metadata.scopeId !== (info.bodyScope ?? info.scope) ||
+        if (expectedBody === undefined || info.derived !== (node.heritage !== null) || info.bodyScope !== expectedBody || metadata.scopeId !== (info.bodyScope ?? info.scope) ||
             metadata.text !== node.source.text.slice(node.start, node.end) || !metadata.strict || metadata.lexicalThis)
             throw new Error("invalid class constructor provenance");
     }
     static materializeClassConstructor(record: ExecutableScript, scopeId: number, environment: ScriptEnvironment, name: string,
-        prototypeObject: GuestObject, context: OperationContext, key: ExecutionKey): ValueCompletion {
+        prototypeObject: GuestObject, constructorParent: GuestObject, context: OperationContext, key: ExecutionKey): ValueCompletion {
         const state = ExecutableScript.state(record, key);
         record.#validateEnvironment(environment, context);
         const node = record.#classDefinition(scopeId);
@@ -499,10 +500,10 @@ class ExecutableScript {
         if (budget.type === "throw") return budget;
         const callable = ScriptGuestCallable.create({ key: record.#activationKey, record, realm: state.realm,
             scopeId: bodyScope ?? scopeId, environment, strict: true, lexicalThis: false,
-            classConstructor: { scope: scopeId, bodyScope }, unit: state.plan.unit,
+            classConstructor: { scope: scopeId, bodyScope, derived: node.heritage !== null }, unit: state.plan.unit,
             start: entry === null ? node.start : entry.source.start, end: entry === null ? node.end : entry.source.end,
             text: node.source.text.slice(node.start, node.end), formals: entry === null ? [] : entry.node.params.slice() });
-        const object = new GuestObject(state.realm.functionPrototype, false, callable, callable);
+        const object = new GuestObject(constructorParent, false, callable, callable);
         const value: Value = { kind: "object", object };
         let length = entry === null ? 0 : entry.node.params.length - (entry.source.rest === true ? 1 : 0);
         if (entry !== null && entry.node.parameters !== undefined) {
@@ -2007,9 +2008,26 @@ class ExecutionEngine {
         }
         this.#frame = { ...saved, scopeId, lexical: environment, strict: true };
         try {
-            const prototype = new GuestObject(saved.realm.objectPrototype);
+            let prototypeParent: GuestObject | null = saved.realm.objectPrototype;
+            let constructorParent = saved.realm.functionPrototype;
+            if (expr.heritage !== null) {
+                const superclass = this.#value(expr.heritage);
+                if (superclass.type === "throw") return superclass;
+                if (superclass.value.kind === "null") prototypeParent = null;
+                else {
+                    if (superclass.value.kind !== "object" || superclass.value.object.constructorSlot === null)
+                        return languageFailure(saved.realm, "TypeError", "class heritage is not a constructor", expr.heritage.loc);
+                    const parent = superclass.value.object.internalGet("prototype", superclass.value, this.context, expr.heritage.loc);
+                    if (parent.type === "throw") return parent;
+                    if (parent.value.kind !== "object" && parent.value.kind !== "null")
+                        return languageFailure(saved.realm, "TypeError", "superclass prototype is not an object or null", expr.heritage.loc);
+                    prototypeParent = parent.value.kind === "object" ? parent.value.object : null;
+                    constructorParent = superclass.value.object;
+                }
+            }
+            const prototype = new GuestObject(prototypeParent);
             const constructor = ExecutableScript.materializeClassConstructor(saved.record, scopeId, environment,
-                expr.name === null ? (inferredName ?? "") : expr.name.name, prototype, this.context, executionKey);
+                expr.name === null ? (inferredName ?? "") : expr.name.name, prototype, constructorParent, this.context, executionKey);
             if (constructor.type === "throw") return constructor;
             if (constructor.value.kind !== "object") throw new Error("class constructor result invariant");
             for (const element of expr.elements) {
@@ -2475,6 +2493,14 @@ class ExecutionEngine {
         const savedRealm = this.activeContext.realm, savedCalls = this.calls;
         this.calls++;
         try {
+            if (fn.isDerivedClassConstructor) {
+                if (!fn.isDefaultClassConstructor) throw new Error("explicit derived constructor is unsupported");
+                this.activeContext.realm = fn.realm;
+                const parent = callee.object.getPrototypeOf();
+                if (parent === null || parent.constructorSlot === null)
+                    return languageFailure(fn.realm, "TypeError", "superclass is not a constructor", loc);
+                return this.#construct({ kind: "object", object: parent }, args, loc, newTarget);
+            }
             // Reserve constructor depth before getters; prototype/allocation
             // failures still belong to the caller frame and Realm.
             const prototype = getPrototypeFromConstructor(newTarget.object, "Object", this.context, loc);

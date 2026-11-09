@@ -925,7 +925,9 @@ class Parser {
             name = { name: text, start: token.start, end: token.end, loc: token.loc };
         }
         if (declaration && name === null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "class declaration requires a name", loc);
-        if (this.at("extends")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class inheritance is unsupported", this.current().loc);
+        const heritage = this.eat("extends") ? this.expression(14) : null;
+        if (heritage !== null && !this.parenthesized.has(heritage) && (heritage.kind === "unary" || heritage.kind === "update"))
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class heritage requires a left-hand-side expression", heritage.loc);
         this.expect("{");
         const elements: ClassElement[] = [];
         let constructorMethod: Extract<Expr, { kind: "function" }> | null = null;
@@ -962,7 +964,9 @@ class Parser {
             elements.push({ kind, isStatic, key, value });
         }
         this.expect("}");
-        return { kind: "class", loc, source: this.source, start, end: this.tokens[this.index - 1].end, name, constructorMethod, elements };
+        if (heritage !== null && constructorMethod !== null)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "explicit derived constructors are unsupported", constructorMethod.loc);
+        return { kind: "class", loc, source: this.source, start, end: this.tokens[this.index - 1].end, name, heritage, constructorMethod, elements };
     }
     private objectExpression(loc: Location): Expr {
         const properties: ObjectProperty[] = [];
