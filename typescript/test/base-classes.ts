@@ -65,6 +65,8 @@ for (const text of ["class C extends B{}", "class C{field=1}", "class C{static{}
         check(prepared.kind === "ready", "default derived preparation is inert");
         const missing = run(text);
         check(missing.type === "throw" && missing.diagnostic.name === "ReferenceError", "original heritage lookup occurs during execution");
+    } else if (text === "class C{m(){super.x}}") {
+        check(prepared.kind === "ready" && run(text).type === "normal", "super property class method declaration");
     } else check(prepared.kind!=="ready","reject "+text);
 }
 check(auditBoundedScriptNumericAssignments("1=2;class C{field=1}").kind==="blocked","unsupported class element vetoes assignment certification");

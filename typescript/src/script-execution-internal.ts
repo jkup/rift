@@ -1,3 +1,4 @@
+import type { SuperContext } from "./syntax.js";
 import { getPrototypeFromConstructor } from "./constructor-prototype.js";
 import type { ClassExpr } from "./syntax.js";
 import type { ArrayPattern, ObjectPattern, DestructuringPattern } from "./syntax.js";
@@ -53,7 +54,7 @@ type FunctionExecution = {
     enter: (environment: ScriptEnvironment) => void;
     evaluate: (initializer: Expr, name: string) => ValueCompletion;
 };
-type CallableState = { classConstructor: { scope: number; bodyScope: number | null; derived: boolean } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+type CallableState = { homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
 class ScriptGuestCallable {
@@ -65,6 +66,7 @@ class ScriptGuestCallable {
             throw new Error("invalid Script callable brand");
         return callable.#state;
     }
+    get homeObject(): GuestObject | null { return this.#state.homeObject; }
     get isClassConstructor(): boolean { return this.#state.classConstructor !== null; }
     get isDerivedClassConstructor(): boolean { return this.#state.classConstructor !== null && this.#state.classConstructor.derived; }
     get isDefaultClassConstructor(): boolean { return this.#state.classConstructor !== null && this.#state.classConstructor.bodyScope === null; }
@@ -201,10 +203,10 @@ class ExecutableScript {
     #activationKey = new ActivationKey();
     #completedMaterializations = 0;
     private constructor() {}
-    static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean, inheritedStrict = false, newTargetAllowed = false, superCallAllowed = false): ScriptPreparation {
+    static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): ScriptPreparation {
         if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
         const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map(), argumentsScopes: new Set() };
-        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes, inheritedStrict, newTargetAllowed, superCallAllowed) : parseDeclarationPlan(unit, nodes);
+        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes, inheritedStrict, newTargetAllowed, superContext) : parseDeclarationPlan(unit, nodes);
         if (plan.kind !== "complete") return plan;
         if (!bounded && !plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
         // Associations were assigned in the collector's original iterative walk.
@@ -514,7 +516,7 @@ class ExecutableScript {
         const entry = bodyScope === null ? null : record.#function(bodyScope);
         const budget = context.tick(node.loc);
         if (budget.type === "throw") return budget;
-        const callable = ScriptGuestCallable.create({ key: record.#activationKey, record, realm: state.realm,
+        const callable = ScriptGuestCallable.create({ homeObject: prototypeObject, key: record.#activationKey, record, realm: state.realm,
             scopeId: bodyScope ?? scopeId, environment, strict: true, lexicalThis: false,
             classConstructor: { scope: scopeId, bodyScope, derived: node.heritage !== null }, unit: state.plan.unit,
             start: entry === null ? node.start : entry.source.start, end: entry === null ? node.end : entry.source.end,
@@ -532,6 +534,13 @@ class ExecutableScript {
         record.#completedMaterializations++;
         return normal(value);
     }
+    static makeMethod(value: Value, homeObject: GuestObject, key: ExecutionKey): void {
+        if (key !== executionKey || value.kind !== "object" || value.object.callable?.kind !== "script-guest") throw new Error("invalid method materialization");
+        const callable = value.object.callable, record = callable.record;
+        const metadata = ScriptGuestCallable.check(callable, record.#activationKey, record);
+        if (metadata.homeObject !== null || record.#function(metadata.scopeId).source.method !== true) throw new Error("invalid method home object");
+        metadata.homeObject = homeObject;
+    }
     materializeFunction(scopeId: number, environment: ScriptEnvironment, inferredName: string | null, context: OperationContext, prototype: GuestObject | null = null): ValueCompletion {
         this.#validateEnvironment(environment, context);
         const state = this.#readState();
@@ -542,7 +551,7 @@ class ExecutableScript {
             : state.plan.declarations[entry.fn.declaration].site.name;
         const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
         if (budget.type === "throw") return budget;
-        const callable = ScriptGuestCallable.create({ classConstructor: null, key: this.#activationKey, record: this, realm: state.realm,
+        const callable = ScriptGuestCallable.create({ homeObject: null, classConstructor: null, key: this.#activationKey, record: this, realm: state.realm,
             scopeId, environment, strict: entry.scope.strict, lexicalThis: entry.source.arrow === true,
             unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
@@ -1099,7 +1108,8 @@ const executionKey = new ExecutionKey();
 // Keep the shared mutable Reference shape unchanged. Script mode belongs to
 // this private wrapper; all operations reuse its one original key cache.
 type EngineReference = Reference | { kind: "script"; binding: ScriptBindingReference }
-    | { kind: "script-property"; reference: Reference; strict: boolean };
+    | { kind: "script-property"; reference: Reference; strict: boolean }
+    | { kind: "script-super"; reference: Reference; strict: boolean; receiver: Value };
 type EngineReferenceResult = { type: "reference"; reference: EngineReference } | { type: "abrupt"; completion: Completion };
 type EngineExpressionResult = EngineReferenceResult | { type: "value"; value: Value };
 export type ScriptLimits = { readonly maxSteps: number; readonly maxCalls: number };
@@ -1425,7 +1435,7 @@ class ExecutionEngine {
                 const result = this.#chain(expr, receiver);
                 return this.#expressionValue(result, expr.loc);
             }
-            case "identifier": case "member": {
+            case "identifier": case "member": case "super-member": {
                 const ref = this.#reference(expr, env, receiver);
                 return ref.type === "abrupt" ? ref.completion : this.#get(ref.reference, expr.loc);
             }
@@ -1526,6 +1536,8 @@ class ExecutionEngine {
                     const name = property.kind === "data" ? property.key : property.kind + " " + property.key;
                     const value = this.#eval(property.value, env, receiver, false, name);
                     if (value.type !== "normal") return value;
+                    if (this.#script && property.value.kind === "function" && property.value.source?.method === true)
+                        ExecutableScript.makeMethod(value.value, object, executionKey);
                     const descriptor = property.kind === "get" ? { get: value.value, enumerable: true, configurable: true }
                         : property.kind === "set" ? { set: value.value, enumerable: true, configurable: true }
                         : { value: value.value, writable: true, enumerable: true, configurable: true };
@@ -1577,7 +1589,7 @@ class ExecutionEngine {
                         if (result.type === "abrupt") return result.completion;
                         return result.type === "reference" ? this.#delete(result.reference, expr.loc) : normal({ kind: "boolean", value: true });
                     }
-                    if (expr.operand.kind === "member" || expr.operand.kind === "identifier") {
+                    if (expr.operand.kind === "member" || expr.operand.kind === "super-member" || expr.operand.kind === "identifier") {
                         // Capture once, without reading the final property.
                         const ref = this.#reference(expr.operand, env, receiver);
                         return ref.type === "abrupt" ? ref.completion : this.#delete(ref.reference, expr.loc);
@@ -1875,7 +1887,7 @@ class ExecutionEngine {
         }
     }
     #expressionReference(expr: Expr, env: Environment | null, receiver: Value): EngineExpressionResult {
-        if (expr.kind === "identifier" || expr.kind === "member") return this.#reference(expr, env, receiver);
+        if (expr.kind === "identifier" || expr.kind === "member" || expr.kind === "super-member") return this.#reference(expr, env, receiver);
         if (expr.kind === "chain") {
             if (env !== null) throw new Error("Script optional chain requires Script execution");
             return this.#chain(expr, receiver);
@@ -1890,6 +1902,7 @@ class ExecutionEngine {
     #callReceiver(result: EngineExpressionResult): Value {
         if (result.type !== "reference") return UNDEFINED;
         const ref = result.reference;
+        if (ref.kind === "script-super") return ref.receiver;
         if (ref.kind === "property") return ref.base;
         if (ref.kind === "script-property" && ref.reference.kind === "property") return ref.reference.base;
         return UNDEFINED;
@@ -1926,6 +1939,18 @@ class ExecutionEngine {
             if (result.type === "throw") return { type: "abrupt", completion: result };
             return { type: "reference", reference: { kind: "script", binding: result.reference } };
         }
+        if (expr.kind === "super-member") {
+            const environment = this.#thisEnvironment(this.#active().lexical);
+            if (!(environment instanceof FunctionActivation) || environment.callable.homeObject === null) throw new Error("invalid super property environment");
+            const actualThis = environment.getThisBinding(this.context.realm, expr.loc);
+            if (actualThis.type === "throw") return { type: "abrupt", completion: actualThis };
+            const key = this.#eval(expr.key, null, receiver);
+            if (key.type !== "normal") return { type: "abrupt", completion: key };
+            const parent = environment.callable.homeObject.getPrototypeOf();
+            const base: Value = parent === null ? { kind: "null" } : { kind: "object", object: parent };
+            const reference: Reference = { kind: "property", base, key: key.value, loc: expr.loc };
+            return { type: "reference", reference: { kind: "script-super", reference, receiver: actualThis.value, strict: this.#active().strict } };
+        }
         if (expr.kind === "member") {
             const strict = this.#active().strict;
             const base = this.#eval(expr.base, null, receiver);
@@ -1938,16 +1963,19 @@ class ExecutionEngine {
         throw new Error("parser admitted a non-reference target");
     }
     #get(ref: EngineReference, loc: Location): Completion {
+        if (ref.kind === "script-super") return getValue(ref.reference, this.context, loc, ref.receiver);
         if (ref.kind === "script") return getScriptBinding(ref.binding, this.context);
         return getValue(ref.kind === "script-property" ? ref.reference : ref, this.context, loc);
     }
     #put(ref: EngineReference, value: Value, loc: Location): Completion {
+        if (ref.kind === "script-super") return putValue(ref.reference, value, this.context, loc, ref.strict, ref.receiver);
         if (ref.kind === "script-property") return putValue(ref.reference, value, this.context, loc, ref.strict);
         if (ref.kind !== "script") return putValue(ref, value, this.context, loc);
         const result = putScriptBinding(ref.binding, value, this.context);
         return result.type === "throw" ? result : normal(value);
     }
     #delete(ref: EngineReference, loc: Location): Completion {
+        if (ref.kind === "script-super") return languageFailure(this.context.realm, "ReferenceError", "cannot delete a super property", loc);
         if (ref.kind === "script") return deleteScriptBinding(ref.binding, this.context);
         if (ref.kind === "script-property") return deleteReference(ref.reference, this.context, loc, ref.strict);
         return deleteReference(ref, this.context, loc);
@@ -2079,6 +2107,7 @@ class ExecutionEngine {
                 const method = this.#value(element.value, name);
                 if (method.type === "throw") return method;
                 const object = element.isStatic ? constructor.value.object : prototype;
+                ExecutableScript.makeMethod(method.value, object, executionKey);
                 const descriptor = element.kind === "get" ? { get: method.value, enumerable: false, configurable: true }
                     : element.kind === "set" ? { set: method.value, enumerable: false, configurable: true }
                     : { value: method.value, writable: true, enumerable: false, configurable: true };
@@ -2648,7 +2677,8 @@ class ExecutionEngine {
         const saved = this.#active(), realm = this.context.realm;
         const functionEnvironment = direct ? this.#thisEnvironment(saved.lexical) : null;
         const prepared = ExecutableScript.prepare({ id: "<eval>", text: input.value }, realm, true, direct && saved.strict,
-            functionEnvironment !== null, functionEnvironment?.callable.isDerivedClassConstructor === true);
+            functionEnvironment !== null, functionEnvironment?.callable.isDerivedClassConstructor === true ? "derived"
+                : functionEnvironment !== null && functionEnvironment.callable.homeObject !== null ? "method" : "none");
         if (prepared.kind === "profile-rejected") throw new Error("invalid eval Realm");
         if (prepared.kind === "conflict") return languageFailure(realm, "SyntaxError", prepared.diagnostic.message, loc);
         if (prepared.kind === "blocked") {

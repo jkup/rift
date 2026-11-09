@@ -87,7 +87,8 @@ check(session.inspect().active === null && session.inspect().calls === 0 && sess
 for (const text of [
     "super()", "function f(){super()}", "class B{constructor(){super()}}",
     "class B{}class D extends B{m(){super()}}", "class B{}class D extends B{constructor(){function f(){super()}}}",
-    "class B{}class D extends B{constructor(){new super()}}", "class B{}class D extends B{constructor(){super.x}}",
+    "class B{}class D extends B{constructor(){new super()}}",
     "class B{}class D extends B{constructor(){super?.()}}"
 ]) check(prepareBoundedScript({ id: "super-boundary", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
+check(run("class B{}class D extends B{constructor(){super.x}}").type === "normal", "super property constructor declaration");
 console.log("Explicit derived constructors passed");

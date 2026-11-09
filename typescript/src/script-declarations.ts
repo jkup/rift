@@ -576,6 +576,7 @@ class DeclarationCollector {
                     }
                 }
                 this.expression(node.base, scope, variableScope); break;
+            case "super-member": this.expression(node.key, scope, variableScope); break;
             case "member": this.expression(node.key, scope, variableScope); this.expression(node.base, scope, variableScope); break;
             case "new": case "call": case "super-call":
                 for (let i = node.args.length - 1; i >= 0; i--) {

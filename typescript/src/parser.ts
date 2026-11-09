@@ -1,3 +1,4 @@
+import type { SuperContext } from "./syntax.js";
 import type { ClassExpr, ClassElement } from "./syntax.js";
 import type { DestructuringPattern, ArrayPattern, ObjectPattern, PatternElement } from "./syntax.js";
 import { collectNumericSeparatorAudit, type NumericSeparatorAudit } from "./script-declarations.js";
@@ -59,9 +60,9 @@ export function auditScriptReturns(source: string): ReturnCoverage {
     return { kind: "complete", goal: "Script", sourceUnits: source.length,
         consumedUnits: end.end, candidates: parser.returnCandidates };
 }
-export function auditBoundedScriptNumericSeparators(source: string, inheritedStrict = false, newTargetAllowed = false, superCallAllowed = false): NumericSeparatorAudit {
+export function auditBoundedScriptNumericSeparators(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): NumericSeparatorAudit {
     const unit = { id: "", text: source };
-    const parsed = parseStructuralSource(unit, null, true, "separator", newTargetAllowed, superCallAllowed);
+    const parsed = parseStructuralSource(unit, null, true, "separator", newTargetAllowed, superContext);
     if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectNumericSeparatorAudit(unit, parsed.body, parsed.tokens, parsed.bindings, inheritedStrict);
@@ -76,11 +77,11 @@ export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes:
     return parseStructuralPlan(unit, nodes, true);
 }
 // Preparation alone may certify bounded rules after full-source parsing.
-export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict = false, newTargetAllowed = false, superCallAllowed = false): DeclarationPlanResult {
-    const original = prepareBeforeNumericSeparators(unit, nodes, inheritedStrict, newTargetAllowed, superCallAllowed);
+export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): DeclarationPlanResult {
+    const original = prepareBeforeNumericSeparators(unit, nodes, inheritedStrict, newTargetAllowed, superContext);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         (original.rejection.capabilityCode !== "lex.numeric-literal" && original.rejection.capabilityCode !== "lex.leading-zero")) return original;
-    const audit = auditBoundedScriptNumericSeparators(original.unit.text, inheritedStrict, newTargetAllowed, superCallAllowed);
+    const audit = auditBoundedScriptNumericSeparators(original.unit.text, inheritedStrict, newTargetAllowed, superContext);
     if (audit.kind !== "eligible") return original;
     const first = audit.candidates[0];
     if (first === undefined) throw new Error("eligible separator audit requires candidate");
@@ -89,11 +90,11 @@ export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: Dec
         diagnostic: { phase: "parse", name: "SyntaxError", message: "invalid numeric separator",
             loc: { line: first.loc.line, column: first.loc.column } } };
 }
-function prepareBeforeNumericSeparators(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superCallAllowed: boolean): DeclarationPlanResult {
-    const original = parseBoundedScriptPreparationBeforeLexicalAudit(unit, nodes, inheritedStrict, newTargetAllowed, superCallAllowed);
+function prepareBeforeNumericSeparators(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext): DeclarationPlanResult {
+    const original = parseBoundedScriptPreparationBeforeLexicalAudit(unit, nodes, inheritedStrict, newTargetAllowed, superContext);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.declaration-statement") return original;
-    const audit = auditBoundedScriptLexicalStatements(original.unit.text, inheritedStrict, newTargetAllowed, superCallAllowed);
+    const audit = auditBoundedScriptLexicalStatements(original.unit.text, inheritedStrict, newTargetAllowed, superContext);
     if (audit.kind !== "eligible") return original;
     const first = audit.candidates[0];
     if (first === undefined) throw new Error("eligible lexical audit requires candidate");
@@ -103,11 +104,11 @@ function prepareBeforeNumericSeparators(unit: ScriptSourceUnit, nodes: Declarati
             loc: { line: first.keyword.loc.line, column: first.keyword.loc.column } } };
 }
 // Preserve D6 dispatch, its original rejection and retained nodes before retry.
-function parseBoundedScriptPreparationBeforeLexicalAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superCallAllowed: boolean): DeclarationPlanResult {
-    const original = parseBoundedScriptPreparationBeforeNumericAudit(unit, nodes, inheritedStrict, newTargetAllowed, superCallAllowed);
+function parseBoundedScriptPreparationBeforeLexicalAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext): DeclarationPlanResult {
+    const original = parseBoundedScriptPreparationBeforeNumericAudit(unit, nodes, inheritedStrict, newTargetAllowed, superContext);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.assignment-target") return original;
-    const audit = auditBoundedScriptNumericAssignments(original.unit.text, inheritedStrict, newTargetAllowed, superCallAllowed);
+    const audit = auditBoundedScriptNumericAssignments(original.unit.text, inheritedStrict, newTargetAllowed, superContext);
     if (audit.kind !== "eligible") return original;
     const first = audit.candidates[0];
     if (first === undefined) throw new Error("eligible numeric audit requires candidate");
@@ -117,21 +118,21 @@ function parseBoundedScriptPreparationBeforeLexicalAudit(unit: ScriptSourceUnit,
             loc: { line: first.target.loc.line, column: first.target.loc.column } } };
 }
 // Preserve D4 dispatch, its original rejection and retained nodes before retry.
-function parseBoundedScriptPreparationBeforeNumericAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superCallAllowed: boolean): DeclarationPlanResult {
-    const original = parseStructuralPlan(unit, nodes, true, true, inheritedStrict, newTargetAllowed, superCallAllowed);
+function parseBoundedScriptPreparationBeforeNumericAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext): DeclarationPlanResult {
+    const original = parseStructuralPlan(unit, nodes, true, true, inheritedStrict, newTargetAllowed, superContext);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.duplicate-parameter") return original;
     // A failed duplicate-formal parse only permits a fresh rejection-only audit.
     // Its retained nodes remain untouched; the continuation cannot produce a plan.
     const source = { id: unit.id, text: unit.text };
-    const parsed = parseStructuralSource(source, null, true, "parameter", newTargetAllowed, superCallAllowed);
+    const parsed = parseStructuralSource(source, null, true, "parameter", newTargetAllowed, superContext);
     if (parsed.kind === "blocked") return original;
     const rejection = collectBoundedScriptParameterRejection(source, parsed.body, parsed.tokens, parsed.bindings, inheritedStrict);
     return rejection === null ? original : rejection;
 }
-function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, certifyBlockFunctions = false, inheritedStrict = false, newTargetAllowed = false, superCallAllowed = false): DeclarationPlanResult {
+function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, certifyBlockFunctions = false, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): DeclarationPlanResult {
     const source = { id: unit.id, text: unit.text };
-    const parsed = parseStructuralSource(source, nodes, bounded, "none", newTargetAllowed, superCallAllowed);
+    const parsed = parseStructuralSource(source, nodes, bounded, "none", newTargetAllowed, superContext);
     if (parsed.kind === "blocked") return parsed;
     if (certifyBlockFunctions) {
         if (nodes === null) throw new Error("preparation requires retained nodes");
@@ -153,17 +154,17 @@ export function auditBoundedScriptStrictParameters(source: string): StrictParame
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectStrictParameterAudit(unit, parsed.body, parsed.tokens, parsed.bindings);
 }
-export function auditBoundedScriptNumericAssignments(source: string, inheritedStrict = false, newTargetAllowed = false, superCallAllowed = false): NumericAssignmentAudit {
+export function auditBoundedScriptNumericAssignments(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): NumericAssignmentAudit {
     const unit = { id: "", text: source };
-    const parsed = parseStructuralSource(unit, null, true, "numeric", newTargetAllowed, superCallAllowed);
+    const parsed = parseStructuralSource(unit, null, true, "numeric", newTargetAllowed, superContext);
     if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectNumericAssignmentAudit(unit, parsed.body, parsed.tokens, parsed.bindings, parsed.numericCandidates, inheritedStrict);
 }
 
-export function auditBoundedScriptLexicalStatements(source: string, inheritedStrict = false, newTargetAllowed = false, superCallAllowed = false): LexicalStatementAudit {
+export function auditBoundedScriptLexicalStatements(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): LexicalStatementAudit {
     const unit = { id: "", text: source };
-    const parsed = parseStructuralSource(unit, null, true, "lexical", newTargetAllowed, superCallAllowed);
+    const parsed = parseStructuralSource(unit, null, true, "lexical", newTargetAllowed, superContext);
     if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectLexicalStatementAudit(unit, parsed.body, parsed.tokens, parsed.bindings, parsed.lexicalCandidates, inheritedStrict);
@@ -174,7 +175,7 @@ type StructuralSource =
     | { kind: "blocked"; goal: "Script"; unit: ScriptSourceUnit; rejection: Rejection; diagnostic: Diagnostic };
 // One lexical/parser path for both public plans and non-emitting audit evidence.
 function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean,
-    audit: "none" | "parameter" | "numeric" | "lexical" | "separator" = "none", newTargetAllowed = false, superCallAllowed = false): StructuralSource {
+    audit: "none" | "parameter" | "numeric" | "lexical" | "separator" = "none", newTargetAllowed = false, superContext: SuperContext = "none"): StructuralSource {
     if (audit !== "none" && (!bounded || nodes !== null)) throw new Error("invalid structural audit purpose");
     const parameterAudit = audit === "parameter", numericAudit = audit === "numeric";
     const lexicalAudit = audit === "lexical", separatorAudit = audit === "separator";
@@ -185,7 +186,7 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     }
     const parserSource: SourceText = { text: source.text };
     if (nodes !== null) nodes.source = parserSource;
-    const parser = new Parser(lexical.tokens, parserSource, separatorAudit ? "bounded-numeric-separator-audit" : lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan", newTargetAllowed, superCallAllowed);
+    const parser = new Parser(lexical.tokens, parserSource, separatorAudit ? "bounded-numeric-separator-audit" : lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan", newTargetAllowed, superContext);
     const parsed = parser.program();
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parser rejection");
@@ -215,7 +216,7 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
-    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" | "bounded-numeric-separator-audit" = "legacy", private newTargetAllowed = false, private superCallAllowed = false) {}
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" | "bounded-numeric-separator-audit" = "legacy", private newTargetAllowed = false, private superContext: SuperContext = "none") {}
     private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit"; }
     private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit"; }
     current(): Token { return this.tokens[this.index]; }
@@ -465,7 +466,7 @@ class Parser {
                     const pattern = this.assignmentPattern(initializer);
                     if (pattern.kind !== "array-pattern" && pattern.kind !== "object-pattern") throw new Error("loop pattern invariant");
                     return this.forEach(kind, loc, start, { kind: "assignment-pattern", loc: initializer.loc, pattern });
-                } else if (initializer.kind !== "identifier" && initializer.kind !== "member") {
+                } else if (initializer.kind !== "identifier" && initializer.kind !== "member" && initializer.kind !== "super-member") {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + kind + " assignment target", initializer.loc);
                 }
                 return this.forEach(kind, loc, start, initializer);
@@ -686,10 +687,10 @@ class Parser {
         if ((rest || parameters.some(parameter => parameter.initializer !== null)) && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with non-simple parameters", loc);
     }
-    functionTail(loc: Location, start: number, superCallAllowed = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
+    functionTail(loc: Location, start: number, superContext: SuperContext = "none"): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
         const savedNewTarget = this.newTargetAllowed;
-        const savedSuperCall = this.superCallAllowed;
-        this.superCallAllowed = superCallAllowed;
+        const savedSuperContext = this.superContext;
+        this.superContext = superContext;
         this.newTargetAllowed = true;
         const { params, rest, parameters } = this.formalParameters(loc, false);
         const bodyLoc = this.current().loc;
@@ -708,7 +709,7 @@ class Parser {
         this.switches = switches;
         this.labels = labels;
         this.newTargetAllowed = savedNewTarget;
-        this.superCallAllowed = savedSuperCall;
+        this.superContext = savedSuperContext;
         this.checkParameterDirective(rest, parameters, bodyIndex, loc);
         return { params, parameters, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end, rest, bodyLoc } };
     }
@@ -847,7 +848,7 @@ class Parser {
                 if (lineTerminatorBetween(this.source.text, previous, this.current())) break;
                 const increment = this.take();
                 const operation = increment.text === "++" ? "increment" : "decrement";
-                if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + operation + " target", left.loc);
+                if (left.kind !== "identifier" && left.kind !== "member" && left.kind !== "super-member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + operation + " target", left.loc);
                 left = { kind: "update", loc: left.loc, target: left, op: increment.text === "++" ? "++" : "--", prefix: false };
                 updated = true;
                 continue;
@@ -882,7 +883,7 @@ class Parser {
                     left = { kind: "destructure", loc, pattern, value: right };
                     continue;
                 }
-                if (left.kind !== "identifier" && left.kind !== "member") {
+                if (left.kind !== "identifier" && left.kind !== "member" && left.kind !== "super-member") {
                     const numeric = this.numericTokens.get(left);
                     // Defer only this token-backed failure after the RHS succeeds.
                     // These continued trees have no retained or executable authority.
@@ -953,7 +954,7 @@ class Parser {
                 key = { kind: "literal", loc: token.loc, value: literalName };
             }
             if (!this.at("(")) { this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class fields and static blocks are unsupported", this.current().loc); break; }
-            const fn = this.functionTail(first.loc, first.start, heritage !== null && !isStatic && literalName === "constructor" && kind === "method");
+            const fn = this.functionTail(first.loc, first.start, heritage !== null && !isStatic && literalName === "constructor" && kind === "method" ? "derived" : "method");
             if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid class accessor parameters", first.loc);
             if (new Set(fn.params).size !== fn.params.length)
@@ -1001,7 +1002,7 @@ class Parser {
                     shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval");
                 }
                 if (this.at("(")) {
-                    const fn = this.functionTail(first.loc, first.start);
+                    const fn = this.functionTail(first.loc, first.start, "method");
                     if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
                     if (new Set(fn.params).size !== fn.params.length)
@@ -1051,7 +1052,7 @@ class Parser {
             for (let i = 0; i < cover.entries.length; i++) {
                 const entry = cover.entries[i];
                 if (entry.kind === "rest") {
-                    if (i !== cover.entries.length - 1 || cover.trailingComma || (entry.value.kind !== "identifier" && entry.value.kind !== "member"))
+                    if (i !== cover.entries.length - 1 || cover.trailingComma || (entry.value.kind !== "identifier" && entry.value.kind !== "member" && entry.value.kind !== "super-member"))
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid object rest target", entry.value.loc);
                     pattern.rest = this.assignmentPattern(entry.value);
                 } else {
@@ -1075,7 +1076,7 @@ class Parser {
             }
             return { kind: "array-pattern", loc: expr.loc, elements, rest };
         }
-        if (expr.kind !== "identifier" && expr.kind !== "member")
+        if (expr.kind !== "identifier" && expr.kind !== "member" && expr.kind !== "super-member")
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid destructuring target", expr.loc);
         return { kind: "target", loc: expr.loc, target: expr,
             inferredName: expr.kind === "identifier" && !this.parenthesized.has(expr) ? expr.name : null };
@@ -1091,7 +1092,18 @@ class Parser {
         const t = this.take();
         const loc = t.loc;
         if (t.kind === "word" && t.text === "super" && this.boundedPlan()) {
-            if (!this.superCallAllowed || !this.at("(")) {
+            if (this.superContext !== "none" && (this.at(".") || this.at("["))) {
+                let key: Expr;
+                if (this.eat(".")) {
+                    const token = this.take();
+                    if (token.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected super property name", token.loc);
+                    key = { kind: "literal", loc: token.loc, value: token.text };
+                } else {
+                    this.take(); key = this.expression(0); this.expect("]");
+                }
+                return { kind: "super-member", loc, key };
+            }
+            if (this.superContext !== "derived" || !this.at("(")) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "super call requires a derived constructor", loc);
                 return { kind: "literal", loc, value: null };
             }
@@ -1109,11 +1121,12 @@ class Parser {
         if (t.kind === "word" && t.text === "new" && this.structuralPlan()) {
             const first = this.current();
             // Only primary/member syntax here; parentheses can contain calls.
-            if ((first.kind === "word" || first.kind === "punct") && ["new", "super", "-", "+", "!", "~", "delete", "typeof", "void", "++", "--"].includes(first.text)) {
+            if ((first.kind === "word" || first.kind === "punct") && ["new", "-", "+", "!", "~", "delete", "typeof", "void", "++", "--"].includes(first.text)) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported constructor operand", first.loc);
                 return { kind: "literal", loc, value: null };
             }
             let callee = this.primary(allowIn);
+            if (callee.kind === "super-call" && !this.isParenthesized(callee)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "super call is not a constructor operand", first.loc);
             while (this.error === null) {
                 if (this.eat(".")) {
                     const key = this.take();
@@ -1176,7 +1189,7 @@ class Parser {
         }
         if (t.kind === "punct" && (t.text === "++" || t.text === "--") && this.structuralPlan()) {
             const target = this.expression(14, allowIn);
-            if (target.kind !== "identifier" && target.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid update target", loc);
+            if (target.kind !== "identifier" && target.kind !== "member" && target.kind !== "super-member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid update target", loc);
             return { kind: "update", loc, target, op: t.text, prefix: true };
         }
         if ((this.structuralPlan() && t.text === "~") || t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {
@@ -1226,7 +1239,7 @@ class Parser {
                     if (key.kind !== "word" && key.kind !== "string" && key.kind !== "number") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", key.loc);
                     const name = key.kind === "number" ? String(Number(key.text.replaceAll("_", ""))) : key.text;
                     if (this.structuralPlan() && this.at("(")) {
-                        const fn = this.functionTail(first.loc, first.start);
+                        const fn = this.functionTail(first.loc, first.start, "method");
                         if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
                             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
                         if (new Set(fn.params).size !== fn.params.length)

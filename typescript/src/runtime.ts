@@ -303,36 +303,36 @@ export type Reference =
     | { kind: "binding"; environment: Environment | null; name: string }
     | { kind: "property"; base: Value; key: Value; loc: Location };
 export type ReferenceResult = { type: "reference"; reference: Reference } | { type: "abrupt"; completion: Completion };
-export function getValue(ref: Reference, context: OperationContext, loc: Location): Completion {
+export function getValue(ref: Reference, context: OperationContext, loc: Location, receiver: Value = ref.kind === "property" ? ref.base : UNDEFINED): Completion {
     if (ref.kind === "property") {
         const object = toObject(ref.base, context, ref.loc);
         if (object.type === "throw") return object;
         const key = toPropertyKey(ref.key, context, ref.loc);
         if (key.type === "throw") return key;
         // Save only a successful key, before dispatch: Get can fail or mutate.
-        // The original base remains the Receiver; wrappers and values are local.
+        // Keep the original Receiver; wrappers and converted keys are local.
         ref.key = typeof key.value === "string"
             ? { kind: "string", value: key.value }
             : { kind: "symbol", value: key.value };
-        return object.value.internalGet(key.value, ref.base, context, loc);
+        return object.value.internalGet(key.value, receiver, context, loc);
     }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
     if (binding === undefined) return languageFailure(context.realm, "ReferenceError", ref.name + " is not defined", loc);
     if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", ref.name + " is not initialized", loc);
     return normal(binding.value);
 }
-export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location, strict = true): Completion {
+export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location, strict = true, receiver: Value = ref.kind === "property" ? ref.base : UNDEFINED): Completion {
     if (ref.kind === "property") {
         const object = toObject(ref.base, context, ref.loc);
         if (object.type === "throw") return object;
         const key = toPropertyKey(ref.key, context, ref.loc);
         if (key.type === "throw") return key;
         // Cache only successful conversion, even when the following Set fails.
-        // Boxing is local: Set must receive the original primitive/object base.
+        // Boxing is local: Set must receive the original Receiver.
         ref.key = typeof key.value === "string"
             ? { kind: "string", value: key.value }
             : { kind: "symbol", value: key.value };
-        const result = object.value.internalSet(key.value, value, ref.base, context, loc);
+        const result = object.value.internalSet(key.value, value, receiver, context, loc);
         if (result.type === "throw") return result;
         if (!result.value && strict) return languageFailure(context.realm, "TypeError", "property is not writable: " + formatPropertyKey(key.value), loc);
         return normal(value);

@@ -1,3 +1,4 @@
+export type SuperContext = "none" | "method" | "derived";
 export type SourceText = { readonly text: string };
 export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number; readonly method?: boolean;
     readonly arrow?: boolean; readonly expressionBody?: boolean; readonly rest?: boolean; readonly bodyLoc?: Location };
@@ -35,6 +36,7 @@ export type Expr =
     | { kind: "this"; loc: Location }
     | { kind: "new-target"; loc: Location }
     | { kind: "super-call"; loc: Location; args: Argument[] }
+    | { kind: "super-member"; loc: Location; key: Expr }
     | { kind: "unary"; loc: Location; op: string; operand: Expr }
     | { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr }
     | { kind: "assign"; loc: Location; target: Expr; value: Expr }
