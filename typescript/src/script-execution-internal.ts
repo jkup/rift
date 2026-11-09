@@ -7,7 +7,7 @@ import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, Argument, Stmt, FunctionSource, FormalParameter, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
+import type { Expr, ChainExpr, Argument, Stmt, FunctionSource, FormalParameter, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
@@ -848,6 +848,7 @@ const executionKey = new ExecutionKey();
 type EngineReference = Reference | { kind: "script"; binding: ScriptBindingReference }
     | { kind: "script-property"; reference: Reference; strict: boolean };
 type EngineReferenceResult = { type: "reference"; reference: EngineReference } | { type: "abrupt"; completion: Completion };
+type EngineExpressionResult = EngineReferenceResult | { type: "value"; value: Value };
 export type ScriptLimits = { readonly maxSteps: number; readonly maxCalls: number };
 export type ScriptEvaluation = { phase: "body"; completion: ValueCompletion } | { phase: "instantiation"; completion: ThrowCompletion };
 export type ScriptSourceSnapshot = { readonly realm: Realm; readonly record: ExecutableScript; readonly unitId: string; readonly loc: Location };
@@ -1147,6 +1148,11 @@ class ExecutionEngine {
                 }
                 return normal({ kind: "string", value: text });
             }
+            case "chain": {
+                if (env !== null) throw new Error("Script optional chain requires Script execution");
+                const result = this.#chain(expr, receiver);
+                return this.#expressionValue(result, expr.loc);
+            }
             case "identifier": case "member": {
                 const ref = this.#reference(expr, env, receiver);
                 return ref.type === "abrupt" ? ref.completion : this.#get(ref.reference, expr.loc);
@@ -1259,23 +1265,22 @@ class ExecutionEngine {
                 return this.#construct(callee.value, args.values, expr.loc);
             }
             case "call": {
-                let thisValue = UNDEFINED;
-                let callee: Completion;
-                if (expr.callee.kind === "identifier" || expr.callee.kind === "member") {
-                    const ref = this.#reference(expr.callee, env, receiver);
-                    if (ref.type === "abrupt") return ref.completion;
-                    callee = this.#get(ref.reference, expr.loc);
-                    if (ref.reference.kind === "property") thisValue = ref.reference.base;
-                    if (ref.reference.kind === "script-property" && ref.reference.reference.kind === "property") thisValue = ref.reference.reference.base;
-                } else callee = this.#eval(expr.callee, env, receiver);
+                const result = this.#expressionReference(expr.callee, env, receiver);
+                const callee = this.#expressionValue(result, expr.loc);
                 if (callee.type !== "normal") return callee;
                 const args = this.#arguments(expr.args, env, receiver);
                 if (args.type === "throw") return args;
-                return this.call(callee.value, thisValue, args.values, expr.loc);
+                return this.call(callee.value, this.#callReceiver(result), args.values, expr.loc);
             }
             case "unary": {
                 if (expr.op === "delete") {
                     if (expr.operand.kind === "identifier" && (env !== null || this.#active().strict)) throw new Error("delete requires a property reference");
+                    if (expr.operand.kind === "chain") {
+                        if (env !== null) throw new Error("Script optional chain requires Script execution");
+                        const result = this.#chain(expr.operand, receiver);
+                        if (result.type === "abrupt") return result.completion;
+                        return result.type === "reference" ? this.#delete(result.reference, expr.loc) : normal({ kind: "boolean", value: true });
+                    }
                     if (expr.operand.kind === "member" || expr.operand.kind === "identifier") {
                         // Capture once, without reading the final property.
                         const ref = this.#reference(expr.operand, env, receiver);
@@ -1569,6 +1574,51 @@ class ExecutionEngine {
             this.calls = savedCalls;
             this.depth = savedDepth;
         }
+    }
+    #expressionReference(expr: Expr, env: Environment | null, receiver: Value): EngineExpressionResult {
+        if (expr.kind === "identifier" || expr.kind === "member") return this.#reference(expr, env, receiver);
+        if (expr.kind === "chain") {
+            if (env !== null) throw new Error("Script optional chain requires Script execution");
+            return this.#chain(expr, receiver);
+        }
+        const result = this.#eval(expr, env, receiver);
+        return result.type === "normal" ? { type: "value", value: result.value } : { type: "abrupt", completion: result };
+    }
+    #expressionValue(result: EngineExpressionResult, loc: Location): Completion {
+        if (result.type === "abrupt") return result.completion;
+        return result.type === "value" ? normal(result.value) : this.#get(result.reference, loc);
+    }
+    #callReceiver(result: EngineExpressionResult): Value {
+        if (result.type !== "reference") return UNDEFINED;
+        const ref = result.reference;
+        if (ref.kind === "property") return ref.base;
+        if (ref.kind === "script-property" && ref.reference.kind === "property") return ref.reference.base;
+        return UNDEFINED;
+    }
+    #chain(expr: ChainExpr, receiver: Value): EngineExpressionResult {
+        let result = this.#expressionReference(expr.base, null, receiver);
+        if (result.type === "abrupt") return result;
+        for (const link of expr.links) {
+            const budget = this.tick(link.loc);
+            if (budget.type !== "normal") return { type: "abrupt", completion: budget };
+            const base = this.#expressionValue(result, link.loc);
+            if (base.type !== "normal") return { type: "abrupt", completion: base };
+            if (link.optional && (base.value.kind === "null" || base.value.kind === "undefined"))
+                return { type: "value", value: UNDEFINED };
+            if (link.kind === "member") {
+                const key = this.#eval(link.key, null, receiver);
+                if (key.type !== "normal") return { type: "abrupt", completion: key };
+                const reference: Reference = { kind: "property", base: base.value, key: key.value, loc: link.loc };
+                result = { type: "reference", reference: { kind: "script-property", reference, strict: this.#active().strict } };
+            } else {
+                const args = this.#arguments(link.args, null, receiver);
+                if (args.type === "throw") return { type: "abrupt", completion: args };
+                const called = this.call(base.value, this.#callReceiver(result), args.values, link.loc);
+                if (called.type !== "normal") return { type: "abrupt", completion: called };
+                result = { type: "value", value: called.value };
+            }
+        }
+        return result;
     }
     #reference(expr: Expr, env: Environment | null, receiver: Value): EngineReferenceResult {
         if (env !== null) return this.reference(expr, env, receiver);

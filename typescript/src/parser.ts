@@ -4,7 +4,7 @@ import type { ScriptSourceUnit } from "./script-metadata.js";
 import { scriptPrologue } from "./script-prologue.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, FormalParameter, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
+import type { Diagnostic, Expr, ChainLink, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, FormalParameter, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -602,6 +602,10 @@ class Parser {
         return { kind: "function", loc: first.loc, params, parameters, body,
             source: { source: this.source, start: first.start, end: this.tokens[this.index - 1].end, arrow: true, expressionBody, rest, bodyLoc } };
     }
+    chainLink(base: Expr, link: ChainLink): Expr {
+        if (base.kind === "chain" && !this.parenthesized.has(base)) { base.links.push(link); return base; }
+        return { kind: "chain", loc: base.loc, base, links: [link] };
+    }
     precedence(op: string): number {
         if (this.structuralPlan() && ["**=", "&=", "|=", "^=", "<<=", ">>=", ">>>="].includes(op)) return 1;
         if (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=") return 1;
@@ -638,16 +642,40 @@ class Parser {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "tagged templates are unsupported", this.current().loc);
                 break;
             }
+            if (!updated && this.structuralPlan() && this.eat("?.")) {
+                const linkLoc = this.tokens[this.index - 1].loc;
+                if (this.eat("(")) {
+                    const args: Argument[] = [];
+                    if (!this.at(")")) do { args.push(this.argument()); } while (this.error === null && this.eat(",") && !this.at(")"));
+                    this.expect(")");
+                    left = this.chainLink(left, { kind: "call", loc: linkLoc, optional: true, args });
+                } else {
+                    let key: Expr;
+                    if (this.eat("[")) { key = this.expression(0); this.expect("]"); }
+                    else {
+                        const token = this.take();
+                        if (token.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected optional property name", token.loc);
+                        key = { kind: "literal", loc: token.loc, value: token.text };
+                    }
+                    left = this.chainLink(left, { kind: "member", loc: linkLoc, optional: true, key });
+                }
+                continue;
+            }
             if (!updated && this.eat(".")) {
                 const key = this.take();
                 if (key.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
-                left = { kind: "member", loc, base: left, key: { kind: "literal", loc: key.loc, value: key.text } };
+                const property: Expr = { kind: "literal", loc: key.loc, value: key.text };
+                left = left.kind === "chain" && !this.parenthesized.has(left)
+                    ? this.chainLink(left, { kind: "member", loc, optional: false, key: property })
+                    : { kind: "member", loc, base: left, key: property };
                 continue;
             }
             if (!updated && this.eat("[")) {
                 const key = this.expression(0);
                 this.expect("]");
-                left = { kind: "member", loc, base: left, key };
+                left = left.kind === "chain" && !this.parenthesized.has(left)
+                    ? this.chainLink(left, { kind: "member", loc, optional: false, key })
+                    : { kind: "member", loc, base: left, key };
                 continue;
             }
             if (!updated && this.eat("(")) {
@@ -658,7 +686,9 @@ class Parser {
                     } while (this.error === null && this.eat(",") && !(this.structuralPlan() && this.at(")")));
                 }
                 this.expect(")");
-                left = { kind: "call", loc, callee: left, args };
+                left = left.kind === "chain" && !this.parenthesized.has(left)
+                    ? this.chainLink(left, { kind: "call", loc, optional: false, args })
+                    : { kind: "call", loc, callee: left, args };
                 continue;
             }
             if (!updated && this.structuralPlan() && (this.at("++") || this.at("--"))) {
@@ -762,6 +792,7 @@ class Parser {
                     callee = { kind: "member", loc: first.loc, base: callee, key };
                 } else break;
             }
+            if (this.at("?.")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "optional constructor operand is unsupported", this.current().loc);
             const args: Argument[] = [];
             if (this.eat("(")) {
                 if (!this.at(")")) {

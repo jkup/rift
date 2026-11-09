@@ -234,11 +234,14 @@ export function lex(source: string, script = false): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
+        } else if (script && two === "?." && !digit(source.charAt(i + 2))) {
+            advance(); advance();
+            tokens.push({ kind: "punct", text: two, loc, start, end: i });
         } else if (script && ["++", "--", "**", "<<", ">>", "&=", "|=", "^=", "=>"].includes(two)) {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });
-        } else if (["++", "--", "=>", "**", "<<", ">>", "?."].includes(two)) {
+        } else if (["++", "--", "=>", "**", "<<", ">>"].includes(two) || (!script && two === "?.")) {
             fail({ kind: "unsupported-syntax", capabilityCode: "lex.operator" }, "unsupported operator: " + two, loc);
         } else if (two === "==" || two === "!=" || two === "<=" || two === ">=" || two === "&&" || two === "||" || two === "+=" || two === "-=" || two === "*=" || two === "/=" || two === "%=") {
             advance();

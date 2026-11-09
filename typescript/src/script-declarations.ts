@@ -460,6 +460,16 @@ class DeclarationCollector {
             case "binary": this.expression(node.right, scope, variableScope); this.expression(node.left, scope, variableScope); break;
             case "assign": case "compound": this.expression(node.value, scope, variableScope); this.expression(node.target, scope, variableScope); break;
             case "conditional": this.expression(node.alternate, scope, variableScope); this.expression(node.consequent, scope, variableScope); this.expression(node.test, scope, variableScope); break;
+            case "chain":
+                for (let i = node.links.length - 1; i >= 0; i--) {
+                    const link = node.links[i];
+                    if (link.kind === "member") this.expression(link.key, scope, variableScope);
+                    else for (let j = link.args.length - 1; j >= 0; j--) {
+                        const arg = link.args[j];
+                        this.expression(arg.kind === "spread" ? arg.expression : arg, scope, variableScope);
+                    }
+                }
+                this.expression(node.base, scope, variableScope); break;
             case "member": this.expression(node.key, scope, variableScope); this.expression(node.base, scope, variableScope); break;
             case "new": case "call":
                 for (let i = node.args.length - 1; i >= 0; i--) {
