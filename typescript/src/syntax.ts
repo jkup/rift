@@ -18,9 +18,9 @@ export type ChainLink = { kind: "member"; loc: Location; optional: boolean; key:
     | { kind: "call"; loc: Location; optional: boolean; args: Argument[] };
 export type ChainExpr = { kind: "chain"; loc: Location; base: Expr; links: ChainLink[] };
 export type ObjectProperty = { kind: "data" | "get" | "set"; key: string; value: Expr };
-export type PatternElement = { pattern: AssignmentPattern; initializer: Expr | null };
-export type ArrayPattern = { kind: "array-pattern"; loc: Location; elements: (PatternElement | null)[]; rest: AssignmentPattern | null };
-export type AssignmentPattern = ArrayPattern | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
+export type PatternElement = { pattern: DestructuringPattern; initializer: Expr | null };
+export type ArrayPattern = { kind: "array-pattern"; loc: Location; elements: (PatternElement | null)[]; rest: DestructuringPattern | null };
+export type DestructuringPattern = ArrayPattern | { kind: "binding"; loc: Location; site: DeclarationSite } | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
 export type Expr =
     | ChainExpr
     | { kind: "destructure"; loc: Location; pattern: ArrayPattern; value: Expr }
@@ -49,6 +49,7 @@ export type ForLexicalBinding = { kind: "lexical"; declarationKind: "let" | "con
 export type ForEachStmt = { kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding; iterable: Expr; body: Stmt };
 export type Stmt =
     | VarStmt
+    | { kind: "pattern-declaration"; loc: Location; declarationKind: "let" | "const" | "var"; pattern: ArrayPattern; init: Expr }
     | ForStmt
     | ForLexicalStmt
     | ForEachStmt

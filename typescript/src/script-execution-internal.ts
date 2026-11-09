@@ -1,4 +1,4 @@
-import type { ArrayPattern, AssignmentPattern } from "./syntax.js";
+import type { ArrayPattern, DestructuringPattern } from "./syntax.js";
 import { instanceofOperator } from "./builtins/function.js";
 import { createArgumentsObject } from "./arguments-object.js";
 import { getIterator, iteratorStep, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow, type IteratorRecord } from "./iterator.js";
@@ -1150,6 +1150,7 @@ class ExecutionEngine {
             case "for": case "for-of": case "for-in": case "for-lexical": throw new Error("Script for AST requires Script execution");
             case "do-while": throw new Error("Script do-while AST requires Script execution");
             case "labelled": throw new Error("Script labelled AST requires Script execution");
+            case "pattern-declaration": throw new Error("Script pattern AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "const": throw new Error("Script const AST requires Script execution");
             case "switch": throw new Error("Script switch AST requires Script execution");
@@ -1802,7 +1803,7 @@ class ExecutionEngine {
         if (ref.kind === "script-property") return deleteReference(ref.reference, this.context, loc, ref.strict);
         return deleteReference(ref, this.context, loc);
     }
-    #arrayPattern(pattern: ArrayPattern, input: Value): ValueCompletion {
+    #arrayPattern(pattern: ArrayPattern, input: Value, environment: ScriptEnvironment | null = null): ValueCompletion {
         if (++this.depth > 256) {
             this.depth--;
             return resourceFailure("evaluation-depth", 257, 256, "evaluation nesting limit exceeded", pattern.loc);
@@ -1821,18 +1822,18 @@ class ExecutionEngine {
                         if (skipped.type === "throw") { result = skipped; break; }
                     }
                 } else {
-                    result = this.#patternElement(element.pattern, element.initializer, iterator, false);
+                    result = this.#patternElement(element.pattern, element.initializer, iterator, false, environment);
                     if (result.type === "throw") break;
                 }
             }
             if (result.type === "normal" && pattern.rest !== null)
-                result = this.#patternElement(pattern.rest, null, iterator, true);
+                result = this.#patternElement(pattern.rest, null, iterator, true, environment);
             if (iterator.done) return result;
             return result.type === "throw" ? iteratorCloseOnThrow(iterator, result, this.context, pattern.loc)
                 : iteratorCloseNormally(iterator, this.context, pattern.loc);
         } finally { this.depth--; }
     }
-    #patternElement(pattern: AssignmentPattern, initializer: Expr | null, iterator: IteratorRecord, rest: boolean): ValueCompletion {
+    #patternElement(pattern: DestructuringPattern, initializer: Expr | null, iterator: IteratorRecord, rest: boolean, environment: ScriptEnvironment | null): ValueCompletion {
         let reference: EngineReference | null = null;
         if (pattern.kind === "target") {
             const target = this.#reference(pattern.target, null, this.#active().thisValue);
@@ -1841,6 +1842,11 @@ class ExecutionEngine {
                 return target.completion;
             }
             reference = target.reference;
+        }
+        if (pattern.kind === "binding" && environment === null) {
+            const target = resolveScriptBinding(this.#active().lexical, pattern.site.name, pattern.loc, this.#active().strict);
+            if (target.type === "throw") return target;
+            reference = { kind: "script", binding: target.reference };
         }
         let value: Value = UNDEFINED;
         if (rest) {
@@ -1861,11 +1867,15 @@ class ExecutionEngine {
             value = next.value;
         }
         if (value.kind === "undefined" && initializer !== null) {
-            const evaluated = this.#value(initializer, pattern.kind === "target" ? pattern.inferredName : null);
+            const evaluated = this.#value(initializer, pattern.kind === "target" ? pattern.inferredName : pattern.kind === "binding" ? pattern.site.name : null);
             if (evaluated.type === "throw") return evaluated;
             value = evaluated.value;
         }
-        if (pattern.kind === "array-pattern") return this.#arrayPattern(pattern, value);
+        if (pattern.kind === "array-pattern") return this.#arrayPattern(pattern, value, environment);
+        if (pattern.kind === "binding" && environment !== null) {
+            return environment.kind === "global" ? environment.record.initializeBinding(pattern.site.name, value, this.context, pattern.loc)
+                : environment.initializeBinding(pattern.site.name, value, this.context, pattern.loc);
+        }
         if (reference === null) throw new Error("missing pattern reference");
         const assigned = this.#put(reference, value, pattern.loc);
         if (assigned.type === "throw") return assigned;
@@ -2035,6 +2045,13 @@ class ExecutionEngine {
                 return { type: "normal", payload: { kind: "empty" } };
             }
             case "expression": return scriptExpressionCompletion(this.#value(stmt.expression));
+            case "pattern-declaration": {
+                const input = this.#value(stmt.init);
+                if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
+                const initialized = this.#arrayPattern(stmt.pattern, input.value, stmt.declarationKind === "var" ? null : this.#active().lexical);
+                if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+                return { type: "normal", payload: { kind: "empty" } };
+            }
             case "let": case "const": {
                 const result = stmt.init === null ? normal() : this.#value(stmt.init, stmt.name);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }

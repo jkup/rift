@@ -44,11 +44,11 @@ for(const prefix of ['',"'use strict';"]) {
 }
 for(const text of ['[...];','[. . .[]];','[..[]];','[...[],...];','f(...[]);','new C(...[]);','({...x});','let [...x]=[];','[...x]=[];'])
     if (text === 'f(...[]);' || text === 'new C(...[]);') passes('function f(){}function C(){}'+text+'true;');
-    else if (text === '[...x]=[];') {
+    else if (text === '[...x]=[];' || text === 'let [...x]=[];') {
         const realm = fresh();
-        check(run(text, realm).type === 'normal', 'array rest assignment admitted');
+        check(run(text, realm).type === 'normal', 'array rest pattern admitted');
         const assigned = run('Array.isArray(x)&&x.length===0;', realm);
-        check(assigned.type === 'normal' && assigned.value.kind === 'boolean' && assigned.value.value, 'array rest assignment value');
+        check(assigned.type === 'normal' && assigned.value.kind === 'boolean' && assigned.value.value, 'array rest pattern value');
     } else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
 check(parse('[...[1]];').error !== null,'legacy parser unchanged');
 const owner=fresh(),caller=fresh();

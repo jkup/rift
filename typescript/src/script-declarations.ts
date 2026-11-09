@@ -1,4 +1,4 @@
-import type { AssignmentPattern } from "./syntax.js";
+import type { DestructuringPattern } from "./syntax.js";
 import { parseDeclarationPlan } from "./parser.js";
 import { scriptPrologue } from "./script-prologue.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
@@ -389,6 +389,17 @@ class DeclarationCollector {
                 this.work.push({ kind: "catch", node, scope, variableScope });
                 this.statement(node.block, scope, variableScope);
                 break;
+            case "pattern-declaration": {
+                const bindings = this.bindings.get(this.tokens[this.tokenIndex(node.loc)].start);
+                if (bindings === undefined) throw new Error("missing pattern binding spans");
+                for (const binding of bindings) {
+                    const id = this.declare(node.declarationKind, binding, scope, variableScope, null);
+                    if (this.nodes !== null) this.nodes.declarations.set(id, { node, initializer: node.init });
+                }
+                this.expression(node.init, scope, variableScope);
+                this.pattern(node.pattern, scope, variableScope);
+                break;
+            }
             case "let": case "const": case "var": {
                 const bindings = this.bindings.get(this.tokens[this.tokenIndex(node.loc)].start);
                 if (bindings === undefined) throw new Error("missing binding spans");
@@ -468,7 +479,8 @@ class DeclarationCollector {
             case "empty": case "break": case "continue": break;
         }
     }
-    pattern(pattern: AssignmentPattern, scope: number, variableScope: number): void {
+    pattern(pattern: DestructuringPattern, scope: number, variableScope: number): void {
+        if (pattern.kind === "binding") return;
         if (pattern.kind === "target") {
             const target = pattern.target;
             if (target.kind === "identifier" && (target.name === "arguments" || target.name === "eval"))

@@ -1,4 +1,4 @@
-import type { AssignmentPattern, PatternElement } from "./syntax.js";
+import type { DestructuringPattern, ArrayPattern, PatternElement } from "./syntax.js";
 import { collectNumericSeparatorAudit, type NumericSeparatorAudit } from "./script-declarations.js";
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatementContext, NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
@@ -283,6 +283,8 @@ class Parser {
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
         if (this.at("const")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: const", keyword.loc);
         if ((this.at("let") && !auditLet) || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
+        if (auditLet && this.tokens[this.index + 1]?.text === "[")
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "pattern declarations require a block", keyword.loc);
         const result = this.statement();
         // Only a complete supported declaration in this exact Statement slot is evidence.
         if (auditLet && this.error === null && result.kind === "let") {
@@ -362,6 +364,20 @@ class Parser {
             return this.finishTry(loc, { kind: "try-catch", loc, block, handler,
                 parameter: { name, start: token.start, end: token.end, loc: token.loc },
                 catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.tokens[this.index - 1].end });
+        }
+        if (this.structuralPlan() && (this.at("let") || this.at("const") || this.at("var")) && this.tokens[this.index + 1]?.text === "[") {
+            const declarationKind = this.take().text;
+            if (declarationKind !== "let" && declarationKind !== "const" && declarationKind !== "var") throw new Error("invalid declaration kind");
+            const bindings: ParsedBinding[] = [];
+            const pattern = this.arrayBindingPattern(bindings);
+            this.expect("=");
+            const initializerStart = this.current().start;
+            const init = this.expression(1);
+            const initializer = { start: initializerStart, end: this.tokens[this.index - 1].end };
+            for (const binding of bindings) binding.initializer = initializer;
+            this.bindings.set(start, bindings);
+            this.statementTerminator();
+            return { kind: "pattern-declaration", loc, declarationKind, pattern, init };
         }
         if (this.structuralPlan() && this.eat("const")) {
             const binding = this.binding(1);
@@ -528,6 +544,36 @@ class Parser {
         do { bindings.push(this.binding(1, allowIn)); } while (this.error === null && this.eat(","));
         this.bindings.set(token.start, bindings);
         return { kind: "var", loc: token.loc, declarations: bindings.map(binding => ({ name: binding.site.name, init: binding.init })) };
+    }
+    arrayBindingPattern(bindings: ParsedBinding[]): ArrayPattern {
+        const loc = this.current().loc;
+        const pattern: ArrayPattern = { kind: "array-pattern", loc, elements: [], rest: null };
+        if (++this.depth > 128) {
+            this.fail({ kind: "resource-limit", guardCode: "parse-depth", count: this.depth, limit: 128 }, "syntax nesting limit exceeded", loc);
+            this.depth--;
+            return pattern;
+        }
+        this.expect("[");
+        while (this.error === null && !this.at("]")) {
+            if (this.eat(",")) { pattern.elements.push(null); continue; }
+            const rest = this.eat("...");
+            let child: DestructuringPattern;
+            if (this.at("[")) child = this.arrayBindingPattern(bindings);
+            else {
+                const token = this.current();
+                const name = this.name();
+                const site = { name, start: token.start, end: token.end, loc: token.loc };
+                bindings.push({ site, init: null, initializer: null });
+                child = { kind: "binding", loc: token.loc, site };
+            }
+            if (rest) { pattern.rest = child; break; }
+            const initializer = this.eat("=") ? this.expression(1) : null;
+            pattern.elements.push({ pattern: child, initializer });
+            if (!this.eat(",")) break;
+        }
+        this.expect("]");
+        this.depth--;
+        return pattern;
     }
     binding(min: number, allowIn = true): ParsedBinding {
         const token = this.current();
@@ -804,10 +850,10 @@ class Parser {
     }
     // Keep the collection key at its declared Expr type for scriptc (TS-152 reduction).
     private isParenthesized(expr: Expr): boolean { return this.parenthesized.has(expr); }
-    assignmentPattern(expr: Expr): AssignmentPattern {
+    assignmentPattern(expr: Expr): DestructuringPattern {
         if (expr.kind === "array" && !this.parenthesized.has(expr)) {
             const elements: (PatternElement | null)[] = [];
-            let rest: AssignmentPattern | null = null;
+            let rest: DestructuringPattern | null = null;
             for (let i = 0; i < expr.elements.length; i++) {
                 const item = expr.elements[i];
                 if (item === null) { elements.push(null); continue; }

@@ -414,7 +414,7 @@ for (const [name, source, expected] of [
     ["separator", "let a = [1 2];", { status: 2, error: "1:12: parse SyntaxError: expected ']', found '2'" }],
     ["delimiter", "let a = [1);", { status: 2, error: "1:11: parse SyntaxError: expected ']', found ')'" }],
     ["spread", "let a = [...x];", { status: 1, error: "1:13: runtime ReferenceError: x is not defined" }],
-    ["binding-pattern", "let [x] = [1];", { status: 2, error: "1:5: parse SyntaxError: expected binding identifier" }],
+    ["binding-pattern", "let [x] = [1];", { stdout: "" }],
     ["assignment-pattern", "[x] = [1];", { stdout: "" }],
     ["comma-operator", "let a = [(1, 2)];", { stdout: "" }],
     ["numeric-key", "let a = [1]; console.log(a[0]);", { stdout: "1\n" }],
@@ -605,6 +605,7 @@ executeDriver("optional-chain", { stdout: "Optional chaining passed\n" });
 executeDriver("semicolon-insertion", { stdout: "Semicolon insertion passed\n" });
 executeDriver("inherited-strictness", { stdout: "Inherited strictness passed\n" });
 executeDriver("array-assignment-patterns", { stdout: "Array assignment patterns passed\n" });
+executeDriver("array-binding-patterns", { stdout: "Array binding patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
 executeDriver("numeric-separator-audit", { stdout: "Numeric separator audit passed\n" });
 executeDriver("numeric-separator-errors", { stdout: "Numeric separator errors passed\n" });

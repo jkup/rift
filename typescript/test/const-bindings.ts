@@ -51,6 +51,7 @@ for (const prefix of ["", "'use strict';"]) {
 passes("const x=1;delete x===false&&x===1;");
 passes("var ok=false;switch(0){case 0:try{x;}catch(e){ok=e instanceof ReferenceError;}break;case 1:const x=3;}ok;");
 for (const source of ["const x;", "const x=1,y=2;", "const [x]=[1];", "if(true)const x=1;", "while(false)const x=1;", "for(const x of []){}", "for(const x=1;false;){}", "const eval=1;"]) {
+    if (source === "const [x]=[1];") { passes(source+"x===1;"); continue; }
     if (source === "const eval=1;") {
         passes(source+"eval===1;");
         check(prepareBoundedScript({id:"strict-eval-binding",text:'"use strict";'+source},fresh()).kind !== "ready", "strict eval binding rejected");

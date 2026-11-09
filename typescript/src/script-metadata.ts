@@ -108,6 +108,7 @@ class MetadataCollector {
     }
     visitStatement(stmt: Stmt, strict: boolean, parent: number | null): void {
         switch (stmt.kind) {
+            case "pattern-declaration": throw new Error("Script pattern AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "labelled": throw new Error("Script labelled AST requires Script execution");
             case "const": throw new Error("Script const AST requires Script execution");
