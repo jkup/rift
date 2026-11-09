@@ -40,7 +40,10 @@ for(const prefix of ['',"'use strict';"]){
             passes(prefix+"var called=0;var closed=0;var later=0;function f(){called++;}var source={};source[Symbol.iterator]=function(){return {next:"+next+",return:function(){closed++;return {};}};};var ok=false;try{"+form+"}catch(e){ok=e===7;}ok&&called===0&&closed===0&&later===0;");
     for(const value of ['null','undefined','7','{length:1,0:1}'])passes(prefix+"function f(){}var ok=false;try{f(..."+value+");}catch(e){ok=e instanceof TypeError;}ok;");
 }
-for(const text of ['f(...);','f(...[],);','new C(...[],);','f(,...[]);','function f(...x){}','({...x});'])check(prepareBoundedScript({id:'unsupported',text},fresh()).kind!=='ready','reject '+text);
+for(const text of ['f(...);','f(...[],);','new C(...[],);','f(,...[]);','function f(...x){}','({...x});']){
+    if(text==='f(...[],);'||text==='new C(...[],);')passes('function f(){return 7;}function C(){this.x=7;}'+text+(text[0]==='f'?'f(...[],)===7;':'new C(...[],).x===7;'));
+    else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind!=='ready','reject '+text);
+}
 check(parse('f(...x);').error!==null,'legacy parser unchanged');
 const owner=fresh(),caller=fresh();const f=run('function f(a,b){return [a,b];}f;',owner);check(f.type==='normal','foreign setup');if(f.type==='normal')caller.defineScriptGlobal('f',{value:f.value});
 const a=run('f(...[1,2]);',caller);check(a.type==='normal'&&a.value.kind==='object'&&a.value.object.getPrototypeOf()===owner.arrayPrototype,'callee Realm');

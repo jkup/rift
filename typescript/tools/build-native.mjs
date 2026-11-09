@@ -46,6 +46,7 @@ const entries = [
     ["test/array-spread.ts", "array-spread"],
     ["test/argument-spread.ts", "argument-spread"],
     ["test/object-methods.ts", "object-methods"],
+    ["test/trailing-commas.ts", "trailing-commas"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

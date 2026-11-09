@@ -550,7 +550,7 @@ class Parser {
                 if (!this.at(")")) {
                     do {
                         args.push(this.argument());
-                    } while (this.error === null && this.eat(","));
+                    } while (this.error === null && this.eat(",") && !(this.structuralPlan() && this.at(")")));
                 }
                 this.expect(")");
                 left = { kind: "call", loc, callee: left, args };
@@ -655,7 +655,7 @@ class Parser {
             const args: Argument[] = [];
             if (this.eat("(")) {
                 if (!this.at(")")) {
-                    do { args.push(this.argument()); } while (this.error === null && this.eat(","));
+                    do { args.push(this.argument()); } while (this.error === null && this.eat(",") && !this.at(")"));
                 }
                 this.expect(")");
             }
@@ -757,7 +757,7 @@ class Parser {
                         this.expect(":");
                         properties.push({ kind: "data", key: name, value: this.expression(0) });
                     }
-                } while (this.error === null && this.eat(","));
+                } while (this.error === null && this.eat(",") && !(this.structuralPlan() && this.at("}")));
             }
             this.expect("}");
             return { kind: "object", loc, properties };

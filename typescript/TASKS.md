@@ -3494,3 +3494,9 @@ Add fixed-key Script object methods and getters/setters, preserving descriptor m
 Status: **done**. Owner: Codex catch-up chat, 2026-11-09; base 5476e760. Runner 32/32 passes, including exact-prefix, empty-label, mixed-marker, summary, failure-retention and process-error controls. Both fixed-corpus runs select 225 files and agree on all raw output, source hashes, status and classifications. Raw engine results are identical to TS-130; the sole classification change is test-getter-setter.js from unchecked completion to reported success with 17 checks. Counts: 94 reported successes, 47 unchecked completions, 37 parse errors, 46 runtime errors and one reported failure; 141 total completions unchanged. Reports: build/legacy-suite-node-TTFZ2h/report.json and build/legacy-suite-native-lO2Fkh/report.json. Engine sources, binaries and guest tests are unchanged; TS-130 static, guest, tooling, typecheck and probe evidence remains applicable. Logs: build/hyphen-markers-*.
 
 Recognize anchored PASS - and FAIL - fixture lines alongside existing markers. Preserve process-error precedence, conservative summary counts, selection, source hashes and raw output. Own legacy-suite.mjs, its tests, baseline documentation and task records. Validate marker controls, runner tests and both fixed-corpus hosts; reuse unchanged engine build evidence.
+
+## TS-132 — Trailing object and argument commas
+
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-09; base 0ed62ef6.
+
+Admit trailing commas in Script object literals and call/constructor arguments, including method/accessor definitions and spread arguments. Preserve legacy parsing, reject leading/doubled commas, and preserve argument count/order and function source spans. Own parser, focused tests, expectation migrations, manifests and docs. Parameter lists and other syntax stay separate. Validate both hosts, static coverage, tooling and fixed corpus.
