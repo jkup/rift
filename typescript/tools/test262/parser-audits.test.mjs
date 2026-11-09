@@ -42,6 +42,16 @@ for (const [driver, directory, count] of [
     else expected.set(snapshot.id, audit);
   }
   assert.equal(expected.size, count);
+  if (driver === 'script-strict-parameter-audit') for (const [id, text, column] of [
+    ['E08', 'function f(a,a,eval){"use strict";}', 16],
+    ['E48', 'function f(a,a,b,eval){"use strict";}', 18],
+  ]) {
+    assert.equal(rows.find(row => row.id === id).text, text);
+    expected.set(id, {kind: 'blocked', reason: 'scope-restriction',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'eval binding or assignment in strict code', loc: {line: 1, column}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.binding-identifier'},
+    });
+  }
   const duplicateDefault = rows.find(row => row.id === 'P10');
   assert.equal(duplicateDefault.text, '"use strict"; function f(a=1,a){}');
   expected.set(duplicateDefault.id, {
