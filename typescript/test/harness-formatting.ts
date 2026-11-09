@@ -8,6 +8,7 @@ import { prepareBoundedScript, type ExecutableScript } from "../src/script-recor
 import { createScriptSession, evaluateScript, type ScriptSession } from "../src/script-execution.js";
 import type { Location } from "../src/syntax.js";
 import { mapObjectDefaultArray } from "../src/array-map.js";
+class Poison extends GuestObject{internalGet(_k:PropertyKey,_r:Value,_c:OperationContext,_l:Location):ValueCompletion{throw new Error("identity path Get");}}
 function check(ok:boolean,label:string):void {if(!ok)throw new Error(label);}
 function obj(object:GuestObject):Value{return {kind:"object",object};}
 function num(value:number):Value{return {kind:"number",value};}
@@ -442,7 +443,6 @@ for(const cross of [false,true]){
  box(run("new String();",b),a,"");box(run("new String(undefined);",b),a,"undefined");
  const allocated:GuestObject[]=[];
  for(const expression of ["Object();","Object(null);","Object(undefined);","new Object();","new Object(null);","new Object(undefined);"]){const o=object(value(run(expression,b)));check(o.getPrototypeOf()===a.objectPrototype&&!allocated.includes(o),"F06 distinct defining Realm");keys(o,[]);allocated.push(o);}
- class Poison extends GuestObject{internalGet(_k:PropertyKey,_r:Value,_c:OperationContext,_l:Location):ValueCompletion{throw new Error("identity path Get");}}
  const q=new Poison(b.objectPrototype),qv=obj(q);define(b,"q",qv);for(const expression of ["Object(q);","new Object(q);"]){const s=createScriptSession();check(value(run(expression,b,s))===qv&&q.getPrototypeOf()===b.objectPrototype,"F07 exact Value/object/prototype");check(s.inspect().steps===(expression.startsWith("new")?4:3),"identity no tick");}
  for(const constructing of [false,true])for(let i=0;i<4;i++){
   const values:Value[]=[num(7),{kind:"boolean",value:false},str("a"),symbol];define(b,"v",values[i]);const o=object(value(run((constructing?"new ":"")+"Object(v);",b)));
