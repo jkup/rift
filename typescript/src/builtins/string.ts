@@ -6,6 +6,7 @@ import type { Location } from "../syntax.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString, toNumber, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
 import { symbolDescriptiveString } from "../symbols.js";
+import { registerStringConstruction } from "./string-construction.js";
 import type { GuestObject, OperationContext, ValueCompletion } from "../runtime.js";
 
 function stringArgument(args: Value[], context: OperationContext, loc: Location): StringCompletion {
@@ -39,6 +40,7 @@ export function registerString(realm: Realm): void {
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.stringPrototype }, writable: false, enumerable: false, configurable: false });
     realm.stringPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     realm.defineScriptGlobal("String", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+    registerStringConstruction(realm, constructor);
 }
 
 export type StringCompletion = { type: "normal"; value: GuestString } | ThrowCompletion;
@@ -112,6 +114,22 @@ function registerStringTrim(realm: Realm, name: string, where: "start" | "end" |
 
 export function registerStringMethods(realm: Realm): void {
     if (realm.profile === "script") {
+        realm.registerBuiltin(realm.stringPrototype, "codePointAt", 1, (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") return text;
+            const position = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
+            if (position.type === "throw") return position;
+            const index = position.value;
+            const length = stringLength(text.value);
+            if (index < 0 || index >= length) return normal(UNDEFINED);
+            const first = stringCodeUnit(text.value, index);
+            if (first >= 0xd800 && first <= 0xdbff && index + 1 < length) {
+                const second = stringCodeUnit(text.value, index + 1);
+                if (second >= 0xdc00 && second <= 0xdfff)
+                    return normal({ kind: "number", value: 0x10000 + (first - 0xd800) * 0x400 + second - 0xdc00 });
+            }
+            return normal({ kind: "number", value: first });
+        });
         registerStringTrim(realm, "trim", "both");
         registerStringTrim(realm, "trimStart", "start");
         registerStringTrim(realm, "trimEnd", "end");

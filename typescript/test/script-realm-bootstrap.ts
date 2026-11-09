@@ -57,7 +57,7 @@ function inventory(a: Realm): void {
             "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownIterator],
         ["toString","valueOf","constructor"],
         ["toString","valueOf","toFixed","toExponential","toPrecision","constructor"],
-        ["length","toString","valueOf","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
+        ["length","toString","valueOf","codePointAt","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
             "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","anchor","big","blink","bold","fixed","fontcolor","fontsize","italics","link","small","strike","sub","sup","isWellFormed","toWellFormed","constructor","includes","startsWith","endsWith",wellKnownIterator],
         ["toString","valueOf","constructor","description",wellKnownToPrimitive,wellKnownToStringTag],
     ];
@@ -93,6 +93,7 @@ function inventory(a: Realm): void {
                 if (name === "Number") keys(f, numberKeys);
                 else if (name === "Array") keys(f, ["name", "length", "prototype", "isArray"]);
                 else if (name === "Object") keys(f, objectConstructorKeys());
+                else if (name === "String") keys(f, ["name", "length", "prototype", "fromCharCode", "fromCodePoint"]);
                 else keys(f, ["name", "length", "prototype"]);
                 if(name==="Array")method(a,f,"isArray","isArray",1);
                 if (name === "Object") {

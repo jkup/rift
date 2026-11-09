@@ -50,6 +50,7 @@ const entries = [
     ["test/string-html.ts", "string-html"],
     ["test/string-escapes.ts", "string-escapes"],
     ["test/string-wellformed.ts", "string-wellformed"],
+    ["test/string-codepoints.ts", "string-codepoints"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],
