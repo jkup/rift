@@ -193,14 +193,21 @@ export function lex(source: string, script = false): LexResult {
             tokens.push({ kind: "string", text, loc, start, end: i });
             continue;
         }
+        const four = source.slice(i, i + 4);
         const three = source.slice(i, i + 3);
         const two = source.slice(i, i + 2);
-        if (three === "===" || three === "!==" || (script && three === "**=")) {
+        if (script && four === ">>>=") {
+            advance();
+            advance();
+            advance();
+            advance();
+            tokens.push({ kind: "punct", text: four, loc, start, end: i });
+        } else if (three === "===" || three === "!==" || (script && ["**=", "<<=", ">>=", ">>>"].includes(three))) {
             advance();
             advance();
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
-        } else if (script && (two === "++" || two === "--" || two === "**")) {
+        } else if (script && ["++", "--", "**", "<<", ">>", "&=", "|=", "^="].includes(two)) {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });
@@ -210,7 +217,7 @@ export function lex(source: string, script = false): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });
-        } else if ("{}();,.:?[]+-*/%<>=!".includes(c)) {
+        } else if ("{}();,.:?[]+-*/%<>=!".includes(c) || (script && "&|^~".includes(c))) {
             if (templates.length > 0 && (c === "{" || c === "}")) templates[templates.length - 1] += c === "{" ? 1 : -1;
             tokens.push({ kind: "punct", text: advance(), loc, start, end: i });
         } else { fail({ kind: "unsupported-syntax", capabilityCode: "lex.character" }, "unsupported character: " + c, loc); }

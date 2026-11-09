@@ -479,16 +479,20 @@ class Parser {
         return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end } };
     }
     precedence(op: string): number {
-        if (this.structuralPlan() && op === "**=") return 1;
+        if (this.structuralPlan() && ["**=", "&=", "|=", "^=", "<<=", ">>=", ">>>="].includes(op)) return 1;
         if (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=") return 1;
         if (op === "?") return 2;
         if (op === "||") return 3;
         if (op === "&&") return 4;
-        if (op === "===" || op === "!==" || op === "==" || op === "!=") return 5;
-        if (op === "<" || op === ">" || op === "<=" || op === ">=" || op === "in" || op === "instanceof") return 6;
-        if (op === "+" || op === "-") return 7;
-        if (op === "*" || op === "/" || op === "%") return 8;
-        if (this.structuralPlan() && op === "**") return 9;
+        if (this.structuralPlan() && op === "|") return 5;
+        if (this.structuralPlan() && op === "^") return 6;
+        if (this.structuralPlan() && op === "&") return 7;
+        if (op === "===" || op === "!==" || op === "==" || op === "!=") return 8;
+        if (op === "<" || op === ">" || op === "<=" || op === ">=" || op === "in" || op === "instanceof") return 9;
+        if (this.structuralPlan() && (op === "<<" || op === ">>" || op === ">>>")) return 10;
+        if (op === "+" || op === "-") return 11;
+        if (op === "*" || op === "/" || op === "%") return 12;
+        if (this.structuralPlan() && op === "**") return 13;
         return 0;
     }
     expression(min: number, allowIn = true): Expr {
@@ -579,12 +583,18 @@ class Parser {
                     if (this.structuralPlan()) this.assignmentNameEligible.set(left, eligible);
                 }
                 else {
-                    let binaryOp: "+" | "-" | "*" | "/" | "%" | "**" = "+";
+                    let binaryOp: "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "<<" | ">>" | ">>>" = "+";
                     if (op === "-=") binaryOp = "-";
                     else if (op === "*=") binaryOp = "*";
                     else if (op === "/=") binaryOp = "/";
                     else if (op === "%=") binaryOp = "%";
                     else if (op === "**=") binaryOp = "**";
+                    else if (op === "&=") binaryOp = "&";
+                    else if (op === "|=") binaryOp = "|";
+                    else if (op === "^=") binaryOp = "^";
+                    else if (op === "<<=") binaryOp = "<<";
+                    else if (op === ">>=") binaryOp = ">>";
+                    else if (op === ">>>=") binaryOp = ">>>";
                     left = { kind: "compound", loc, target: left, value: right, op: binaryOp };
                 }
             } else left = { kind: "binary", loc, op, left, right };
@@ -598,7 +608,7 @@ class Parser {
         if (t.kind === "word" && t.text === "new" && this.structuralPlan()) {
             const first = this.current();
             // Only primary/member syntax here; parentheses can contain calls.
-            if ((first.kind === "word" || first.kind === "punct") && ["new", "-", "+", "!", "delete", "typeof", "void", "++", "--"].includes(first.text)) {
+            if ((first.kind === "word" || first.kind === "punct") && ["new", "-", "+", "!", "~", "delete", "typeof", "void", "++", "--"].includes(first.text)) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported constructor operand", first.loc);
                 return { kind: "literal", loc, value: null };
             }
@@ -661,12 +671,12 @@ class Parser {
             return expr;
         }
         if (t.kind === "punct" && (t.text === "++" || t.text === "--") && this.structuralPlan()) {
-            const target = this.expression(10, allowIn);
+            const target = this.expression(14, allowIn);
             if (target.kind !== "identifier" && target.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid update target", loc);
             return { kind: "update", loc, target, op: t.text, prefix: true };
         }
-        if (t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {
-            const operand = this.expression(10, allowIn);
+        if ((this.structuralPlan() && t.text === "~") || t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {
+            const operand = this.expression(14, allowIn);
             // Parentheses preserve identifiers. The bounded collector validates
             // their inherited mode after whole-source grammar coverage.
             if (t.text === "delete" && operand.kind === "identifier" && !this.boundedPlan()) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);

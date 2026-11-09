@@ -19,7 +19,7 @@ export type Expr =
     | { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr }
     | { kind: "assign"; loc: Location; target: Expr; value: Expr }
     | { kind: "update"; loc: Location; target: Expr; op: "++" | "--"; prefix: boolean }
-    | { kind: "compound"; loc: Location; target: Expr; value: Expr; op: "+" | "-" | "*" | "/" | "%" | "**" }
+    | { kind: "compound"; loc: Location; target: Expr; value: Expr; op: "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "<<" | ">>" | ">>>" }
     | { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr }
     | { kind: "member"; loc: Location; base: Expr; key: Expr }
     | { kind: "new"; loc: Location; callee: Expr; args: Expr[] }
