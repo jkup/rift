@@ -346,6 +346,17 @@ const negatives = [
 ];
 for(const row of negatives) {
  const r=fresh(), session=createScriptSession(); const result=prepareStrictScript({id:row.id,text:(row.id === "N14" ? "" : '"use strict";')+row.source},r);
+ if (row.source === "for(k of o);") {
+  check(result.kind === "ready" && session.inspect().steps === 0, "for-of prepares without effects");
+  define(r, "k", {kind: "number", value: 0});
+  run('"use strict";var o=[3,8];', r, session);
+  if (result.kind !== "ready") throw new Error("missing for-of record");
+  const completion = evaluateScript(session, result.record).completion;
+  check(completion.type === "normal" && completion.value.kind === "undefined", "empty for-of body completion");
+  check(scalar(own(r, "k") ?? UNDEFINED) === "8", "for-of assigns each value");
+  idle(session);
+  continue;
+ }
  if (["++x;", "x--;", "--x;"].includes(row.source)) {
   check(result.kind === "ready" && session.inspect().steps === 0, "new update prepares without effects");
   define(r, "x", {kind: "number", value: 7});

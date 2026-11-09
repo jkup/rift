@@ -343,6 +343,20 @@ class Parser {
             let initializer: VarStmt | Expr | null = null;
             if (this.at("var")) initializer = this.varDeclaration(false);
             else if (!this.at(";")) initializer = this.expression(0, false);
+            if (initializer !== null && this.eat("of")) {
+                if (initializer.kind === "var") {
+                    if (initializer.declarations.length !== 1 || initializer.declarations[0].init !== null)
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "for-of requires one uninitialized binding", initializer.loc);
+                } else if (initializer.kind !== "identifier" && initializer.kind !== "member") {
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid for-of assignment target", initializer.loc);
+                }
+                const iterable = this.expression(1);
+                this.expect(")");
+                this.loops++;
+                const body = this.branch("for-body");
+                this.loops--;
+                return { kind: "for-of", loc, head: initializer, iterable, body };
+            }
             this.expect(";");
             const test = this.at(";") ? null : this.expression(0);
             this.expect(";");

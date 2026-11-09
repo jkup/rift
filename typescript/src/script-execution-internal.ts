@@ -1,4 +1,5 @@
 import { instanceofOperator } from "./builtins/function.js";
+import { getIterator, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow } from "./iterator.js";
 import type { ConstructBuiltin, BuiltinConstructor } from "./runtime.js";
 import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js";
 import type { Realm } from "./realm.js";
@@ -758,7 +759,7 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
-            case "for": throw new Error("Script for AST requires Script execution");
+            case "for": case "for-of": throw new Error("Script for AST requires Script execution");
             case "do-while": throw new Error("Script do-while AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "switch": throw new Error("Script switch AST requires Script execution");
@@ -1426,6 +1427,34 @@ class ExecutionEngine {
                 const branch = truthy(test.value) ? stmt.consequent : stmt.alternate;
                 const result: ScriptStatementCompletion = branch === null ? { type: "normal", payload: { kind: "empty" } } : this.#statement(branch);
                 return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
+            }
+            case "for-of": {
+                const iterable = this.#value(stmt.iterable);
+                if (iterable.type === "throw") { const abrupt: ThrowCompletion = iterable; return abrupt; }
+                const acquired = getIterator(iterable.value, this.context, stmt.loc);
+                if (acquired.type === "throw") return acquired;
+                const iterator = acquired.value;
+                const target: Expr = stmt.head.kind === "var"
+                    ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name } : stmt.head;
+                let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
+                while (true) {
+                    const next = iteratorStepValue(iterator, this.context, stmt.loc);
+                    if (next.type === "throw") return next;
+                    if (next.done) return { type: "normal", payload: value };
+                    const reference = this.#reference(target, null, this.#active().thisValue);
+                    const assigned = reference.type === "abrupt" ? reference.completion : this.#put(reference.reference, next.value, target.loc);
+                    if (assigned.type === "throw") return iteratorCloseOnThrow(iterator, assigned, this.context, stmt.loc);
+                    if (assigned.type !== "normal") throw new Error("invalid for-of assignment completion");
+                    const result = this.#statement(stmt.body);
+                    if (result.type === "throw") return iteratorCloseOnThrow(iterator, result, this.context, stmt.loc);
+                    if (result.type === "break" || result.type === "return") {
+                        const closed = iteratorCloseNormally(iterator, this.context, stmt.loc);
+                        if (closed.type === "throw") { const abrupt: ThrowCompletion = closed; return abrupt; }
+                        if (result.type === "return") return result;
+                        return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
+                    }
+                    if (result.payload.kind !== "empty") value = result.payload;
+                }
             }
             case "for": {
                 if (stmt.initializer !== null) {

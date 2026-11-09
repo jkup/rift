@@ -1,6 +1,6 @@
 import { toObject } from "./object-conversion.js";
-import { languageFailure, truthy, UNDEFINED, type GuestObject, type OperationContext,
-    type ThrowCompletion, type Value } from "./runtime.js";
+import { languageFailure, normal, truthy, UNDEFINED, type GuestObject, type OperationContext,
+    type ThrowCompletion, type Value, type ValueCompletion } from "./runtime.js";
 import { wellKnownIterator } from "./symbols.js";
 import type { Location } from "./syntax.js";
 
@@ -57,6 +57,20 @@ export function iteratorStepValue(record: IteratorRecord, context: OperationCont
 
 function engineStop(completion: ThrowCompletion): boolean {
     return completion.origin.kind === "resource-limit" || completion.origin.kind === "unsupported-operation";
+}
+
+export function iteratorCloseNormally(record: IteratorRecord, context: OperationContext, loc: Location): ValueCompletion {
+    const receiver: Value = { kind: "object", object: record.iterator };
+    const method = record.iterator.internalGet("return", receiver, context, loc);
+    if (method.type === "throw") return method;
+    if (method.value.kind === "undefined" || method.value.kind === "null") return normal();
+    if (method.value.kind !== "object" || method.value.object.callable === null)
+        return languageFailure(context.realm, "TypeError", "iterator return must be callable", loc);
+    const result = context.call(method.value, receiver, [], loc);
+    if (result.type === "throw") return result;
+    if (result.value.kind !== "object")
+        return languageFailure(context.realm, "TypeError", "iterator return result must be an object", loc);
+    return normal();
 }
 
 export function iteratorCloseOnThrow(record: IteratorRecord, pending: ThrowCompletion, context: OperationContext, loc: Location): ThrowCompletion {

@@ -31,6 +31,7 @@ export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Expr 
 export type Stmt =
     | VarStmt
     | ForStmt
+    | { kind: "for-of"; loc: Location; head: VarStmt | Expr; iterable: Expr; body: Stmt }
     | { kind: "empty"; loc: Location }
     | { kind: "expression"; loc: Location; expression: Expr }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }

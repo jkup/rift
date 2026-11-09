@@ -381,6 +381,12 @@ class DeclarationCollector {
                 if (node.alternate !== null) this.statement(node.alternate, scope, variableScope);
                 this.statement(node.consequent, scope, variableScope);
                 this.expression(node.test, scope, variableScope); break;
+            case "for-of":
+                this.statement(node.body, scope, variableScope);
+                this.expression(node.iterable, scope, variableScope);
+                if (node.head.kind === "var") this.statement(node.head, scope, variableScope);
+                else this.expression(node.head, scope, variableScope);
+                break;
             case "for":
                 this.statement(node.body, scope, variableScope);
                 if (node.update !== null) this.expression(node.update, scope, variableScope);
