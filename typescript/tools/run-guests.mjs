@@ -606,6 +606,7 @@ executeDriver("semicolon-insertion", { stdout: "Semicolon insertion passed\n" })
 executeDriver("inherited-strictness", { stdout: "Inherited strictness passed\n" });
 executeDriver("array-assignment-patterns", { stdout: "Array assignment patterns passed\n" });
 executeDriver("array-binding-patterns", { stdout: "Array binding patterns passed\n" });
+executeDriver("object-binding-patterns", { stdout: "Object binding patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
 executeDriver("numeric-separator-audit", { stdout: "Numeric separator audit passed\n" });
 executeDriver("numeric-separator-errors", { stdout: "Numeric separator errors passed\n" });

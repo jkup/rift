@@ -1,4 +1,4 @@
-import type { DestructuringPattern, ArrayPattern, PatternElement } from "./syntax.js";
+import type { DestructuringPattern, ArrayPattern, ObjectPattern, PatternElement } from "./syntax.js";
 import { collectNumericSeparatorAudit, type NumericSeparatorAudit } from "./script-declarations.js";
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatementContext, NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
@@ -283,7 +283,7 @@ class Parser {
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
         if (this.at("const")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: const", keyword.loc);
         if ((this.at("let") && !auditLet) || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
-        if (auditLet && this.tokens[this.index + 1]?.text === "[")
+        if (auditLet && (this.tokens[this.index + 1]?.text === "[" || this.tokens[this.index + 1]?.text === "{"))
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "pattern declarations require a block", keyword.loc);
         const result = this.statement();
         // Only a complete supported declaration in this exact Statement slot is evidence.
@@ -365,11 +365,11 @@ class Parser {
                 parameter: { name, start: token.start, end: token.end, loc: token.loc },
                 catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.tokens[this.index - 1].end });
         }
-        if (this.structuralPlan() && (this.at("let") || this.at("const") || this.at("var")) && this.tokens[this.index + 1]?.text === "[") {
+        if (this.structuralPlan() && (this.at("let") || this.at("const") || this.at("var")) && (this.tokens[this.index + 1]?.text === "[" || this.tokens[this.index + 1]?.text === "{")) {
             const declarationKind = this.take().text;
             if (declarationKind !== "let" && declarationKind !== "const" && declarationKind !== "var") throw new Error("invalid declaration kind");
             const bindings: ParsedBinding[] = [];
-            const pattern = this.arrayBindingPattern(bindings);
+            const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
             this.expect("=");
             const initializerStart = this.current().start;
             const init = this.expression(1);
@@ -557,21 +557,63 @@ class Parser {
         while (this.error === null && !this.at("]")) {
             if (this.eat(",")) { pattern.elements.push(null); continue; }
             const rest = this.eat("...");
-            let child: DestructuringPattern;
-            if (this.at("[")) child = this.arrayBindingPattern(bindings);
-            else {
-                const token = this.current();
-                const name = this.name();
-                const site = { name, start: token.start, end: token.end, loc: token.loc };
-                bindings.push({ site, init: null, initializer: null });
-                child = { kind: "binding", loc: token.loc, site };
-            }
+            const child = this.bindingPattern(bindings);
             if (rest) { pattern.rest = child; break; }
             const initializer = this.eat("=") ? this.expression(1) : null;
             pattern.elements.push({ pattern: child, initializer });
             if (!this.eat(",")) break;
         }
         this.expect("]");
+        this.depth--;
+        return pattern;
+    }
+    bindingName(bindings: ParsedBinding[]): DestructuringPattern {
+        const token = this.current();
+        const name = this.name();
+        const site = { name, start: token.start, end: token.end, loc: token.loc };
+        bindings.push({ site, init: null, initializer: null });
+        return { kind: "binding", loc: token.loc, site };
+    }
+    bindingPattern(bindings: ParsedBinding[]): DestructuringPattern {
+        if (this.at("[")) return this.arrayBindingPattern(bindings);
+        if (this.at("{")) return this.objectBindingPattern(bindings);
+        return this.bindingName(bindings);
+    }
+    objectBindingPattern(bindings: ParsedBinding[]): ObjectPattern {
+        const loc = this.current().loc;
+        const pattern: ObjectPattern = { kind: "object-pattern", loc, properties: [], rest: null };
+        if (++this.depth > 128) {
+            this.fail({ kind: "resource-limit", guardCode: "parse-depth", count: this.depth, limit: 128 }, "syntax nesting limit exceeded", loc);
+            this.depth--;
+            return pattern;
+        }
+        this.expect("{");
+        while (this.error === null && !this.at("}")) {
+            if (this.eat("...")) { pattern.rest = this.bindingName(bindings); break; }
+            const token = this.current();
+            let key: Expr;
+            let child: DestructuringPattern;
+            if (this.eat("[")) {
+                key = this.expression(1);
+                this.expect("]");
+                this.expect(":");
+                child = this.bindingPattern(bindings);
+            } else {
+                if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number")
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected property name", token.loc);
+                const name = token.kind === "number" ? String(Number(token.text.replaceAll("_", ""))) : token.text;
+                key = { kind: "literal", loc: token.loc, value: name };
+                if (this.tokens[this.index + 1]?.text === ":") {
+                    this.take();
+                    this.expect(":");
+                    child = this.bindingPattern(bindings);
+                } else child = this.bindingName(bindings);
+            }
+            const initializer = this.eat("=") ? this.expression(1) : null;
+            pattern.properties.push({ key, element: { pattern: child, initializer } });
+            if (!this.eat(",")) break;
+        }
+        this.expect("}");
         this.depth--;
         return pattern;
     }

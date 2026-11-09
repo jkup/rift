@@ -1,4 +1,4 @@
-import type { ArrayPattern, DestructuringPattern } from "./syntax.js";
+import type { ArrayPattern, ObjectPattern, DestructuringPattern } from "./syntax.js";
 import { instanceofOperator } from "./builtins/function.js";
 import { createArgumentsObject } from "./arguments-object.js";
 import { getIterator, iteratorStep, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow, type IteratorRecord } from "./iterator.js";
@@ -9,7 +9,7 @@ import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
 import type { Expr, ChainExpr, Argument, Stmt, FunctionSource, FormalParameter, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
-import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, getValue, putValue, truthy } from "./runtime.js";
+import { GuestObject, UNDEFINED, normal, type Value, type PropertyKey, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
 import type { ScriptBindingCell } from "./script-environment.js";
@@ -1834,20 +1834,12 @@ class ExecutionEngine {
         } finally { this.depth--; }
     }
     #patternElement(pattern: DestructuringPattern, initializer: Expr | null, iterator: IteratorRecord, rest: boolean, environment: ScriptEnvironment | null): ValueCompletion {
-        let reference: EngineReference | null = null;
-        if (pattern.kind === "target") {
-            const target = this.#reference(pattern.target, null, this.#active().thisValue);
-            if (target.type === "abrupt") {
-                if (target.completion.type !== "throw") throw new Error("invalid pattern reference completion");
-                return target.completion;
-            }
-            reference = target.reference;
+        const target = this.#patternReference(pattern, environment);
+        if (target !== null && target.type === "abrupt") {
+            if (target.completion.type !== "throw") throw new Error("invalid pattern reference completion");
+            return target.completion;
         }
-        if (pattern.kind === "binding" && environment === null) {
-            const target = resolveScriptBinding(this.#active().lexical, pattern.site.name, pattern.loc, this.#active().strict);
-            if (target.type === "throw") return target;
-            reference = { kind: "script", binding: target.reference };
-        }
+        const reference = target === null ? null : target.reference;
         let value: Value = UNDEFINED;
         if (rest) {
             const array = this.context.realm.createArray();
@@ -1866,12 +1858,25 @@ class ExecutionEngine {
             if (next.type === "throw") return next;
             value = next.value;
         }
+        return this.#initializePattern(pattern, initializer, value, environment, reference);
+    }
+    #patternReference(pattern: DestructuringPattern, environment: ScriptEnvironment | null): EngineReferenceResult | null {
+        if (pattern.kind === "target") return this.#reference(pattern.target, null, this.#active().thisValue);
+        if (pattern.kind === "binding" && environment === null) {
+            const target = resolveScriptBinding(this.#active().lexical, pattern.site.name, pattern.loc, this.#active().strict);
+            if (target.type === "throw") return { type: "abrupt", completion: target };
+            return { type: "reference", reference: { kind: "script", binding: target.reference } };
+        }
+        return null;
+    }
+    #initializePattern(pattern: DestructuringPattern, initializer: Expr | null, value: Value, environment: ScriptEnvironment | null, reference: EngineReference | null): ValueCompletion {
         if (value.kind === "undefined" && initializer !== null) {
             const evaluated = this.#value(initializer, pattern.kind === "target" ? pattern.inferredName : pattern.kind === "binding" ? pattern.site.name : null);
             if (evaluated.type === "throw") return evaluated;
             value = evaluated.value;
         }
         if (pattern.kind === "array-pattern") return this.#arrayPattern(pattern, value, environment);
+        if (pattern.kind === "object-pattern") return this.#objectPattern(pattern, value, environment);
         if (pattern.kind === "binding" && environment !== null) {
             return environment.kind === "global" ? environment.record.initializeBinding(pattern.site.name, value, this.context, pattern.loc)
                 : environment.initializeBinding(pattern.site.name, value, this.context, pattern.loc);
@@ -1881,6 +1886,56 @@ class ExecutionEngine {
         if (assigned.type === "throw") return assigned;
         if (assigned.type !== "normal") throw new Error("invalid pattern assignment completion");
         return normal();
+    }
+    #objectPattern(pattern: ObjectPattern, input: Value, environment: ScriptEnvironment | null): ValueCompletion {
+        if (++this.depth > 256) {
+            this.depth--;
+            return resourceFailure("evaluation-depth", 257, 256, "evaluation nesting limit exceeded", pattern.loc);
+        }
+        try {
+            const boxed = toObject(input, this.context, pattern.loc);
+            if (boxed.type === "throw") return boxed;
+            const excluded = new Set<PropertyKey>();
+            for (const property of pattern.properties) {
+                const tick = this.context.tick(property.key.loc);
+                if (tick.type === "throw") return tick;
+                const keyValue = this.#value(property.key);
+                if (keyValue.type === "throw") return keyValue;
+                const key = toPropertyKey(keyValue.value, this.context, property.key.loc);
+                if (key.type === "throw") return key;
+                excluded.add(key.value);
+                const target = this.#patternReference(property.element.pattern, environment);
+                if (target !== null && target.type === "abrupt") {
+                    if (target.completion.type !== "throw") throw new Error("invalid property binding reference");
+                    return target.completion;
+                }
+                const value = boxed.value.internalGet(key.value, input, this.context, property.key.loc);
+                if (value.type === "throw") return value;
+                const initialized = this.#initializePattern(property.element.pattern, property.element.initializer, value.value, environment, target === null ? null : target.reference);
+                if (initialized.type === "throw") return initialized;
+            }
+            if (pattern.rest === null) return normal();
+            const target = this.#patternReference(pattern.rest, environment);
+            if (target !== null && target.type === "abrupt") {
+                if (target.completion.type !== "throw") throw new Error("invalid rest binding reference");
+                return target.completion;
+            }
+            const rest = this.context.realm.createObject();
+            const receiver: Value = { kind: "object", object: boxed.value };
+            for (const key of boxed.value.ownPropertyKeys()) {
+                const tick = this.context.tick(pattern.rest.loc);
+                if (tick.type === "throw") return tick;
+                if (excluded.has(key)) continue;
+                const descriptor = boxed.value.getOwnProperty(key);
+                if (descriptor === undefined || !descriptor.enumerable) continue;
+                const value = boxed.value.internalGet(key, receiver, this.context, pattern.rest.loc);
+                if (value.type === "throw") return value;
+                const defined = rest.defineOwnProperty(key, { value: value.value, writable: true, enumerable: true, configurable: true }, this.context, pattern.rest.loc);
+                if (defined.type === "throw") return defined;
+                if (!defined.value) throw new Error("fresh rest object invariant");
+            }
+            return this.#initializePattern(pattern.rest, null, { kind: "object", object: rest }, environment, target === null ? null : target.reference);
+        } finally { this.depth--; }
     }
     #value(expr: Expr, name: string | null = null): ValueCompletion {
         const result = this.#eval(expr, null, this.#active().thisValue, false, name);
@@ -2048,7 +2103,7 @@ class ExecutionEngine {
             case "pattern-declaration": {
                 const input = this.#value(stmt.init);
                 if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
-                const initialized = this.#arrayPattern(stmt.pattern, input.value, stmt.declarationKind === "var" ? null : this.#active().lexical);
+                const initialized = this.#initializePattern(stmt.pattern, null, input.value, stmt.declarationKind === "var" ? null : this.#active().lexical, null);
                 if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
                 return { type: "normal", payload: { kind: "empty" } };
             }

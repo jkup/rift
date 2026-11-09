@@ -861,6 +861,13 @@ for(const source of [
     '"use strict";let o={__proto__:null};','"use strict";++x;','"use strict";1,2;'
 ]) {
     const r=fresh(),s=createScriptSession();const prepared=prepareStrictScript({id:"negative",text:source},r);
+    if (source === '"use strict";let {x}=o;') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "object binding prepares without execution");
+        run('"use strict";var o={x:7};',r,s);
+        check(run(source,r,s).type === "normal", "original object binding source executes");
+        scalar(run('"use strict";x;',r,s),7);
+        continue;
+    }
     if (source === '"use strict";function f(){eval("1");}') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "eval prepares without execution");
         scalar(run(source+'f();eval("1");',r,s),1);

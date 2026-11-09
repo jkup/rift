@@ -489,6 +489,15 @@ class DeclarationCollector {
             return;
         }
         if (pattern.rest !== null) this.pattern(pattern.rest, scope, variableScope);
+        if (pattern.kind === "object-pattern") {
+            for (let i = pattern.properties.length - 1; i >= 0; i--) {
+                const property = pattern.properties[i];
+                if (property.element.initializer !== null) this.expression(property.element.initializer, scope, variableScope);
+                this.pattern(property.element.pattern, scope, variableScope);
+                this.expression(property.key, scope, variableScope);
+            }
+            return;
+        }
         for (let i = pattern.elements.length - 1; i >= 0; i--) {
             const element = pattern.elements[i];
             if (element === null) continue;

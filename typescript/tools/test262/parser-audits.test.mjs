@@ -220,6 +220,11 @@ for (const [driver, directory, count, variants] of [
     arrayBinding.expected = {kind: 'blocked', reason: 'grammar-or-resource',
       diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'pattern declarations require a block', loc: {line: 1, column: 11}},
       rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'}};
+    const objectBinding = rows.find(row => row.id === 'excluded-let-object');
+    assert.equal(objectBinding.text, 'while(false) let {x}=a;');
+    objectBinding.expected = {kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'pattern declarations require a block', loc: {line: 1, column: 14}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'}};
     const implicit = rows.find(row => row.id === 'excluded-missing-semicolon');
     assert.equal(implicit.text, 'if(false) let x');
     implicit.expected = {kind: 'eligible', sourceUnits: 15, consumedUnits: 15, candidates: [{

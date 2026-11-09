@@ -26,6 +26,7 @@ const entries = [
     ["test/iterator-step.ts", "iterator-step"],
     ["test/array-assignment-patterns.ts", "array-assignment-patterns"],
     ["test/array-binding-patterns.ts", "array-binding-patterns"],
+    ["test/object-binding-patterns.ts", "object-binding-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
     ["test/object-from-entries.ts", "object-from-entries"],
     ["test/keyed-collection.ts", "keyed-collection"],
