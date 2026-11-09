@@ -431,6 +431,22 @@ class DeclarationCollector {
                 this.statement(node.consequent, scope, variableScope);
                 this.expression(node.test, scope, variableScope); break;
             case "for-of": case "for-in": {
+                if (node.head.kind === "pattern") {
+                    const lexical = node.head.declarationKind !== "var";
+                    const id = lexical ? this.scope(node.kind, scope, node.start, node.end, this.scopes[scope].strict, []) : scope;
+                    for (const site of node.head.sites) {
+                        const declaration = this.declare(node.head.declarationKind, { site, init: null, initializer: null }, id, variableScope, null);
+                        if (this.nodes !== null) this.nodes.declarations.set(declaration, { node, initializer: null });
+                    }
+                    if (lexical) {
+                        if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: [node.body] });
+                        this.work.push({ kind: "block-end", scope: id });
+                    }
+                    this.statement(node.body, id, variableScope);
+                    this.expression(node.iterable, id, variableScope);
+                    this.pattern(node.head.pattern, id, variableScope);
+                    break;
+                }
                 if (node.head.kind === "lexical") {
                     const id = this.scope(node.kind, scope, node.start, node.end, this.scopes[scope].strict, []);
                     const declaration = this.declare(node.head.declarationKind,

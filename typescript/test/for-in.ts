@@ -58,7 +58,8 @@ for (const prefix of ["", "'use strict';"]) {
     const empty=run(prefix+'7;for(var k in null){}');check(empty.type === 'normal' && empty.value.kind === 'undefined','empty completion');
 }
 for(const text of ['for(var k=1 in {}){}','for(let k=1 in {}){}','for(const k=1 in {}){}','for(var k,j in {}){}','for(let [k] in {}){}','for(1 in {}){}','for(let k in {})let x;'])
-    check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
+    if(text === 'for(let [k] in {}){}') passes(text+"typeof k==='undefined';");
+    else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
 const owner=fresh(),caller=fresh();
 const fn=run("var f;for(const k in {a:1})f=function(){k=1;};f;",owner);
 check(fn.type === 'normal','foreign closure');if(fn.type === 'normal')caller.defineScriptGlobal('f',{value:fn.value});

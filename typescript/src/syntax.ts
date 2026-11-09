@@ -47,7 +47,8 @@ export type ForLexicalStmt = { kind: "for-lexical"; loc: Location; start: number
     binding: { site: DeclarationSite; init: Expr | null; initializer: { start: number; end: number } | null };
     test: Expr | null; update: Expr | null; body: Stmt };
 export type ForLexicalBinding = { kind: "lexical"; declarationKind: "let" | "const"; site: DeclarationSite };
-export type ForEachStmt = { kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding; iterable: Expr; body: Stmt };
+export type ForPatternBinding = { kind: "pattern"; declarationKind: "let" | "const" | "var"; pattern: ArrayPattern | ObjectPattern; sites: DeclarationSite[] };
+export type ForEachStmt = { kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding | ForPatternBinding; iterable: Expr; body: Stmt };
 export type Stmt =
     | VarStmt
     | { kind: "pattern-declaration"; loc: Location; declarationKind: "let" | "const" | "var"; pattern: ArrayPattern | ObjectPattern; init: Expr }

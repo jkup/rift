@@ -417,6 +417,15 @@ class Parser {
         }
         if (this.structuralPlan() && this.eat("for")) {
             this.expect("(");
+            if ((this.at("let") || this.at("const") || this.at("var")) && (this.tokens[this.index + 1]?.text === "[" || this.tokens[this.index + 1]?.text === "{")) {
+                const declarationKind = this.take().text;
+                if (declarationKind !== "let" && declarationKind !== "const" && declarationKind !== "var") throw new Error("invalid loop declaration kind");
+                const bindings: ParsedBinding[] = [];
+                const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
+                if (!this.at("of") && !this.at("in")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "pattern loop requires in or of", this.current().loc);
+                const kind = this.take().text === "in" ? "for-in" : "for-of";
+                return this.forEach(kind, loc, start, { kind: "pattern", declarationKind, pattern, sites: bindings.map(binding => binding.site) });
+            }
             if ((this.at("let") || this.at("const")) && this.tokens[this.index + 2]?.kind === "word" && (this.tokens[this.index + 2]?.text === "of" || this.tokens[this.index + 2]?.text === "in")) {
                 const declarationKind = this.take().text === "let" ? "let" : "const";
                 const token = this.current();
