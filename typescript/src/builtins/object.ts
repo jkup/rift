@@ -1,6 +1,7 @@
 import type { Realm } from "../realm.js";
 import { GuestArguments } from "../arguments-object.js";
 import { toObject } from "../object-conversion.js";
+import { invoke } from "../invoke.js";
 import { GuestError, normal, UNDEFINED, type Value } from "../runtime.js";
 import { toPropertyKey } from "../conversion.js";
 import { registerObjectEnumeration } from "./object-enumeration.js";
@@ -60,6 +61,8 @@ export function registerObject(realm: Realm): void {
         return normal({kind: "boolean", value: descriptor !== undefined && descriptor.enumerable});
     });
     registerObjectPrototypes(realm, constructor);
+    realm.registerBuiltin(realm.objectPrototype, "toLocaleString", 0, (receiver, _args, context, loc) =>
+        invoke(receiver, "toString", [], context, loc));
     registerObjectFromEntries(realm, constructor);
     registerGroupBy(realm, constructor, "property");
     realm.defineScriptGlobal("Object", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });

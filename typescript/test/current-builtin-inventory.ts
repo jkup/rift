@@ -48,7 +48,7 @@ export function prototypeMethodLength(name: string, numberPrototype: boolean): n
         "findLast", "findLastIndex", "every", "some", "charAt", "charCodeAt", "codePointAt", "startsWith", "endsWith",
     ].includes(name)) return 1;
     if ([
-        "valueOf", "pop", "shift", "reverse", "toReversed", "flat", "trim",
+        "valueOf", "toLocaleString", "pop", "shift", "reverse", "toReversed", "flat", "trim",
         "trimStart", "trimEnd", "toLowerCase", "toUpperCase", "keys", "values", "entries",
         "big", "blink", "bold", "fixed", "italics", "small", "strike", "sub", "sup", "isWellFormed", "toWellFormed",
     ].includes(name)) return 0;

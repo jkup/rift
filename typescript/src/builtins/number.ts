@@ -127,6 +127,11 @@ export function registerNumberConversions(realm: Realm): void {
 }
 
 function registerNumberFormatting(realm: Realm): void {
+    realm.registerBuiltin(realm.numberPrototype, "toLocaleString", 0, (receiver, _args, context, loc): ValueCompletion => {
+        const extracted = thisNumberValue(receiver, loc, context.realm);
+        if (extracted.type === "throw") return extracted;
+        return normal({ kind: "string", value: numberToString(extracted.value) });
+    });
     for (const name of ["toFixed", "toExponential", "toPrecision"]) {
         realm.registerBuiltin(realm.numberPrototype, name, 1, (receiver, args, context, loc): ValueCompletion => {
             const extracted = thisNumberValue(receiver, loc, context.realm);

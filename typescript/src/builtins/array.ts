@@ -1,5 +1,6 @@
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
+import { invoke } from "../invoke.js";
 import { lengthOfArrayLike } from "../array-like.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString, numberToString, type StringCompletion } from "../conversion.js";
@@ -52,6 +53,29 @@ function toElementString(value: Value, context: OperationContext, loc: Location)
     return toString(primitive.value, loc, context.realm);
 }
 
+function joinIndexedProperties(object: GuestObject, length: number, separator: string, methodName: string | null,
+    context: OperationContext, loc: Location): ValueCompletion {
+    let text = "";
+    for (let k = 0; k < length; k++) {
+        const iteration = context.tick(loc);
+        if (iteration.type === "throw") return iteration;
+        if (k > 0) text = stringConcat(text, separator);
+        const element = object.internalGet(numberToString(k), { kind: "object", object }, context, loc);
+        if (element.type === "throw") return element;
+        if (element.value.kind === "null" || element.value.kind === "undefined") continue;
+        let value: Value = element.value;
+        if (methodName !== null) {
+            const called = invoke(value, methodName, [], context, loc);
+            if (called.type === "throw") return called;
+            value = called.value;
+        }
+        const converted = toElementString(value, context, loc);
+        if (converted.type === "throw") return converted;
+        text = stringConcat(text, converted.value);
+    }
+    return normal({ kind: "string", value: text });
+}
+
 export function registerArrayConversions(realm: Realm, objectToString: Value): void {
     realm.registerBuiltin(realm.arrayPrototype, "join", 1, (receiver, args, context, loc) => {
         const boxed = toObject(receiver, context, loc);
@@ -67,20 +91,16 @@ export function registerArrayConversions(realm: Realm, objectToString: Value): v
             if (converted.type === "throw") return converted;
             separatorText = converted.value;
         }
-        let text = "";
-        for (let k = 0; k < length.value; k++) {
-            const iteration = context.tick(loc);
-            if (iteration.type === "throw") return iteration;
-            if (k > 0) text = stringConcat(text, separatorText);
-            const element = boxed.value.internalGet(numberToString(k), { kind: "object", object: boxed.value }, context, loc);
-            if (element.type === "throw") return element;
-            if (element.value.kind !== "null" && element.value.kind !== "undefined") {
-                const converted = toElementString(element.value, context, loc);
-                if (converted.type === "throw") return converted;
-                text = stringConcat(text, converted.value);
-            }
-        }
-        return normal({ kind: "string", value: text });
+        return joinIndexedProperties(boxed.value, length.value, separatorText, null, context, loc);
+    });
+    if (realm.profile === "script") realm.registerBuiltin(realm.arrayPrototype, "toLocaleString", 0, (receiver, _args, context, loc) => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        return joinIndexedProperties(boxed.value, length.value, ",", "toLocaleString", context, loc);
     });
     realm.registerBuiltin(realm.arrayPrototype, "toString", 0, (receiver, _args, context, loc) => {
         const boxed = toObject(receiver, context, loc);
