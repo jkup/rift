@@ -6,6 +6,7 @@ import type { Diagnostic, Location, Stmt, FunctionSource } from "./syntax.js";
 import type { GuestString } from "./strings.js";
 import type { Realm } from "./realm.js";
 import type { ScriptGuestCallable } from "./script-record.js";
+import type { EvalCallable } from "./script-execution-internal.js";
 import { arrayIndex } from "./property-keys.js";
 
 export type Value =
@@ -112,6 +113,7 @@ export type BoundCallable = { readonly kind: "bound"; readonly realm: Realm;
     readonly target: GuestObject; readonly receiver: Value; readonly args: Value[] };
 export type Callable =
     | ScriptGuestCallable
+    | EvalCallable
     | BoundCallable
     | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment; readonly source: FunctionSource | null }
     | { readonly kind: "builtin"; readonly realm: Realm; readonly invoke: Builtin; readonly initialName: string | null };

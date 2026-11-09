@@ -42,7 +42,7 @@ import type { ExecutableScript } from "./script-record.js";
 // Keep the factory's module reachable without exporting its private classes;
 // Callable still imports ScriptGuestCallable as a type only. No setup runs here.
 // Reduced before/after evidence: docs/validation/ts-033e3a/reachability-*.ts.
-import { consumeScriptBuiltinPermit, consumeScriptConstructorPermit } from "./script-execution-internal.js";
+import { consumeScriptBuiltinPermit, consumeScriptConstructorPermit, createEvalIntrinsic } from "./script-execution-internal.js";
 import type { ScriptEnvironment } from "./script-environment.js";
 import type { OperationContext } from "./runtime.js";
 
@@ -66,6 +66,7 @@ export class Realm {
     readonly arrayConstructor: GuestObject | null = null;
     readonly arrayValues: Value = UNDEFINED;
     readonly restrictedFunctionThrower: Value = UNDEFINED;
+    readonly evalIntrinsic: GuestObject | null = null;
     readonly booleanPrototype: GuestBoolean;
     readonly numberPrototype: GuestNumber;
     readonly symbolPrototype: GuestObject;
@@ -146,7 +147,11 @@ export class Realm {
             return normal();
         });
         this.installGlobal("console", { kind: "object", object: consoleObject }, true);
-        if (profile === "script") registerFunctionConstructor(this);
+        if (profile === "script") {
+            registerFunctionConstructor(this);
+            this.evalIntrinsic = createEvalIntrinsic(this);
+            this.defineScriptGlobal("eval", { value: { kind: "object", object: this.evalIntrinsic }, writable: true, enumerable: false, configurable: true });
+        }
         registerNumber(this);
         if (profile === "script") {
             const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError"];

@@ -30,6 +30,7 @@ export function functionSourceString(callable: Callable): string {
         }
         case "builtin": return nativeFunctionString(callable.initialName);
         case "bound": return nativeFunctionString(null);
+        case "eval": return nativeFunctionString("eval");
         case "script-guest": return callable.sourceText();
     }
 }

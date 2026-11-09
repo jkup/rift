@@ -261,7 +261,7 @@ function copySite(site: DeclarationSite): DeclarationSite {
 
 class DeclarationCollector {
     readonly arrowScopes = new Set<number>();
-    readonly argumentsAssignments: { scope: number; loc: Location }[] = [];
+    readonly restrictedAssignments: { name: string; scope: number; loc: Location }[] = [];
     readonly scopes: MutableScope[] = [];
     readonly declarations: Declaration[] = [];
     readonly functions: PlannedFunction[] = [];
@@ -441,8 +441,8 @@ class DeclarationCollector {
     }
     visitExpression(node: Expr, scope: number, variableScope: number): void {
         if ((node.kind === "assign" || node.kind === "compound" || node.kind === "update") &&
-            node.target.kind === "identifier" && node.target.name === "arguments")
-            this.argumentsAssignments.push({ scope, loc: node.target.loc });
+            node.target.kind === "identifier" && (node.target.name === "arguments" || node.target.name === "eval"))
+            this.restrictedAssignments.push({ name: node.target.name, scope, loc: node.target.loc });
         switch (node.kind) {
             case "function": this.functionBody(node.source, node.loc, node.body, scope, null, node); break;
             case "array":
@@ -478,7 +478,7 @@ class DeclarationCollector {
                 }
                 this.expression(node.callee, scope, variableScope); break;
             case "identifier": {
-                if (node.name !== "arguments" || this.nodes === null || this.nodes.argumentsScopes === undefined) break;
+                if ((node.name !== "arguments" && node.name !== "eval") || this.nodes === null || this.nodes.argumentsScopes === undefined) break;
                 let current: number | null = scope;
                 while (current !== null) {
                     const parent: MutableScope = this.scopes[current];
@@ -548,10 +548,10 @@ class DeclarationCollector {
         }
     }
     project(): DeclarationPlanResult {
-        const restricted = this.restrictedArguments();
+        const restricted = this.restrictedBinding();
         if (restricted !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
-            diagnostic: { phase: "parse", name: "SyntaxError", message: "arguments binding or assignment in strict code", loc: restricted } };
+            diagnostic: { phase: "parse", name: "SyntaxError", message: restricted.name + " binding or assignment in strict code", loc: restricted.loc } };
         // Preserve the ordinary first-failure projection, including interleaved
         // catch/conflict checks. The audit below has a separate global veto.
         // No conflicts are reported until all grammar/resource checks and every
@@ -618,17 +618,17 @@ class DeclarationCollector {
         }
         return result;
     }
-    private restrictedArguments(): Location | null {
-        for (const site of this.argumentsAssignments) if (this.scopes[site.scope].strict) return site.loc;
+    private restrictedBinding(): { name: string; loc: Location } | null {
+        for (const site of this.restrictedAssignments) if (this.scopes[site.scope].strict) return site;
         for (const scope of this.scopes) {
             if (!scope.strict) continue;
-            for (const formal of scope.formals) if (formal.name === "arguments") return formal.loc;
-            if (scope.catchParameter !== null && scope.catchParameter.name === "arguments") return scope.catchParameter.loc;
+            for (const formal of scope.formals) if (formal.name === "arguments" || formal.name === "eval") return formal;
+            if (scope.catchParameter !== null && (scope.catchParameter.name === "arguments" || scope.catchParameter.name === "eval")) return scope.catchParameter;
         }
         for (const declaration of this.declarations) {
-            if (declaration.site.name !== "arguments") continue;
+            if (declaration.site.name !== "arguments" && declaration.site.name !== "eval") continue;
             if (this.scopes[declaration.scope].strict ||
-                (declaration.functionScope !== null && this.scopes[declaration.functionScope].strict)) return declaration.site.loc;
+                (declaration.functionScope !== null && this.scopes[declaration.functionScope].strict)) return declaration.site;
         }
         return null;
     }

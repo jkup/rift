@@ -10,7 +10,7 @@ const capabilities = new Set(['lex.indeterminate-comment','lex.leading-zero','le
   'parse.expected-token','parse.binding-identifier','parse.duplicate-binding','parse.declaration-statement',
   'parse.return-context','parse.line-terminator','parse.throw-expression','parse.loop-context','parse.duplicate-parameter',
   'parse.property-name','parse.assignment-target','parse.delete-identifier','parse.array-spread','parse.object-key',
-  'parse.prototype-literal','parse.unexpected','runtime.object-to-number','runtime.object-to-string','runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species','runtime.flat-species','runtime.flatmap-species','runtime.dynamic-function-source']);
+  'parse.prototype-literal','parse.unexpected','runtime.object-to-number','runtime.object-to-string','runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species','runtime.flat-species','runtime.flatmap-species','runtime.dynamic-function-source','runtime.eval-source']);
 function strictObservation(o) {
   if (!o || typeof o !== 'object') return false;
   const fields = { normal: [], throw: ['phase','valueKind','constructor'], 'syntax-error': ['phase','constructorName','ruleCode'], 'unsupported-syntax': ['capabilityCode'],

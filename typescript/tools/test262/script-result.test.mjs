@@ -141,7 +141,7 @@ test('syntax allowlist and runtime domain remain disjoint at both boundaries',()
    assert.doesNotThrow(()=>childParse(Buffer.from(JSON.stringify(c)),r.binding));
    const v=envelope(c,r);v.classification.reasonCode=capabilityCode;assert.doesNotThrow(()=>parse(v,r.binding));
   }
-  for(const capabilityCode of ['runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species','runtime.flat-species','runtime.flatmap-species','runtime.dynamic-function-source','runtime.object-to-number','runtime.object-to-string','script.unknown','']) {
+  for(const capabilityCode of ['runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species','runtime.flat-species','runtime.flatmap-species','runtime.dynamic-function-source','runtime.eval-source','runtime.object-to-number','runtime.object-to-string','script.unknown','']) {
    const c=copy(r.child);c.result.capabilityCode=capabilityCode;
    assert.throws(()=>childParse(Buffer.from(JSON.stringify(c)),r.binding));assert.throws(()=>parse(envelope(c,r),r.binding));
   }

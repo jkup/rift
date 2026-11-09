@@ -2,7 +2,7 @@ import { instanceofOperator } from "./builtins/function.js";
 import { createArgumentsObject } from "./arguments-object.js";
 import { getIterator, iteratorStepValue, iteratorCloseNormally, iteratorCloseOnThrow, type IteratorRecord } from "./iterator.js";
 import { ForInEnumerator } from "./for-in.js";
-import type { ConstructBuiltin, BuiltinConstructor, BoundCallable } from "./runtime.js";
+import type { ConstructBuiltin, BuiltinConstructor, BoundCallable, InternalBooleanCompletion } from "./runtime.js";
 import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js";
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
@@ -15,6 +15,24 @@ import type { ScriptBindingCell } from "./script-environment.js";
 import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
 
 class ActivationKey {}
+export type { EvalCallable };
+class EvalCallable {
+    readonly kind = "eval";
+    #realm: Realm;
+    private constructor(realm: Realm) { this.#realm = realm; }
+    static create(realm: Realm): EvalCallable { return new EvalCallable(realm); }
+    static check(callable: EvalCallable): void {
+        if (!(callable instanceof EvalCallable)) throw new Error("invalid eval callable brand");
+    }
+    get realm(): Realm { return this.#realm; }
+}
+export function createEvalIntrinsic(realm: Realm): GuestObject {
+    if (realm.profile !== "script") throw new Error("Script Realm required");
+    const object = new GuestObject(realm.functionPrototype, false, EvalCallable.create(realm));
+    object.bootstrapDefine("name", { value: { kind: "string", value: "eval" }, writable: false, enumerable: false, configurable: true });
+    object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, writable: false, enumerable: false, configurable: true });
+    return object;
+}
 function hasParameterInitializers(parameters: readonly FormalParameter[] | undefined): boolean {
     if (parameters === undefined) return false;
     for (const parameter of parameters) if (parameter.initializer !== null) return true;
@@ -154,10 +172,10 @@ class ExecutableScript {
     #activationKey = new ActivationKey();
     #completedMaterializations = 0;
     private constructor() {}
-    static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean): ScriptPreparation {
+    static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean, inheritedStrict = false): ScriptPreparation {
         if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
         const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map(), argumentsScopes: new Set() };
-        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes) : parseDeclarationPlan(unit, nodes);
+        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes, inheritedStrict) : parseDeclarationPlan(unit, nodes);
         if (plan.kind !== "complete") return plan;
         if (!bounded && !plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
         // Associations were assigned in the collector's original iterative walk.
@@ -725,6 +743,126 @@ class ExecutableScript {
             return this.materializeFunction(fn.scope, { kind: "global", record: environment }, null, context);
         };
     }
+    static instantiateEval(record: ExecutableScript, lexical: ScriptDeclarativeEnvironment, variable: ScriptEnvironment,
+        context: OperationContext, enabledLegacyFunctions: Set<number>, key: ExecutionKey): ValueCompletion {
+        const state = ExecutableScript.state(record, key), plan = state.plan, root = plan.scopes[0];
+        record.#validateEnvironment(lexical, context);
+        record.#validateEnvironment(variable, context);
+        for (const id of root.varDeclarations) {
+            const site = plan.declarations[id].site;
+            const conflict = record.#evalBindingConflict(lexical, variable, site, context, true);
+            if (conflict.type === "throw") return conflict;
+            if (conflict.value) return languageFailure(context.realm, "SyntaxError", "eval declaration conflicts with lexical binding: " + site.name, site.loc);
+        }
+        const selected = new Set<string>(), functions: Declaration[] = [];
+        for (let i = root.varDeclarations.length - 1; i >= 0; i--) {
+            const declaration = plan.declarations[root.varDeclarations[i]], site = declaration.site;
+            const tick = context.tick(site.loc);
+            if (tick.type === "throw") return tick;
+            if (declaration.kind !== "function" || selected.has(site.name)) continue;
+            if (variable.kind === "global") {
+                const allowed = variable.record.canDeclareGlobalFunction(site.name);
+                if (allowed.type === "throw") return allowed;
+                if (!allowed.value) return languageFailure(context.realm, "TypeError", "cannot declare eval function: " + site.name, site.loc);
+            }
+            selected.add(site.name);
+            functions.push(declaration);
+        }
+        functions.reverse();
+        const variables = new Map<string, DeclarationSite>();
+        for (const id of root.varDeclarations) {
+            const declaration = plan.declarations[id], site = declaration.site;
+            const tick = context.tick(site.loc);
+            if (tick.type === "throw") return tick;
+            if (declaration.kind !== "var" || selected.has(site.name)) continue;
+            if (variable.kind === "global") {
+                const allowed = variable.record.canDeclareGlobalVar(site.name);
+                if (allowed.type === "throw") return allowed;
+                if (!allowed.value) return languageFailure(context.realm, "TypeError", "cannot declare eval var: " + site.name, site.loc);
+            }
+            if (!variables.has(site.name)) variables.set(site.name, site);
+        }
+        if (plan.legacyBlockFunctions !== undefined) for (const id of plan.legacyBlockFunctions) {
+            const declaration = plan.declarations[id], site = declaration.site;
+            if (declaration.variableScope !== 0) continue;
+            const conflict = record.#evalBindingConflict(lexical, variable, site, context, false);
+            if (conflict.type === "throw") return conflict;
+            if (conflict.value) continue;
+            if (variable.kind === "global") {
+                const allowed = variable.record.canDeclareGlobalVar(site.name);
+                if (allowed.type === "throw") return allowed;
+                if (!allowed.value) continue;
+            }
+            if (!selected.has(site.name) && !variables.has(site.name)) {
+                const created = record.#createEvalVar(variable, site, context);
+                if (created.type === "throw") return created;
+                selected.add(site.name);
+            }
+            enabledLegacyFunctions.add(id);
+        }
+        for (const id of root.lexicalDeclarations) {
+            const declaration = plan.declarations[id], site = declaration.site;
+            const tick = context.tick(site.loc);
+            if (tick.type === "throw") return tick;
+            const created = declaration.kind === "const" ? lexical.createImmutableBinding(site.name, site.loc)
+                : lexical.createMutableBinding(site.name, site.loc);
+            if (created.type === "throw") return created;
+        }
+        for (const declaration of functions) {
+            if (declaration.functionScope === null) throw new Error("eval function scope missing");
+            const site = declaration.site;
+            const value = record.materializeFunction(declaration.functionScope, lexical, null, context);
+            if (value.type === "throw") return value;
+            if (variable.kind === "global") {
+                const created = variable.record.createGlobalFunctionBinding(site.name, value.value, context, site.loc, true);
+                if (created.type === "throw") return created;
+            } else {
+                const present = variable.hasBinding(site.name, site.loc);
+                if (present.type === "throw") return present;
+                if (present.value) {
+                    const assigned = variable.setMutableBinding(site.name, value.value, context, site.loc, false);
+                    if (assigned.type === "throw") return assigned;
+                } else {
+                    const created = variable.createMutableBinding(site.name, site.loc, true);
+                    if (created.type === "throw") return created;
+                    const initialized = variable.initializeBinding(site.name, value.value, context, site.loc);
+                    if (initialized.type === "throw") return initialized;
+                }
+            }
+        }
+        for (const site of variables.values()) {
+            const created = record.#createEvalVar(variable, site, context);
+            if (created.type === "throw") return created;
+        }
+        return normal();
+    }
+    #evalBindingConflict(lexical: ScriptEnvironment, variable: ScriptEnvironment, site: DeclarationSite,
+        context: OperationContext, skipCatch: boolean): InternalBooleanCompletion {
+        if (variable.kind === "global" && variable.record.hasLexicalDeclaration(site.name)) return { type: "normal", value: true };
+        let current = lexical;
+        while (current !== variable) {
+            const tick = context.tick(site.loc);
+            if (tick.type === "throw") return tick;
+            if (current.kind === "global") throw new Error("eval variable environment is not an ancestor");
+            if (!skipCatch || !(current instanceof CatchActivation)) {
+                const present = current.hasBinding(site.name, site.loc);
+                if (present.type === "throw" || present.value) return present;
+            }
+            current = current.outer;
+        }
+        return { type: "normal", value: false };
+    }
+    #createEvalVar(variable: ScriptEnvironment, site: DeclarationSite, context: OperationContext): ValueCompletion {
+        const tick = context.tick(site.loc);
+        if (tick.type === "throw") return tick;
+        if (variable.kind === "global") return variable.record.createGlobalVarBinding(site.name, context, site.loc, true);
+        const present = variable.hasBinding(site.name, site.loc);
+        if (present.type === "throw") return present;
+        if (present.value) return normal();
+        const created = variable.createMutableBinding(site.name, site.loc, true);
+        if (created.type === "throw") return created;
+        return variable.initializeBinding(site.name, UNDEFINED, context, site.loc);
+    }
     instantiateGlobals(environment: GlobalEnvironment, context: OperationContext, enabledLegacyFunctions: Set<number> | null = null): ValueCompletion {
         const materialize = this.createGlobalMaterializer(environment, context);
         return instantiateBoundedGlobalDeclarations(this.#readState().plan, environment, context, materialize, enabledLegacyFunctions);
@@ -1270,6 +1408,9 @@ class ExecutionEngine {
                 if (callee.type !== "normal") return callee;
                 const args = this.#arguments(expr.args, env, receiver);
                 if (args.type === "throw") return args;
+                if (this.#script && expr.callee.kind === "identifier" && expr.callee.name === "eval" &&
+                    callee.value.kind === "object" && callee.value.object === this.#active().realm.evalIntrinsic)
+                    return this.#callScript(callee.value, UNDEFINED, args.values, expr.loc, true);
                 return this.call(callee.value, this.#callReceiver(result), args.values, expr.loc);
             }
             case "unary": {
@@ -1332,7 +1473,7 @@ class ExecutionEngine {
         if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
         if (this.#script) return this.#callScript(callee, receiver, args, loc);
         if (this.context.realm.profile !== "legacy") throw new Error("Script execution unavailable");
-        if (fn.kind === "script-guest" || fn.kind === "bound") throw new Error("Script execution unavailable");
+        if (fn.kind === "script-guest" || fn.kind === "bound" || fn.kind === "eval") throw new Error("Script execution unavailable");
         if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
         const callerRealm = this.activeContext.realm;
         this.calls++;
@@ -1729,13 +1870,13 @@ class ExecutionEngine {
             const present = variable.hasBinding(name, stmt.loc);
             if (present.type === "throw") return present;
             if (!present.value) {
-                const created = variable.createMutableBinding(name, stmt.loc);
+                const created = variable.createMutableBinding(name, stmt.loc, declaration.variableScope === 0);
                 if (created.type === "throw") return created;
                 return variable.initializeBinding(name, value.value, this.context, stmt.loc);
             }
         }
         return variable.kind === "global" ? variable.record.setMutableBinding(name, value.value, this.context, stmt.loc, false)
-            : variable.setMutableBinding(name, value.value, this.context, stmt.loc);
+            : variable.setMutableBinding(name, value.value, this.context, stmt.loc, false);
     }
     #continueTarget(target: string | undefined, labels: readonly string[] | null): boolean {
         return target === undefined || (labels !== null && labels.includes(target));
@@ -2075,7 +2216,7 @@ class ExecutionEngine {
             const setup = source.hasInitializers || source.needsArguments
                 ? ExecutableScript.instantiateFunctionForExecution(record, created.environment, args, this.context, {
                     callee,
-                    enter: (environment: ScriptEnvironment): void => { this.#frame = { ...this.#active(), lexical: environment }; },
+                    enter: (environment: ScriptEnvironment): void => { this.#frame = { ...this.#active(), lexical: environment, variable: environment }; },
                     evaluate: (initializer: Expr, name: string): ValueCompletion => this.#value(initializer, name),
                 }, executionKey)
                 : record.instantiateFunction(created.environment, args, this.context);
@@ -2091,7 +2232,47 @@ class ExecutionEngine {
             this.#inspectionSource = savedInspectionSource;
         }
     }
-    #callScript(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
+    #performEval(input: Value, direct: boolean, loc: Location): ValueCompletion {
+        if (input.kind !== "string") return normal(input);
+        if (input.value.length > 100000) return resourceFailure("source-units", input.value.length, 100000, "eval source exceeds 100000 UTF-16 units", loc);
+        for (let i = 0; i < input.value.length; i++) {
+            const tick = this.tick(loc);
+            if (tick.type === "throw") return tick;
+        }
+        const saved = this.#active(), realm = this.context.realm;
+        const prepared = ExecutableScript.prepare({ id: "<eval>", text: input.value }, realm, true, direct && saved.strict);
+        if (prepared.kind === "profile-rejected") throw new Error("invalid eval Realm");
+        if (prepared.kind === "conflict") return languageFailure(realm, "SyntaxError", prepared.diagnostic.message, loc);
+        if (prepared.kind === "blocked") {
+            const rejection = prepared.rejection;
+            if (rejection.kind === "resource-limit") return resourceFailure(rejection.guardCode, rejection.count, rejection.limit, prepared.diagnostic.message, loc);
+            if (rejection.kind === "syntax-error") return languageFailure(realm, "SyntaxError", prepared.diagnostic.message, loc);
+            return unsupportedFailure("runtime.eval-source", "SyntaxError", prepared.diagnostic.message, loc);
+        }
+        const record = prepared.record, state = ExecutableScript.state(record, executionKey);
+        const global: ScriptEnvironment = { kind: "global", record: realm.globalEnvironment };
+        const lexical = new ScriptDeclarativeEnvironment(direct ? saved.lexical : global);
+        const variable = state.plan.strictness.strict ? lexical : direct ? saved.variable : global;
+        const savedLegacy = this.#legacyGlobalFunctions, savedInspection = this.#inspectionSource;
+        this.#legacyGlobalFunctions = new Set();
+        this.#inspectionSource = null;
+        this.#frame = { realm, record, scopeId: 0, lexical, variable, strict: state.plan.strictness.strict,
+            thisValue: direct ? saved.thisValue : realm.globalThisValue, function: null, privateEnvironment: null, phase: "instantiation" };
+        try {
+            const setup = ExecutableScript.instantiateEval(record, lexical, variable, this.context, this.#legacyGlobalFunctions, executionKey);
+            if (setup.type === "throw") { this.#capture(setup); return setup; }
+            this.#frame = { ...this.#active(), phase: "body" };
+            const result = this.#list(ExecutableScript.readRoot(record, executionKey));
+            if (result.type === "throw") { this.#capture(result); return result; }
+            if (result.type !== "normal") throw new Error("invalid eval root completion");
+            return normal(result.payload.kind === "empty" ? UNDEFINED : result.payload.value);
+        } finally {
+            this.#frame = saved;
+            this.#legacyGlobalFunctions = savedLegacy;
+            this.#inspectionSource = savedInspection;
+        }
+    }
+    #callScript(callee: Value, receiver: Value, args: Value[], loc: Location, directEval = false): ValueCompletion {
         const saved = this.#active();
         if (callee.kind !== "object" || callee.object.callable === null) throw new Error("invalid private dispatch");
         const fn = callee.object.callable;
@@ -2106,6 +2287,12 @@ class ExecutionEngine {
         this.activeContext.realm = fn.realm;
         this.#frame = { ...saved, realm: fn.realm };
         try {
+            if (fn.kind === "eval") {
+                EvalCallable.check(fn);
+                const result = this.#performEval(args[0] ?? UNDEFINED, directEval, loc);
+                if (result.type === "throw") this.#capture(result);
+                return result;
+            }
             if (fn.kind === "bound") {
                 const combined = this.#boundArguments(fn, args, loc);
                 if (combined.type === "throw") return combined;
