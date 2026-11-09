@@ -3569,7 +3569,7 @@ Add identifier parameter defaults to Script functions, methods and arrows. Inspe
 
 ## TS-144 — Arguments objects
 
-Status: **ready** after TS-143 acceptance.
+Status: **in progress**. Owner: Codex catch-up chat, 2026-11-09; base 408ac51e. TS-143 accepted.
 
 Add implicit arguments bindings to ordinary Script functions, with lexical inheritance through arrows. Sloppy simple parameters require mapped indices; strict and non-simple parameters require unmapped objects. Preserve explicit parameter/body declarations named arguments and enforce strict binding/assignment restrictions. Keep original callee identity and intrinsic iterator/thrower references in the defining Realm. Own argument object storage, parameter bindings, parser/declaration analysis, activation, Realm intrinsics, focused tests, explicit expectation migrations and docs. Do not admit eval or duplicate parameters as part of this task.
 

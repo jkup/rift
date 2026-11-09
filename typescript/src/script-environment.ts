@@ -9,9 +9,15 @@ export type ScriptEnvironment = ScriptDeclarativeEnvironment | ScriptFunctionEnv
 
 // Immutable bindings here are const bindings: writes throw even in sloppy code.
 // Absence is a caller error; an uninitialized binding produces guest TDZ.
+export type ScriptBindingCell = { initialized: boolean; mutable: boolean; value: Value };
 class ScriptLocalBindings {
-    private readonly bindings: Map<string, { initialized: boolean; mutable: boolean; value: Value }> = new Map();
+    private readonly bindings: Map<string, ScriptBindingCell> = new Map();
     constructor(readonly outer: ScriptEnvironment) {}
+    parameterCell(name: string): ScriptBindingCell {
+        const binding = this.bindings.get(name);
+        if (binding === undefined || !binding.mutable) throw new Error("missing mutable parameter: " + name);
+        return binding;
+    }
     hasBinding(name: string, _loc: Location): InternalBooleanCompletion {
         return { type: "normal", value: this.bindings.has(name) };
     }
