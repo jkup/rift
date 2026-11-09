@@ -73,7 +73,7 @@ export class ScriptDeclarativeEnvironment extends ScriptLocalBindings {
 export class ScriptFunctionEnvironment extends ScriptLocalBindings {
     readonly kind = "function";
     // Host metadata only. This record neither creates nor invokes a callable.
-    constructor(outer: ScriptEnvironment, readonly thisValue: Value, readonly callable: ScriptGuestCallable) { super(outer); }
+    constructor(outer: ScriptEnvironment, readonly thisValue: Value, readonly callable: ScriptGuestCallable, readonly newTarget: Value = UNDEFINED) { super(outer); }
 }
 export type ScriptBindingReference = {
     readonly base: ScriptEnvironment | null;

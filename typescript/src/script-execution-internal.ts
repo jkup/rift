@@ -85,8 +85,8 @@ class FunctionActivation extends ScriptFunctionEnvironment {
     #bodyEnvironment: ScriptEnvironment | null = null;
     #variableEnvironment: ScriptEnvironment | null = null;
     #phase: "fresh" | "started" | "complete" = "fresh";
-    constructor(key: ActivationKey, scopeId: number, outer: ScriptEnvironment, callable: ScriptGuestCallable, receiver: Value) {
-        super(outer, receiver, callable);
+    constructor(key: ActivationKey, scopeId: number, outer: ScriptEnvironment, callable: ScriptGuestCallable, receiver: Value, newTarget: Value) {
+        super(outer, receiver, callable, newTarget);
         this.#ownerKey = key;
         this.#scopeId = scopeId;
     }
@@ -183,10 +183,10 @@ class ExecutableScript {
     #activationKey = new ActivationKey();
     #completedMaterializations = 0;
     private constructor() {}
-    static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean, inheritedStrict = false): ScriptPreparation {
+    static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean, inheritedStrict = false, newTargetAllowed = false): ScriptPreparation {
         if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
         const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map(), argumentsScopes: new Set() };
-        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes, inheritedStrict) : parseDeclarationPlan(unit, nodes);
+        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes, inheritedStrict, newTargetAllowed) : parseDeclarationPlan(unit, nodes);
         if (plan.kind !== "complete") return plan;
         if (!bounded && !plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
         // Associations were assigned in the collector's original iterative walk.
@@ -547,7 +547,7 @@ class ExecutableScript {
         this.#completedMaterializations++;
         return normal(value);
     }
-    createFunctionEnvironment(callable: ScriptGuestCallable, receiver: Value, context: OperationContext): ScriptFunctionEnvironmentCompletion {
+    createFunctionEnvironment(callable: ScriptGuestCallable, receiver: Value, context: OperationContext, newTarget: Value = UNDEFINED): ScriptFunctionEnvironmentCompletion {
         const metadata = ScriptGuestCallable.check(callable, this.#activationKey, this);
         if (metadata.classConstructor !== null) ExecutableScript.validateClassConstructor(this, callable, executionKey);
         this.#validateEnvironment(metadata.environment, context);
@@ -561,6 +561,8 @@ class ExecutableScript {
             throw new Error("invalid Script callable metadata");
         const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
         if (budget.type === "throw") { const abrupt: ThrowCompletion = budget; return abrupt; }
+        if (newTarget.kind !== "undefined" && (newTarget.kind !== "object" || newTarget.object.constructorSlot === null))
+            throw new Error("invalid function newTarget");
         let boundThis = receiver;
         if (metadata.lexicalThis) {
             let outer = metadata.environment;
@@ -578,7 +580,7 @@ class ExecutableScript {
                 boundThis = { kind: "object", object: boxed.value };
             }
         }
-        return { type: "normal", environment: new FunctionActivation(this.#activationKey, metadata.scopeId, metadata.environment, callable, boundThis) };
+        return { type: "normal", environment: new FunctionActivation(this.#activationKey, metadata.scopeId, metadata.environment, callable, boundThis, newTarget) };
     }
     instantiateFunction(environment: ScriptFunctionEnvironment, args: Value[], context: OperationContext): ValueCompletion {
         return this.#instantiateFunction(environment, args, context, null);
@@ -1372,6 +1374,12 @@ class ExecutionEngine {
                 return normal({ kind: "string", value });
             }
             case "this": return normal(receiver);
+            case "new-target": {
+                if (env !== null) throw new Error("Script new.target AST requires Script execution");
+                const environment = this.#newTargetEnvironment(this.#active().lexical);
+                if (environment === null) throw new Error("missing new.target function environment");
+                return normal(environment.newTarget);
+            }
             case "template": {
                 let text = expr.strings[0];
                 for (let i = 0; i < expr.expressions.length; i++) {
@@ -2471,7 +2479,7 @@ class ExecutionEngine {
             const receiver: Value = { kind: "object", object: new GuestObject(proto) };
             this.activeContext.realm = fn.realm;
             if (fn.isDefaultClassConstructor) return normal(receiver);
-            const result = this.#executeScriptFunction(callee.object, fn, receiver, args);
+            const result = this.#executeScriptFunction(callee.object, fn, receiver, args, callee);
             if (result.type === "throw") return result;
             return result.value.kind === "object" ? result : normal(receiver);
         } finally {
@@ -2508,7 +2516,7 @@ class ExecutionEngine {
             this.calls = savedCalls;
         }
     }
-    #executeScriptFunction(callee: GuestObject, fn: ScriptGuestCallable, receiver: Value, args: Value[]): ValueCompletion {
+    #executeScriptFunction(callee: GuestObject, fn: ScriptGuestCallable, receiver: Value, args: Value[], newTarget: Value = UNDEFINED): ValueCompletion {
         const savedInspectionSource = this.#inspectionSource;
         this.#inspectionSource = null;
         try {
@@ -2518,7 +2526,7 @@ class ExecutionEngine {
             this.#frame = { realm: fn.realm, record, scopeId: source.scopeId, lexical: fn.environment,
                 variable: fn.environment, strict: fn.strict, thisValue: receiver, function: fn,
                 privateEnvironment: null, phase: "instantiation" };
-            const created = record.createFunctionEnvironment(fn, receiver, this.context);
+            const created = record.createFunctionEnvironment(fn, receiver, this.context, newTarget);
             if (created.type === "throw") { this.#capture(created); return created; }
             this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
             const setup = source.hasInitializers || source.needsArguments
@@ -2540,6 +2548,14 @@ class ExecutionEngine {
             this.#inspectionSource = savedInspectionSource;
         }
     }
+    #newTargetEnvironment(environment: ScriptEnvironment): ScriptFunctionEnvironment | null {
+        let current = environment;
+        while (current.kind !== "global") {
+            if (current.kind === "function" && current.callable.thisMode !== "lexical") return current;
+            current = current.outer;
+        }
+        return null;
+    }
     #performEval(input: Value, direct: boolean, loc: Location): ValueCompletion {
         if (input.kind !== "string") return normal(input);
         if (input.value.length > 100000) return resourceFailure("source-units", input.value.length, 100000, "eval source exceeds 100000 UTF-16 units", loc);
@@ -2548,7 +2564,7 @@ class ExecutionEngine {
             if (tick.type === "throw") return tick;
         }
         const saved = this.#active(), realm = this.context.realm;
-        const prepared = ExecutableScript.prepare({ id: "<eval>", text: input.value }, realm, true, direct && saved.strict);
+        const prepared = ExecutableScript.prepare({ id: "<eval>", text: input.value }, realm, true, direct && saved.strict, direct && this.#newTargetEnvironment(saved.lexical) !== null);
         if (prepared.kind === "profile-rejected") throw new Error("invalid eval Realm");
         if (prepared.kind === "conflict") return languageFailure(realm, "SyntaxError", prepared.diagnostic.message, loc);
         if (prepared.kind === "blocked") {

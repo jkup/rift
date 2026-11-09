@@ -612,6 +612,7 @@ executeDriver("class-planning", { stdout: "Class planning passed\n" });
 executeDriver("base-classes", { stdout: "Base classes passed\n" });
 executeDriver("duplicate-parameters", { stdout: "Duplicate parameters passed\n" });
 executeDriver("catch-var", { stdout: "Catch var declarations passed\n" });
+executeDriver("new-target", { stdout: "New target passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

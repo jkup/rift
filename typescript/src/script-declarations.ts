@@ -595,7 +595,7 @@ class DeclarationCollector {
                 }
                 break;
             }
-            case "literal": case "this": break;
+            case "literal": case "this": case "new-target": break;
         }
     }
     collect(body: Stmt[]): void {

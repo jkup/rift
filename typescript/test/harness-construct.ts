@@ -107,6 +107,11 @@ for (const source of negatives) for (const strict of [false, true]) {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "duplicate parameter preparation is inert");
         check(run("function C(){}"+source,r,s).type === "normal", "original duplicate source executes");
         expect(run("f.length;",r,s),number(2),"duplicate parameter arity");
+    } else if (source === "function C(){new.target;}") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "new.target preparation is inert");
+        check(run(prefix+source,r,s).type === "normal", "original new.target source executes");
+        expect(run("C();",r,s),UNDEFINED,"new.target does not change implicit return");
+        expect(run("new C() instanceof C;",r,s),{kind:"boolean",value:true},"new.target constructor executes");
     } else if (source === "new C();eval('1');") {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "eval after constructor prepares");
         expect(run(prefix+"function C(){}"+source,r,s),number(1),"eval after constructor executes");

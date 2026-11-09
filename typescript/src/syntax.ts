@@ -33,6 +33,7 @@ export type Expr =
     | { kind: "template"; loc: Location; strings: string[]; expressions: Expr[] }
     | { kind: "identifier"; loc: Location; name: string }
     | { kind: "this"; loc: Location }
+    | { kind: "new-target"; loc: Location }
     | { kind: "unary"; loc: Location; op: string; operand: Expr }
     | { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr }
     | { kind: "assign"; loc: Location; target: Expr; value: Expr }
