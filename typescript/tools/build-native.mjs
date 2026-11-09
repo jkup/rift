@@ -73,6 +73,7 @@ const entries = [
     ["test/semicolon-insertion.ts", "semicolon-insertion"],
     ["test/inherited-strictness.ts", "inherited-strictness"],
     ["test/numeric-separator-audit.ts", "numeric-separator-audit"],
+    ["test/numeric-separator-errors.ts", "numeric-separator-errors"],
     ["test/eval.ts", "eval"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],

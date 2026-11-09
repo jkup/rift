@@ -1,5 +1,6 @@
-import { auditBoundedScriptNumericSeparators, parseBoundedScriptDeclarationPlan } from "../src/parser.js";
+import { auditBoundedScriptNumericSeparators, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation } from "../src/parser.js";
 import { lex, lexNumericSeparatorAudit } from "../src/lexer.js";
+import type { DeclarationNodes } from "../src/script-declarations.js";
 
 function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
 const malformed = ["1_", "10__0", "10._1", "10.0_e1", "0b0_", "0b0__0", "0o0_", "0x1_", "00_0", "0_0", "08_0",
@@ -14,6 +15,10 @@ for (const literal of malformed) {
         const token = audit.candidates[0];
         check(token.text === literal && text.slice(token.start, token.end) === literal, "original token");
         check(token.loc.line === 2 && token.loc.column === 2, "original location");
+        const nodes: DeclarationNodes = { source: { text: "untouched" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map() };
+        const result = parseBoundedScriptPreparation({ id: "original", text }, nodes, strict);
+        check(result.kind === "blocked" && result.rejection.kind === "syntax-error" && result.rejection.ruleCode === "numeric-separator", "certified preparation");
+        check(nodes.source.text === "untouched" && nodes.body.length === 0 && nodes.scopes.size === 0 && nodes.declarations.size === 0, "no retained audit nodes");
     }
     check(lex(text, true).error !== null, "ordinary lexer unchanged");
     const plan = parseBoundedScriptDeclarationPlan({ id: "original", text });

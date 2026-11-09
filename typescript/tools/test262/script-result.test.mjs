@@ -6,6 +6,27 @@ import { parseEnvelope as oldParse } from './result.mjs';
 import { serialized,copy,mutations,envelope,transport,harnessRow,rebind,hash } from '../../docs/validation/ts-035a/controls.mjs';
 const rows=serialized();
 const parse=(v,b)=>parseScriptEnvelope(JSON.stringify(v),b);
+
+test('numeric separator certification is admitted only by its exact parse rule',()=>{
+ for(const r of rows.filter(r=>r.id.endsWith('/syntax'))) {
+  const child=copy(r.child);child.result.ruleCode='numeric-separator';
+  const bytes=Buffer.from(JSON.stringify(child));
+  assert.deepEqual(childParse(bytes,r.binding),child);
+  const result=envelope(child,r);assert.deepEqual(parse(result,r.binding),result);
+  for(const ruleCode of ['numeric-literal','numeric-separators','Numeric-separator','numeric-separator ',null]) {
+   const bad=copy(child);bad.result.ruleCode=ruleCode;
+   assert.throws(()=>childParse(Buffer.from(JSON.stringify(bad)),r.binding));
+   const badEnvelope=copy(result);badEnvelope.observation.ruleCode=ruleCode;
+   assert.throws(()=>parse(badEnvelope,r.binding));
+  }
+  for(const phase of ['runtime','instantiation']) {
+   const bad=copy(child);bad.result.phase=phase;
+   assert.throws(()=>childParse(Buffer.from(JSON.stringify(bad)),r.binding));
+   const badEnvelope=copy(result);badEnvelope.observation.phase=phase;
+   assert.throws(()=>parse(badEnvelope,r.binding));
+  }
+ }
+});
 test('T04 exact both-lane child -> composed envelope -> parse/assert/inspect roundtrip',()=>{
  for(const r of rows) {
   const child=childParse(r.bytes,r.binding),v=envelope(child,r);

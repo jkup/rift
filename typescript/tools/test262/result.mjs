@@ -3,7 +3,7 @@ import { isDeepStrictEqual } from 'node:util';
 
 export const STATUSES = ['pass', 'fail', 'unsupported-feature', 'unsupported-profile',
   'harness-error', 'resource-limit', 'timeout', 'host-fault'];
-const RULES = ['assignment-target', 'lexical-declaration-statement', 'return-outside-function',
+const RULES = ['numeric-separator', 'assignment-target', 'lexical-declaration-statement', 'return-outside-function',
   'duplicate-strict-parameter', 'duplicate-block-lexical-function'];
 const GUARD_LIMIT = { 'source-units': 'sourceUnits', 'parse-depth': 'parseDepth', steps: 'steps',
   calls: 'calls', 'evaluation-depth': 'evaluationDepth', output: 'outputBytes' };

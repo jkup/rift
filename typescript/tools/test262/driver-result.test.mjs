@@ -89,7 +89,7 @@ test('certified return has a closed rule and consistent operation and binding in
     assert.deepEqual(accepted.inputs.harness, []);
     assert.equal(Object.hasOwn(accepted, 'classification'), false);
     const bad = [];
-    for (const ruleCode of ['assignment-target','lexical-declaration-statement','duplicate-strict-parameter','duplicate-block-lexical-function','unknown','',null]) bad.push({ ...good, observation: { ...certified, ruleCode } });
+    for (const ruleCode of ['numeric-separator','assignment-target','lexical-declaration-statement','duplicate-strict-parameter','duplicate-block-lexical-function','unknown','',null]) bad.push({ ...good, observation: { ...certified, ruleCode } });
     for (const field of Object.keys(certified).filter(x => x !== 'diagnostic')) {
       const observation = { ...certified }; delete observation[field]; bad.push({ ...good, observation });
     }

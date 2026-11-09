@@ -75,6 +75,19 @@ export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes:
 }
 // Preparation alone may certify bounded rules after full-source parsing.
 export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict = false): DeclarationPlanResult {
+    const original = prepareBeforeNumericSeparators(unit, nodes, inheritedStrict);
+    if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
+        (original.rejection.capabilityCode !== "lex.numeric-literal" && original.rejection.capabilityCode !== "lex.leading-zero")) return original;
+    const audit = auditBoundedScriptNumericSeparators(original.unit.text, inheritedStrict);
+    if (audit.kind !== "eligible") return original;
+    const first = audit.candidates[0];
+    if (first === undefined) throw new Error("eligible separator audit requires candidate");
+    return { kind: "blocked", goal: "Script", unit: original.unit,
+        rejection: { kind: "syntax-error", ruleCode: "numeric-separator" },
+        diagnostic: { phase: "parse", name: "SyntaxError", message: "invalid numeric separator",
+            loc: { line: first.loc.line, column: first.loc.column } } };
+}
+function prepareBeforeNumericSeparators(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean): DeclarationPlanResult {
     const original = parseBoundedScriptPreparationBeforeLexicalAudit(unit, nodes, inheritedStrict);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.declaration-statement") return original;

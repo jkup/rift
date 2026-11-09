@@ -70,7 +70,7 @@ function constructorShape(c) {
 function resultShape(x,parent=false) {
   if (x===null || typeof x!=='object') return false;
   const fields={normal:{},throw:{phase:one(['runtime']),original:originalShape,constructor:constructorShape},
-    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target','lexical-declaration-statement'])},
+    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target','lexical-declaration-statement','numeric-separator'])},
     'unsupported-syntax':{capabilityCode:one(syntaxCodes)},
     'unsupported-operation':{phase:one(['runtime']),capabilityCode:one(runtimeCodes)},
     'unsupported-profile':{reasonCode:one(['strict','realm'])},
