@@ -103,7 +103,10 @@ for (const source of negatives) for (const strict of [false, true]) {
     const s=createScriptSession();
     const prefix=strict ? '"use strict";' : '';
     const p=prepareBoundedScript({id:"N",text:prefix+'out(9);'+source},r);
-    if (source === "new (function(){return arguments;})();") {
+    if (source === "new C();eval('1');") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "eval after constructor prepares");
+        expect(run(prefix+"function C(){}"+source,r,s),number(1),"eval after constructor executes");
+    } else if (source === "new (function(){return arguments;})();") {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "arguments constructor prepares");
         const result=run(prefix+source,r,s);
         check(result.type === "normal" && result.value.kind === "object", "constructor returns arguments object");

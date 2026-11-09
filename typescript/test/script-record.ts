@@ -121,7 +121,8 @@ for (const bad of ["", "const bad=0;", " ".repeat(100001)]) {
 kind("var x;","profile-rejected"); kind("let x;var x;","conflict"); kind("let x;let x;const tail=0;","conflict");
 const withArguments = ready('"use strict";function f(){return arguments;}');
 check(withArguments.inspect().functions.length === 1 && withArguments.inspectNodes().scopes[1].text === "function f(){return arguments;}", "arguments retains original function source");
-kind('"use strict";function f(){eval("1");}',"blocked");
+const withEval = ready('"use strict";function f(){eval("1");}');
+check(withEval.inspectNodes().scopes[1].text === 'function f(){eval("1");}', "eval retains original function source");
 ready('"use strict";let o={arguments:1};o.arguments;');
 console.log("BOUNDARY PASS");
 const dynamicText = '"use strict";let '+name+'=function(){return '+payload+';};this.effect='+payload+';';
