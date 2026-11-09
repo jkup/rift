@@ -50,7 +50,7 @@ export function prototypeMethodLength(name: string, numberPrototype: boolean): n
     if ([
         "valueOf", "pop", "shift", "reverse", "toReversed", "flat", "trim",
         "trimStart", "trimEnd", "toLowerCase", "toUpperCase", "keys", "values", "entries",
-        "big", "blink", "bold", "fixed", "italics", "small", "strike", "sub", "sup",
+        "big", "blink", "bold", "fixed", "italics", "small", "strike", "sub", "sup", "isWellFormed", "toWellFormed",
     ].includes(name)) return 0;
     throw new Error("missing expected prototype arity: " + name);
 }
