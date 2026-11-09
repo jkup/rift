@@ -134,7 +134,7 @@ class MetadataCollector {
                     if (item !== null) this.expression(item.kind === "spread" ? item.expression : item, strict, parent);
                 }
                 break;
-            case "object": for (let i = expr.values.length - 1; i >= 0; i--) this.expression(expr.values[i], strict, parent); break;
+            case "object": for (let i = expr.properties.length - 1; i >= 0; i--) this.expression(expr.properties[i].value, strict, parent); break;
             case "template": for (let i = expr.expressions.length - 1; i >= 0; i--) this.expression(expr.expressions[i], strict, parent); break;
             case "unary": this.expression(expr.operand, strict, parent); break;
             case "binary": this.expression(expr.right, strict, parent); this.expression(expr.left, strict, parent); break;

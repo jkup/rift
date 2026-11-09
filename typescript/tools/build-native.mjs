@@ -45,6 +45,7 @@ const entries = [
     ["test/for-in.ts", "for-in"],
     ["test/array-spread.ts", "array-spread"],
     ["test/argument-spread.ts", "argument-spread"],
+    ["test/object-methods.ts", "object-methods"],
     ["test/array-flat.ts", "array-flat"],
     ["test/string-split.ts", "string-split"],
     ["test/global-numeric-predicates.ts", "global-numeric-predicates"],

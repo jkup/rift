@@ -442,7 +442,7 @@ class DeclarationCollector {
                     if (item !== null) this.expression(item.kind === "spread" ? item.expression : item, scope, variableScope);
                 }
                 break;
-            case "object": for (let i = node.values.length - 1; i >= 0; i--) this.expression(node.values[i], scope, variableScope); break;
+            case "object": for (let i = node.properties.length - 1; i >= 0; i--) this.expression(node.properties[i].value, scope, variableScope); break;
             case "template": for (let i = node.expressions.length - 1; i >= 0; i--) this.expression(node.expressions[i], scope, variableScope); break;
             case "update": this.expression(node.target, scope, variableScope); break;
             case "unary":

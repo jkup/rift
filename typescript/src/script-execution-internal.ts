@@ -385,13 +385,16 @@ class ExecutableScript {
         const callable = ScriptGuestCallable.create({ key: this.#activationKey, record: this, realm: state.realm,
             scopeId, environment, strict: entry.scope.strict, unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
-        const object = new GuestObject(state.realm.functionPrototype, false, callable, callable);
-        const prototypeObject = new GuestObject(state.realm.objectPrototype);
+        const method = entry.source.method === true;
+        const object = new GuestObject(state.realm.functionPrototype, false, callable, method ? null : callable);
         const value: Value = { kind: "object", object };
-        prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
         object.bootstrapDefine("length", { value: { kind: "number", value: entry.node.params.length }, writable: false, enumerable: false, configurable: true });
         object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
-        object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: true, enumerable: false, configurable: false });
+        if (!method) {
+            const prototypeObject = new GuestObject(state.realm.objectPrototype);
+            prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
+            object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: true, enumerable: false, configurable: false });
+        }
         this.#completedMaterializations++;
         return normal(value);
     }
@@ -1041,10 +1044,14 @@ class ExecutionEngine {
             }
             case "object": {
                 const object = this.context.realm.createObject();
-                for (let i = 0; i < expr.keys.length; i++) {
-                    const value = this.#eval(expr.values[i], env, receiver, false, expr.keys[i]);
+                for (const property of expr.properties) {
+                    const name = property.kind === "data" ? property.key : property.kind + " " + property.key;
+                    const value = this.#eval(property.value, env, receiver, false, name);
                     if (value.type !== "normal") return value;
-                    const defined = object.defineOwnProperty(expr.keys[i], { value: value.value, writable: true, enumerable: true, configurable: true }, this.context, expr.loc);
+                    const descriptor = property.kind === "get" ? { get: value.value, enumerable: true, configurable: true }
+                        : property.kind === "set" ? { set: value.value, enumerable: true, configurable: true }
+                        : { value: value.value, writable: true, enumerable: true, configurable: true };
+                    const defined = object.defineOwnProperty(property.key, descriptor, this.context, expr.loc);
                     if (defined.type === "throw") return defined;
                     if (!defined.value) throw new Error("fresh object property definition failed");
                 }

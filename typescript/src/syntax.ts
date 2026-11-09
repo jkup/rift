@@ -1,5 +1,5 @@
 export type SourceText = { readonly text: string };
-export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number };
+export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number; readonly method?: boolean };
 export type Location = { line: number; column: number };
 export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
 export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
@@ -12,6 +12,7 @@ export type TryFinallyStmt = { kind: "try-finally"; loc: Location; body: BlockSt
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
 export type Argument = Expr | { kind: "spread"; loc: Location; expression: Expr };
 export type ArrayElement = Argument | null;
+export type ObjectProperty = { kind: "data" | "get" | "set"; key: string; value: Expr };
 export type Expr =
     | { kind: "array"; loc: Location; elements: ArrayElement[] }
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
@@ -28,7 +29,7 @@ export type Expr =
     | { kind: "new"; loc: Location; callee: Expr; args: Argument[] }
     | { kind: "call"; loc: Location; callee: Expr; args: Argument[] }
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
-    | { kind: "object"; loc: Location; keys: string[]; values: Expr[] };
+    | { kind: "object"; loc: Location; properties: ObjectProperty[] };
 export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };
 export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Expr | null; test: Expr | null; update: Expr | null; body: Stmt };
 export type ForLexicalStmt = { kind: "for-lexical"; loc: Location; start: number; end: number; declarationKind: "let" | "const";

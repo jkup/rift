@@ -365,7 +365,7 @@ for (const path of ["key", "operator", "length", "array length"]) {
                 conversionA.global.bindings.set("foreignKey", { initialized: true, mutable: true, value: input });
                 const computed = conversionEntry.evaluate({
                     kind: "member", loc,
-                    base: { kind: "object", loc, keys: [], values: [] },
+                    base: { kind: "object", loc, properties: [] },
                     key: { kind: "identifier", loc, name: "foreignKey" },
                 }, conversionA.global, UNDEFINED);
                 check(computed === foreignSentinel, "R20 exact computed key throw");

@@ -882,6 +882,12 @@ for(const source of [
         check(run(source,r,s).type === "normal", "finally executes");
         continue;
     }
+    if (source === '"use strict";let o={m(){}};' || source === '"use strict";let o={get x(){}};') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "object method prepares without execution");
+        check(run(source,r,s).type === "normal", "object method executes");
+        scalar(run(source.includes("get x") ? '"use strict";o.x===undefined?1:0;' : '"use strict";o.m()===undefined?1:0;',r,s),1);
+        continue;
+    }
     if (source === '"use strict";++x;') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "prefix update prepares without execution");
         thrown(run(source, r, s), "ReferenceError");

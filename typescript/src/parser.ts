@@ -3,7 +3,7 @@ export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatement
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
+import type { Diagnostic, Expr, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -731,20 +731,36 @@ class Parser {
             return { kind: "array", loc, elements };
         }
         if (t.text === "{") {
-            const keys: string[] = [];
-            const values: Expr[] = [];
+            const properties: ObjectProperty[] = [];
             if (!this.at("}")) {
                 do {
-                    const key = this.take();
+                    const first = this.take();
+                    let key = first;
+                    let kind: "data" | "get" | "set" = "data";
+                    if (this.structuralPlan() && first.kind === "word" && (first.text === "get" || first.text === "set") && !this.at(":") && !this.at("(")) {
+                        kind = first.text;
+                        key = this.take();
+                    }
                     if (key.kind !== "word" && key.kind !== "string" && key.kind !== "number") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", key.loc);
-                    if (key.text === "__proto__") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, "prototype literal syntax is unsupported", key.loc);
-                    keys.push(key.kind === "number" ? String(Number(key.text)) : key.text);
-                    this.expect(":");
-                    values.push(this.expression(0));
+                    const name = key.kind === "number" ? String(Number(key.text)) : key.text;
+                    if (this.structuralPlan() && this.at("(")) {
+                        const fn = this.functionTail(first.loc, first.start);
+                        if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && fn.params.length !== 1))
+                            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
+                        if (new Set(fn.params).size !== fn.params.length)
+                            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate method parameter", first.loc);
+                        properties.push({ kind, key: name, value: { kind: "function", loc: first.loc, params: fn.params, body: fn.body,
+                            source: { source: fn.source.source, start: fn.source.start, end: fn.source.end, method: true } } });
+                    } else {
+                        if (kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
+                        if (key.text === "__proto__") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, "prototype literal syntax is unsupported", key.loc);
+                        this.expect(":");
+                        properties.push({ kind: "data", key: name, value: this.expression(0) });
+                    }
                 } while (this.error === null && this.eat(","));
             }
             this.expect("}");
-            return { kind: "object", loc, keys, values };
+            return { kind: "object", loc, properties };
         }
         if (t.kind === "word" && !RESERVED.includes(" " + t.text + " ")) return { kind: "identifier", loc, name: t.text };
         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: " + t.text, loc);
