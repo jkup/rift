@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { prepareBoundedScript } from "./script-record.js";
-import { createScriptSession, evaluateScript } from "./script-execution.js";
+import { createScriptSession, evaluateScript, drainScriptJobs } from "./script-execution.js";
 import { Realm } from "./realm.js";
 import { display } from "./runtime.js";
 import type { Diagnostic } from "./syntax.js";
@@ -27,12 +27,19 @@ function main(): void {
         process.exitCode = 2;
         return;
     }
-    const result = evaluateScript(createScriptSession(), prepared.record);
+    const session = createScriptSession();
+    const result = evaluateScript(session, prepared.record);
     if (result.completion.type === "throw") {
         const d = result.completion.diagnostic;
         if (d.name === "Uncaught") d.message = display(result.completion.value);
         report(filename, d); process.exitCode = 1;
     } else if (result.completion.type !== "normal") throw new Error("top-level abrupt control flow");
+    for (const failure of drainScriptJobs(session).failures) {
+        const diagnostic = failure.completion.diagnostic;
+        if (diagnostic.name === "Uncaught") diagnostic.message = display(failure.completion.value);
+        report(failure.source.unitId, diagnostic);
+        process.exitCode = 1;
+    }
 }
 try { main(); }
 catch (error) {

@@ -524,6 +524,11 @@ function execute(name, executable, args, expected) {
     console.log(`${verdict} ${name}`);
     if (verdict !== "PASS") console.error(result);
 }
+cases.push(
+    { file: "test/fixtures/promise-checkpoint.js", stdout: "sync\nthenable\nreaction\nvalue 3\ncaught 4\n" },
+    { file: "test/fixtures/promise-after-throw.js", stdout: "checkpoint\n", status: 1, error: "2:1: runtime Uncaught: top level" },
+    { file: "test/fixtures/promise-unhandled.js", stdout: "no rejection tracker\n" },
+);
 for (const c of cases) execute(c.file, command, [...prefix, c.file], c);
 execute("inline", command, [...prefix, "-e", "console.log(6 * 7);"], { stdout: "42\n" });
 execute("usage", command, prefix, { status: 64, stderr: "usage: rift <file.js> | -e <source>\n" });
@@ -619,6 +624,7 @@ executeDriver("default-derived", { stdout: "Default derived classes passed\n" })
 executeDriver("explicit-derived", { stdout: "Explicit derived constructors passed\n" });
 executeDriver("super-properties", { stdout: "Super properties passed\n" });
 executeDriver("script-jobs", { stdout: "Script jobs passed\n" });
+executeDriver("promise-core", { stdout: "Promise core passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
