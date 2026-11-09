@@ -5,20 +5,22 @@ Updated 2026-11-09. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted TS-152 object binding slice (implementation `6d534ff7`, historical
-plan migration `ad4dd9b4`) passes 646/646 guests on each host, 291/291 tooling checks,
-all 156 native static gates, and 162 completed fixtures in the unchanged 225-file
-selection: 105 reported successes and 57 unchecked completions. The remaining
-outcomes are 18 parse errors, 44 runtime errors and one reported failure. These
+The accepted Promise milestone passes 666/666 guests on each host, 291/291 tooling
+checks, and all 173 native static gates. The unchanged 225-file C++ corpus has
+172 completions: 111 reported successes and 61 unchecked completions. Remaining
+outcomes are 14 parse errors, 38 runtime errors and one reported failure. These
 are diagnostic fixture results, not a Test262 conformance score.
 
-Array assignment and standalone array/object bindings support defaults, nesting
-and rest; arrays also support elisions. Next are for-in/of binding patterns,
-then mixed declaration lists and classic-for patterns. Object assignment needs
-a separate cover-grammar review. Preserve iterator/reference ordering, TDZ and
-rest-copy semantics; see [the design](destructuring-design.md) and TS-152 in
-[TASKS](../TASKS.md). Classes, generators/async, Promise, RegExp, Temporal and
-weak-reference facilities remain larger gaps.
+Bounded classes now include inheritance, explicit derived constructors, new.target
+and super properties. Promise construction, resolution, then/catch/finally, try,
+withResolvers and explicit CLI checkpoints are accepted. Reviewed all/race,
+AggregateError and allSettled/any drafts are next for integration and full validation.
+
+RegExp backend probes exposed dynamic metadata and flag limits; proceed with a
+bounded pattern parser and matching machine before guest object/protocol admission.
+Generators/async, Temporal, weak-reference facilities, class fields and remaining
+destructuring contexts are separate gaps. Preserve the known malformed or
+nonstandard-helper C++ fixtures and the classified disagreements below.
 
 ## Direction
 
@@ -685,3 +687,7 @@ Explicit derived constructors accepted (8c7186be): both guest suites pass 658/65
 ### TS-160/TS-161 super and checkpoint milestone
 
 Super properties and Script checkpoints accepted (8905c5ec, 6de4b230): both guest suites pass 660/660 without skips; tooling 291/291, runner 32/32, ten probes and typechecking pass. The 170-entry native matrix passed 169 entries in 1178468ms; json-parse encountered a Zig mingw cache file-open failure and passed an isolated unchanged-source retry. All 170 entries have passing static-only builds and parsed coverage, with initial/retry/accepted reports retained separately in build/super-jobs-native-{initial,retry,results}.json. All 225 normalized corpus records agree between Node gAJhh9 and native nPHQhi, preserving original hashes and all 165 prior completions. class-test.js raises completions to 166 (108 reported successes, 58 unchecked; 14 parse errors, 44 runtime errors, one reported failure). Its corpus classification remains unchecked; separate focused evidence verifies all 26 true outputs. Evidence: build/super-jobs-corpus-comparison.json, build/super-jobs-* and build/super-property-draft/build/class-corpus-reviewed.json. Next: reviewed Promise core and finally as separate commits, followed by combined canonical validation.
+
+### TS-162/TS-163/TS-164 Promise checkpoint
+
+Promise core, finally and capability helpers accepted (a337c48a, c935de54, e7ade7cc): both guest suites pass 666/666 without skips; tooling 291/291, runner 32/32, ten probes and typechecking pass. All 173 native entries pass static-only builds and parsed coverage on unchanged production source in 1239160ms without retries. Focused canonical coverage is 9860/9837/9828 static statements respectively, zero dynamic. All 225 normalized corpus records agree between Node bjO72j and native jDylN0, preserving hashes and all 166 prior completions. Six Promise fixtures raise completions to 172 (111 reported successes, 61 unchecked; 14 parse errors, 38 runtime errors, one reported failure). Finally, thenable-verify and withResolvers report 8/7/6 checks; basic/thenable structure prints remain unchecked. Promise.try stays unchecked in the corpus but separate expected-output evidence verifies four asynchronous OK lines and exposes its self-catching TypeError assertion. Evidence: build/promise-core-native-results.json, build/promise-core-corpus-comparison.json, build/promise-core-* and focused reports under the three Promise draft directories. Next: separate reviewed all/race, AggregateError and allSettled/any commits, then combined canonical validation. RegExp remains a separately bounded parser/matcher/object-layer effort.
