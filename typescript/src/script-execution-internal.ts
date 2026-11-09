@@ -198,7 +198,6 @@ class ExecutableScript {
                 if (head === null || scope.kind !== node.kind) throw new Error("invalid lexical loop kind");
                 const initializer = node.kind === "for-lexical" ? node.binding.initializer : null;
                 const declaration = plan.declarations[scope.lexicalDeclarations[0]];
-                const association = nodes.declarations.get(scope.lexicalDeclarations[0]);
                 if (entry.body.length !== 1 || entry.body[0] !== node.body || scope.start !== node.start || scope.end !== node.end ||
                     scope.parent === null || scope.parent >= scope.id || scope.strict !== plan.scopes[scope.parent].strict || scope.formals.length !== 0 ||
                     scope.start < plan.scopes[scope.parent].start || scope.end > plan.scopes[scope.parent].end ||
@@ -208,7 +207,6 @@ class ExecutableScript {
                     declaration.functionScope !== null || (initializer === null ? declaration.initializer !== null
                         : declaration.initializer === null || declaration.initializer.start !== initializer.start || declaration.initializer.end !== initializer.end) ||
                     head.site.start <= node.start || head.site.end >= node.end ||
-                    association === undefined || association.node !== node || association.initializer !== (node.kind === "for-lexical" ? node.binding.init : null) ||
                     (initializer !== null && (initializer.start <= head.site.end || initializer.end >= node.end || initializer.end <= initializer.start)))
                     throw new Error("invalid lexical loop association");
                 scopes.set(node, scope.id);
