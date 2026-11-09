@@ -26,7 +26,27 @@ test('Script metadata: 136 accepted snapshots and detached source invariants in 
   }
 });
 
-test('Script declarations: 135 plans, 71 historical literals and seven const migrations in both hosts', () => {
+function defaultPlanExpectation(record) {
+  const {unit} = record.plan;
+  if (unit.id !== 'L08-default') return record;
+  assert.equal(unit.text, '"use strict";function f(a=1){}');
+  const scope = {strict: true, catchParameter: null, lexicalDeclarations: [], lexicalNames: []};
+  return {plan: {kind: 'complete', goal: 'Script', unit, consumedUnits: 30,
+    strictness: {ownStrict: true, inheritedStrict: false, strict: true,
+      directives: [{start: 0, end: 12, statementEnd: 13, loc: {line: 1, column: 1}, raw: '"use strict"', useStrict: true}]},
+    scopes: [
+      {...scope, id: 0, kind: 'script', parent: null, start: 0, end: 30,
+        formals: [], varDeclarations: [0], varNames: ['f']},
+      {...scope, id: 1, kind: 'function', parent: 0, start: 13, end: 30,
+        formals: [{name: 'a', start: 24, end: 25, loc: {line: 1, column: 25}}], varDeclarations: [], varNames: []},
+    ],
+    declarations: [{id: 0, kind: 'function', site: {name: 'f', start: 22, end: 23, loc: {line: 1, column: 23}},
+      scope: 0, variableScope: 0, functionScope: 1, initializer: null}],
+    functions: [{scope: 1, declaration: 0, start: 13, end: 30,
+      strictness: {ownStrict: false, inheritedStrict: true, strict: true, directives: []}}]}, winners: [[0], []]};
+}
+
+test('Script declarations: 135 plans, 71 historical literals, seven const and one default migration in both hosts', () => {
   const snapshots = json('docs/validation/ts-034h6-c/replays/plans-results.json');
   const literals = json('fixtures/script-declarations/literal.json');
   assert.equal(literals.length, 71);
@@ -52,10 +72,11 @@ test('Script declarations: 135 plans, 71 historical literals and seven const mig
     }
   }
   assert.equal([...expected.values()].filter(record => constPlanExpectation(record) !== record).length, 7);
+  assert.equal([...expected.values()].filter(record => defaultPlanExpectation(record) !== record).length, 1);
   for (const lane of ['node', 'native']) for (const record of expected.values()) {
     run('script-declarations', lane, record.plan.unit, [], (stdout, label) => {
       const {plan, winners} = JSON.parse(stdout);
-      assert.deepEqual({plan, winners}, constPlanExpectation(record), label);
+      assert.deepEqual({plan, winners}, defaultPlanExpectation(constPlanExpectation(record)), label);
     });
   }
 });
