@@ -45,7 +45,7 @@ for (const source of [
 
 for (const source of ["1;a:{break a;}", "a:{1;break a;}", "a:while(true){1;break a;}", "a:{b:{1;break a;}}", "a:try{1;break a;}finally{9;}"])
     expect(source, { kind: "number", value: 1 });
-for (const source of ["1;a:if(true)break a;", "a:try{throw 1;}finally{break a;}"])
+for (const source of ["1;a:if(true)break a;", "a:try{throw 1;}finally{break a;}", "a:while(true){break\na;}"])
     expect(source, { kind: "undefined" });
 
 const iterators = "var log='';function make(name){var n=0;var it={next(){n++;return {value:n,done:n>2};},return(){log+=name;return {};}};it[Symbol.iterator]=function(){return this;};return it;}";
@@ -60,7 +60,7 @@ for (const text of [
     "a:{while(true){continue a;}}", "a:if(true)while(true){continue a;}",
     "a:while(true){function f(){break a;}}", "a:while(true){var f=()=>{continue a;};}",
     "a:while(true){var o={m(){break a;}};}", "a:let x;", "a:const x=1;", "a:function f(){}",
-    "a:{break;}", "a:while(true){break\na;}",
+    "a:{break;}",
 ]) {
     const prepared = prepareBoundedScript({ id: "invalid-label", text }, fresh());
     check(prepared.kind === "blocked" && prepared.rejection.kind === "unsupported-syntax" && prepared.diagnostic.phase === "parse", text);

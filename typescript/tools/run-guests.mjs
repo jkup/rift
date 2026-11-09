@@ -293,7 +293,7 @@ const generated = [
     ["updates-prefix-newline", "let x=2; console.log(++\nx,--\nx);", 0, "", "3 2\n"],
     ["updates-invalid-prefix", "console.log('no'); ++(1+2);", 2, "parse SyntaxError: invalid update target"],
     ["updates-invalid-postfix", "console.log('no'); (1+2)--;", 2, "parse SyntaxError: invalid decrement target"],
-    ["updates-postfix-newline", "let x=2; x\n--;", 2, "parse SyntaxError: newline before postfix decrement is unsupported"],
+    ["updates-postfix-newline", "let x=2; x\n--;", 2, "parse SyntaxError: unsupported or unexpected syntax: ;"],
     ["boolean-call", "console.log(Boolean(),Boolean(undefined),Boolean(null),Boolean(false),Boolean(0),Boolean(-0),Boolean(NaN),Boolean(''));", 0, "", "false false false false false false false false\n"],
     ["boolean-truthy", "console.log(Boolean(1),Boolean(-1),Boolean(Infinity),Boolean('false'),Boolean({}),Boolean([]),Boolean(new Boolean(false)));", 0, "", "true true true true true true true\n"],
     ["boolean-construct", "let b=new Boolean(false); console.log(typeof b,b.valueOf(),b.toString(),b instanceof Boolean,b.constructor===Boolean,b.value);", 0, "", "object false false true true undefined\n"],
@@ -307,8 +307,8 @@ const generated = [
     ["continue", "continue;", 2, "parse SyntaxError: continue outside loop"],
     ["return", "return 1;", 2, "parse SyntaxError: return outside function"],
     ["cross-function-break", "while(true) { function f() { break; } }", 2, "parse SyntaxError: break outside loop"],
-    ["asi", "let x = 1\nconsole.log(x);", 2, "parse SyntaxError: expected ';'"],
-    ["newline-return", "function f() { return\n 1; }", 2, "parse SyntaxError: newline after return/throw is unsupported"],
+    ["asi", "let x = 1\nconsole.log(x);", 0, "", "1\n"],
+    ["newline-return", "function f() { return\n 1; }", 0, "", ""],
     ["newline-throw", "throw\n1;", 2, "parse SyntaxError: newline after return/throw is unsupported"],
     ["string", "'unterminated", 2, "parse SyntaxError: unterminated string"],
     ["comment", "/* unterminated", 2, "parse SyntaxError: unterminated comment"],
@@ -484,8 +484,9 @@ for (const [name, separator] of [["lf", "\n"], ["cr", "\r"], ["crlf", "\r\n"], [
     for (const [prefix, suffix] of [["return", "function f() { return"], ["throw", "throw"]]) {
         const tail = prefix === "return" ? "1; }" : "1;";
         const error = "1:" + (prefix === "return" ? "16" : "1") + ": parse SyntaxError: newline after return/throw is unsupported";
-        lineCase(name + "-" + prefix, suffix + separator + tail, { status: 2, error });
-        lineCase(name + "-block-" + prefix, suffix + " /* comment" + separator + "*/" + tail, { status: 2, error });
+        const expected = prefix === "return" ? { status: 0, stdout: "" } : { status: 2, error };
+        lineCase(name + "-" + prefix, suffix + separator + tail, expected);
+        lineCase(name + "-block-" + prefix, suffix + " /* comment" + separator + "*/" + tail, expected);
     }
 }
 for (const [name, separator] of [["ls", "\u2028"], ["ps", "\u2029"]]) {
@@ -601,6 +602,7 @@ executeDriver("sloppy-block-functions", { stdout: "Sloppy block functions passed
 executeDriver("locale-string", { stdout: "Locale string conversions passed\n" });
 executeDriver("labels", { stdout: "Labelled statements passed\n" });
 executeDriver("optional-chain", { stdout: "Optional chaining passed\n" });
+executeDriver("semicolon-insertion", { stdout: "Semicolon insertion passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });
