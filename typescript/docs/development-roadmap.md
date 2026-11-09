@@ -536,3 +536,7 @@ Traditional lexical for loops are accepted: 615/615 guests on each host, all 125
 ### TS-127 checkpoint
 
 For-in is accepted: 616/616 guests on each host, all 126 native entries static, tooling 290/290, runner 31/31 and ten probes. All 225 fixture results agree, all 138 prior completions remain, and for-in-loop-test.js adds 15 passing checks for 139 completed fixtures. See [for-in](for-in.md) for prototype and mutation semantics. Next: array literal spread with iterator semantics and elisions; the sparse-array fixture is blocked on `[1, ...items, , 5]`.
+
+### TS-128 checkpoint
+
+Array literal spread is accepted: 617/617 guests on each host, all 127 native entries static, tooling 290/290, runner 31/31 and ten probes. All 225 fixture results agree, all 139 prior completions remain, and the sparse-array fixture adds 11 passing checks for 140 completed fixtures. See [array spread](array-spread.md) for iterator and elision semantics. Next: call and constructor argument spread, preserving callee/receiver capture and argument evaluation order.
