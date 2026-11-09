@@ -102,7 +102,11 @@ for (const source of negatives) {
     const r=fresh(), out:Value[]=[]; recorder(r,out);
     const p=prepareBoundedScript({id:"N",text:source},r);
     check(out.length === 0 && r.globalObject.getOwnProperty("f") === undefined, "preparation is inert");
-    if (source === "function f(){return arguments;}") {
+    if (source === "{function f(){}}" || source === "switch(1){case 1:function f(){}}") {
+        check(p.kind === "ready", "sloppy block function prepares");
+        expect(run(source+"typeof f;",r),{kind:"string",value:"function"},"sloppy block function publishes");
+        expect(run("f();",r),UNDEFINED,"sloppy block function executes");
+    } else if (source === "function f(){return arguments;}") {
         check(p.kind === "ready", "arguments prepares");
         expect(run(source+"f(7,8).length;",r),{kind:"number",value:2},"arguments length");
         expect(run("f(7)[0];",r),{kind:"number",value:7},"arguments value");

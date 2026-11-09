@@ -597,6 +597,7 @@ executeDriver("rest-parameters", { stdout: "Rest parameters passed\n" });
 executeDriver("default-parameters", { stdout: "Default parameters passed\n" });
 executeDriver("arguments-storage", { stdout: "Arguments storage passed\n" });
 executeDriver("arguments", { stdout: "Arguments passed\n" });
+executeDriver("sloppy-block-functions", { stdout: "Sloppy block functions passed\n" });
 executeDriver("object-prototype-methods", { stdout: "Object prototype methods passed\n" });
 executeDriver("object-reflection", { stdout: "Object reflection passed\n" });
 executeDriver("object-create", { stdout: "Object creation passed\n" });

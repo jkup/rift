@@ -1,7 +1,7 @@
 import { GuestSymbol, wellKnownToPrimitive } from "../src/symbols.js";
 import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
-import { prepareStrictScript, type ExecutableScript } from "../src/script-record.js";
+import { prepareBoundedScript, prepareStrictScript, type ExecutableScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript, type ScriptSession } from "../src/script-execution.js";
 import { GuestObject, Environment, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext } from "../src/runtime.js";
 import { Evaluator } from "../src/evaluator.js";
@@ -367,6 +367,16 @@ const rejects = [
 for (const row of rejects) {
     const r = fresh(), session = createScriptSession();
     const result = prepareStrictScript({ id: row.id, text: (row.id === "N10" ? "" : '"use strict";') + row.source }, r);
+    if (row.id === "N10") {
+        const bounded = prepareBoundedScript({ id: row.id, text: row.source + "typeof f;" }, r);
+        check(result.kind !== "ready", "strict-only entry rejects sloppy source");
+        check(bounded.kind === "ready" && session.inspect().steps === 0, "sloppy switch function prepares without effects");
+        if (bounded.kind !== "ready") throw new Error("sloppy switch preparation");
+        const completion = evaluateScript(session, bounded.record).completion;
+        check(completion.type === "normal" && completion.value.kind === "string" && completion.value.value === "function", "sloppy switch function publishes outer binding");
+        idle(session);
+        continue;
+    }
     if (row.source === "switch(1){case 1:try{}finally{}}") {
         check(result.kind === "ready" && session.inspect().steps === 0, "finally prepares in switch");
         check(run('"use strict";' + row.source,r).type === "normal", "finally executes in switch");

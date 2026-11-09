@@ -66,6 +66,7 @@ const entries = [
     ["test/default-parameters.ts", "default-parameters"],
     ["test/arguments-storage.ts", "arguments-storage"],
     ["test/arguments.ts", "arguments"],
+    ["test/sloppy-block-functions.ts", "sloppy-block-functions"],
     ["test/array-sort.ts", "array-sort"],
     ["test/array-copy.ts", "array-copy"],
     ["test/json-parse.ts", "json-parse"],
