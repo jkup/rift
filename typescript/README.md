@@ -5,10 +5,14 @@ source is read **at runtime** by Rift; scriptc compiles the interpreter, never t
 guest programs. No host eval, Function, vm, or dynamic compiler fallback is used.
 The original C++ engine remains intact.
 
-The CLI uses the Script evaluator: `var`, `for`, `do…while`, prefix/postfix `++` and `--`, `try`/`catch`, and
-ordinary `new` calls work alongside the existing subset. Scripts are non-strict
-unless they contain a `"use strict"` directive. Unsupported syntax, including
-`const`, arrows and general automatic semicolon insertion, still fails explicitly.
+The CLI uses the Script evaluator with a bounded subset including let/const/var,
+functions and arrows, loops and labels, try/catch/finally, ordinary construction,
+optional chaining and automatic semicolon insertion. Scripts are non-strict
+unless they contain a "use strict" directive. Bounded eval and Function construction
+use Rift's own parser and execution machinery; see [eval](docs/eval-design.md).
+Array assignment patterns support nesting, defaults, rest and elisions; declaration
+and object patterns are still in progress. See [destructuring](docs/destructuring-design.md).
+Classes, generators and async execution remain unsupported.
 Object literals accept identifier, string and numeric property names.
 Script numbers include decimal exponents and leading-dot fractions; see [decimal literals](docs/decimal-literals.md).
 Binary, octal and hexadecimal prefixes are supported; see [radix literals](docs/radix-literals.md).

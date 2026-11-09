@@ -1,7 +1,22 @@
 # Development roadmap
 
-Updated 2026-11-08 after reviewing recent history through `ec63ebee` and
+Updated 2026-11-09. The original catch-up review covered history through `ec63ebee` and
 [Claude's review, PR #82](https://github.com/jkup/rift/pull/82).
+
+## Current checkpoint
+
+The accepted TS-152 array assignment slice (implementation `366b994b`, audit
+migration `593f6e4a`) passes 644/644 guests on each host, 291/291 tooling checks,
+all 154 native static gates, and 161 completed fixtures in the unchanged 225-file
+selection: 105 reported successes and 56 unchecked completions. The remaining
+outcomes are 19 parse errors, 44 runtime errors and one reported failure. These
+are diagnostic fixture results, not a Test262 conformance score.
+
+Array assignment supports defaults, nesting, rest and elisions. The next work
+is shared declaration/object patterns and loop heads, with iterator/reference
+ordering, TDZ and rest-copy semantics. See [the design](destructuring-design.md)
+and the active TS-152 entry in [TASKS](../TASKS.md). Classes, generators/async,
+Promise, RegExp, Temporal and weak-reference facilities remain larger gaps.
 
 ## Direction
 
@@ -23,6 +38,8 @@ readable changes. [The C++ fixture baseline](legacy-fixture-baseline.md) now
 provides a fixed 225-file diagnostic selection in both hosts. Use its concrete
 failures alongside semantic tests to prioritize work; existing C++ runner counts
 are not an authoritative conformance score.
+
+## Historical feature checkpoints
 
 TS-066 baseline review: the 67 parse failures include nine first failures on
 template literals, six on `for…of`, five on arrows, five on binding patterns,
@@ -79,7 +96,7 @@ throw-comprehensive-test.js:8 deliberately throws an uncaught string and says th
 following statement must not run. Preserve both fixtures and their runtime-error
 classifications; these first failures are not missing interpreter features.
 
-## Findings and next work
+## Catch-up review and historical checkpoints
 
 Completed in this catch-up: ordinary input-test invocation, the five tracked report
 overwrites, separation of the historical checkpoint gate, and the CLI Script
