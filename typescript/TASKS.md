@@ -3890,7 +3890,7 @@ Status: **done — tagged retention viable; detached activation migration requir
 
 ## TS-197 — String substring and substr
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add standard substring and Annex B substr with ordered receiver/index conversions, clamping versus relative-start semantics, omitted lengths, UTF-16 boundaries, metadata and output budgets. Own String registration/inventories, focused tests/manifests and notes in build/string-ranges-draft based on TS-194. No locale approximation; the original additional-method fixture remains blocked at locale behavior.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add standard substring and Annex B substr with ordered receiver/index conversions, clamping versus relative-start semantics, omitted lengths, UTF-16 boundaries, metadata and output budgets. Own String registration/inventories, focused tests/manifests and notes in build/string-ranges-draft based on TS-194. No locale approximation; the original additional-method fixture remains blocked at locale behavior.
 
 ## TS-198 — Refresh compiler contract boundaries
 

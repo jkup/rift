@@ -142,8 +142,36 @@ function registerStringTrim(realm: Realm, name: string, where: "start" | "end" |
     });
 }
 
+function registerStringRange(realm: Realm, name: "substring" | "substr"): void {
+    realm.registerBuiltin(realm.stringPrototype, name, 2, (receiver, args, context, loc): ValueCompletion => {
+        const text = stringReceiver(receiver, context, loc);
+        if (text.type === "throw") return text;
+        const size = stringLength(text.value);
+        const start = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
+        if (start.type === "throw") return start;
+        const endOrLength: NumberCompletion = args.length < 2 || args[1].kind === "undefined"
+            ? {type: "normal", value: size} : integerArgument(args[1], context, loc);
+        if (endOrLength.type === "throw") return endOrLength;
+        let from = Math.min(Math.max(start.value, 0), size);
+        let to = Math.min(Math.max(endOrLength.value, 0), size);
+        if (name === "substr") {
+            from = sliceIndex(start.value, size);
+            to = Math.min(from + to, size);
+        } else if (from > to) {
+            const saved = from; from = to; to = saved;
+        }
+        for (let i = from; i < to; i++) {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+        }
+        return normal({kind: "string", value: stringSlice(text.value, from, to)});
+    });
+}
+
 export function registerStringMethods(realm: Realm): void {
     if (realm.profile === "script") {
+        registerStringRange(realm, "substring");
+        registerStringRange(realm, "substr");
         registerStringPadding(realm, "padStart", true);
         registerStringPadding(realm, "padEnd", false);
         realm.registerBuiltin(realm.stringPrototype, "repeat", 1, (receiver, args, context, loc): ValueCompletion => {
