@@ -35,7 +35,7 @@ for (const text of [
     "(a,a)=>a;", "(a=1,a)=>a;", "(a,...a)=>a;", "(a)\n=>a;",
     "(a)/*\r\n*/=>a;", "1+(a)=>a;", "new (a)=>a;", "(a)=>{}.x;",
     "(a)=>{let a;};", "(a=1)=>{'use strict';return a};", "(...a)=>{'use strict'};",
-    "({a})=>a;", "([a])=>a;", "(a={x:1}, {b})=>a;",
+
 ]) {
     const realm = new Realm((_line: string) => {}, "script");
     check(prepareBoundedScript({ id: "arrow-cover-rejected", text }, realm).kind !== "ready", "reject: " + text);
@@ -45,4 +45,7 @@ for (const text of [
     const text = "(".repeat(140) + "1" + ")".repeat(140);
     check(prepareBoundedScript({ id: "arrow-cover-depth", text }, realm).kind !== "ready", "nested cover depth remains bounded");
 }
+passes("var f=({a})=>a;f({a:7})===7;");
+passes("var f=([a])=>a;f([7])===7;");
+passes("var f=(a={x:1}, {b})=>a;f(undefined,{b:2}).x===1;");
 console.log("Arrow cover passed");

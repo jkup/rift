@@ -204,7 +204,7 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
     return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates, lexicalCandidates: parser.lexicalCandidates };
 }
-type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; value: Expr } | { kind: "rest"; value: Expr };
+type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; computed?: true; value: Expr } | { kind: "rest"; value: Expr };
 type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupported: { reason: Rejection; message: string; loc: Location } | null };
 class Parser {
     private generatorContext = false;
@@ -1092,7 +1092,7 @@ class Parser {
                         }
                     }
                     properties.push({ kind, key: computed ? key : name, value });
-                    cover.entries.push({ kind: "data", key, value });
+                    cover.entries.push({ kind: "data", key, ...(computed ? { computed: true as const } : {}), value });
                 }
             }
             if (!this.eat(",")) break;
@@ -1125,7 +1125,7 @@ class Parser {
                     pattern.rest = this.assignmentPattern(entry.value);
                 } else {
                     if (entry.kind === "method") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "method in assignment pattern", entry.value.loc);
-                    pattern.properties.push({ key: entry.key, element: this.assignmentElement(entry.value) });
+                    pattern.properties.push({ key: entry.key, ...(entry.computed === true ? { computed: true as const } : {}), element: this.assignmentElement(entry.value) });
                 }
             }
             return pattern;
@@ -1156,6 +1156,36 @@ class Parser {
         }
         return this.expression(1);
     }
+    private coverBinding(pattern: DestructuringPattern, bindings: DeclarationSite[]): DestructuringPattern {
+        if (pattern.kind === "target") {
+            const target = pattern.target;
+            if (target.kind !== "identifier" || this.isParenthesized(target)) {
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", target.loc);
+                return pattern;
+            }
+            let low = 0, high = this.index;
+            while (low < high) {
+                const middle = Math.floor((low + high) / 2), loc = this.tokens[middle].loc;
+                if (loc.line < target.loc.line || (loc.line === target.loc.line && loc.column < target.loc.column)) low = middle + 1;
+                else high = middle;
+            }
+            const token = this.tokens[low];
+            if (token.loc.line !== target.loc.line || token.loc.column !== target.loc.column)
+                throw new Error("missing cover binding token");
+            const site = { name: target.name, start: token.start, end: token.end, loc: token.loc };
+            bindings.push(site);
+            return { kind: "binding", loc: target.loc, site };
+        }
+        if (pattern.kind === "array-pattern") return { ...pattern,
+            elements: pattern.elements.map(element => element === null ? null :
+                { ...element, pattern: this.coverBinding(element.pattern, bindings) }),
+            rest: pattern.rest === null ? null : this.coverBinding(pattern.rest, bindings) };
+        if (pattern.kind === "object-pattern") return { ...pattern,
+            properties: pattern.properties.map(property => ({ ...property,
+                element: { ...property.element, pattern: this.coverBinding(property.element.pattern, bindings) } })),
+            rest: pattern.rest === null ? null : this.coverBinding(pattern.rest, bindings) };
+        throw new Error("unexpected binding in expression cover");
+    }
     private parenthesizedExpression(first: Token, allowIn: boolean, allowArrow: boolean): Expr {
         const values: { value: Expr; token: Token }[] = [];
         let rest = false, trailingComma = false;
@@ -1171,17 +1201,28 @@ class Parser {
             const params: string[] = [], parameters: FormalParameter[] = [];
             for (let i = 0; i < values.length; i++) {
                 const { value, token } = values[i];
+                if (this.isParenthesized(value)) {
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "parenthesized arrow parameter", token.loc);
+                    continue;
+                }
+                const initializer = value.kind === "assign" || value.kind === "destructure" ? value.value : null;
                 const target = value.kind === "assign" ? value.target : value;
-                if (target.kind !== "identifier" || this.parenthesized.has(value) || this.parenthesized.has(target)) {
+                if (value.kind !== "destructure" && target.kind !== "identifier" && target.kind !== "array" && target.kind !== "object") {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", token.loc);
                     continue;
                 }
-                if (params.includes(target.name))
-                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate arrow parameter: " + target.name, first.loc);
-                if (rest && i === values.length - 1 && value.kind === "assign")
+                const bindings: DeclarationSite[] = [];
+                const pattern = this.coverBinding(value.kind === "destructure" ? value.pattern : this.assignmentPattern(target), bindings);
+                for (const site of bindings) {
+                    if (params.includes(site.name))
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate arrow parameter: " + site.name, first.loc);
+                    params.push(site.name);
+                }
+                if (rest && i === values.length - 1 && initializer !== null)
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "rest parameter cannot have a default", token.loc);
-                params.push(target.name);
-                parameters.push({ kind: "identifier", site: { name: target.name, start: token.start, end: token.end, loc: token.loc }, initializer: value.kind === "assign" ? value.value : null });
+                if (pattern.kind === "binding") parameters.push({ kind: "identifier", site: pattern.site, initializer });
+                else if (pattern.kind === "array-pattern" || pattern.kind === "object-pattern")
+                    parameters.push({ kind: "pattern", pattern, bindings, initializer });
             }
             return this.arrowBody(first, params, rest, parameters, allowIn);
         }

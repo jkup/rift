@@ -72,8 +72,7 @@ for (let i = 0; i < cases.length; i++) {
 for (const source of [
     "function f([a],a){}", "function f({a},[a]){}", "function f([a]){let a;}",
     "function f({}){\"use strict\";}", "function f(...[a]=[]){}", "function f(...[a],b){}",
-    "var o={get x([a]){}};", "var o={set x({},a){}};", "function* f([a=yield 1]){}",
-    "var f=([a])=>a;"
+    "var o={get x([a]){}};", "var o={set x({},a){}};", "function* f([a=yield 1]){}"
 ]) {
     check(prepareBoundedScript({id: "boundary", text: source}, new Realm((_line: string): void => {}, "script")).kind !== "ready", "formal boundary " + source);
 }
@@ -87,4 +86,6 @@ check(failed.type === "throw" && failed.value.kind === "object" && failed.value.
 check(creator.inspect().steps === steps && session.inspect().steps > 0, "formal current session");
 const stopped = run('work([]);', B, createScriptSession({maxSteps: 80, maxCalls: 16}));
 check(stopped.type === "throw" && stopped.origin.kind === "resource-limit", "formal resource stop");
+const arrow = run("var f=([a])=>a;f([7])===7;", new Realm((_line: string): void => {}, "script"));
+check(arrow.type === "normal" && arrow.value.kind === "boolean" && arrow.value.value, "preserved arrow formal input");
 console.log("formal pattern passed");

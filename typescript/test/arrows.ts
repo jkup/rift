@@ -56,7 +56,7 @@ expect(run("var f=()=> 'use strict';f();implicit=3;implicit===3;"), { kind: "boo
 passes("var f=(x /* comment */)=>\nx;f(3)===3;");
 
 for (const text of [
-    "x\n=>x;", "(x)/*\n*/=>x;", "(a,a)=>a;", "({a})=>a;",
+    "x\n=>x;", "(x)/*\n*/=>x;", "(a,a)=>a;",
     "async x=>x;", "var f=()=>arguments;", "()=>super.x;", "()=>new.target;", "1+x=>x;",
     "new ()=>1;", "()=>{}.x;", "()=>{}();", "()=>{}+1;", "((x))=>x;", "(x+y)=>x;",
     "while(true){var f=()=>{break;};}", "while(true){var f=()=>{continue;};}",
@@ -95,4 +95,5 @@ check(exhausted.type === "throw" && exhausted.origin.kind === "resource-limit", 
 const loop = run("var f=()=>{while(true){}};f();", fresh(), 500);
 check(loop.type === "throw" && loop.origin.kind === "resource-limit", "arrow loop bounded");
 check(parse("x=>x;").error !== null, "legacy grammar unchanged");
+passes("var f=({a})=>a;f({a:7})===7;");
 console.log("Arrow functions passed");
