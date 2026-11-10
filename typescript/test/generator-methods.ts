@@ -21,6 +21,7 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+"var o={*f(){yield* [];}};o.f().next().done;",
     "var o={x:2,*f(){yield this.x;yield this.x+1;}};Array.from(o.f()).join(\",\")===\"2,3\";",
     "var key=Symbol(\"key\"),o={*[key](){yield 2;}};o[key].name===\"[key]\"&&o[key]().next().value===2;",
     "var n=0,o={*[(n++,\"f\")](){yield n;}};n===1&&o.f().next().value===1;",
@@ -38,5 +39,5 @@ const cases: string[] = [
     "class C{*f(a){arguments[0]=9;yield a;}}new C().f(2).next().value===2;"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"method case "+i);}
-for(const source of ["class C{*constructor(){}}","var o={get *f(){}};","var o={*f:1};","var o={*f(a,a){}};","class C{static *prototype(){}}","var o={async *f(){}};","var o={*f(){yield* [];}};"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+for(const source of ["class C{*constructor(){}}","var o={get *f(){}};","var o={*f:1};","var o={*f(a,a){}};","class C{static *prototype(){}}","var o={async *f(){}};"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 console.log("generator methods passed");

@@ -524,11 +524,13 @@ class Parser {
         }
         if (this.generatorContext && this.eat("yield")) {
             const keyword = this.token(this.index - 1);
-            if (this.at("*")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield delegation is unsupported", loc);
-            const empty = lineTerminatorBetween(this.source.text, keyword, this.current()) || this.at(";") || this.at("}") || this.current().kind === "eof";
+            const newline = lineTerminatorBetween(this.source.text, keyword, this.current());
+            const delegate = !newline && this.eat("*");
+            const empty = (!delegate && newline) || this.at(";") || this.at("}") || this.current().kind === "eof";
+            if (delegate && empty) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield delegation requires an operand", loc);
             const value = empty ? null : this.expression(1);
             this.statementTerminator();
-            const statement: GeneratorYieldStmt = { kind: "yield", loc, value };
+            const statement: GeneratorYieldStmt = { kind: "yield", loc, value, ...(delegate ? { delegate: true as const } : {}) };
             this.generatorYields.push(statement);
             return statement;
         }

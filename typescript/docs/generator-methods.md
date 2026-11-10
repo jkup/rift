@@ -17,3 +17,5 @@ Bodies use the same admitted statement continuations as generator functions.
 Yield delegation, expression suspension and cleanup scopes remain unsupported.
 See [generator start](generator-start.md) and [generator for loops](generator-for.md)
 for execution and validation boundaries.
+TS-219 adds standalone synchronous yield-star statements and iterator protocol
+resumption; see [generator delegation](generator-delegation.md).

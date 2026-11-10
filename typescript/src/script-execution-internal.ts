@@ -1,3 +1,4 @@
+import { resumeGeneratorDelegate, type GeneratorResumeMode } from "./generator-delegate.js";
 import { iteratorResult } from "./iterator-result.js";
 import { getReferenceValue, putReferenceValue, deleteReferenceValue, referenceCallReceiver, type EvaluationReference, type EvaluationReferenceResult, type ExpressionResult } from "./evaluation-reference.js";
 import { applyBinaryOperator } from "./binary-operator.js";
@@ -1139,7 +1140,6 @@ export type ScriptFrameSnapshot = { readonly realm: Realm; readonly record: Exec
     readonly scopeId: number; readonly lexical: ScriptEnvironment; readonly variable: ScriptEnvironment;
     readonly strict: boolean; readonly thisValue: Value; readonly function: ScriptGuestCallable | null;
     readonly privateEnvironment: null; readonly phase: "instantiation" | "body" };
-type GeneratorResumeMode = "next" | "return" | "throw";
 export type { GeneratorResumeCallable };
 class GeneratorResumeCallable {
     readonly kind = "generator-resume";
@@ -1164,7 +1164,7 @@ type GeneratorSequence = { kind: "sequence"; frame: ScriptFrameSnapshot; body: S
 type GeneratorLoop = { kind: "loop"; frame: ScriptFrameSnapshot; test: Expr; body: Stmt; testFirst: boolean; first: boolean; depth: number };
 type GeneratorForLoop = { kind: "for"; frame: ScriptFrameSnapshot; statement: ForStmt | ForLexicalStmt; outer: ScriptEnvironment | null; first: boolean; depth: number };
 type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop;
-type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null };
+type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
     #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
@@ -1172,7 +1172,7 @@ class GuestGenerator extends GuestObject {
     constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
         super(prototype);
         if (key !== executionKey) throw new Error("invalid generator allocation");
-        this.#continuation = { sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null };
+        this.#continuation = { sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null, delegate: null };
     }
     static is(object: GuestObject): object is GuestGenerator {
         if (!(object instanceof GuestGenerator)) return false;
@@ -2515,7 +2515,7 @@ class ExecutionEngine {
                             return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
                         return updateScriptEmpty(result, value);
                     }
-                    if (result.type === "yield") throw new Error("yield escaped a supported generator sequence");
+                    if (result.type === "yield" || result.type === "delegate") throw new Error("yield escaped a supported generator sequence");
                     if (result.payload.kind !== "empty") value = result.payload;
                 }
             }
@@ -2579,6 +2579,11 @@ class ExecutionEngine {
             case "yield": {
                 const value = stmt.value === null ? normal() : this.#value(stmt.value);
                 if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
+                if (stmt.delegate === true) {
+                    const iterator = getIterator(value.value, this.context, stmt.loc);
+                    if (iterator.type === "throw") return iterator;
+                    return { type: "delegate", iterator: iterator.value, loc: stmt.loc };
+                }
                 return { type: "yield", value: value.value, loc: stmt.loc };
             }
             case "return": case "throw": {
@@ -2889,8 +2894,8 @@ class ExecutionEngine {
         this.activeContext.realm = active.frame.realm;
         this.#inspectionSource = null;
         try {
-            if (mode === "return") return normal(value);
-            if (mode === "throw") {
+            if (mode === "return" && continuation.delegate === null) return normal(value);
+            if (mode === "throw" && continuation.delegate === null) {
                 if (continuation.yieldLoc === null) throw new Error("abrupt generator resume without yield");
                 const result: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value,
                     diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: continuation.yieldLoc } };
@@ -2898,6 +2903,23 @@ class ExecutionEngine {
                 return result;
             }
             while (sequences.length !== 0) {
+                if (continuation.delegate !== null) {
+                    const frame = sequences[sequences.length - 1];
+                    this.#frame = frame.frame;
+                    this.depth = callerDepth + frame.depth + 1;
+                    if (this.depth > 256) {
+                        const failure = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", continuation.delegate.loc);
+                        this.#capture(failure);
+                        return failure;
+                    }
+                    const delegated = resumeGeneratorDelegate(continuation.delegate.iterator, mode, value, this.context, continuation.delegate.loc);
+                    mode = "next";
+                    value = UNDEFINED;
+                    if (delegated.type === "throw") { this.#capture(delegated); return delegated; }
+                    if (delegated.type === "yield") return delegated;
+                    continuation.delegate = null;
+                    if (delegated.type === "return") return normal(delegated.value);
+                }
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
                 this.depth = callerDepth + sequence.depth;
@@ -2925,6 +2947,13 @@ class ExecutionEngine {
                 const result = this.#statement(statement, null, sequences);
                 if (result.type === "throw") { this.#capture(result); return result; }
                 if (result.type === "return") return normal(result.value);
+                if (result.type === "delegate") {
+                    continuation.delegate = { iterator: result.iterator, loc: result.loc };
+                    continuation.yieldLoc = result.loc;
+                    mode = "next";
+                    value = UNDEFINED;
+                    continue;
+                }
                 if (result.type === "yield") {
                     sequence.frame = this.#active();
                     continuation.yieldLoc = result.loc;
