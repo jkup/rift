@@ -2866,3 +2866,5 @@ The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound
 2026-11-10 TS-381 review accepted in docs/class-fields-review.md. TS-382 implements the bounded empty-field slice; initializer contexts, private fields and static blocks remain separate work. TS-360–380 and TS-382 are integrated pending the 867-guest/374-native combined gates.
 
 2026-11-10 TS-392 corrected the historical inventory heading and added a current-roadmap pointer. Historical scope/evidence remains intact; no source, fixture or validation claims changed.
+
+2026-11-10 TS-393 Date host review: all nine UTC field/ISO cases, clipping and clock smoke agree with zero dynamic coverage; four local-field/offset records disagree for historical/extreme London dates. Evidence is retained in docs/validation/date-host-review. Future guest Date uses an explicit UTC default timezone and engine-owned calendar/parsing/formatting, with only the host clock crossing the boundary. This is a deliberate engine timezone policy, not a claim that native local-time behavior matches Node.

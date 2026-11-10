@@ -4719,3 +4719,7 @@ Status: **in progress — isolated successor to TS-390**. Owner: Codex catch-up 
 ## TS-392 — Clarify historical feature inventory
 
 Status: **done — documentation review**. Owner: Codex catch-up chat, 2026-11-10. Mark the early inventory as historical and direct current scope/acceptance questions to the development roadmap. Preserve historical audit text and evidence. Own docs/feature-inventory.md.
+
+## TS-393 — Date host boundary review
+
+Status: **done — local-time discrepancies recorded; UTC/clock boundary reviewed**. Owner: Codex catch-up chat, 2026-11-10. Probe UTC/local fields, timezone offsets, clipping, parsing/formatting and clock support across both hosts before defining guest Date behavior. Keep native static-only/zero-dynamic gates and report host discrepancies explicitly. Own build/date-host-review initially; no guest Date API registration.
