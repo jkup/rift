@@ -16,7 +16,11 @@ export function getIterator(input: Value, context: OperationContext, loc: Locati
     if (method.type === "throw") return method;
     if (method.value.kind !== "object" || method.value.object.callable === null)
         return languageFailure(context.realm, "TypeError", "value is not iterable", loc);
-    const called = context.call(method.value, input, [], loc);
+    return getIteratorFromMethod(input, method.value, context, loc);
+}
+
+export function getIteratorFromMethod(input: Value, method: Value, context: OperationContext, loc: Location): IteratorCompletion {
+    const called = context.call(method, input, [], loc);
     if (called.type === "throw") return called;
     if (called.value.kind !== "object")
         return languageFailure(context.realm, "TypeError", "iterator must be an object", loc);

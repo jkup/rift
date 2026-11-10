@@ -8,6 +8,7 @@ import { toString, numberToString, type StringCompletion } from "../conversion.j
 import { stringConcat } from "../strings.js";
 import { GuestArray } from "../array-object.js";
 import { createArrayWithLength } from "../array-create.js";
+import { arrayFrom } from "../array-from.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import type { Location } from "../syntax.js";
 
@@ -75,6 +76,7 @@ export function registerArray(realm: Realm): GuestObject {
         return normal({ kind: "boolean", value: value.kind === "object" && value.object instanceof GuestArray });
     });
     realm.registerBuiltin(constructor, "of", 0, (receiver, args, context, loc) => arrayOf(receiver, args, context, loc));
+    realm.registerBuiltin(constructor, "from", 1, (receiver, args, context, loc) => arrayFrom(receiver, args, context, loc));
     realm.arrayPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     realm.defineScriptGlobal("Array", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     return constructor;

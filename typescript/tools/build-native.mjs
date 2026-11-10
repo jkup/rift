@@ -58,6 +58,7 @@ const entries = [
     ["test/regexp-literal-scan.ts", "regexp-literal-scan"],
     ["test/regexp-literals.ts", "regexp-literals"],
     ["test/array-of.ts", "array-of"],
+    ["test/array-from.ts", "array-from"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

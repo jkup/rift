@@ -91,11 +91,11 @@ function inventory(a: Realm): void {
                 const name=i===0?"Object":i===1?"Function":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
                 desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
                 if (name === "Number") keys(f, numberKeys);
-                else if (name === "Array") keys(f, ["name", "length", "prototype", "isArray", "of"]);
+                else if (name === "Array") keys(f, ["name", "length", "prototype", "isArray", "of", "from"]);
                 else if (name === "Object") keys(f, objectConstructorKeys());
                 else if (name === "String") keys(f, ["name", "length", "prototype", "fromCharCode", "fromCodePoint"]);
                 else keys(f, ["name", "length", "prototype"]);
-                if(name==="Array"){method(a,f,"isArray","isArray",1);method(a,f,"of","of",0);}
+                if(name==="Array"){method(a,f,"isArray","isArray",1);method(a,f,"of","of",0);method(a,f,"from","from",1);}
                 if (name === "Object") {
                     for (const expected of objectMethods) method(a, f, expected.name, expected.name, expected.length);
                 }

@@ -3832,7 +3832,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-184 — Generic Array.from factory
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Build on reviewed TS-183 with iterable and array-like construction, mapper validation/receiver/index behavior, captured iterator method, exact constructor ordering, own data properties and final length assignment. Reuse iterator completion/close rules, preserve original throws and engine-stop boundaries, and cover hostile accessors, custom constructors, realms and budgets. Own Array factory registration, iterator-from-method extraction, focused tests/manifests and notes in build/array-from-draft. Canonical literal validation remains frozen; Array.fromAsync and species support remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Build on reviewed TS-183 with iterable and array-like construction, mapper validation/receiver/index behavior, captured iterator method, exact constructor ordering, own data properties and final length assignment. Reuse iterator completion/close rules, preserve original throws and engine-stop boundaries, and cover hostile accessors, custom constructors, realms and budgets. Own Array factory registration, iterator-from-method extraction, focused tests/manifests and notes in build/array-from-draft. Canonical literal validation remains frozen; Array.fromAsync and species support remain separate.
 
 ## TS-185 — String repetition
 
