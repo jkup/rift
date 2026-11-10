@@ -4622,7 +4622,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-369 — Temporal PlainYearMonth ISO parsing
 
-Status: **in progress — isolated successor to TS-368**. Owner: Codex catch-up chat, 2026-11-10. Parse shortened year-month and full date/time forms through shared ISO scanner/annotations. Keep syntax parsing independent of public month bounds and conversion normalization. Share shortened year-month scanning with calendar strings. Require basic/extended forms, reference days, offsets, annotations and invalid inputs on both hosts. Own src/temporal-iso-parser.ts, src/temporal-calendar-parse.ts and tests/manifests/docs in build/temporal-plain-year-month-parse-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse shortened year-month and full date/time forms through shared ISO scanner/annotations. Keep syntax parsing independent of public month bounds and conversion normalization. Share shortened year-month scanning with calendar strings. Require basic/extended forms, reference days, offsets, annotations and invalid inputs on both hosts. Own src/temporal-iso-parser.ts, src/temporal-calendar-parse.ts and tests/manifests/docs in build/temporal-plain-year-month-parse-draft/.
 
 ## TS-370 — Temporal PlainYearMonth conversion and comparison
 

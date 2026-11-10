@@ -1,5 +1,5 @@
 import { isValidISODate } from "./iso-calendar.js";
-import { TemporalISOScanner, temporalISODate, temporalISOTime, temporalISOAnnotations, validAnnotationValue } from "./temporal-iso-parser.js";
+import { TemporalISOScanner, temporalISOYearMonth, temporalISODate, temporalISOTime, temporalISOAnnotations, validAnnotationValue } from "./temporal-iso-parser.js";
 import { parseTemporalPlainTime } from "./temporal-plain-time-parse.js";
 import { parseUTCOffset } from "./utc-offset.js";
 
@@ -25,14 +25,8 @@ function dateTimeCalendar(text: string): string | null {
 }
 
 function yearMonthCalendar(text: string): string | null {
-    const scanner = new TemporalISOScanner(text), sign = scanner.peek();
-    const signed = sign === "+" || sign === "-";
-    if (signed) scanner.index++;
-    const year = scanner.digits(signed ? 6 : 4);
-    if (year < 0 || (sign === "-" && year === 0)) return null;
-    scanner.take("-");
-    const month = scanner.digits(2);
-    return month >= 1 && month <= 12 ? calendarAnnotation(scanner, true) : null;
+    const scanner = new TemporalISOScanner(text);
+    return temporalISOYearMonth(scanner) === null ? null : calendarAnnotation(scanner, true);
 }
 
 function monthDayCalendar(text: string): string | null {

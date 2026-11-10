@@ -137,3 +137,13 @@ export function temporalISOTime(scanner: TemporalISOScanner): TimeFields | null 
     }
     return { hour, minute, second, millisecond: Math.floor(fraction / 1000000), microsecond: Math.floor(fraction / 1000) % 1000, nanosecond: fraction % 1000 };
 }
+
+export function temporalISOYearMonth(scanner: TemporalISOScanner): ISODate | null {
+    const sign = scanner.peek(), signed = sign === "+" || sign === "-";
+    if (signed) scanner.index++;
+    const year = scanner.digits(signed ? 6 : 4);
+    if (year < 0 || (sign === "-" && year === 0)) return null;
+    scanner.take("-");
+    const month = scanner.digits(2);
+    return month >= 1 && month <= 12 ? { year: sign === "-" ? -year : year, month, day: 1 } : null;
+}
