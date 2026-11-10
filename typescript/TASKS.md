@@ -4266,7 +4266,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-283 — Shared class construction and method definition
 
-Status: **in progress — isolated successor to TS-282**. Owner: Codex catch-up chat, 2026-11-10. Extract class constructor/prototype creation and method definition from ordinary class evaluation for reuse by later continuations. Preserve class-name TDZ, strict scope, naming, computed-key order, accessors and outer-frame restoration. Own class evaluator helpers, semantic tests/manifests and docs in build/class-evaluation-draft. Class suspension remains separate. Require both-host/static, class context and existing derived/super regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract class constructor/prototype creation and method definition from ordinary class evaluation for reuse by later continuations. Preserve class-name TDZ, strict scope, naming, computed-key order, accessors and outer-frame restoration. Own class evaluator helpers, semantic tests/manifests and docs in build/class-evaluation-draft. Class suspension remains separate. Require both-host/static, class context and existing derived/super regressions.
 
 ## TS-284 — Suspended class heritage
 

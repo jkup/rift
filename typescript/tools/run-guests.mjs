@@ -733,6 +733,7 @@ executeDriver("nullish-coalescing", { stdout: "nullish coalescing passed\n" });
 executeDriver("logical-assignment", { stdout: "logical assignment passed\n" });
 executeDriver("generator-logical-assignment", { stdout: "generator logical assignment passed\n" });
 executeDriver("generator-optional-chain", { stdout: "generator optional chain passed\n" });
+executeDriver("class-evaluation", { stdout: "class evaluation passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

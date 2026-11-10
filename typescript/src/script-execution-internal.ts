@@ -14,7 +14,7 @@ import { copyDataProperties } from "./copy-data-properties.js";
 import { regExpCreate } from "./builtins/regexp.js";
 import type { SuperContext } from "./syntax.js";
 import { getPrototypeFromConstructor } from "./constructor-prototype.js";
-import type { ClassExpr } from "./syntax.js";
+import type { ClassExpr, ClassElement } from "./syntax.js";
 import type { ArrayPattern, ObjectPattern, DestructuringPattern } from "./syntax.js";
 import { instanceofOperator } from "./builtins/function.js";
 import { createArgumentsObject } from "./arguments-object.js";
@@ -2240,6 +2240,46 @@ class ExecutionEngine {
         if (assigned.type !== "normal") throw new Error("invalid pattern assignment completion");
         return normal();
     }
+    #createClassConstructor(expr: ClassExpr, scopeId: number, environment: ScriptDeclarativeEnvironment, inferredName: string | null,
+        superclass: Value | null): { type: "normal"; constructor: GuestObject; prototype: GuestObject } | ThrowCompletion {
+        const active = this.#active();
+        let prototypeParent: GuestObject | null = active.realm.objectPrototype;
+        let constructorParent = active.realm.functionPrototype;
+        if (superclass !== null) {
+            if (superclass.kind === "null") prototypeParent = null;
+            else {
+                const loc = expr.heritage === null ? expr.loc : expr.heritage.loc;
+                if (superclass.kind !== "object" || superclass.object.constructorSlot === null)
+                    return languageFailure(active.realm, "TypeError", "class heritage is not a constructor", loc);
+                const parent = superclass.object.internalGet("prototype", superclass, this.context, loc);
+                if (parent.type === "throw") return parent;
+                if (parent.value.kind !== "object" && parent.value.kind !== "null")
+                    return languageFailure(active.realm, "TypeError", "superclass prototype is not an object or null", loc);
+                prototypeParent = parent.value.kind === "object" ? parent.value.object : null;
+                constructorParent = superclass.object;
+            }
+        }
+        const prototype = new GuestObject(prototypeParent);
+        const constructor = ExecutableScript.materializeClassConstructor(active.record, scopeId, environment,
+            expr.name === null ? (inferredName ?? "") : expr.name.name, prototype, constructorParent, this.context, executionKey);
+        if (constructor.type === "throw") return constructor;
+        if (constructor.value.kind !== "object") throw new Error("class constructor result invariant");
+        return { type: "normal", constructor: constructor.value.object, prototype };
+    }
+    #defineClassMethod(element: ClassElement, key: PropertyKey, constructor: GuestObject, prototype: GuestObject): ThrowCompletion | null {
+        const propertyName = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
+        const name = element.kind === "method" ? propertyName : element.kind + " " + propertyName;
+        const method = this.#value(element.value, name);
+        if (method.type === "throw") return method;
+        const object = element.isStatic ? constructor : prototype;
+        ExecutableScript.makeMethod(method.value, object, executionKey);
+        const descriptor = element.kind === "get" ? { get: method.value, enumerable: false, configurable: true }
+            : element.kind === "set" ? { set: method.value, enumerable: false, configurable: true }
+            : { value: method.value, writable: true, enumerable: false, configurable: true };
+        const defined = object.defineOwnProperty(key, descriptor, this.context, element.value.loc);
+        if (defined.type === "throw") return defined;
+        return defined.value ? null : languageFailure(this.context.realm, "TypeError", "cannot define class method", element.value.loc);
+    }
     #classExpression(expr: ClassExpr, inferredName: string | null): ValueCompletion {
         const saved = this.#active();
         const scopeId = ExecutableScript.scopeOfNode(saved.record, expr, executionKey);
@@ -2250,52 +2290,29 @@ class ExecutionEngine {
         }
         this.#frame = { ...saved, scopeId, lexical: environment, strict: true };
         try {
-            let prototypeParent: GuestObject | null = saved.realm.objectPrototype;
-            let constructorParent = saved.realm.functionPrototype;
+            let superclass: Value | null = null;
             if (expr.heritage !== null) {
-                const superclass = this.#value(expr.heritage);
-                if (superclass.type === "throw") return superclass;
-                if (superclass.value.kind === "null") prototypeParent = null;
-                else {
-                    if (superclass.value.kind !== "object" || superclass.value.object.constructorSlot === null)
-                        return languageFailure(saved.realm, "TypeError", "class heritage is not a constructor", expr.heritage.loc);
-                    const parent = superclass.value.object.internalGet("prototype", superclass.value, this.context, expr.heritage.loc);
-                    if (parent.type === "throw") return parent;
-                    if (parent.value.kind !== "object" && parent.value.kind !== "null")
-                        return languageFailure(saved.realm, "TypeError", "superclass prototype is not an object or null", expr.heritage.loc);
-                    prototypeParent = parent.value.kind === "object" ? parent.value.object : null;
-                    constructorParent = superclass.value.object;
-                }
+                const evaluated = this.#value(expr.heritage);
+                if (evaluated.type === "throw") return evaluated;
+                superclass = evaluated.value;
             }
-            const prototype = new GuestObject(prototypeParent);
-            const constructor = ExecutableScript.materializeClassConstructor(saved.record, scopeId, environment,
-                expr.name === null ? (inferredName ?? "") : expr.name.name, prototype, constructorParent, this.context, executionKey);
-            if (constructor.type === "throw") return constructor;
-            if (constructor.value.kind !== "object") throw new Error("class constructor result invariant");
+            const created = this.#createClassConstructor(expr, scopeId, environment, inferredName, superclass);
+            if (created.type === "throw") return created;
             for (const element of expr.elements) {
                 if (element.value === expr.constructorMethod) continue;
                 const keyValue = this.#value(element.key);
                 if (keyValue.type === "throw") return keyValue;
                 const key = toPropertyKey(keyValue.value, this.context, element.key.loc);
                 if (key.type === "throw") return key;
-                const propertyName = typeof key.value === "string" ? key.value : key.value.description === undefined ? "" : "[" + key.value.description + "]";
-                const name = element.kind === "method" ? propertyName : element.kind + " " + propertyName;
-                const method = this.#value(element.value, name);
-                if (method.type === "throw") return method;
-                const object = element.isStatic ? constructor.value.object : prototype;
-                ExecutableScript.makeMethod(method.value, object, executionKey);
-                const descriptor = element.kind === "get" ? { get: method.value, enumerable: false, configurable: true }
-                    : element.kind === "set" ? { set: method.value, enumerable: false, configurable: true }
-                    : { value: method.value, writable: true, enumerable: false, configurable: true };
-                const defined = object.defineOwnProperty(key.value, descriptor, this.context, element.value.loc);
-                if (defined.type === "throw") return defined;
-                if (!defined.value) return languageFailure(saved.realm, "TypeError", "cannot define class method", element.value.loc);
+                const defined = this.#defineClassMethod(element, key.value, created.constructor, created.prototype);
+                if (defined !== null) return defined;
             }
+            const value: Value = { kind: "object", object: created.constructor };
             if (expr.name !== null) {
-                const initialized = environment.initializeBinding(expr.name.name, constructor.value, this.context, expr.name.loc);
+                const initialized = environment.initializeBinding(expr.name.name, value, this.context, expr.name.loc);
                 if (initialized.type === "throw") return initialized;
             }
-            return constructor;
+            return normal(value);
         } finally { this.#frame = saved; }
     }
     #objectPattern(pattern: ObjectPattern, input: Value, environment: ScriptEnvironment | null): ValueCompletion {
