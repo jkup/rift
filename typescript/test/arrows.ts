@@ -64,6 +64,12 @@ for (const text of [
 ]) {
     const realm = fresh();
     const prepared = prepareBoundedScript({ id: "invalid-arrow", text: "var effect=1;" + text }, realm);
+    if (text === "async x=>x;") {
+        check(prepared.kind === "ready", "async arrow prepares");
+        expect(run("typeof effect;", realm), { kind: "string", value: "undefined" }, "async arrow preparation is inert");
+        passes("(async x=>x)(7) instanceof Promise;");
+        continue;
+    }
     if (text === "var f=()=>arguments;") {
         check(prepared.kind === "ready", "arguments arrow prepares");
         expect(run("typeof effect;", realm), { kind: "string", value: "undefined" }, "arguments preparation is inert");

@@ -4096,7 +4096,7 @@ Status: **done — accepted in async-iteration milestone**. Owner: Codex catch-u
 
 ## TS-243 — Async arrow functions
 
-Status: **in progress — isolated successor to TS-242**. Owner: Codex catch-up chat, 2026-11-10. Extend arrow cover parsing to async single/parenthesized parameters with line-terminator distinctions and await-aware bodies. Reuse async activation while preserving lexical this/arguments/super/new.target and nonconstructability. Share suspension admission between function and arrow bodies. Own parser, focused tests/manifests and docs in build/async-arrow-draft; add runtime changes only if existing arrow/async metadata interaction requires them. Async generators remain separate. Require both-host/static checks and original async-arrow fixture where present.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend arrow cover parsing to async single/parenthesized parameters with line-terminator distinctions and await-aware bodies. Reuse async activation while preserving lexical this/arguments/super/new.target and nonconstructability. Share suspension admission between function and arrow bodies. Own parser, focused tests/manifests and docs in build/async-arrow-draft; add runtime changes only if existing arrow/async metadata interaction requires them. Async generators remain separate. Require both-host/static checks and original async-arrow fixture where present.
 
 ## TS-244 — Duplicate async/generator lexical declarations
 

@@ -181,6 +181,7 @@ const cases: {source:string;before:string;after:string}[] = [
         "after": "true"
     }
 ];
+cases.push({ source: "var f=async()=>7;f().then(v=>out+=v);", before: "", after: "7" });
 for(const test of cases){
  const realm=fresh(),session=createScriptSession();
  check(run("var out='';"+test.source,realm,session).type === "normal","setup: "+test.source);
@@ -189,7 +190,7 @@ for(const test of cases){
  check(!drained.fatal&&drained.failures.length===0,"checkpoint: "+test.source);
  string("out",test.after,realm,session);
 }
-for(const text of ['async function* f(){}','var f=async()=>7;','if(true) async function f(){}','label: async function f(){}','async\nfunction f(){}'])
+for(const text of ['async function* f(){}','if(true) async function f(){}','label: async function f(){}'])
  check(prepareBoundedScript({id:"boundary",text},fresh()).kind === "blocked","async boundary "+text);
 {
  const realm=fresh(),session=createScriptSession({maxSteps:100,maxCalls:16});
@@ -211,5 +212,10 @@ for(const text of ['async function* f(){}','var f=async()=>7;','if(true) async f
  const drained=drainScriptJobs(session);check(!drained.fatal&&drained.failures.length===0,"foreign async jobs");string('out','7true',B,session);
  check(creator.inspect().steps===before&&session.inspect().steps>0,"async current session");
  const state=session.inspect();check(state.active===null&&state.calls===0&&state.depth===0,"async caller restored");
+}
+{
+ const realm=fresh(),session=createScriptSession();
+ check(prepareBoundedScript({id:"newline",text:'async\nfunction f(){}'},realm).kind==="ready","newline separates async identifier and declaration");
+ const result=run('async\nfunction f(){}',realm,session);check(result.type==="throw"&&result.diagnostic.name==="ReferenceError","original newline source reads unbound async");
 }
 console.log("async function passed");

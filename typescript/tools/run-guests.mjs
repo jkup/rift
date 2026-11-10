@@ -693,6 +693,7 @@ executeDriver("async-await", { stdout: "async await passed\n" });
 executeDriver("async-methods", { stdout: "async methods passed\n" });
 executeDriver("async-iterator", { stdout: "async iterator passed\n" });
 executeDriver("for-await", { stdout: "for await passed\n" });
+executeDriver("async-arrow", { stdout: "async arrow passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

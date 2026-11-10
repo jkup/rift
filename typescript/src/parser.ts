@@ -273,7 +273,7 @@ class Parser {
     }
     name(): string {
         const t = this.take();
-        if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && (t.text === "arguments" || t.text === "eval")))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
+        if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async")))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
         return t.text;
     }
     program(): ParseResult {
@@ -585,7 +585,7 @@ class Parser {
         return { kind: "expression", loc, expression };
     }
     private labelIdentifier(token: Token): boolean {
-        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval");
+        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval" || token.text === "async");
     }
     private labelAhead(index: number): boolean {
         return this.labelIdentifier(this.token(index)) && this.token(index + 1)?.kind === "punct" && this.token(index + 1)?.text === ":";
@@ -764,33 +764,7 @@ class Parser {
             } else if (isSuspendingGeneratorExpression(node.test) || isSuspendingGeneratorExpression(node.consequent) || isSuspendingGeneratorExpression(node.alternate)) node.suspends = true;
         }
     }
-    functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false, asynchronous = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
-        const savedAsync = this.asyncContext, savedAwaits = this.awaits;
-        this.asyncContext = false;
-        this.awaits = [];
-        const savedGenerator = this.generatorContext, savedYields = this.generatorYields;
-        this.generatorContext = false;
-        this.generatorYields = [];
-        const savedNewTarget = this.newTargetAllowed;
-        const savedSuperContext = this.superContext;
-        this.superContext = superContext;
-        this.newTargetAllowed = true;
-        const { params, rest, parameters } = this.formalParameters(loc, false);
-        if (generator && new Set(params).size !== params.length)
-            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate generator parameter", loc);
-        const bodyLoc = this.current().loc;
-        this.expect("{");
-        const bodyIndex = this.index;
-        const loops = this.loops;
-        const switches = this.switches;
-        const labels = this.labels;
-        this.loops = 0;
-        this.switches = 0;
-        this.labels = [];
-        this.functions++;
-        this.generatorContext = generator;
-        this.asyncContext = asynchronous;
-        const body = this.list(true, params);
+    private admitSuspendingBody(body: Stmt[]): void {
         if (this.generatorYields.length !== 0 || this.awaits.length !== 0) {
             const supported = new Set<Stmt | Expr>();
             const pending = [...body];
@@ -825,6 +799,35 @@ class Parser {
             for (const expression of this.generatorYields) if (!supported.has(expression))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield in this expression or control flow is unsupported", expression.loc);
         }
+    }
+    functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false, asynchronous = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
+        const savedAsync = this.asyncContext, savedAwaits = this.awaits;
+        this.asyncContext = false;
+        this.awaits = [];
+        const savedGenerator = this.generatorContext, savedYields = this.generatorYields;
+        this.generatorContext = false;
+        this.generatorYields = [];
+        const savedNewTarget = this.newTargetAllowed;
+        const savedSuperContext = this.superContext;
+        this.superContext = superContext;
+        this.newTargetAllowed = true;
+        const { params, rest, parameters } = this.formalParameters(loc, false);
+        if (generator && new Set(params).size !== params.length)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate generator parameter", loc);
+        const bodyLoc = this.current().loc;
+        this.expect("{");
+        const bodyIndex = this.index;
+        const loops = this.loops;
+        const switches = this.switches;
+        const labels = this.labels;
+        this.loops = 0;
+        this.switches = 0;
+        this.labels = [];
+        this.functions++;
+        this.generatorContext = generator;
+        this.asyncContext = asynchronous;
+        const body = this.list(true, params);
+        this.admitSuspendingBody(body);
         this.generatorContext = savedGenerator;
         this.generatorYields = savedYields;
         this.asyncContext = savedAsync;
@@ -843,11 +846,13 @@ class Parser {
         const name = this.name();
         return this.arrowBody(first, [name], false, [{ kind: "identifier", site: { name, start: first.start, end: first.end, loc: first.loc }, initializer: null }], allowIn);
     }
-    private arrowBody(first: Token, params: string[], rest: boolean, parameters: FormalParameter[], allowIn: boolean): Expr {
-        const savedAsync = this.asyncContext;
-        this.asyncContext = false;
-        const savedGenerator = this.generatorContext;
+    private arrowBody(first: Token, params: string[], rest: boolean, parameters: FormalParameter[], allowIn: boolean, asynchronous = false): Expr {
+        const savedAsync = this.asyncContext, savedAwaits = this.awaits;
+        this.asyncContext = asynchronous;
+        this.awaits = [];
+        const savedGenerator = this.generatorContext, savedYields = this.generatorYields;
         this.generatorContext = false;
+        this.generatorYields = [];
         if (this.current().loc.line !== this.token(this.index - 1).loc.line)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "line terminator before arrow", this.current().loc);
         this.expect("=>");
@@ -863,15 +868,18 @@ class Parser {
         const body: Stmt[] = expressionBody
             ? [{ kind: "return", loc: this.current().loc, value: this.expression(1, allowIn) }]
             : this.list(true, params);
+        this.admitSuspendingBody(body);
+        this.awaits = savedAwaits;
         this.functions--;
         this.loops = loops;
         this.switches = switches;
         this.labels = labels;
         this.generatorContext = savedGenerator;
+        this.generatorYields = savedYields;
         this.asyncContext = savedAsync;
         if (!expressionBody) this.checkParameterDirective(rest, parameters, bodyIndex, first.loc);
-        return { kind: "function", loc: first.loc, params, parameters, body,
-            source: { source: this.source, start: first.start, end: this.token(this.index - 1).end, arrow: true, expressionBody, rest, bodyLoc } };
+        const source: FunctionSource = { source: this.source, start: first.start, end: this.token(this.index - 1).end, arrow: true, expressionBody, rest, bodyLoc, ...(asynchronous ? { async: true } : {}) };
+        return { kind: "function", loc: first.loc, params, parameters, body, source };
     }
     chainLink(base: Expr, link: ChainLink): Expr {
         if (base.kind === "chain" && !this.parenthesized.has(base)) { base.links.push(link); return base; }
@@ -1127,7 +1135,7 @@ class Parser {
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", token.loc);
                     name = token.kind === "number" ? String(Number(token.text.replaceAll("_", ""))) : token.text;
                     key = { kind: "literal", loc: token.loc, value: name };
-                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval");
+                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async");
                 }
                 if (this.at("(")) {
                     const fn = this.functionTail(first.loc, first.start, "method", generator, asynchronous);
@@ -1254,21 +1262,23 @@ class Parser {
             rest: pattern.rest === null ? null : this.coverBinding(pattern.rest, bindings) };
         throw new Error("unexpected binding in expression cover");
     }
-    private parenthesizedExpression(first: Token, allowIn: boolean, allowArrow: boolean): Expr {
-        const values: { value: Expr; token: Token }[] = [];
+    private parenthesizedExpression(first: Token, allowIn: boolean, allowArrow: boolean, asyncPrefix: Token | null = null): Expr {
+        const values: { value: Expr; token: Token; spread: boolean }[] = [];
         let rest = false, trailingComma = false;
         while (this.error === null && !this.at(")")) {
             rest = this.eat("...");
             const token = this.current();
-            values.push({ value: this.expression(1), token });
-            if (rest || !this.eat(",")) break;
+            values.push({ value: this.expression(1), token, spread: rest });
+            if ((rest && asyncPrefix === null) || !this.eat(",")) break;
             trailingComma = this.at(")");
         }
         this.expect(")");
         if (allowArrow && this.at("=>")) {
             const params: string[] = [], parameters: FormalParameter[] = [];
             for (let i = 0; i < values.length; i++) {
-                const { value, token } = values[i];
+                const { value, token, spread } = values[i];
+                if (spread && (i !== values.length - 1 || trailingComma))
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "rest parameter must be last", token.loc);
                 if (this.isParenthesized(value)) {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "parenthesized arrow parameter", token.loc);
                     continue;
@@ -1292,7 +1302,11 @@ class Parser {
                 else if (pattern.kind === "array-pattern" || pattern.kind === "object-pattern")
                     parameters.push({ kind: "pattern", pattern, bindings, initializer });
             }
-            return this.arrowBody(first, params, rest, parameters, allowIn);
+            return this.arrowBody(asyncPrefix ?? first, params, rest, parameters, allowIn, asyncPrefix !== null);
+        }
+        if (asyncPrefix !== null) {
+            const args: Argument[] = values.map(entry => entry.spread ? { kind: "spread", loc: entry.token.loc, expression: entry.value } : entry.value);
+            return { kind: "call", loc: asyncPrefix.loc, callee: { kind: "identifier", loc: asyncPrefix.loc, name: "async" }, args };
         }
         if (values.length === 0 || rest || trailingComma)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid parenthesized expression", first.loc);
@@ -1326,6 +1340,13 @@ class Parser {
     primary(allowIn: boolean, allowArrow = false): Expr {
         const t = this.take();
         const loc = t.loc;
+        if (this.structuralPlan() && allowArrow && t.text === "async" && t.loc.line === this.current().loc.line) {
+            if (this.current().kind === "word" && this.token(this.index + 1).text === "=>") {
+                const parameter = this.current(), name = this.name();
+                return this.arrowBody(t, [name], false, [{ kind: "identifier", site: { name, start: parameter.start, end: parameter.end, loc: parameter.loc }, initializer: null }], allowIn, true);
+            }
+            if (this.at("(")) { const first = this.take(); return this.parenthesizedExpression(first, allowIn, true, t); }
+        }
         if (this.asyncContext && t.text === "await") {
             const expression: AwaitExpr = { kind: "await", loc, value: this.expression(14, allowIn) };
             this.awaits.push(expression);
@@ -1514,7 +1535,7 @@ class Parser {
             this.expect("}");
             return { kind: "object", loc, properties };
         }
-        if (t.kind === "word" && (!RESERVED.includes(" " + t.text + " ") || (this.structuralPlan() && (t.text === "arguments" || t.text === "eval")))) return { kind: "identifier", loc, name: t.text };
+        if (t.kind === "word" && (!RESERVED.includes(" " + t.text + " ") || (this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async")))) return { kind: "identifier", loc, name: t.text };
         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: " + t.text, loc);
         return { kind: "literal", loc, value: null };
     }
