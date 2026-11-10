@@ -4794,7 +4794,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-411 — ZonedDateTime projections and timezone/calendar replacement
 
-Status: **in progress — isolated successor to TS-410**. Owner: Codex catch-up chat, 2026-11-10. Add intrinsic toInstant/toPlainDate/toPlainTime/toPlainDateTime plus withTimeZone/withCalendar for supported UTC/fixed-offset ISO values. Preserve exact epochs, local projections, receiver-first validation, fresh intrinsic results, slot-based branded options and defining-Realm ownership; cover endpoint projections on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-parts-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add intrinsic toInstant/toPlainDate/toPlainTime/toPlainDateTime plus withTimeZone/withCalendar for supported UTC/fixed-offset ISO values. Preserve exact epochs, local projections, receiver-first validation, fresh intrinsic results, slot-based branded options and defining-Realm ownership; cover endpoint projections on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-parts-draft/.
 
 ## TS-412 — Temporal Now and Instant ZonedDateTime factories
 
