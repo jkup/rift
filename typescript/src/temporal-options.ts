@@ -101,18 +101,7 @@ export function temporalRoundingIncrement(options: GuestObject, context: Operati
     return { type: "normal", value: integer };
 }
 
-export function temporalUnitNanoseconds(name: string): bigint | null {
-    const unit = name.endsWith("s") ? name.slice(0, -1) : name;
-    switch (unit) {
-        case "hour": return 3600000000000n;
-        case "minute": return 60000000000n;
-        case "second": return 1000000000n;
-        case "millisecond": return 1000000n;
-        case "microsecond": return 1000n;
-        case "nanosecond": return 1n;
-        default: return null;
-    }
-}
+export { temporalUnitNanoseconds } from "./temporal-time.js";
 
 export function temporalCalendarName(options: GuestObject, context: OperationContext, loc: Location): StringCompletion {
     const read = options.internalGet("calendarName", { kind: "object", object: options }, context, loc);

@@ -225,6 +225,7 @@ const entries = [
     ["test/iso-date-time-difference.ts", "iso-date-time-difference"],
     ["test/temporal-date-time-difference-options.ts", "temporal-date-time-difference-options"],
     ["test/temporal-calendar-date-time-round.ts", "temporal-calendar-date-time-round"],
+    ["test/temporal-day-time-round.ts", "temporal-day-time-round"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

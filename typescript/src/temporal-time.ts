@@ -29,3 +29,16 @@ export function timeFromNanoseconds(value: bigint): TimeFields | null {
         millisecond: Math.floor(fraction / 1000000), microsecond: Math.floor(fraction / 1000) % 1000, nanosecond: fraction % 1000,
     };
 }
+
+export function temporalUnitNanoseconds(name: string): bigint | null {
+    const unit = name.endsWith("s") ? name.slice(0, -1) : name;
+    switch (unit) {
+        case "hour": return 3600000000000n;
+        case "minute": return 60000000000n;
+        case "second": return 1000000000n;
+        case "millisecond": return 1000000n;
+        case "microsecond": return 1000n;
+        case "nanosecond": return 1n;
+        default: return null;
+    }
+}

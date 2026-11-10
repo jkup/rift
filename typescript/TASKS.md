@@ -4598,7 +4598,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-363 — Exact day/time nudging for date-time differences
 
-Status: **in progress — isolated successor to TS-362**. Owner: Codex catch-up chat, 2026-11-10. Add pure exact rounding of combined difference days and nanoseconds, preserving calendar fields, signed whole-day expansion and nudged epoch values. Keep internal rounded endpoints independent of public DateTime construction bounds. Require all signed tie modes, day carries, time-only largest units, zero carry signals and invalid increments. Relative calendar carries and public methods remain separate. Own  and tests/manifests/docs in build/temporal-day-time-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add pure exact rounding of combined difference days and nanoseconds, preserving calendar fields, signed whole-day expansion and nudged epoch values. Keep internal rounded endpoints independent of public DateTime construction bounds. Require all signed tie modes, day carries, time-only largest units, zero carry signals and invalid increments. Relative calendar carries and public methods remain separate. Own  and tests/manifests/docs in build/temporal-day-time-round-draft/.
  Pure unit-length arithmetic moves to temporal-time.ts with the options-module export retained; native isolated-import evidence exposed the runtime dependency.
 ## TS-364 — Relative ISO date-time rounding
 
