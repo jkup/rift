@@ -726,10 +726,14 @@ class Parser {
         while (pending.length !== 0) {
             const entry = pending.pop()!, node = entry.expression;
             if (node.kind === "yield") { supported.add(node); continue; }
-            if (node.kind !== "binary") continue;
+            if (node.kind !== "binary" && node.kind !== "conditional") continue;
             if (!entry.visited) {
-                pending.push({ expression: node, visited: true }, { expression: node.right, visited: false }, { expression: node.left, visited: false });
-            } else if (isSuspendingGeneratorExpression(node.left) || isSuspendingGeneratorExpression(node.right)) node.suspends = true;
+                pending.push({ expression: node, visited: true });
+                if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
+                else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
+            } else if (node.kind === "binary") {
+                if (isSuspendingGeneratorExpression(node.left) || isSuspendingGeneratorExpression(node.right)) node.suspends = true;
+            } else if (isSuspendingGeneratorExpression(node.test) || isSuspendingGeneratorExpression(node.consequent) || isSuspendingGeneratorExpression(node.alternate)) node.suspends = true;
         }
     }
     functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {

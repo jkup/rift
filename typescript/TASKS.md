@@ -4052,7 +4052,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-233 — Conditional expression continuations in generators
 
-Status: **in progress — isolated successor to TS-232**. Owner: Codex catch-up chat, 2026-11-10. Extend the explicit expression frame stack to ternary tests and selected branches. Evaluate the test once, retain only the chosen branch at runtime, preserve value semantics, nested binary/yield-star behavior, abrupt discard and depth accounting. Own syntax/parser markers, expression-frame types/private evaluation, focused tests/manifests and notes in build/generator-conditional-draft. Calls, unary expressions and yielding heads remain separate. Require both-host/static checks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend the explicit expression frame stack to ternary tests and selected branches. Evaluate the test once, retain only the chosen branch at runtime, preserve value semantics, nested binary/yield-star behavior, abrupt discard and depth accounting. Own syntax/parser markers, expression-frame types/private evaluation, focused tests/manifests and notes in build/generator-conditional-draft. Calls, unary expressions and yielding heads remain separate. Require both-host/static checks.
 
 ## TS-234 — Unary value operations across suspension
 

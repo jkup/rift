@@ -1,4 +1,4 @@
-import { isSuspendingGeneratorExpression, type GeneratorBinaryFrame } from "./generator-expression.js";
+import { isSuspendingGeneratorExpression, type GeneratorExpressionFrame } from "./generator-expression.js";
 import { hasParameterExpressions, hasParameterPatterns } from "./formal-parameters.js";
 import type { GeneratorYieldReceiver } from "./generator-yield-receiver.js";
 import type { GeneratorYieldStmt } from "./syntax.js";
@@ -1185,7 +1185,7 @@ type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statemen
 type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number };
 type GeneratorFrame = GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
-type GeneratorContinuation = { sequences: GeneratorFrame[]; expressionFrames: GeneratorBinaryFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
+type GeneratorContinuation = { sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 type GeneratorExpressionResult = GeneratorResumeResult | { type: "suspended-delegate" };
 class GuestGenerator extends GuestObject {
@@ -2960,7 +2960,7 @@ class ExecutionEngine {
     }
     #generatorExpression(expression: Expr, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
         if (expression.kind === "yield") return this.#generatorYield(expression, receiver);
-        if (expression.kind !== "binary" || expression.suspends !== true) throw new Error("invalid suspended expression");
+        if (!isSuspendingGeneratorExpression(expression)) throw new Error("invalid suspended expression");
         return { type: "generator-expression", expression, receiver };
     }
     #generatorYield(expression: GeneratorYieldStmt, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
@@ -2985,7 +2985,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || (expression.kind === "binary" && expression.suspends === true)) {
+                if (expression.kind === "yield" || ((expression.kind === "binary" || expression.kind === "conditional") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -2995,6 +2995,11 @@ class ExecutionEngine {
                         expression = expression.left;
                         continue;
                     }
+                    if (expression.kind === "conditional") {
+                        frames.push({ kind: "conditional", expression });
+                        expression = expression.test;
+                        continue;
+                    }
                     const yielded = this.#generatorYield(expression, null);
                     if (yielded.type === "throw") return yielded;
                     continuation.yieldLoc = expression.loc;
@@ -3002,7 +3007,7 @@ class ExecutionEngine {
                         continuation.delegate = { iterator: yielded.iterator, loc: yielded.loc, depth: sequence.depth + frames.length + 2 };
                         return { type: "suspended-delegate" };
                     }
-                    if (yielded.type !== "yield") throw new Error("invalid binary yield completion");
+                    if (yielded.type !== "yield") throw new Error("invalid expression yield completion");
                     const result = iteratorResult(yielded.value, false, this.context, yielded.loc);
                     if (result.type === "throw") return result;
                     return { type: "yield", result: result.value };
@@ -3013,8 +3018,15 @@ class ExecutionEngine {
                 expression = null;
             }
             if (frames.length === 0) return normal(value);
-            const frame = frames.pop()!, node = frame.expression;
+            const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "conditional") {
+                frames.push({ kind: "branch", expression: frame.expression });
+                expression = truthy(value) ? frame.expression.consequent : frame.expression.alternate;
+                continue;
+            }
+            if (frame.kind === "branch") continue;
+            const node = frame.expression;
             if (frame.kind === "left") {
                 if ((node.op === "&&" && !truthy(value)) || (node.op === "||" && truthy(value))) continue;
                 frames.push({ kind: "right", expression: node, left: value });
