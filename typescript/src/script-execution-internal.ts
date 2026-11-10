@@ -3353,7 +3353,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3433,7 +3433,10 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "call" && isSuspendingGeneratorExpression(expression.callee)) {
-                        if (expression.callee.kind === "super-member") {
+                        if (expression.callee.kind === "chain") {
+                            frames.push({ kind: "chain-evaluate", expression: expression.callee, consumer: { kind: "call", expression } });
+                            expression = null;
+                        } else if (expression.callee.kind === "super-member") {
                             const superContext = this.#superContext(expression.callee.loc);
                             if (superContext.type === "throw") return superContext;
                             frames.push({ kind: "super-key", expression: expression.callee, operation: { kind: "call", expression },
@@ -3451,6 +3454,11 @@ class ExecutionEngine {
                     if (expression.kind === "new" && isSuspendingGeneratorExpression(expression.callee)) {
                         frames.push({ kind: "constructor", expression });
                         expression = expression.callee;
+                        continue;
+                    }
+                    if (expression.kind === "chain") {
+                        frames.push({ kind: "chain-evaluate", expression, consumer: { kind: "value" } });
+                        expression = null;
                         continue;
                     }
                     if (expression.kind === "destructure") {
@@ -3491,6 +3499,11 @@ class ExecutionEngine {
                     if (expression.kind === "conditional") {
                         frames.push({ kind: "conditional", expression });
                         expression = expression.test;
+                        continue;
+                    }
+                    if (expression.kind === "unary" && expression.op === "delete" && expression.operand.kind === "chain") {
+                        frames.push({ kind: "chain-evaluate", expression: expression.operand, consumer: { kind: "delete", expression } });
+                        expression = null;
                         continue;
                     }
                     if (expression.kind === "unary" && expression.op === "delete" && expression.operand.kind === "super-member") {
@@ -3537,6 +3550,112 @@ class ExecutionEngine {
             if (frames.length === 0) return normal(value);
             const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "chain-evaluate") {
+                const base = frame.expression.base;
+                if (isSuspendingGeneratorExpression(base)) {
+                    if (base.kind === "chain") {
+                        frames.push({ kind: "chain-evaluate", expression: base,
+                            consumer: { kind: "chain", expression: frame.expression, consumer: frame.consumer } });
+                    } else if (base.kind === "member") {
+                        frames.push({ kind: "chain-reference-base", expression: frame.expression, consumer: frame.consumer });
+                        expression = base.base;
+                    } else if (base.kind === "super-member") {
+                        const context = this.#superContext(base.loc);
+                        if (context.type === "throw") return context;
+                        frames.push({ kind: "super-key", expression: base, homeObject: context.homeObject, receiver: context.receiver,
+                            operation: { kind: "chain", expression: frame.expression, consumer: frame.consumer } });
+                        expression = base.key;
+                    } else {
+                        frames.push({ kind: "chain-base-value", expression: frame.expression, consumer: frame.consumer });
+                        expression = base;
+                    }
+                } else {
+                    const result = this.#expressionReference(base, null, this.#active().thisValue);
+                    if (result.type === "abrupt") {
+                        if (result.completion.type === "throw") return result.completion;
+                        throw new Error("invalid chain base completion");
+                    }
+                    frames.push({ kind: "chain-step", expression: frame.expression, consumer: frame.consumer, index: 0, result });
+                }
+                continue;
+            }
+            if (frame.kind === "chain-base-value" || frame.kind === "chain-called") {
+                frames.push({ kind: "chain-step", expression: frame.expression, consumer: frame.consumer,
+                    index: frame.kind === "chain-called" ? frame.index : 0, result: { type: "value", value } });
+                continue;
+            }
+            if (frame.kind === "chain-reference-base") {
+                if (frame.expression.base.kind !== "member") throw new Error("invalid chain member base");
+                frames.push({ kind: "chain-reference-key", expression: frame.expression, consumer: frame.consumer, base: value });
+                expression = frame.expression.base.key;
+                continue;
+            }
+            if (frame.kind === "chain-reference-key") {
+                const reference: EvaluationReference = { kind: "script-property", strict: this.#active().strict,
+                    reference: { kind: "property", base: frame.base, key: value, loc: frame.expression.base.loc } };
+                frames.push({ kind: "chain-step", expression: frame.expression, consumer: frame.consumer,
+                    index: 0, result: { type: "reference", reference } });
+                continue;
+            }
+            if (frame.kind === "chain-key") {
+                const reference: EvaluationReference = { kind: "script-property", strict: this.#active().strict,
+                    reference: { kind: "property", base: frame.base, key: value, loc: frame.expression.links[frame.index - 1].loc } };
+                frames.push({ kind: "chain-step", expression: frame.expression, consumer: frame.consumer,
+                    index: frame.index, result: { type: "reference", reference } });
+                continue;
+            }
+            if (frame.kind === "chain-step") {
+                if (frame.index === frame.expression.links.length) {
+                    const consumer = frame.consumer;
+                    if (consumer.kind === "chain") {
+                        frames.push({ kind: "chain-step", expression: consumer.expression, consumer: consumer.consumer, index: 0, result: frame.result });
+                        continue;
+                    }
+                    if (consumer.kind === "delete") {
+                        const result = frame.result.type === "reference" ? deleteReferenceValue(this.context, frame.result.reference, consumer.expression.loc)
+                            : normal({ kind: "boolean", value: true });
+                        if (result.type === "throw") return result;
+                        if (result.type !== "normal") throw new Error("invalid chain deletion completion");
+                        value = result.value;
+                        continue;
+                    }
+                    const result = this.#expressionValue(frame.result, frame.expression.loc);
+                    if (result.type === "throw") return result;
+                    if (result.type !== "normal") throw new Error("invalid chain result completion");
+                    if (consumer.kind === "call") frames.push({ kind: "call-target", expression: consumer.expression, receiver: referenceCallReceiver(frame.result) });
+                    value = result.value;
+                    continue;
+                }
+                const link = frame.expression.links[frame.index];
+                const budget = this.tick(link.loc);
+                if (budget.type === "throw") return budget;
+                const base = this.#expressionValue(frame.result, link.loc);
+                if (base.type === "throw") return base;
+                if (base.type !== "normal") throw new Error("invalid chain link completion");
+                if (link.optional && (base.value.kind === "null" || base.value.kind === "undefined")) {
+                    frames.push({ kind: "chain-step", expression: frame.expression, consumer: frame.consumer,
+                        index: frame.expression.links.length, result: { type: "value", value: UNDEFINED } });
+                    continue;
+                }
+                if (link.kind === "member") {
+                    frames.push({ kind: "chain-key", expression: frame.expression, consumer: frame.consumer, index: frame.index + 1, base: base.value });
+                    expression = link.key;
+                    continue;
+                }
+                const receiver = referenceCallReceiver(frame.result);
+                if (link.args.length === 0) {
+                    const called = this.call(base.value, receiver, [], link.loc);
+                    if (called.type === "throw") return called;
+                    frames.push({ kind: "chain-step", expression: frame.expression, consumer: frame.consumer,
+                        index: frame.index + 1, result: { type: "value", value: called.value } });
+                    continue;
+                }
+                frames.push({ kind: "chain-called", expression: frame.expression, consumer: frame.consumer, index: frame.index + 1 });
+                frames.push({ kind: "call-argument", expression: link, callee: base.value, receiver, directEval: false, values: [], index: 0 });
+                const arg = link.args[0];
+                expression = arg.kind === "spread" ? arg.expression : arg;
+                continue;
+            }
             if (frame.kind === "compound-value") {
                 const op = frame.expression.op;
                 const computed = op === "&&" || op === "||" || op === "??" ? normal(value)
@@ -3555,6 +3674,11 @@ class ExecutionEngine {
             }
             if (frame.kind === "super-key") {
                 const reference = this.#superReference(frame.homeObject, frame.receiver, value, frame.expression.loc);
+                if (frame.operation.kind === "chain") {
+                    frames.push({ kind: "chain-step", expression: frame.operation.expression, consumer: frame.operation.consumer,
+                        index: 0, result: { type: "reference", reference } });
+                    continue;
+                }
                 if (frame.operation.kind === "delete") {
                     const result = deleteReferenceValue(this.context, reference, frame.operation.expression.loc);
                     if (result.type === "throw") return result;

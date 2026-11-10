@@ -43,7 +43,7 @@ const cases: string[] = [
   "function* inner(){yield 1;return {x:7}}function* f(){return (yield* inner()).x}var g=f();g.next().value===1&&g.next().value===7"
 ];
 for(let i=0;i<cases.length;i++){const result=run(cases[i],new Realm((_line:string)=>{},"script"));check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"member case "+i);}
-for(const source of ['function* f(){return (yield 1)?.x}'])check(prepareBoundedScript({id:'boundary',text:source},new Realm((_line:string)=>{},'script')).kind==='blocked','member boundary '+source);
+{const result=run('function* f(){return (yield 1)?.x}var g=f();g.next();g.next({x:7}).value===7',new Realm((_line:string)=>{},'script'));check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'original optional member boundary');}
 for(const source of ['async function f(){return (await Promise.resolve({x:7})).x}f().then(x=>out=x)', 'var o={x:7};async function f(){return o[await Promise.resolve("x")]}f().then(x=>out=x)', 'async function* f(){yield (await Promise.resolve({x:7})).x}f().next().then(r=>out=r.value)']){
  const realm=new Realm((_line:string)=>{},'script'),session=createScriptSession();check(run('var out=0;'+source,realm,session).type==='normal','async setup');const jobs=drainScriptJobs(session);check(!jobs.fatal&&jobs.failures.length===0,'async jobs');const result=run('out===7',realm,session);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'async member result');
 }

@@ -1,15 +1,27 @@
 import type { ScriptEnvironment } from "./script-environment.js";
-import type { EvaluationReference } from "./evaluation-reference.js";
-import type { DestructureExpr, SuperCallExpr, SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
+import type { EvaluationReference, ExpressionResult } from "./evaluation-reference.js";
+import type { ChainExpr, ChainCallLink, DestructureExpr, SuperCallExpr, SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
 import type { GuestObject, PropertyKey, Value } from "./runtime.js";
 
+export type ChainConsumer = { kind: "value" }
+    | { kind: "call"; expression: CallExpr }
+    | { kind: "delete"; expression: UnaryExpr }
+    | { kind: "chain"; expression: ChainExpr; consumer: ChainConsumer };
 export type SuperPropertyOperation = { kind: "read" }
     | { kind: "call"; expression: CallExpr }
     | { kind: "assignment"; expression: AssignExpr }
     | { kind: "compound"; expression: CompoundExpr }
     | { kind: "update"; expression: UpdateExpr }
-    | { kind: "delete"; expression: UnaryExpr };
+    | { kind: "delete"; expression: UnaryExpr }
+    | { kind: "chain"; expression: ChainExpr; consumer: ChainConsumer };
 export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
+    | { kind: "chain-evaluate"; expression: ChainExpr; consumer: ChainConsumer }
+    | { kind: "chain-base-value"; expression: ChainExpr; consumer: ChainConsumer }
+    | { kind: "chain-reference-base"; expression: ChainExpr; consumer: ChainConsumer }
+    | { kind: "chain-reference-key"; expression: ChainExpr; consumer: ChainConsumer; base: Value }
+    | { kind: "chain-step"; expression: ChainExpr; consumer: ChainConsumer; index: number; result: ExpressionResult }
+    | { kind: "chain-key"; expression: ChainExpr; consumer: ChainConsumer; index: number; base: Value }
+    | { kind: "chain-called"; expression: ChainExpr; consumer: ChainConsumer; index: number }
     | { kind: "destructure-value"; expression: DestructureExpr }
     | { kind: "compound-value"; expression: CompoundExpr; reference: EvaluationReference; left: Value }
     | { kind: "super-key"; expression: SuperMemberExpr; operation: SuperPropertyOperation; homeObject: GuestObject; receiver: Value }
@@ -26,7 +38,7 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "call-key"; expression: CallExpr; base: Value }
     | { kind: "constructor"; expression: NewExpr }
     | { kind: "super-argument"; expression: SuperCallExpr; environment: ScriptEnvironment; parent: GuestObject | null; values: Value[]; index: number }
-    | { kind: "call-argument"; expression: CallExpr | NewExpr; callee: Value; receiver: Value; directEval: boolean; values: Value[]; index: number }
+    | { kind: "call-argument"; expression: CallExpr | NewExpr | ChainCallLink; callee: Value; receiver: Value; directEval: boolean; values: Value[]; index: number }
     | { kind: "member-base"; expression: MemberExpr }
     | { kind: "member-key"; expression: MemberExpr; base: Value }
     | { kind: "right"; expression: BinaryExpr; left: Value }
@@ -39,5 +51,5 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "await-operand"; expression: AwaitExpr };
 export function isSuspendingGeneratorExpression(expression: Expr | null): boolean {
     return expression !== null && (expression.kind === "yield" || expression.kind === "await" ||
-        ((expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "array" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
+        ((expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "array" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
 }

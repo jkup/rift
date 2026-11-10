@@ -18,9 +18,10 @@ export type TryFinallyStmt = { kind: "try-finally"; loc: Location; body: BlockSt
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
 export type Argument = Expr | { kind: "spread"; loc: Location; expression: Expr };
 export type ArrayElement = Argument | null;
+export type ChainCallLink = { kind: "call"; loc: Location; optional: boolean; args: Argument[] };
 export type ChainLink = { kind: "member"; loc: Location; optional: boolean; key: Expr }
-    | { kind: "call"; loc: Location; optional: boolean; args: Argument[] };
-export type ChainExpr = { kind: "chain"; loc: Location; base: Expr; links: ChainLink[] };
+    | ChainCallLink;
+export type ChainExpr = { kind: "chain"; loc: Location; base: Expr; links: ChainLink[]; suspends?: true };
 export type ObjectProperty = { kind: "data" | "get" | "set" | "prototype"; key: string | Expr; value: Expr }
     | { kind: "spread"; loc: Location; value: Expr };
 export type PatternElement = { pattern: DestructuringPattern; initializer: Expr | null };
