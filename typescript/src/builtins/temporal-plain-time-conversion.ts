@@ -6,7 +6,7 @@ import { readTemporalTimeFields, regulateTemporalTime } from "../temporal-time-f
 import { parseTemporalPlainTime } from "../temporal-plain-time-parse.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type Value, type OperationContext, type ThrowCompletion, type ValueCompletion } from "../runtime.js";
 
-function toTimeFields(value: Value, options: Value, context: OperationContext, loc: Location): { type: "normal"; value: TimeFields } | ThrowCompletion {
+export function toTimeFields(value: Value, options: Value, context: OperationContext, loc: Location): { type: "normal"; value: TimeFields } | ThrowCompletion {
     let fields: TimeFields;
     if (value.kind === "object") {
         if (value.object instanceof GuestTemporalPlainTime) fields = value.object.time;

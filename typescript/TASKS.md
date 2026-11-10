@@ -4482,7 +4482,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-335 — Temporal PlainTime differences
 
-Status: **in progress — isolated successor to TS-334**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.until/since using shared conversion and exact within-day differences, defaulting to hour units without midnight wrapping. Own PlainTime difference registration and conversion helper export, focused tests/manifests/docs in build/temporal-plain-time-difference-draft. Require signed rounding, day-edge differences, property-bag ordering, options validation, brands/Realm and full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.until/since using shared conversion and exact within-day differences, defaulting to hour units without midnight wrapping. Own PlainTime difference registration and conversion helper export, focused tests/manifests/docs in build/temporal-plain-time-difference-draft. Require signed rounding, day-edge differences, property-bag ordering, options validation, brands/Realm and full Node/native static validation.
 
 ## TS-336 — ISO calendar fields and PlainDate bounds
 

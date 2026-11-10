@@ -1,4 +1,5 @@
 import { registerTemporalPlainTimeArithmetic } from "./temporal-plain-time-arithmetic.js";
+import { registerTemporalPlainTimeDifference } from "./temporal-plain-time-difference.js";
 import { registerTemporalPlainTimeConversion } from "./temporal-plain-time-conversion.js";
 import { temporalTimeInteger } from "../temporal-time-fields.js";
 import { registerTemporalPlainTimeWith } from "./temporal-plain-time-with.js";
@@ -61,5 +62,6 @@ export function registerTemporalPlainTime(realm: Realm, namespace: GuestObject):
     registerTemporalPlainTimeWith(realm);
     registerTemporalPlainTimeConversion(realm, constructor);
     registerTemporalPlainTimeArithmetic(realm);
+    registerTemporalPlainTimeDifference(realm);
     namespace.bootstrapDefine("PlainTime", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
