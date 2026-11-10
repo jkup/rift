@@ -5,6 +5,7 @@ import type { Location } from "./syntax.js";
 
 export type RegExpMatchFlags = { ignoreCase: boolean; multiline: boolean; dotAll: boolean };
 type Instruction = { kind: "character"; value: number } | { kind: "dot" }
+    | { kind: "backreference"; index: number }
     | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean; folded: Set<number> | null }
     | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
     | { kind: "split"; first: number; second: number } | { kind: "jump"; target: number }
@@ -169,6 +170,18 @@ class PatternMatcher {
                     if (instruction.name === "start") accepted = state.position === 0 || this.program.flags.multiline && lineTerminator(before);
                     else if (instruction.name === "end") accepted = state.position === this.input.length || this.program.flags.multiline && lineTerminator(after);
                     else accepted = (word(before) !== word(after)) === (instruction.name === "word");
+                } else if (instruction.kind === "backreference") {
+                    const from = state.captures[instruction.index * 2], to = state.captures[instruction.index * 2 + 1];
+                    if (from >= 0 && to >= 0) {
+                        const length = to - from;
+                        accepted = state.position + length <= this.input.length;
+                        for (let i = 0; accepted && i < length; i++) {
+                            if (!this.tick()) { accepted = false; break; }
+                            const captured = this.input.charCodeAt(from + i), current = this.input.charCodeAt(state.position + i);
+                            accepted = this.program.flags.ignoreCase ? canonicalize(captured) === canonicalize(current) : captured === current;
+                        }
+                        if (accepted) state.position += length;
+                    }
                 } else if (state.position >= this.input.length) accepted = false;
                 else {
                     const code = this.input.charCodeAt(state.position);

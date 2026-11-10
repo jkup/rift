@@ -755,6 +755,7 @@ executeDriver("temporal-instant-parse", { stdout: "temporal instant parse passed
 executeDriver("temporal-instant-conversion", { stdout: "temporal instant conversion passed\n" });
 executeDriver("numeric-compound-audit", { stdout: "numeric compound audit passed\n" });
 executeDriver("numeric-update-audit", { stdout: "numeric update audit passed\n" });
+executeDriver("regexp-backreference", { stdout: "regexp backreference passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

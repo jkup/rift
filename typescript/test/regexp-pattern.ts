@@ -28,7 +28,7 @@ for (const source of ["*", "+", "?", "a**", "a+*", "a???", "{1}", "[", "[a", "[z
     const result = parse(source);
     check(result.kind === "syntax-error", "proven invalid pattern: " + source);
 }
-for (const source of ["(?=a)", "(?!a)", "(?<=a)", "(?<name>a)", "(?i:a)", "(a)\\1", "\\k<x>", "\\07", "\\c_", "[\\d-a]", "[a-\\d]", "a{9007199254740992}"]) {
+for (const source of ["(?=a)", "(?!a)", "(?<=a)", "(?<name>a)", "(?i:a)", "\\k<x>", "\\07", "\\c_", "[\\d-a]", "[a-\\d]", "a{9007199254740992}"]) {
     check(parse(source).kind === "unsupported", "unsupported pattern: " + source);
 }
 for (const test of [
@@ -72,4 +72,7 @@ for (const test of [
     const tentative = parse("a{" + "1".repeat(1000), 10);
     check(tentative.kind === "abrupt" && tentative.completion.origin.kind === "resource-limit", "tentative quantifier work is charged");
 }
+
+
+ready("(a)\\1");
 console.log("RegExp patterns passed");

@@ -4358,7 +4358,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-305 — Numeric RegExp backreferences
 
-Status: **in progress — isolated successor to TS-304**. Owner: Codex catch-up chat, 2026-11-10. Parse valid numeric backreferences using a budgeted capture-count scan and execute them against captured UTF-16 spans, preserving ignoreCase, unmatched/forward references, backtracking and repeat clearing. Own RegExp syntax/matcher, focused and historical boundary tests/manifests/docs in build/regexp-backreference-draft. Keep out-of-range legacy numeric escapes, character-class numeric escapes, named groups/references, lookaround and Unicode modes explicitly unsupported. Require fixed semantic/capture/indices cases, resource checks, full Node and native static/zero-dynamic plus RegExp regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse valid numeric backreferences using a budgeted capture-count scan and execute them against captured UTF-16 spans, preserving ignoreCase, unmatched/forward references, backtracking and repeat clearing. Own RegExp syntax/matcher, focused and historical boundary tests/manifests/docs in build/regexp-backreference-draft. Keep out-of-range legacy numeric escapes, character-class numeric escapes, named groups/references, lookaround and Unicode modes explicitly unsupported. Require fixed semantic/capture/indices cases, resource checks, full Node and native static/zero-dynamic plus RegExp regressions.
 
 ## TS-306 — Temporal Instant string options
 

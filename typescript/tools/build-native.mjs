@@ -171,6 +171,7 @@ const entries = [
     ["test/temporal-instant-conversion.ts", "temporal-instant-conversion"],
     ["test/numeric-compound-audit.ts", "numeric-compound-audit"],
     ["test/numeric-update-audit.ts", "numeric-update-audit"],
+    ["test/regexp-backreference.ts", "regexp-backreference"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

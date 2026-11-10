@@ -41,7 +41,7 @@ for (const source of ["RegExp(Symbol())", "RegExp('a',Symbol())", "RegExp.protot
     "Object.getOwnPropertyDescriptor(RegExp.prototype,'flags').get.call(1)", "'abc'.includes(RegExp('a'))", "'abc'.startsWith(RegExp('a'))", "'abc'.endsWith(RegExp('a'))"]) {
     string("try{" + source + ";'wrong'}catch(e){String(e instanceof TypeError)}", "true");
 }
-for (const source of ["RegExp('a','u')", "RegExp('a','v')", "RegExp('(?=a)')", "RegExp('(a)\\\\1')"]) {
+for (const source of ["RegExp('a','u')", "RegExp('a','v')", "RegExp('(?=a)')"]) {
     const realm = fresh(), prepared = prepareBoundedScript({ id: "regexp-unsupported", text: "try{" + source + "}catch(e){'caught'}" }, realm);
     if (prepared.kind !== "ready") throw new Error("unsupported prepare");
     const result = evaluateScript(createScriptSession(), prepared.record).completion;
@@ -67,4 +67,7 @@ string("RegExp('[/]').source", "[/]");
 string("RegExp('a\\nb\\rc\\u2028d\\u2029').source", "a\\nb\\rc\\u2028d\\u2029");
 string("RegExp('\\\\/').source", "\\/");
 string("RegExp('\\\\\\n').source", "\\n");
+
+
+string("RegExp('(a)\\\\1').source", "(a)\\1");
 console.log("RegExp construction passed");

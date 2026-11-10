@@ -56,7 +56,7 @@ for (const text of ["/a/gg; async function f(){await 1;}", "/a/gg; async functio
     const plan = parseBoundedScriptDeclarationPlan({ id: "literal-provenance", text });
     check(plan.kind === "blocked" && plan.rejection.kind === "syntax-error" && plan.rejection.ruleCode === "regexp-literal", "certified literal early error: " + text);
 }
-for (const text of ["/a/u;", "/a/v;", "/(?=a)/;", "/(a)\\1/;", "/(?<x>a)/;"]) {
+for (const text of ["/a/u;", "/a/v;", "/(?=a)/;", "/(?<x>a)/;"]) {
     const plan = parseBoundedScriptDeclarationPlan({ id: "literal-unsupported", text });
     check(plan.kind === "blocked" && plan.rejection.kind === "unsupported-syntax" && plan.rejection.capabilityCode === "parse.regexp-pattern", "unsupported pattern: " + text);
 }
@@ -79,4 +79,7 @@ for (const text of ["/a/gg; import x from \"x\";", "/(/; @", "/a/gg; /(?=a)/", "
 }
 const limited = run("/a{1000000000}/", undefined, 100);
 check(limited.type === "throw" && limited.origin.kind === "resource-limit", "literal compilation is budgeted at evaluation");
+
+
+check(parseBoundedScriptDeclarationPlan({id:"backreference-migration",text:"/(a)\\1/;"}).kind === "complete", "historical backreference now supported");
 console.log("RegExp literals passed");

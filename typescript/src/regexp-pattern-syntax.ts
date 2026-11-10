@@ -1,6 +1,7 @@
 export type RegExpClassPart = { kind: "range"; from: number; to: number }
     | { kind: "builtin"; name: "digit" | "word" | "space"; inverted: boolean };
 export type RegExpAtom = { kind: "character"; value: number } | { kind: "dot" }
+    | { kind: "backreference"; index: number }
     | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean }
     | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
     | { kind: "group"; index: number; body: RegExpDisjunction };
@@ -24,6 +25,7 @@ function hex(text: string): number {
 class PatternParser {
     private offset = 0;
     private captures = 0;
+    private totalCaptures: number | null = null;
     private depth = 0;
     private failure: RegExpSyntaxFailure | null = null;
     constructor(private readonly source: string, private readonly tick: () => boolean) {}
@@ -43,6 +45,21 @@ class PatternParser {
     private reject(kind: "syntax-error" | "unsupported", message: string): null {
         if (this.failure === null) this.failure = { kind, message, offset: this.offset };
         return null;
+    }
+    private captureCount(): number {
+        if (this.totalCaptures !== null) return this.totalCaptures;
+        let count = 0, escaped = false, inClass = false;
+        for (let i = 0; i < this.source.length; i++) {
+            if (!this.tick()) { this.failure = { kind: "stopped" }; return 0; }
+            const char = this.source.charAt(i);
+            if (escaped) { escaped = false; continue; }
+            if (char === "\\") { escaped = true; continue; }
+            if (inClass) { if (char === "]") inClass = false; continue; }
+            if (char === "[") inClass = true;
+            else if (char === "(" && this.source.charAt(i + 1) !== "?") count++;
+        }
+        this.totalCaptures = count;
+        return count;
     }
     private disjunction(): RegExpDisjunction {
         const alternatives: RegExpTerm[][] = [];
@@ -139,8 +156,17 @@ class PatternParser {
             return { kind: "class", inverted: false, parts: [{ kind: "builtin",
                 name: lower === "d" ? "digit" : lower === "s" ? "space" : "word", inverted: char !== lower }] };
         }
+        if (char >= "1" && char <= "9" && !inClass) {
+            const count = this.captureCount();
+            let index = char.charCodeAt(0) - 48;
+            while (this.failure === null && digit(this.current()))
+                index = Math.min(count + 1, index * 10 + this.take().charCodeAt(0) - 48);
+            if (this.failure !== null) return null;
+            if (index <= count) return { kind: "backreference", index };
+            return this.reject("unsupported", "legacy numeric escape is unsupported");
+        }
         if (char >= "1" && char <= "9" || char === "0" && digit(this.current()) || char === "k")
-            return this.reject("unsupported", "backreferences and legacy numeric escapes are unsupported");
+            return this.reject("unsupported", "named backreferences and legacy numeric escapes are unsupported");
         const controls = "fnrtv";
         const controlIndex = controls.indexOf(char);
         if (controlIndex >= 0) return { kind: "character", value: [12, 10, 13, 9, 11][controlIndex] };
