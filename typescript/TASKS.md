@@ -4632,7 +4632,7 @@ TS-370 scope refinement: share calendar-with-ISO-default lookup across Date, Dat
 
 ## TS-371 — Temporal PlainYearMonth field replacement and date conversion
 
-Status: **in progress — isolated successor to TS-370**. Owner: Codex catch-up chat, 2026-11-10. Add with and toPlainDate using shared ordered field readers. Normalize replaced reference days, reject empty/Temporal partials, constrain the supplied date day and enforce date bounds. Require monthCode merging, getter/error order, ignored fields and Realm-owned intrinsic results on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-fields-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add with and toPlainDate using shared ordered field readers. Normalize replaced reference days, reject empty/Temporal partials, constrain the supplied date day and enforce date bounds. Require monthCode merging, getter/error order, ignored fields and Realm-owned intrinsic results on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-fields-draft/.
 
 ## TS-372 — Temporal PlainYearMonth arithmetic
 
