@@ -226,6 +226,7 @@ for (const [driver, directory, count] of [
       ['E13', 'var f=function(a,a){}; function g(b,b){"use strict";}', 23, 53, 34, 'b'],
       ['E14', 'function f(a,a){"use strict";} var g=function(b,b){};', 0, 30, 11, 'a'],
       ['E15', 'function outer(){function f(a,a){} function g(b,b){"use strict";}}', 35, 65, 46, 'b'],
+      ['E37', 'var f=function named(a,a){"use strict";};', 6, 40, 21, 'a'],
     ]) {
       assert.equal(rows.find(row => row.id === id).text, text);
       expected.set(id, {kind: 'eligible', sourceUnits: text.length, consumedUnits: text.length, candidates: [{
