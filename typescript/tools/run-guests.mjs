@@ -745,6 +745,7 @@ executeDriver("bigint-literals", { stdout: "bigint literals passed\n" });
 executeDriver("bigint-width", { stdout: "bigint width passed\n" });
 executeDriver("iso-calendar", { stdout: "iso calendar passed\n" });
 executeDriver("bigint-literal-storage", { stdout: "bigint literal storage passed\n" });
+executeDriver("temporal-instant-core", { stdout: "temporal instant core passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

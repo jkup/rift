@@ -4312,7 +4312,7 @@ Status: **done — accepted in bigint-foundation milestone**. Owner: Codex catch
 
 ## TS-294 — Temporal.Instant construction and epoch accessors
 
-Status: **in progress — isolated successor to TS-293**. Owner: Codex catch-up chat, 2026-11-10. Introduce Realm-local Temporal namespace/Instant prototype, branded nanosecond storage, new-only constructor, fromEpochMilliseconds/fromEpochNanoseconds, epoch getters and valueOf rejection. Preserve exact range/conversion order, subclass/newTarget prototype selection and cross-Realm allocation/errors. Own new instant object/builtin, Realm/prototype fallback, expected global inventory, tests/manifests/docs in build/temporal-instant-core-draft. String parsing, formatting, comparisons, arithmetic, Now and other Temporal types are later tasks. Require both-host static/zero-dynamic plus full Node and relevant native regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Introduce Realm-local Temporal namespace/Instant prototype, branded nanosecond storage, new-only constructor, fromEpochMilliseconds/fromEpochNanoseconds, epoch getters and valueOf rejection. Preserve exact range/conversion order, subclass/newTarget prototype selection and cross-Realm allocation/errors. Own new instant object/builtin, Realm/prototype fallback, expected global inventory, tests/manifests/docs in build/temporal-instant-core-draft. String parsing, formatting, comparisons, arithmetic, Now and other Temporal types are later tasks. Require both-host static/zero-dynamic plus full Node and relevant native regressions.
 
 ## TS-295 — Exact Temporal rounding and UTC formatting backend
 

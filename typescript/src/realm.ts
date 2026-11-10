@@ -1,3 +1,4 @@
+import { registerTemporal } from "./builtins/temporal.js";
 import { registerBigInt } from "./builtins/bigint.js";
 import type { TemplateObjectExpr } from "./syntax.js";
 import { registerAsyncIterators } from "./async-iterator.js";
@@ -109,6 +110,7 @@ export class Realm {
     readonly booleanPrototype: GuestBoolean;
     readonly numberPrototype: GuestNumber;
     readonly bigintPrototype: GuestObject;
+    readonly temporalInstantPrototype: GuestObject;
     readonly symbolPrototype: GuestObject;
     readonly stringPrototype: GuestStringObject;
     constructor(output: Output, readonly profile: RealmProfile = "legacy") {
@@ -151,6 +153,7 @@ export class Realm {
         this.booleanPrototype = new GuestBoolean(false, this.objectPrototype);
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
         this.bigintPrototype = new GuestObject(this.objectPrototype);
+        this.temporalInstantPrototype = new GuestObject(this.objectPrototype);
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);
         this.symbolPrototype = new GuestObject(this.objectPrototype);
         registerObjectValueOf(this);
@@ -235,6 +238,7 @@ export class Realm {
             registerMapIterators(this);
             registerSet(this);
             registerSetIterators(this);
+            registerTemporal(this);
         }
     }
     get global(): Environment {

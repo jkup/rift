@@ -161,6 +161,7 @@ const entries = [
     ["test/bigint-width.ts", "bigint-width"],
     ["test/iso-calendar.ts", "iso-calendar"],
     ["test/bigint-literal-storage.ts", "bigint-literal-storage"],
+    ["test/temporal-instant-core.ts", "temporal-instant-core"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
