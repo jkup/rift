@@ -165,6 +165,7 @@ export class Realm {
             registerPromise(this);
             registerRegExp(this);
             this.evalIntrinsic = createEvalIntrinsic(this);
+            this.defineScriptGlobal("globalThis", { value: this.globalThisValue, writable: true, enumerable: false, configurable: true });
             this.defineScriptGlobal("eval", { value: { kind: "object", object: this.evalIntrinsic }, writable: true, enumerable: false, configurable: true });
         }
         registerNumber(this);

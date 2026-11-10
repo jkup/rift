@@ -3917,7 +3917,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-203 — Script globalThis binding
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Expose the existing Realm global-this value through the standard writable, non-enumerable, configurable global property. Verify replacement/deletion and lexical shadowing leave the actual this binding intact, cross-Realm identity and bootstrap inventories. Own Realm registration, inventories, focused tests/manifests and notes in build/global-this-draft based on TS-202. Preserve legacy globals and host boundaries.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose the existing Realm global-this value through the standard writable, non-enumerable, configurable global property. Verify replacement/deletion and lexical shadowing leave the actual this binding intact, cross-Realm identity and bootstrap inventories. Own Realm registration, inventories, focused tests/manifests and notes in build/global-this-draft based on TS-202. Preserve legacy globals and host boundaries.
 
 ## TS-204 — Named function expressions
 

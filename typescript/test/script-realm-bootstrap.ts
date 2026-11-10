@@ -144,7 +144,7 @@ function row(id: string,name: string,initial: number): void {
         keys(a.globalObject,globals); check(a.globalObject.getPrototypeOf()===a.objectPrototype && a.globalObject.callable===null && a.globalObject.isExtensible(),"global shape");
         check(object(a.globalThisValue)===a.globalObject && object(a.globalEnvironment.getThisBinding())===a.globalObject,"same this object");
         for(let i=0;i<globals.length;i++) desc(a.globalObject,globals[i],i===0?UNDEFINED:i===1?n(NaN):i===2?n(Infinity):own(a.globalObject,globals[i]),i>=3,false,i>=3);
-        check(a.globalObject.getOwnProperty("globalThis")===undefined,"no globalThis property"); error(()=>{a.installGlobal(name,first,true);},"invalid bootstrap global"); break;
+        check(sameValue(own(a.globalObject,"globalThis"),a.globalThisValue),"globalThis property"); error(()=>{a.installGlobal(name,first,true);},"invalid bootstrap global"); break;
     }
     case "B03": inventory(a); break;
     case "B04": {
