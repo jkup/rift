@@ -4878,7 +4878,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-431 — Compose zoned difference rounding
 
-Status: **in progress — isolated successor to TS-430**. Owner: Codex catch-up chat, 2026-11-10. Compose exact instant differences and checked zoned calendar/time nudges with calendar carry, preserving nanosecond and equality fast paths before public until/since integration. Own  and tests/manifests/docs in build/temporal-zoned-difference-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Compose exact instant differences and checked zoned calendar/time nudges with calendar carry, preserving nanosecond and equality fast paths before public until/since integration. Own  and tests/manifests/docs in build/temporal-zoned-difference-round-draft/.
 
 ## TS-432 — ZonedDateTime until and since
 
