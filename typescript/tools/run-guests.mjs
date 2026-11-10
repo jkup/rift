@@ -840,6 +840,7 @@ executeDriver("date-time-core", { stdout: "date time core passed\n" });
 executeDriver("date-calendar", { stdout: "date calendar passed\n" });
 executeDriver("date-iso-parse", { stdout: "date iso parse passed\n" });
 executeDriver("date-format", { stdout: "date format passed\n" });
+executeDriver("date-string-parse", { stdout: "date string parse passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

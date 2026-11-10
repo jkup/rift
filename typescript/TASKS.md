@@ -4742,7 +4742,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-398 — Date parsing of engine-owned round-trip strings
 
-Status: **in progress — isolated successor to TS-397**. Owner: Codex catch-up chat, 2026-11-10. Add Date parsing for the engine's UTC/display strings alongside ISO parsing, preserving the specification's zero-millisecond round trips. Use bounded token parsing and the ISO backend; keep arbitrary implementation-specific legacy formats outside the supported parser. Test full endpoints, extended years, malformed strings and both format variants on both hosts. Own  and tests/manifests/docs in build/date-string-parse-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Date parsing for the engine's UTC/display strings alongside ISO parsing, preserving the specification's zero-millisecond round trips. Use bounded token parsing and the ISO backend; keep arbitrary implementation-specific legacy formats outside the supported parser. Test full endpoints, extended years, malformed strings and both format variants on both hosts. Own  and tests/manifests/docs in build/date-string-parse-draft/.
 
 ## TS-399 — Branded Date construction and core methods
 
