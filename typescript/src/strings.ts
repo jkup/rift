@@ -9,6 +9,16 @@ export function stringCodeUnit(value: GuestString, index: number): number { retu
 export function stringFromCodeUnit(code: number): GuestString { return String.fromCharCode(code); }
 export function stringConcat(left: GuestString, right: GuestString): GuestString { return left + right; }
 
+export function stringRepeat(value: GuestString, count: number): GuestString {
+    let result = "", chunk = value;
+    while (count > 0) {
+        if (count % 2 === 1) result += chunk;
+        count = Math.floor(count / 2);
+        if (count > 0) chunk += chunk;
+    }
+    return result;
+}
+
 // Compare code units, not code points: a supplementary character's leading
 // surrogate sorts before BMP characters above the surrogate range.
 export function stringCompare(left: GuestString, right: GuestString): number {

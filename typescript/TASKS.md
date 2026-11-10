@@ -3836,7 +3836,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-185 — String repetition
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add String.prototype.repeat with receiver/count coercion order, integer truncation, negative/infinite RangeErrors, UTF-16 preservation and resource-bounded output allocation. Own String method registration/helper, bootstrap inventory, focused tests/manifests and notes in build/string-repeat-draft, based on reviewed TS-183/184. No padding or Unicode regex expansion. Canonical literal validation remains frozen.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add String.prototype.repeat with receiver/count coercion order, integer truncation, negative/infinite RangeErrors, UTF-16 preservation and resource-bounded output allocation. Own String method registration/helper, bootstrap inventory, focused tests/manifests and notes in build/string-repeat-draft, based on reviewed TS-183/184. No padding or Unicode regex expansion. Canonical literal validation remains frozen.
 
 ## TS-186 — Array fill and copyWithin
 

@@ -2,7 +2,7 @@ import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestStringObject } from "../primitive-objects.js";
 import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
-import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, isStringWhitespace, stringLowerCase, stringUpperCase, type GuestString } from "../strings.js";
+import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, isStringWhitespace, stringLowerCase, stringUpperCase, stringRepeat, type GuestString } from "../strings.js";
 import type { Location } from "../syntax.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString, toNumber, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
@@ -115,6 +115,21 @@ function registerStringTrim(realm: Realm, name: string, where: "start" | "end" |
 
 export function registerStringMethods(realm: Realm): void {
     if (realm.profile === "script") {
+        realm.registerBuiltin(realm.stringPrototype, "repeat", 1, (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") return text;
+            const count = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
+            if (count.type === "throw") return count;
+            if (count.value < 0 || count.value === Infinity)
+                return languageFailure(context.realm, "RangeError", "invalid repeat count", loc);
+            if (count.value === 0 || stringLength(text.value) === 0) return normal({ kind: "string", value: "" });
+            const units = stringLength(text.value) * count.value;
+            for (let i = 0; i < units; i++) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") return tick;
+            }
+            return normal({ kind: "string", value: stringRepeat(text.value, count.value) });
+        });
         realm.registerBuiltin(realm.stringPrototype, "codePointAt", 1, (receiver, args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);
             if (text.type === "throw") return text;

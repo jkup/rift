@@ -2210,3 +2210,5 @@ Incremental lexing, arrow cover parsing, Script token access, RegExp literal sca
 2026-11-10 TS-183 promoted after parser/literal acceptance with 4 changed-file baselines verified. The isolated draft passes 682 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/array-of-draft/build. Combined canonical acceptance remains pending.
 
 2026-11-10 TS-184 promoted after parser/literal acceptance with 5 changed-file baselines verified. The isolated draft passes 683 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/array-from-draft/build. Combined canonical acceptance remains pending.
+
+2026-11-10 TS-185 promoted after parser/literal acceptance with 7 changed-file baselines verified. The isolated draft passes 684 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/string-repeat-draft/build. Combined canonical acceptance remains pending.
