@@ -875,6 +875,7 @@ executeDriver("temporal-zoned-calendar-carry", { stdout: "temporal zoned calenda
 executeDriver("temporal-zoned-difference-round", { stdout: "temporal zoned difference round passed\n" });
 executeDriver("temporal-zoned-difference", { stdout: "temporal zoned difference passed\n" });
 executeDriver("temporal-zoned-duration-total", { stdout: "temporal zoned duration total passed\n" });
+executeDriver("temporal-zoned-zero-round", { stdout: "temporal zoned zero round passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

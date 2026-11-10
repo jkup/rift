@@ -18,7 +18,7 @@ export function roundZonedDateTimeDifference(first: bigint, last: bigint, zone: 
     }
     const largestDate = largest === "years" ? "year" : largest === "months" ? "month" : largest === "weeks" ? "week" : "day";
     const difference = differenceTemporalZonedDateTime(first, last, zone, largestDate);
-    if (difference === null || first === last || (smallest === "nanoseconds" && increment === 1)) return difference;
+    if (difference === null || (smallest === "nanoseconds" && increment === 1)) return difference;
     let rounded: ZonedDurationNudge | null;
     if (smallest === "years" || smallest === "months" || smallest === "weeks" || smallest === "days") {
         const unit = smallest === "years" ? "year" : smallest === "months" ? "month" : smallest === "weeks" ? "week" : "day";

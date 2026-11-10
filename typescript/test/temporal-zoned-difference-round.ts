@@ -18,6 +18,6 @@ result = roundZonedDateTimeDifference(max - day, max, zone, "days", "nanoseconds
 check(result !== null && result.date.days === 1, "exact nanosecond fast path");
 check(roundZonedDateTimeDifference(max - day, max, zone, "days", "nanoseconds", 2, "trunc") === null, "rounding checks adjacent day");
 result = roundZonedDateTimeDifference(max, max, zone, "years", "years", 1, "ceil");
-check(result !== null && result.date.years === 0 && result.time === 0n, "equal epoch fast path");
+check(result === null, "relative rounding checks zero calendar windows; public until/since handles equality");
 check(roundZonedDateTimeDifference(first, last, zone, "hours", "seconds", 0, "trunc") === null, "invalid increment");
 console.log("temporal zoned difference round passed");

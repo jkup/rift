@@ -22,6 +22,8 @@ export function registerTemporalZonedDifference(realm: Realm): void {
             const calendarUnit = largest === "years" || largest === "months" || largest === "weeks" || largest === "days";
             if (calendarUnit && left.value.timeZone.identifier !== right.timeZone.identifier)
                 return languageFailure(context.realm, "RangeError", "calendar differences require matching time zones", loc);
+            if (calendarUnit && left.value.epochNanoseconds === right.epoch)
+                return createTemporalDuration(dateDuration(0, 0, 0), context.realm.temporalDurationPrototype, context, loc);
             const mode = name === "since" ? negateTemporalRoundingMode(options.mode) : options.mode;
             const rounded = roundZonedDateTimeDifference(left.value.epochNanoseconds, right.epoch, left.value.timeZone, largest, options.smallest, options.increment, mode);
             if (rounded === null) return languageFailure(context.realm, "RangeError", "zoned difference rounding exceeds range", loc);

@@ -4890,7 +4890,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-434 — Keep equal-instant shortcut at the public difference boundary
 
-Status: **in progress — isolated successor to TS-433**. Owner: Codex catch-up chat, 2026-11-10. Keep ZonedDateTime until/since equal-epoch shortcuts in the builtin while allowing the shared relative rounding helper to validate zero-duration calendar windows for Duration.round. Own src/temporal-zoned-difference-round.ts, src/builtins/temporal-zoned-difference.ts, test/temporal-zoned-difference-round.ts, docs/temporal-zoned-difference-round.md and tests/manifests/docs in build/temporal-zoned-zero-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Keep ZonedDateTime until/since equal-epoch shortcuts in the builtin while allowing the shared relative rounding helper to validate zero-duration calendar windows for Duration.round. Own src/temporal-zoned-difference-round.ts, src/builtins/temporal-zoned-difference.ts, test/temporal-zoned-difference-round.ts, docs/temporal-zoned-difference-round.md and tests/manifests/docs in build/temporal-zoned-zero-round-draft/.
 
 ## TS-435 — Zoned relativeTo for Duration APIs
 
