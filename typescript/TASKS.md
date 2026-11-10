@@ -4556,7 +4556,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-353 — Temporal PlainDateTime parsing
 
-Status: **in progress — isolated successor to TS-352**. Owner: Codex catch-up chat, 2026-11-10. Share ISO date/optional-time parsing between PlainDate and PlainDateTime, retaining exact fractions, annotation rules, ignored numeric offsets, leap-second normalization and rejection of Z. Keep range validation separate for observable option ordering in later conversion. Own parser, PlainDate wrapper, tests/manifests/docs in build/temporal-plain-date-time-parse-draft. Require grammar boundaries, signed years, syntax/range separation and date-parser regressions on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Share ISO date/optional-time parsing between PlainDate and PlainDateTime, retaining exact fractions, annotation rules, ignored numeric offsets, leap-second normalization and rejection of Z. Keep range validation separate for observable option ordering in later conversion. Own parser, PlainDate wrapper, tests/manifests/docs in build/temporal-plain-date-time-parse-draft. Require grammar boundaries, signed years, syntax/range separation and date-parser regressions on both hosts.
 
 ## TS-354 — Ordered Temporal date-time fields
 
