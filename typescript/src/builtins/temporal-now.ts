@@ -1,6 +1,7 @@
 import type { Realm } from "../realm.js";
 import { currentDateMilliseconds } from "../date-clock.js";
 import { createTemporalInstant } from "../temporal-instant-object.js";
+import { createTemporalZonedDateTime } from "../temporal-zoned-date-time-object.js";
 import { toTemporalTimeZone } from "../temporal-time-zone.js";
 import { isoDateTimeFromEpochNanoseconds } from "../iso-calendar.js";
 import { createTemporalPlainDateTime } from "../temporal-plain-date-time-object.js";
@@ -30,5 +31,12 @@ export function registerTemporalNow(realm: Realm, namespace: GuestObject): void 
             return createTemporalPlainDateTime(value, context.realm.temporalPlainDateTimePrototype, context, loc);
         });
     }
+    realm.registerBuiltin(now, "zonedDateTimeISO", 0, (_receiver, args, context, loc): ValueCompletion => {
+        const supplied = args.length === 0 ? UNDEFINED : args[0];
+        const zone = toTemporalTimeZone(supplied.kind === "undefined" ? { kind: "string", value: "UTC" } : supplied, context, loc);
+        if (zone.type === "throw") return zone;
+        const epoch = BigInt(currentDateMilliseconds(context.realm)) * 1000000n;
+        return createTemporalZonedDateTime(epoch, zone.value, context.realm.temporalZonedDateTimePrototype, context, loc);
+    });
     namespace.bootstrapDefine("Now", { value: { kind: "object", object: now }, writable: true, enumerable: false, configurable: true });
 }
