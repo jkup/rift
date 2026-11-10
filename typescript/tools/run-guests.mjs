@@ -642,6 +642,7 @@ executeDriver("arrow-cover", { stdout: "Arrow cover passed\n" });
 executeDriver("parser-token-stream", { stdout: "Parser token stream passed\n" });
 executeDriver("regexp-literal-scan", { stdout: "RegExp literal scan passed\n" });
 executeDriver("regexp-literals", { stdout: "RegExp literals passed\n" });
+executeDriver("array-of", { stdout: "Array.of passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

@@ -7,7 +7,8 @@ import { toPrimitive } from "../primitive-conversion.js";
 import { toString, numberToString, type StringCompletion } from "../conversion.js";
 import { stringConcat } from "../strings.js";
 import { GuestArray } from "../array-object.js";
-import { normal, UNDEFINED, type GuestObject, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
+import { createArrayWithLength } from "../array-create.js";
+import { languageFailure, normal, UNDEFINED, type GuestObject, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import type { Location } from "../syntax.js";
 
 function arrayArguments(callee: GuestObject, args: Value[], context: OperationContext, loc: Location): ValueCompletion {
@@ -34,6 +35,36 @@ function arrayArguments(callee: GuestObject, args: Value[], context: OperationCo
     return normal({ kind: "object", object: array });
 }
 
+function arrayOf(receiver: Value, args: Value[], context: OperationContext, loc: Location): ValueCompletion {
+    const length: Value = { kind: "number", value: args.length };
+    let result: GuestObject;
+    if (receiver.kind === "object" && receiver.object.constructorSlot !== null) {
+        if (context.construct === undefined) throw new Error("Array.of construction unavailable");
+        const constructed = context.construct(receiver, [length], receiver, loc);
+        if (constructed.type === "throw") return constructed;
+        if (constructed.value.kind !== "object") throw new Error("constructor result invariant");
+        result = constructed.value.object;
+    } else {
+        const allocation = context.tick(loc);
+        if (allocation.type === "throw") return allocation;
+        const array = createArrayWithLength(args.length, context, loc);
+        if (array.type === "throw") return array;
+        result = array.value;
+    }
+    for (let i = 0; i < args.length; i++) {
+        const step = context.tick(loc);
+        if (step.type === "throw") return step;
+        const defined = result.defineOwnProperty(numberToString(i), {
+            value: args[i], writable: true, enumerable: true, configurable: true,
+        }, context, loc);
+        if (defined.type === "throw") return defined;
+        if (!defined.value) return languageFailure(context.realm, "TypeError", "Array.of cannot define element", loc);
+    }
+    const resized = result.set("length", length, context, loc);
+    if (resized.type === "throw") return resized;
+    return normal({ kind: "object", object: result });
+}
+
 export function registerArray(realm: Realm): GuestObject {
     const constructor: GuestObject = realm.createBuiltinConstructor("Array", 1,
         (_receiver, args, context, loc) => arrayArguments(constructor, args, context, loc),
@@ -43,6 +74,7 @@ export function registerArray(realm: Realm): GuestObject {
         const value = args.length === 0 ? UNDEFINED : args[0];
         return normal({ kind: "boolean", value: value.kind === "object" && value.object instanceof GuestArray });
     });
+    realm.registerBuiltin(constructor, "of", 0, (receiver, args, context, loc) => arrayOf(receiver, args, context, loc));
     realm.arrayPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     realm.defineScriptGlobal("Array", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     return constructor;

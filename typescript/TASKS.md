@@ -3828,7 +3828,7 @@ Status: **accepted**. Owner: Codex catch-up chat, 2026-11-10. Canonical TS-177�
 
 ## TS-183 — Generic Array.of factory
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add Array.of with constructor-aware allocation, own data-property creation, final throwing length assignment, item identity and current-method-Realm fallback arrays. Preserve custom constructor/newTarget behavior, abrupt ordering, nonconstructor receivers and operation budgets. Own Array registration/factory helper, bootstrap inventory, tests/manifests and notes in build/array-of-draft. Review ECMAScript 2025 and pinned engine262; Array.from remains a subsequent slice. Canonical TS-177–182 validation stays frozen.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Array.of with constructor-aware allocation, own data-property creation, final throwing length assignment, item identity and current-method-Realm fallback arrays. Preserve custom constructor/newTarget behavior, abrupt ordering, nonconstructor receivers and operation budgets. Own Array registration/factory helper, bootstrap inventory, tests/manifests and notes in build/array-of-draft. Review ECMAScript 2025 and pinned engine262; Array.from remains a subsequent slice. Canonical TS-177–182 validation stays frozen.
 
 ## TS-184 — Generic Array.from factory
 
