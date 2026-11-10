@@ -1189,7 +1189,8 @@ type GeneratorForOf = { kind: "iterator"; awaiting?: boolean; frame: ScriptFrame
 type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; enumerator: ForInEnumerator;
     target: Expr | null; lexical: boolean; scopeId: number; depth: number; labels?: readonly string[] | null };
 type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
-type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number };
+type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number;
+    selection: { statement: SwitchStmt; discriminant: Value; nextClause: number; fallback: number } | null };
 type AsyncIteratorCloseFrame = { kind: "async-close"; frame: ScriptFrameSnapshot; loc: Location; depth: number; pending: GeneratorAbrupt; abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null };
 type GeneratorFrame = AsyncIteratorCloseFrame | GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
 type ExecutionContinuation = { asyncGenerator?: true; sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; asynchronous: AsyncDelegate | null; loc: Location; depth: number } | null };
@@ -2385,6 +2386,14 @@ class ExecutionEngine {
             if (result.payload.kind !== "empty") value = result.payload;
         }
     }
+    #enterSwitchClauses(boundary: GeneratorSwitch, sequences: GeneratorFrame[], selected: number): void {
+        const selection = boundary.selection;
+        if (selection === null) throw new Error("switch already selected");
+        boundary.selection = null;
+        const clauses = selection.statement.caseBlock.clauses;
+        if (selected >= 0) for (let i = clauses.length - 1; i >= selected; i--)
+            sequences.push({ kind: "sequence", frame: boundary.frame, body: clauses[i].body, nextStatement: 0, depth: boundary.depth });
+    }
     #switchBody(stmt: SwitchStmt, discriminant: Value, sequences: GeneratorFrame[] | null): ScriptStatementCompletion {
         const saved = this.#active();
         const scopeId = ExecutableScript.scopeOfNode(saved.record, stmt, executionKey);
@@ -2394,6 +2403,11 @@ class ExecutionEngine {
         try {
             const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
             if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
+            if (sequences !== null) {
+                const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
+                sequences.push({ kind: "switch", frame, depth, selection: { statement: stmt, discriminant, nextClause: 0, fallback: -1 } });
+                return { type: "normal", payload: { kind: "empty" } };
+            }
             const clauses = stmt.caseBlock.clauses;
             let selected = -1, fallback = -1;
             for (let i = 0; i < clauses.length; i++) {
@@ -2404,13 +2418,6 @@ class ExecutionEngine {
                 if (equal(discriminant, selector.value)) { selected = i; break; }
             }
             if (selected < 0) selected = fallback;
-            if (sequences !== null) {
-                const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
-                sequences.push({ kind: "switch", frame, depth });
-                if (selected >= 0) for (let i = clauses.length - 1; i >= selected; i--)
-                    sequences.push({ kind: "sequence", frame, body: clauses[i].body, nextStatement: 0, depth });
-                return { type: "normal", payload: { kind: "empty" } };
-            }
             let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
             if (selected >= 0) for (let i = selected; i < clauses.length; i++) {
                 const result = updateScriptEmpty(this.#list(clauses[i].body), value);
@@ -3500,6 +3507,11 @@ class ExecutionEngine {
             this.#capture(failure);
             return failure;
         }
+        if (receiver.kind === "switch-selector") {
+            if (frame.kind !== "switch" || frame.selection === null) throw new Error("selector without switch frame");
+            if (equal(frame.selection.discriminant, value)) this.#enterSwitchClauses(frame, continuation.sequences, frame.selection.nextClause - 1);
+            return null;
+        }
         if (receiver.kind === "switch-test") {
             const result = this.#switchBody(receiver.statement, value, continuation.sequences);
             if (result.type === "throw") {
@@ -3761,7 +3773,34 @@ class ExecutionEngine {
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
                 this.depth = callerDepth + sequence.depth;
-                if (sequence.kind === "catch" || sequence.kind === "label" || sequence.kind === "switch") { sequences.pop(); continue; }
+                if (sequence.kind === "switch") {
+                    const selection = sequence.selection;
+                    if (selection === null) { sequences.pop(); continue; }
+                    const clauses = selection.statement.caseBlock.clauses;
+                    if (selection.nextClause === clauses.length) {
+                        this.#enterSwitchClauses(sequence, sequences, selection.fallback);
+                        continue;
+                    }
+                    const index = selection.nextClause++, test = clauses[index].test;
+                    if (test === null) { selection.fallback = index; continue; }
+                    if (isSuspendingGeneratorExpression(test)) {
+                        mode = "next";
+                        value = UNDEFINED;
+                        const result = this.#startSuspendingExpression(continuation, test, { kind: "switch-selector" }, callerDepth);
+                        if (result !== null) return result;
+                        continue;
+                    }
+                    const selector = this.#value(test);
+                    if (selector.type === "throw") {
+                        this.#capture(selector);
+                        const failed = this.#unwindContinuation(continuation, selector, callerDepth);
+                        if (failed !== null) return failed;
+                        continue;
+                    }
+                    if (equal(selection.discriminant, selector.value)) this.#enterSwitchClauses(sequence, sequences, index);
+                    continue;
+                }
+                if (sequence.kind === "catch" || sequence.kind === "label") { sequences.pop(); continue; }
                 if (sequence.kind === "finally") {
                     sequences.pop();
                     this.#scheduleFinally(continuation, sequence, { type: "normal" });

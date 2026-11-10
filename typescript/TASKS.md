@@ -4152,7 +4152,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-256 — Suspended switch selectors
 
-Status: **in progress — isolated successor to TS-255**. Owner: Codex catch-up chat, 2026-11-10. Retain discriminant, selector cursor and default index in the switch boundary while case expressions suspend. Preserve the initialized CaseBlock environment, strict comparison, first-match short circuit and fallthrough. Own parser, switch frame/receiver integration, historical selector boundary migration, tests/manifests and docs in build/generator-switch-case-draft. Consult pinned engine262 SwitchStatement/CaseBlockEvaluation; require both-host/static, default-search, TDZ and abrupt tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain discriminant, selector cursor and default index in the switch boundary while case expressions suspend. Preserve the initialized CaseBlock environment, strict comparison, first-match short circuit and fallthrough. Own parser, switch frame/receiver integration, historical selector boundary migration, tests/manifests and docs in build/generator-switch-case-draft. Consult pinned engine262 SwitchStatement/CaseBlockEvaluation; require both-host/static, default-search, TDZ and abrupt tests.
 
 ## TS-257 — Suspended object literal properties
 

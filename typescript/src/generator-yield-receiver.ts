@@ -8,6 +8,7 @@ export type GeneratorYieldReceiver = { kind: "return" }
     | { kind: "loop-test" }
     | { kind: "for-update" }
     | { kind: "switch-test"; statement: SwitchStmt }
+    | { kind: "switch-selector" }
     | { kind: "throw"; loc: Location }
     | { kind: "branch"; consequent: Stmt; alternate: Stmt | null }
     | { kind: "pattern"; pattern: DestructuringPattern; environment: ScriptEnvironment | null }
