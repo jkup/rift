@@ -4210,7 +4210,7 @@ Status: **done — accepted in loop-sources milestone**. Owner: Codex catch-up c
 
 ## TS-270 — Suspended update targets
 
-Status: **in progress — isolated successor to TS-269**. Owner: Codex catch-up chat, 2026-11-10. Retain member bases and keys for prefix/postfix updates, then share ordinary read/coercion/write behavior. Preserve cached keys, setter lookup, old versus new result values, strictness and abrupt completion. Own syntax/parser, expression frames, shared update helper, historical boundaries, tests/manifests and docs in build/generator-update-draft. Super targets remain separate. Require both-host/static, numeric/order and Realm tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain member bases and keys for prefix/postfix updates, then share ordinary read/coercion/write behavior. Preserve cached keys, setter lookup, old versus new result values, strictness and abrupt completion. Own syntax/parser, expression frames, shared update helper, historical boundaries, tests/manifests and docs in build/generator-update-draft. Super targets remain separate. Require both-host/static, numeric/order and Realm tests.
 
 ## TS-271 — Suspended super property reads
 

@@ -1634,6 +1634,19 @@ class ExecutionEngine {
             this.depth--;
         }
     }
+    #updateReference(reference: EvaluationReference, op: "++" | "--", prefix: boolean, loc: Location): ValueCompletion {
+        const oldValue = getReferenceValue(this.context, reference, loc);
+        if (oldValue.type === "throw") return oldValue;
+        if (oldValue.type !== "normal") throw new Error("invalid update read completion");
+        const primitive = toPrimitive(oldValue.value, "number", this.context, loc);
+        if (primitive.type === "throw") return primitive;
+        const numeric = toNumber(primitive.value, loc, this.context.realm);
+        if (numeric.type === "throw") return numeric;
+        const newValue = op === "++" ? numeric.value + 1 : numeric.value - 1;
+        const written = putReferenceValue(this.context, reference, { kind: "number", value: newValue }, loc);
+        if (written.type === "throw") return written;
+        return normal({ kind: "number", value: prefix ? newValue : numeric.value });
+    }
     #objectPropertyName(property: ObjectProperty, key: PropertyKey | null): string | null {
         if (property.kind === "spread" || property.kind === "prototype") return null;
         if (key === null) throw new Error("object property without key");
@@ -1766,17 +1779,7 @@ class ExecutionEngine {
                 if (env !== null) throw new Error("Script update AST requires Script execution");
                 const ref = this.#reference(expr.target, null, receiver);
                 if (ref.type === "abrupt") return ref.completion;
-                const oldValue = getReferenceValue(this.context, ref.reference, expr.loc);
-                if (oldValue.type === "throw") return oldValue;
-                const primitive = toPrimitive(oldValue.value, "number", this.context, expr.loc);
-                if (primitive.type === "throw") return primitive;
-                const numeric = toNumber(primitive.value, expr.loc, this.context.realm);
-                if (numeric.type === "throw") return numeric;
-                // The Reference caches the converted key, never a descriptor or setter.
-                const newValue = expr.op === "++" ? numeric.value + 1 : numeric.value - 1;
-                const written = putReferenceValue(this.context, ref.reference, { kind: "number", value: newValue }, expr.loc);
-                if (written.type === "throw") return written;
-                return normal({ kind: "number", value: expr.prefix ? newValue : numeric.value });
+                return this.#updateReference(ref.reference, expr.op, expr.prefix, expr.loc);
             }
             case "compound": {
                 const ref = this.#reference(expr.target, env, receiver);
@@ -3331,7 +3334,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3339,6 +3342,12 @@ class ExecutionEngine {
                     if (expression.kind === "await") {
                         frames.push({ kind: "await-operand", expression });
                         expression = expression.value;
+                        continue;
+                    }
+                    if (expression.kind === "update") {
+                        if (expression.target.kind !== "member") throw new Error("suspended update without member");
+                        frames.push({ kind: "update-base", expression });
+                        expression = expression.target.base;
                         continue;
                     }
                     if (expression.kind === "assign" || expression.kind === "compound") {
@@ -3462,6 +3471,20 @@ class ExecutionEngine {
                 if (written.type === "throw") return written;
                 if (written.type !== "normal") throw new Error("invalid compound write completion");
                 value = written.value;
+                continue;
+            }
+            if (frame.kind === "update-base") {
+                if (frame.expression.target.kind !== "member") throw new Error("update base without member");
+                frames.push({ kind: "update-key", expression: frame.expression, base: value });
+                expression = frame.expression.target.key;
+                continue;
+            }
+            if (frame.kind === "update-key") {
+                const reference: EvaluationReference = { kind: "script-property", strict: this.#active().strict,
+                    reference: { kind: "property", base: frame.base, key: value, loc: frame.expression.target.loc } };
+                const result = this.#updateReference(reference, frame.expression.op, frame.expression.prefix, frame.expression.loc);
+                if (result.type === "throw") return result;
+                value = result.value;
                 continue;
             }
             if (frame.kind === "assignment-base") {

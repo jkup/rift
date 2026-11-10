@@ -750,10 +750,11 @@ class Parser {
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
             }
-            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound") continue;
+            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
-                if (node.kind === "assign" || node.kind === "compound") {
+                if (node.kind === "update") pending.push({ expression: node.target, visited: false });
+                else if (node.kind === "assign" || node.kind === "compound") {
                     pending.push({ expression: node.value, visited: false });
                     pending.push({ expression: node.target, visited: false });
                 }
@@ -777,6 +778,8 @@ class Parser {
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
+            } else if (node.kind === "update") {
+                if (isSuspendingGeneratorExpression(node.target)) node.suspends = true;
             } else if (node.kind === "assign" || node.kind === "compound") {
                 if (isSuspendingGeneratorExpression(node.value) || isSuspendingGeneratorExpression(node.target)) {
                     if (node.kind === "assign") node.suspends = true;

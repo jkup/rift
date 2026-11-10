@@ -30,6 +30,7 @@ export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "bindi
 export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[] };
 export type ArrayExpr = { kind: "array"; loc: Location; elements: ArrayElement[]; suspends?: true };
+export type UpdateExpr = { kind: "update"; loc: Location; target: Expr; op: "++" | "--"; prefix: boolean; suspends?: true };
 export type CompoundExpr = { kind: "compound"; loc: Location; target: Expr; value: Expr; op: "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "<<" | ">>" | ">>>"; suspends?: true };
 export type AssignExpr = { kind: "assign"; loc: Location; target: Expr; value: Expr; suspends?: true };
 export type ObjectExpr = { kind: "object"; loc: Location; properties: ObjectProperty[]; suspends?: true };
@@ -58,7 +59,7 @@ export type Expr =
     | UnaryExpr
     | BinaryExpr
     | AssignExpr
-    | { kind: "update"; loc: Location; target: Expr; op: "++" | "--"; prefix: boolean }
+    | UpdateExpr
     | CompoundExpr
     | ConditionalExpr
     | MemberExpr
