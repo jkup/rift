@@ -2314,3 +2314,5 @@ Array fill/copyWithin, String.raw, padStart/padEnd and Realm-local Math.random a
 2026-11-10 TS-215 promoted after generator-start acceptance with 6 changed-file baselines verified. Isolated evidence passes 705 Node guests and focused native static-only/zero-dynamic checks. Combined canonical validation remains pending. Evidence: build/generator-blocks-draft/build and build/generator-blocks-* logs.
 
 2026-11-10 TS-216 promoted after generator-start acceptance with 7 changed-file baselines verified. Isolated evidence passes 706 Node guests and focused native static-only/zero-dynamic checks. Combined canonical validation remains pending. Evidence: build/generator-loops-draft/build and build/generator-loops-* logs.
+
+2026-11-10 TS-217 promoted after generator-start acceptance with 6 changed-file baselines verified. Isolated evidence passes 707 Node guests and focused native static-only/zero-dynamic checks. Combined canonical validation remains pending. Evidence: build/generator-for-draft/build and build/generator-for-* logs.

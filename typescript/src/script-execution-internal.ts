@@ -1162,7 +1162,8 @@ export function createGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResu
 }
 type GeneratorSequence = { kind: "sequence"; frame: ScriptFrameSnapshot; body: Stmt[]; nextStatement: number; depth: number };
 type GeneratorLoop = { kind: "loop"; frame: ScriptFrameSnapshot; test: Expr; body: Stmt; testFirst: boolean; first: boolean; depth: number };
-type GeneratorFrame = GeneratorSequence | GeneratorLoop;
+type GeneratorForLoop = { kind: "for"; frame: ScriptFrameSnapshot; statement: ForStmt | ForLexicalStmt; outer: ScriptEnvironment | null; first: boolean; depth: number };
+type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop;
 type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
@@ -2237,30 +2238,36 @@ class ExecutionEngine {
             return result;
         } finally { this.depth = savedDepth; }
     }
+    #prepareForIteration(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null, first: boolean): ValueCompletion {
+        if (stmt.kind === "for-lexical" && stmt.declarationKind === "let") {
+            const frame = this.#active();
+            if (!(frame.lexical instanceof ScriptDeclarativeEnvironment) || outer === null)
+                throw new Error("invalid for iteration environment");
+            const previous = frame.lexical.getBindingValue(stmt.binding.site.name, this.context, stmt.loc);
+            if (previous.type === "throw") { const abrupt: ThrowCompletion = previous; return abrupt; }
+            const created = ExecutableScript.activateLoop(frame.record, stmt, outer, previous.value, this.context, executionKey);
+            if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
+            this.#frame = { ...frame, lexical: created.environment };
+        }
+        if (!first && stmt.update !== null) {
+            const updated = this.#value(stmt.update);
+            if (updated.type === "throw") { const abrupt: ThrowCompletion = updated; return abrupt; }
+        }
+        if (stmt.test !== null) {
+            const test = this.#value(stmt.test);
+            if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
+            return test;
+        }
+        return normal({ kind: "boolean", value: true });
+    }
     #forBody(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null, labels: readonly string[] | null): ScriptStatementCompletion {
         let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
         let first = true;
         while (true) {
-            if (stmt.kind === "for-lexical" && stmt.declarationKind === "let") {
-                const frame = this.#active();
-                if (!(frame.lexical instanceof ScriptDeclarativeEnvironment) || outer === null)
-                    throw new Error("invalid for iteration environment");
-                const previous = frame.lexical.getBindingValue(stmt.binding.site.name, this.context, stmt.loc);
-                if (previous.type === "throw") { const abrupt: ThrowCompletion = previous; return abrupt; }
-                const created = ExecutableScript.activateLoop(frame.record, stmt, outer, previous.value, this.context, executionKey);
-                if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
-                this.#frame = { ...frame, lexical: created.environment };
-            }
-            if (!first && stmt.update !== null) {
-                const updated = this.#value(stmt.update);
-                if (updated.type === "throw") { const abrupt: ThrowCompletion = updated; return abrupt; }
-            }
+            const test = this.#prepareForIteration(stmt, outer, first);
+            if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
             first = false;
-            if (stmt.test !== null) {
-                const test = this.#value(stmt.test);
-                if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
-                if (!truthy(test.value)) return { type: "normal", payload: value };
-            }
+            if (!truthy(test.value)) return { type: "normal", payload: value };
             const result = this.#statement(stmt.body);
             if (result.type === "break" && result.target === undefined) return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
             if (result.type !== "normal" && (result.type !== "continue" || !this.#continueTarget(result.target, labels))) return updateScriptEmpty(result, value);
@@ -2522,6 +2529,10 @@ class ExecutionEngine {
                         if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
                     }
                 }
+                if (sequences !== null) {
+                    sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: null, first: true, depth: sequences[sequences.length - 1].depth + 1 });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 return this.#forBody(stmt, null, labels);
             }
             case "for-lexical": {
@@ -2535,6 +2546,10 @@ class ExecutionEngine {
                     if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
                     const initialized = created.environment.initializeBinding(binding.site.name, value.value, this.context, binding.site.loc);
                     if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+                    if (sequences !== null) {
+                        sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: saved.lexical, first: true, depth: sequences[sequences.length - 1].depth + 1 });
+                        return { type: "normal", payload: { kind: "empty" } };
+                    }
                     return this.#forBody(stmt, saved.lexical, labels);
                 } finally { this.#frame = saved; }
             }
@@ -2886,6 +2901,15 @@ class ExecutionEngine {
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
                 this.depth = callerDepth + sequence.depth;
+                if (sequence.kind === "for") {
+                    const test = this.#prepareForIteration(sequence.statement, sequence.outer, sequence.first);
+                    if (test.type === "throw") { this.#capture(test); return test; }
+                    sequence.first = false;
+                    sequence.frame = this.#active();
+                    if (!truthy(test.value)) { sequences.pop(); continue; }
+                    sequences.push({ kind: "sequence", frame: sequence.frame, body: [sequence.statement.body], nextStatement: 0, depth: sequence.depth });
+                    continue;
+                }
                 if (sequence.kind === "loop") {
                     if (sequence.testFirst || !sequence.first) {
                         const test = this.#value(sequence.test);
@@ -2910,7 +2934,7 @@ class ExecutionEngine {
                 }
                 if (result.type === "break" || result.type === "continue") {
                     if (result.target !== undefined) throw new Error("label escaped supported generator control flow");
-                    while (sequences.length !== 0 && sequences[sequences.length - 1].kind !== "loop") sequences.pop();
+                    while (sequences.length !== 0 && sequences[sequences.length - 1].kind === "sequence") sequences.pop();
                     if (sequences.length === 0) throw new Error("generator loop control without loop");
                     if (result.type === "break") sequences.pop();
                     continue;

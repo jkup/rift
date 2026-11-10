@@ -746,7 +746,7 @@ class Parser {
             const statement = pending.pop()!;
             direct.add(statement);
             if (statement.kind === "block") pending.push(...statement.body);
-            else if (statement.kind === "while" || statement.kind === "do-while") pending.push(statement.body);
+            else if (statement.kind === "while" || statement.kind === "do-while" || statement.kind === "for" || statement.kind === "for-lexical") pending.push(statement.body);
             else if (statement.kind === "if") {
                 pending.push(statement.consequent);
                 if (statement.alternate !== null) pending.push(statement.alternate);

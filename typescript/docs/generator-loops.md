@@ -22,3 +22,5 @@ focused native and Node checks.
 
 See [generator blocks](generator-blocks.md) and [the yield state model](generator-yield.md)
 for the continuation invariants and specification/engine references.
+TS-217 adds ordinary and lexical for-loop continuations, sharing iteration setup
+with synchronous execution. See [generator for loops](generator-for.md).

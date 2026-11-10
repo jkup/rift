@@ -3982,7 +3982,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-217 — Generator for-loop continuations
 
-Status: **in progress — isolated successor to TS-216**. Owner: Codex catch-up chat, 2026-11-10. Extend generator loop records to ordinary and lexical for loops, preserving initializer-once behavior, test/update order, per-iteration let cells and break/continue routing. Reuse existing loop activation semantics. Iterator loops, labels, cleanup and expression-level yields remain blocked. Own parser admission, private loop state, tests/manifests and notes in build/generator-for-draft; require both-host and static coverage gates before promotion.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend generator loop records to ordinary and lexical for loops, preserving initializer-once behavior, test/update order, per-iteration let cells and break/continue routing. Reuse existing loop activation semantics. Iterator loops, labels, cleanup and expression-level yields remain blocked. Own parser admission, private loop state, tests/manifests and notes in build/generator-for-draft; require both-host and static coverage gates before promotion.
 
 ## TS-218 — Generator methods
 
