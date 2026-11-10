@@ -81,6 +81,7 @@ const entries = [
     ["test/generator-start.ts", "generator-start"],
     ["test/generator-yield.ts", "generator-yield"],
     ["test/generator-blocks.ts", "generator-blocks"],
+    ["test/generator-loops.ts", "generator-loops"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -3978,7 +3978,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-216 — Generator while/do-while continuations
 
-Status: **in progress — isolated successor to TS-215**. Owner: Codex catch-up chat, 2026-11-10. Add loop continuation records for while/do-while tests, bodies and unlabelled break/continue, retaining per-iteration lexical environments and side-effect order. Preserve the boundary for for/iterator loops, labelled suspension, cleanup and expression-level yields. Own parser admission, private continuation dispatch, tests/manifests and notes in build/generator-loops-draft; require both-host semantic and static coverage checks before promotion.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add loop continuation records for while/do-while tests, bodies and unlabelled break/continue, retaining per-iteration lexical environments and side-effect order. Preserve the boundary for for/iterator loops, labelled suspension, cleanup and expression-level yields. Own parser admission, private continuation dispatch, tests/manifests and notes in build/generator-loops-draft; require both-host semantic and static coverage checks before promotion.
 
 ## TS-217 — Generator for-loop continuations
 

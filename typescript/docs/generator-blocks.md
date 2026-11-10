@@ -26,3 +26,5 @@ Existing block/if rejection inputs are preserved as positive execution cases.
 
 This extends the [direct-yield state model](generator-yield.md), based on the
 same specification and pinned engine262 generator-operation references.
+TS-216 extends the sequence stack with while/do-while test/body records and
+unlabelled break/continue routing; see [generator loops](generator-loops.md).

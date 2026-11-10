@@ -1160,8 +1160,10 @@ export function createGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResu
     object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
     return object;
 }
-type GeneratorSequence = { frame: ScriptFrameSnapshot; body: Stmt[]; nextStatement: number; depth: number };
-type GeneratorContinuation = { sequences: GeneratorSequence[]; yieldLoc: Location | null };
+type GeneratorSequence = { kind: "sequence"; frame: ScriptFrameSnapshot; body: Stmt[]; nextStatement: number; depth: number };
+type GeneratorLoop = { kind: "loop"; frame: ScriptFrameSnapshot; test: Expr; body: Stmt; testFirst: boolean; first: boolean; depth: number };
+type GeneratorFrame = GeneratorSequence | GeneratorLoop;
+type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
     #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
@@ -1169,7 +1171,7 @@ class GuestGenerator extends GuestObject {
     constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
         super(prototype);
         if (key !== executionKey) throw new Error("invalid generator allocation");
-        this.#continuation = { sequences: [{ frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null };
+        this.#continuation = { sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null };
     }
     static is(object: GuestObject): object is GuestGenerator {
         if (!(object instanceof GuestGenerator)) return false;
@@ -2217,7 +2219,7 @@ class ExecutionEngine {
         }
         return { type: "normal", payload: previous };
     }
-    #statement(stmt: Stmt, labels: readonly string[] | null = null, sequences: GeneratorSequence[] | null = null): ScriptStatementCompletion {
+    #statement(stmt: Stmt, labels: readonly string[] | null = null, sequences: GeneratorFrame[] | null = null): ScriptStatementCompletion {
         // Explicit throw-arm locals retain identity and the accepted E2 static
         // union lowering (see script-completion.ts); they do not wrap failures.
         const budget = this.tick(stmt.loc);
@@ -2289,7 +2291,7 @@ class ExecutionEngine {
     #continueTarget(target: string | undefined, labels: readonly string[] | null): boolean {
         return target === undefined || (labels !== null && labels.includes(target));
     }
-    #scriptStatement(stmt: Stmt, labels: readonly string[] | null, sequences: GeneratorSequence[] | null): ScriptStatementCompletion {
+    #scriptStatement(stmt: Stmt, labels: readonly string[] | null, sequences: GeneratorFrame[] | null): ScriptStatementCompletion {
         switch (stmt.kind) {
             case "class-declaration": {
                 if (stmt.value.name === null) throw new Error("class declaration name missing");
@@ -2413,7 +2415,7 @@ class ExecutionEngine {
                     const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
                     if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
                     if (sequences !== null) {
-                        sequences.push({ frame: this.#active(), body: stmt.body, nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
+                        sequences.push({ kind: "sequence", frame: this.#active(), body: stmt.body, nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
                         return { type: "normal", payload: { kind: "empty" } };
                     }
                     return this.#list(stmt.body);
@@ -2424,7 +2426,7 @@ class ExecutionEngine {
                 if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
                 const branch = truthy(test.value) ? stmt.consequent : stmt.alternate;
                 if (sequences !== null) {
-                    if (branch !== null) sequences.push({ frame: this.#active(), body: [branch], nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
+                    if (branch !== null) sequences.push({ kind: "sequence", frame: this.#active(), body: [branch], nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
                     return { type: "normal", payload: { kind: "empty" } };
                 }
                 const result: ScriptStatementCompletion = branch === null ? { type: "normal", payload: { kind: "empty" } } : this.#statement(branch);
@@ -2537,6 +2539,11 @@ class ExecutionEngine {
                 } finally { this.#frame = saved; }
             }
             case "while": case "do-while": {
+                if (sequences !== null) {
+                    sequences.push({ kind: "loop", frame: this.#active(), test: stmt.test, body: stmt.body,
+                        testFirst: stmt.kind === "while", first: true, depth: sequences[sequences.length - 1].depth + 1 });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
                 let first = true;
                 while (true) {
@@ -2877,9 +2884,19 @@ class ExecutionEngine {
             }
             while (sequences.length !== 0) {
                 const sequence = sequences[sequences.length - 1];
-                if (sequence.nextStatement === sequence.body.length) { sequences.pop(); continue; }
                 this.#frame = sequence.frame;
                 this.depth = callerDepth + sequence.depth;
+                if (sequence.kind === "loop") {
+                    if (sequence.testFirst || !sequence.first) {
+                        const test = this.#value(sequence.test);
+                        if (test.type === "throw") { this.#capture(test); return test; }
+                        if (!truthy(test.value)) { sequences.pop(); continue; }
+                    }
+                    sequence.first = false;
+                    sequences.push({ kind: "sequence", frame: sequence.frame, body: [sequence.body], nextStatement: 0, depth: sequence.depth });
+                    continue;
+                }
+                if (sequence.nextStatement === sequence.body.length) { sequences.pop(); continue; }
                 const statement = sequence.body[sequence.nextStatement++];
                 const result = this.#statement(statement, null, sequences);
                 if (result.type === "throw") { this.#capture(result); return result; }
@@ -2890,6 +2907,13 @@ class ExecutionEngine {
                     const output = iteratorResult(result.value, false, this.context, result.loc);
                     if (output.type === "throw") { this.#capture(output); return output; }
                     return { type: "yield", result: output.value };
+                }
+                if (result.type === "break" || result.type === "continue") {
+                    if (result.target !== undefined) throw new Error("label escaped supported generator control flow");
+                    while (sequences.length !== 0 && sequences[sequences.length - 1].kind !== "loop") sequences.pop();
+                    if (sequences.length === 0) throw new Error("generator loop control without loop");
+                    if (result.type === "break") sequences.pop();
+                    continue;
                 }
                 if (result.type !== "normal") throw new Error("invalid generator body completion");
             }
