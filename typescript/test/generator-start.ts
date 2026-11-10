@@ -21,6 +21,7 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases = [
+    'function* f(){yield 1;}var g=f();g.next().value===1&&g.next().done;',
     '{function* inner(){return 1;}if(inner().next().value!==1)throw 2;}typeof inner==="undefined";',
     'eval("{function* hidden(){}}");typeof hidden==="undefined";',
     'switch(1){case 1:function* hidden(){return 2;}if(hidden().next().value!==2)throw 3;}typeof hidden==="undefined";',
@@ -64,7 +65,7 @@ for (let i=0;i<cases.length;i++) {
     const result = run(cases[i], realm);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "case " + i);
 }
-for (const source of ['function* f(a,a){}','var f=function* (a,a){};','function* f(){yield 1;}','var o={*f(){}};','async function* f(){}']) {
+for (const source of ['function* f(a,a){}','var f=function* (a,a){};','var o={*f(){}};','async function* f(){}']) {
     const realm = new Realm((_line: string): void => {}, "script");
     check(prepareBoundedScript({id:"unsupported",text:source},realm).kind === "blocked", "boundary " + source);
 }

@@ -79,6 +79,7 @@ const entries = [
     ["test/suspension-context.ts", "suspension-context"],
     ["test/pending-expression.ts", "pending-expression"],
     ["test/generator-start.ts", "generator-start"],
+    ["test/generator-yield.ts", "generator-yield"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

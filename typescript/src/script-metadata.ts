@@ -116,7 +116,7 @@ class MetadataCollector {
             case "block": this.statements(stmt.body, strict, parent); break;
             case "expression": this.expression(stmt.expression, strict, parent); break;
             case "let": if (stmt.init !== null) this.expression(stmt.init, strict, parent); break;
-            case "return": case "throw": if (stmt.value !== null) this.expression(stmt.value, strict, parent); break;
+            case "return": case "throw": case "yield": if (stmt.value !== null) this.expression(stmt.value, strict, parent); break;
             case "if":
                 if (stmt.alternate !== null) this.statement(stmt.alternate, strict, parent);
                 this.statement(stmt.consequent, strict, parent);

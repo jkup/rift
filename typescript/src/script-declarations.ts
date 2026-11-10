@@ -437,7 +437,7 @@ class DeclarationCollector {
                 break;
             }
             case "expression": this.expression(node.expression, scope, variableScope); break;
-            case "return": case "throw": if (node.value !== null) this.expression(node.value, scope, variableScope); break;
+            case "return": case "throw": case "yield": if (node.value !== null) this.expression(node.value, scope, variableScope); break;
             case "if":
                 if (node.alternate !== null) this.statement(node.alternate, scope, variableScope);
                 this.statement(node.consequent, scope, variableScope);

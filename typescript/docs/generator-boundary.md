@@ -84,3 +84,7 @@ engine. Parameters run at call time; the body runs on first next. Current budget
 caller cleanup and captured-body error provenance pass both hosts, including host
 faults. No AST continuation survives a yield yet. See [generator start](generator-start.md)
 for the admitted boundary and the remaining suspended-yield work.
+
+TS-214 adds direct generator-body yield statements using an explicit completion
+and saved next-statement cursor. See [direct generator yields](generator-yield.md)
+for the supported boundary and state invariants. Nested suspension is still blocked.

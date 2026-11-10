@@ -1160,31 +1160,39 @@ export function createGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResu
     object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
     return object;
 }
+type GeneratorSequence = { activation: PreparedFunctionBody; nextStatement: number; yieldLoc: Location | null };
+type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
-    #state: "suspended-start" | "executing" | "completed" = "suspended-start";
-    #activation: PreparedFunctionBody | null;
+    #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
+    #continuation: GeneratorSequence | null;
     constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
         super(prototype);
         if (key !== executionKey) throw new Error("invalid generator allocation");
-        this.#activation = activation;
+        this.#continuation = { activation, nextStatement: 0, yieldLoc: null };
     }
     static is(object: GuestObject): object is GuestGenerator {
         if (!(object instanceof GuestGenerator)) return false;
         const branded: GuestGenerator = object;
         return #state in branded;
     }
-    get state(): "suspended-start" | "executing" | "completed" { return this.#state; }
-    start(key: ExecutionKey): PreparedFunctionBody {
-        if (key !== executionKey || this.#state !== "suspended-start" || this.#activation === null) throw new Error("invalid generator start");
-        const activation = this.#activation;
-        this.#activation = null;
+    get state(): "suspended-start" | "suspended-yield" | "executing" | "completed" { return this.#state; }
+    start(key: ExecutionKey): GeneratorSequence {
+        if (key !== executionKey || (this.#state !== "suspended-start" && this.#state !== "suspended-yield") || this.#continuation === null)
+            throw new Error("invalid generator resume");
+        const continuation = this.#continuation;
+        this.#continuation = null;
         this.#state = "executing";
-        return activation;
+        return continuation;
+    }
+    suspend(key: ExecutionKey, continuation: GeneratorSequence): void {
+        if (key !== executionKey || this.#state !== "executing") throw new Error("invalid generator suspension");
+        this.#continuation = continuation;
+        this.#state = "suspended-yield";
     }
     complete(key: ExecutionKey): void {
         if (key !== executionKey) throw new Error("invalid generator completion");
         this.#state = "completed";
-        this.#activation = null;
+        this.#continuation = null;
     }
 }
 
@@ -1436,6 +1444,7 @@ class ExecutionEngine {
                     if (result.type !== "normal" && result.type !== "continue") return result;
                 }
             }
+            case "yield": throw new Error("generator yield requires Script execution");
             case "return": case "throw": {
                 const result = stmt.value === null ? normal() : this.evaluate(stmt.value, env, receiver);
                 if (result.type !== "normal") return result;
@@ -2488,6 +2497,7 @@ class ExecutionEngine {
                             return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
                         return updateScriptEmpty(result, value);
                     }
+                    if (result.type === "yield") throw new Error("yield escaped a supported generator sequence");
                     if (result.payload.kind !== "empty") value = result.payload;
                 }
             }
@@ -2534,6 +2544,11 @@ class ExecutionEngine {
                     if (result.type !== "normal" && (result.type !== "continue" || !this.#continueTarget(result.target, labels))) return updateScriptEmpty(result, value);
                     if (result.payload.kind !== "empty") value = result.payload;
                 }
+            }
+            case "yield": {
+                const value = stmt.value === null ? normal() : this.#value(stmt.value);
+                if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
+                return { type: "yield", value: value.value, loc: stmt.loc };
             }
             case "return": case "throw": {
                 const result = stmt.value === null ? normal() : this.#value(stmt.value);
@@ -2813,29 +2828,58 @@ class ExecutionEngine {
             return languageFailure(this.context.realm, "TypeError", "incompatible generator receiver", loc);
         const generator = receiver.object;
         if (generator.state === "executing") return languageFailure(this.context.realm, "TypeError", "generator is already executing", loc);
-        if (mode !== "next") {
+        if (mode !== "next" && generator.state !== "suspended-yield") {
             generator.complete(executionKey);
             if (mode === "throw") return { type: "throw", origin: { kind: "guest" }, value,
                 diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc } };
             return iteratorResult(value, true, this.context, loc);
         }
         if (generator.state === "completed") return iteratorResult(UNDEFINED, true, this.context, loc);
-        let result: ValueCompletion;
-        try { result = this.#runGeneratorBody(generator.start(executionKey)); }
-        finally { generator.complete(executionKey); }
+        const continuation = generator.start(executionKey);
+        let result: GeneratorResumeResult;
+        let suspended = false;
+        try {
+            result = this.#runGeneratorBody(continuation, mode, value);
+            if (result.type === "yield") {
+                generator.suspend(executionKey, continuation);
+                suspended = true;
+                return normal(result.result);
+            }
+        } finally {
+            if (!suspended) generator.complete(executionKey);
+        }
         return result.type === "throw" ? result : iteratorResult(result.value, true, this.context, loc);
     }
-    #runGeneratorBody(activation: PreparedFunctionBody): ValueCompletion {
+    #runGeneratorBody(continuation: GeneratorSequence, mode: GeneratorResumeMode, value: Value): GeneratorResumeResult {
+        const activation = continuation.activation;
         const caller = this.#active(), callerRealm = this.activeContext.realm, inspection = this.#inspectionSource;
         this.#frame = activation.frame;
         this.activeContext.realm = activation.frame.realm;
         this.#inspectionSource = null;
         try {
-            const result = this.#list(activation.body);
-            if (result.type === "throw") { this.#capture(result); return result; }
-            if (result.type === "return") return normal(result.value);
-            if (result.type === "normal") return normal();
-            throw new Error("invalid generator body completion");
+            if (mode === "return") return normal(value);
+            if (mode === "throw") {
+                if (continuation.yieldLoc === null) throw new Error("abrupt generator resume without yield");
+                const result: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value,
+                    diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: continuation.yieldLoc } };
+                this.#capture(result);
+                return result;
+            }
+            while (continuation.nextStatement < activation.body.length) {
+                const statement = activation.body[continuation.nextStatement++];
+                const result = this.#statement(statement);
+                if (result.type === "throw") { this.#capture(result); return result; }
+                if (result.type === "return") return normal(result.value);
+                if (result.type === "yield") {
+                    activation.frame = this.#active();
+                    continuation.yieldLoc = result.loc;
+                    const output = iteratorResult(result.value, false, this.context, result.loc);
+                    if (output.type === "throw") { this.#capture(output); return output; }
+                    return { type: "yield", result: output.value };
+                }
+                if (result.type !== "normal") throw new Error("invalid generator body completion");
+            }
+            return normal();
         } finally {
             this.#frame = caller;
             this.activeContext.realm = callerRealm;

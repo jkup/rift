@@ -1,3 +1,4 @@
+import type { Location } from "./syntax.js";
 import type { Value, ValueCompletion, ThrowCompletion } from "./runtime.js";
 
 // Empty is statement bookkeeping, never a guest Value or legacy undefined.
@@ -5,12 +6,13 @@ export type ScriptStatementPayload = { readonly kind: "empty" } | { readonly kin
 export type ScriptStatementCompletion =
     | { readonly type: "normal" | "break" | "continue"; readonly payload: ScriptStatementPayload; readonly target?: string }
     | { readonly type: "return"; readonly value: Value }
+    | { readonly type: "yield"; readonly value: Value; readonly loc: Location }
     | ThrowCompletion;
 
 // ECMA-262 2025 §6.2.4.4: carry the previous payload even through empty
 // break/continue, but preserve every already-valued or throwing record.
 export function updateScriptEmpty(completion: ScriptStatementCompletion, previous: ScriptStatementPayload): ScriptStatementCompletion {
-    if (completion.type === "throw" || completion.type === "return" || completion.payload.kind === "value") return completion;
+    if (completion.type === "throw" || completion.type === "return" || completion.type === "yield" || completion.payload.kind === "value") return completion;
     return completion.target === undefined ? { type: completion.type, payload: previous }
         : { type: completion.type, payload: previous, target: completion.target };
 }

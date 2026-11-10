@@ -49,3 +49,7 @@ Evidence: test/generator-start.ts and build/generator-start-draft/build. The
 initial native private-brand failure and reduced workaround remain separate
 from passing validation; see the compiler contract. Mid-expression suspension,
 cleanup that yields and iterator delegation are subsequent work.
+
+TS-214 adds direct generator-body yield statements using an explicit completion
+and saved next-statement cursor. See [direct generator yields](generator-yield.md)
+for the supported boundary and state invariants. Nested suspension is still blocked.

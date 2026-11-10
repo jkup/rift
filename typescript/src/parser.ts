@@ -1,3 +1,4 @@
+import type { GeneratorYieldStmt } from "./syntax.js";
 import { validateRegExpLiteral } from "./regexp-literal-validation.js";
 import type { SuperContext } from "./syntax.js";
 import type { ClassExpr, ClassElement } from "./syntax.js";
@@ -205,6 +206,8 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
 type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; value: Expr } | { kind: "rest"; value: Expr };
 type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupported: { reason: Rejection; message: string; loc: Location } | null };
 class Parser {
+    private generatorContext = false;
+    private generatorYields: GeneratorYieldStmt[] = [];
     private readonly objectCovers = new Map<Expr, ObjectCover>();
     private readonly arrayTrailingCommas = new Set<Expr>();
     readonly lexicalCandidates: LexicalStatementCandidate[] = [];
@@ -519,6 +522,16 @@ class Parser {
             this.loops--;
             return { kind: "while", loc, test, body };
         }
+        if (this.generatorContext && this.eat("yield")) {
+            const keyword = this.token(this.index - 1);
+            if (this.at("*")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield delegation is unsupported", loc);
+            const empty = lineTerminatorBetween(this.source.text, keyword, this.current()) || this.at(";") || this.at("}") || this.current().kind === "eof";
+            const value = empty ? null : this.expression(1);
+            this.statementTerminator();
+            const statement: GeneratorYieldStmt = { kind: "yield", loc, value };
+            this.generatorYields.push(statement);
+            return statement;
+        }
         if (this.at("return") || this.at("throw")) {
             const keyword = this.take();
             const kind = keyword.text === "return" ? "return" : "throw";
@@ -705,6 +718,9 @@ class Parser {
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with non-simple parameters", loc);
     }
     functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
+        const savedGenerator = this.generatorContext, savedYields = this.generatorYields;
+        this.generatorContext = false;
+        this.generatorYields = [];
         const savedNewTarget = this.newTargetAllowed;
         const savedSuperContext = this.superContext;
         this.superContext = superContext;
@@ -722,7 +738,13 @@ class Parser {
         this.switches = 0;
         this.labels = [];
         this.functions++;
+        this.generatorContext = generator;
         const body = this.list(true, params);
+        const direct = new Set<Stmt>(body);
+        for (const statement of this.generatorYields) if (!direct.has(statement))
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield in nested control flow is unsupported", statement.loc);
+        this.generatorContext = savedGenerator;
+        this.generatorYields = savedYields;
         this.functions--;
         this.loops = loops;
         this.switches = switches;
@@ -738,6 +760,8 @@ class Parser {
         return this.arrowBody(first, [name], false, [{ site: { name, start: first.start, end: first.end, loc: first.loc }, initializer: null }], allowIn);
     }
     private arrowBody(first: Token, params: string[], rest: boolean, parameters: FormalParameter[], allowIn: boolean): Expr {
+        const savedGenerator = this.generatorContext;
+        this.generatorContext = false;
         if (this.current().loc.line !== this.token(this.index - 1).loc.line)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "line terminator before arrow", this.current().loc);
         this.expect("=>");
@@ -757,6 +781,7 @@ class Parser {
         this.loops = loops;
         this.switches = switches;
         this.labels = labels;
+        this.generatorContext = savedGenerator;
         if (!expressionBody) this.checkParameterDirective(rest, parameters, bodyIndex, first.loc);
         return { kind: "function", loc: first.loc, params, parameters, body,
             source: { source: this.source, start: first.start, end: this.token(this.index - 1).end, arrow: true, expressionBody, rest, bodyLoc } };

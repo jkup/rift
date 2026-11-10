@@ -5,6 +5,7 @@ export type FunctionSource = { readonly source: SourceText; readonly start: numb
 export type Location = { line: number; column: number };
 export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
 export type FormalParameter = { readonly site: DeclarationSite; readonly initializer: Expr | null };
+export type GeneratorYieldStmt = { kind: "yield"; loc: Location; value: Expr | null };
 export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
 export type SwitchClause = { loc: Location; start: number; end: number; test: Expr | null; body: Stmt[] };
 export type CaseBlock = { loc: Location; start: number; end: number; clauses: SwitchClause[]; body: Stmt[] };
@@ -60,6 +61,7 @@ export type ForPatternBinding = { kind: "pattern"; declarationKind: "let" | "con
 export type ForAssignmentPattern = { kind: "assignment-pattern"; loc: Location; pattern: ArrayPattern | ObjectPattern };
 export type ForEachStmt = { kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding | ForPatternBinding | ForAssignmentPattern; iterable: Expr; body: Stmt };
 export type Stmt =
+    | GeneratorYieldStmt
     | { kind: "class-declaration"; loc: Location; value: ClassExpr }
     | VarStmt
     | { kind: "pattern-declaration"; loc: Location; declarationKind: "let" | "const" | "var"; pattern: ArrayPattern | ObjectPattern; init: Expr }
