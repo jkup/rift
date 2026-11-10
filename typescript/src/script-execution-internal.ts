@@ -1123,7 +1123,7 @@ function copyStrictness(strictness: StrictnessMetadata): StrictnessMetadata {
             loc: { line: d.loc.line, column: d.loc.column }, raw: d.raw, useStrict: d.useStrict })) };
 }
 
-import { intrinsicPromiseCapability, fatalPromiseCompletion } from "./promise.js";
+import { GuestPromise, promiseResolve, intrinsicPromiseCapability, fatalPromiseCompletion, type PromiseCapability } from "./promise.js";
 import { stringConcat } from "./strings.js";
 import { GuestArray } from "./array-object.js";
 import { toObject } from "./object-conversion.js";
@@ -1188,12 +1188,12 @@ type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statemen
 type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number };
 type GeneratorFrame = GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
-type GeneratorContinuation = { sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
-type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
-type GeneratorExpressionResult = GeneratorResumeResult | { type: "suspended-delegate" };
+type ExecutionContinuation = { sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
+type ContinuationResult = ValueCompletion | { type: "yield"; result: Value } | { type: "await"; value: Value; loc: Location; depth: number };
+type ExpressionContinuationResult = ContinuationResult | { type: "suspended-delegate" };
 class GuestGenerator extends GuestObject {
     #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
-    #continuation: GeneratorContinuation | null;
+    #continuation: ExecutionContinuation | null;
     constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
         super(prototype);
         if (key !== executionKey) throw new Error("invalid generator allocation");
@@ -1205,7 +1205,7 @@ class GuestGenerator extends GuestObject {
         return #state in branded;
     }
     get state(): "suspended-start" | "suspended-yield" | "executing" | "completed" { return this.#state; }
-    start(key: ExecutionKey): GeneratorContinuation {
+    start(key: ExecutionKey): ExecutionContinuation {
         if (key !== executionKey || (this.#state !== "suspended-start" && this.#state !== "suspended-yield") || this.#continuation === null)
             throw new Error("invalid generator resume");
         const continuation = this.#continuation;
@@ -1213,7 +1213,7 @@ class GuestGenerator extends GuestObject {
         this.#state = "executing";
         return continuation;
     }
-    suspend(key: ExecutionKey, continuation: GeneratorContinuation): void {
+    suspend(key: ExecutionKey, continuation: ExecutionContinuation): void {
         if (key !== executionKey || this.#state !== "executing") throw new Error("invalid generator suspension");
         this.#continuation = continuation;
         this.#state = "suspended-yield";
@@ -1223,6 +1223,53 @@ class GuestGenerator extends GuestObject {
         this.#state = "completed";
         this.#continuation = null;
     }
+}
+
+class AsyncActivation {
+    #continuation: ExecutionContinuation | null;
+    #state: "suspended" | "executing" | "completed" = "suspended";
+    constructor(key: ExecutionKey, readonly realm: Realm, readonly capability: PromiseCapability, activation: PreparedFunctionBody) {
+        if (key !== executionKey) throw new Error("invalid async activation");
+        this.#continuation = { expressionFrames: [], sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null, receiver: null, delegate: null };
+    }
+    start(key: ExecutionKey): ExecutionContinuation {
+        if (key !== executionKey || this.#state !== "suspended" || this.#continuation === null) throw new Error("invalid async resume");
+        const continuation = this.#continuation;
+        this.#continuation = null;
+        this.#state = "executing";
+        return continuation;
+    }
+    suspend(key: ExecutionKey, continuation: ExecutionContinuation): void {
+        if (key !== executionKey || this.#state !== "executing") throw new Error("invalid async suspension");
+        this.#continuation = continuation;
+        this.#state = "suspended";
+    }
+    complete(key: ExecutionKey): void {
+        if (key !== executionKey) throw new Error("invalid async completion");
+        this.#continuation = null;
+        this.#state = "completed";
+    }
+}
+export type { AsyncResumeCallable };
+class AsyncResumeCallable {
+    readonly kind = "async-resume";
+    #activation: AsyncActivation;
+    constructor(key: ExecutionKey, readonly realm: Realm, activation: AsyncActivation, readonly mode: "next" | "throw") {
+        if (key !== executionKey) throw new Error("invalid async handler");
+        this.#activation = activation;
+    }
+    static activation(callable: AsyncResumeCallable, key: ExecutionKey): AsyncActivation {
+        if (key !== executionKey || !(callable instanceof AsyncResumeCallable) || !(#activation in callable))
+            throw new Error("invalid async handler access");
+        return callable.#activation;
+    }
+}
+function asyncResumeHandler(activation: AsyncActivation, mode: "next" | "throw"): Value {
+    const callable = new AsyncResumeCallable(executionKey, activation.realm, activation, mode);
+    const object = new GuestObject(activation.realm.functionPrototype, false, callable);
+    object.bootstrapDefine("name", { value: { kind: "string", value: "" }, configurable: true });
+    object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
+    return { kind: "object", object };
 }
 
 type PreparedFunctionBody = { frame: ScriptFrameSnapshot; body: Stmt[]; environment: ScriptFunctionEnvironment };
@@ -1557,7 +1604,7 @@ class ExecutionEngine {
     }
     #expression(expr: Expr, env: Environment | null, receiver: Value, name: string | null): Completion {
         switch (expr.kind) {
-            case "yield": throw new Error("yield expression requires a generator continuation");
+            case "await": case "yield": throw new Error("suspension expression requires a continuation");
             case "class": {
                 if (env !== null) throw new Error("class requires Script execution");
                 return this.#classExpression(expr, name);
@@ -1822,7 +1869,7 @@ class ExecutionEngine {
         if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
         if (this.#script) return this.#callScript(callee, receiver, args, loc);
         if (this.context.realm.profile !== "legacy") throw new Error("Script execution unavailable");
-        if (fn.kind === "script-guest" || fn.kind === "bound" || fn.kind === "eval" || fn.kind === "generator-resume") throw new Error("Script execution unavailable");
+        if (fn.kind === "script-guest" || fn.kind === "bound" || fn.kind === "eval" || fn.kind === "generator-resume" || fn.kind === "async-resume") throw new Error("Script execution unavailable");
         if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
         const callerRealm = this.activeContext.realm;
         this.calls++;
@@ -2442,9 +2489,9 @@ class ExecutionEngine {
             case "expression": {
                 const expression = stmt.expression;
                 if (sequences !== null) {
-                    if (isSuspendingGeneratorExpression(expression)) return this.#generatorExpression(expression, null);
+                    if (isSuspendingGeneratorExpression(expression)) return this.#suspendingExpression(expression, null);
                     if (expression.kind === "destructure" && isSuspendingGeneratorExpression(expression.value))
-                        return this.#generatorExpression(expression.value, { kind: "pattern", pattern: expression.pattern, environment: null });
+                        return this.#suspendingExpression(expression.value, { kind: "pattern", pattern: expression.pattern, environment: null });
                     if ((expression.kind === "assign" || expression.kind === "compound") && isSuspendingGeneratorExpression(expression.value)) {
                         const reference = this.#reference(expression.target, null, this.#active().thisValue);
                         if (reference.type === "abrupt") {
@@ -2452,18 +2499,18 @@ class ExecutionEngine {
                             throw new Error("invalid suspended assignment reference");
                         }
                         if (expression.kind === "assign")
-                            return this.#generatorExpression(expression.value, { kind: "assignment", reference: reference.reference, loc: expression.loc });
+                            return this.#suspendingExpression(expression.value, { kind: "assignment", reference: reference.reference, loc: expression.loc });
                         const left = getReferenceValue(this.context, reference.reference, expression.loc);
                         if (left.type === "throw") { const abrupt: ThrowCompletion = left; return abrupt; }
                         if (left.type !== "normal") throw new Error("invalid suspended compound operand");
-                        return this.#generatorExpression(expression.value, { kind: "compound", reference: reference.reference, left: left.value, operator: expression.op, loc: expression.loc });
+                        return this.#suspendingExpression(expression.value, { kind: "compound", reference: reference.reference, left: left.value, operator: expression.op, loc: expression.loc });
                     }
                 }
                 return scriptExpressionCompletion(this.#value(expression));
             }
             case "pattern-declaration": {
                 if (isSuspendingGeneratorExpression(stmt.init) && sequences !== null)
-                    return this.#generatorExpression(stmt.init, { kind: "pattern", pattern: stmt.pattern, environment: stmt.declarationKind === "var" ? null : this.#active().lexical });
+                    return this.#suspendingExpression(stmt.init, { kind: "pattern", pattern: stmt.pattern, environment: stmt.declarationKind === "var" ? null : this.#active().lexical });
                 const input = this.#value(stmt.init);
                 if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
                 const initialized = this.#initializePattern(stmt.pattern, null, input.value, stmt.declarationKind === "var" ? null : this.#active().lexical, null);
@@ -2472,7 +2519,7 @@ class ExecutionEngine {
             }
             case "let": case "const": {
                 if (stmt.init !== null && isSuspendingGeneratorExpression(stmt.init) && sequences !== null)
-                    return this.#generatorExpression(stmt.init, { kind: "initialization", environment: this.#active().lexical, name: stmt.name, loc: stmt.loc });
+                    return this.#suspendingExpression(stmt.init, { kind: "initialization", environment: this.#active().lexical, name: stmt.name, loc: stmt.loc });
                 const result = stmt.init === null ? normal() : this.#value(stmt.init, stmt.name);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 const env = this.#active().lexical;
@@ -2488,7 +2535,7 @@ class ExecutionEngine {
                     if (ref.type === "throw") return ref;
                     if (isSuspendingGeneratorExpression(declaration.init) && sequences !== null) {
                         if (stmt.declarations.length !== 1) throw new Error("unsupported suspended declaration list");
-                        return this.#generatorExpression(declaration.init, { kind: "binding", reference: ref.reference });
+                        return this.#suspendingExpression(declaration.init, { kind: "binding", reference: ref.reference });
                     }
                     const value = this.#value(declaration.init, declaration.name);
                     if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
@@ -2515,7 +2562,7 @@ class ExecutionEngine {
             }
             case "if": {
                 if (sequences !== null && isSuspendingGeneratorExpression(stmt.test))
-                    return this.#generatorExpression(stmt.test, { kind: "branch", consequent: stmt.consequent, alternate: stmt.alternate });
+                    return this.#suspendingExpression(stmt.test, { kind: "branch", consequent: stmt.consequent, alternate: stmt.alternate });
                 const test = this.#value(stmt.test);
                 if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
                 const branch = truthy(test.value) ? stmt.consequent : stmt.alternate;
@@ -2651,7 +2698,7 @@ class ExecutionEngine {
             case "yield": return this.#generatorYield(stmt, null);
             case "return": case "throw": {
                 if (stmt.value !== null && isSuspendingGeneratorExpression(stmt.value) && sequences !== null)
-                    return this.#generatorExpression(stmt.value, stmt.kind === "return" ? { kind: "return" } : { kind: "throw", loc: stmt.loc });
+                    return this.#suspendingExpression(stmt.value, stmt.kind === "return" ? { kind: "return" } : { kind: "throw", loc: stmt.loc });
                 const result = stmt.value === null ? normal() : this.#value(stmt.value);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 if (stmt.kind === "return") return { type: "return", value: result.value };
@@ -2783,10 +2830,65 @@ class ExecutionEngine {
     }
     #executeAsyncFunction(callee: GuestObject, fn: ScriptGuestCallable, receiver: Value, args: Value[], loc: Location): ValueCompletion {
         const capability = intrinsicPromiseCapability(fn.realm);
-        const result = this.#executeScriptFunction(callee, fn, receiver, args, UNDEFINED, loc);
-        if (result.type === "throw" && fatalPromiseCompletion(result)) return result;
-        const settled = this.call(result.type === "throw" ? capability.reject : capability.resolve, UNDEFINED, [result.value], loc);
-        return settled.type === "throw" ? settled : normal(capability.promise);
+        const prepared = this.#prepareScriptFunction(callee, fn, receiver, args, UNDEFINED);
+        if (prepared.type === "throw") {
+            if (fatalPromiseCompletion(prepared)) return prepared;
+            const rejected = this.call(capability.reject, UNDEFINED, [prepared.value], loc);
+            return rejected.type === "throw" ? rejected : normal(capability.promise);
+        }
+        const activation = new AsyncActivation(executionKey, fn.realm, capability, prepared.activation);
+        const started = this.#resumeAsync(activation, "next", UNDEFINED, loc);
+        return started.type === "throw" ? started : normal(capability.promise);
+    }
+    #resumeAsync(activation: AsyncActivation, mode: "next" | "throw", value: Value, loc: Location): ValueCompletion {
+        const continuation = activation.start(executionKey);
+        let suspended = false;
+        try {
+            while (true) {
+                const result = this.#runContinuation(continuation, mode, value);
+                if (result.type === "yield") throw new Error("yield in async activation");
+                if (result.type === "await") {
+                    const reacted = this.#awaitPromise(activation, continuation, result.value, result.loc, result.depth);
+                    if (reacted.type === "throw") {
+                        if (fatalPromiseCompletion(reacted)) return reacted;
+                        mode = "throw";
+                        value = reacted.value;
+                        continue;
+                    }
+                    activation.suspend(executionKey, continuation);
+                    suspended = true;
+                    return normal();
+                }
+                if (result.type === "throw" && fatalPromiseCompletion(result)) return result;
+                const settled = this.call(result.type === "throw" ? activation.capability.reject : activation.capability.resolve, UNDEFINED, [result.value], loc);
+                return settled.type === "throw" ? settled : normal();
+            }
+        } finally {
+            if (!suspended) activation.complete(executionKey);
+        }
+    }
+    #awaitPromise(activation: AsyncActivation, continuation: ExecutionContinuation, value: Value, loc: Location, depth: number): ValueCompletion {
+        const caller = this.#active(), callerRealm = this.activeContext.realm, callerDepth = this.depth, inspection = this.#inspectionSource;
+        const frame = continuation.sequences[continuation.sequences.length - 1].frame;
+        this.#frame = frame;
+        this.activeContext.realm = frame.realm;
+        this.depth = callerDepth + depth;
+        this.#inspectionSource = null;
+        try {
+            const constructor = activation.realm.promiseConstructor;
+            if (constructor === null) throw new Error("missing Promise intrinsic");
+            const promise = promiseResolve({ kind: "object", object: constructor }, value, this.context, loc);
+            if (promise.type === "throw") { this.#capture(promise); return promise; }
+            if (promise.value.kind !== "object" || !(promise.value.object instanceof GuestPromise)) throw new Error("invalid awaited Promise");
+            const reacted = promise.value.object.then(null, asyncResumeHandler(activation, "next"), asyncResumeHandler(activation, "throw"), this.context, loc);
+            if (reacted.type === "throw") this.#capture(reacted);
+            return reacted;
+        } finally {
+            this.#frame = caller;
+            this.activeContext.realm = callerRealm;
+            this.depth = callerDepth;
+            this.#inspectionSource = inspection;
+        }
     }
     #executeScriptFunction(callee: GuestObject, fn: ScriptGuestCallable, receiver: Value, args: Value[], newTarget: Value = UNDEFINED, constructorLoc: Location | null = null): ValueCompletion {
         const caller = this.#active(), callerRealm = this.activeContext.realm;
@@ -2892,6 +2994,7 @@ class ExecutionEngine {
         this.activeContext.realm = fn.realm;
         this.#frame = { ...saved, realm: fn.realm };
         try {
+            if (fn.kind === "async-resume") return this.#resumeAsync(AsyncResumeCallable.activation(fn, executionKey), fn.mode, args[0] ?? UNDEFINED, loc);
             if (fn.kind === "generator-resume") {
                 GeneratorResumeCallable.check(fn);
                 const result = this.#resumeGenerator(receiver, fn.mode, args[0] ?? UNDEFINED, loc);
@@ -2946,10 +3049,11 @@ class ExecutionEngine {
         }
         if (generator.state === "completed") return iteratorResult(UNDEFINED, true, this.context, loc);
         const continuation = generator.start(executionKey);
-        let result: GeneratorResumeResult;
+        let result: ContinuationResult;
         let suspended = false;
         try {
-            result = this.#runGeneratorBody(continuation, mode, value);
+            result = this.#runContinuation(continuation, mode, value);
+            if (result.type === "await") throw new Error("await in generator activation");
             if (result.type === "yield") {
                 generator.suspend(executionKey, continuation);
                 suspended = true;
@@ -2960,7 +3064,7 @@ class ExecutionEngine {
         }
         return result.type === "throw" ? result : iteratorResult(result.value, true, this.context, loc);
     }
-    #generatorExpression(expression: Expr, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
+    #suspendingExpression(expression: Expr, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
         if (expression.kind === "yield") return this.#generatorYield(expression, receiver);
         if (!isSuspendingGeneratorExpression(expression)) throw new Error("invalid suspended expression");
         return { type: "generator-expression", expression, receiver };
@@ -2976,7 +3080,7 @@ class ExecutionEngine {
         }
         return { type: "yield", value: value.value, loc: expression.loc, receiver };
     }
-    #evaluateGeneratorExpression(continuation: GeneratorContinuation, expression: Expr | null, value: Value, callerDepth: number): GeneratorExpressionResult {
+    #evaluateSuspendingExpression(continuation: ExecutionContinuation, expression: Expr | null, value: Value, callerDepth: number): ExpressionContinuationResult {
         const frames = continuation.expressionFrames;
         const sequence = continuation.sequences[continuation.sequences.length - 1];
         const baseDepth = callerDepth + sequence.depth + 1;
@@ -2988,11 +3092,16 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || ((expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
                         return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", expression.loc);
+                    if (expression.kind === "await") {
+                        frames.push({ kind: "await-operand", expression });
+                        expression = expression.value;
+                        continue;
+                    }
                     if (expression.kind === "binary") {
                         frames.push({ kind: "left", expression });
                         expression = expression.left;
@@ -3039,6 +3148,10 @@ class ExecutionEngine {
                 continue;
             }
             if (frame.kind === "branch") continue;
+            if (frame.kind === "await-operand") {
+                continuation.yieldLoc = frame.expression.loc;
+                return { type: "await", value, loc: frame.expression.loc, depth: this.depth - callerDepth };
+            }
             if (frame.kind === "yield-operand") {
                 continuation.yieldLoc = frame.expression.loc;
                 if (frame.expression.delegate === true) {
@@ -3071,25 +3184,25 @@ class ExecutionEngine {
             value = computed.value;
         }
     }
-    #startGeneratorExpression(continuation: GeneratorContinuation, expression: Expr, receiver: GeneratorYieldReceiver | null, callerDepth: number): GeneratorResumeResult | null {
+    #startSuspendingExpression(continuation: ExecutionContinuation, expression: Expr, receiver: GeneratorYieldReceiver | null, callerDepth: number): ContinuationResult | null {
         continuation.receiver = receiver;
-        const evaluated = this.#evaluateGeneratorExpression(continuation, expression, UNDEFINED, callerDepth);
-        if (evaluated.type === "yield") return evaluated;
+        const evaluated = this.#evaluateSuspendingExpression(continuation, expression, UNDEFINED, callerDepth);
+        if (evaluated.type === "yield" || evaluated.type === "await") return evaluated;
         if (evaluated.type === "suspended-delegate") return null;
         if (evaluated.type === "throw") {
             this.#capture(evaluated);
-            return this.#unwindGenerator(continuation, evaluated, callerDepth);
+            return this.#unwindContinuation(continuation, evaluated, callerDepth);
         }
-        return this.#receiveGeneratorYield(continuation, evaluated.value, callerDepth);
+        return this.#receiveSuspension(continuation, evaluated.value, callerDepth);
     }
-    #receiveGeneratorYield(continuation: GeneratorContinuation, value: Value, callerDepth: number): GeneratorResumeResult | null {
+    #receiveSuspension(continuation: ExecutionContinuation, value: Value, callerDepth: number): ContinuationResult | null {
         if (continuation.expressionFrames.length !== 0) {
-            const computed = this.#evaluateGeneratorExpression(continuation, null, value, callerDepth);
-            if (computed.type === "yield") return computed;
+            const computed = this.#evaluateSuspendingExpression(continuation, null, value, callerDepth);
+            if (computed.type === "yield" || computed.type === "await") return computed;
             if (computed.type === "suspended-delegate") return null;
             if (computed.type === "throw") {
                 this.#capture(computed);
-                return this.#unwindGenerator(continuation, computed, callerDepth);
+                return this.#unwindContinuation(continuation, computed, callerDepth);
             }
             value = computed.value;
         }
@@ -3118,18 +3231,18 @@ class ExecutionEngine {
             if (branch !== null) continuation.sequences.push({ kind: "sequence", frame: frame.frame, body: [branch], nextStatement: 0, depth: frame.depth + 1 });
             return null;
         }
-        if (receiver.kind === "return") return this.#unwindGenerator(continuation, { type: "return", value }, callerDepth);
+        if (receiver.kind === "return") return this.#unwindContinuation(continuation, { type: "return", value }, callerDepth);
         if (receiver.kind === "throw") {
             const abrupt: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value,
                 diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: receiver.loc } };
             this.#capture(abrupt);
-            return this.#unwindGenerator(continuation, abrupt, callerDepth);
+            return this.#unwindContinuation(continuation, abrupt, callerDepth);
         }
         if (receiver.kind === "pattern") {
             const initialized = this.#initializePattern(receiver.pattern, null, value, receiver.environment, null);
             if (initialized.type === "throw") {
                 this.#capture(initialized);
-                return this.#unwindGenerator(continuation, initialized, callerDepth);
+                return this.#unwindContinuation(continuation, initialized, callerDepth);
             }
             return null;
         }
@@ -3138,14 +3251,14 @@ class ExecutionEngine {
                 const computed = applyBinaryOperator(receiver.operator, receiver.left, value, this.context, receiver.loc);
                 if (computed.type === "throw") {
                     this.#capture(computed);
-                    return this.#unwindGenerator(continuation, computed, callerDepth);
+                    return this.#unwindContinuation(continuation, computed, callerDepth);
                 }
                 value = computed.value;
             }
             const written = putReferenceValue(this.context, receiver.reference, value, receiver.loc);
             if (written.type === "throw") {
                 this.#capture(written);
-                return this.#unwindGenerator(continuation, written, callerDepth);
+                return this.#unwindContinuation(continuation, written, callerDepth);
             }
             if (written.type !== "normal") throw new Error("invalid resumed assignment completion");
             return null;
@@ -3155,18 +3268,18 @@ class ExecutionEngine {
             : receiver.environment.initializeBinding(receiver.name, value, this.context, receiver.loc);
         if (written.type === "throw") {
             this.#capture(written);
-            return this.#unwindGenerator(continuation, written, callerDepth);
+            return this.#unwindContinuation(continuation, written, callerDepth);
         }
         return null;
     }
-    #scheduleGeneratorFinally(continuation: GeneratorContinuation, boundary: GeneratorFinally, pending: GeneratorPending): void {
+    #scheduleFinally(continuation: ExecutionContinuation, boundary: GeneratorFinally, pending: GeneratorPending): void {
         continuation.sequences.push({ kind: "cleanup", frame: boundary.frame, pending,
             abrupt: this.#abrupt, source: this.#lastAbrupt, depth: boundary.depth });
         continuation.sequences.push({ kind: "sequence", frame: boundary.frame,
             body: [boundary.statement.finalizer], nextStatement: 0, depth: boundary.depth });
         this.#abrupt = null;
     }
-    #unwindGenerator(continuation: GeneratorContinuation, completion: GeneratorAbrupt, callerDepth: number): ValueCompletion | null {
+    #unwindContinuation(continuation: ExecutionContinuation, completion: GeneratorAbrupt, callerDepth: number): ValueCompletion | null {
         continuation.delegate = null;
         continuation.receiver = null;
         continuation.expressionFrames.length = 0;
@@ -3192,7 +3305,7 @@ class ExecutionEngine {
                 continue;
             }
             if (boundary.kind === "finally") {
-                this.#scheduleGeneratorFinally(continuation, boundary, completion);
+                this.#scheduleFinally(continuation, boundary, completion);
                 return null;
             }
             if (boundary.kind === "switch" && completion.type === "break" && completion.target === undefined) return null;
@@ -3224,7 +3337,7 @@ class ExecutionEngine {
         if (completion.type === "return") return normal(completion.value);
         throw new Error("generator loop control without loop");
     }
-    #runGeneratorBody(continuation: GeneratorContinuation, mode: GeneratorResumeMode, value: Value): GeneratorResumeResult {
+    #runContinuation(continuation: ExecutionContinuation, mode: GeneratorResumeMode, value: Value): ContinuationResult {
         const sequences = continuation.sequences;
         const caller = this.#active(), callerRealm = this.activeContext.realm, inspection = this.#inspectionSource, callerDepth = this.depth;
         const active = sequences[sequences.length - 1];
@@ -3233,12 +3346,12 @@ class ExecutionEngine {
         this.#inspectionSource = null;
         try {
             if (mode === "next" && continuation.delegate === null && (continuation.receiver !== null || continuation.expressionFrames.length !== 0)) {
-                const result = this.#receiveGeneratorYield(continuation, value, callerDepth);
+                const result = this.#receiveSuspension(continuation, value, callerDepth);
                 if (result !== null) return result;
                 value = UNDEFINED;
             }
             if (mode === "return" && continuation.delegate === null) {
-                const result = this.#unwindGenerator(continuation, { type: "return", value }, callerDepth);
+                const result = this.#unwindContinuation(continuation, { type: "return", value }, callerDepth);
                 if (result !== null) return result;
             }
             if (mode === "throw" && continuation.delegate === null) {
@@ -3246,7 +3359,7 @@ class ExecutionEngine {
                 const result: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value,
                     diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: continuation.yieldLoc } };
                 this.#capture(result);
-                const uncaught = this.#unwindGenerator(continuation, result, callerDepth);
+                const uncaught = this.#unwindContinuation(continuation, result, callerDepth);
                 if (uncaught !== null) return uncaught;
             }
             while (sequences.length !== 0) {
@@ -3264,18 +3377,18 @@ class ExecutionEngine {
                     value = UNDEFINED;
                     if (delegated.type === "throw") {
                         this.#capture(delegated);
-                        const uncaught = this.#unwindGenerator(continuation, delegated, callerDepth);
+                        const uncaught = this.#unwindContinuation(continuation, delegated, callerDepth);
                         if (uncaught !== null) return uncaught;
                         continue;
                     }
                     if (delegated.type === "yield") return delegated;
                     continuation.delegate = null;
                     if (delegated.type === "return") {
-                        const result = this.#unwindGenerator(continuation, { type: "return", value: delegated.value }, callerDepth);
+                        const result = this.#unwindContinuation(continuation, { type: "return", value: delegated.value }, callerDepth);
                         if (result !== null) return result;
                         continue;
                     }
-                    const result = this.#receiveGeneratorYield(continuation, delegated.value, callerDepth);
+                    const result = this.#receiveSuspension(continuation, delegated.value, callerDepth);
                     if (result !== null) return result;
                     if (sequences.length === 0) return normal();
                     if (continuation.delegate !== null) continue;
@@ -3286,7 +3399,7 @@ class ExecutionEngine {
                 if (sequence.kind === "catch" || sequence.kind === "label" || sequence.kind === "switch") { sequences.pop(); continue; }
                 if (sequence.kind === "finally") {
                     sequences.pop();
-                    this.#scheduleGeneratorFinally(continuation, sequence, { type: "normal" });
+                    this.#scheduleFinally(continuation, sequence, { type: "normal" });
                     continue;
                 }
                 if (sequence.kind === "cleanup") {
@@ -3296,7 +3409,7 @@ class ExecutionEngine {
                         this.#abrupt = sequence.abrupt;
                         this.#lastAbrupt = sequence.source;
                     }
-                    const result = this.#unwindGenerator(continuation, sequence.pending, callerDepth);
+                    const result = this.#unwindContinuation(continuation, sequence.pending, callerDepth);
                     if (result !== null) return result;
                     continue;
                 }
@@ -3306,7 +3419,7 @@ class ExecutionEngine {
                     if (next.type === "throw") {
                         sequences.pop();
                         this.#capture(next);
-                        const result = this.#unwindGenerator(continuation, next, callerDepth);
+                        const result = this.#unwindContinuation(continuation, next, callerDepth);
                         if (result !== null) return result;
                         continue;
                     }
@@ -3314,7 +3427,7 @@ class ExecutionEngine {
                     const initialized = this.#initializeForEach(sequence.statement, sequence.frame, sequence.scopeId, sequence.lexical, sequence.target, next.value);
                     if (initialized.type === "throw") {
                         this.#capture(initialized);
-                        const result = this.#unwindGenerator(continuation, initialized, callerDepth);
+                        const result = this.#unwindContinuation(continuation, initialized, callerDepth);
                         if (result !== null) return result;
                         continue;
                     }
@@ -3325,7 +3438,7 @@ class ExecutionEngine {
                     const test = this.#prepareForIteration(sequence.statement, sequence.outer, sequence.first);
                     if (test.type === "throw") {
                         this.#capture(test);
-                        const uncaught = this.#unwindGenerator(continuation, test, callerDepth);
+                        const uncaught = this.#unwindContinuation(continuation, test, callerDepth);
                         if (uncaught !== null) return uncaught;
                         continue;
                     }
@@ -3340,14 +3453,14 @@ class ExecutionEngine {
                         if (isSuspendingGeneratorExpression(sequence.test)) {
                             mode = "next";
                             value = UNDEFINED;
-                            const result = this.#startGeneratorExpression(continuation, sequence.test, { kind: "loop-test" }, callerDepth);
+                            const result = this.#startSuspendingExpression(continuation, sequence.test, { kind: "loop-test" }, callerDepth);
                             if (result !== null) return result;
                             continue;
                         }
                         const test = this.#value(sequence.test);
                         if (test.type === "throw") {
                             this.#capture(test);
-                            const uncaught = this.#unwindGenerator(continuation, test, callerDepth);
+                            const uncaught = this.#unwindContinuation(continuation, test, callerDepth);
                             if (uncaught !== null) return uncaught;
                             continue;
                         }
@@ -3362,19 +3475,19 @@ class ExecutionEngine {
                 const result = this.#statement(statement, sequence.labels ?? null, sequences);
                 if (result.type === "throw") {
                     this.#capture(result);
-                    const uncaught = this.#unwindGenerator(continuation, result, callerDepth);
+                    const uncaught = this.#unwindContinuation(continuation, result, callerDepth);
                     if (uncaught !== null) return uncaught;
                     continue;
                 }
                 if (result.type === "return") {
-                    const terminal = this.#unwindGenerator(continuation, result, callerDepth);
+                    const terminal = this.#unwindContinuation(continuation, result, callerDepth);
                     if (terminal !== null) return terminal;
                     continue;
                 }
                 if (result.type === "generator-expression") {
                     mode = "next";
                     value = UNDEFINED;
-                    const received = this.#startGeneratorExpression(continuation, result.expression, result.receiver, callerDepth);
+                    const received = this.#startSuspendingExpression(continuation, result.expression, result.receiver, callerDepth);
                     if (received !== null) return received;
                     continue;
                 }
@@ -3395,7 +3508,7 @@ class ExecutionEngine {
                     return { type: "yield", result: output.value };
                 }
                 if (result.type === "break" || result.type === "continue") {
-                    const terminal = this.#unwindGenerator(continuation, { type: result.type, target: result.target }, callerDepth);
+                    const terminal = this.#unwindContinuation(continuation, { type: result.type, target: result.target }, callerDepth);
                     if (terminal !== null) return terminal;
                     continue;
                 }

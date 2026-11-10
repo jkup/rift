@@ -104,6 +104,7 @@ const entries = [
     ["test/generator-if.ts", "generator-if"],
     ["test/generator-loop-test.ts", "generator-loop-test"],
     ["test/async-function.ts", "async-function"],
+    ["test/async-await.ts", "async-await"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

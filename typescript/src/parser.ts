@@ -1,5 +1,5 @@
 import { isSuspendingGeneratorExpression } from "./generator-expression.js";
-import type { GeneratorYieldStmt } from "./syntax.js";
+import type { GeneratorYieldStmt, AwaitExpr } from "./syntax.js";
 import { validateRegExpLiteral } from "./regexp-literal-validation.js";
 import type { SuperContext } from "./syntax.js";
 import type { ClassExpr, ClassElement } from "./syntax.js";
@@ -210,6 +210,8 @@ type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupp
 class Parser {
     private generatorContext = false;
     private generatorYields: GeneratorYieldStmt[] = [];
+    private asyncContext = false;
+    private awaits: AwaitExpr[] = [];
     private readonly objectCovers = new Map<Expr, ObjectCover>();
     private readonly arrayTrailingCommas = new Set<Expr>();
     readonly lexicalCandidates: LexicalStatementCandidate[] = [];
@@ -444,7 +446,7 @@ class Parser {
             const token = this.current();
             const name = this.name();
             if (this.structuralPlan()) this.bindings.set(start, [{ site: { name, start: token.start, end: token.end, loc: token.loc }, init: null, initializer: null }]);
-            const fn = this.functionTail(loc, start, "none", generator);
+            const fn = this.functionTail(loc, start, "none", generator, asynchronous);
             const source: FunctionSource = asynchronous ? { ...fn.source, async: true } : fn.source;
             return { kind: "function", loc, name, params: fn.params, parameters: fn.parameters, body: fn.body, source };
         }
@@ -733,7 +735,7 @@ class Parser {
         const pending: { expression: Expr; visited: boolean }[] = [{ expression, visited: false }];
         while (pending.length !== 0) {
             const entry = pending.pop()!, node = entry.expression;
-            if (node.kind === "yield") {
+            if (node.kind === "yield" || node.kind === "await") {
                 supported.add(node);
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
@@ -751,7 +753,10 @@ class Parser {
             } else if (isSuspendingGeneratorExpression(node.test) || isSuspendingGeneratorExpression(node.consequent) || isSuspendingGeneratorExpression(node.alternate)) node.suspends = true;
         }
     }
-    functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
+    functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false, asynchronous = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
+        const savedAsync = this.asyncContext, savedAwaits = this.awaits;
+        this.asyncContext = false;
+        this.awaits = [];
         const savedGenerator = this.generatorContext, savedYields = this.generatorYields;
         this.generatorContext = false;
         this.generatorYields = [];
@@ -773,8 +778,9 @@ class Parser {
         this.labels = [];
         this.functions++;
         this.generatorContext = generator;
+        this.asyncContext = asynchronous;
         const body = this.list(true, params);
-        if (this.generatorYields.length !== 0) {
+        if (this.generatorYields.length !== 0 || this.awaits.length !== 0) {
             const supported = new Set<Stmt | Expr>();
             const pending = [...body];
             while (pending.length !== 0) {
@@ -803,11 +809,15 @@ class Parser {
                     else this.admitGeneratorExpression(expression, supported);
                 }
             }
+            for (const expression of this.awaits) if (!supported.has(expression))
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "await in this expression or control flow is unsupported", expression.loc);
             for (const expression of this.generatorYields) if (!supported.has(expression))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield in this expression or control flow is unsupported", expression.loc);
         }
         this.generatorContext = savedGenerator;
         this.generatorYields = savedYields;
+        this.asyncContext = savedAsync;
+        this.awaits = savedAwaits;
         this.functions--;
         this.loops = loops;
         this.switches = switches;
@@ -823,6 +833,8 @@ class Parser {
         return this.arrowBody(first, [name], false, [{ kind: "identifier", site: { name, start: first.start, end: first.end, loc: first.loc }, initializer: null }], allowIn);
     }
     private arrowBody(first: Token, params: string[], rest: boolean, parameters: FormalParameter[], allowIn: boolean): Expr {
+        const savedAsync = this.asyncContext;
+        this.asyncContext = false;
         const savedGenerator = this.generatorContext;
         this.generatorContext = false;
         if (this.current().loc.line !== this.token(this.index - 1).loc.line)
@@ -845,6 +857,7 @@ class Parser {
         this.switches = switches;
         this.labels = labels;
         this.generatorContext = savedGenerator;
+        this.asyncContext = savedAsync;
         if (!expressionBody) this.checkParameterDirective(rest, parameters, bodyIndex, first.loc);
         return { kind: "function", loc: first.loc, params, parameters, body,
             source: { source: this.source, start: first.start, end: this.token(this.index - 1).end, arrow: true, expressionBody, rest, bodyLoc } };
@@ -969,7 +982,7 @@ class Parser {
                 left = { kind: "conditional", loc, test: left, consequent, alternate };
                 continue;
             }
-            if (op === "**" && left.kind === "unary" && !this.parenthesized.has(left))
+            if (op === "**" && (left.kind === "unary" || left.kind === "await") && !this.parenthesized.has(left))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unparenthesized unary exponentiation base", left.loc);
             const right = this.expression(precedence === 1 || op === "**" ? precedence : precedence + 1, allowIn);
             if (precedence === 1) {
@@ -1294,6 +1307,11 @@ class Parser {
     primary(allowIn: boolean, allowArrow = false): Expr {
         const t = this.take();
         const loc = t.loc;
+        if (this.asyncContext && t.text === "await") {
+            const expression: AwaitExpr = { kind: "await", loc, value: this.expression(14, allowIn) };
+            this.awaits.push(expression);
+            return expression;
+        }
         if (this.generatorContext && t.text === "yield") {
             if (!allowArrow) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield requires an assignment-expression position", t.loc);
             return this.generatorYield(t);
@@ -1395,7 +1413,7 @@ class Parser {
                 const token = this.current();
                 name = { name: this.name(), start: token.start, end: token.end, loc: token.loc };
             }
-            const fn = this.functionTail(loc, t.start, "none", generator);
+            const fn = this.functionTail(loc, t.start, "none", generator, asynchronous);
             const source: FunctionSource = asynchronous ? { ...fn.source, async: true } : fn.source;
             return { kind: "function", loc, params: fn.params, parameters: fn.parameters, body: fn.body,
                 source: name === undefined ? source : { ...source, name } };

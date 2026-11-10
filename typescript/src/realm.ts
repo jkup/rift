@@ -69,6 +69,7 @@ export class Realm {
     readonly stringIteratorPrototype: GuestObject;
     readonly regexpStringIteratorPrototype: GuestObject;
     readonly promisePrototype: GuestObject;
+    readonly promiseConstructor: GuestObject | null = null;
     readonly regexpPrototype: GuestObject;
     readonly mapPrototype: GuestObject;
     readonly mapIteratorPrototype: GuestObject;
@@ -170,7 +171,7 @@ export class Realm {
             registerGeneratorFunctionConstructor(this);
             registerAsyncFunctionConstructor(this);
             registerReflect(this);
-            registerPromise(this);
+            this.promiseConstructor = registerPromise(this);
             registerRegExp(this);
             this.evalIntrinsic = createEvalIntrinsic(this);
             this.defineScriptGlobal("globalThis", { value: this.globalThisValue, writable: true, enumerable: false, configurable: true });

@@ -6,6 +6,7 @@ export type Location = { line: number; column: number };
 export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
 export type FormalParameter = { readonly kind: "identifier"; readonly site: DeclarationSite; readonly initializer: Expr | null }
     | { readonly kind: "pattern"; readonly pattern: ArrayPattern | ObjectPattern; readonly bindings: readonly DeclarationSite[]; readonly initializer: Expr | null };
+export type AwaitExpr = { kind: "await"; loc: Location; value: Expr };
 export type GeneratorYieldStmt = { kind: "yield"; loc: Location; value: Expr | null; delegate?: true };
 export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
 export type SwitchClause = { loc: Location; start: number; end: number; test: Expr | null; body: Stmt[] };
@@ -32,6 +33,7 @@ export type UnaryExpr = { kind: "unary"; loc: Location; op: string; operand: Exp
 export type ConditionalExpr = { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr; suspends?: true };
 export type BinaryExpr = { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr; suspends?: true };
 export type Expr =
+    | AwaitExpr
     | GeneratorYieldStmt
     | { kind: "regexp"; loc: Location; pattern: string; flags: string }
     | ClassExpr

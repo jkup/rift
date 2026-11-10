@@ -689,6 +689,7 @@ executeDriver("generator-yield-operand", { stdout: "generator yield operand pass
 executeDriver("generator-if", { stdout: "generator if passed\n" });
 executeDriver("generator-loop-test", { stdout: "generator loop test passed\n" });
 executeDriver("async-function", { stdout: "async function passed\n" });
+executeDriver("async-await", { stdout: "async await passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

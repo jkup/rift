@@ -49,7 +49,7 @@ passes("var ok=false;try{eval('/a/gg')}catch(e){ok=e instanceof SyntaxError}ok;"
 passes("var ok=false;try{Function('return /(/')}catch(e){ok=e instanceof SyntaxError}ok;");
 passes("var ok=false;try{new Function('return /a/z')}catch(e){ok=e instanceof SyntaxError}ok;");
 
-for (const text of ["/a/gg; async function f(){}", "/(/;", "/a/gg;", "/a/z;", "/a/0;", "/a/uv;", "if(false)/[z-a]/;", "function f(){return /a{3,2}/}"]) {
+for (const text of ["/a/gg; async function f(){await 1;}", "/a/gg; async function f(){}", "/(/;", "/a/gg;", "/a/z;", "/a/0;", "/a/uv;", "if(false)/[z-a]/;", "function f(){return /a{3,2}/}"]) {
     const realm = new Realm((_line: string) => { throw new Error("early error must not execute"); }, "script");
     const result = prepareBoundedScript({ id: "literal-early-error", text: "console.log('wrong');" + text }, realm);
     check(result.kind !== "ready", "invalid literal is early: " + text);
@@ -64,7 +64,7 @@ for (const text of ["/a", "/[a/", "/a\n/", "/a\\\n/", "/a/gé"]) {
     const plan = parseBoundedScriptDeclarationPlan({ id: "literal-lexical", text });
     check(plan.kind === "blocked" && plan.rejection.kind === "unsupported-syntax" && plan.rejection.capabilityCode === "lex.regexp-literal", "uncovered lexical form: " + text);
 }
-for (const text of ["/a/gg; async function f(){await 1;}", "/(/; @", "/a/gg; /(?=a)/", "/a/gg; let = ;"]) {
+for (const text of ["/a/gg; import x from \"x\";", "/(/; @", "/a/gg; /(?=a)/", "/a/gg; let = ;"]) {
     const plan = parseBoundedScriptDeclarationPlan({ id: "literal-incomplete-coverage", text });
     check(plan.kind === "blocked" && plan.rejection.kind === "unsupported-syntax", "no certification without complete supported grammar");
 }

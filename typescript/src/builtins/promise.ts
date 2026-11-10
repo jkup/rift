@@ -5,10 +5,10 @@ import type { Realm } from "../realm.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import { toObject } from "../object-conversion.js";
 import { GuestPromise, createResolvingFunctions, newPromiseCapability, promiseSpecies, promiseResolve, isCallable, fatalPromiseCompletion } from "../promise.js";
-import { normal, languageFailure, UNDEFINED, type Value, type ValueCompletion } from "../runtime.js";
+import { normal, languageFailure, UNDEFINED, type GuestObject, type Value, type ValueCompletion } from "../runtime.js";
 import { wellKnownSpecies, wellKnownToStringTag } from "../symbols.js";
 
-export function registerPromise(realm: Realm): void {
+export function registerPromise(realm: Realm): GuestObject {
     const constructor = realm.createBuiltinConstructor("Promise", 1,
         (_receiver, _args, context, loc): ValueCompletion => languageFailure(context.realm, "TypeError", "Promise requires new", loc),
         (_callee, newTarget, args, context, loc): ValueCompletion => {
@@ -63,4 +63,5 @@ export function registerPromise(realm: Realm): void {
     registerPromiseHelpers(realm, constructor);
     registerPromiseCombinators(realm, constructor);
     realm.defineScriptGlobal("Promise", { value: { kind: "object", object: constructor }, writable: true, configurable: true });
+    return constructor;
 }

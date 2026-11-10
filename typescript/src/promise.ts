@@ -4,7 +4,7 @@ import type { Location } from "./syntax.js";
 import { wellKnownSpecies } from "./symbols.js";
 
 export type PromiseCapability = { promise: Value; resolve: Value; reject: Value };
-type Reaction = { capability: PromiseCapability; handler: Value; reject: boolean };
+type Reaction = { capability: PromiseCapability | null; handler: Value; reject: boolean };
 export function intrinsicPromiseCapability(realm: Realm): PromiseCapability {
     const promise = new GuestPromise(realm.promisePrototype);
     const functions = createResolvingFunctions(promise, realm);
@@ -35,7 +35,7 @@ export class GuestPromise extends GuestObject {
         return normal();
     }
 
-    then(capability: PromiseCapability, onFulfilled: Value, onRejected: Value, context: OperationContext, loc: Location): ValueCompletion {
+    then(capability: PromiseCapability | null, onFulfilled: Value, onRejected: Value, context: OperationContext, loc: Location): ValueCompletion {
         const fulfilled: Reaction = { capability, handler: isCallable(onFulfilled) ? onFulfilled : UNDEFINED, reject: false };
         const rejected: Reaction = { capability, handler: isCallable(onRejected) ? onRejected : UNDEFINED, reject: true };
         if (this.state === "pending") {
@@ -45,7 +45,7 @@ export class GuestPromise extends GuestObject {
             const queued = enqueueReaction(this.state === "fulfilled" ? fulfilled : rejected, this.result, context, loc);
             if (queued.type === "throw") return queued;
         }
-        return normal(capability.promise);
+        return normal(capability === null ? UNDEFINED : capability.promise);
     }
 }
 
@@ -56,9 +56,10 @@ function enqueueReaction(reaction: Reaction, argument: Value, context: Operation
     const realm = handler.kind === "object" && handler.object.callable !== null ? handler.object.callable.realm : null;
     return enqueue({ realm, run: (jobContext: OperationContext): ValueCompletion => {
         if (handler.kind === "undefined")
-            return jobContext.call(reaction.reject ? reaction.capability.reject : reaction.capability.resolve, UNDEFINED, [argument], loc);
+            return reaction.capability === null ? normal() : jobContext.call(reaction.reject ? reaction.capability.reject : reaction.capability.resolve, UNDEFINED, [argument], loc);
         const result = jobContext.call(handler, UNDEFINED, [argument], loc);
         if (result.type === "throw" && fatalPromiseCompletion(result)) return result;
+        if (reaction.capability === null) return result.type === "throw" ? result : normal();
         return jobContext.call(result.type === "throw" ? reaction.capability.reject : reaction.capability.resolve, UNDEFINED, [result.value], loc);
     } }, loc);
 }
