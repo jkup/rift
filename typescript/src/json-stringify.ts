@@ -1,6 +1,7 @@
+import { toObject } from "./object-conversion.js";
 import { GuestArray } from "./array-object.js";
 import { lengthOfArrayLike } from "./array-like.js";
-import { GuestBoolean, GuestNumber, GuestStringObject } from "./primitive-objects.js";
+import { GuestBoolean, GuestNumber, GuestBigInt, GuestStringObject } from "./primitive-objects.js";
 import { numberToString, toNumber, toString, toIntegerOrInfinity } from "./conversion.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
@@ -107,8 +108,10 @@ export class JSONSerializer {
         const read = holder.internalGet(key, receiver, this.context, this.loc);
         if (read.type === "throw") return read;
         let value = read.value;
-        if (value.kind === "object") {
-            const method = value.object.internalGet("toJSON", value, this.context, this.loc);
+        if (value.kind === "object" || value.kind === "bigint") {
+            const object = toObject(value, this.context, this.loc);
+            if (object.type === "throw") return object;
+            const method = object.value.internalGet("toJSON", value, this.context, this.loc);
             if (method.type === "throw") return method;
             if (method.value.kind === "object" && method.value.object.callable !== null) {
                 const result = this.context.call(method.value, value, [{ kind: "string", value: key }], this.loc);
@@ -123,6 +126,7 @@ export class JSONSerializer {
         }
         if (value.kind === "object") {
             if (value.object instanceof GuestBoolean) value = { kind: "boolean", value: value.object.booleanData };
+            else if (value.object instanceof GuestBigInt) value = { kind: "bigint", value: value.object.bigintData };
             else if (value.object instanceof GuestNumber || value.object instanceof GuestStringObject) {
                 const numeric = value.object instanceof GuestNumber;
                 const primitive = toPrimitive(value, numeric ? "number" : "string", this.context, this.loc);
@@ -139,6 +143,7 @@ export class JSONSerializer {
     }
 
     private emit(value: Value, parentIndent: string): ValueCompletion {
+        if (value.kind === "bigint") return languageFailure(this.context.realm, "TypeError", "cannot serialize BigInt", this.loc);
         if (value.kind === "string") return this.quote(value.value);
         if (value.kind === "number") return this.append(Number.isFinite(value.value) ? numberToString(value.value) : "null");
         if (value.kind === "boolean") return this.append(value.value ? "true" : "false");

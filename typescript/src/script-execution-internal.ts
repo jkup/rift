@@ -1,3 +1,5 @@
+import { toNumeric } from "./numeric.js";
+import { bigintOperation } from "./bigint-arithmetic.js";
 import { appendArrayElement, finishArrayLiteral } from "./array-literal.js";
 import { resumeAsyncDelegate, type AsyncDelegate } from "./async-generator-delegate.js";
 import { getAsyncIterator } from "./async-iterator.js";
@@ -1638,14 +1640,17 @@ class ExecutionEngine {
         const oldValue = getReferenceValue(this.context, reference, loc);
         if (oldValue.type === "throw") return oldValue;
         if (oldValue.type !== "normal") throw new Error("invalid update read completion");
-        const primitive = toPrimitive(oldValue.value, "number", this.context, loc);
-        if (primitive.type === "throw") return primitive;
-        const numeric = toNumber(primitive.value, loc, this.context.realm);
+        const numeric = toNumeric(oldValue.value, this.context, loc);
         if (numeric.type === "throw") return numeric;
-        const newValue = op === "++" ? numeric.value + 1 : numeric.value - 1;
-        const written = putReferenceValue(this.context, reference, { kind: "number", value: newValue }, loc);
+        let newValue: Value;
+        if (numeric.value.kind === "bigint") {
+            const result = bigintOperation(op === "++" ? "+" : "-", numeric.value.value, 1n, this.context, loc);
+            if (result.type === "throw") return result;
+            newValue = { kind: "bigint", value: result.value };
+        } else newValue = { kind: "number", value: op === "++" ? numeric.value.value + 1 : numeric.value.value - 1 };
+        const written = putReferenceValue(this.context, reference, newValue, loc);
         if (written.type === "throw") return written;
-        return normal({ kind: "number", value: prefix ? newValue : numeric.value });
+        return normal(prefix ? newValue : numeric.value);
     }
     #objectPropertyName(property: ObjectProperty, key: PropertyKey | null): string | null {
         if (property.kind === "spread" || property.kind === "prototype") return null;

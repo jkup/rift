@@ -46,6 +46,7 @@ function numberArgument(args: Value[], context: OperationContext, loc: Location)
     if (args.length === 0) return { type: "normal", value: 0 };
     const primitive = toPrimitive(args[0], "number", context, loc);
     if (primitive.type === "throw") return primitive;
+    if (primitive.value.kind === "bigint") return { type: "normal", value: Number(primitive.value.value) };
     return toNumber(primitive.value, loc, context.realm);
 }
 

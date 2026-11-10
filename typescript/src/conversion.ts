@@ -72,6 +72,7 @@ export function toNumber(value: Value, loc: Location, realm: Realm | null): Numb
         case "number": return { type: "normal", value: value.value };
         case "string": return { type: "normal", value: stringToNumber(value.value) };
         case "symbol": return languageFailure(realm, "TypeError", "cannot convert symbol to number", loc);
+        case "bigint": return languageFailure(realm, "TypeError", "cannot implicitly convert BigInt to number", loc);
         case "object": return unsupportedFailure("runtime.object-to-number", "TypeError", "object-to-primitive conversion unsupported", loc);
     }
 }
@@ -117,6 +118,7 @@ export function toString(value: Value, loc: Location, realm: Realm | null): Stri
         case "boolean": return { type: "normal", value: value.value ? "true" : "false" };
         case "string": return { type: "normal", value: value.value };
         case "number": return { type: "normal", value: numberToString(value.value) };
+        case "bigint": return { type: "normal", value: value.value.toString() };
         case "symbol": return languageFailure(realm, "TypeError", "cannot convert symbol to string", loc);
         case "object": return unsupportedFailure("runtime.object-to-string", "TypeError", "object-to-primitive conversion unsupported", loc);
     }

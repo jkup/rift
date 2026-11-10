@@ -67,7 +67,7 @@ function observation(x) {
   if (!x || typeof x !== 'object') return false;
   const variants = {
     normal: {},
-    throw: { phase: one(['runtime']), valueKind: one(['undefined', 'null', 'boolean', 'number', 'string', 'symbol', 'object']), constructor },
+    throw: { phase: one(['runtime']), valueKind: one(['undefined', 'null', 'boolean', 'number', 'bigint', 'string', 'symbol', 'object']), constructor },
     'syntax-error': { phase: one(['parse']), constructorName: one(['SyntaxError']), ruleCode: one(RULES) },
     'unsupported-syntax': { capabilityCode: str },
     'resource-limit': { guardCode: one(Object.keys(GUARD_LIMIT)), limit: integer, count: integer },

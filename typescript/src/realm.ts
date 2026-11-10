@@ -1,3 +1,4 @@
+import { registerBigInt } from "./builtins/bigint.js";
 import type { TemplateObjectExpr } from "./syntax.js";
 import { registerAsyncIterators } from "./async-iterator.js";
 import { registerPromise } from "./builtins/promise.js";
@@ -40,7 +41,7 @@ import { registerArrayReduction } from "./builtins/array-reduce.js";
 import { registerScriptArrayIteration } from "./builtins/array-iteration.js";
 import { GlobalEnvironment } from "./global-environment.js";
 import type { Stmt, FunctionSource, Location } from "./syntax.js";
-import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
+import { GuestBoolean, GuestNumber, GuestBigInt, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
 import type { GuestString } from "./strings.js";
 import type { ExecutableScript } from "./script-record.js";
 // scriptc follows value-import reachability when lowering opaque class types.
@@ -107,6 +108,7 @@ export class Realm {
     readonly evalIntrinsic: GuestObject | null = null;
     readonly booleanPrototype: GuestBoolean;
     readonly numberPrototype: GuestNumber;
+    readonly bigintPrototype: GuestObject;
     readonly symbolPrototype: GuestObject;
     readonly stringPrototype: GuestStringObject;
     constructor(output: Output, readonly profile: RealmProfile = "legacy") {
@@ -148,6 +150,7 @@ export class Realm {
         this.setIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.booleanPrototype = new GuestBoolean(false, this.objectPrototype);
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
+        this.bigintPrototype = new GuestObject(this.objectPrototype);
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);
         this.symbolPrototype = new GuestObject(this.objectPrototype);
         registerObjectValueOf(this);
@@ -210,6 +213,7 @@ export class Realm {
             this.defineScriptGlobal("eval", { value: { kind: "object", object: this.evalIntrinsic }, writable: true, enumerable: false, configurable: true });
         }
         registerNumber(this);
+        if (profile === "script") registerBigInt(this);
         if (profile === "script") {
             const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError", "AggregateError"];
             for (const name of names) this.errorConstructors.set(name, createErrorConstructor(this, name));
@@ -297,6 +301,7 @@ export class Realm {
     createArray(): GuestArray { return new GuestArray(this.arrayPrototype); }
     createBooleanObject(value: boolean): GuestBoolean { return new GuestBoolean(value, this.booleanPrototype); }
     createNumberObject(value: number): GuestNumber { return new GuestNumber(value, this.numberPrototype); }
+    createBigIntObject(value: bigint): GuestBigInt { return new GuestBigInt(value, this.bigintPrototype); }
     createStringObject(value: GuestString): GuestStringObject { return new GuestStringObject(value, this.stringPrototype); }
     createSymbolObject(value: GuestSymbol): GuestSymbolObject { return new GuestSymbolObject(value, this.symbolPrototype); }
     createGuestFunction(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): GuestObject {

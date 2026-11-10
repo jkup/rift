@@ -4,7 +4,7 @@ import type { Guard, RuntimeCapability, SyntaxCapability } from "./outcomes.js";
 // they never carry guest objects, ASTs, or authority to execute a Script.
 export type ScriptSite = { unitId: string; realmId: string; location: { line: number; column: number } };
 export type ScriptOperation = { stage: "harness" | "test"; phase: "parse" | "instantiation" | "body"; unitId: string; realmId: string };
-export type ScriptOriginalThrow = { valueKind: "undefined" | "null" | "boolean" | "number" | "string" | "symbol" | "object"; origin: "guest" | "engine-diagnostic"; site: ScriptSite };
+export type ScriptOriginalThrow = { valueKind: "undefined" | "null" | "boolean" | "number" | "bigint" | "string" | "symbol" | "object"; origin: "guest" | "engine-diagnostic"; site: ScriptSite };
 export type ScriptConstructor =
     | { outcome: "available"; name: string; realmId: string; secondary: null }
     | { outcome: "absent" | "non-callable" | "foreign-profile" | "unregistered-realm"; name: null; realmId: null; secondary: null }

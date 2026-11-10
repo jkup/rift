@@ -8,6 +8,7 @@ export function typeOfValue(value: Value): GuestString {
         case "null": return "object";
         case "boolean": return "boolean";
         case "number": return "number";
+        case "bigint": return "bigint";
         case "string": return "string";
         case "symbol": return "symbol";
         case "object": return value.object.callable === null ? "object" : "function";

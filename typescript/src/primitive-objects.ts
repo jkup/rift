@@ -9,6 +9,10 @@ export class GuestBoolean extends GuestObject {
     constructor(readonly booleanData: boolean, proto: GuestObject | null = null) { super(proto); }
 }
 
+export class GuestBigInt extends GuestObject {
+    constructor(readonly bigintData: bigint, proto: GuestObject | null = null) { super(proto); }
+}
+
 export class GuestNumber extends GuestObject {
     constructor(readonly numberData: number, proto: GuestObject | null = null) { super(proto); }
 }

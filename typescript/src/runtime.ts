@@ -12,6 +12,7 @@ import { arrayIndex } from "./property-keys.js";
 export type Value =
     | { kind: "undefined" } | { kind: "null" }
     | { kind: "boolean"; value: boolean } | { kind: "number"; value: number }
+    | { kind: "bigint"; value: bigint }
     | { kind: "symbol"; value: GuestSymbol }
     | { kind: "string"; value: GuestString } | { kind: "object"; object: GuestObject };
 export const UNDEFINED: Value = { kind: "undefined" };
@@ -353,6 +354,7 @@ export function truthy(value: Value): boolean {
         case "undefined": case "null": return false;
         case "boolean": return value.value;
         case "number": return value.value !== 0 && !Number.isNaN(value.value);
+        case "bigint": return value.value !== 0n;
         case "string": return value.value.length !== 0;
         case "symbol": case "object": return true;
     }
@@ -363,6 +365,7 @@ export function display(value: Value): string {
         case "undefined": return "undefined";
         case "null": return "null";
         case "boolean": case "number": return String(value.value);
+        case "bigint": return value.value.toString() + "n";
         case "string": return value.value;
         case "symbol": return symbolDescriptiveString(value.value);
         case "object": return value.object.callable === null ? "[object Object]" : "[function]";
@@ -375,6 +378,7 @@ export function equal(left: Value, right: Value): boolean {
         case "boolean": return right.kind === "boolean" && left.value === right.value;
         case "number": return right.kind === "number" && left.value === right.value;
         case "string": return right.kind === "string" && left.value === right.value;
+        case "bigint": return right.kind === "bigint" && left.value === right.value;
         case "symbol": return right.kind === "symbol" && left.value === right.value;
         case "object": return right.kind === "object" && left.object === right.object;
     }

@@ -37,7 +37,7 @@ const unitShape = x => record(x,{id,ordinal:integer,role:one(['harness','test'])
 const realmShape = x => record(x,{id,profile:one(['script'])});
 const operationShape = x => record(x,{stage:one(['harness','test']),phase:one(['parse','instantiation','body']),unitId:id,realmId:id});
 const siteShape = x => record(x,{unitId:id,realmId:id,location:y=>record(y,{line:n=>integer(n)&&n>0,column:n=>integer(n)&&n>0})});
-const originalShape = x => record(x,{valueKind:one(['undefined','null','boolean','number','string','symbol','object']),origin:one(['guest','engine-diagnostic']),site:siteShape});
+const originalShape = x => record(x,{valueKind:one(['undefined','null','boolean','number','bigint','string','symbol','object']),origin:one(['guest','engine-diagnostic']),site:siteShape});
 const inspectionShape = nullable(x=>record(x,{original:originalShape,operation:operationShape}));
 
 function bindingState(b) {

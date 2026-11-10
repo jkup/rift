@@ -1,3 +1,4 @@
+import { stringToBigInt } from "./bigint-conversion.js";
 import { equal, type Value, type OperationContext, type InternalBooleanCompletion } from "./runtime.js";
 import { stringToNumber } from "./conversion.js";
 import { toPrimitive } from "./primitive-conversion.js";
@@ -23,6 +24,20 @@ export function isLooselyEqual(
             left = { kind: "number", value: stringToNumber(left.value) };
             continue;
         }
+        if (left.kind === "bigint" && right.kind === "string") {
+            const parsed = stringToBigInt(right.value, context, loc);
+            if (parsed.type === "throw") return parsed;
+            return { type: "normal", value: parsed.value !== null && left.value === parsed.value };
+        }
+        if (left.kind === "string" && right.kind === "bigint") {
+            const parsed = stringToBigInt(left.value, context, loc);
+            if (parsed.type === "throw") return parsed;
+            return { type: "normal", value: parsed.value !== null && parsed.value === right.value };
+        }
+        if (left.kind === "bigint" && right.kind === "number")
+            return { type: "normal", value: Number.isInteger(right.value) && left.value === BigInt(right.value) };
+        if (left.kind === "number" && right.kind === "bigint")
+            return { type: "normal", value: Number.isInteger(left.value) && BigInt(left.value) === right.value };
         if (left.kind === "boolean") {
             left = { kind: "number", value: left.value ? 1 : 0 };
             continue;
@@ -31,13 +46,13 @@ export function isLooselyEqual(
             right = { kind: "number", value: right.value ? 1 : 0 };
             continue;
         }
-        if ((left.kind === "string" || left.kind === "number" || left.kind === "symbol") && right.kind === "object") {
+        if ((left.kind === "string" || left.kind === "number" || left.kind === "bigint" || left.kind === "symbol") && right.kind === "object") {
             const primitive = toPrimitive(right, "default", context, loc);
             if (primitive.type === "throw") return primitive;
             right = primitive.value;
             continue;
         }
-        if (left.kind === "object" && (right.kind === "string" || right.kind === "number" || right.kind === "symbol")) {
+        if (left.kind === "object" && (right.kind === "string" || right.kind === "number" || right.kind === "bigint" || right.kind === "symbol")) {
             const primitive = toPrimitive(left, "default", context, loc);
             if (primitive.type === "throw") return primitive;
             left = primitive.value;

@@ -2,7 +2,7 @@ import type { GuestObject, ThrowCompletion, Value, ValueCompletion } from "./run
 import type { GuestSymbol } from "./symbols.js";
 import type { Location } from "./syntax.js";
 
-type CollectionKey = undefined | null | boolean | number | string | GuestObject | GuestSymbol;
+type CollectionKey = undefined | null | boolean | number | bigint | string | GuestObject | GuestSymbol;
 type CollectionBudget = { tick: (loc: Location) => ValueCompletion };
 export type CollectionEntry = { key: Value; value: Value };
 type CursorCompletion = { type: "normal"; entry: CollectionEntry | null } | ThrowCompletion;

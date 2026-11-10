@@ -18,7 +18,7 @@ function strictObservation(o) {
   if (!fields || !keys(o, ['kind', ...fields, ...(Object.hasOwn(o, 'diagnostic') && o.kind !== 'normal' ? ['diagnostic'] : [])]) ||
       (Object.hasOwn(o, 'diagnostic') && (typeof o.diagnostic !== 'string' || !o.diagnostic))) return false;
   if (o.kind === 'syntax-error') return o.phase === 'parse' && o.constructorName === 'SyntaxError' && o.ruleCode === 'return-outside-function';
-  if (o.kind === 'throw') return o.phase === 'runtime' && ['undefined','null','boolean','number','string','symbol','object'].includes(o.valueKind) &&
+  if (o.kind === 'throw') return o.phase === 'runtime' && ['undefined','null','boolean','number','bigint','string','symbol','object'].includes(o.valueKind) &&
     keys(o.constructor, ['outcome','name','realmId','secondary']) &&
     o.constructor.outcome === (o.valueKind === 'object' ? 'unsupported' : 'absent') &&
     o.constructor.name === null && o.constructor.realmId === null && o.constructor.secondary === null;
