@@ -4584,91 +4584,91 @@ Status: **done — accepted in temporal-date-time milestone**. Owner: Codex catc
 
 ## TS-360 — Exact ISO date-time differences
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add a pure unrounded ISO date-time difference record with calendar components and exact nanosecond time. Adjust the destination date when time and date directions disagree; fold days into time for time-only largest units. Require signed month-end cases, midnight borrowing, full bounds, exact subsecond differences and reconstruction. Public options/rounding remain separate. Own  and tests/manifests/docs in build/iso-date-time-difference-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add a pure unrounded ISO date-time difference record with calendar components and exact nanosecond time. Adjust the destination date when time and date directions disagree; fold days into time for time-only largest units. Require signed month-end cases, midnight borrowing, full bounds, exact subsecond differences and reconstruction. Public options/rounding remain separate. Own  and tests/manifests/docs in build/iso-date-time-difference-draft/.
 
 2026-11-10 Temporal arithmetic/date milestone accepted (TS-328–340): 826/826 guests on each host without skips; all 333 native static-only/zero-dynamic gates pass in 4153817ms plus 22524ms for an unchanged string-split linker/cache retry; initial failure evidence is retained. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-iUdnDj/native-tePdc4 matches all 225 normalized records, preserving all 190 prior completions; 2 records change diagnostics/output. Original fixture bytes remain unchanged. PlainTime/Instant arithmetic and differences, Duration arithmetic/string rounding, ISO calendar fields and PlainDate construction/formatting/parsing are accepted. PlainDate conversion methods, calendar arithmetic and remaining Temporal APIs are still pending. Evidence: build/temporal-arithmetic-date-*.
 
 ## TS-361 — Ordered Temporal date-time difference options
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resolve shared ordered difference options across all calendar/time units, with day/nanosecond defaults, automatic largest-unit expansion and time-increment divisibility. Share duration-unit mapping with time-only differences. Require full getter/coercion order, unit ordering, calendar increments, invalid-value phases and unchanged Date/Time/Instant settings on both hosts. Own src/temporal-difference-options.ts and tests/manifests/docs in build/temporal-date-time-difference-options-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Resolve shared ordered difference options across all calendar/time units, with day/nanosecond defaults, automatic largest-unit expansion and time-increment divisibility. Share duration-unit mapping with time-only differences. Require full getter/coercion order, unit ordering, calendar increments, invalid-value phases and unchanged Date/Time/Instant settings on both hosts. Own src/temporal-difference-options.ts and tests/manifests/docs in build/temporal-date-time-difference-options-draft/.
 
 ## TS-362 — Exact calendar rounding for date-time differences
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Share calendar window construction and exact endpoint selection with date-only rounding, then add date-time calendar nudges with nanosecond distances and preserved origin time. Require fractional-day ties, signed half-even parity, variable month/year lengths, shifted windows, calendar bounds and internal endpoints outside public DateTime bounds. Public until/since and time-unit nudging remain separate. Own src/temporal-calendar-round.ts and tests/manifests/docs in build/temporal-calendar-date-time-round-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Share calendar window construction and exact endpoint selection with date-only rounding, then add date-time calendar nudges with nanosecond distances and preserved origin time. Require fractional-day ties, signed half-even parity, variable month/year lengths, shifted windows, calendar bounds and internal endpoints outside public DateTime bounds. Public until/since and time-unit nudging remain separate. Own src/temporal-calendar-round.ts and tests/manifests/docs in build/temporal-calendar-date-time-round-draft/.
 
 ## TS-363 — Exact day/time nudging for date-time differences
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add pure exact rounding of combined difference days and nanoseconds, preserving calendar fields, signed whole-day expansion and nudged epoch values. Keep internal rounded endpoints independent of public DateTime construction bounds. Require all signed tie modes, day carries, time-only largest units, zero carry signals and invalid increments. Relative calendar carries and public methods remain separate. Own  and tests/manifests/docs in build/temporal-day-time-round-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add pure exact rounding of combined difference days and nanoseconds, preserving calendar fields, signed whole-day expansion and nudged epoch values. Keep internal rounded endpoints independent of public DateTime construction bounds. Require all signed tie modes, day carries, time-only largest units, zero carry signals and invalid increments. Relative calendar carries and public methods remain separate. Own  and tests/manifests/docs in build/temporal-day-time-round-draft/.
  Pure unit-length arithmetic moves to temporal-time.ts with the options-module export retained; native isolated-import evidence exposed the runtime dependency.
 ## TS-364 — Relative ISO date-time rounding
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Combine exact unrounded differences with calendar/day/time nudges and specified larger-calendar carries. Extract the carry helper shared with PlainDate rounding. Require no-op nanosecond behavior, signed ties, day-to-month/year carries, internal boundary semantics and existing date rounding regressions. Guest until/since remain separate. Own src/temporal-date-round.ts, src/temporal-difference-options.ts, src/temporal-duration-balance.ts and tests/manifests/docs in build/temporal-relative-date-time-round-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Combine exact unrounded differences with calendar/day/time nudges and specified larger-calendar carries. Extract the carry helper shared with PlainDate rounding. Require no-op nanosecond behavior, signed ties, day-to-month/year carries, internal boundary semantics and existing date rounding regressions. Guest until/since remain separate. Own src/temporal-date-round.ts, src/temporal-difference-options.ts, src/temporal-duration-balance.ts and tests/manifests/docs in build/temporal-relative-date-time-round-draft/.
 
 ## TS-365 — Temporal PlainDateTime differences
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add until/since using existing DateTime conversion, ordered settings and exact relative rounding. Reverse rounding direction and result for since without swapping calendar operands. Require defaults, asymmetric calendar cases, all signed rounding modes, precise endpoints, conversion/options order and Realm-owned Duration results on both hosts. Own src/builtins/temporal-plain-date-time.ts and tests/manifests/docs in build/temporal-plain-date-time-difference-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add until/since using existing DateTime conversion, ordered settings and exact relative rounding. Reverse rounding direction and result for since without swapping calendar operands. Require defaults, asymmetric calendar cases, all signed rounding modes, precise endpoints, conversion/options order and Realm-owned Duration results on both hosts. Own src/builtins/temporal-plain-date-time.ts and tests/manifests/docs in build/temporal-plain-date-time-difference-draft/.
 
 ## TS-366 — Temporal PlainDate to PlainDateTime conversion
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainDateTime with optional midnight, ordered time conversion and exact DateTime bounds. Share ToTimeRecordOrMidnight with DateTime.withPlainTime. Require branding, conversion order, intrinsic Realm results and boundary checks on both hosts. Own src/builtins/temporal-plain-date.ts, src/builtins/temporal-plain-time-conversion.ts, src/builtins/temporal-plain-date-time-parts.ts and tests/manifests/docs in build/temporal-plain-date-to-date-time-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainDateTime with optional midnight, ordered time conversion and exact DateTime bounds. Share ToTimeRecordOrMidnight with DateTime.withPlainTime. Require branding, conversion order, intrinsic Realm results and boundary checks on both hosts. Own src/builtins/temporal-plain-date.ts, src/builtins/temporal-plain-time-conversion.ts, src/builtins/temporal-plain-date-time-parts.ts and tests/manifests/docs in build/temporal-plain-date-to-date-time-draft/.
 
 ## TS-367 — Temporal PlainYearMonth construction and ISO getters
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Introduce branded Realm-owned ISO PlainYearMonth construction, reference-day validation, month-level bounds and calendar getters. Wire constructor fallback, calendar-bearing recognition and partial-object rejection. Formatting, parsing and methods remain separate. Require coercion order, bounds, subclass/Realm behavior and native static coverage. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-plain-year-month-core-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Introduce branded Realm-owned ISO PlainYearMonth construction, reference-day validation, month-level bounds and calendar getters. Wire constructor fallback, calendar-bearing recognition and partial-object rejection. Formatting, parsing and methods remain separate. Require coercion order, bounds, subclass/Realm behavior and native static coverage. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-plain-year-month-core-draft/.
 
 ## TS-368 — Temporal PlainYearMonth formatting
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ISO YearMonth string/JSON/locale fallback formatting with reference days for always/critical calendar annotations. Require extended years, endpoint reference days, ordered options, branding and Realm errors on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-format-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add ISO YearMonth string/JSON/locale fallback formatting with reference days for always/critical calendar annotations. Require extended years, endpoint reference days, ordered options, branding and Realm errors on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-format-draft/.
 
 ## TS-369 — Temporal PlainYearMonth ISO parsing
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse shortened year-month and full date/time forms through shared ISO scanner/annotations. Keep syntax parsing independent of public month bounds and conversion normalization. Share shortened year-month scanning with calendar strings. Require basic/extended forms, reference days, offsets, annotations and invalid inputs on both hosts. Own src/temporal-iso-parser.ts, src/temporal-calendar-parse.ts and tests/manifests/docs in build/temporal-plain-year-month-parse-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Parse shortened year-month and full date/time forms through shared ISO scanner/annotations. Keep syntax parsing independent of public month bounds and conversion normalization. Share shortened year-month scanning with calendar strings. Require basic/extended forms, reference days, offsets, annotations and invalid inputs on both hosts. Own src/temporal-iso-parser.ts, src/temporal-calendar-parse.ts and tests/manifests/docs in build/temporal-plain-year-month-parse-draft/.
 
 ## TS-370 — Temporal PlainYearMonth conversion and comparison
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add from/compare/equals with ordered ISO year-month fields, shared month resolution and month bounds. Preserve reference days on branded copies; normalize string and bag records to day one. Validate overflow after conversion reads, ignore day/era fields, and test intrinsic Realm results and getter precedence on both hosts. Own src/temporal-date-fields.ts, src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-conversion-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add from/compare/equals with ordered ISO year-month fields, shared month resolution and month bounds. Preserve reference days on branded copies; normalize string and bag records to day one. Validate overflow after conversion reads, ignore day/era fields, and test intrinsic Realm results and getter precedence on both hosts. Own src/temporal-date-fields.ts, src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-conversion-draft/.
 
 TS-370 scope refinement: share calendar-with-ISO-default lookup across Date, DateTime and YearMonth conversion so calendar-bearing brands bypass guest calendar getters. Own src/temporal-calendar.ts, src/builtins/temporal-plain-date-conversion.ts, src/builtins/temporal-plain-date-time-conversion.ts as well; test the new YearMonth interactions with existing date conversion.
 
 ## TS-371 — Temporal PlainYearMonth field replacement and date conversion
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add with and toPlainDate using shared ordered field readers. Normalize replaced reference days, reject empty/Temporal partials, constrain the supplied date day and enforce date bounds. Require monthCode merging, getter/error order, ignored fields and Realm-owned intrinsic results on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-fields-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add with and toPlainDate using shared ordered field readers. Normalize replaced reference days, reject empty/Temporal partials, constrain the supplied date day and enforce date bounds. Require monthCode merging, getter/error order, ignored fields and Realm-owned intrinsic results on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-fields-draft/.
 
 ## TS-372 — Temporal PlainYearMonth arithmetic
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add/subtract year-and-month durations using first-day calendar arithmetic and intrinsic YearMonth results. Reject nonzero week/day/time components after options validation. Require signed carries, reference-day normalization, first-day endpoint behavior, option precedence and Realm tests on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-arithmetic-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add/subtract year-and-month durations using first-day calendar arithmetic and intrinsic YearMonth results. Reject nonzero week/day/time components after options validation. Require signed carries, reference-day normalization, first-day endpoint behavior, option precedence and Realm tests on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-arithmetic-draft/.
 
 ## TS-373 — Temporal PlainYearMonth differences
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add until/since with year/month-only ordered settings, first-day calendar differences and exact relative rounding. Preserve equal-record shortcut and skip rounding for the exact default month increment. Require signed calendar ties, minimum-month first-day checks, option order and Realm Duration results on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-difference-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add until/since with year/month-only ordered settings, first-day calendar differences and exact relative rounding. Preserve equal-record shortcut and skip rounding for the exact default month increment. Require signed calendar ties, minimum-month first-day checks, option order and Realm Duration results on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-difference-draft/.
 
 ## TS-374 — Temporal PlainDate to PlainYearMonth conversion
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainYearMonth using the stored ISO date and normalized reference day one, preserving YearMonth boundary months and intrinsic Realm prototypes. Require branding, ignored getters/arguments, subclass and boundary tests on both hosts. Own src/builtins/temporal-plain-date.ts and tests/manifests/docs in build/temporal-plain-date-to-year-month-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainYearMonth using the stored ISO date and normalized reference day one, preserving YearMonth boundary months and intrinsic Realm prototypes. Require branding, ignored getters/arguments, subclass and boundary tests on both hosts. Own src/builtins/temporal-plain-date.ts and tests/manifests/docs in build/temporal-plain-date-to-year-month-draft/.
 
 ## TS-375 — Temporal PlainMonthDay construction and ISO getters
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Introduce branded Realm-owned ISO PlainMonthDay with default reference year 1972, date-range bounds, ordered construction and calendarId/monthCode/day getters. Wire constructor fallback and shared calendar/partial recognition. Parsing, formatting and other methods remain separate; require both-host coverage and Realm tests. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-plain-month-day-core-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Introduce branded Realm-owned ISO PlainMonthDay with default reference year 1972, date-range bounds, ordered construction and calendarId/monthCode/day getters. Wire constructor fallback and shared calendar/partial recognition. Parsing, formatting and other methods remain separate; require both-host coverage and Realm tests. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-plain-month-day-core-draft/.
 
 ## TS-376 — Temporal PlainMonthDay formatting
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ISO MonthDay string/JSON/locale fallback formatting, including stored reference years for always/critical annotations. Require default leap-year output, signed reference years, ignored locale arguments, branding, ordered options and Realm error tests on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-format-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add ISO MonthDay string/JSON/locale fallback formatting, including stored reference years for always/critical annotations. Require default leap-year output, signed reference years, ignored locale arguments, branding, ordered options and Realm error tests on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-format-draft/.
 
 ## TS-377 — Temporal PlainMonthDay ISO parsing
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse short month-day forms with optional double hyphen and full ISO date/time forms, sharing short scanning with calendar strings. Preserve parsed reference years until conversion and validate leap dates without public range checks. Require annotations, offsets, yearless leap days and malformed syntax on both hosts. Own src/temporal-iso-parser.ts, src/temporal-calendar-parse.ts and tests/manifests/docs in build/temporal-plain-month-day-parse-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Parse short month-day forms with optional double hyphen and full ISO date/time forms, sharing short scanning with calendar strings. Preserve parsed reference years until conversion and validate leap dates without public range checks. Require annotations, offsets, yearless leap days and malformed syntax on both hosts. Own src/temporal-iso-parser.ts, src/temporal-calendar-parse.ts and tests/manifests/docs in build/temporal-plain-month-day-parse-draft/.
 
 ## TS-378 — Temporal PlainMonthDay conversion and equality
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add from/equals with ordered date fields, shared month resolution and reference-year normalization. Use supplied bag year for leap-day regulation but normalize to 1972 without imposing input-year date bounds. Preserve branded reference years, validate overflow after reads and require getter/order/Realm regressions on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-conversion-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add from/equals with ordered date fields, shared month resolution and reference-year normalization. Use supplied bag year for leap-day regulation but normalize to 1972 without imposing input-year date bounds. Preserve branded reference years, validate overflow after reads and require getter/order/Realm regressions on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-conversion-draft/.
 
 ## TS-379 — Temporal PlainMonthDay field replacement and date conversion
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add with/toPlainDate using ordered shared date fields. Do not default partial replacement year to the stored reference year; normalize replacement results to 1972. Date conversion reads only year, constrains leap day and applies date bounds. Require empty/Temporal partial rejection, getter precedence, metadata and Realm results on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-fields-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add with/toPlainDate using ordered shared date fields. Do not default partial replacement year to the stored reference year; normalize replacement results to 1972. Date conversion reads only year, constrains leap day and applies date bounds. Require empty/Temporal partial rejection, getter precedence, metadata and Realm results on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-fields-draft/.
 
 ## TS-380 — Temporal PlainDate to PlainMonthDay conversion
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainMonthDay from stored ISO month/day with reference year 1972. Require leap-day preservation, full date endpoints, ignored guest fields/arguments, branding and intrinsic Realm result tests on both hosts. Own src/builtins/temporal-plain-date.ts and tests/manifests/docs in build/temporal-plain-date-to-month-day-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainMonthDay from stored ISO month/day with reference year 1972. Require leap-day preservation, full date endpoints, ignored guest fields/arguments, branding and intrinsic Realm result tests on both hosts. Own src/builtins/temporal-plain-date.ts and tests/manifests/docs in build/temporal-plain-date-to-month-day-draft/.
 
 ## TS-381 — Public class field architecture review
 
@@ -4676,7 +4676,7 @@ Status: **done — architecture review recorded in docs/class-fields-review.md**
 
 ## TS-382 — Public class fields without initializers
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement public instance/static fields without initializers as a bounded first class-field increment. Keep initializer expressions, private fields and static blocks explicitly unsupported. Preserve key evaluation/ASI, own data-property semantics, all constructor paths, static finalization and suspended class keys. Review TS-381 findings and require focused/full Node, native zero-dynamic and constructor/generator regressions. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-execution-internal.ts and tests/manifests/docs in build/class-empty-fields-draft/.
+Status: **done — accepted in temporal-year-month-day milestone**. Owner: Codex catch-up chat, 2026-11-10. Implement public instance/static fields without initializers as a bounded first class-field increment. Keep initializer expressions, private fields and static blocks explicitly unsupported. Preserve key evaluation/ASI, own data-property semantics, all constructor paths, static finalization and suspended class keys. Review TS-381 findings and require focused/full Node, native zero-dynamic and constructor/generator regressions. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-execution-internal.ts and tests/manifests/docs in build/class-empty-fields-draft/.
 
 ## TS-383 — Exact calendar duration days for relative comparisons
 
@@ -4723,3 +4723,81 @@ Status: **done — documentation review**. Owner: Codex catch-up chat, 2026-11-1
 ## TS-393 — Date host boundary review
 
 Status: **done — local-time discrepancies recorded; UTC/clock boundary reviewed**. Owner: Codex catch-up chat, 2026-11-10. Probe UTC/local fields, timezone offsets, clipping, parsing/formatting and clock support across both hosts before defining guest Date behavior. Keep native static-only/zero-dynamic gates and report host discrepancies explicitly. Own build/date-host-review initially; no guest Date API registration.
+
+## TS-394 — Date time clipping and UTC field primitives
+
+Status: **in progress — isolated successor to TS-393**. Owner: Codex catch-up chat, 2026-11-10. Add engine-owned Date time clipping, UTC field decomposition, ordered floating-point MakeTime/MakeDate and two-digit year expansion. Reuse the bounded ISO calendar backend and keep Date's zero-based months explicit. Test negative milliseconds, full clip endpoints, NaN/infinity and prescribed floating-point ordering before guest API registration. Own  and tests/manifests/docs in build/date-time-core-draft/.
+
+## TS-395 — Date calendar construction with month and day overflow
+
+Status: **in progress — isolated successor to TS-394**. Owner: Codex catch-up chat, 2026-11-10. Implement engine-owned MakeDay with finite input checks, mathematical month balancing, Gregorian year arithmetic and required Number conversions. Preserve overflow/negative components and full Date endpoints without host Date.UTC delegation. Require leap, signed month/day, large balanced inputs and primitive regressions on both hosts. Own  and tests/manifests/docs in build/date-calendar-draft/.
+
+## TS-396 — Date ISO string parsing under UTC policy
+
+Status: **in progress — isolated successor to TS-395**. Owner: Codex catch-up chat, 2026-11-10. Parse ECMAScript Date Time String Format using engine-owned calendar/time primitives, including reduced dates, expanded years, exact millisecond fields, 24:00 and numeric offsets. Apply clipping only after offset subtraction; reject malformed fields and negative-zero expanded years. No host Date.parse or Temporal annotation grammar. Own  and tests/manifests/docs in build/date-iso-parse-draft/.
+
+## TS-397 — Engine-owned UTC Date formatting
+
+Status: **in progress — isolated successor to TS-396**. Owner: Codex catch-up chat, 2026-11-10. Format clipped Date values as ISO, UTC, date-only, time-only and full UTC display strings. Keep expanded ISO years distinct from display year spelling, preserve invalid-date results and avoid host locale/timezone formatting. Test endpoint and negative/year-zero records on both hosts. Own  and tests/manifests/docs in build/date-format-draft/.
+
+## TS-398 — Date parsing of engine-owned round-trip strings
+
+Status: **in progress — isolated successor to TS-397**. Owner: Codex catch-up chat, 2026-11-10. Add Date parsing for the engine's UTC/display strings alongside ISO parsing, preserving the specification's zero-millisecond round trips. Use bounded token parsing and the ISO backend; keep arbitrary implementation-specific legacy formats outside the supported parser. Test full endpoints, extended years, malformed strings and both format variants on both hosts. Own  and tests/manifests/docs in build/date-string-parse-draft/.
+
+## TS-399 — Branded Date construction and core methods
+
+Status: **in progress — isolated successor to TS-398**. Owner: Codex catch-up chat, 2026-11-10. Install Date with clipped mutable time slots, all constructor forms, UTC default timezone, host-clock isolation, now/parse/UTC and core formatting/value conversion methods. Add Date branding/prototype fallback and generic Symbol.toPrimitive semantics. Preserve coercion order, cloning without hooks, intrinsic Realm errors, subclass construction and legacy-profile isolation. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/object.ts and tests/manifests/docs in build/date-core-draft/.
+
+## TS-400 — Date UTC and local field getters
+
+Status: **in progress — isolated successor to TS-399**. Owner: Codex catch-up chat, 2026-11-10. Install Date field getters, getTimezoneOffset and legacy getYear under the explicit UTC timezone policy. Preserve invalid-date NaN, slot branding, zero-based months/weekdays, metadata and defining-Realm errors. Require all fields at leap/negative/full-range values on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-getters-draft/.
+
+## TS-401 — Date time setters and mutation ordering
+
+Status: **in progress — isolated successor to TS-400**. Owner: Codex catch-up chat, 2026-11-10. Implement setTime and local/UTC time-component setters with original-slot snapshots, ordered argument coercion, invalid-date behavior and UTC timezone policy. Validate mutation during coercion, clipping, frozen objects and Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-time-setters-draft/.
+
+## TS-402 — Date calendar setters and invalid-date recovery
+
+Status: **in progress — isolated successor to TS-401**. Owner: Codex catch-up chat, 2026-11-10. Implement local/UTC setFullYear, setMonth and setDate using original time-slot snapshots, ordered coercion and clipped calendar balancing. Distinguish FullYear recovery from invalid Month/Date behavior, preserve year zero and time within day, and validate Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-calendar-setters-draft/.
+
+## TS-403 — Generic Date JSON serialization
+
+Status: **in progress — isolated successor to TS-402**. Owner: Codex catch-up chat, 2026-11-10. Implement generic Date.prototype.toJSON with ToObject, numeric primitive conversion, non-finite null short-circuit and observable toISOString invocation. Validate JSON.stringify integration, non-Date receivers, coercion order, abrupt completions and defining-Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-json-draft/.
+
+## TS-404 — Legacy Date setYear
+
+Status: **in progress — isolated successor to TS-403**. Owner: Codex catch-up chat, 2026-11-10. Implement Annex B setYear with original-slot snapshot, invalid-date recovery and the 0–99 year mapping. Validate fractional years, mutation during coercion, clipping, branding and defining-Realm errors on both hosts. Own src/builtins/date-calendar-setters.ts, src/builtins/date.ts and tests/manifests/docs in build/date-legacy-year-draft/.
+
+## TS-405 — Date locale fallback methods
+
+Status: **in progress — isolated successor to TS-404**. Owner: Codex catch-up chat, 2026-11-10. Add Date toLocaleString, toLocaleDateString and toLocaleTimeString using deterministic English/UTC fallback strings while ECMA-402 remains unsupported. Ignore reserved argument positions, preserve branding and invalid-date behavior, and validate cross-Realm errors and method metadata on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-locale-draft/.
+
+## TS-406 — Temporal Now instant and timezone identity
+
+Status: **in progress — isolated successor to TS-405**. Owner: Codex catch-up chat, 2026-11-10. Create Realm-owned Temporal.Now with instant and timeZoneId, using the existing Realm-local millisecond clock and explicit UTC timezone policy. Validate fresh intrinsic Instant allocation, clock calls, namespace metadata, receiver independence, defining-Realm ownership and host-clock fault boundaries on both hosts. Calendar/timezone projections remain follow-ups. Own src/builtins/temporal.ts and tests/manifests/docs in build/temporal-now-core-draft/.
+
+## TS-407 — UTC and fixed-offset Temporal timezone parsing
+
+Status: **in progress — isolated successor to TS-406**. Owner: Codex catch-up chat, 2026-11-10. Resolve supported Temporal timezone strings from UTC names, minute offsets and ISO date/time/year-month/month-day forms. Share the ISO scanner, preserve annotation precedence and syntax checks, reject sub-minute timezone identifiers and unavailable named zones, and validate all supported grammar branches on both hosts. Own  and tests/manifests/docs in build/temporal-time-zone-parse-draft/.
+
+## TS-408 — Temporal Now plain ISO projections
+
+Status: **in progress — isolated successor to TS-407**. Owner: Codex catch-up chat, 2026-11-10. Add Now.plainDateTimeISO, plainDateISO and plainTimeISO with UTC/fixed-offset timezone conversion before clock access. Share intrinsic allocation and bounded ISO epoch conversion, reject non-string coercion and unavailable names, preserve defining-Realm clocks/prototypes and endpoint shifts, and validate on both hosts. Own src/builtins/temporal-now.ts and tests/manifests/docs in build/temporal-now-plain-draft/.
+
+## TS-409 — Branded UTC and fixed-offset ZonedDateTime construction
+
+Status: **in progress — isolated successor to TS-408**. Owner: Codex catch-up chat, 2026-11-10. Construct Temporal.ZonedDateTime with exact epoch, supported raw timezone identifiers and ISO calendar. Add core slot getters, Realm prototype fallback, timezone/calendar brand recognition and partial-object rejection. Preserve ordered coercion, direct-identifier grammar, subclassing and intrinsic errors; conversion, formatting, field getters and arithmetic remain follow-ups. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-time-zone-parse.ts, src/temporal-time-zone.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-zoned-date-time-core-draft/.
+
+## TS-410 — ZonedDateTime ISO fields and fixed-offset day lengths
+
+Status: **in progress — isolated successor to TS-409**. Owner: Codex catch-up chat, 2026-11-10. Expose local ISO calendar/time and offset getters from ZonedDateTime slots. Share exact epoch projection, preserve getter branding and Realm errors, and implement hoursInDay range checks for both local midnights before returning the fixed 24-hour length. Validate offset day rollover, nanosecond precision and both epoch endpoints. Own src/temporal-zoned-date-time-object.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-fields-draft/.
+
+## TS-411 — ZonedDateTime projections and timezone/calendar replacement
+
+Status: **in progress — isolated successor to TS-410**. Owner: Codex catch-up chat, 2026-11-10. Add intrinsic toInstant/toPlainDate/toPlainTime/toPlainDateTime plus withTimeZone/withCalendar for supported UTC/fixed-offset ISO values. Preserve exact epochs, local projections, receiver-first validation, fresh intrinsic results, slot-based branded options and defining-Realm ownership; cover endpoint projections on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-parts-draft/.
+
+## TS-412 — Temporal Now and Instant ZonedDateTime factories
+
+Status: **in progress — isolated successor to TS-411**. Owner: Codex catch-up chat, 2026-11-10. Add Now.zonedDateTimeISO and Instant.toZonedDateTimeISO using supported timezone conversion and intrinsic ZonedDateTime allocation. Preserve clock/argument order, default UTC only for Now, exact epochs, branded timezone inputs, ignored extras and defining-Realm clocks/prototypes. Own src/builtins/temporal-now.ts, src/builtins/temporal.ts and tests/manifests/docs in build/temporal-zoned-factories-draft/.
+
+2026-11-10 DateTime differences / YearMonth / MonthDay milestone accepted (TS-360–380 and TS-382): 867/867 guests on each host without skips; all 374 native static-only/zero-dynamic gates pass in 4936802ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-EGRfd0/native-cZs4ci matches all 225 normalized records and preserves 190 prior completions; 190 complete, 2 records change diagnostics/output. Original fixture bytes remain unchanged. Exact PlainDateTime differences and ISO PlainYearMonth/PlainMonthDay construction, parsing, formatting, conversion, replacement and supported arithmetic/differences are accepted. PlainDate part conversions and shared calendar-bearing lookup are included. Public fields without initializers are included, with constructor timing, suspended keys and execution-budget checks. Initializer expressions, private fields, static blocks, ZonedDateTime, relative Duration APIs and locale-aware formatting remain follow-ups. Evidence: build/temporal-year-month-day-*.

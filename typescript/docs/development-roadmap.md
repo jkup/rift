@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted temporal-date-time milestone passes 845/845 guests on each
-host, 295/295 tooling checks, and all 352 native static gates.
+The accepted temporal-year-month-day milestone passes 867/867 guests on each
+host, 295/295 tooling checks, and all 374 native static gates.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -748,3 +748,5 @@ The temporal-regexp milestone passes all 306 native gates directly. Its 225-reco
 [Class field integration review](class-fields-review.md) records constructor timing, Realm/source ownership and initializer-context risks. Public fields without initializers are integrated pending combined acceptance; full initializer contexts remain a follow-up.
 
 [Date host review](date-host-review.md) found historical/extreme local-time differences in the pinned backend. Date implementation should use an explicit UTC default timezone and engine-owned calendar semantics; arbitrary system/IANA timezone support remains separate. No Date API is enabled by the review.
+
+2026-11-10 DateTime differences / YearMonth / MonthDay milestone accepted (TS-360–380 and TS-382): 867/867 guests on each host without skips; all 374 native static-only/zero-dynamic gates pass in 4936802ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-EGRfd0/native-cZs4ci matches all 225 normalized records and preserves 190 prior completions; 190 complete, 2 records change diagnostics/output. Original fixture bytes remain unchanged. Exact PlainDateTime differences and ISO PlainYearMonth/PlainMonthDay construction, parsing, formatting, conversion, replacement and supported arithmetic/differences are accepted. PlainDate part conversions and shared calendar-bearing lookup are included. Public fields without initializers are included, with constructor timing, suspended keys and execution-budget checks. Initializer expressions, private fields, static blocks, ZonedDateTime, relative Duration APIs and locale-aware formatting remain follow-ups. Evidence: build/temporal-year-month-day-*.
