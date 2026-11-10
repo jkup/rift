@@ -3901,7 +3901,7 @@ Array fill/copyWithin, String.raw, padStart/padEnd and Realm-local Math.random a
 
 ## TS-199 — String at and trim aliases
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add relative UTF-16 String.prototype.at and Annex B trimLeft/trimRight aliases preserving exact function identity with trimStart/trimEnd. Cover conversion order, bounds, lone surrogate results, metadata and alias independence after assignment. Own String registration/inventories, focused tests/manifests and notes in build/string-at-draft based on TS-197; no locale changes.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add relative UTF-16 String.prototype.at and Annex B trimLeft/trimRight aliases preserving exact function identity with trimStart/trimEnd. Cover conversion order, bounds, lone surrogate results, metadata and alias independence after assignment. Own String registration/inventories, focused tests/manifests and notes in build/string-at-draft based on TS-197; no locale changes.
 
 ## TS-200 — RegExp and String matchAll
 

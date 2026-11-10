@@ -57,7 +57,7 @@ function inventory(a: Realm): void {
             "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownIterator],
         ["toString","valueOf","constructor"],
         ["toString","valueOf","toLocaleString","toFixed","toExponential","toPrecision","constructor"],
-        ["length","toString","valueOf","substring","substr","padStart","padEnd","repeat","codePointAt","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
+        ["length","toString","valueOf","at","substring","substr","padStart","padEnd","repeat","codePointAt","trim","trimStart","trimEnd","trimLeft","trimRight","toLowerCase","toUpperCase",
             "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","anchor","big","blink","bold","fixed","fontcolor","fontsize","italics","link","small","strike","sub","sup","isWellFormed","toWellFormed","match","search","replace","constructor","includes","startsWith","endsWith",wellKnownIterator],
         ["toString","valueOf","constructor","description",wellKnownToPrimitive,wellKnownToStringTag],
     ];
@@ -103,7 +103,7 @@ function inventory(a: Realm): void {
                 desc(f,"prototype",obj(p),false,false,false);
                 check(f.getPrototypeOf()===a.functionPrototype && callable!==null && callable.kind==="builtin" && callable.realm===a && slot!==null && slot.kind==="builtin-constructor" && slot.realm===a && slot.callable===callable,"formatting constructor graph and matching slots");
                 check(f.getOwnProperty("caller")===undefined && f.getOwnProperty("arguments")===undefined,"constructor inherited restrictions");
-            } else method(a, p, k, k, prototypeMethodLength(k, i === 4));
+            } else method(a, p, k, k === "trimLeft" ? "trimStart" : k === "trimRight" ? "trimEnd" : k, prototypeMethodLength(k, i === 4));
         }
     }
     desc(a.functionPrototype,"name",{kind:"string",value:""},false,false,true); desc(a.functionPrototype,"length",n(0),false,false,true);

@@ -118,8 +118,8 @@ function registerStringPadding(realm: Realm, name: string, start: boolean): void
     });
 }
 
-function registerStringTrim(realm: Realm, name: string, where: "start" | "end" | "both"): void {
-    realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
+function registerStringTrim(realm: Realm, name: string, where: "start" | "end" | "both"): Value {
+    return realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
         const text = stringReceiver(receiver, context, loc);
         if (text.type === "throw") return text;
         let start = 0;
@@ -170,6 +170,15 @@ function registerStringRange(realm: Realm, name: "substring" | "substr"): void {
 
 export function registerStringMethods(realm: Realm): void {
     if (realm.profile === "script") {
+        realm.registerBuiltin(realm.stringPrototype, "at", 1, (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") return text;
+            const relative = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
+            if (relative.type === "throw") return relative;
+            const size = stringLength(text.value);
+            const index = relative.value < 0 ? size + relative.value : relative.value;
+            return normal(index < 0 || index >= size ? UNDEFINED : {kind: "string", value: stringUnit(text.value, index)});
+        });
         registerStringRange(realm, "substring");
         registerStringRange(realm, "substr");
         registerStringPadding(realm, "padStart", true);
@@ -206,8 +215,10 @@ export function registerStringMethods(realm: Realm): void {
             return normal({ kind: "number", value: first });
         });
         registerStringTrim(realm, "trim", "both");
-        registerStringTrim(realm, "trimStart", "start");
-        registerStringTrim(realm, "trimEnd", "end");
+        const trimStart = registerStringTrim(realm, "trimStart", "start");
+        const trimEnd = registerStringTrim(realm, "trimEnd", "end");
+        realm.stringPrototype.bootstrapDefine("trimLeft", {value: trimStart, writable: true, configurable: true});
+        realm.stringPrototype.bootstrapDefine("trimRight", {value: trimEnd, writable: true, configurable: true});
         realm.registerBuiltin(realm.stringPrototype, "toLowerCase", 0, (receiver, _args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);
             return text.type === "throw" ? text : normal({ kind: "string", value: stringLowerCase(text.value) });
