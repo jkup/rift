@@ -38,7 +38,7 @@ for (const entry of cases) {
     const actual = run(fresh(), entry[0]);
     check(actual.type === "normal" && actual.value.kind === "string" && actual.value.value === entry[1], "template result: " + entry[0]);
 }
-for (const text of ["`", "`a${1", "`a${1}", "`${}`;", "`\\1`;", "`\\01`;", "`\\8`;", "`\\xG0`;", "`\\u{}`;", "`\\u{110000}`;", "`\\u123`;", "function f(){} f`x`;", "(1)`x`;", "`a` `b`;", "`x`=7;"]) {
+for (const text of ["`", "`a${1", "`a${1}", "`${}`;", "`\\1`;", "`\\01`;", "`\\8`;", "`\\xG0`;", "`\\u{}`;", "`\\u{110000}`;", "`\\u123`;", "`x`=7;"]) {
     const result = prepareBoundedScript({id: "invalid-template", text}, fresh());
     check(result.kind !== "ready", "reject malformed or unsupported template: " + text);
 }
@@ -80,4 +80,6 @@ for (const text of ["`", "`a${1", "`a${1}", "`${}`;", "`\\1`;", "`\\01`;", "`\\8
     }
     check(interrupted && completed, "template budget boundary");
 }
+check(run(fresh(), "function f(){} f`x`;").type === "normal", "historical tagged function input");
+for(const text of ["(1)`x`;", "`a` `b`;"]){const result=run(fresh(),text);check(result.type==='throw'&&result.diagnostic.name==='TypeError','historical noncallable tag input');}
 console.log("Script templates passed");

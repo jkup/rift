@@ -1,3 +1,4 @@
+import type { TemplateObjectExpr } from "./syntax.js";
 import { isSuspendingGeneratorExpression } from "./generator-expression.js";
 import type { GeneratorYieldStmt, AwaitExpr } from "./syntax.js";
 import { validateRegExpLiteral } from "./regexp-literal-validation.js";
@@ -973,6 +974,27 @@ class Parser {
         const source: FunctionSource = { source: this.source, start: first.start, end: this.token(this.index - 1).end, arrow: true, expressionBody, rest, bodyLoc, ...(asynchronous ? { async: true } : {}) };
         return { kind: "function", loc: first.loc, params, parameters, body, source };
     }
+    taggedTemplate(callee: Expr): Expr {
+        const first = this.take();
+        if (first.cooked === undefined || first.raw === undefined) throw new Error("template token lacks values");
+        const site: TemplateObjectExpr = { kind: "template-object", loc: first.loc, cooked: [first.cooked], raw: [first.raw] };
+        const args: Argument[] = [site];
+        if (first.kind === "template-head") {
+            while (this.error === null) {
+                args.push(this.expression(0));
+                const part = this.take();
+                if (part.kind !== "template-middle" && part.kind !== "template-tail") {
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "expected template continuation", part.loc);
+                    break;
+                }
+                if (part.cooked === undefined || part.raw === undefined) throw new Error("template token lacks values");
+                site.cooked.push(part.cooked);
+                site.raw.push(part.raw);
+                if (part.kind === "template-tail") break;
+            }
+        }
+        return { kind: "call", tagged: true, loc: callee.loc, callee, args };
+    }
     templateCooked(token: Token): string {
         if (token.cooked === undefined) throw new Error("template token lacks cooked text");
         if (token.cooked === null) {
@@ -1019,8 +1041,12 @@ class Parser {
         while (this.error === null) {
             if (arrow && !(min === 0 && this.at(","))) break;
             if (this.current().kind === "template" || this.current().kind === "template-head") {
-                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "tagged templates are unsupported", this.current().loc);
-                break;
+                if (updated || !this.structuralPlan() || (left.kind === "chain" && !this.parenthesized.has(left))) {
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid template tag", this.current().loc);
+                    break;
+                }
+                left = this.taggedTemplate(left);
+                continue;
             }
             if (!updated && this.structuralPlan() && this.eat("?.")) {
                 const linkLoc = this.token(this.index - 1).loc;
@@ -1515,7 +1541,8 @@ class Parser {
                     const key = this.expression(0);
                     this.expect("]");
                     callee = { kind: "member", loc: first.loc, base: callee, key };
-                } else break;
+                } else if (this.current().kind === "template" || this.current().kind === "template-head") callee = this.taggedTemplate(callee);
+                else break;
             }
             if (this.at("?.")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "optional constructor operand is unsupported", this.current().loc);
             const args: Argument[] = [];

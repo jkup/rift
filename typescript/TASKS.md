@@ -4282,7 +4282,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-287 — Tagged templates
 
-Status: **in progress — isolated successor to TS-286**. Owner: Codex catch-up chat, 2026-11-10. Add per-site Realm-local frozen template arrays and tagged-call parsing through existing reference/argument evaluation, including suspended tags/substitutions. Preserve indirect eval, raw/cooked values, constructor precedence and optional-chain restrictions. Own syntax/parser/Realm/evaluator/AST visitors, historical tests/manifests and docs in build/tagged-templates-draft. Require both-host static/zero-dynamic, identity/descriptors/order/Realm/budget/async checks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add per-site Realm-local frozen template arrays and tagged-call parsing through existing reference/argument evaluation, including suspended tags/substitutions. Preserve indirect eval, raw/cooked values, constructor precedence and optional-chain restrictions. Own syntax/parser/Realm/evaluator/AST visitors, historical tests/manifests and docs in build/tagged-templates-draft. Require both-host static/zero-dynamic, identity/descriptors/order/Realm/budget/async checks.
 
 ## TS-288 — Exact BigInt conversion backend
 

@@ -1,3 +1,4 @@
+import type { TemplateObjectExpr } from "./syntax.js";
 import { registerAsyncIterators } from "./async-iterator.js";
 import { registerPromise } from "./builtins/promise.js";
 import { registerRegExp } from "./builtins/regexp.js";
@@ -54,6 +55,26 @@ import type { RandomState } from "./random.js";
 export type Output = (line: string) => void;
 export type RealmProfile = "legacy" | "script";
 export class Realm {
+    private templateMap = new Map<TemplateObjectExpr, GuestArray>();
+    getTemplateObject(site: TemplateObjectExpr, context: OperationContext): ValueCompletion {
+        const cached = this.templateMap.get(site);
+        if (cached !== undefined) return normal({ kind: "object", object: cached });
+        const template = this.createArray(), raw = this.createArray();
+        for (let i = 0; i < site.cooked.length; i++) {
+            const tick = context.tick(site.loc);
+            if (tick.type === "throw") return tick;
+            const text = site.cooked[i];
+            template.bootstrapDefine(String(i), { value: text === null ? UNDEFINED : { kind: "string", value: text }, writable: false, enumerable: true, configurable: false });
+            raw.bootstrapDefine(String(i), { value: { kind: "string", value: site.raw[i] }, writable: false, enumerable: true, configurable: false });
+        }
+        raw.bootstrapDefine("length", { writable: false });
+        raw.preventExtensions();
+        template.bootstrapDefine("raw", { value: { kind: "object", object: raw }, writable: false, enumerable: false, configurable: false });
+        template.bootstrapDefine("length", { writable: false });
+        template.preventExtensions();
+        this.templateMap.set(site, template);
+        return normal({ kind: "object", object: template });
+    }
     randomState: RandomState | null = null;
     private legacyGlobal: Environment | null = null;
     private scriptGlobal: GlobalEnvironment | null = null;

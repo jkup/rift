@@ -140,7 +140,7 @@ const generated = [
     ["template-cooked","let t=`\\x41\\u0042\\u{1F600}`;console.log(t.length,t.charCodeAt(0),t.charCodeAt(2),t.charCodeAt(3));",0,"","4 65 55357 56832\n"],
     ["template-linebreaks","let t=`a\r\nb\rc`;console.log(t.length,t.charCodeAt(1),t.charCodeAt(3));",0,"","5 10 10\n"],
     ["template-malformed","console.log('must not run'); `\\1`;",2,"parse SyntaxError: invalid template escape",""],
-    ["template-tagged","function tag(){} tag`x`;",2,"parse SyntaxError: tagged templates are unsupported",""],
+    ["template-tagged","function tag(){} tag`x`;",0,"",""],
     ["lastindex-start","let a=[1,2,1]; console.log(a.lastIndexOf(1),a.lastIndexOf(1,undefined),a.lastIndexOf(1,NaN),a.lastIndexOf(1,1),a.lastIndexOf(1,-1),a.lastIndexOf(1,-2),a.lastIndexOf(1,Infinity),a.lastIndexOf(1,-Infinity));",0,"","2 0 0 0 2 0 2 -1\n"],
     ["lastindex-fraction","let a=[1,2,1]; console.log(a.lastIndexOf(1,1.9),a.lastIndexOf(1,-1.9),a.lastIndexOf(1,-4),a.lastIndexOf(1,-0),1/a.lastIndexOf(1,-0));",0,"","0 2 -1 0 Infinity\n"],
     ["lastindex-equality","let x={}; let a=[NaN,0,x,'1',1]; console.log(a.lastIndexOf(NaN),a.lastIndexOf(-0),a.lastIndexOf(x),a.lastIndexOf({}),a.lastIndexOf('1'));",0,"","-1 1 2 -1 3\n"],
@@ -737,6 +737,7 @@ executeDriver("class-evaluation", { stdout: "class evaluation passed\n" });
 executeDriver("generator-class-heritage", { stdout: "generator class heritage passed\n" });
 executeDriver("generator-class-key", { stdout: "generator class key passed\n" });
 executeDriver("template-tokens", { stdout: "template tokens passed\n" });
+executeDriver("tagged-templates", { stdout: "tagged templates passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

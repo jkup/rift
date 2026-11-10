@@ -152,6 +152,7 @@ const entries = [
     ["test/generator-class-heritage.ts", "generator-class-heritage"],
     ["test/generator-class-key.ts", "generator-class-key"],
     ["test/template-tokens.ts", "template-tokens"],
+    ["test/tagged-templates.ts", "tagged-templates"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

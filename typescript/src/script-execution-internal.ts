@@ -1716,6 +1716,7 @@ class ExecutionEngine {
                 if (env !== null) throw new Error("class requires Script execution");
                 return this.#classExpression(expr, name);
             }
+            case "template-object": return this.context.realm.getTemplateObject(expr, this.context);
             case "regexp": {
                 if (env !== null) throw new Error("RegExp literal requires Script execution");
                 return regExpCreate({ kind: "string", value: expr.pattern }, { kind: "string", value: expr.flags }, this.context, expr.loc);
@@ -1864,7 +1865,7 @@ class ExecutionEngine {
                 if (callee.type !== "normal") return callee;
                 const args = this.#arguments(expr.args, env, receiver);
                 if (args.type === "throw") return args;
-                if (this.#script && expr.callee.kind === "identifier" && expr.callee.name === "eval" &&
+                if (this.#script && !expr.tagged && expr.callee.kind === "identifier" && expr.callee.name === "eval" &&
                     callee.value.kind === "object" && callee.value.object === this.#active().realm.evalIntrinsic)
                     return this.#callScript(callee.value, UNDEFINED, args.values, expr.loc, true);
                 return this.call(callee.value, referenceCallReceiver(result), args.values, expr.loc);
@@ -3516,7 +3517,7 @@ class ExecutionEngine {
                         const callee = this.#expressionValue(reference, expression.loc);
                         if (callee.type === "throw") return callee;
                         if (callee.type !== "normal") throw new Error("invalid callee completion");
-                        const directEval = expression.kind === "call" && expression.callee.kind === "identifier" && expression.callee.name === "eval" &&
+                        const directEval = expression.kind === "call" && !expression.tagged && expression.callee.kind === "identifier" && expression.callee.name === "eval" &&
                             callee.value.kind === "object" && callee.value.object === this.#active().realm.evalIntrinsic;
                         frames.push({ kind: "call-argument", expression, callee: callee.value,
                             receiver: referenceCallReceiver(reference), directEval, values: [], index: 0 });

@@ -38,9 +38,10 @@ export type UpdateExpr = { kind: "update"; loc: Location; target: Expr; op: "++"
 export type CompoundExpr = { kind: "compound"; loc: Location; target: Expr; value: Expr; op: "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "<<" | ">>" | ">>>" | "&&" | "||" | "??"; suspends?: true };
 export type AssignExpr = { kind: "assign"; loc: Location; target: Expr; value: Expr; suspends?: true };
 export type ObjectExpr = { kind: "object"; loc: Location; properties: ObjectProperty[]; suspends?: true };
+export type TemplateObjectExpr = { kind: "template-object"; loc: Location; cooked: (string | null)[]; raw: string[] };
 export type TemplateExpr = { kind: "template"; loc: Location; strings: string[]; expressions: Expr[]; suspends?: true };
 export type NewExpr = { kind: "new"; loc: Location; callee: Expr; args: Argument[]; suspends?: true };
-export type CallExpr = { kind: "call"; loc: Location; callee: Expr; args: Argument[]; suspends?: true };
+export type CallExpr = { kind: "call"; tagged?: true; loc: Location; callee: Expr; args: Argument[]; suspends?: true };
 export type MemberExpr = { kind: "member"; loc: Location; base: Expr; key: Expr; suspends?: true };
 export type UnaryExpr = { kind: "unary"; loc: Location; op: string; operand: Expr; suspends?: true };
 export type ConditionalExpr = { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr; suspends?: true };
@@ -55,6 +56,7 @@ export type Expr =
     | ArrayExpr
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
     | TemplateExpr
+    | TemplateObjectExpr
     | { kind: "identifier"; loc: Location; name: string }
     | { kind: "this"; loc: Location }
     | { kind: "new-target"; loc: Location }
