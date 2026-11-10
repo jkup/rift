@@ -4672,7 +4672,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-381 — Public class field architecture review
 
-Status: **in progress — read-only successor planning during Temporal validation**. Owner: Codex catch-up chat, 2026-11-10. Review public instance/static field parsing, planner ownership, constructor timing and suspended class-key evaluation before changing core syntax. Own build/class-fields-review.md initially. Keep canonical source frozen; private elements and static blocks remain separate. Record concrete integration risks and an executable acceptance boundary rather than enabling partially implemented syntax.
+Status: **done — architecture review recorded in docs/class-fields-review.md**. Owner: Codex catch-up chat, 2026-11-10. Review public instance/static field parsing, planner ownership, constructor timing and suspended class-key evaluation before changing core syntax. Own build/class-fields-review.md initially. Keep canonical source frozen; private elements and static blocks remain separate. Record concrete integration risks and an executable acceptance boundary rather than enabling partially implemented syntax.
 
 ## TS-382 — Public class fields without initializers
 
