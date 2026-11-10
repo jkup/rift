@@ -4738,7 +4738,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-397 — Engine-owned UTC Date formatting
 
-Status: **in progress — isolated successor to TS-396**. Owner: Codex catch-up chat, 2026-11-10. Format clipped Date values as ISO, UTC, date-only, time-only and full UTC display strings. Keep expanded ISO years distinct from display year spelling, preserve invalid-date results and avoid host locale/timezone formatting. Test endpoint and negative/year-zero records on both hosts. Own  and tests/manifests/docs in build/date-format-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Format clipped Date values as ISO, UTC, date-only, time-only and full UTC display strings. Keep expanded ISO years distinct from display year spelling, preserve invalid-date results and avoid host locale/timezone formatting. Test endpoint and negative/year-zero records on both hosts. Own  and tests/manifests/docs in build/date-format-draft/.
 
 ## TS-398 — Date parsing of engine-owned round-trip strings
 
