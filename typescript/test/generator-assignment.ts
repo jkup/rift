@@ -47,7 +47,7 @@ for (let i = 0; i < cases.length; i++) {
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "assignment case " + i);
 }
 for (const source of [
-    "function* f(){var a,b;a=b=yield 1;}",
+
 
     "function* f(){var x;x??=yield 1;}",
     "function* f(){var o={};o[yield 1]=2;}"
@@ -68,4 +68,5 @@ const stopped = run('slow.next({valueOf(){while(true){}}});', B, createScriptSes
 check(stopped.type === "throw" && stopped.origin.kind === "resource-limit", "resumed coercion resource stop");
 const closed = run('!cleaned&&slow.next().done;', A);
 check(closed.type === "normal" && closed.value.kind === "boolean" && closed.value.value, "resource stop discards pending reference");
+{const realm=new Realm((_line:string)=>{},'script');const result=run('function* f(){var a,b;a=b=yield 1;}var g=f();g.next().value===1&&g.next(7).done',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'original chained assignment boundary');}
 console.log("generator assignment passed");

@@ -4190,7 +4190,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-265 — Suspended assignment-expression values
 
-Status: **in progress — isolated successor to TS-264**. Owner: Codex catch-up chat, 2026-11-10. Retain an ordinary assignment reference before a nested RHS suspends, then reuse PutValue and return the assigned value. Cover nested expressions, call arguments, loop updates, setter order, abrupt completion and strict errors. Own syntax/parser, expression frames, continuation integration, historical boundaries, tests/manifests and docs in build/generator-assignment-value-draft. Target suspension and compound expressions remain separate. Require both-host/static and reference/Realm tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain an ordinary assignment reference before a nested RHS suspends, then reuse PutValue and return the assigned value. Cover nested expressions, call arguments, loop updates, setter order, abrupt completion and strict errors. Own syntax/parser, expression frames, continuation integration, historical boundaries, tests/manifests and docs in build/generator-assignment-value-draft. Target suspension and compound expressions remain separate. Require both-host/static and reference/Realm tests.
 
 ## TS-266 — Suspended compound-assignment expressions
 
