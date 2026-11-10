@@ -29,6 +29,7 @@ export type ObjectPattern = { kind: "object-pattern"; loc: Location; properties:
 export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "binding"; loc: Location; site: DeclarationSite } | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
 export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[] };
+export type ArrayExpr = { kind: "array"; loc: Location; elements: ArrayElement[]; suspends?: true };
 export type CallExpr = { kind: "call"; loc: Location; callee: Expr; args: Argument[]; suspends?: true };
 export type MemberExpr = { kind: "member"; loc: Location; base: Expr; key: Expr; suspends?: true };
 export type UnaryExpr = { kind: "unary"; loc: Location; op: string; operand: Expr; suspends?: true };
@@ -41,7 +42,7 @@ export type Expr =
     | ClassExpr
     | ChainExpr
     | { kind: "destructure"; loc: Location; pattern: ArrayPattern | ObjectPattern; value: Expr }
-    | { kind: "array"; loc: Location; elements: ArrayElement[] }
+    | ArrayExpr
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
     | { kind: "template"; loc: Location; strings: string[]; expressions: Expr[] }
     | { kind: "identifier"; loc: Location; name: string }

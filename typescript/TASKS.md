@@ -4126,7 +4126,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-250 — Suspended array elements
 
-Status: **in progress — isolated successor to TS-249**. Owner: Codex catch-up chat, 2026-11-10. Retain the newly allocated array and next index while elements or spread operands suspend, preserving holes, length, element order and Realm ownership. Reuse ordinary property creation and iterator semantics. Own syntax/parser, expression frames, array helper/continuation integration, tests/manifests and docs in build/generator-array-draft. Object literals, constructor arguments and suspended callees remain separate. Require both-host/static and abrupt/Realm tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain the newly allocated array and next index while elements or spread operands suspend, preserving holes, length, element order and Realm ownership. Reuse ordinary property creation and iterator semantics. Own syntax/parser, expression frames, array helper/continuation integration, tests/manifests and docs in build/generator-array-draft. Object literals, constructor arguments and suspended callees remain separate. Require both-host/static and abrupt/Realm tests.
 
 ## TS-251 — Suspended constructor arguments
 

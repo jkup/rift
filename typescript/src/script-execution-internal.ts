@@ -1,3 +1,4 @@
+import { appendArrayElement, finishArrayLiteral } from "./array-literal.js";
 import { resumeAsyncDelegate, type AsyncDelegate } from "./async-generator-delegate.js";
 import { getAsyncIterator } from "./async-iterator.js";
 import { isSuspendingGeneratorExpression, type GeneratorExpressionFrame } from "./generator-expression.js";
@@ -1767,40 +1768,17 @@ class ExecutionEngine {
                     if (budget.type !== "normal") return budget;
                     const element = expr.elements[i];
                     if (element === null) { index++; continue; }
-                    if (element.kind === "spread") {
-                        if (env !== null) throw new Error("Script array spread AST requires Script execution");
-                        const input = this.#value(element.expression);
-                        if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
-                        const acquired = getIterator(input.value, this.context, element.loc);
-                        if (acquired.type === "throw") return acquired;
-                        while (true) {
-                            const next = iteratorStepValue(acquired.value, this.context, element.loc);
-                            if (next.type === "throw") return next;
-                            if (next.done) break;
-                            const defined = object.defineOwnProperty(String(index++), {
-                                value: next.value, writable: true, enumerable: true, configurable: true,
-                            }, this.context, element.loc);
-                            if (defined.type === "throw") return defined;
-                            if (!defined.value) throw new Error("fresh array spread element invariant");
-                        }
-                        continue;
-                    }
-                    const value = this.#eval(element, env, receiver);
+                    if (element.kind === "spread" && env !== null) throw new Error("Script array spread AST requires Script execution");
+                    const value = this.#eval(element.kind === "spread" ? element.expression : element, env, receiver);
                     if (value.type !== "normal") return value;
-                    const defined = object.defineOwnProperty(String(index++), {
-                        value: value.value, writable: true, enumerable: true, configurable: true,
-                    }, this.context, expr.loc);
-                    if (defined.type === "throw") return defined;
-                    if (!defined.value) throw new Error("fresh array literal element invariant");
+                    const appended = appendArrayElement(object, index, value.value, element.kind === "spread", this.context,
+                        element.kind === "spread" ? element.loc : expr.loc);
+                    if (appended.type === "throw") return appended;
+                    index = appended.index;
                 }
-                // Index definitions grow length, but trailing holes do not define keys.
-                const length = object.defineOwnProperty("length", {
-                    value: { kind: "number", value: index },
-                }, this.context, expr.loc);
-                if (length.type === "throw") return length;
-                if (!length.value) throw new Error("fresh array literal length invariant");
-                return normal({ kind: "object", object });
+                return finishArrayLiteral(object, index, this.context, expr.loc);
             }
+
             case "object": {
                 const object = this.context.realm.createObject();
                 for (const property of expr.properties) {
@@ -3300,7 +3278,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3308,6 +3286,11 @@ class ExecutionEngine {
                     if (expression.kind === "await") {
                         frames.push({ kind: "await-operand", expression });
                         expression = expression.value;
+                        continue;
+                    }
+                    if (expression.kind === "array") {
+                        frames.push({ kind: "array-element", expression, object: this.context.realm.createArray(), index: -1, nextIndex: 0 });
+                        expression = null;
                         continue;
                     }
                     if (expression.kind === "call") {
@@ -3369,6 +3352,30 @@ class ExecutionEngine {
             if (frames.length === 0) return normal(value);
             const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "array-element") {
+                if (frame.index >= 0) {
+                    const element = frame.expression.elements[frame.index];
+                    if (element === null) throw new Error("suspended array hole");
+                    const appended = appendArrayElement(frame.object, frame.nextIndex, value, element.kind === "spread", this.context,
+                        element.kind === "spread" ? element.loc : frame.expression.loc);
+                    if (appended.type === "throw") return appended;
+                    frame.nextIndex = appended.index;
+                }
+                while (++frame.index < frame.expression.elements.length) {
+                    const budget = this.tick(frame.expression.loc);
+                    if (budget.type === "throw") return budget;
+                    const element = frame.expression.elements[frame.index];
+                    if (element === null) { frame.nextIndex++; continue; }
+                    frames.push(frame);
+                    expression = element.kind === "spread" ? element.expression : element;
+                    break;
+                }
+                if (expression !== null) continue;
+                const finished = finishArrayLiteral(frame.object, frame.nextIndex, this.context, frame.expression.loc);
+                if (finished.type === "throw") return finished;
+                value = finished.value;
+                continue;
+            }
             if (frame.kind === "call-argument") {
                 const arg = frame.expression.args[frame.index];
                 if (arg.kind === "spread") {

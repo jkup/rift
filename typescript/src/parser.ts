@@ -750,16 +750,23 @@ class Parser {
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
             }
-            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call") continue;
+            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array") continue;
             if (node.kind === "unary" && node.op === "delete" && node.operand.kind === "member") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
-                if (node.kind === "call") {
+                if (node.kind === "array") {
+                    for (let i = node.elements.length - 1; i >= 0; i--) {
+                        const element = node.elements[i];
+                        if (element !== null) pending.push({ expression: element.kind === "spread" ? element.expression : element, visited: false });
+                    }
+                } else if (node.kind === "call") {
                     for (let i = node.args.length - 1; i >= 0; i--) { const arg = node.args[i]; pending.push({ expression: arg.kind === "spread" ? arg.expression : arg, visited: false }); }
                 } else if (node.kind === "member") pending.push({ expression: node.key, visited: false }, { expression: node.base, visited: false });
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
+            } else if (node.kind === "array") {
+                if (node.elements.some(element => element !== null && isSuspendingGeneratorExpression(element.kind === "spread" ? element.expression : element))) node.suspends = true;
             } else if (node.kind === "call") {
                 if (node.args.some(arg => isSuspendingGeneratorExpression(arg.kind === "spread" ? arg.expression : arg))) node.suspends = true;
             } else if (node.kind === "member") {
