@@ -725,7 +725,11 @@ class Parser {
         const pending: { expression: Expr; visited: boolean }[] = [{ expression, visited: false }];
         while (pending.length !== 0) {
             const entry = pending.pop()!, node = entry.expression;
-            if (node.kind === "yield") { supported.add(node); continue; }
+            if (node.kind === "yield") {
+                supported.add(node);
+                if (node.value !== null) pending.push({ expression: node.value, visited: false });
+                continue;
+            }
             if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
@@ -768,7 +772,8 @@ class Parser {
             while (pending.length !== 0) {
                 const statement = pending.pop()!;
                 supported.add(statement);
-                if (statement.kind === "block") pending.push(...statement.body);
+                if (statement.kind === "yield") this.admitGeneratorExpression(statement, supported);
+                else if (statement.kind === "block") pending.push(...statement.body);
                 else if (statement.kind === "labelled") pending.push(statement.body);
                 else if (statement.kind === "switch") for (const clause of statement.caseBlock.clauses) pending.push(...clause.body);
                 else if (statement.kind === "while" || statement.kind === "do-while" || statement.kind === "for" || statement.kind === "for-lexical" || statement.kind === "for-of" || statement.kind === "for-in") pending.push(statement.body);

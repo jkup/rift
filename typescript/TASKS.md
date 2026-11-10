@@ -4060,7 +4060,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-235 — Nested yield operands
 
-Status: **in progress — isolated successor to TS-234**. Owner: Codex catch-up chat, 2026-11-10. Extend expression frames to yield/yield-star operands, evaluating the operand before exposing a value or acquiring its iterator. Preserve nested resume values, delegation and abrupt discard, current budgets and final receivers. Own parser admission, expression frame/evaluator changes, focused tests/manifests and docs in build/generator-yield-operand-draft. Calls and member references remain separate. Require both-host/static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend expression frames to yield/yield-star operands, evaluating the operand before exposing a value or acquiring its iterator. Preserve nested resume values, delegation and abrupt discard, current budgets and final receivers. Own parser admission, expression frame/evaluator changes, focused tests/manifests and docs in build/generator-yield-operand-draft. Calls and member references remain separate. Require both-host/static validation.
 
 ## TS-236 — Suspended if conditions
 

@@ -2953,6 +2953,7 @@ class ExecutionEngine {
         return { type: "generator-expression", expression, receiver };
     }
     #generatorYield(expression: GeneratorYieldStmt, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
+        if (isSuspendingGeneratorExpression(expression.value)) return { type: "generator-expression", expression, receiver };
         const value = expression.value === null ? normal() : this.#value(expression.value);
         if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
         if (expression.delegate === true) {
@@ -2994,6 +2995,11 @@ class ExecutionEngine {
                         expression = expression.operand;
                         continue;
                     }
+                    if (isSuspendingGeneratorExpression(expression.value)) {
+                        frames.push({ kind: "yield-operand", expression });
+                        expression = expression.value;
+                        continue;
+                    }
                     const yielded = this.#generatorYield(expression, null);
                     if (yielded.type === "throw") return yielded;
                     continuation.yieldLoc = expression.loc;
@@ -3020,6 +3026,18 @@ class ExecutionEngine {
                 continue;
             }
             if (frame.kind === "branch") continue;
+            if (frame.kind === "yield-operand") {
+                continuation.yieldLoc = frame.expression.loc;
+                if (frame.expression.delegate === true) {
+                    const iterator = getIterator(value, this.context, frame.expression.loc);
+                    if (iterator.type === "throw") return iterator;
+                    continuation.delegate = { iterator: iterator.value, loc: frame.expression.loc, depth: sequence.depth + frames.length + 2 };
+                    return { type: "suspended-delegate" };
+                }
+                const result = iteratorResult(value, false, this.context, frame.expression.loc);
+                if (result.type === "throw") return result;
+                return { type: "yield", result: result.value };
+            }
             if (frame.kind === "unary") {
                 const computed = applyUnaryValueOperator(frame.expression.op, value, this.context, frame.expression.loc);
                 if (computed.type === "throw") return computed;
@@ -3222,6 +3240,7 @@ class ExecutionEngine {
                     const result = this.#receiveGeneratorYield(continuation, delegated.value, callerDepth);
                     if (result !== null) return result;
                     if (sequences.length === 0) return normal();
+                    if (continuation.delegate !== null) continue;
                 }
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
