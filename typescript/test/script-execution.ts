@@ -861,6 +861,12 @@ for(const source of [
     '"use strict";let o={__proto__:null};','"use strict";++x;','"use strict";1,2;'
 ]) {
     const r=fresh(),s=createScriptSession();const prepared=prepareStrictScript({id:"negative",text:source},r);
+    if (source === '"use strict";let f=function named(){};') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "named function preparation is inert");
+        check(run(source,r,s).type === "normal", "named expression executes");
+        scalar(run('"use strict";f.name==="named"&&typeof named==="undefined"?1:0;',r,s),1);
+        continue;
+    }
     if (source === '"use strict";let o={[x]:1};') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "computed key preparation is inert");
         run('"use strict";var x="key";',r,s);

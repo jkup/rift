@@ -366,6 +366,8 @@ class DeclarationCollector {
             ? { ownStrict: false, inheritedStrict, strict: inheritedStrict, directives: [] }
             : scriptPrologue(this.unit.text, this.tokens, index + 1, inheritedStrict);
         const id = this.scope("function", scope, hasInitializers ? source.start : this.tokens[index].start, source.end, strictness.strict, formals);
+        if (source.name !== undefined && (source.name.name === "eval" || source.name.name === "arguments"))
+            this.restrictedAssignments.push({ name: source.name.name, scope: id, loc: source.name.loc });
         if (source.arrow === true) this.arrowScopes.add(id);
         if (this.nodes !== null) this.nodes.scopes.set(id, { node, body });
         this.functions.push({ scope: id, declaration, start: source.start, end: source.end, strictness });

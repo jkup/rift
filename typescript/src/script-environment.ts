@@ -7,9 +7,10 @@ import type { ScriptGuestCallable } from "./script-record.js";
 export type ScriptEnvironment = ScriptDeclarativeEnvironment | ScriptFunctionEnvironment
     | { readonly kind: "global"; readonly record: GlobalEnvironment };
 
-// Immutable bindings here are const bindings: writes throw even in sloppy code.
+// Strict immutable bindings throw on all writes; named-function bindings only
+// throw for strict references.
 // Mapped arguments retain these cells even if a binding is later deleted.
-export type ScriptBindingCell = { initialized: boolean; mutable: boolean; value: Value };
+export type ScriptBindingCell = { initialized: boolean; mutable: boolean; strict: boolean; value: Value };
 class ScriptLocalBindings {
     private readonly bindings: Map<string, ScriptBindingCell> = new Map();
     private readonly deletableNames: Set<string> = new Set();
@@ -24,13 +25,13 @@ class ScriptLocalBindings {
     }
     createMutableBinding(name: string, _loc: Location, deletable = false): ValueCompletion {
         if (this.bindings.has(name)) throw new Error("binding already exists: " + name);
-        this.bindings.set(name, { initialized: false, mutable: true, value: UNDEFINED });
+        this.bindings.set(name, { initialized: false, mutable: true, strict: false, value: UNDEFINED });
         if (deletable) this.deletableNames.add(name);
         return normal();
     }
-    createImmutableBinding(name: string, _loc: Location): ValueCompletion {
+    createImmutableBinding(name: string, _loc: Location, strict = true): ValueCompletion {
         if (this.bindings.has(name)) throw new Error("binding already exists: " + name);
-        this.bindings.set(name, { initialized: false, mutable: false, value: UNDEFINED });
+        this.bindings.set(name, { initialized: false, mutable: false, strict, value: UNDEFINED });
         return normal();
     }
     initializeBinding(name: string, value: Value, context: OperationContext, _loc: Location): ValueCompletion {
@@ -55,7 +56,8 @@ class ScriptLocalBindings {
             return this.initializeBinding(name, value, context, loc);
         }
         if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
-        if (!binding.mutable) return languageFailure(context.realm, "TypeError", name + " is immutable", loc);
+        if (!binding.mutable) return strict || binding.strict
+            ? languageFailure(context.realm, "TypeError", name + " is immutable", loc) : normal();
         binding.value = value;
         return normal();
     }

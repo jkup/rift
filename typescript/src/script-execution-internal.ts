@@ -548,10 +548,18 @@ class ExecutableScript {
         const entry = this.#function(scopeId);
         if ((entry.fn.declaration !== null && inferredName !== null) || (inferredName !== null && typeof inferredName !== "string"))
             throw new Error("invalid Script inferred name");
-        const name = entry.fn.declaration === null ? (inferredName === null ? "" : inferredName)
+        const name = entry.source.name !== undefined ? entry.source.name.name
+            : entry.fn.declaration === null ? (inferredName === null ? "" : inferredName)
             : state.plan.declarations[entry.fn.declaration].site.name;
         const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
         if (budget.type === "throw") return budget;
+        let namedEnvironment: ScriptDeclarativeEnvironment | null = null;
+        if (entry.source.name !== undefined) {
+            namedEnvironment = new ScriptDeclarativeEnvironment(environment);
+            const created = namedEnvironment.createImmutableBinding(name, entry.source.name.loc, false);
+            if (created.type === "throw") return created;
+            environment = namedEnvironment;
+        }
         const callable = ScriptGuestCallable.create({ homeObject: null, classConstructor: null, key: this.#activationKey, record: this, realm: state.realm,
             scopeId, environment, strict: entry.scope.strict, lexicalThis: entry.source.arrow === true,
             unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
@@ -571,6 +579,10 @@ class ExecutableScript {
             const prototypeObject = new GuestObject(state.realm.objectPrototype);
             prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
             object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: true, enumerable: false, configurable: false });
+        }
+        if (namedEnvironment !== null) {
+            const initialized = namedEnvironment.initializeBinding(name, value, context, entry.node.loc);
+            if (initialized.type === "throw") return initialized;
         }
         this.#completedMaterializations++;
         return normal(value);

@@ -103,7 +103,12 @@ for (const source of negatives) for (const strict of [false, true]) {
     const s=createScriptSession();
     const prefix=strict ? '"use strict";' : '';
     const p=prepareBoundedScript({id:"N",text:prefix+'out(9);'+source},r);
-    if (source === "new C();function f(a,a){}" && !strict) {
+    if (source === "new (function named(){})();") {
+        check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "named constructor prepares");
+        const result=run(prefix+source,r,s);
+        check(result.type === "normal" && result.value.kind === "object", "named constructor executes");
+        expect(run("typeof named;",r,s),{kind:"string",value:"undefined"},"constructor name stays private");
+    } else if (source === "new C();function f(a,a){}" && !strict) {
         check(p.kind === "ready" && out.length === 0 && s.inspect().steps === 0, "duplicate parameter preparation is inert");
         check(run("function C(){}"+source,r,s).type === "normal", "original duplicate source executes");
         expect(run("f.length;",r,s),number(2),"duplicate parameter arity");

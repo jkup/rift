@@ -82,6 +82,10 @@ for (const text of ["try{eval('class C{}')}catch(e){true}", "try{eval('return 1'
     const result = run(text);
     if (text === "try{eval('class C{}')}catch(e){true}")
         check(result.type === "normal" && result.value.kind === "undefined", "original base class eval executes");
+    else if (text === "try{eval('(function f(){return 7})')}catch(e){true}") {
+        check(result.type === "normal" && result.value.kind === "object" && result.value.object.callable !== null, "named function eval executes");
+        expect("eval('(function f(){return 7})')()===7");
+    }
     else check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.eval-source", "unsupported eval stays fatal");
 }
 const limited = run("eval('while(true){}')", undefined, 100);

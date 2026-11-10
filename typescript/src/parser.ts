@@ -1232,8 +1232,14 @@ class Parser {
         if (t.text === "null") return { kind: "literal", loc, value: null };
         if (t.text === "this") return { kind: "this", loc };
         if (t.text === "function") {
+            let name: DeclarationSite | undefined;
+            if (this.structuralPlan() && !this.at("(")) {
+                const token = this.current();
+                name = { name: this.name(), start: token.start, end: token.end, loc: token.loc };
+            }
             const fn = this.functionTail(loc, t.start);
-            return { kind: "function", loc, params: fn.params, parameters: fn.parameters, body: fn.body, source: fn.source };
+            return { kind: "function", loc, params: fn.params, parameters: fn.parameters, body: fn.body,
+                source: name === undefined ? fn.source : { ...fn.source, name } };
         }
         if (t.text === "(") {
             if (this.structuralPlan()) return this.parenthesizedExpression(t, allowIn, allowArrow);

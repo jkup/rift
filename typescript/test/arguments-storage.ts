@@ -19,7 +19,7 @@ function passes(realm: Realm, text: string): void {
 function fixture(): { realm: Realm; object: GuestArguments; cell: ScriptBindingCell } {
     const realm = new Realm((_line: string) => {}, "script");
     const object = new GuestArguments(realm.objectPrototype);
-    const cell: ScriptBindingCell = { initialized: true, mutable: true, value: number(1) };
+    const cell: ScriptBindingCell = { initialized: true, mutable: true, strict: false, value: number(1) };
     object.bootstrapDefine("0", { value: number(1), writable: true, enumerable: true, configurable: true });
     object.bootstrapDefine("1", { value: number(2), writable: true, enumerable: true, configurable: true });
     object.bootstrapDefine("length", { value: number(2), writable: true, configurable: true });
@@ -91,7 +91,7 @@ function fixture(): { realm: Realm; object: GuestArguments; cell: ScriptBindingC
 }
 for (const mapped of [false, true]) {
     const realm = new Realm((_line: string) => {}, "script");
-    const cell: ScriptBindingCell = { initialized: true, mutable: true, value: number(1) };
+    const cell: ScriptBindingCell = { initialized: true, mutable: true, strict: false, value: number(1) };
     const make = realm.createBuiltin("make", 0, (_receiver, args, context, loc): ValueCompletion =>
         createArgumentsObject(realm, args, mapped ? realm.functionPrototype : null, mapped ? [cell] : [], context, loc));
     realm.defineScriptGlobal("make", { value: { kind: "object", object: make } });

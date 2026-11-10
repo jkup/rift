@@ -1,7 +1,7 @@
 export type SuperContext = "none" | "method" | "derived";
 export type SourceText = { readonly text: string };
 export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number; readonly method?: boolean;
-    readonly arrow?: boolean; readonly expressionBody?: boolean; readonly rest?: boolean; readonly bodyLoc?: Location };
+    readonly name?: DeclarationSite; readonly arrow?: boolean; readonly expressionBody?: boolean; readonly rest?: boolean; readonly bodyLoc?: Location };
 export type Location = { line: number; column: number };
 export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
 export type FormalParameter = { readonly site: DeclarationSite; readonly initializer: Expr | null };
