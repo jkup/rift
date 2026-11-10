@@ -1,26 +1,14 @@
+import { temporalTimeInteger } from "../temporal-time-fields.js";
+import { registerTemporalPlainTimeWith } from "./temporal-plain-time-with.js";
 import { registerTemporalPlainTimeRound } from "./temporal-plain-time-round.js";
 import { registerTemporalPlainTimeString } from "./temporal-plain-time-string.js";
 import type { Realm } from "../realm.js";
 import { formatTemporalTime } from "../temporal-time-format.js";
-import type { Location } from "../syntax.js";
 import { createTemporalPlainTime, temporalPlainTimeValue } from "../temporal-plain-time-object.js";
 import type { TimeFields } from "../temporal-time.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
-import { toPrimitive } from "../primitive-conversion.js";
-import { toNumber, type NumberCompletion } from "../conversion.js";
 import { wellKnownToStringTag } from "../symbols.js";
-import { languageFailure, normal, UNDEFINED, type GuestObject, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
-
-function timeInteger(value: Value, context: OperationContext, loc: Location): NumberCompletion {
-    if (value.kind === "undefined") return { type: "normal", value: 0 };
-    const primitive = toPrimitive(value, "number", context, loc);
-    if (primitive.type === "throw") return primitive;
-    const converted = toNumber(primitive.value, loc, context.realm);
-    if (converted.type === "throw") return converted;
-    if (!Number.isFinite(converted.value)) return languageFailure(context.realm, "RangeError", "time field must be finite", loc);
-    const integer = Math.trunc(converted.value);
-    return { type: "normal", value: integer === 0 ? 0 : integer };
-}
+import { languageFailure, normal, UNDEFINED, type GuestObject, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalPlainTime(realm: Realm, namespace: GuestObject): void {
     const prototype = realm.temporalPlainTimePrototype;
@@ -29,7 +17,9 @@ export function registerTemporalPlainTime(realm: Realm, namespace: GuestObject):
         (_callee, newTarget, args, context, loc): ValueCompletion => {
             const fields: number[] = [];
             for (let i = 0; i < 6; i++) {
-                const converted = timeInteger(i < args.length ? args[i] : UNDEFINED, context, loc);
+                const value = i < args.length ? args[i] : UNDEFINED;
+                if (value.kind === "undefined") { fields.push(0); continue; }
+                const converted = temporalTimeInteger(value, context, loc);
                 if (converted.type === "throw") return converted;
                 fields.push(converted.value);
             }
@@ -66,5 +56,6 @@ export function registerTemporalPlainTime(realm: Realm, namespace: GuestObject):
     }
     registerTemporalPlainTimeString(realm);
     registerTemporalPlainTimeRound(realm);
+    registerTemporalPlainTimeWith(realm);
     namespace.bootstrapDefine("PlainTime", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }

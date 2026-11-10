@@ -179,6 +179,7 @@ const entries = [
     ["test/temporal-time.ts", "temporal-time"],
     ["test/temporal-plain-time-string.ts", "temporal-plain-time-string"],
     ["test/temporal-plain-time-round.ts", "temporal-plain-time-round"],
+    ["test/temporal-plain-time-with.ts", "temporal-plain-time-with"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

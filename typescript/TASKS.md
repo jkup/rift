@@ -4408,7 +4408,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-317 — Temporal PlainTime field replacement
 
-Status: **in progress — isolated successor to TS-316**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.with with partial-object screening, alphabetical field conversion, missing-field preservation and constrain/reject overflow. Share finite integer conversion with the constructor. Own time-field conversion, PlainTime builtin/registration, focused tests/manifests/docs in build/temporal-plain-time-with-draft. Require exact read/coercion/abrupt order, no-field rejection, branding, fresh intrinsic/Realm results, full Node and native static/zero-dynamic regressions. Future Temporal date types must extend partial-object brand screening when introduced.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.with with partial-object screening, alphabetical field conversion, missing-field preservation and constrain/reject overflow. Share finite integer conversion with the constructor. Own time-field conversion, PlainTime builtin/registration, focused tests/manifests/docs in build/temporal-plain-time-with-draft. Require exact read/coercion/abrupt order, no-field rejection, branding, fresh intrinsic/Realm results, full Node and native static/zero-dynamic regressions. Future Temporal date types must extend partial-object brand screening when introduced.
 
 ## TS-318 — Shared Temporal ISO scanner
 
