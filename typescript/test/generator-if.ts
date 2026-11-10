@@ -21,6 +21,7 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+    "function* f(){while(yield 1){}}var g=f();g.next().value===1&&g.next(false).done;",
     "function* f(){if(yield 1){return 2;}return 3;}var a=f(),b=f();a.next();b.next();a.next(true).value===2&&b.next(false).value===3;",
     "function* f(){if(yield 1){yield 2;}else{yield 3;}return 4;}var g=f();g.next();g.next(false).value===3&&g.next().value===4;",
     "function* f(){if(yield 1){if(yield 2)return 3;else return 4;}else return 5;}var g=f();g.next();g.next(true).value===2&&g.next(false).value===4;",
@@ -44,7 +45,7 @@ for (let i=0;i<cases.length;i++) {
  const result=run(cases[i],new Realm((_line:string):void=>{},"script"));
  check(result.type === "normal" && result.value.kind === "boolean" && result.value.value,"if case "+i);
 }
-for(const source of ['function* f(){while(yield 1){}}','function* f(){if(foo(yield 1)){}}'])
+for(const source of ['function* f(){if(foo(yield 1)){}}'])
  check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind === "blocked","if boundary");
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script"),creator=createScriptSession();
 run('var cleaned=false;function* f(){try{if(yield 1){while(true){}}}finally{cleaned=true;}}var g=f();g.next();',A,creator);

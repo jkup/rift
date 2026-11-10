@@ -4,6 +4,7 @@ import type { ScriptBindingReference, ScriptEnvironment } from "./script-environ
 import type { DestructuringPattern, Location, Stmt } from "./syntax.js";
 
 export type GeneratorYieldReceiver = { kind: "return" }
+    | { kind: "loop-test" }
     | { kind: "throw"; loc: Location }
     | { kind: "branch"; consequent: Stmt; alternate: Stmt | null }
     | { kind: "pattern"; pattern: DestructuringPattern; environment: ScriptEnvironment | null }

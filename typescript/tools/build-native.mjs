@@ -102,6 +102,7 @@ const entries = [
     ["test/generator-unary.ts", "generator-unary"],
     ["test/generator-yield-operand.ts", "generator-yield-operand"],
     ["test/generator-if.ts", "generator-if"],
+    ["test/generator-loop-test.ts", "generator-loop-test"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

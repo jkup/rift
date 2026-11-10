@@ -4068,7 +4068,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-237 — Suspended while and do-while conditions
 
-Status: **in progress — isolated successor to TS-236**. Owner: Codex catch-up chat, 2026-11-10. Resume while/do-while tests through expression continuations and a loop-test receiver, keeping test-before/after-body ordering and existing break/continue/cleanup boundaries. Share expression-start handling with statement receivers. Own parser admission, receiver and private loop scheduling, tests/manifests and docs in build/generator-loop-test-draft. For-loop heads remain separate. Require both-host/static checks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume while/do-while tests through expression continuations and a loop-test receiver, keeping test-before/after-body ordering and existing break/continue/cleanup boundaries. Share expression-start handling with statement receivers. Own parser admission, receiver and private loop scheduling, tests/manifests and docs in build/generator-loop-test-draft. For-loop heads remain separate. Require both-host/static checks.
 
 ## TS-238 — Async function calls before await
 

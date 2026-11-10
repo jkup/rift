@@ -3060,6 +3060,17 @@ class ExecutionEngine {
             value = computed.value;
         }
     }
+    #startGeneratorExpression(continuation: GeneratorContinuation, expression: Expr, receiver: GeneratorYieldReceiver | null, callerDepth: number): GeneratorResumeResult | null {
+        continuation.receiver = receiver;
+        const evaluated = this.#evaluateGeneratorExpression(continuation, expression, UNDEFINED, callerDepth);
+        if (evaluated.type === "yield") return evaluated;
+        if (evaluated.type === "suspended-delegate") return null;
+        if (evaluated.type === "throw") {
+            this.#capture(evaluated);
+            return this.#unwindGenerator(continuation, evaluated, callerDepth);
+        }
+        return this.#receiveGeneratorYield(continuation, evaluated.value, callerDepth);
+    }
     #receiveGeneratorYield(continuation: GeneratorContinuation, value: Value, callerDepth: number): GeneratorResumeResult | null {
         if (continuation.expressionFrames.length !== 0) {
             const computed = this.#evaluateGeneratorExpression(continuation, null, value, callerDepth);
@@ -3081,6 +3092,15 @@ class ExecutionEngine {
             const failure = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", continuation.yieldLoc);
             this.#capture(failure);
             return failure;
+        }
+        if (receiver.kind === "loop-test") {
+            if (frame.kind !== "loop") throw new Error("loop test without loop frame");
+            if (!truthy(value)) continuation.sequences.pop();
+            else {
+                frame.first = false;
+                continuation.sequences.push({ kind: "sequence", frame: frame.frame, body: [frame.body], nextStatement: 0, depth: frame.depth });
+            }
+            return null;
         }
         if (receiver.kind === "branch") {
             const branch = truthy(value) ? receiver.consequent : receiver.alternate;
@@ -3306,6 +3326,13 @@ class ExecutionEngine {
                 }
                 if (sequence.kind === "loop") {
                     if (sequence.testFirst || !sequence.first) {
+                        if (isSuspendingGeneratorExpression(sequence.test)) {
+                            mode = "next";
+                            value = UNDEFINED;
+                            const result = this.#startGeneratorExpression(continuation, sequence.test, { kind: "loop-test" }, callerDepth);
+                            if (result !== null) return result;
+                            continue;
+                        }
                         const test = this.#value(sequence.test);
                         if (test.type === "throw") {
                             this.#capture(test);
@@ -3334,19 +3361,9 @@ class ExecutionEngine {
                     continue;
                 }
                 if (result.type === "generator-expression") {
-                    continuation.receiver = result.receiver;
-                    const evaluated = this.#evaluateGeneratorExpression(continuation, result.expression, UNDEFINED, callerDepth);
                     mode = "next";
                     value = UNDEFINED;
-                    if (evaluated.type === "yield") return evaluated;
-                    if (evaluated.type === "suspended-delegate") continue;
-                    if (evaluated.type === "throw") {
-                        this.#capture(evaluated);
-                        const uncaught = this.#unwindGenerator(continuation, evaluated, callerDepth);
-                        if (uncaught !== null) return uncaught;
-                        continue;
-                    }
-                    const received = this.#receiveGeneratorYield(continuation, evaluated.value, callerDepth);
+                    const received = this.#startGeneratorExpression(continuation, result.expression, result.receiver, callerDepth);
                     if (received !== null) return received;
                     continue;
                 }
