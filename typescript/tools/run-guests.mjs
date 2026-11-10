@@ -837,6 +837,7 @@ executeDriver("temporal-relative-duration-target", { stdout: "temporal relative 
 executeDriver("temporal-duration-round-options", { stdout: "temporal duration round options passed\n" });
 executeDriver("temporal-duration-round", { stdout: "temporal duration round passed\n" });
 executeDriver("date-time-core", { stdout: "date time core passed\n" });
+executeDriver("date-calendar", { stdout: "date calendar passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

@@ -4730,7 +4730,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-395 — Date calendar construction with month and day overflow
 
-Status: **in progress — isolated successor to TS-394**. Owner: Codex catch-up chat, 2026-11-10. Implement engine-owned MakeDay with finite input checks, mathematical month balancing, Gregorian year arithmetic and required Number conversions. Preserve overflow/negative components and full Date endpoints without host Date.UTC delegation. Require leap, signed month/day, large balanced inputs and primitive regressions on both hosts. Own  and tests/manifests/docs in build/date-calendar-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement engine-owned MakeDay with finite input checks, mathematical month balancing, Gregorian year arithmetic and required Number conversions. Preserve overflow/negative components and full Date endpoints without host Date.UTC delegation. Require leap, signed month/day, large balanced inputs and primitive regressions on both hosts. Own  and tests/manifests/docs in build/date-calendar-draft/.
 
 ## TS-396 — Date ISO string parsing under UTC policy
 
