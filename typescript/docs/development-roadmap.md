@@ -5,10 +5,10 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted RegExp core milestone passes 673/673 guests on each host,
-291/291 tooling checks, and all 180 native static gates without retries.
-The unchanged 225-file C++ corpus has 177 completions: 114 reported successes and
-63 unchecked completions. Remaining outcomes are 14 parse errors, 33 runtime
+The accepted RegExp protocol milestone passes 676/676 guests on each host,
+291/291 tooling checks, and all 183 native static gates without retries.
+The unchanged 225-file C++ corpus has 178 completions: 114 reported successes and
+64 unchecked completions. Remaining outcomes are 14 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
 Test262 conformance score.
 
@@ -17,13 +17,14 @@ and super properties. Promise construction, resolution, then/catch/finally, try,
 withResolvers, explicit CLI checkpoints, all/race, AggregateError and
 allSettled/any are accepted.
 
-The bounded RegExp parser, matching machine, constructor and exec/test are
-accepted, including lastIndex and d indices. Reviewed match/search, replacement
-and split protocols are next for integration and full validation. Regex literal
-syntax needs parser-controlled lexical goals: the current eager lexer must not
-classify slash using a preceding-token heuristic. Keep this as an explicit
-architecture review before syntax admission. Unicode modes, lookaround and
-backreferences remain unsupported.
+The bounded RegExp parser, matching machine, constructor, exec/test, d indices
+and match/search/replace/split protocols are accepted. Regex literal syntax
+uses parser-selected lexical goals. Reviewed incremental lexing, parenthesized
+arrow cover parsing, parser token access and delimiter scanning are ready for
+integration and full validation. Literal admission remains isolated, including
+whole-source early-error certification and fresh intrinsic object evaluation.
+Unicode modes, lookaround, backreferences, named groups and matchAll remain
+unsupported.
 Generators/async, Temporal, weak-reference facilities, class fields and remaining
 destructuring contexts are separate gaps. Preserve the known malformed or
 nonstandard-helper C++ fixtures and the classified disagreements below.

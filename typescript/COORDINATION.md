@@ -2164,3 +2164,18 @@ RegExp matcher, construction and execution accepted (e108d370, 15b9a602, 3e6040a
 2026-11-10 TS-175 promoted after RegExp core acceptance with all 7 changed-file baselines verified. The isolated draft passes 675 Node guests and focused both-host execution with parsed zero-dynamic coverage. Evidence remains under build/regexp-replacement-draft/build. Full canonical acceptance remains pending.
 
 2026-11-10 TS-176 promoted after RegExp core acceptance with all 4 changed-file baselines verified. The isolated draft passes 676 Node guests and focused both-host execution with parsed zero-dynamic coverage. Evidence remains under build/regexp-split-draft/build. Full canonical acceptance remains pending.
+
+2026-11-10 Claimed TS-177 incremental lexer foundation while the 183-entry RegExp protocol matrix remains frozen. Preserve eager lexing results and public audits in this step; parser-controlled slash rescanning and literal admission follow separately.
+
+2026-11-10 TS-177 draft review passes 677 Node guests, focused native coverage (341 static, zero dynamic) and 1023 exact old/new lexer comparisons. Claimed TS-178 parenthesized arrow cover parsing as the next isolated prerequisite for parser-controlled regex scanning. Canonical protocol production remains frozen.
+
+2026-11-10 TS-178 draft review passes 678 Node guests, focused native coverage (11048 static, zero dynamic) and 3069 unchanged parser/plan/audit comparisons. Claimed TS-179 incremental Script token access. Canonical RegExp protocol production remains frozen.
+
+2026-11-10 TS-179 review passes 679 Node guests, focused native coverage (11055 static, zero dynamic) and all 3069 parser compatibility comparisons. Claimed TS-180 standalone RegExp literal delimiter scanning before parser admission. Canonical protocol matrix remains fixed.
+
+2026-11-10 TS-180 review passes 680 Node guests and focused native scanning (77 static, zero dynamic). Claimed TS-181 bounded RegExp literal admission, with explicit early-error provenance after complete grammar coverage. Canonical protocol production remains frozen.
+
+
+2026-11-10 TS-174/TS-175/TS-176 acceptance
+
+RegExp/String match/search, replacement and split accepted (eb84c261, 807b7fb0, 43544c78): both guest suites pass 676/676 without skips; tooling 291/291, runner 32/32, ten probes and typechecking pass. All 183 native entries pass static-only builds and parsed coverage in 1469176ms without retries. Canonical match/search, replacement and split coverage is 11013/11006/11015 static statements, zero dynamic. All 225 normalized corpus records agree between Node UEmH9e and native 9GzDkR, preserving hashes and all 177 prior completions. The unchanged string match/replace/search fixture raises completions to 178 (114 reported successes, 64 unchecked; 14 parse errors, 32 runtime errors, one reported failure). Its conservative corpus classification remains unchecked; separate focused evidence verifies 53 passing checks and zero failures on both hosts. Evidence: build/regexp-protocols-native-results.json, regexp-protocols-corpus-comparison.json, regexp-protocols-* logs and build/regexp-replacement-draft/build/original-string-reviewed.json. Next: separate reviewed incremental lexer, arrow cover, parser token access and literal scanner commits, then canonical validation. Literal admission remains an isolated draft.
