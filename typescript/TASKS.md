@@ -3875,3 +3875,11 @@ Array.of, Array.from and String.repeat are accepted (TS-183–185). Node/native 
 ## TS-193 — JSON string scanner allocation review
 
 Status: **done — measured; no production change justified**. Owner: Codex catch-up chat, 2026-11-10. Measure the current JSON string scanner on increasing plain/escaped string sizes before deciding whether its per-character concatenation needs replacement. If evidence supports a change, collect contiguous source segments and decoded escapes with one final join, preserving exact parser validation, UTF-16 results and tick order. Own json-parser string scanning, focused tests and notes in build/json-string-draft based on TS-192; no syntax or reviver semantics changes.
+
+## TS-194 — JSON.stringify
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add the ECMAScript 2025 serializer for current Values: toJSON/replacer ordering, replacer property lists, boxed primitive conversion, gap coercion, well-formed UTF-16 quoting, captured object keys/array lengths, omissions and null array entries, cycle errors and bounded iterative traversal/output. Own json-stringify module, JSON registration/inventories, focused tests/manifests and notes in build/json-stringify-draft based on TS-192. No rawJSON, BigInt or host serialization of guest objects; preserve existing parse behavior.
+
+## TS-195 — String locale host prerequisites
+
+Status: **done — casing prerequisites pass; comparison blocked by native canonical-equivalence failures**. Owner: Codex catch-up chat, 2026-11-10. Probe pinned static support and actual behavior for locale case mapping and comparison, including Turkish casing, Greek context, Unicode comparison and explicit locales. Determine whether a trustworthy common host boundary can close the remaining string-method fixture; do not replace locale behavior with ASCII/code-unit approximations. Own build/string-locale-review and a concise decision note; no guest registrations or toolchain changes.
