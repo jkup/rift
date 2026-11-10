@@ -4366,7 +4366,7 @@ Status: **in progress — isolated successor to TS-305**. Owner: Codex catch-up 
 
 ## TS-307 — Native manifest integrity
 
-Status: **in progress — validation repair**. Owner: Codex catch-up chat, 2026-11-10. Review found multiple new test paths nested inside the bigint-values pair, silently omitted by tuple destructuring. Repair manifest entries, fail before builds on malformed/duplicate tuples and compare driver scheduling with declared native names. Preserve the running manifest and its actual result; complete omitted/misnamed entries separately with explicit composite provenance or rerun. Propagate corrected baselines to isolated successors. No milestone acceptance until every declared gate and native guest is verified.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Review found multiple new test paths nested inside the bigint-values pair, silently omitted by tuple destructuring. Repair manifest entries, fail before builds on malformed/duplicate tuples and compare driver scheduling with declared native names. Preserve the running manifest and its actual result; complete omitted/misnamed entries separately with explicit composite provenance or rerun. Propagate corrected baselines to isolated successors. No milestone acceptance until every declared gate and native guest is verified.
 
 ## TS-308 — RegExp lookahead assertions
 
@@ -4379,3 +4379,11 @@ Status: **in progress — validation repair**. Owner: Codex catch-up chat, 2026-
 ## TS-310 — Temporal PlainTime core
 
 Status: **in progress — isolated successor to TS-308**. Owner: Codex catch-up chat, 2026-11-10. Add a branded Realm-owned PlainTime with new-only constructor, ordered finite/truncated numeric conversions, post-conversion time validation, subclass/newTarget behavior, six immutable internal time fields and branded accessors/valueOf. Own object/builtin modules, Realm/prototype fallback, namespace registration, focused tests/manifests/docs in build/temporal-plain-time-core-draft. Parsing, arithmetic, comparison and formatting remain separate follow-ups. Require abrupt/prototype order, exact bounds, metadata, cross-Realm tests and both-host/static plus full Node checks.
+
+## TS-311 — Temporal PlainTime serialization
+
+Status: **in progress — isolated successor to TS-310**. Owner: Codex catch-up chat, 2026-11-10. Extract shared exact time-field formatting from Instant output and add branded PlainTime.toJSON plus the non-Intl toLocaleString fallback, ignoring reserved arguments and public overrides. Own formatter, PlainTime builtin, focused tests/manifests/docs in build/temporal-plain-time-format-draft. Option-aware toString/round remain follow-ups. Require fractional widths, endpoints, protocol behavior, branding/Realm, formatter/Instant regressions, full Node and native static/zero-dynamic validation.
+
+## TS-312 — Dispatch audit JSON projection
+
+Status: **in progress — validation repair**. Owner: Codex catch-up chat, 2026-11-10. The completed matrix passes 286/287 scheduled entries; lexical-statement dispatch fails static host JSON because its history record contains an activation/completion union now including BigInt. Preserve the failed report and narrow the known-idle/numeric-seed JSON projection without weakening identity/state assertions or changing wire output. Rebuild this entry and validate all 320 frozen dispatch wire cases and complete guest/tooling suites before foundation acceptance.

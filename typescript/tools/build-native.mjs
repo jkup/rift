@@ -1,3 +1,4 @@
+import { validateNativeEntries } from "./native-entry-manifest.mjs";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -155,11 +156,11 @@ const entries = [
     ["test/tagged-templates.ts", "tagged-templates"],
     ["test/bigint-conversion.ts", "bigint-conversion"],
     ["test/bigint-arithmetic.ts", "bigint-arithmetic"],
-    ["test/bigint-values.ts",
-"test/bigint-literals.ts",
-"test/bigint-width.ts",
-"test/iso-calendar.ts",
-"test/bigint-literal-storage.ts", "bigint-values"],
+    ["test/bigint-values.ts", "bigint-values"],
+    ["test/bigint-literals.ts", "bigint-literals"],
+    ["test/bigint-width.ts", "bigint-width"],
+    ["test/iso-calendar.ts", "iso-calendar"],
+    ["test/bigint-literal-storage.ts", "bigint-literal-storage"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
@@ -303,6 +304,7 @@ const entries = [
     ["test/script-lexical-statement-audit.ts", "script-lexical-statement-audit"],
     ["test/script-lexical-statement-dispatch.ts", "script-lexical-statement-dispatch"],
 ];
+validateNativeEntries(entries);
 const started = Date.now();
 const results = await mapConcurrent(entries, jobs, async ([entry, name]) => {
     const build = await run(["build", entry, "--tier", "static-only", "-o", join(root, "build/native", name + suffix)]);
