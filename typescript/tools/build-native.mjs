@@ -123,6 +123,7 @@ const entries = [
     ["test/generator-switch-test.ts", "generator-switch-test"],
     ["test/generator-switch-case.ts", "generator-switch-case"],
     ["test/generator-object.ts", "generator-object"],
+    ["test/generator-constructor.ts", "generator-constructor"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

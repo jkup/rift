@@ -3321,6 +3321,11 @@ class ExecutionEngine {
                         expression = null;
                         continue;
                     }
+                    if (expression.kind === "new" && isSuspendingGeneratorExpression(expression.callee)) {
+                        frames.push({ kind: "constructor", expression });
+                        expression = expression.callee;
+                        continue;
+                    }
                     if (expression.kind === "call" || expression.kind === "new") {
                         const reference = this.#expressionReference(expression.callee, null, this.#active().thisValue);
                         const callee = this.#expressionValue(reference, expression.loc);
@@ -3460,6 +3465,19 @@ class ExecutionEngine {
                 const finished = finishArrayLiteral(frame.object, frame.nextIndex, this.context, frame.expression.loc);
                 if (finished.type === "throw") return finished;
                 value = finished.value;
+                continue;
+            }
+            if (frame.kind === "constructor") {
+                if (frame.expression.args.length === 0) {
+                    const constructed = this.#construct(value, [], frame.expression.loc);
+                    if (constructed.type === "throw") return constructed;
+                    value = constructed.value;
+                    continue;
+                }
+                frames.push({ kind: "call-argument", expression: frame.expression, callee: value,
+                    receiver: UNDEFINED, directEval: false, values: [], index: 0 });
+                const arg = frame.expression.args[0];
+                expression = arg.kind === "spread" ? arg.expression : arg;
                 continue;
             }
             if (frame.kind === "call-argument") {

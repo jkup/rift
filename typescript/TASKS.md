@@ -4160,7 +4160,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-258 — Suspended constructor expressions
 
-Status: **in progress — isolated successor to TS-257**. Owner: Codex catch-up chat, 2026-11-10. Resume the constructor expression before evaluating arguments, then reuse construction dispatch. Preserve GetValue ordering, delayed constructability checks, abrupt completion and async resumption. Own parser, expression frames, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-constructor-draft. Require both-host/static and order/Realm tests. Call reference suspension remains separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume the constructor expression before evaluating arguments, then reuse construction dispatch. Preserve GetValue ordering, delayed constructability checks, abrupt completion and async resumption. Own parser, expression frames, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-constructor-draft. Require both-host/static and order/Realm tests. Call reference suspension remains separate.
 
 ## TS-259 — Suspended call targets
 
