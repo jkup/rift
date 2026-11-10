@@ -4618,7 +4618,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-368 — Temporal PlainYearMonth formatting
 
-Status: **in progress — isolated successor to TS-367**. Owner: Codex catch-up chat, 2026-11-10. Add ISO YearMonth string/JSON/locale fallback formatting with reference days for always/critical calendar annotations. Require extended years, endpoint reference days, ordered options, branding and Realm errors on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-format-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ISO YearMonth string/JSON/locale fallback formatting with reference days for always/critical calendar annotations. Require extended years, endpoint reference days, ordered options, branding and Realm errors on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-format-draft/.
 
 ## TS-369 — Temporal PlainYearMonth ISO parsing
 
