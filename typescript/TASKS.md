@@ -4525,3 +4525,27 @@ Status: **in progress — isolated successor to TS-343**. Owner: Codex catch-up 
 ## TS-345 — ISO calendar difference backend
 
 Status: **in progress — isolated successor to TS-344**. Owner: Codex catch-up chat, 2026-11-10. Add bounded constant-time ISO calendar differences in years/months/weeks/days, preserving unclamped candidate comparison before residual-day calculation. Own pure difference helper, tests/manifests/docs in build/iso-calendar-difference-draft. No guest methods yet. Require asymmetric leap/month-end examples, signed results, full-range inputs and calendar-cycle reconstruction on both hosts. Date difference options/rounding remain separate.
+
+## TS-346 — Temporal date difference options
+
+Status: **in progress — isolated successor to TS-345**. Owner: Codex catch-up chat, 2026-11-10. Share ordered difference-option reads with time differences and add year/month/week/day unit validation and defaults. Own difference option helpers, tests/manifests/docs in build/temporal-date-difference-options-draft. No guest date difference methods yet. Require coercion and error ordering, date versus time unit categories, defaults, increments and unchanged time differences on both hosts.
+
+## TS-347 — Exact calendar rounding windows
+
+Status: **in progress — isolated successor to TS-346**. Owner: Codex catch-up chat, 2026-11-10. Add pure year/month/week rounding windows for ISO date differences using actual calendar-day distances and exact rational rounding. Preserve window shifts, range failures and carry signals for later relative-duration balancing. Own rounding helper, tests/manifests/docs in build/temporal-calendar-round-draft. No guest methods yet. Require signed ties, half-even parity, variable month/year lengths, exact-boundary behavior and native static validation.
+
+## TS-348 — Relative ISO date rounding
+
+Status: **in progress — isolated successor to TS-347**. Owner: Codex catch-up chat, 2026-11-10. Combine unrounded ISO differences, exact calendar windows, signed day rounding and specified larger-unit carries. Own relative date rounding helper, shared date-duration factory, tests/manifests/docs in build/temporal-date-round-draft. No guest methods yet. Require rounding/carry boundaries, unchanged exact-day behavior, signed and half-even cases, equal dates and representable-window failures on both hosts.
+
+## TS-349 — Temporal PlainDate differences
+
+Status: **in progress — isolated successor to TS-348**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.until/since using date conversion, ordered settings and exact relative calendar rounding. Share signed rounding-mode reversal with integer rounding. Own difference builtin/registration, rounding helper, tests/manifests/docs in build/temporal-plain-date-difference-draft. Require asymmetric month-end differences, since direction, signed rounding, full date range, conversion/options order, equal dates and Realm results on both hosts.
+
+## TS-350 — ISO date-time records and limits
+
+Status: **in progress — isolated successor to TS-349**. Owner: Codex catch-up chat, 2026-11-10. Add shared date/time composition and strict PlainDateTime bounds, extracting internal nanosecond conversion without changing Instant limits. Own ISO calendar/date-time helper, tests/manifests/docs in build/iso-date-time-draft. No guest DateTime constructor yet. Require one-nanosecond endpoints, signed epoch round trips, invalid fields and unchanged Instant arithmetic/formatting on both hosts.
+
+## TS-351 — Temporal PlainDateTime core
+
+Status: **in progress — isolated successor to TS-350**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDateTime construction, branded date/time accessors and Realm prototypes. Share calendar accessor values with PlainDate and extend existing date/time/calendar conversion and partial-object screening for the new brand. Own object/builtin/calendar fields, Realm/constructor/namespace wiring, conversion helpers and tests/manifests/docs in build/temporal-plain-date-time-core-draft. Require nine-field conversion order, calendar-before-range/prototype checks, exact bounds, subclasses and cross-Realm behavior on both hosts. Formatting and new DateTime conversion methods remain separate.
