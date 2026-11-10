@@ -248,6 +248,7 @@ const entries = [
     ["test/temporal-relative-to-option.ts", "temporal-relative-to-option"],
     ["test/temporal-duration-compare.ts", "temporal-duration-compare"],
     ["test/temporal-ratio-number.ts", "temporal-ratio-number"],
+    ["test/temporal-relative-duration-total.ts", "temporal-relative-duration-total"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

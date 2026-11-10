@@ -4698,7 +4698,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-387 — Exact plain relative duration totals
 
-Status: **in progress — isolated successor to TS-386**. Owner: Codex catch-up chat, 2026-11-10. Compute plain ISO relative totals for all units using shared calendar windows and a single exact rational conversion. Preserve midnight carry, calendar endpoint validation, equal-target shortcuts and PlainDateTime bounds. Keep public option dispatch separate and test signed/month/year/week fractions plus endpoints on both hosts. Own  and tests/manifests/docs in build/temporal-relative-duration-total-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Compute plain ISO relative totals for all units using shared calendar windows and a single exact rational conversion. Preserve midnight carry, calendar endpoint validation, equal-target shortcuts and PlainDateTime bounds. Keep public option dispatch separate and test signed/month/year/week fractions plus endpoints on both hosts. Own  and tests/manifests/docs in build/temporal-relative-duration-total-draft/.
 
 ## TS-388 — Temporal Duration total with exact plain relative ratios
 
