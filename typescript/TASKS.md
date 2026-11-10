@@ -4382,7 +4382,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-311 — Temporal PlainTime serialization
 
-Status: **in progress — isolated successor to TS-310**. Owner: Codex catch-up chat, 2026-11-10. Extract shared exact time-field formatting from Instant output and add branded PlainTime.toJSON plus the non-Intl toLocaleString fallback, ignoring reserved arguments and public overrides. Own formatter, PlainTime builtin, focused tests/manifests/docs in build/temporal-plain-time-format-draft. Option-aware toString/round remain follow-ups. Require fractional widths, endpoints, protocol behavior, branding/Realm, formatter/Instant regressions, full Node and native static/zero-dynamic validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract shared exact time-field formatting from Instant output and add branded PlainTime.toJSON plus the non-Intl toLocaleString fallback, ignoring reserved arguments and public overrides. Own formatter, PlainTime builtin, focused tests/manifests/docs in build/temporal-plain-time-format-draft. Option-aware toString/round remain follow-ups. Require fractional widths, endpoints, protocol behavior, branding/Realm, formatter/Instant regressions, full Node and native static/zero-dynamic validation.
 
 ## TS-312 — Dispatch audit JSON projection
 

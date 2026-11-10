@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { formatTemporalTime } from "../temporal-time-format.js";
 import type { Location } from "../syntax.js";
 import { createTemporalPlainTime, temporalPlainTimeValue, type TimeFields } from "../temporal-plain-time-object.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
@@ -51,5 +52,14 @@ export function registerTemporalPlainTime(realm: Realm, namespace: GuestObject):
     }
     realm.registerBuiltin(prototype, "valueOf", 0, (_receiver, _args, context, loc): ValueCompletion =>
         languageFailure(context.realm, "TypeError", "Temporal.PlainTime cannot be converted to a primitive number", loc));
+    for (const name of ["toJSON", "toLocaleString"]) {
+        realm.registerBuiltin(prototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
+            const time = temporalPlainTimeValue(receiver, context, loc);
+            if (time.type === "throw") return time;
+            const formatted = formatTemporalTime(time.value);
+            if (formatted === null) throw new Error("automatic time precision invariant");
+            return normal({ kind: "string", value: formatted });
+        });
+    }
     namespace.bootstrapDefine("PlainTime", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }

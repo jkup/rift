@@ -758,6 +758,7 @@ executeDriver("numeric-update-audit", { stdout: "numeric update audit passed\n" 
 executeDriver("regexp-backreference", { stdout: "regexp backreference passed\n" });
 executeDriver("regexp-lookahead", { stdout: "regexp lookahead passed\n" });
 executeDriver("temporal-plain-time-core", { stdout: "temporal plain time core passed\n" });
+executeDriver("temporal-plain-time-format", { stdout: "temporal plain time format passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
