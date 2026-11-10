@@ -208,6 +208,7 @@ const entries = [
     ["test/temporal-plain-date-with.ts", "temporal-plain-date-with"],
     ["test/temporal-plain-date-arithmetic.ts", "temporal-plain-date-arithmetic"],
     ["test/iso-calendar-difference.ts", "iso-calendar-difference"],
+    ["test/temporal-date-difference-options.ts", "temporal-date-difference-options"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

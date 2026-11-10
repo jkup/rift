@@ -4528,7 +4528,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-346 — Temporal date difference options
 
-Status: **in progress — isolated successor to TS-345**. Owner: Codex catch-up chat, 2026-11-10. Share ordered difference-option reads with time differences and add year/month/week/day unit validation and defaults. Own difference option helpers, tests/manifests/docs in build/temporal-date-difference-options-draft. No guest date difference methods yet. Require coercion and error ordering, date versus time unit categories, defaults, increments and unchanged time differences on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Share ordered difference-option reads with time differences and add year/month/week/day unit validation and defaults. Own difference option helpers, tests/manifests/docs in build/temporal-date-difference-options-draft. No guest date difference methods yet. Require coercion and error ordering, date versus time unit categories, defaults, increments and unchanged time differences on both hosts.
 
 ## TS-347 — Exact calendar rounding windows
 
