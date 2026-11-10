@@ -31,6 +31,7 @@ function componentDate(args: Value[], context: OperationContext, loc: Location):
 export function registerDate(realm: Realm): void {
     const prototype = realm.datePrototype;
     registerDateGetters(realm);
+    registerDateTimeSetters(realm);
     const constructor = realm.createBuiltinConstructor("Date", 7,
         (_receiver, _args, context, _loc): ValueCompletion => normal({ kind: "string", value: formatDateString(currentDateMilliseconds(context.realm), "display") }),
         (_callee, newTarget, args, context, loc): ValueCompletion => {
@@ -102,3 +103,4 @@ export function registerDate(realm: Realm): void {
     });
     prototype.bootstrapDefine(wellKnownToPrimitive, { value: { kind: "object", object: primitive }, writable: false, enumerable: false, configurable: true });
 }
+import { registerDateTimeSetters } from "./date-time-setters.js";

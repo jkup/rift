@@ -4754,7 +4754,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-401 — Date time setters and mutation ordering
 
-Status: **in progress — isolated successor to TS-400**. Owner: Codex catch-up chat, 2026-11-10. Implement setTime and local/UTC time-component setters with original-slot snapshots, ordered argument coercion, invalid-date behavior and UTC timezone policy. Validate mutation during coercion, clipping, frozen objects and Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-time-setters-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement setTime and local/UTC time-component setters with original-slot snapshots, ordered argument coercion, invalid-date behavior and UTC timezone policy. Validate mutation during coercion, clipping, frozen objects and Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-time-setters-draft/.
 
 ## TS-402 — Date calendar setters and invalid-date recovery
 
