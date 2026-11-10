@@ -9,9 +9,10 @@ import { languageFailure, type GuestObject, type OperationContext, type ThrowCom
 
 export interface TemporalDateTimeFields { date: TemporalDateFields; time: TimeFields }
 
-export function readTemporalDateTimeFields(object: GuestObject, context: OperationContext, loc: Location): { type: "normal"; value: TemporalDateTimeFields } | ThrowCompletion {
+export function readTemporalDateTimeFields(object: GuestObject, context: OperationContext, loc: Location, defaults: TimeFields | null = null): { type: "normal"; value: TemporalDateTimeFields; present: boolean } | ThrowCompletion {
     const date: TemporalDateFields = { year: null, month: null, monthCode: null, day: null };
     const time: number[] = [];
+    let present = false;
     const names: (keyof TemporalDateFields | keyof TimeFields)[] = ["day", "hour", "microsecond", "millisecond", "minute", "month", "monthCode", "nanosecond", "second", "year"];
     for (const name of names) {
         if (name === "day" || name === "month" || name === "monthCode" || name === "year") {
@@ -20,13 +21,14 @@ export function readTemporalDateTimeFields(object: GuestObject, context: Operati
         } else {
             const read = object.internalGet(name, { kind: "object", object }, context, loc);
             if (read.type === "throw") return read;
-            if (read.value.kind === "undefined") { time.push(0); continue; }
+            if (read.value.kind === "undefined") { time.push(defaults === null ? 0 : defaults[name]); continue; }
             const converted = temporalInteger(read.value, context, loc);
             if (converted.type === "throw") return converted;
             time.push(converted.value);
+            present = true;
         }
     }
-    return { type: "normal", value: { date, time: { hour: time[0], microsecond: time[1], millisecond: time[2], minute: time[3], nanosecond: time[4], second: time[5] } } };
+    return { type: "normal", present: present || date.year !== null || date.month !== null || date.monthCode !== null || date.day !== null, value: { date, time: { hour: time[0], microsecond: time[1], millisecond: time[2], minute: time[3], nanosecond: time[4], second: time[5] } } };
 }
 
 export function resolveTemporalDateTimeFields(fields: TemporalDateTimeFields, reject: boolean, context: OperationContext, loc: Location): { type: "normal"; value: ISODateTime } | ThrowCompletion {

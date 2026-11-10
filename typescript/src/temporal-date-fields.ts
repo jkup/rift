@@ -68,3 +68,12 @@ export function resolveTemporalDateFields(fields: TemporalDateFields, reject: bo
     if (!isoDateWithinLimits(date)) return languageFailure(context.realm, "RangeError", "date is invalid or outside its range", loc);
     return { type: "normal", value: date };
 }
+
+export function mergeTemporalDateFields(date: ISODate, fields: TemporalDateFields): TemporalDateFields {
+    return {
+        year: fields.year ?? date.year,
+        month: fields.month === null && fields.monthCode === null ? date.month : fields.month,
+        monthCode: fields.monthCode,
+        day: fields.day ?? date.day,
+    };
+}

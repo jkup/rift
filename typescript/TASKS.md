@@ -4572,7 +4572,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-357 — Temporal PlainDateTime field replacement
 
-Status: **in progress — isolated successor to TS-356**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDateTime.with with ordered partial preparation, preserved time defaults and shared ISO month/monthCode merging. Reuse partial-brand screening and overflow regulation. Own with builtin/registration, date/date-time field helpers and PlainDate merge call site, tests/manifests/docs in build/temporal-plain-date-time-with-draft. Require empty-partial rejection before options, month consistency, invalid partial screening, endpoint checks, observable order and intrinsic results on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDateTime.with with ordered partial preparation, preserved time defaults and shared ISO month/monthCode merging. Reuse partial-brand screening and overflow regulation. Own with builtin/registration, date/date-time field helpers and PlainDate merge call site, tests/manifests/docs in build/temporal-plain-date-time-with-draft. Require empty-partial rejection before options, month consistency, invalid partial screening, endpoint checks, observable order and intrinsic results on both hosts.
 
 ## TS-358 — Temporal PlainDateTime rounding
 

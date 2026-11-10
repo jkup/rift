@@ -1,6 +1,6 @@
 import type { Realm } from "../realm.js";
 import { createTemporalPlainDate, temporalPlainDateValue } from "../temporal-plain-date-object.js";
-import { readTemporalDateFields, resolveTemporalDateFields } from "../temporal-date-fields.js";
+import { mergeTemporalDateFields, readTemporalDateFields, resolveTemporalDateFields } from "../temporal-date-fields.js";
 import { temporalPartialObject } from "../temporal-partial.js";
 import { temporalOverflowReject } from "../temporal-options.js";
 import { toTemporalCalendar } from "../temporal-calendar.js";
@@ -17,12 +17,7 @@ export function registerTemporalPlainDateWith(realm: Realm): void {
         const fields = read.value;
         if (fields.year === null && fields.month === null && fields.monthCode === null && fields.day === null)
             return languageFailure(context.realm, "TypeError", "at least one date field is required", loc);
-        const merged = {
-            year: fields.year ?? date.value.year,
-            month: fields.month === null && fields.monthCode === null ? date.value.month : fields.month,
-            monthCode: fields.monthCode,
-            day: fields.day ?? date.value.day,
-        };
+        const merged = mergeTemporalDateFields(date.value, fields);
         const overflow = temporalOverflowReject(args.length < 2 ? UNDEFINED : args[1], context, loc);
         if (overflow.type === "throw") return overflow;
         const result = resolveTemporalDateFields(merged, overflow.value, context, loc);

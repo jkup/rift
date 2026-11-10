@@ -219,6 +219,7 @@ const entries = [
     ["test/temporal-date-time-fields.ts", "temporal-date-time-fields"],
     ["test/temporal-plain-date-time-conversion.ts", "temporal-plain-date-time-conversion"],
     ["test/temporal-plain-date-time-parts.ts", "temporal-plain-date-time-parts"],
+    ["test/temporal-plain-date-time-with.ts", "temporal-plain-date-time-with"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
