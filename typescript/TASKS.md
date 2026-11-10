@@ -4544,7 +4544,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-350 — ISO date-time records and limits
 
-Status: **in progress — isolated successor to TS-349**. Owner: Codex catch-up chat, 2026-11-10. Add shared date/time composition and strict PlainDateTime bounds, extracting internal nanosecond conversion without changing Instant limits. Own ISO calendar/date-time helper, tests/manifests/docs in build/iso-date-time-draft. No guest DateTime constructor yet. Require one-nanosecond endpoints, signed epoch round trips, invalid fields and unchanged Instant arithmetic/formatting on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add shared date/time composition and strict PlainDateTime bounds, extracting internal nanosecond conversion without changing Instant limits. Own ISO calendar/date-time helper, tests/manifests/docs in build/iso-date-time-draft. No guest DateTime constructor yet. Require one-nanosecond endpoints, signed epoch round trips, invalid fields and unchanged Instant arithmetic/formatting on both hosts.
 
 ## TS-351 — Temporal PlainDateTime core
 

@@ -77,11 +77,15 @@ export function isoDateTimeFromEpochNanoseconds(value: bigint): ISODateTime | nu
         millisecond: time.millisecond, microsecond: time.microsecond, nanosecond: time.nanosecond };
 }
 
-export function epochNanosecondsFromUTC(time: ISODateTime): bigint | null {
+export function isoDateTimeToEpochNanoseconds(time: ISODateTime): bigint | null {
     const within = timeToNanoseconds(time);
     if (within === null) return null;
     const day = isoDateToEpochDay(time.date);
     if (day === null) return null;
-    const value = BigInt(day) * NANOSECONDS_PER_DAY + within;
-    return isValidEpochNanoseconds(value) ? value : null;
+    return BigInt(day) * NANOSECONDS_PER_DAY + within;
+}
+
+export function epochNanosecondsFromUTC(time: ISODateTime): bigint | null {
+    const value = isoDateTimeToEpochNanoseconds(time);
+    return value !== null && isValidEpochNanoseconds(value) ? value : null;
 }
