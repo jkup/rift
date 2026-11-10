@@ -38,7 +38,6 @@ const cases: string[] = [
     "function* f(){{let x=2;yield eval(\"x\");yield eval(\"x+=2\");}return typeof x;}var g=f();g.next().value===2&&g.next().value===4&&g.next().value===\"undefined\";"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"block case "+i);}
-for(const source of []){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('function* f(){{let x=2;yield ()=>++x;yield x;}yield 9;}var g=f();',A);
 define(B,"g",own(A,"g"));

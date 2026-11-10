@@ -42,7 +42,6 @@ const cases: string[] = [
     "var marker={};function* f(){try{yield 1;}catch(e){throw marker;}}var g=f(),caught;g.next();try{g.throw(2);}catch(e){caught=e;}caught===marker&&g.next().done;"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"catch case "+i);}
-for(const source of []){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('var caught=false;function* f(){try{yield 1;}catch(e){yield e instanceof TypeError;yield ()=>e;}}var g=f();g.next();function* costly(){try{yield 1;while(true){}}catch(e){caught=true;yield 2;}}var slow=costly();slow.next();',A);
 define(B,"g",own(A,"g"));define(B,"slow",own(A,"slow"));define(B,"errorA",{kind:"object",object:A.createError("TypeError","caught")});

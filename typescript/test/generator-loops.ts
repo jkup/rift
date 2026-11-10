@@ -41,7 +41,6 @@ const cases: string[] = [
     "function* f(){var i=0;while(i<2){i++;try{if(i===1)continue;}finally{}yield i;}}Array.from(f()).join(\",\")===\"2\";"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"loop case "+i);}
-for(const source of []){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('function* f(){var i=0;while(i<2){let x=++i;yield ()=>x;}}var g=f();function* costly(){while(true){yield 1;while(true){}}}var slow=costly();slow.next();',A);
 define(B,"g",own(A,"g"));define(B,"slow",own(A,"slow"));

@@ -1,3 +1,4 @@
+import { isSuspendingGeneratorExpression } from "./generator-expression.js";
 import type { GeneratorYieldStmt } from "./syntax.js";
 import { validateRegExpLiteral } from "./regexp-literal-validation.js";
 import type { SuperContext } from "./syntax.js";
@@ -720,6 +721,17 @@ class Parser {
         if ((rest || hasParameterPatterns(parameters) || parameters.some(parameter => parameter.initializer !== null)) && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with non-simple parameters", loc);
     }
+    private admitGeneratorExpression(expression: Expr, supported: Set<Stmt | Expr>): void {
+        const pending: { expression: Expr; visited: boolean }[] = [{ expression, visited: false }];
+        while (pending.length !== 0) {
+            const entry = pending.pop()!, node = entry.expression;
+            if (node.kind === "yield") { supported.add(node); continue; }
+            if (node.kind !== "binary") continue;
+            if (!entry.visited) {
+                pending.push({ expression: node, visited: true }, { expression: node.right, visited: false }, { expression: node.left, visited: false });
+            } else if (isSuspendingGeneratorExpression(node.left) || isSuspendingGeneratorExpression(node.right)) node.suspends = true;
+        }
+    }
     functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
         const savedGenerator = this.generatorContext, savedYields = this.generatorYields;
         this.generatorContext = false;
@@ -758,13 +770,13 @@ class Parser {
                 else if (statement.kind === "if") {
                     pending.push(statement.consequent);
                     if (statement.alternate !== null) pending.push(statement.alternate);
-                } else if ((statement.kind === "return" || statement.kind === "throw") && statement.value?.kind === "yield") supported.add(statement.value);
-                else if ((statement.kind === "let" || statement.kind === "const" || statement.kind === "pattern-declaration") && statement.init?.kind === "yield") supported.add(statement.init);
-                else if (statement.kind === "var" && statement.declarations.length === 1 && statement.declarations[0].init?.kind === "yield") supported.add(statement.declarations[0].init);
+                } else if ((statement.kind === "return" || statement.kind === "throw") && statement.value !== null) this.admitGeneratorExpression(statement.value, supported);
+                else if ((statement.kind === "let" || statement.kind === "const" || statement.kind === "pattern-declaration") && statement.init !== null) this.admitGeneratorExpression(statement.init, supported);
+                else if (statement.kind === "var" && statement.declarations.length === 1 && statement.declarations[0].init !== null) this.admitGeneratorExpression(statement.declarations[0].init, supported);
                 else if (statement.kind === "expression") {
                     const expression = statement.expression;
-                    if (expression.kind === "yield") supported.add(expression);
-                    else if ((expression.kind === "assign" || expression.kind === "compound" || expression.kind === "destructure") && expression.value.kind === "yield") supported.add(expression.value);
+                    if (expression.kind === "assign" || expression.kind === "compound" || expression.kind === "destructure") this.admitGeneratorExpression(expression.value, supported);
+                    else this.admitGeneratorExpression(expression, supported);
                 }
             }
             for (const expression of this.generatorYields) if (!supported.has(expression))
@@ -1258,7 +1270,10 @@ class Parser {
     primary(allowIn: boolean, allowArrow = false): Expr {
         const t = this.take();
         const loc = t.loc;
-        if (this.generatorContext && t.text === "yield") return this.generatorYield(t);
+        if (this.generatorContext && t.text === "yield") {
+            if (!allowArrow) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield requires an assignment-expression position", t.loc);
+            return this.generatorYield(t);
+        }
         if (this.structuralPlan() && t.kind === "punct" && (t.text === "/" || t.text === "/=")) return this.regexpLiteral(t);
         if (t.kind === "word" && t.text === "super" && this.boundedPlan()) {
             if (this.superContext !== "none" && (this.at(".") || this.at("["))) {

@@ -21,6 +21,7 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+    "function* f(){var x;x=1+(yield 2);}var g=f();g.next().value===2&&g.next(7).done;",
     "function* f(){var x;x=yield 1;return x;}var g=f();g.next().value===1&&g.next(7).value===7;",
     "var x=1;function* f(){x+=yield 2;return x;}var g=f();g.next();x=100;g.next(3).value===4&&x===4;",
     "var trace=\"\",key={toString(){trace+=\"K\";return \"x\";}},left={valueOf(){trace+=\"A\";return 2;}},o={get x(){trace+=\"G\";return left;},set x(v){trace+=\"old\";}};function* f(){o[key]+=yield 1;return trace;}var g=f();g.next();var before=trace;key.toString=function(){throw 9;};left.valueOf=function(){trace+=\"V\";return 5;};Object.defineProperty(o,\"x\",{set(v){trace+=\"S\"+v;}});before===\"KG\"&&g.next(3).value===\"KGVS8\";",
@@ -47,7 +48,7 @@ for (let i = 0; i < cases.length; i++) {
 }
 for (const source of [
     "function* f(){var a,b;a=b=yield 1;}",
-    "function* f(){var x;x=1+(yield 2);}",
+
     "function* f(){var x;x??=yield 1;}",
     "function* f(){var o={};o[yield 1]=2;}"
 ]) {

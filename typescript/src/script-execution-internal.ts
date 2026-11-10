@@ -1,3 +1,4 @@
+import { isSuspendingGeneratorExpression, type GeneratorBinaryFrame } from "./generator-expression.js";
 import { hasParameterExpressions, hasParameterPatterns } from "./formal-parameters.js";
 import type { GeneratorYieldReceiver } from "./generator-yield-receiver.js";
 import type { GeneratorYieldStmt } from "./syntax.js";
@@ -1184,15 +1185,16 @@ type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statemen
 type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number };
 type GeneratorFrame = GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
-type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
+type GeneratorContinuation = { sequences: GeneratorFrame[]; expressionFrames: GeneratorBinaryFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
+type GeneratorExpressionResult = GeneratorResumeResult | { type: "suspended-delegate" };
 class GuestGenerator extends GuestObject {
     #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
     #continuation: GeneratorContinuation | null;
     constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
         super(prototype);
         if (key !== executionKey) throw new Error("invalid generator allocation");
-        this.#continuation = { sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null, receiver: null, delegate: null };
+        this.#continuation = { expressionFrames: [], sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null, receiver: null, delegate: null };
     }
     static is(object: GuestObject): object is GuestGenerator {
         if (!(object instanceof GuestGenerator)) return false;
@@ -2448,28 +2450,28 @@ class ExecutionEngine {
             case "expression": {
                 const expression = stmt.expression;
                 if (sequences !== null) {
-                    if (expression.kind === "yield") return this.#generatorYield(expression, null);
-                    if (expression.kind === "destructure" && expression.value.kind === "yield")
-                        return this.#generatorYield(expression.value, { kind: "pattern", pattern: expression.pattern, environment: null });
-                    if ((expression.kind === "assign" || expression.kind === "compound") && expression.value.kind === "yield") {
+                    if (isSuspendingGeneratorExpression(expression)) return this.#generatorExpression(expression, null);
+                    if (expression.kind === "destructure" && isSuspendingGeneratorExpression(expression.value))
+                        return this.#generatorExpression(expression.value, { kind: "pattern", pattern: expression.pattern, environment: null });
+                    if ((expression.kind === "assign" || expression.kind === "compound") && isSuspendingGeneratorExpression(expression.value)) {
                         const reference = this.#reference(expression.target, null, this.#active().thisValue);
                         if (reference.type === "abrupt") {
                             if (reference.completion.type === "throw") { const abrupt: ThrowCompletion = reference.completion; return abrupt; }
                             throw new Error("invalid suspended assignment reference");
                         }
                         if (expression.kind === "assign")
-                            return this.#generatorYield(expression.value, { kind: "assignment", reference: reference.reference, loc: expression.loc });
+                            return this.#generatorExpression(expression.value, { kind: "assignment", reference: reference.reference, loc: expression.loc });
                         const left = getReferenceValue(this.context, reference.reference, expression.loc);
                         if (left.type === "throw") { const abrupt: ThrowCompletion = left; return abrupt; }
                         if (left.type !== "normal") throw new Error("invalid suspended compound operand");
-                        return this.#generatorYield(expression.value, { kind: "compound", reference: reference.reference, left: left.value, operator: expression.op, loc: expression.loc });
+                        return this.#generatorExpression(expression.value, { kind: "compound", reference: reference.reference, left: left.value, operator: expression.op, loc: expression.loc });
                     }
                 }
                 return scriptExpressionCompletion(this.#value(expression));
             }
             case "pattern-declaration": {
-                if (stmt.init.kind === "yield" && sequences !== null)
-                    return this.#generatorYield(stmt.init, { kind: "pattern", pattern: stmt.pattern, environment: stmt.declarationKind === "var" ? null : this.#active().lexical });
+                if (isSuspendingGeneratorExpression(stmt.init) && sequences !== null)
+                    return this.#generatorExpression(stmt.init, { kind: "pattern", pattern: stmt.pattern, environment: stmt.declarationKind === "var" ? null : this.#active().lexical });
                 const input = this.#value(stmt.init);
                 if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
                 const initialized = this.#initializePattern(stmt.pattern, null, input.value, stmt.declarationKind === "var" ? null : this.#active().lexical, null);
@@ -2477,8 +2479,8 @@ class ExecutionEngine {
                 return { type: "normal", payload: { kind: "empty" } };
             }
             case "let": case "const": {
-                if (stmt.init?.kind === "yield" && sequences !== null)
-                    return this.#generatorYield(stmt.init, { kind: "initialization", environment: this.#active().lexical, name: stmt.name, loc: stmt.loc });
+                if (stmt.init !== null && isSuspendingGeneratorExpression(stmt.init) && sequences !== null)
+                    return this.#generatorExpression(stmt.init, { kind: "initialization", environment: this.#active().lexical, name: stmt.name, loc: stmt.loc });
                 const result = stmt.init === null ? normal() : this.#value(stmt.init, stmt.name);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 const env = this.#active().lexical;
@@ -2492,9 +2494,9 @@ class ExecutionEngine {
                     if (declaration.init === null) continue;
                     const ref = resolveScriptBinding(this.#active().lexical, declaration.name, stmt.loc, this.#active().strict);
                     if (ref.type === "throw") return ref;
-                    if (declaration.init.kind === "yield" && sequences !== null) {
+                    if (isSuspendingGeneratorExpression(declaration.init) && sequences !== null) {
                         if (stmt.declarations.length !== 1) throw new Error("unsupported suspended declaration list");
-                        return this.#generatorYield(declaration.init, { kind: "binding", reference: ref.reference });
+                        return this.#generatorExpression(declaration.init, { kind: "binding", reference: ref.reference });
                     }
                     const value = this.#value(declaration.init, declaration.name);
                     if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
@@ -2591,7 +2593,7 @@ class ExecutionEngine {
                             return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
                         return updateScriptEmpty(result, value);
                     }
-                    if (result.type === "yield" || result.type === "delegate") throw new Error("yield escaped a supported generator sequence");
+                    if (result.type === "yield" || result.type === "delegate" || result.type === "generator-expression") throw new Error("yield escaped a supported generator sequence");
                     if (result.payload.kind !== "empty") value = result.payload;
                 }
             }
@@ -2654,8 +2656,8 @@ class ExecutionEngine {
             }
             case "yield": return this.#generatorYield(stmt, null);
             case "return": case "throw": {
-                if (stmt.value?.kind === "yield" && sequences !== null)
-                    return this.#generatorYield(stmt.value, stmt.kind === "return" ? { kind: "return" } : { kind: "throw", loc: stmt.loc });
+                if (stmt.value !== null && isSuspendingGeneratorExpression(stmt.value) && sequences !== null)
+                    return this.#generatorExpression(stmt.value, stmt.kind === "return" ? { kind: "return" } : { kind: "throw", loc: stmt.loc });
                 const result = stmt.value === null ? normal() : this.#value(stmt.value);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 if (stmt.kind === "return") return { type: "return", value: result.value };
@@ -2956,6 +2958,11 @@ class ExecutionEngine {
         }
         return result.type === "throw" ? result : iteratorResult(result.value, true, this.context, loc);
     }
+    #generatorExpression(expression: Expr, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
+        if (expression.kind === "yield") return this.#generatorYield(expression, receiver);
+        if (expression.kind !== "binary" || expression.suspends !== true) throw new Error("invalid suspended expression");
+        return { type: "generator-expression", expression, receiver };
+    }
     #generatorYield(expression: GeneratorYieldStmt, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
         const value = expression.value === null ? normal() : this.#value(expression.value);
         if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
@@ -2966,7 +2973,72 @@ class ExecutionEngine {
         }
         return { type: "yield", value: value.value, loc: expression.loc, receiver };
     }
-    #receiveGeneratorYield(continuation: GeneratorContinuation, value: Value, callerDepth: number): ValueCompletion | null {
+    #evaluateGeneratorExpression(continuation: GeneratorContinuation, expression: Expr | null, value: Value, callerDepth: number): GeneratorExpressionResult {
+        const frames = continuation.expressionFrames;
+        const sequence = continuation.sequences[continuation.sequences.length - 1];
+        const baseDepth = callerDepth + sequence.depth + 1;
+        while (true) {
+            this.depth = baseDepth + frames.length;
+            if (this.depth > 256) {
+                const loc = expression !== null ? expression.loc : frames.length !== 0 ? frames[frames.length - 1].expression.loc : continuation.yieldLoc;
+                if (loc === null) throw new Error("expression continuation without source");
+                return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
+            }
+            if (expression !== null) {
+                if (expression.kind === "yield" || (expression.kind === "binary" && expression.suspends === true)) {
+                    const budget = this.tick(expression.loc);
+                    if (budget.type === "throw") return budget;
+                    if (++this.depth > 256)
+                        return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", expression.loc);
+                    if (expression.kind === "binary") {
+                        frames.push({ kind: "left", expression });
+                        expression = expression.left;
+                        continue;
+                    }
+                    const yielded = this.#generatorYield(expression, null);
+                    if (yielded.type === "throw") return yielded;
+                    continuation.yieldLoc = expression.loc;
+                    if (yielded.type === "delegate") {
+                        continuation.delegate = { iterator: yielded.iterator, loc: yielded.loc, depth: sequence.depth + frames.length + 2 };
+                        return { type: "suspended-delegate" };
+                    }
+                    if (yielded.type !== "yield") throw new Error("invalid binary yield completion");
+                    const result = iteratorResult(yielded.value, false, this.context, yielded.loc);
+                    if (result.type === "throw") return result;
+                    return { type: "yield", result: result.value };
+                }
+                const evaluated = this.#value(expression);
+                if (evaluated.type === "throw") return evaluated;
+                value = evaluated.value;
+                expression = null;
+            }
+            if (frames.length === 0) return normal(value);
+            const frame = frames.pop()!, node = frame.expression;
+            this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "left") {
+                if ((node.op === "&&" && !truthy(value)) || (node.op === "||" && truthy(value))) continue;
+                frames.push({ kind: "right", expression: node, left: value });
+                expression = node.right;
+                continue;
+            }
+            if (node.op === "&&" || node.op === "||" || node.op === ",") continue;
+            const computed = node.op === "instanceof" ? instanceofOperator(frame.left, value, this.context, node.loc)
+                : applyBinaryOperator(node.op, frame.left, value, this.context, node.loc);
+            if (computed.type === "throw") return computed;
+            value = computed.value;
+        }
+    }
+    #receiveGeneratorYield(continuation: GeneratorContinuation, value: Value, callerDepth: number): GeneratorResumeResult | null {
+        if (continuation.expressionFrames.length !== 0) {
+            const computed = this.#evaluateGeneratorExpression(continuation, null, value, callerDepth);
+            if (computed.type === "yield") return computed;
+            if (computed.type === "suspended-delegate") return null;
+            if (computed.type === "throw") {
+                this.#capture(computed);
+                return this.#unwindGenerator(continuation, computed, callerDepth);
+            }
+            value = computed.value;
+        }
         const receiver = continuation.receiver;
         continuation.receiver = null;
         if (receiver === null) return null;
@@ -3029,6 +3101,7 @@ class ExecutionEngine {
     #unwindGenerator(continuation: GeneratorContinuation, completion: GeneratorAbrupt, callerDepth: number): ValueCompletion | null {
         continuation.delegate = null;
         continuation.receiver = null;
+        continuation.expressionFrames.length = 0;
         if (completion.type === "throw" && completion.origin.kind !== "guest" && completion.origin.kind !== "engine-diagnostic") return completion;
         const sequences = continuation.sequences;
         while (sequences.length !== 0) {
@@ -3091,9 +3164,10 @@ class ExecutionEngine {
         this.activeContext.realm = active.frame.realm;
         this.#inspectionSource = null;
         try {
-            if (mode === "next" && continuation.delegate === null && continuation.receiver !== null) {
+            if (mode === "next" && continuation.delegate === null && (continuation.receiver !== null || continuation.expressionFrames.length !== 0)) {
                 const result = this.#receiveGeneratorYield(continuation, value, callerDepth);
                 if (result !== null) return result;
+                value = UNDEFINED;
             }
             if (mode === "return" && continuation.delegate === null) {
                 const result = this.#unwindGenerator(continuation, { type: "return", value }, callerDepth);
@@ -3111,7 +3185,7 @@ class ExecutionEngine {
                 if (continuation.delegate !== null) {
                     const frame = sequences[sequences.length - 1];
                     this.#frame = frame.frame;
-                    this.depth = callerDepth + frame.depth + 1;
+                    this.depth = callerDepth + continuation.delegate.depth;
                     if (this.depth > 256) {
                         const failure = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", continuation.delegate.loc);
                         this.#capture(failure);
@@ -3221,9 +3295,26 @@ class ExecutionEngine {
                     if (terminal !== null) return terminal;
                     continue;
                 }
+                if (result.type === "generator-expression") {
+                    continuation.receiver = result.receiver;
+                    const evaluated = this.#evaluateGeneratorExpression(continuation, result.expression, UNDEFINED, callerDepth);
+                    mode = "next";
+                    value = UNDEFINED;
+                    if (evaluated.type === "yield") return evaluated;
+                    if (evaluated.type === "suspended-delegate") continue;
+                    if (evaluated.type === "throw") {
+                        this.#capture(evaluated);
+                        const uncaught = this.#unwindGenerator(continuation, evaluated, callerDepth);
+                        if (uncaught !== null) return uncaught;
+                        continue;
+                    }
+                    const received = this.#receiveGeneratorYield(continuation, evaluated.value, callerDepth);
+                    if (received !== null) return received;
+                    continue;
+                }
                 if (result.type === "delegate") {
                     continuation.receiver = result.receiver;
-                    continuation.delegate = { iterator: result.iterator, loc: result.loc };
+                    continuation.delegate = { iterator: result.iterator, loc: result.loc, depth: sequence.depth + 1 };
                     continuation.yieldLoc = result.loc;
                     mode = "next";
                     value = UNDEFINED;
