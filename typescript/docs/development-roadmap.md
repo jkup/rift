@@ -5,9 +5,9 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted iteration/objects milestone passes 696/696 guests on each
-host, 293/293 tooling checks, and all 203 native static gates after one recorded
-Zig cache failure and an unchanged passing isolated rebuild.
+The accepted functions/spread milestone passes 701/701 guests on each
+host, 293/293 tooling checks after one historical expectation migration, and all
+208 native static gates without retries.
 The unchanged 225-file C++ corpus has 179 completions: 114 reported successes and
 65 unchecked completions. Remaining outcomes are 12 parse errors, 33 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -17,12 +17,14 @@ Classes, Promise combinators/checkpoints and bounded RegExp protocols/literals
 are accepted. Incremental lexing and arrow cover parsing are integrated.
 Array.of/from/fill/copyWithin, String.raw/repeat/padStart/padEnd and Realm-local
 Math.random, JSON reviver/stringify, substring/substr, String.at, trim aliases,
-matchAll, computed object keys, shorthand and globalThis are accepted. Named
-functions, separate function setup/body execution, prototype setters, object
-spread and replaceAll have reviewed isolated drafts awaiting integration. A
-suspension-context probe passes both hosts but does not establish guest AST
-suspension. Unicode regex modes, lookaround, backreferences and named groups
-remain unsupported.
+matchAll, computed object keys, shorthand, globalThis, named functions, separate
+function setup/body execution, prototype setters, object spread and replaceAll
+are accepted. The accepted context probe and reviewed pending-operand probe
+protect the suspension boundary. Isolated binary/reference extractions and a
+generator-start implementation pass both hosts; generator bodies without yield
+execute their saved real frame in a later session. Mid-body yield/delegation and
+async remain subsequent work. Unicode regex modes, lookaround, backreferences
+and named groups remain unsupported.
 
 Prioritize the [generator activation boundary](generator-boundary.md) before
 adding yield/async grammar. Keep explicit completion records and prove that
@@ -711,3 +713,7 @@ Promise core, finally and capability helpers accepted (a337c48a, c935de54, e7ade
 ### TS-199–203 checkpoint
 
 Iteration/objects accepted (TS-199–203): 696/696 guests on each host without skips; 203 native entries have passing static-only/zero-dynamic evidence. The initial matrix took 1644465ms and retained one globalThis Zig mingw cache file-open failure; its unchanged isolated rebuild and both-host execution pass. Tooling passes 293/293 in 220662.0366ms; runner32/32 in 816.4794ms, ten probes and typechecking pass. Node 6bchHo/native XqXpYx match all 225 normalized corpus records exactly and preserve 179 completions (114 reported successes, 65 unchecked). Evidence: build/iteration-objects-native-results.json, native-retry.json, native-accepted.json and corpus-comparison.json with the same prefix, plus iteration-objects-* logs. Named functions, prepared function bodies, prototype setters, object spread, replaceAll and the suspension-context prerequisite remain reviewed isolated successors.
+
+### TS-204–209 checkpoint
+
+Functions/spread accepted (TS-204–209): 701/701 guests on each host without skips, 208/208 native static-only/zero-dynamic gates in 1658613ms without retries, and 293/293 tooling checks in 217585.0237ms. The initial tooling run was 292/293: the preserved E37 named-function input now exposes its strict duplicate-parameter audit candidate; its exact expectation migration, complete both-host audit and full tooling rerun pass. Runner32/32 in 663.8071ms, ten probes and typechecking pass. Node ze6MwK/native OtfzoY match all 225 normalized corpus records and preserve all 179 completions (114 reported successes, 65 unchecked). Evidence: build/functions-spread-native-results.json, corpus-comparison.json with the same prefix, and functions-spread-* logs including initial failures. Binary/reference extraction, pending operands and generator-start execution remain reviewed isolated successors. Generator bodies containing yield remain unsupported.
