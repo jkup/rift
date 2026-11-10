@@ -4859,3 +4859,27 @@ Status: **in progress — isolated successor to TS-424**. Owner: Codex catch-up 
 ## TS-426 — Zoned difference reuse review
 
 Status: **done — review documented; zoned differences require a separate implementation**. Owner: Codex catch-up chat, 2026-11-10. Review plain date-time difference reuse before implementing zoned differences; distinguish upstream calendar-window oracle differences from required zoned boundary checks. Own docs/temporal-zoned-difference-review.md and the roadmap review note. No semantic source changes or new guest gate in this task.
+
+## TS-427 — Exact zoned calendar difference records
+
+Status: **in progress — isolated successor to TS-426**. Owner: Codex catch-up chat, 2026-11-10. Implement the unrounded calendar/time split for fixed-offset zoned instants with checked intermediate epochs, following DifferenceZonedDateTime. Preserve signed local-time borrowing and ISO calendar differences; validate offset endpoints and same-day fast paths before public until/since integration. Own  and tests/manifests/docs in build/temporal-zoned-difference-record-draft/.
+
+## TS-428 — Checked zoned calendar rounding windows
+
+Status: **in progress — isolated successor to TS-427**. Owner: Codex catch-up chat, 2026-11-10. Round zoned calendar difference records through exact checked year/month/week/day window endpoints. Preserve the consensus-correct retained larger-unit start, signed modes and Instant boundary failures before public difference integration. Own  and tests/manifests/docs in build/temporal-zoned-calendar-round-draft/.
+
+## TS-429 — Checked zoned time rounding and day carry
+
+Status: **in progress — isolated successor to TS-428**. Owner: Codex catch-up chat, 2026-11-10. Round zoned difference time remainders through checked current and adjacent local day endpoints, preserving signed rounding and day carry for fixed-offset zones. Own  and tests/manifests/docs in build/temporal-zoned-time-round-draft/.
+
+## TS-430 — Checked zoned calendar carry
+
+Status: **in progress — isolated successor to TS-429**. Owner: Codex catch-up chat, 2026-11-10. Carry expanded zoned rounded differences into weeks, months and years while validating each candidate calendar boundary as an Instant. Own  and tests/manifests/docs in build/temporal-zoned-calendar-carry-draft/.
+
+## TS-431 — Compose zoned difference rounding
+
+Status: **in progress — isolated successor to TS-430**. Owner: Codex catch-up chat, 2026-11-10. Compose exact instant differences and checked zoned calendar/time nudges with calendar carry, preserving nanosecond and equality fast paths before public until/since integration. Own  and tests/manifests/docs in build/temporal-zoned-difference-round-draft/.
+
+## TS-432 — ZonedDateTime until and since
+
+Status: **in progress — isolated successor to TS-431**. Owner: Codex catch-up chat, 2026-11-10. Expose checked zoned differences with ordered conversion/options, default hour balancing, calendar-zone equality, since rounding polarity and defining-Realm Duration allocation. Own src/temporal-date-time-difference-options.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-difference-draft/.

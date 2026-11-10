@@ -15,3 +15,11 @@ The next implementation should:
 - Retain the upstream corrected full-duration zero test and verify since rounding polarity independently.
 
 References: [DifferenceTemporalZonedDateTime](https://tc39.es/proposal-temporal/#sec-temporal-differencetemporalzoneddatetime), [NudgeToZonedTime](https://tc39.es/proposal-temporal/#sec-temporal-nudgetozonedtime), [ComputeNudgeWindow](https://tc39.es/proposal-temporal/#sec-temporal-computenudgewindow), and the merged correction above. Experiment and exact rows: `build/audit-zoned-difference-reuse.mjs` and `build/zoned-difference-reuse-audit.json`. The proposal document's calendar-window condition predates the consensus correction; consult the implementation and merged change alongside it.
+
+## Isolated implementation checks
+
+TS-427–432 implement the fixed-offset difference pipeline in separate drafts: calendar decomposition, checked calendar rounding, checked time rounding, calendar carry, composition, then public until/since integration. The canonical Duration/Date validation snapshot remains unchanged while these successors are tested.
+
+Unrounded differences pass 7,200 differential cases; calendar rounding and time rounding each pass 12,960. The composed rounder checks 49,680 cases: 49,605 match Node exactly, and 75 independently verified deviations follow PR3319. These also cover retained years when rounding months, and retained years/months/weeks when rounding days. For each deviation, native Temporal date addition independently computes the corrected start/end instants, the target is strictly less than halfway through that window, and Rift returns that start duration. No unexplained deviation is accepted. The test harness's initial invalid subsecond increments are retained separately; corrected cases use divisors of 1,000.
+
+Evidence: `build/temporal-zoned-{difference-record,calendar-round,time-round,difference-round}-oracle.json`, with initial reports preserved. Full Node, focused native static-coverage and regression checks are recorded separately per successor. These checks are not combined acceptance or a change to the 190-completion corpus count.
