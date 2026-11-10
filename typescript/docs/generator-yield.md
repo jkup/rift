@@ -33,3 +33,6 @@ matrix remains a separate integration gate.
 
 References: [GeneratorYield and GeneratorResumeAbrupt](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-generatoryield)
 and [engine262 generator operations at 18cdeb03](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/abstract-ops/generator-operations.mts).
+TS-215 extends this historical direct-yield slice with explicit block and if
+sequence records; see [generator blocks and conditionals](generator-blocks.md).
+Loop, cleanup and expression-level suspension remain blocked.

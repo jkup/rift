@@ -3974,7 +3974,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-215 — Generator block and conditional continuations
 
-Status: **in progress — isolated successor to TS-214**. Owner: Codex catch-up chat, 2026-11-10. Replace the single statement cursor with explicit sequence records retaining lexical frames and nesting depth; support yields inside blocks and selected if branches without replaying tests or block instantiation. Keep loop, try/finally, labelled and expression-level suspension blocked. Own parser continuation admission, private execution state, focused tests/manifests and notes in build/generator-blocks-draft. Acceptance requires both-host semantics, static-only/zero-dynamic coverage and the combined integration gates.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Replace the single statement cursor with explicit sequence records retaining lexical frames and nesting depth; support yields inside blocks and selected if branches without replaying tests or block instantiation. Keep loop, try/finally, labelled and expression-level suspension blocked. Own parser continuation admission, private execution state, focused tests/manifests and notes in build/generator-blocks-draft. Acceptance requires both-host semantics, static-only/zero-dynamic coverage and the combined integration gates.
 
 ## TS-216 — Generator while/do-while continuations
 

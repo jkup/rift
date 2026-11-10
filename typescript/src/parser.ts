@@ -740,9 +740,19 @@ class Parser {
         this.functions++;
         this.generatorContext = generator;
         const body = this.list(true, params);
-        const direct = new Set<Stmt>(body);
+        const direct = new Set<Stmt>();
+        const pending = [...body];
+        while (pending.length !== 0) {
+            const statement = pending.pop()!;
+            direct.add(statement);
+            if (statement.kind === "block") pending.push(...statement.body);
+            else if (statement.kind === "if") {
+                pending.push(statement.consequent);
+                if (statement.alternate !== null) pending.push(statement.alternate);
+            }
+        }
         for (const statement of this.generatorYields) if (!direct.has(statement))
-            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield in nested control flow is unsupported", statement.loc);
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield in this control flow is unsupported", statement.loc);
         this.generatorContext = savedGenerator;
         this.generatorYields = savedYields;
         this.functions--;

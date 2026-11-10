@@ -21,6 +21,8 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+"function* f(){{yield 1;}}f().next().value===1;",
+"function* f(){if(true)yield 1;}f().next().value===1;",
     "var n=0;function* f(){n++;yield n;n++;yield n;return ++n;}var g=f(),a=g.next(99),b=g.next(88),c=g.next(77),d=g.next();a.value===1&&!a.done&&b.value===2&&!b.done&&c.value===3&&c.done&&d.done&&n===3;",
     "function* f(){yield;yield\n7;return 8;}var g=f(),a=g.next(),b=g.next(),c=g.next();a.value===undefined&&!a.done&&b.value===undefined&&!b.done&&c.value===8&&c.done;",
     "function* f(){let x=1;yield function(){return ++x;};yield x;x+=2;return x;}var g=f(),h=g.next().value;h()===2&&g.next().value===2&&g.next().value===4;",
@@ -42,7 +44,7 @@ for (let i=0;i<cases.length;i++) {
  const result=run(cases[i],new Realm((_line:string):void=>{},"script"));
  check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"yield case "+i);
 }
-for (const source of ["function* f(){if(true)yield 1;}","function* f(){{yield 1;}}","function* f(){while(true){yield 1;}}","function* f(){try{yield 1;}finally{}}","function* f(){let x=yield 1;}","function* f(){yield* [];}","function* f(){return yield 1;}","function f(){yield 1;}","function* f(){var g=()=>{yield 1;};}","function* f(){function g(){yield 1;}}","function* f(){yield yield 1;}"]) {
+for (const source of ["function* f(){while(true){yield 1;}}","function* f(){try{yield 1;}finally{}}","function* f(){let x=yield 1;}","function* f(){yield* [];}","function* f(){return yield 1;}","function f(){yield 1;}","function* f(){var g=()=>{yield 1;};}","function* f(){function g(){yield 1;}}","function* f(){yield yield 1;}"]) {
  check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","yield boundary "+source);
 }
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");

@@ -1160,15 +1160,16 @@ export function createGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResu
     object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
     return object;
 }
-type GeneratorSequence = { activation: PreparedFunctionBody; nextStatement: number; yieldLoc: Location | null };
+type GeneratorSequence = { frame: ScriptFrameSnapshot; body: Stmt[]; nextStatement: number; depth: number };
+type GeneratorContinuation = { sequences: GeneratorSequence[]; yieldLoc: Location | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
     #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
-    #continuation: GeneratorSequence | null;
+    #continuation: GeneratorContinuation | null;
     constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
         super(prototype);
         if (key !== executionKey) throw new Error("invalid generator allocation");
-        this.#continuation = { activation, nextStatement: 0, yieldLoc: null };
+        this.#continuation = { sequences: [{ frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null };
     }
     static is(object: GuestObject): object is GuestGenerator {
         if (!(object instanceof GuestGenerator)) return false;
@@ -1176,7 +1177,7 @@ class GuestGenerator extends GuestObject {
         return #state in branded;
     }
     get state(): "suspended-start" | "suspended-yield" | "executing" | "completed" { return this.#state; }
-    start(key: ExecutionKey): GeneratorSequence {
+    start(key: ExecutionKey): GeneratorContinuation {
         if (key !== executionKey || (this.#state !== "suspended-start" && this.#state !== "suspended-yield") || this.#continuation === null)
             throw new Error("invalid generator resume");
         const continuation = this.#continuation;
@@ -1184,7 +1185,7 @@ class GuestGenerator extends GuestObject {
         this.#state = "executing";
         return continuation;
     }
-    suspend(key: ExecutionKey, continuation: GeneratorSequence): void {
+    suspend(key: ExecutionKey, continuation: GeneratorContinuation): void {
         if (key !== executionKey || this.#state !== "executing") throw new Error("invalid generator suspension");
         this.#continuation = continuation;
         this.#state = "suspended-yield";
@@ -2216,7 +2217,7 @@ class ExecutionEngine {
         }
         return { type: "normal", payload: previous };
     }
-    #statement(stmt: Stmt, labels: readonly string[] | null = null): ScriptStatementCompletion {
+    #statement(stmt: Stmt, labels: readonly string[] | null = null, sequences: GeneratorSequence[] | null = null): ScriptStatementCompletion {
         // Explicit throw-arm locals retain identity and the accepted E2 static
         // union lowering (see script-completion.ts); they do not wrap failures.
         const budget = this.tick(stmt.loc);
@@ -2229,7 +2230,7 @@ class ExecutionEngine {
                 this.#capture(result);
                 const abrupt: ThrowCompletion = result; return abrupt;
             }
-            const result = this.#scriptStatement(stmt, labels);
+            const result = this.#scriptStatement(stmt, labels, sequences);
             if (result.type === "throw") this.#capture(result);
             return result;
         } finally { this.depth = savedDepth; }
@@ -2288,7 +2289,7 @@ class ExecutionEngine {
     #continueTarget(target: string | undefined, labels: readonly string[] | null): boolean {
         return target === undefined || (labels !== null && labels.includes(target));
     }
-    #scriptStatement(stmt: Stmt, labels: readonly string[] | null): ScriptStatementCompletion {
+    #scriptStatement(stmt: Stmt, labels: readonly string[] | null, sequences: GeneratorSequence[] | null): ScriptStatementCompletion {
         switch (stmt.kind) {
             case "class-declaration": {
                 if (stmt.value.name === null) throw new Error("class declaration name missing");
@@ -2411,6 +2412,10 @@ class ExecutionEngine {
                 try {
                     const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
                     if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
+                    if (sequences !== null) {
+                        sequences.push({ frame: this.#active(), body: stmt.body, nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
+                        return { type: "normal", payload: { kind: "empty" } };
+                    }
                     return this.#list(stmt.body);
                 } finally { this.#frame = saved; }
             }
@@ -2418,6 +2423,10 @@ class ExecutionEngine {
                 const test = this.#value(stmt.test);
                 if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
                 const branch = truthy(test.value) ? stmt.consequent : stmt.alternate;
+                if (sequences !== null) {
+                    if (branch !== null) sequences.push({ frame: this.#active(), body: [branch], nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 const result: ScriptStatementCompletion = branch === null ? { type: "normal", payload: { kind: "empty" } } : this.#statement(branch);
                 return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
             }
@@ -2850,11 +2859,12 @@ class ExecutionEngine {
         }
         return result.type === "throw" ? result : iteratorResult(result.value, true, this.context, loc);
     }
-    #runGeneratorBody(continuation: GeneratorSequence, mode: GeneratorResumeMode, value: Value): GeneratorResumeResult {
-        const activation = continuation.activation;
-        const caller = this.#active(), callerRealm = this.activeContext.realm, inspection = this.#inspectionSource;
-        this.#frame = activation.frame;
-        this.activeContext.realm = activation.frame.realm;
+    #runGeneratorBody(continuation: GeneratorContinuation, mode: GeneratorResumeMode, value: Value): GeneratorResumeResult {
+        const sequences = continuation.sequences;
+        const caller = this.#active(), callerRealm = this.activeContext.realm, inspection = this.#inspectionSource, callerDepth = this.depth;
+        const active = sequences[sequences.length - 1];
+        this.#frame = active.frame;
+        this.activeContext.realm = active.frame.realm;
         this.#inspectionSource = null;
         try {
             if (mode === "return") return normal(value);
@@ -2865,13 +2875,17 @@ class ExecutionEngine {
                 this.#capture(result);
                 return result;
             }
-            while (continuation.nextStatement < activation.body.length) {
-                const statement = activation.body[continuation.nextStatement++];
-                const result = this.#statement(statement);
+            while (sequences.length !== 0) {
+                const sequence = sequences[sequences.length - 1];
+                if (sequence.nextStatement === sequence.body.length) { sequences.pop(); continue; }
+                this.#frame = sequence.frame;
+                this.depth = callerDepth + sequence.depth;
+                const statement = sequence.body[sequence.nextStatement++];
+                const result = this.#statement(statement, null, sequences);
                 if (result.type === "throw") { this.#capture(result); return result; }
                 if (result.type === "return") return normal(result.value);
                 if (result.type === "yield") {
-                    activation.frame = this.#active();
+                    sequence.frame = this.#active();
                     continuation.yieldLoc = result.loc;
                     const output = iteratorResult(result.value, false, this.context, result.loc);
                     if (output.type === "throw") { this.#capture(output); return output; }
@@ -2881,6 +2895,7 @@ class ExecutionEngine {
             }
             return normal();
         } finally {
+            this.depth = callerDepth;
             this.#frame = caller;
             this.activeContext.realm = callerRealm;
             this.#inspectionSource = inspection;
