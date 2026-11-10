@@ -4750,7 +4750,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-400 — Date UTC and local field getters
 
-Status: **in progress — isolated successor to TS-399**. Owner: Codex catch-up chat, 2026-11-10. Install Date field getters, getTimezoneOffset and legacy getYear under the explicit UTC timezone policy. Preserve invalid-date NaN, slot branding, zero-based months/weekdays, metadata and defining-Realm errors. Require all fields at leap/negative/full-range values on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-getters-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Install Date field getters, getTimezoneOffset and legacy getYear under the explicit UTC timezone policy. Preserve invalid-date NaN, slot branding, zero-based months/weekdays, metadata and defining-Realm errors. Require all fields at leap/negative/full-range values on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-getters-draft/.
 
 ## TS-401 — Date time setters and mutation ordering
 

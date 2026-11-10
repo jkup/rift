@@ -842,6 +842,7 @@ executeDriver("date-iso-parse", { stdout: "date iso parse passed\n" });
 executeDriver("date-format", { stdout: "date format passed\n" });
 executeDriver("date-string-parse", { stdout: "date string parse passed\n" });
 executeDriver("date-core", { stdout: "date core passed\n" });
+executeDriver("date-getters", { stdout: "date getters passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
