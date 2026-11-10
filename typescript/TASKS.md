@@ -4505,3 +4505,23 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ordered day/month/monthCode/year field conversion and ISO date resolution for future PlainDate conversion and replacement. Keep field reads separate from overflow and required-field checks. Own date field helper, focused tests/manifests/docs in build/temporal-date-fields-draft. Require coercion order, month-code syntax versus calendar validation phases, missing fields, leap days and range limits on both hosts. No guest methods yet.
 
 2026-11-10 PlainTime/Duration milestone accepted (TS-314–327): 813/813 guests on each host without skips; all 320 native static-only/zero-dynamic gates pass in 3832978ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-GNoOVK/native-dyLrNQ matches all 225 normalized records, preserving all 190 prior completions; 1 records change diagnostics/output. Original fixture bytes remain unchanged. PlainTime parsing, formatting, rounding, conversion and field replacement, plus Duration core/conversion/parsing/serialization are accepted. Arithmetic and option-aware Duration strings remain isolated successors. Evidence: build/plain-time-duration-*; initial sandbox probe failure retained separately, followed by all ten passing with Zig access.
+
+## TS-341 — Temporal calendar string parsing
+
+Status: **in progress — isolated successor to TS-340**. Owner: Codex catch-up chat, 2026-11-10. Parse calendar identifiers from bare annotation values and the complete Temporal date/time, time, year-month and month-day string forms. Preserve first calendar annotations and syntax validation without epoch range restrictions. Own calendar parser/shared scanner exports, focused tests/manifests/docs in build/temporal-calendar-parse-draft. No guest calendar conversion yet. Require valid and invalid form coverage, annotations, expanded years, default ISO calendar and native static validation.
+
+## TS-342 — Temporal PlainDate conversion and comparison
+
+Status: **in progress — isolated successor to TS-341**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDate.from/compare/equals with branded, string and property-bag inputs, calendar-first field conversion, ordered overflow and range checks. Share overflow option handling with PlainTime. Own date conversion registration, calendar conversion helper, shared options/time fields, tests/manifests/docs in build/temporal-plain-date-conversion-draft. Require property and error ordering, no object primitive conversion, bounds, Realm results and native static regressions. Future DateTime/ZonedDateTime brands need dedicated conversion branches.
+
+## TS-343 — Temporal PlainDate field and calendar replacement
+
+Status: **in progress — isolated successor to TS-342**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.with and withCalendar using ordered date fields, ISO month/monthCode replacement, shared overflow and calendar conversion. Share partial Temporal object screening with PlainTime.with. Own date replacement builtin/registration, partial-object helper, PlainTime.with and tests/manifests/docs in build/temporal-plain-date-with-draft. Require empty partial rejection before options, brand/calendar/timeZone ordering, month replacement conflicts, boundaries and fresh intrinsic/Realm results on both hosts.
+
+## TS-344 — Temporal PlainDate arithmetic
+
+Status: **in progress — isolated successor to TS-343**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDate.add/subtract with year/month regulation followed by weeks/days and exact whole-day time balancing. Own pure date arithmetic helper, builtin/registration, tests/manifests/docs in build/temporal-plain-date-arithmetic-draft. Require signed month/year boundaries, leap overflow, sub-day truncation, unsafe subsecond inputs, input/options ordering, bounds and Realm results on both hosts. Date differences and non-ISO calendars remain separate.
+
+## TS-345 — ISO calendar difference backend
+
+Status: **in progress — isolated successor to TS-344**. Owner: Codex catch-up chat, 2026-11-10. Add bounded constant-time ISO calendar differences in years/months/weeks/days, preserving unclamped candidate comparison before residual-day calculation. Own pure difference helper, tests/manifests/docs in build/iso-calendar-difference-draft. No guest methods yet. Require asymmetric leap/month-end examples, signed results, full-range inputs and calendar-cycle reconstruction on both hosts. Date difference options/rounding remain separate.
