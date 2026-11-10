@@ -30,6 +30,7 @@ export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "bindi
 export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[] };
 export type ArrayExpr = { kind: "array"; loc: Location; elements: ArrayElement[]; suspends?: true };
+export type ObjectExpr = { kind: "object"; loc: Location; properties: ObjectProperty[]; suspends?: true };
 export type TemplateExpr = { kind: "template"; loc: Location; strings: string[]; expressions: Expr[]; suspends?: true };
 export type NewExpr = { kind: "new"; loc: Location; callee: Expr; args: Argument[]; suspends?: true };
 export type CallExpr = { kind: "call"; loc: Location; callee: Expr; args: Argument[]; suspends?: true };
@@ -62,7 +63,7 @@ export type Expr =
     | NewExpr
     | CallExpr
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null; readonly parameters?: readonly FormalParameter[] }
-    | { kind: "object"; loc: Location; properties: ObjectProperty[] };
+    | ObjectExpr;
 export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };
 export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Expr | null; test: Expr | null; update: Expr | null; body: Stmt };
 export type ForLexicalStmt = { kind: "for-lexical"; loc: Location; start: number; end: number; declarationKind: "let" | "const";

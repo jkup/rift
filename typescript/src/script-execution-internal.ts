@@ -25,7 +25,7 @@ import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, ChainExpr, Argument, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt, SwitchStmt } from "./syntax.js";
+import type { Expr, ChainExpr, Argument, ObjectProperty, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt, SwitchStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type PropertyKey, type ValueCompletion, type ThrowCompletion, type OperationContext, type ScriptJob, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, putScriptBinding } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
@@ -1632,6 +1632,36 @@ class ExecutionEngine {
             this.depth--;
         }
     }
+    #objectPropertyName(property: ObjectProperty, key: PropertyKey | null): string | null {
+        if (property.kind === "spread" || property.kind === "prototype") return null;
+        if (key === null) throw new Error("object property without key");
+        const name = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
+        return property.kind === "data" ? name : property.kind + " " + name;
+    }
+    #defineObjectLiteralProperty(object: GuestObject, property: ObjectProperty, key: PropertyKey | null, value: Value, loc: Location): ThrowCompletion | null {
+        if (property.kind === "spread") {
+            const copied = copyDataProperties(object, value, null, this.context, property.loc);
+            return copied.type === "throw" ? copied : null;
+        }
+        if (property.kind === "prototype") {
+            if (value.kind === "object" || value.kind === "null") {
+                const changed = object.internalSetPrototypeOf(value.kind === "null" ? null : value.object, this.context, loc);
+                if (changed.type === "throw") return changed;
+                if (!changed.value) throw new Error("fresh object prototype invariant");
+            }
+            return null;
+        }
+        if (key === null) throw new Error("object property without key");
+        if (this.#script && property.value.kind === "function" && property.value.source?.method === true)
+            ExecutableScript.makeMethod(value, object, executionKey);
+        const descriptor = property.kind === "get" ? { get: value, enumerable: true, configurable: true }
+            : property.kind === "set" ? { set: value, enumerable: true, configurable: true }
+            : { value, writable: true, enumerable: true, configurable: true };
+        const defined = object.defineOwnProperty(key, descriptor, this.context, loc);
+        if (defined.type === "throw") return defined;
+        if (!defined.value) throw new Error("fresh object property definition failed");
+        return null;
+    }
     #templateString(value: Value, loc: Location): { type: "normal"; value: string } | ThrowCompletion {
         const primitive = toPrimitive(value, "string", this.context, loc);
         return primitive.type === "throw" ? primitive : toString(primitive.value, loc, this.context.realm);
@@ -1785,42 +1815,21 @@ class ExecutionEngine {
             case "object": {
                 const object = this.context.realm.createObject();
                 for (const property of expr.properties) {
-                    if (property.kind === "spread") {
-                        const source = this.#eval(property.value, env, receiver);
-                        if (source.type !== "normal") return source;
-                        const copied = copyDataProperties(object, source.value, null, this.context, property.loc);
-                        if (copied.type === "throw") return copied;
-                        continue;
-                    }
-                    let key: PropertyKey;
-                    if (typeof property.key === "string") key = property.key;
-                    else {
-                        const evaluated = this.#eval(property.key, env, receiver);
-                        if (evaluated.type !== "normal") return evaluated;
-                        const converted = toPropertyKey(evaluated.value, this.context, property.key.loc);
-                        if (converted.type === "throw") return converted;
-                        key = converted.value;
-                    }
-                    const propertyName = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
-                    const name = property.kind === "prototype" ? null : property.kind === "data" ? propertyName : property.kind + " " + propertyName;
-                    const value = this.#eval(property.value, env, receiver, false, name);
-                    if (value.type !== "normal") return value;
-                    if (property.kind === "prototype") {
-                        if (value.value.kind === "object" || value.value.kind === "null") {
-                            const changed = object.internalSetPrototypeOf(value.value.kind === "null" ? null : value.value.object, this.context, expr.loc);
-                            if (changed.type === "throw") return changed;
-                            if (!changed.value) throw new Error("fresh object prototype invariant");
+                    let key: PropertyKey | null = null;
+                    if (property.kind !== "spread") {
+                        if (typeof property.key === "string") key = property.key;
+                        else {
+                            const evaluated = this.#eval(property.key, env, receiver);
+                            if (evaluated.type !== "normal") return evaluated;
+                            const converted = toPropertyKey(evaluated.value, this.context, property.key.loc);
+                            if (converted.type === "throw") return converted;
+                            key = converted.value;
                         }
-                        continue;
                     }
-                    if (this.#script && property.value.kind === "function" && property.value.source?.method === true)
-                        ExecutableScript.makeMethod(value.value, object, executionKey);
-                    const descriptor = property.kind === "get" ? { get: value.value, enumerable: true, configurable: true }
-                        : property.kind === "set" ? { set: value.value, enumerable: true, configurable: true }
-                        : { value: value.value, writable: true, enumerable: true, configurable: true };
-                    const defined = object.defineOwnProperty(key, descriptor, this.context, expr.loc);
-                    if (defined.type === "throw") return defined;
-                    if (!defined.value) throw new Error("fresh object property definition failed");
+                    const value = this.#eval(property.value, env, receiver, false, this.#objectPropertyName(property, key));
+                    if (value.type !== "normal") return value;
+                    const defined = this.#defineObjectLiteralProperty(object, property, key, value.value, expr.loc);
+                    if (defined !== null) return defined;
                 }
                 return normal({ kind: "object", object });
             }
@@ -3287,7 +3296,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3295,6 +3304,11 @@ class ExecutionEngine {
                     if (expression.kind === "await") {
                         frames.push({ kind: "await-operand", expression });
                         expression = expression.value;
+                        continue;
+                    }
+                    if (expression.kind === "object") {
+                        frames.push({ kind: "object-property", expression, object: this.context.realm.createObject(), index: 0, stage: "next", key: null });
+                        expression = null;
                         continue;
                     }
                     if (expression.kind === "template") {
@@ -3366,6 +3380,52 @@ class ExecutionEngine {
             if (frames.length === 0) return normal(value);
             const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "object-property") {
+                if (frame.stage === "key") {
+                    const property = frame.expression.properties[frame.index];
+                    if (property.kind === "spread" || typeof property.key === "string") throw new Error("invalid suspended property key");
+                    const converted = toPropertyKey(value, this.context, property.key.loc);
+                    if (converted.type === "throw") return converted;
+                    frame.key = converted.value;
+                    frame.stage = "ready";
+                } else if (frame.stage === "value") {
+                    const defined = this.#defineObjectLiteralProperty(frame.object, frame.expression.properties[frame.index], frame.key, value, frame.expression.loc);
+                    if (defined !== null) return defined;
+                    frame.index++;
+                    frame.stage = "next";
+                }
+                while (frame.index < frame.expression.properties.length) {
+                    const property = frame.expression.properties[frame.index];
+                    if (frame.stage === "next") {
+                        frame.key = null;
+                        if (property.kind !== "spread") {
+                            if (typeof property.key === "string") frame.key = property.key;
+                            else {
+                                frame.stage = "key";
+                                frames.push(frame);
+                                expression = property.key;
+                                break;
+                            }
+                        }
+                        frame.stage = "ready";
+                    }
+                    if (isSuspendingGeneratorExpression(property.value)) {
+                        frame.stage = "value";
+                        frames.push(frame);
+                        expression = property.value;
+                        break;
+                    }
+                    const evaluated = this.#value(property.value, this.#objectPropertyName(property, frame.key));
+                    if (evaluated.type === "throw") return evaluated;
+                    const defined = this.#defineObjectLiteralProperty(frame.object, property, frame.key, evaluated.value, frame.expression.loc);
+                    if (defined !== null) return defined;
+                    frame.index++;
+                    frame.stage = "next";
+                }
+                if (expression !== null) continue;
+                value = { kind: "object", object: frame.object };
+                continue;
+            }
             if (frame.kind === "template-substitution") {
                 const converted = this.#templateString(value, frame.expression.expressions[frame.index].loc);
                 if (converted.type === "throw") return converted;

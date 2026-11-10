@@ -4156,7 +4156,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-257 — Suspended object literal properties
 
-Status: **in progress — isolated successor to TS-256**. Owner: Codex catch-up chat, 2026-11-10. Retain object, property cursor and converted key across suspension in computed keys, values and spread operands. Share ordinary property definition, prototype setting, method home objects and name inference. Own syntax/parser, expression frames, object helper/continuation integration, tests/manifests and docs in build/generator-object-draft. Require both-host/static, conversion order, metadata, spread and Realm tests. Preserve prototype-setter exclusion from anonymous name inference.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain object, property cursor and converted key across suspension in computed keys, values and spread operands. Share ordinary property definition, prototype setting, method home objects and name inference. Own syntax/parser, expression frames, object helper/continuation integration, tests/manifests and docs in build/generator-object-draft. Require both-host/static, conversion order, metadata, spread and Realm tests. Preserve prototype-setter exclusion from anonymous name inference.
 
 ## TS-258 — Suspended constructor expressions
 

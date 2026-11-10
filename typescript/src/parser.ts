@@ -750,11 +750,17 @@ class Parser {
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
             }
-            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template") continue;
+            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object") continue;
             if (node.kind === "unary" && node.op === "delete" && node.operand.kind === "member") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
-                if (node.kind === "template") {
+                if (node.kind === "object") {
+                    for (let i = node.properties.length - 1; i >= 0; i--) {
+                        const property = node.properties[i];
+                        pending.push({ expression: property.value, visited: false });
+                        if (property.kind !== "spread" && typeof property.key !== "string") pending.push({ expression: property.key, visited: false });
+                    }
+                } else if (node.kind === "template") {
                     for (let i = node.expressions.length - 1; i >= 0; i--) pending.push({ expression: node.expressions[i], visited: false });
                 } else if (node.kind === "array") {
                     for (let i = node.elements.length - 1; i >= 0; i--) {
@@ -767,6 +773,9 @@ class Parser {
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
+            } else if (node.kind === "object") {
+                if (node.properties.some(property => isSuspendingGeneratorExpression(property.value) ||
+                    (property.kind !== "spread" && typeof property.key !== "string" && isSuspendingGeneratorExpression(property.key)))) node.suspends = true;
             } else if (node.kind === "template") {
                 if (node.expressions.some(expression => isSuspendingGeneratorExpression(expression))) node.suspends = true;
             } else if (node.kind === "array") {
