@@ -4313,3 +4313,15 @@ Status: **in progress — isolated successor to TS-292**. Owner: Codex catch-up 
 ## TS-294 — Temporal.Instant construction and epoch accessors
 
 Status: **in progress — isolated successor to TS-293**. Owner: Codex catch-up chat, 2026-11-10. Introduce Realm-local Temporal namespace/Instant prototype, branded nanosecond storage, new-only constructor, fromEpochMilliseconds/fromEpochNanoseconds, epoch getters and valueOf rejection. Preserve exact range/conversion order, subclass/newTarget prototype selection and cross-Realm allocation/errors. Own new instant object/builtin, Realm/prototype fallback, expected global inventory, tests/manifests/docs in build/temporal-instant-core-draft. String parsing, formatting, comparisons, arithmetic, Now and other Temporal types are later tasks. Require both-host static/zero-dynamic plus full Node and relevant native regressions.
+
+## TS-295 — Exact Temporal rounding and UTC formatting backend
+
+Status: **in progress — isolated successor to TS-294**. Owner: Codex catch-up chat, 2026-11-10. Add exact integer increment rounding for all nine Temporal modes, distinct Instant as-if-positive rounding, and UTC ISO formatting with auto/minute/fixed fractional precision and expanded years. Own new helpers/tests/manifests/docs in build/temporal-time-format-draft. Keep guest options/coercion/registration and named time zones separate. Require fixed positive/negative/tie vectors, exact large values, epoch bounds and both-host static/zero-dynamic plus full Node.
+
+## TS-296 — Temporal.Instant rounding and JSON serialization
+
+Status: **in progress — isolated successor to TS-295**. Owner: Codex catch-up chat, 2026-11-10. Register Instant.round with string/object options, all time units/modes, ordered coercion and increment validation; add branded toJSON and the specified non-Intl toLocaleString fallback. Share receiver/allocation helpers. Own instant object/builtin and new method module, tests/manifests/docs in build/temporal-instant-methods-draft. toString options/timezone resolution, string parsing and duration arithmetic remain separate. Require exact negative rounding, metadata, side-effect/error ordering, subclass/cross-Realm behavior, both-host static/zero-dynamic and full Node.
+
+## TS-297 — BigInt non-Intl locale fallback
+
+Status: **in progress — isolated successor to TS-296**. Owner: Codex catch-up chat, 2026-11-10. Add the own BigInt.prototype.toLocaleString method with strict BigInt branding, reserved-argument non-observation and the explicitly permitted non-Intl decimal fallback. Own BigInt builtin/tests/manifests/docs in build/bigint-locale-draft. Do not approximate locale-sensitive string operations or claim Intl support. Require metadata, override resistance, exact large values, Realm errors, full Node and native static/zero-dynamic validation.

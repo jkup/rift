@@ -2624,3 +2624,9 @@ The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound
 2026-11-10: TS-291 passes 781 Node guests and nine relevant native regressions after exact historical-input migration. TS-292 passes 782 Node guests and native width conversion; shared conversion regressions continue. TS-293 claims bounded ISO/UTC arithmetic as the next Temporal prerequisite; named-zone and local-time backend blockers remain explicit.
 
 2026-11-10: TS-292 five native conversion regressions pass. TS-293 calendar/UTC backend passes focused Node/native including 146097 consecutive days and exact negative nanoseconds. TS-294 claims the minimal Instant object boundary; the old C++ nanosecond-as-Number expectation and constructor-without-new fixtures remain unchanged.
+
+2026-11-10: TS-294 passes 784 Node guests and focused native Instant construction; native integration regressions continue. TS-295 claims exact time rounding/UTC formatting. Spec review distinguishes signed duration rounding from Instant as-if-positive rounding (negative trunc rounds toward the beginning of time).
+
+2026-11-10: TS-294 six relevant native regressions pass. TS-295 native formatting/rounding passes after reducing a three-line compiler crash for indexed BigInt arguments to a sign-check helper; only test iteration changed to for-of, with before/after probes and original failure retained. TS-296 claims Instant rounding and JSON serialization.
+
+2026-11-10: TS-296 passes 786 Node guests, focused native methods and five relevant native regressions. TS-297 closes the remaining own BigInt locale method using the expressly permitted non-Intl decimal fallback; general locale comparison/casing blockers are unchanged.
