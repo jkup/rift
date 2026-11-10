@@ -1,5 +1,4 @@
 import type { GeneratorYieldReceiver } from "./generator-yield-receiver.js";
-import type { IteratorRecord } from "./iterator.js";
 import type { Expr, Location } from "./syntax.js";
 import type { Value, ValueCompletion, ThrowCompletion } from "./runtime.js";
 
@@ -7,7 +6,7 @@ import type { Value, ValueCompletion, ThrowCompletion } from "./runtime.js";
 export type ScriptStatementPayload = { readonly kind: "empty" } | { readonly kind: "value"; readonly value: Value };
 export type ScriptStatementCompletion =
     | { readonly type: "generator-expression"; readonly expression: Expr; readonly receiver: GeneratorYieldReceiver | null }
-    | { readonly type: "delegate"; readonly iterator: IteratorRecord; readonly loc: Location; readonly receiver: GeneratorYieldReceiver | null }
+    | { readonly type: "delegate"; readonly value: Value; readonly loc: Location; readonly receiver: GeneratorYieldReceiver | null }
     | { readonly type: "normal" | "break" | "continue"; readonly payload: ScriptStatementPayload; readonly target?: string }
     | { readonly type: "return"; readonly value: Value }
     | { readonly type: "yield"; readonly value: Value; readonly loc: Location; readonly receiver: GeneratorYieldReceiver | null }

@@ -827,8 +827,6 @@ class Parser {
         this.asyncContext = asynchronous;
         const body = this.list(true, params);
         this.admitSuspendingBody(body);
-        if (generator && asynchronous) for (const expression of this.generatorYields)
-            if (expression.delegate) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generator delegation is unsupported", expression.loc);
         this.generatorContext = savedGenerator;
         this.generatorYields = savedYields;
         this.asyncContext = savedAsync;

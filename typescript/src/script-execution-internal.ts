@@ -1,3 +1,4 @@
+import { resumeAsyncDelegate, type AsyncDelegate } from "./async-generator-delegate.js";
 import { getAsyncIterator } from "./async-iterator.js";
 import { isSuspendingGeneratorExpression, type GeneratorExpressionFrame } from "./generator-expression.js";
 import { hasParameterExpressions, hasParameterPatterns } from "./formal-parameters.js";
@@ -1190,8 +1191,8 @@ type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string;
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number };
 type AsyncIteratorCloseFrame = { kind: "async-close"; frame: ScriptFrameSnapshot; loc: Location; depth: number; pending: GeneratorAbrupt; abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null };
 type GeneratorFrame = AsyncIteratorCloseFrame | GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
-type ExecutionContinuation = { asyncGenerator?: true; sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
-type ContinuationResult = ValueCompletion | { type: "yield"; result: Value } | { type: "await"; value: Value; loc: Location; depth: number };
+type ExecutionContinuation = { asyncGenerator?: true; sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; asynchronous: AsyncDelegate | null; loc: Location; depth: number } | null };
+type ContinuationResult = ValueCompletion | { type: "async-delegate-yield"; value: Value } | { type: "yield"; result: Value } | { type: "await"; value: Value; loc: Location; depth: number };
 type ExpressionContinuationResult = ContinuationResult | { type: "suspended-delegate" };
 class GuestGenerator extends GuestObject {
     #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
@@ -2898,7 +2899,7 @@ class ExecutionEngine {
         try {
             while (true) {
                 const result = this.#runContinuation(continuation, mode, value);
-                if (result.type === "yield") throw new Error("yield in async activation");
+                if (result.type === "yield" || result.type === "async-delegate-yield") throw new Error("yield in async activation");
                 if (result.type === "await") {
                     const reacted = this.#awaitPromise(activation, continuation, result.value, result.loc, result.depth);
                     if (reacted.type === "throw") {
@@ -3167,6 +3168,11 @@ class ExecutionEngine {
         data.state = "executing";
         const result = this.#runContinuation(continuation, mode, value);
         if (result.type === "await") return this.#awaitAsyncGenerator(generator, result.value, "await", result.loc, result.depth);
+        if (result.type === "async-delegate-yield") {
+            const completed = this.#completeAsyncGeneratorStep(generator, normal(result.value), false, loc);
+            data.state = "suspended-yield";
+            return completed;
+        }
         if (result.type === "yield") {
             if (result.result.kind !== "object") throw new Error("invalid async yield result");
             const yielded = result.result.object.getOwnProperty("value");
@@ -3248,7 +3254,7 @@ class ExecutionEngine {
         let suspended = false;
         try {
             result = this.#runContinuation(continuation, mode, value);
-            if (result.type === "await") throw new Error("await in generator activation");
+            if (result.type === "await" || result.type === "async-delegate-yield") throw new Error("async suspension in generator activation");
             if (result.type === "yield") {
                 generator.suspend(executionKey, continuation);
                 suspended = true;
@@ -3264,15 +3270,18 @@ class ExecutionEngine {
         if (!isSuspendingGeneratorExpression(expression)) throw new Error("invalid suspended expression");
         return { type: "generator-expression", expression, receiver };
     }
+    #beginDelegate(continuation: ExecutionContinuation, value: Value, loc: Location, depth: number): ThrowCompletion | null {
+        const acquired = continuation.asyncGenerator ? getAsyncIterator(value, this.context, loc) : getIterator(value, this.context, loc);
+        if (acquired.type === "throw") return acquired;
+        const asynchronous: AsyncDelegate | null = continuation.asyncGenerator ? { iterator: acquired.value, mode: "next", pending: null } : null;
+        continuation.delegate = { iterator: acquired.value, asynchronous, loc, depth };
+        return null;
+    }
     #generatorYield(expression: GeneratorYieldStmt, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
         if (isSuspendingGeneratorExpression(expression.value)) return { type: "generator-expression", expression, receiver };
         const value = expression.value === null ? normal() : this.#value(expression.value);
         if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
-        if (expression.delegate === true) {
-            const iterator = getIterator(value.value, this.context, expression.loc);
-            if (iterator.type === "throw") return iterator;
-            return { type: "delegate", iterator: iterator.value, loc: expression.loc, receiver };
-        }
+        if (expression.delegate === true) return { type: "delegate", value: value.value, loc: expression.loc, receiver };
         return { type: "yield", value: value.value, loc: expression.loc, receiver };
     }
     #evaluateSuspendingExpression(continuation: ExecutionContinuation, expression: Expr | null, value: Value, callerDepth: number): ExpressionContinuationResult {
@@ -3321,7 +3330,8 @@ class ExecutionEngine {
                     if (yielded.type === "throw") return yielded;
                     continuation.yieldLoc = expression.loc;
                     if (yielded.type === "delegate") {
-                        continuation.delegate = { iterator: yielded.iterator, loc: yielded.loc, depth: sequence.depth + frames.length + 2 };
+                        const acquired = this.#beginDelegate(continuation, yielded.value, yielded.loc, sequence.depth + frames.length + 2);
+                        if (acquired !== null) return acquired;
                         return { type: "suspended-delegate" };
                     }
                     if (yielded.type !== "yield") throw new Error("invalid expression yield completion");
@@ -3350,9 +3360,8 @@ class ExecutionEngine {
             if (frame.kind === "yield-operand") {
                 continuation.yieldLoc = frame.expression.loc;
                 if (frame.expression.delegate === true) {
-                    const iterator = getIterator(value, this.context, frame.expression.loc);
-                    if (iterator.type === "throw") return iterator;
-                    continuation.delegate = { iterator: iterator.value, loc: frame.expression.loc, depth: sequence.depth + frames.length + 2 };
+                    const acquired = this.#beginDelegate(continuation, value, frame.expression.loc, sequence.depth + frames.length + 2);
+                    if (acquired !== null) return acquired;
                     return { type: "suspended-delegate" };
                 }
                 const result = iteratorResult(value, false, this.context, frame.expression.loc);
@@ -3382,7 +3391,7 @@ class ExecutionEngine {
     #startSuspendingExpression(continuation: ExecutionContinuation, expression: Expr, receiver: GeneratorYieldReceiver | null, callerDepth: number): ContinuationResult | null {
         continuation.receiver = receiver;
         const evaluated = this.#evaluateSuspendingExpression(continuation, expression, UNDEFINED, callerDepth);
-        if (evaluated.type === "yield" || evaluated.type === "await") return evaluated;
+        if (evaluated.type === "yield" || evaluated.type === "await" || evaluated.type === "async-delegate-yield") return evaluated;
         if (evaluated.type === "suspended-delegate") return null;
         if (evaluated.type === "throw") {
             this.#capture(evaluated);
@@ -3393,7 +3402,7 @@ class ExecutionEngine {
     #receiveSuspension(continuation: ExecutionContinuation, value: Value, callerDepth: number): ContinuationResult | null {
         if (continuation.expressionFrames.length !== 0) {
             const computed = this.#evaluateSuspendingExpression(continuation, null, value, callerDepth);
-            if (computed.type === "yield" || computed.type === "await") return computed;
+            if (computed.type === "yield" || computed.type === "await" || computed.type === "async-delegate-yield") return computed;
             if (computed.type === "suspended-delegate") return null;
             if (computed.type === "throw") {
                 this.#capture(computed);
@@ -3632,7 +3641,11 @@ class ExecutionEngine {
                         this.#capture(failure);
                         return failure;
                     }
-                    const delegated = resumeGeneratorDelegate(continuation.delegate.iterator, mode, value, this.context, continuation.delegate.loc);
+                    const delegate = continuation.delegate;
+                    const delegated = delegate.asynchronous === null ? resumeGeneratorDelegate(delegate.iterator, mode, value, this.context, delegate.loc)
+                        : resumeAsyncDelegate(delegate.asynchronous, mode, value, this.context, delegate.loc);
+                    if (delegated.type === "await") return { type: "await", value: delegated.value, loc: delegate.loc, depth: delegate.depth };
+                    if (delegated.type === "async-delegate-yield") return { type: "async-delegate-yield", value: delegated.value };
                     mode = "next";
                     value = UNDEFINED;
                     if (delegated.type === "throw") {
@@ -3641,7 +3654,7 @@ class ExecutionEngine {
                         if (uncaught !== null) return uncaught;
                         continue;
                     }
-                    if (delegated.type === "yield") return delegated;
+                    if (delegated.type === "yield") { const yielded: { type: "yield"; result: Value } = delegated; return yielded; }
                     continuation.delegate = null;
                     if (delegated.type === "return") {
                         const result = this.#unwindContinuation(continuation, { type: "return", value: delegated.value }, callerDepth);
@@ -3770,7 +3783,15 @@ class ExecutionEngine {
                 }
                 if (result.type === "delegate") {
                     continuation.receiver = result.receiver;
-                    continuation.delegate = { iterator: result.iterator, loc: result.loc, depth: sequence.depth + 1 };
+                    this.depth++;
+                    const acquired = this.#beginDelegate(continuation, result.value, result.loc, sequence.depth + 1);
+                    this.depth--;
+                    if (acquired !== null) {
+                        this.#capture(acquired);
+                        const failed = this.#unwindContinuation(continuation, acquired, callerDepth);
+                        if (failed !== null) return failed;
+                        continue;
+                    }
                     continuation.yieldLoc = result.loc;
                     mode = "next";
                     value = UNDEFINED;

@@ -121,8 +121,8 @@ const cases:{source:string;before:string;after:string}[]=[
 cases.push({source:'async function* g(){try{return;}finally{out+="f"}}g().next().then(r=>out+=r.done);out+="s"',before:'fs',after:'fstrue'});
 cases.push({source:'async function* g(){try{return undefined;}finally{out+="f"}}g().next().then(r=>out+=r.done);out+="s"',before:'s',after:'sftrue'});
 cases.push({source:"var o={async *g(){}};o.g().next().then(r=>out+=r.done);class C{async *g(){}}new C().g().next().then(r=>out+=r.done);",before:"",after:"truetrue"});
+cases.push({source:"async function* g(){yield* []}g().next().then(r=>out+=r.done);",before:"",after:"true"});
 for(const test of cases){const realm=fresh(),session=createScriptSession({maxSteps:1000000,maxCalls:64});check(run("var out='';"+test.source,realm,session).type==="normal","setup "+test.source);string("out",test.before,realm,session);const drained=drainScriptJobs(session);check(!drained.fatal&&drained.failures.length===0,"jobs "+test.source);string("out",test.after,realm,session);}
-for(const text of ['async function* g(){yield* []}'])check(prepareBoundedScript({id:"boundary",text},fresh()).kind==="blocked","async generator boundary "+text);
 {
  const owner=fresh(),caller=fresh(),creator=createScriptSession();
  check(run('var c=Promise.withResolvers(),out="";async function* g(){yield await c.promise;yield 8}var i=g(),p=i.next();',owner,creator).type==="normal","pending generator");
