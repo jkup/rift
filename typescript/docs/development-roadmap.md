@@ -5,8 +5,9 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted JSON/ranges milestone passes 691/691 guests on each
-host, 293/293 tooling checks, and all 198 native static gates without retries.
+The accepted iteration/objects milestone passes 696/696 guests on each
+host, 293/293 tooling checks, and all 203 native static gates after one recorded
+Zig cache failure and an unchanged passing isolated rebuild.
 The unchanged 225-file C++ corpus has 179 completions: 114 reported successes and
 65 unchecked completions. Remaining outcomes are 12 parse errors, 33 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -15,11 +16,13 @@ Test262 conformance score.
 Classes, Promise combinators/checkpoints and bounded RegExp protocols/literals
 are accepted. Incremental lexing and arrow cover parsing are integrated.
 Array.of/from/fill/copyWithin, String.raw/repeat/padStart/padEnd and Realm-local
-Math.random, JSON reviver/stringify and substring/substr are accepted. String.at,
-trim aliases, matchAll, computed object keys, shorthand and globalThis have
-reviewed isolated drafts awaiting combined integration. Named function expressions
-are the next isolated slice. Unicode regex modes, lookaround, backreferences and
-named groups remain unsupported.
+Math.random, JSON reviver/stringify, substring/substr, String.at, trim aliases,
+matchAll, computed object keys, shorthand and globalThis are accepted. Named
+functions, separate function setup/body execution, prototype setters, object
+spread and replaceAll have reviewed isolated drafts awaiting integration. A
+suspension-context probe passes both hosts but does not establish guest AST
+suspension. Unicode regex modes, lookaround, backreferences and named groups
+remain unsupported.
 
 Prioritize the [generator activation boundary](generator-boundary.md) before
 adding yield/async grammar. Keep explicit completion records and prove that
@@ -704,3 +707,7 @@ Super properties and Script checkpoints accepted (8905c5ec, 6de4b230): both gues
 ### TS-162/TS-163/TS-164 Promise checkpoint
 
 Promise core, finally and capability helpers accepted (a337c48a, c935de54, e7ade7cc): both guest suites pass 666/666 without skips; tooling 291/291, runner 32/32, ten probes and typechecking pass. All 173 native entries pass static-only builds and parsed coverage on unchanged production source in 1239160ms without retries. Focused canonical coverage is 9860/9837/9828 static statements respectively, zero dynamic. All 225 normalized corpus records agree between Node bjO72j and native jDylN0, preserving hashes and all 166 prior completions. Six Promise fixtures raise completions to 172 (111 reported successes, 61 unchecked; 14 parse errors, 38 runtime errors, one reported failure). Finally, thenable-verify and withResolvers report 8/7/6 checks; basic/thenable structure prints remain unchecked. Promise.try stays unchecked in the corpus but separate expected-output evidence verifies four asynchronous OK lines and exposes its self-catching TypeError assertion. Evidence: build/promise-core-native-results.json, build/promise-core-corpus-comparison.json, build/promise-core-* and focused reports under the three Promise draft directories. Next: separate reviewed all/race, AggregateError and allSettled/any commits, then combined canonical validation. RegExp remains a separately bounded parser/matcher/object-layer effort.
+
+### TS-199–203 checkpoint
+
+Iteration/objects accepted (TS-199–203): 696/696 guests on each host without skips; 203 native entries have passing static-only/zero-dynamic evidence. The initial matrix took 1644465ms and retained one globalThis Zig mingw cache file-open failure; its unchanged isolated rebuild and both-host execution pass. Tooling passes 293/293 in 220662.0366ms; runner32/32 in 816.4794ms, ten probes and typechecking pass. Node 6bchHo/native XqXpYx match all 225 normalized corpus records exactly and preserve 179 completions (114 reported successes, 65 unchecked). Evidence: build/iteration-objects-native-results.json, native-retry.json, native-accepted.json and corpus-comparison.json with the same prefix, plus iteration-objects-* logs. Named functions, prepared function bodies, prototype setters, object spread, replaceAll and the suspension-context prerequisite remain reviewed isolated successors.

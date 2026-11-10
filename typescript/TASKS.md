@@ -3901,23 +3901,23 @@ Array fill/copyWithin, String.raw, padStart/padEnd and Realm-local Math.random a
 
 ## TS-199 — String at and trim aliases
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add relative UTF-16 String.prototype.at and Annex B trimLeft/trimRight aliases preserving exact function identity with trimStart/trimEnd. Cover conversion order, bounds, lone surrogate results, metadata and alias independence after assignment. Own String registration/inventories, focused tests/manifests and notes in build/string-at-draft based on TS-197; no locale changes.
+Status: **done — accepted in combined iteration/objects milestone**. Owner: Codex catch-up chat, 2026-11-10. Add relative UTF-16 String.prototype.at and Annex B trimLeft/trimRight aliases preserving exact function identity with trimStart/trimEnd. Cover conversion order, bounds, lone surrogate results, metadata and alias independence after assignment. Own String registration/inventories, focused tests/manifests and notes in build/string-at-draft based on TS-197; no locale changes.
 
 ## TS-200 — RegExp and String matchAll
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement species-based matcher creation, String protocol dispatch and a lazy branded RegExp string iterator with captured Realm, abrupt completion and reentry semantics. Cover coercion order, empty Unicode advancement with custom species, original lastIndex isolation, borrowed next, metadata and budgets. Own RegExp iterator/module/Realm wiring, inventories, tests/manifests and notes in build/regexp-matchall-draft based on TS-199. No new RegExp pattern flags or general generator grammar.
+Status: **done — accepted in combined iteration/objects milestone**. Owner: Codex catch-up chat, 2026-11-10. Implement species-based matcher creation, String protocol dispatch and a lazy branded RegExp string iterator with captured Realm, abrupt completion and reentry semantics. Cover coercion order, empty Unicode advancement with custom species, original lastIndex isolation, borrowed next, metadata and budgets. Own RegExp iterator/module/Realm wiring, inventories, tests/manifests and notes in build/regexp-matchall-draft based on TS-199. No new RegExp pattern flags or general generator grammar.
 
 ## TS-201 — Computed object literal property names
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend object literal data/method/accessor keys with ordered expression evaluation and ToPropertyKey, symbol-aware inferred names, metadata/declaration traversal and existing cover-grammar disambiguation. Preserve literal __proto__ rejection and assignment-pattern behavior; computed __proto__ is an ordinary own property. Own syntax/parser/evaluator traversal, focused tests/manifests and notes in build/object-keys-draft based on TS-200. No object spread, shorthand or generator grammar expansion.
+Status: **done — accepted in combined iteration/objects milestone**. Owner: Codex catch-up chat, 2026-11-10. Extend object literal data/method/accessor keys with ordered expression evaluation and ToPropertyKey, symbol-aware inferred names, metadata/declaration traversal and existing cover-grammar disambiguation. Preserve literal __proto__ rejection and assignment-pattern behavior; computed __proto__ is an ordinary own property. Own syntax/parser/evaluator traversal, focused tests/manifests and notes in build/object-keys-draft based on TS-200. No object spread, shorthand or generator grammar expansion.
 
 ## TS-202 — Object literal shorthand
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Admit ordinary IdentifierReference shorthand while retaining cover-initialized-name rejection in object expressions and existing assignment-pattern defaults. Test lexical reads, abrupt ordering, descriptors, special names and distinction from methods. Own the Script object parser, focused tests/manifests and notes in build/object-shorthand-draft based on TS-201; no prototype setter, spread or named-function-expression expansion.
+Status: **done — accepted in combined iteration/objects milestone**. Owner: Codex catch-up chat, 2026-11-10. Admit ordinary IdentifierReference shorthand while retaining cover-initialized-name rejection in object expressions and existing assignment-pattern defaults. Test lexical reads, abrupt ordering, descriptors, special names and distinction from methods. Own the Script object parser, focused tests/manifests and notes in build/object-shorthand-draft based on TS-201; no prototype setter, spread or named-function-expression expansion.
 
 ## TS-203 — Script globalThis binding
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose the existing Realm global-this value through the standard writable, non-enumerable, configurable global property. Verify replacement/deletion and lexical shadowing leave the actual this binding intact, cross-Realm identity and bootstrap inventories. Own Realm registration, inventories, focused tests/manifests and notes in build/global-this-draft based on TS-202. Preserve legacy globals and host boundaries.
+Status: **done — accepted in combined iteration/objects milestone**. Owner: Codex catch-up chat, 2026-11-10. Expose the existing Realm global-this value through the standard writable, non-enumerable, configurable global property. Verify replacement/deletion and lexical shadowing leave the actual this binding intact, cross-Realm identity and bootstrap inventories. Own Realm registration, inventories, focused tests/manifests and notes in build/global-this-draft based on TS-202. Preserve legacy globals and host boundaries.
 
 ## TS-204 — Named function expressions
 
@@ -3925,3 +3925,26 @@ Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-
 
 
 JSON reviver/stringify and substring/substr are accepted (TS-192/194/197). Both hosts pass 691/691 guests without skips. All 198 native entries pass static-only compilation and parsed zero-dynamic coverage in 1589333ms without retries. Tooling passes 293/293 in 241416.1132ms; runner32/32 in 690.1767ms, ten probes and typechecking pass. Corpus Node A7d62C/native ESvnbD matches all 225 normalized records and preserves all 179 completions (114 reported successes, 65 unchecked; 12 parse errors, 33 runtime errors, one reported failure). Evidence: build/json-ranges-native-results.json, corpus-comparison.json with the same prefix and json-ranges-* logs. Next: separately integrate reviewed at/trim aliases, matchAll, computed object keys, shorthand and globalThis. Named function expressions remain an isolated successor.
+
+## TS-205 — Separate function instantiation from body execution
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Extract a prepared function-body record containing source body, lexical/variable frame and activation environment, with no retained ExecutionEngine or OperationContext. Keep synchronous evaluation and exact setup budgets unchanged; install/restore the current execution frame around preparation/body evaluation and preserve derived-constructor and abrupt-source semantics. Own script-execution-internal and generator-boundary notes in build/function-body-draft based on TS-204, validated through existing exact setup-prefix, foreign-Realm, reentry and constructor suites. No yield grammar, suspension claim or exported resume authority.
+
+## TS-206 — Object literal prototype setters
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Implement non-computed __proto__: object/null setters, primitive no-op and no own property, with duplicate setter rejection deferred through cover grammar. Preserve computed/method/accessor/shorthand __proto__ as ordinary properties and assignment-pattern duplicate keys. Own object property AST/parser/evaluation, existing rejection migrations and focused tests/manifests in build/object-prototype-draft based on TS-205; no spread or legacy parser expansion.
+
+## TS-207 — Object spread and shared data-property copying
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add object literal spread with ordered expression evaluation, nullish skipping, boxed primitive own keys, captured key order/live descriptors and getters, symbol copying and data-property definition. Share CopyDataProperties with existing object rest while preserving its budgets and exclusions. Own object AST/parser/traversals/evaluation, one copy helper, rejection migrations and tests/manifests in build/object-spread-draft based on TS-206. No object-pattern grammar changes or host Object.assign on guest objects.
+
+## TS-208 — String replaceAll
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add replaceAll with the RegExp-global prerequisite before custom Symbol.replace dispatch, ordered string/replacement conversion, non-overlapping UTF-16 positions (including empty search), functional replacement and existing substitution/output budgets. Share the global-RegExp validation with matchAll and preserve replace behavior. Own RegExp replacement registration, one protocol helper, inventories and focused tests/manifests in build/string-replaceall-draft based on TS-207. No matcher flag or pattern expansion.
+
+## TS-209 — Current-session suspension prerequisite probe
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Exercise a host-generator controller whose OperationContext exists only during resume, using real guest callbacks across sessions and Realms. Verify budget ownership, reentrancy, completion identity and context cleanup on yield/throw/host fault. Own a host-only regression test, its manifests and suspension-context notes in build/suspension-context-draft. This does not establish AST suspension or authorize yield syntax; retain that limitation explicitly.
+
+
+Iteration/objects accepted (TS-199–203): 696/696 guests on each host without skips; 203 native entries have passing static-only/zero-dynamic evidence. The initial matrix took 1644465ms and retained one globalThis Zig mingw cache file-open failure; its unchanged isolated rebuild and both-host execution pass. Tooling passes 293/293 in 220662.0366ms; runner32/32 in 816.4794ms, ten probes and typechecking pass. Node 6bchHo/native XqXpYx match all 225 normalized corpus records exactly and preserve 179 completions (114 reported successes, 65 unchecked). Evidence: build/iteration-objects-native-results.json, native-retry.json, native-accepted.json and corpus-comparison.json with the same prefix, plus iteration-objects-* logs. Named functions, prepared function bodies, prototype setters, object spread, replaceAll and the suspension-context prerequisite remain reviewed isolated successors.
