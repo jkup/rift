@@ -114,6 +114,7 @@ export class Realm {
     readonly temporalDurationPrototype: GuestObject;
     readonly temporalPlainTimePrototype: GuestObject;
     readonly temporalPlainDateTimePrototype: GuestObject;
+    readonly temporalPlainMonthDayPrototype: GuestObject;
     readonly temporalPlainYearMonthPrototype: GuestObject;
     readonly temporalPlainDatePrototype: GuestObject;
     readonly symbolPrototype: GuestObject;
@@ -162,6 +163,7 @@ export class Realm {
         this.temporalDurationPrototype = new GuestObject(this.objectPrototype);
         this.temporalPlainTimePrototype = new GuestObject(this.objectPrototype);
         this.temporalPlainDateTimePrototype = new GuestObject(this.objectPrototype);
+        this.temporalPlainMonthDayPrototype = new GuestObject(this.objectPrototype);
         this.temporalPlainYearMonthPrototype = new GuestObject(this.objectPrototype);
         this.temporalPlainDatePrototype = new GuestObject(this.objectPrototype);
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);

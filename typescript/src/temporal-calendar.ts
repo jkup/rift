@@ -1,3 +1,4 @@
+import { GuestTemporalPlainMonthDay } from "./temporal-plain-month-day-object.js";
 import { GuestTemporalPlainYearMonth } from "./temporal-plain-year-month-object.js";
 import { GuestTemporalPlainDateTime } from "./temporal-plain-date-time-object.js";
 import { parseTemporalCalendarString } from "./temporal-calendar-parse.js";
@@ -21,7 +22,7 @@ export function toTemporalCalendar(value: Value, context: OperationContext, loc:
 
 
 function hasTemporalCalendar(object: GuestObject): boolean {
-    return object instanceof GuestTemporalPlainDate || object instanceof GuestTemporalPlainDateTime || object instanceof GuestTemporalPlainYearMonth;
+    return object instanceof GuestTemporalPlainDate || object instanceof GuestTemporalPlainDateTime || object instanceof GuestTemporalPlainYearMonth || object instanceof GuestTemporalPlainMonthDay;
 }
 
 export function temporalCalendarWithISODefault(object: GuestObject, context: OperationContext, loc: Location): StringCompletion {

@@ -1,3 +1,4 @@
+import { registerTemporalPlainMonthDay } from "./temporal-plain-month-day.js";
 import { registerTemporalPlainYearMonth } from "./temporal-plain-year-month.js";
 import { registerTemporalPlainDateTime } from "./temporal-plain-date-time.js";
 import { registerTemporalInstantString } from "./temporal-instant-string.js";
@@ -71,6 +72,7 @@ export function registerTemporal(realm: Realm): void {
     registerTemporalPlainTime(realm, namespace);
     registerTemporalPlainDate(realm, namespace);
     registerTemporalPlainYearMonth(realm, namespace);
+    registerTemporalPlainMonthDay(realm, namespace);
     registerTemporalPlainDateTime(realm, namespace);
     registerTemporalDuration(realm, namespace);
     realm.defineScriptGlobal("Temporal", { value: { kind: "object", object: namespace }, writable: true, enumerable: false, configurable: true });

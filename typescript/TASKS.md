@@ -4648,7 +4648,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-375 — Temporal PlainMonthDay construction and ISO getters
 
-Status: **in progress — isolated successor to TS-374**. Owner: Codex catch-up chat, 2026-11-10. Introduce branded Realm-owned ISO PlainMonthDay with default reference year 1972, date-range bounds, ordered construction and calendarId/monthCode/day getters. Wire constructor fallback and shared calendar/partial recognition. Parsing, formatting and other methods remain separate; require both-host coverage and Realm tests. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-plain-month-day-core-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Introduce branded Realm-owned ISO PlainMonthDay with default reference year 1972, date-range bounds, ordered construction and calendarId/monthCode/day getters. Wire constructor fallback and shared calendar/partial recognition. Parsing, formatting and other methods remain separate; require both-host coverage and Realm tests. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-plain-month-day-core-draft/.
 
 ## TS-376 — Temporal PlainMonthDay formatting
 
