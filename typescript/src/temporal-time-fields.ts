@@ -1,4 +1,4 @@
-import { temporalOptionString } from "./temporal-options.js";
+import { temporalOverflowReject } from "./temporal-options.js";
 import type { Location } from "./syntax.js";
 import { isValidTime, type TimeFields } from "./temporal-time.js";
 import { temporalInteger } from "./temporal-integer.js";
@@ -24,21 +24,9 @@ export function readTemporalTimeFields(object: GuestObject, defaults: TimeFields
 }
 
 export function regulateTemporalTime(value: TimeFields, supplied: Value, context: OperationContext, loc: Location): { type: "normal"; value: TimeFields } | ThrowCompletion {
-    let options: GuestObject;
-    if (supplied.kind === "undefined") options = new GuestObject(null);
-    else if (supplied.kind === "object") options = supplied.object;
-    else return languageFailure(context.realm, "TypeError", "Temporal time options must be an object", loc);
-    const read = options.internalGet("overflow", { kind: "object", object: options }, context, loc);
-    if (read.type === "throw") return read;
-    let reject = false;
-    if (read.value.kind !== "undefined") {
-        const overflow = temporalOptionString(read.value, context, loc);
-        if (overflow.type === "throw") return overflow;
-        if (overflow.value !== "constrain" && overflow.value !== "reject")
-            return languageFailure(context.realm, "RangeError", "invalid overflow option", loc);
-        reject = overflow.value === "reject";
-    }
-    if (reject) {
+    const overflow = temporalOverflowReject(supplied, context, loc);
+    if (overflow.type === "throw") return overflow;
+    if (overflow.value) {
         if (!isValidTime(value)) return languageFailure(context.realm, "RangeError", "time field is outside its range", loc);
         return { type: "normal", value };
     }

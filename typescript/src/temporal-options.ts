@@ -2,12 +2,27 @@ import type { TemporalTimePrecision } from "./temporal-time-format.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toString, toNumber, type NumberCompletion, type StringCompletion } from "./conversion.js";
 import type { TemporalRoundingMode } from "./temporal-rounding.js";
-import { languageFailure, type GuestObject, type OperationContext, type ThrowCompletion, type Value } from "./runtime.js";
+import { languageFailure, GuestObject, type OperationContext, type ThrowCompletion, type Value } from "./runtime.js";
 import type { Location } from "./syntax.js";
 
 export function temporalOptionString(value: Value, context: OperationContext, loc: Location): StringCompletion {
     const primitive = toPrimitive(value, "string", context, loc);
     return primitive.type === "throw" ? primitive : toString(primitive.value, loc, context.realm);
+}
+
+export function temporalOverflowReject(supplied: Value, context: OperationContext, loc: Location): { type: "normal"; value: boolean } | ThrowCompletion {
+    let options: GuestObject;
+    if (supplied.kind === "undefined") options = new GuestObject(null);
+    else if (supplied.kind === "object") options = supplied.object;
+    else return languageFailure(context.realm, "TypeError", "Temporal options must be an object", loc);
+    const read = options.internalGet("overflow", { kind: "object", object: options }, context, loc);
+    if (read.type === "throw") return read;
+    if (read.value.kind === "undefined") return { type: "normal", value: false };
+    const overflow = temporalOptionString(read.value, context, loc);
+    if (overflow.type === "throw") return overflow;
+    if (overflow.value !== "constrain" && overflow.value !== "reject")
+        return languageFailure(context.realm, "RangeError", "invalid overflow option", loc);
+    return { type: "normal", value: overflow.value === "reject" };
 }
 
 export function temporalRoundingMode(options: GuestObject, context: OperationContext, loc: Location, fallback: TemporalRoundingMode): { type: "normal"; value: TemporalRoundingMode } | ThrowCompletion {

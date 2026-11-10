@@ -4512,7 +4512,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-342 — Temporal PlainDate conversion and comparison
 
-Status: **in progress — isolated successor to TS-341**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDate.from/compare/equals with branded, string and property-bag inputs, calendar-first field conversion, ordered overflow and range checks. Share overflow option handling with PlainTime. Own date conversion registration, calendar conversion helper, shared options/time fields, tests/manifests/docs in build/temporal-plain-date-conversion-draft. Require property and error ordering, no object primitive conversion, bounds, Realm results and native static regressions. Future DateTime/ZonedDateTime brands need dedicated conversion branches.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDate.from/compare/equals with branded, string and property-bag inputs, calendar-first field conversion, ordered overflow and range checks. Share overflow option handling with PlainTime. Own date conversion registration, calendar conversion helper, shared options/time fields, tests/manifests/docs in build/temporal-plain-date-conversion-draft. Require property and error ordering, no object primitive conversion, bounds, Realm results and native static regressions. Future DateTime/ZonedDateTime brands need dedicated conversion branches.
 
 ## TS-343 — Temporal PlainDate field and calendar replacement
 

@@ -787,6 +787,7 @@ executeDriver("temporal-plain-date-format", { stdout: "temporal plain date forma
 executeDriver("temporal-plain-date-parse", { stdout: "temporal plain date parse passed\n" });
 executeDriver("temporal-date-fields", { stdout: "temporal date fields passed\n" });
 executeDriver("temporal-calendar-parse", { stdout: "temporal calendar parse passed\n" });
+executeDriver("temporal-plain-date-conversion", { stdout: "temporal plain date conversion passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
