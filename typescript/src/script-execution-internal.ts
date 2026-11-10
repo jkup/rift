@@ -1,3 +1,5 @@
+import type { GeneratorYieldReceiver } from "./generator-yield-receiver.js";
+import type { GeneratorYieldStmt } from "./syntax.js";
 import type { TryFinallyStmt } from "./syntax.js";
 import { resumeGeneratorDelegate, type GeneratorResumeMode } from "./generator-delegate.js";
 import { iteratorResult } from "./iterator-result.js";
@@ -1171,7 +1173,7 @@ type GeneratorFinally = { kind: "finally"; frame: ScriptFrameSnapshot; statement
 type GeneratorCleanup = { kind: "cleanup"; frame: ScriptFrameSnapshot; pending: GeneratorPending;
     abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null; depth: number };
 type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup;
-type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
+type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
     #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
@@ -1179,7 +1181,7 @@ class GuestGenerator extends GuestObject {
     constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
         super(prototype);
         if (key !== executionKey) throw new Error("invalid generator allocation");
-        this.#continuation = { sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null, delegate: null };
+        this.#continuation = { sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null, receiver: null, delegate: null };
     }
     static is(object: GuestObject): object is GuestGenerator {
         if (!(object instanceof GuestGenerator)) return false;
@@ -1539,6 +1541,7 @@ class ExecutionEngine {
     }
     #expression(expr: Expr, env: Environment | null, receiver: Value, name: string | null): Completion {
         switch (expr.kind) {
+            case "yield": throw new Error("yield expression requires a generator continuation");
             case "class": {
                 if (env !== null) throw new Error("class requires Script execution");
                 return this.#classExpression(expr, name);
@@ -2402,7 +2405,8 @@ class ExecutionEngine {
                 if (copied.type === "throw") { const abrupt: ThrowCompletion = copied; return abrupt; }
                 return { type: "normal", payload: { kind: "empty" } };
             }
-            case "expression": return scriptExpressionCompletion(this.#value(stmt.expression));
+            case "expression": return stmt.expression.kind === "yield" && sequences !== null
+                ? this.#generatorYield(stmt.expression, null) : scriptExpressionCompletion(this.#value(stmt.expression));
             case "pattern-declaration": {
                 const input = this.#value(stmt.init);
                 if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
@@ -2411,6 +2415,8 @@ class ExecutionEngine {
                 return { type: "normal", payload: { kind: "empty" } };
             }
             case "let": case "const": {
+                if (stmt.init?.kind === "yield" && sequences !== null)
+                    return this.#generatorYield(stmt.init, { kind: "initialization", environment: this.#active().lexical, name: stmt.name, loc: stmt.loc });
                 const result = stmt.init === null ? normal() : this.#value(stmt.init, stmt.name);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 const env = this.#active().lexical;
@@ -2424,6 +2430,10 @@ class ExecutionEngine {
                     if (declaration.init === null) continue;
                     const ref = resolveScriptBinding(this.#active().lexical, declaration.name, stmt.loc, this.#active().strict);
                     if (ref.type === "throw") return ref;
+                    if (declaration.init.kind === "yield" && sequences !== null) {
+                        if (stmt.declarations.length !== 1) throw new Error("unsupported suspended declaration list");
+                        return this.#generatorYield(declaration.init, { kind: "binding", reference: ref.reference });
+                    }
                     const value = this.#value(declaration.init, declaration.name);
                     if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
                     const written = putScriptBinding(ref.reference, value.value, this.context);
@@ -2595,17 +2605,10 @@ class ExecutionEngine {
                     if (result.payload.kind !== "empty") value = result.payload;
                 }
             }
-            case "yield": {
-                const value = stmt.value === null ? normal() : this.#value(stmt.value);
-                if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
-                if (stmt.delegate === true) {
-                    const iterator = getIterator(value.value, this.context, stmt.loc);
-                    if (iterator.type === "throw") return iterator;
-                    return { type: "delegate", iterator: iterator.value, loc: stmt.loc };
-                }
-                return { type: "yield", value: value.value, loc: stmt.loc };
-            }
+            case "yield": return this.#generatorYield(stmt, null);
             case "return": case "throw": {
+                if (stmt.kind === "return" && stmt.value?.kind === "yield" && sequences !== null)
+                    return this.#generatorYield(stmt.value, { kind: "return" });
                 const result = stmt.value === null ? normal() : this.#value(stmt.value);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 if (stmt.kind === "return") return { type: "return", value: result.value };
@@ -2905,6 +2908,38 @@ class ExecutionEngine {
         }
         return result.type === "throw" ? result : iteratorResult(result.value, true, this.context, loc);
     }
+    #generatorYield(expression: GeneratorYieldStmt, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
+        const value = expression.value === null ? normal() : this.#value(expression.value);
+        if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
+        if (expression.delegate === true) {
+            const iterator = getIterator(value.value, this.context, expression.loc);
+            if (iterator.type === "throw") return iterator;
+            return { type: "delegate", iterator: iterator.value, loc: expression.loc, receiver };
+        }
+        return { type: "yield", value: value.value, loc: expression.loc, receiver };
+    }
+    #receiveGeneratorYield(continuation: GeneratorContinuation, value: Value, callerDepth: number): ValueCompletion | null {
+        const receiver = continuation.receiver;
+        continuation.receiver = null;
+        if (receiver === null) return null;
+        const frame = continuation.sequences[continuation.sequences.length - 1];
+        this.depth = callerDepth + frame.depth + 1;
+        if (this.depth > 256) {
+            if (continuation.yieldLoc === null) throw new Error("yield receiver without source");
+            const failure = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", continuation.yieldLoc);
+            this.#capture(failure);
+            return failure;
+        }
+        if (receiver.kind === "return") return this.#unwindGenerator(continuation, { type: "return", value }, callerDepth);
+        const written = receiver.kind === "binding" ? putScriptBinding(receiver.reference, value, this.context)
+            : receiver.environment.kind === "global" ? receiver.environment.record.initializeBinding(receiver.name, value, this.context, receiver.loc)
+            : receiver.environment.initializeBinding(receiver.name, value, this.context, receiver.loc);
+        if (written.type === "throw") {
+            this.#capture(written);
+            return this.#unwindGenerator(continuation, written, callerDepth);
+        }
+        return null;
+    }
     #scheduleGeneratorFinally(continuation: GeneratorContinuation, boundary: GeneratorFinally, pending: GeneratorPending): void {
         continuation.sequences.push({ kind: "cleanup", frame: boundary.frame, pending,
             abrupt: this.#abrupt, source: this.#lastAbrupt, depth: boundary.depth });
@@ -2914,6 +2949,7 @@ class ExecutionEngine {
     }
     #unwindGenerator(continuation: GeneratorContinuation, completion: GeneratorAbrupt, callerDepth: number): ValueCompletion | null {
         continuation.delegate = null;
+        continuation.receiver = null;
         if (completion.type === "throw" && completion.origin.kind !== "guest" && completion.origin.kind !== "engine-diagnostic") return completion;
         const sequences = continuation.sequences;
         while (sequences.length !== 0) {
@@ -2955,6 +2991,10 @@ class ExecutionEngine {
         this.activeContext.realm = active.frame.realm;
         this.#inspectionSource = null;
         try {
+            if (mode === "next" && continuation.delegate === null && continuation.receiver !== null) {
+                const result = this.#receiveGeneratorYield(continuation, value, callerDepth);
+                if (result !== null) return result;
+            }
             if (mode === "return" && continuation.delegate === null) {
                 const result = this.#unwindGenerator(continuation, { type: "return", value }, callerDepth);
                 if (result !== null) return result;
@@ -2993,6 +3033,9 @@ class ExecutionEngine {
                         if (result !== null) return result;
                         continue;
                     }
+                    const result = this.#receiveGeneratorYield(continuation, delegated.value, callerDepth);
+                    if (result !== null) return result;
+                    if (sequences.length === 0) return normal();
                 }
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
@@ -3058,6 +3101,7 @@ class ExecutionEngine {
                     continue;
                 }
                 if (result.type === "delegate") {
+                    continuation.receiver = result.receiver;
                     continuation.delegate = { iterator: result.iterator, loc: result.loc };
                     continuation.yieldLoc = result.loc;
                     mode = "next";
@@ -3065,6 +3109,7 @@ class ExecutionEngine {
                     continue;
                 }
                 if (result.type === "yield") {
+                    continuation.receiver = result.receiver;
                     sequence.frame = this.#active();
                     continuation.yieldLoc = result.loc;
                     const output = iteratorResult(result.value, false, this.context, result.loc);

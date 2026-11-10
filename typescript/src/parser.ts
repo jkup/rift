@@ -523,15 +523,8 @@ class Parser {
             return { kind: "while", loc, test, body };
         }
         if (this.generatorContext && this.eat("yield")) {
-            const keyword = this.token(this.index - 1);
-            const newline = lineTerminatorBetween(this.source.text, keyword, this.current());
-            const delegate = !newline && this.eat("*");
-            const empty = (!delegate && newline) || this.at(";") || this.at("}") || this.current().kind === "eof";
-            if (delegate && empty) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield delegation requires an operand", loc);
-            const value = empty ? null : this.expression(1);
+            const statement = this.generatorYield(this.token(this.index - 1));
             this.statementTerminator();
-            const statement: GeneratorYieldStmt = { kind: "yield", loc, value, ...(delegate ? { delegate: true as const } : {}) };
-            this.generatorYields.push(statement);
             return statement;
         }
         if (this.at("return") || this.at("throw")) {
@@ -742,22 +735,27 @@ class Parser {
         this.functions++;
         this.generatorContext = generator;
         const body = this.list(true, params);
-        const direct = new Set<Stmt>();
-        const pending = [...body];
-        while (pending.length !== 0) {
-            const statement = pending.pop()!;
-            direct.add(statement);
-            if (statement.kind === "block") pending.push(...statement.body);
-            else if (statement.kind === "while" || statement.kind === "do-while" || statement.kind === "for" || statement.kind === "for-lexical") pending.push(statement.body);
-            else if (statement.kind === "try-finally") pending.push(statement.body, statement.finalizer);
-            else if (statement.kind === "try-catch") pending.push(statement.block, statement.handler);
-            else if (statement.kind === "if") {
-                pending.push(statement.consequent);
-                if (statement.alternate !== null) pending.push(statement.alternate);
+        if (this.generatorYields.length !== 0) {
+            const supported = new Set<Stmt | Expr>();
+            const pending = [...body];
+            while (pending.length !== 0) {
+                const statement = pending.pop()!;
+                supported.add(statement);
+                if (statement.kind === "block") pending.push(...statement.body);
+                else if (statement.kind === "while" || statement.kind === "do-while" || statement.kind === "for" || statement.kind === "for-lexical") pending.push(statement.body);
+                else if (statement.kind === "try-finally") pending.push(statement.body, statement.finalizer);
+                else if (statement.kind === "try-catch") pending.push(statement.block, statement.handler);
+                else if (statement.kind === "if") {
+                    pending.push(statement.consequent);
+                    if (statement.alternate !== null) pending.push(statement.alternate);
+                } else if (statement.kind === "return" && statement.value?.kind === "yield") supported.add(statement.value);
+                else if ((statement.kind === "let" || statement.kind === "const") && statement.init?.kind === "yield") supported.add(statement.init);
+                else if (statement.kind === "var" && statement.declarations.length === 1 && statement.declarations[0].init?.kind === "yield") supported.add(statement.declarations[0].init);
+                else if (statement.kind === "expression" && statement.expression.kind === "yield") supported.add(statement.expression);
             }
+            for (const expression of this.generatorYields) if (!supported.has(expression))
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield in this expression or control flow is unsupported", expression.loc);
         }
-        for (const statement of this.generatorYields) if (!direct.has(statement))
-            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield in this control flow is unsupported", statement.loc);
         this.generatorContext = savedGenerator;
         this.generatorYields = savedYields;
         this.functions--;
@@ -1191,9 +1189,21 @@ class Parser {
         else if (result.kind === "resource-limit") this.fail(result.origin, result.message, token.loc);
         return { kind: "regexp", loc: token.loc, pattern, flags };
     }
+    private generatorYield(keyword: Token): GeneratorYieldStmt {
+        const loc = keyword.loc;
+        const newline = lineTerminatorBetween(this.source.text, keyword, this.current());
+        const delegate = !newline && this.eat("*");
+        const empty = (!delegate && newline) || [";", "}", ")", "]", ","].includes(this.current().text) || this.current().kind === "eof";
+        if (delegate && empty) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield delegation requires an operand", loc);
+        const value = empty ? null : this.expression(1);
+        const expression: GeneratorYieldStmt = { kind: "yield", loc, value, ...(delegate ? { delegate: true as const } : {}) };
+        this.generatorYields.push(expression);
+        return expression;
+    }
     primary(allowIn: boolean, allowArrow = false): Expr {
         const t = this.take();
         const loc = t.loc;
+        if (this.generatorContext && t.text === "yield") return this.generatorYield(t);
         if (this.structuralPlan() && t.kind === "punct" && (t.text === "/" || t.text === "/=")) return this.regexpLiteral(t);
         if (t.kind === "word" && t.text === "super" && this.boundedPlan()) {
             if (this.superContext !== "none" && (this.at(".") || this.at("["))) {

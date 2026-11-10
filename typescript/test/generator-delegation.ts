@@ -21,6 +21,7 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+"function* f(){return yield* [];}var g=f();g.next();g.next().done;",
 "function* f(){try{yield* [];}finally{}}var g=f();g.next();g.return();g.next().done;",
     "function* f(){yield* [1,2];yield 3;}Array.from(f()).join(\",\")===\"1,2,3\";",
     "function* f(){yield* \"ab\";}Array.from(f()).join(\",\")===\"a,b\";",
@@ -48,7 +49,7 @@ const cases: string[] = [
     "var caught=false;function* f(){yield* null;}var g=f();try{g.next();}catch(e){caught=e instanceof TypeError;}caught&&g.next().done;"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"delegation case "+i);}
-for(const source of ["function* f(){return yield* [];}","function* f(){yield*;}","function* f(){yield\n*[];}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+for(const source of ["function* f(){yield*;}","function* f(){yield\n*[];}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('var result={value:2,done:false},it={next(){return result;},[Symbol.iterator](){return this;}};function* f(){yield* it;}var g=f();',A);define(B,"g",own(A,"g"));define(B,"result",own(A,"result"));
 const cross=run('g.next()===result;',B);check(cross.type==="normal"&&cross.value.kind==="boolean"&&cross.value.value,"foreign delegated result identity");

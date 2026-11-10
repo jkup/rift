@@ -553,6 +553,7 @@ class DeclarationCollector {
                 if (node.heritage !== null) this.expression(node.heritage, id, variableScope);
                 break;
             }
+            case "yield": if (node.value !== null) this.expression(node.value, scope, variableScope); break;
             case "function": this.functionBody(node.source, node.loc, node.body, scope, null, node); break;
             case "destructure": this.expression(node.value, scope, variableScope); this.pattern(node.pattern, scope, variableScope); break;
             case "array":

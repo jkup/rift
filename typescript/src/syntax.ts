@@ -28,6 +28,7 @@ export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "bindi
 export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[] };
 export type Expr =
+    | GeneratorYieldStmt
     | { kind: "regexp"; loc: Location; pattern: string; flags: string }
     | ClassExpr
     | ChainExpr

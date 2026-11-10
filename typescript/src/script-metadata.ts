@@ -129,6 +129,7 @@ class MetadataCollector {
     }
     visitExpression(expr: Expr, strict: boolean, parent: number | null): void {
         switch (expr.kind) {
+            case "yield": if (expr.value !== null) this.expression(expr.value, strict, parent); break;
             case "function": this.functionBody(expr.source, expr.loc, expr.body, strict, parent); break;
             case "array":
                 for (let i = expr.elements.length - 1; i >= 0; i--) {

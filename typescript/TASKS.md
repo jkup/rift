@@ -4004,7 +4004,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-222 — Direct yield expressions in bindings and returns
 
-Status: **in progress — isolated successor to TS-221**. Owner: Codex catch-up chat, 2026-11-10. Admit direct yield/yield-star expressions in single var, let/const initializers, return statements and parenthesized standalone expressions. Retain a data-only receiver for binding initialization/write or return, apply next/delegation completion values in the current captured frame, and discard it on abrupt resumption. Keep nested arithmetic/call/assignment yields and multi-declarator suspension blocked until their pending operations exist. Own expression AST/parser admission/traversal, private yield receiver records, focused tests/manifests and notes in build/generator-receive-draft. Require both-host/static checks and original fixture evidence.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Admit direct yield/yield-star expressions in single var, let/const initializers, return statements and parenthesized standalone expressions. Retain a data-only receiver for binding initialization/write or return, apply next/delegation completion values in the current captured frame, and discard it on abrupt resumption. Keep nested arithmetic/call/assignment yields and multi-declarator suspension blocked until their pending operations exist. Own expression AST/parser admission/traversal, private yield receiver records, focused tests/manifests and notes in build/generator-receive-draft. Require both-host/static checks and original fixture evidence.
 
 ## TS-223 — Generator for-of continuations and iterator cleanup
 

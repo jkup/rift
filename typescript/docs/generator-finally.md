@@ -21,3 +21,6 @@ Expression-position yields and iterator-loop cleanup remain unsupported.
 The design follows the completion precedence in [ECMAScript try evaluation](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-try-statement-runtime-semantics-evaluation)
 and [engine262 TryStatement at 18cdeb03](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/runtime-semantics/TryStatement.mts),
 using stored records rather than a host generator stack.
+TS-222 admits direct yield expressions in single binding initializers and returns;
+see [yield expression receivers](generator-receive.md). Nested expression
+continuations and iterator-loop cleanup remain subsequent work.
