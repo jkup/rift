@@ -751,6 +751,7 @@ class Parser {
                 continue;
             }
             if (node.kind !== "destructure" && node.kind !== "super-call" && node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update" && node.kind !== "super-member") continue;
+            if (node.kind === "compound" && (node.op === "&&" || node.op === "||" || node.op === "??")) continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
                 if (node.kind === "destructure") pending.push({ expression: node.value, visited: false });
@@ -960,7 +961,7 @@ class Parser {
         return { kind: "chain", loc: base.loc, base, links: [link] };
     }
     precedence(op: string): number {
-        if (this.structuralPlan() && ["**=", "&=", "|=", "^=", "<<=", ">>=", ">>>="].includes(op)) return 1;
+        if (this.structuralPlan() && ["**=", "&=", "|=", "^=", "<<=", ">>=", ">>>=", "&&=", "||=", "??="].includes(op)) return 1;
         if (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=") return 1;
         if (op === "?") return 2;
         if (op === "||" || (this.structuralPlan() && op === "??")) return 3;
@@ -1112,7 +1113,7 @@ class Parser {
                     if (this.structuralPlan()) this.assignmentNameEligible.set(left, eligible);
                 }
                 else {
-                    let binaryOp: "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "<<" | ">>" | ">>>" = "+";
+                    let binaryOp: "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "<<" | ">>" | ">>>" | "&&" | "||" | "??" = "+";
                     if (op === "-=") binaryOp = "-";
                     else if (op === "*=") binaryOp = "*";
                     else if (op === "/=") binaryOp = "/";
@@ -1124,7 +1125,12 @@ class Parser {
                     else if (op === "<<=") binaryOp = "<<";
                     else if (op === ">>=") binaryOp = ">>";
                     else if (op === ">>>=") binaryOp = ">>>";
+                    else if (op === "&&=") binaryOp = "&&";
+                    else if (op === "||=") binaryOp = "||";
+                    else if (op === "??=") binaryOp = "??";
+                    const eligible = left.kind === "identifier" && !this.parenthesized.has(left);
                     left = { kind: "compound", loc, target: left, value: right, op: binaryOp };
+                    if (binaryOp === "&&" || binaryOp === "||" || binaryOp === "??") this.assignmentNameEligible.set(left, eligible);
                 }
             } else left = { kind: "binary", loc, op, left, right };
         }

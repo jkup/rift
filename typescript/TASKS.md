@@ -4252,7 +4252,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-280 — Logical assignment
 
-Status: **in progress — isolated successor to TS-279**. Owner: Codex catch-up chat, 2026-11-10. Add ordinary &&=, ||= and ??= through existing assignment references, preserving single reads, skipped writes/RHS, key caching, strict errors and anonymous function naming. Own lexer/parser, compound syntax, shared short-circuit predicate, ordinary evaluation, tests/manifests and docs in build/logical-assignment-draft. Suspended logical assignment remains separate and explicitly rejected. Require both-host/static and grammar/reference tests plus pinned engine review.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ordinary &&=, ||= and ??= through existing assignment references, preserving single reads, skipped writes/RHS, key caching, strict errors and anonymous function naming. Own lexer/parser, compound syntax, shared short-circuit predicate, ordinary evaluation, tests/manifests and docs in build/logical-assignment-draft. Suspended logical assignment remains separate and explicitly rejected. Require both-host/static and grammar/reference tests plus pinned engine review.
 
 ## TS-281 — Suspended logical assignments
 

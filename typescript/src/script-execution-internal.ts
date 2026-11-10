@@ -9,7 +9,7 @@ import type { TryFinallyStmt } from "./syntax.js";
 import { resumeGeneratorDelegate, type GeneratorResumeMode } from "./generator-delegate.js";
 import { iteratorResult } from "./iterator-result.js";
 import { getReferenceValue, putReferenceValue, deleteReferenceValue, referenceCallReceiver, type EvaluationReference, type EvaluationReferenceResult, type ExpressionResult } from "./evaluation-reference.js";
-import { applyBinaryOperator } from "./binary-operator.js";
+import { applyBinaryOperator, skipsRightOperand } from "./binary-operator.js";
 import { copyDataProperties } from "./copy-data-properties.js";
 import { regExpCreate } from "./builtins/regexp.js";
 import type { SuperContext } from "./syntax.js";
@@ -1786,9 +1786,13 @@ class ExecutionEngine {
                 if (ref.type === "abrupt") return ref.completion;
                 const oldValue = getReferenceValue(this.context, ref.reference, expr.loc);
                 if (oldValue.type !== "normal") return oldValue;
-                const right = this.#eval(expr.value, env, receiver);
+                const logical = expr.op === "&&" || expr.op === "||" || expr.op === "??";
+                if (skipsRightOperand(expr.op, oldValue.value)) return oldValue;
+                const inferred = logical && env === null && expr.target.kind === "identifier" &&
+                    ExecutableScript.assignmentMayName(this.#active().record, expr, executionKey) ? expr.target.name : null;
+                const right = this.#eval(expr.value, env, receiver, false, inferred);
                 if (right.type !== "normal") return right;
-                const result = this.binary(expr.op, oldValue.value, right.value, expr.loc);
+                const result = logical ? right : this.binary(expr.op, oldValue.value, right.value, expr.loc);
                 if (result.type !== "normal") return result;
                 return putReferenceValue(this.context, ref.reference, result.value, expr.loc);
             }
@@ -1897,9 +1901,7 @@ class ExecutionEngine {
                 if (expr.op === "instanceof" && !this.#script) throw new Error("Script instanceof unavailable");
                 const left = this.#eval(expr.left, env, receiver);
                 if (left.type !== "normal") return left;
-                if (expr.op === "&&" && !truthy(left.value)) return left;
-                if (expr.op === "||" && truthy(left.value)) return left;
-                if (expr.op === "??" && left.value.kind !== "null" && left.value.kind !== "undefined") return left;
+                if (skipsRightOperand(expr.op, left.value)) return left;
                 const right = this.#eval(expr.right, env, receiver);
                 if (right.type !== "normal") return right;
                 if (expr.op === "??" || expr.op === "&&" || expr.op === "||" || expr.op === ",") return right;
@@ -3815,8 +3817,7 @@ class ExecutionEngine {
             }
             const node = frame.expression;
             if (frame.kind === "left") {
-                if ((node.op === "&&" && !truthy(value)) || (node.op === "||" && truthy(value)) ||
-                    (node.op === "??" && value.kind !== "null" && value.kind !== "undefined")) continue;
+                if (skipsRightOperand(node.op, value)) continue;
                 frames.push({ kind: "right", expression: node, left: value });
                 expression = node.right;
                 continue;

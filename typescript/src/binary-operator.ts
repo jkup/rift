@@ -2,8 +2,13 @@ import { stringConcat, stringCompare } from "./strings.js";
 import { isLooselyEqual } from "./abstract-equality.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toNumber, toString, toPropertyKey } from "./conversion.js";
-import { normal, equal, languageFailure, type Value, type ValueCompletion, type OperationContext } from "./runtime.js";
+import { normal, equal, truthy, languageFailure, type Value, type ValueCompletion, type OperationContext } from "./runtime.js";
 import type { Location } from "./syntax.js";
+
+export function skipsRightOperand(op: string, left: Value): boolean {
+    return (op === "&&" && !truthy(left)) || (op === "||" && truthy(left)) ||
+        (op === "??" && left.kind !== "null" && left.kind !== "undefined");
+}
 
 export function applyBinaryOperator(op: string, left: Value, right: Value, context: OperationContext, loc: Location): ValueCompletion {
     if (op === "in") {

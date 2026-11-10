@@ -55,7 +55,7 @@ for (const [op,expected] of operators) for (const prefix of ["","'use strict';"]
 passes("var hint='';var a={};a[Symbol.toPrimitive]=function(h){hint=h;return 5;};~a===-6&&hint==='number';");
 passes("var ok=false;try{~Symbol();}catch(e){ok=e instanceof TypeError;}ok;");
 passes("var x=2;var a=~x++;var b=~++x;a===-3&&b===-5&&x===4;");
-for (const source of ["~2 ** 3;","~;","2 &= 3;","x >>>;","x >>>> 2;","x &&= 2;","x ||= 2;","new ~x;"])
+for (const source of ["~2 ** 3;","~;","2 &= 3;","x >>>;","x >>>> 2;","new ~x;"])
     check(prepareBoundedScript({id:"invalid",text:source},fresh()).kind !== "ready","reject "+source);
 for (const source of ["~1;","1 & 2;","x |= 2;","1 << 2;","x >>>= 1;"])
     check(parse(source).error !== null,"legacy boundary "+source);
@@ -65,4 +65,10 @@ caller.defineScriptGlobal("f",{value:fn.value});const error=run("f(Symbol());",c
 check(error.type === "throw" && error.value.kind === "object" && error.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),"conversion error Realm");
 const bounded=run("var a={valueOf:function(){while(true){}}};a << 2;",fresh(),80);
 check(bounded.type === "throw" && bounded.origin.kind === "resource-limit","conversion resource boundary");
+for (const source of ["x &&= 2;", "x ||= 2;"]) {
+    const realm = fresh(), result = run(source, realm);
+    check(result.type === "throw" && result.value.kind === "object" && result.value.object.getPrototypeOf() === realm.getErrorPrototype("ReferenceError"), "original logical assignment runtime error");
+}
+passes("var x=1;x &&= 2;x===2;");
+passes("var x=0;x ||= 2;x===2;");
 console.log("Bitwise operators passed");
