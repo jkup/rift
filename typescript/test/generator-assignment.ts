@@ -49,7 +49,7 @@ for (let i = 0; i < cases.length; i++) {
 for (const source of [
 
 
-    "function* f(){var x;x??=yield 1;}",
+
 
 ]) {
     const prepared = prepareBoundedScript({ id: "boundary", text: source }, new Realm((_line: string): void => {}, "script"));
@@ -71,3 +71,5 @@ check(closed.type === "normal" && closed.value.kind === "boolean" && closed.valu
 {const realm=new Realm((_line:string)=>{},'script');const result=run('function* f(){var a,b;a=b=yield 1;}var g=f();g.next().value===1&&g.next(7).done',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'original chained assignment boundary');}
 {const realm=new Realm((_line:string)=>{},'script');const result=run('function* f(){var o={};o[yield 1]=2;}var g=f();g.next().value===1&&g.next("x").done',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'original computed assignment boundary');}
 console.log("generator assignment passed");
+
+{const result=run('function* f(){var x;x??=yield 1;}var g=f();g.next().value===1&&g.next(7).done',new Realm((_line:string)=>{},'script'));check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'original nullish assignment boundary');}

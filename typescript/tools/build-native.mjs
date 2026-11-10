@@ -146,6 +146,7 @@ const entries = [
     ["test/generator-destructure-value.ts", "generator-destructure-value"],
     ["test/nullish-coalescing.ts", "nullish-coalescing"],
     ["test/logical-assignment.ts", "logical-assignment"],
+    ["test/generator-logical-assignment.ts", "generator-logical-assignment"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

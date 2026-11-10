@@ -3407,6 +3407,11 @@ class ExecutionEngine {
                             const left = getReferenceValue(this.context, reference.reference, expression.loc);
                             if (left.type === "throw") return left;
                             if (left.type !== "normal") throw new Error("invalid compound read completion");
+                            if (skipsRightOperand(expression.op, left.value)) {
+                                value = left.value;
+                                expression = null;
+                                continue;
+                            }
                             frames.push({ kind: "compound-value", expression, reference: reference.reference, left: left.value });
                         } else frames.push({ kind: "assignment-value", expression, reference: reference.reference });
                         expression = expression.value;
@@ -3533,7 +3538,9 @@ class ExecutionEngine {
             const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
             if (frame.kind === "compound-value") {
-                const computed = applyBinaryOperator(frame.expression.op, frame.left, value, this.context, frame.expression.loc);
+                const op = frame.expression.op;
+                const computed = op === "&&" || op === "||" || op === "??" ? normal(value)
+                    : applyBinaryOperator(op, frame.left, value, this.context, frame.expression.loc);
                 if (computed.type === "throw") return computed;
                 const written = putReferenceValue(this.context, frame.reference, computed.value, frame.expression.loc);
                 if (written.type === "throw") return written;
@@ -3569,6 +3576,10 @@ class ExecutionEngine {
                 if (result.type === "throw") return result;
                 if (result.type !== "normal") throw new Error("invalid super read completion");
                 if (frame.operation.kind === "compound") {
+                    if (skipsRightOperand(frame.operation.expression.op, result.value)) {
+                        value = result.value;
+                        continue;
+                    }
                     frames.push({ kind: "compound-value", expression: frame.operation.expression, reference, left: result.value });
                     expression = frame.operation.expression.value;
                     continue;
@@ -3604,6 +3615,10 @@ class ExecutionEngine {
                     const left = getReferenceValue(this.context, reference, frame.expression.loc);
                     if (left.type === "throw") return left;
                     if (left.type !== "normal") throw new Error("invalid compound target read");
+                    if (skipsRightOperand(frame.expression.op, left.value)) {
+                        value = left.value;
+                        continue;
+                    }
                     frames.push({ kind: "compound-value", expression: frame.expression, reference, left: left.value });
                 } else frames.push({ kind: "assignment-value", expression: frame.expression, reference });
                 expression = frame.expression.value;

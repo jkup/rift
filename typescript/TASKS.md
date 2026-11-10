@@ -4256,7 +4256,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-281 — Suspended logical assignments
 
-Status: **in progress — isolated successor to TS-280**. Owner: Codex catch-up chat, 2026-11-10. Resume logical assignment targets and RHS expressions with the same reference/short-circuit rules as ordinary evaluation. Skip RHS suspension and writes when the old value decides the result; retain property/super references when writing. Own parser, compound continuation paths, historical boundary migrations, tests/manifests and docs in build/generator-logical-assignment-draft. Require both-host/static, async, accessor/order and Realm/budget tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume logical assignment targets and RHS expressions with the same reference/short-circuit rules as ordinary evaluation. Skip RHS suspension and writes when the old value decides the result; retain property/super references when writing. Own parser, compound continuation paths, historical boundary migrations, tests/manifests and docs in build/generator-logical-assignment-draft. Require both-host/static, async, accessor/order and Realm/budget tests.
 
 ## TS-282 — Suspended optional chains
 

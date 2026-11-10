@@ -751,7 +751,6 @@ class Parser {
                 continue;
             }
             if (node.kind !== "destructure" && node.kind !== "super-call" && node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update" && node.kind !== "super-member") continue;
-            if (node.kind === "compound" && (node.op === "&&" || node.op === "||" || node.op === "??")) continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
                 if (node.kind === "destructure") pending.push({ expression: node.value, visited: false });
