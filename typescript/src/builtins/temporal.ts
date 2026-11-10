@@ -3,6 +3,7 @@ import { registerTemporalInstantArithmetic } from "./temporal-instant-arithmetic
 import { registerTemporalInstantDifference } from "./temporal-instant-difference.js";
 import { registerTemporalDuration } from "./temporal-duration.js";
 import { registerTemporalPlainTime } from "./temporal-plain-time.js";
+import { registerTemporalPlainDate } from "./temporal-plain-date.js";
 import { registerTemporalInstantMethods } from "./temporal-instant-methods.js";
 import { registerTemporalInstantConversion } from "./temporal-instant-conversion.js";
 import type { Realm } from "../realm.js";
@@ -66,6 +67,7 @@ export function registerTemporal(realm: Realm): void {
     registerTemporalInstantDifference(realm);
     namespace.bootstrapDefine("Instant", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     registerTemporalPlainTime(realm, namespace);
+    registerTemporalPlainDate(realm, namespace);
     registerTemporalDuration(realm, namespace);
     realm.defineScriptGlobal("Temporal", { value: { kind: "object", object: namespace }, writable: true, enumerable: false, configurable: true });
 }

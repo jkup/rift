@@ -4490,7 +4490,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-337 — Temporal PlainDate core
 
-Status: **in progress — isolated successor to TS-336**. Owner: Codex catch-up chat, 2026-11-10. Add ISO-only PlainDate construction and branded calendar/date accessors with Realm-owned prototypes. Validate numeric/calendar input before prototype access and extend PlainTime.with brand screening. Own date object/builtin, Realm/constructor/namespace wiring, focused tests/manifests/docs in build/temporal-plain-date-core-draft. Require bounds, conversion ordering, metadata/subclass/Realm behavior and unchanged existing Temporal APIs on full Node/native static validation. Formatting, conversion and arithmetic remain separate tasks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ISO-only PlainDate construction and branded calendar/date accessors with Realm-owned prototypes. Validate numeric/calendar input before prototype access and extend PlainTime.with brand screening. Own date object/builtin, Realm/constructor/namespace wiring, focused tests/manifests/docs in build/temporal-plain-date-core-draft. Require bounds, conversion ordering, metadata/subclass/Realm behavior and unchanged existing Temporal APIs on full Node/native static validation. Formatting, conversion and arithmetic remain separate tasks.
 
 ## TS-338 — Temporal PlainDate formatting
 

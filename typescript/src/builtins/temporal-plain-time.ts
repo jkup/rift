@@ -1,7 +1,7 @@
 import { registerTemporalPlainTimeArithmetic } from "./temporal-plain-time-arithmetic.js";
 import { registerTemporalPlainTimeDifference } from "./temporal-plain-time-difference.js";
 import { registerTemporalPlainTimeConversion } from "./temporal-plain-time-conversion.js";
-import { temporalTimeInteger } from "../temporal-time-fields.js";
+import { temporalInteger } from "../temporal-integer.js";
 import { registerTemporalPlainTimeWith } from "./temporal-plain-time-with.js";
 import { registerTemporalPlainTimeRound } from "./temporal-plain-time-round.js";
 import { registerTemporalPlainTimeString } from "./temporal-plain-time-string.js";
@@ -22,7 +22,7 @@ export function registerTemporalPlainTime(realm: Realm, namespace: GuestObject):
             for (let i = 0; i < 6; i++) {
                 const value = i < args.length ? args[i] : UNDEFINED;
                 if (value.kind === "undefined") { fields.push(0); continue; }
-                const converted = temporalTimeInteger(value, context, loc);
+                const converted = temporalInteger(value, context, loc);
                 if (converted.type === "throw") return converted;
                 fields.push(converted.value);
             }

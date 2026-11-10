@@ -1,5 +1,6 @@
 import type { Realm } from "../realm.js";
 import { GuestTemporalPlainTime, createTemporalPlainTime, temporalPlainTimeValue } from "../temporal-plain-time-object.js";
+import { GuestTemporalPlainDate } from "../temporal-plain-date-object.js";
 import { readTemporalTimeFields, regulateTemporalTime } from "../temporal-time-fields.js";
 import { languageFailure, UNDEFINED, type ValueCompletion } from "../runtime.js";
 
@@ -8,7 +9,7 @@ export function registerTemporalPlainTimeWith(realm: Realm): void {
         const time = temporalPlainTimeValue(receiver, context, loc);
         if (time.type === "throw") return time;
         const partial = args.length === 0 ? UNDEFINED : args[0];
-        if (partial.kind !== "object" || partial.object instanceof GuestTemporalPlainTime)
+        if (partial.kind !== "object" || partial.object instanceof GuestTemporalPlainTime || partial.object instanceof GuestTemporalPlainDate)
             return languageFailure(context.realm, "TypeError", "with requires a partial time object", loc);
         for (const name of ["calendar", "timeZone"]) {
             const read = partial.object.internalGet(name, partial, context, loc);

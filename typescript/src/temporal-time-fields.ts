@@ -1,19 +1,8 @@
 import { temporalOptionString } from "./temporal-options.js";
 import type { Location } from "./syntax.js";
 import { isValidTime, type TimeFields } from "./temporal-time.js";
-import { toPrimitive } from "./primitive-conversion.js";
-import { toNumber, type NumberCompletion } from "./conversion.js";
+import { temporalInteger } from "./temporal-integer.js";
 import { GuestObject, languageFailure, type Value, type OperationContext, type ThrowCompletion } from "./runtime.js";
-
-export function temporalTimeInteger(value: Value, context: OperationContext, loc: Location): NumberCompletion {
-    const primitive = toPrimitive(value, "number", context, loc);
-    if (primitive.type === "throw") return primitive;
-    const converted = toNumber(primitive.value, loc, context.realm);
-    if (converted.type === "throw") return converted;
-    if (!Number.isFinite(converted.value)) return languageFailure(context.realm, "RangeError", "time field must be finite", loc);
-    const integer = Math.trunc(converted.value);
-    return { type: "normal", value: integer === 0 ? 0 : integer };
-}
 
 export function readTemporalTimeFields(object: GuestObject, defaults: TimeFields, context: OperationContext, loc: Location): { type: "normal"; value: TimeFields } | ThrowCompletion {
     const names: (keyof TimeFields)[] = ["hour", "microsecond", "millisecond", "minute", "nanosecond", "second"];
@@ -24,7 +13,7 @@ export function readTemporalTimeFields(object: GuestObject, defaults: TimeFields
         if (read.type === "throw") return read;
         if (read.value.kind === "undefined") fields.push(defaults[name]);
         else {
-            const converted = temporalTimeInteger(read.value, context, loc);
+            const converted = temporalInteger(read.value, context, loc);
             if (converted.type === "throw") return converted;
             fields.push(converted.value);
             present = true;
