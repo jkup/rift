@@ -3342,6 +3342,11 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "assign" || expression.kind === "compound") {
+                        if (expression.kind === "assign" && expression.target.kind === "member" && isSuspendingGeneratorExpression(expression.target)) {
+                            frames.push({ kind: "assignment-base", expression });
+                            expression = expression.target.base;
+                            continue;
+                        }
                         const reference = this.#reference(expression.target, null, this.#active().thisValue);
                         if (reference.type === "abrupt") {
                             if (reference.completion.type === "throw") return reference.completion;
@@ -3457,6 +3462,19 @@ class ExecutionEngine {
                 if (written.type === "throw") return written;
                 if (written.type !== "normal") throw new Error("invalid compound write completion");
                 value = written.value;
+                continue;
+            }
+            if (frame.kind === "assignment-base") {
+                if (frame.expression.target.kind !== "member") throw new Error("assignment base without member");
+                frames.push({ kind: "assignment-key", expression: frame.expression, base: value });
+                expression = frame.expression.target.key;
+                continue;
+            }
+            if (frame.kind === "assignment-key") {
+                const reference: EvaluationReference = { kind: "script-property", strict: this.#active().strict,
+                    reference: { kind: "property", base: frame.base, key: value, loc: frame.expression.target.loc } };
+                frames.push({ kind: "assignment-value", expression: frame.expression, reference });
+                expression = frame.expression.value;
                 continue;
             }
             if (frame.kind === "assignment-value") {

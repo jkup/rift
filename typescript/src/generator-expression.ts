@@ -4,6 +4,8 @@ import type { GuestObject, PropertyKey, Value } from "./runtime.js";
 
 export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "compound-value"; expression: CompoundExpr; reference: EvaluationReference; left: Value }
+    | { kind: "assignment-base"; expression: AssignExpr }
+    | { kind: "assignment-key"; expression: AssignExpr; base: Value }
     | { kind: "assignment-value"; expression: AssignExpr; reference: EvaluationReference }
     | { kind: "object-property"; expression: ObjectExpr; object: GuestObject; index: number; stage: "next" | "key" | "ready" | "value"; key: PropertyKey | null }
     | { kind: "template-substitution"; expression: TemplateExpr; index: number; text: string }
