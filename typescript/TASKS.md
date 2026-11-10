@@ -4656,7 +4656,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-377 — Temporal PlainMonthDay ISO parsing
 
-Status: **in progress — isolated successor to TS-376**. Owner: Codex catch-up chat, 2026-11-10. Parse short month-day forms with optional double hyphen and full ISO date/time forms, sharing short scanning with calendar strings. Preserve parsed reference years until conversion and validate leap dates without public range checks. Require annotations, offsets, yearless leap days and malformed syntax on both hosts. Own src/temporal-iso-parser.ts, src/temporal-calendar-parse.ts and tests/manifests/docs in build/temporal-plain-month-day-parse-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse short month-day forms with optional double hyphen and full ISO date/time forms, sharing short scanning with calendar strings. Preserve parsed reference years until conversion and validate leap dates without public range checks. Require annotations, offsets, yearless leap days and malformed syntax on both hosts. Own src/temporal-iso-parser.ts, src/temporal-calendar-parse.ts and tests/manifests/docs in build/temporal-plain-month-day-parse-draft/.
 
 ## TS-378 — Temporal PlainMonthDay conversion and equality
 

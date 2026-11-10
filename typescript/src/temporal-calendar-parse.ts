@@ -1,5 +1,4 @@
-import { isValidISODate } from "./iso-calendar.js";
-import { TemporalISOScanner, temporalISOYearMonth, temporalISODate, temporalISOTime, temporalISOAnnotations, validAnnotationValue } from "./temporal-iso-parser.js";
+import { TemporalISOScanner, temporalISOMonthDay, temporalISOYearMonth, temporalISODate, temporalISOTime, temporalISOAnnotations, validAnnotationValue } from "./temporal-iso-parser.js";
 import { parseTemporalPlainTime } from "./temporal-plain-time-parse.js";
 import { parseUTCOffset } from "./utc-offset.js";
 
@@ -31,11 +30,7 @@ function yearMonthCalendar(text: string): string | null {
 
 function monthDayCalendar(text: string): string | null {
     const scanner = new TemporalISOScanner(text);
-    if (text.startsWith("--")) scanner.index = 2;
-    const month = scanner.digits(2);
-    scanner.take("-");
-    const day = scanner.digits(2);
-    return isValidISODate({ year: 1972, month, day }) ? calendarAnnotation(scanner, true) : null;
+    return temporalISOMonthDay(scanner) === null ? null : calendarAnnotation(scanner, true);
 }
 
 export function parseTemporalCalendarString(text: string): string | null {

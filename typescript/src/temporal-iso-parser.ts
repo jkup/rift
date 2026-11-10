@@ -147,3 +147,12 @@ export function temporalISOYearMonth(scanner: TemporalISOScanner): ISODate | nul
     const month = scanner.digits(2);
     return month >= 1 && month <= 12 ? { year: sign === "-" ? -year : year, month, day: 1 } : null;
 }
+
+export function temporalISOMonthDay(scanner: TemporalISOScanner): ISODate | null {
+    if (scanner.text.startsWith("--", scanner.index)) scanner.index += 2;
+    const month = scanner.digits(2);
+    scanner.take("-");
+    const day = scanner.digits(2);
+    const date = { year: 1972, month, day };
+    return isValidISODate(date) ? date : null;
+}
