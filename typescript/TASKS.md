@@ -4232,7 +4232,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-275 — Suspended super update targets
 
-Status: **in progress — isolated successor to TS-274**. Owner: Codex catch-up chat, 2026-11-10. Resume a computed super key into the shared prefix/postfix update path. Retain actual this, obtain the home prototype after the key, and preserve key conversion, numeric coercion, getter/setter order and abrupt completion. Own parser, super operation frame, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-super-update-draft. Super deletion remains separate. Require both-host/static and Realm/budget checks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume a computed super key into the shared prefix/postfix update path. Retain actual this, obtain the home prototype after the key, and preserve key conversion, numeric coercion, getter/setter order and abrupt completion. Own parser, super operation frame, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-super-update-draft. Super deletion remains separate. Require both-host/static and Realm/budget checks.
 
 ## TS-276 — Suspended super deletion
 

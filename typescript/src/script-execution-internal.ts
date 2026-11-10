@@ -3360,6 +3360,14 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "update") {
+                        if (expression.target.kind === "super-member") {
+                            const superContext = this.#superContext(expression.target.loc);
+                            if (superContext.type === "throw") return superContext;
+                            frames.push({ kind: "super-key", expression: expression.target, operation: { kind: "update", expression },
+                                homeObject: superContext.homeObject, receiver: superContext.receiver });
+                            expression = expression.target.key;
+                            continue;
+                        }
                         if (expression.target.kind !== "member") throw new Error("suspended update without member");
                         frames.push({ kind: "update-base", expression });
                         expression = expression.target.base;
@@ -3504,6 +3512,13 @@ class ExecutionEngine {
             }
             if (frame.kind === "super-key") {
                 const reference = this.#superReference(frame.homeObject, frame.receiver, value, frame.expression.loc);
+                if (frame.operation.kind === "update") {
+                    const result = this.#updateReference(reference, frame.operation.expression.op, frame.operation.expression.prefix, frame.operation.expression.loc);
+                    if (result.type === "throw") return result;
+                    if (result.type !== "normal") throw new Error("invalid super update completion");
+                    value = result.value;
+                    continue;
+                }
                 if (frame.operation.kind === "assignment") {
                     frames.push({ kind: "assignment-value", expression: frame.operation.expression, reference });
                     expression = frame.operation.expression.value;

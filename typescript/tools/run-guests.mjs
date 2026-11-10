@@ -725,6 +725,7 @@ executeDriver("generator-super-member", { stdout: "generator super member passed
 executeDriver("generator-super-call", { stdout: "generator super call passed\n" });
 executeDriver("generator-super-assignment", { stdout: "generator super assignment passed\n" });
 executeDriver("generator-super-compound", { stdout: "generator super compound passed\n" });
+executeDriver("generator-super-update", { stdout: "generator super update passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

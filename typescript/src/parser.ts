@@ -756,7 +756,7 @@ class Parser {
                 pending.push({ expression: node, visited: true });
                 if (node.kind === "super-member") pending.push({ expression: node.key, visited: false });
                 else if (node.kind === "update") {
-                    if (node.target.kind !== "super-member") pending.push({ expression: node.target, visited: false });
+                    pending.push({ expression: node.target, visited: false });
                 }
                 else if (node.kind === "assign" || node.kind === "compound") {
                     pending.push({ expression: node.value, visited: false });
