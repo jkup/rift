@@ -4846,7 +4846,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-423 — Validate zoned transition queries
 
-Status: **in progress — isolated successor to TS-422**. Owner: Codex catch-up chat, 2026-11-10. Implement getTimeZoneTransition for supported UTC and fixed-offset zones, which have no transitions. Preserve required direction conversion, option access and receiver/error ordering, metadata and cross-Realm errors before returning null. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-transition-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement getTimeZoneTransition for supported UTC and fixed-offset zones, which have no transitions. Preserve required direction conversion, option access and receiver/error ordering, metadata and cross-Realm errors before returning null. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-transition-draft/.
 
 ## TS-424 — Replace ZonedDateTime fields
 
