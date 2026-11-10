@@ -4374,7 +4374,7 @@ Status: **in progress — isolated successor to TS-306**. Owner: Codex catch-up 
 
 ## TS-309 — BigInt codec expectation review
 
-Status: **in progress — validation repair**. Owner: Codex catch-up chat, 2026-11-10. The focused exact-codec review detects the intentional BigInt value-kind addition from TS-290, but its current expectation omitted that approved change. Preserve the historical base and initial failure; narrowly extend the current expected predicate and rerun codec/full tooling. No runtime or protocol widening beyond the integrated BigInt value kind. Prepared correction is in build/native-manifest-repair/script-observe-codec.test.mjs and already passes the isolated successor codec suite.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. The focused exact-codec review detects the intentional BigInt value-kind addition from TS-290, but its current expectation omitted that approved change. Preserve the historical base and initial failure; narrowly extend the current expected predicate and rerun codec/full tooling. No runtime or protocol widening beyond the integrated BigInt value kind. Prepared correction is in build/native-manifest-repair/script-observe-codec.test.mjs and already passes the isolated successor codec suite.
 
 ## TS-310 — Temporal PlainTime core
 
