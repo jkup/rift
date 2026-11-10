@@ -154,6 +154,7 @@ const entries = [
     ["test/template-tokens.ts", "template-tokens"],
     ["test/tagged-templates.ts", "tagged-templates"],
     ["test/bigint-conversion.ts", "bigint-conversion"],
+    ["test/bigint-arithmetic.ts", "bigint-arithmetic"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

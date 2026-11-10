@@ -4290,7 +4290,7 @@ Status: **done — accepted in expression-contexts milestone**. Owner: Codex cat
 
 ## TS-289 — Budgeted BigInt arithmetic backend
 
-Status: **in progress — isolated successor to TS-288**. Owner: Codex catch-up chat, 2026-11-10. Add exact primitive arithmetic with explicit division/exponent errors, signed shifts, bitwise operations and pre-allocation work charging against current steps. Own new backend/tests/manifests/docs in build/bigint-arithmetic-draft. Do not expose guest Value/global syntax yet; numeric integration follows reviewed native primitives. Require static/zero-dynamic and fixed expected arithmetic/error/Realm/resource cases, including enormous exponents and shifts without allocation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add exact primitive arithmetic with explicit division/exponent errors, signed shifts, bitwise operations and pre-allocation work charging against current steps. Own new backend/tests/manifests/docs in build/bigint-arithmetic-draft. Do not expose guest Value/global syntax yet; numeric integration follows reviewed native primitives. Require static/zero-dynamic and fixed expected arithmetic/error/Realm/resource cases, including enormous exponents and shifts without allocation.
 
 ## TS-290 — BigInt values, coercion and numeric operators
 
