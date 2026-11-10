@@ -42,7 +42,7 @@ const cases: string[] = [
   "Object.defineProperty(Number.prototype,\"f\",{value:function(x){\"use strict\";return this+x}});function* f(){return (3).f(yield 1)}var g=f();g.next();g.next(4).value===7"
 ];
 for(let i=0;i<cases.length;i++){const result=run(cases[i],new Realm((_line:string)=>{},"script"));check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"call case "+i);}
-for(const source of ['function* f(){(yield 1)()}', 'function* f(){(yield 1).x(2)}', 'function* f(){new F(yield 1)}', 'function* f(){o?.f(yield 1)}'])check(prepareBoundedScript({id:'boundary',text:source},new Realm((_line:string)=>{},'script')).kind==='blocked','call boundary '+source);
+for(const source of ['function* f(){(yield 1)()}', 'function* f(){(yield 1).x(2)}', 'function* f(){o?.f(yield 1)}'])check(prepareBoundedScript({id:'boundary',text:source},new Realm((_line:string)=>{},'script')).kind==='blocked','call boundary '+source);
 for(const source of ['async function f(){return Math.max(1,await Promise.resolve(7))}f().then(x=>out=x)', 'async function f(){return Math.max(...(await Promise.resolve([1,7])))}f().then(x=>out=x)', 'async function* f(){yield Math.max(1,await Promise.resolve(7))}f().next().then(r=>out=r.value)']){
  const realm=new Realm((_line:string)=>{},'script'),session=createScriptSession();check(run('var out=0;'+source,realm,session).type==='normal','async setup');const jobs=drainScriptJobs(session);check(!jobs.fatal&&jobs.failures.length===0,'async jobs');const result=run('out===7',realm,session);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'async call result');
 }
@@ -60,5 +60,8 @@ for(const source of ['async function f(){return Math.max(1,await Promise.resolve
  const realm=new Realm((_line:string)=>{},'script'),session=createScriptSession(),sentinel=new Error('host call fault');
  const fault=realm.createBuiltin('hostFault',0,(_receiver:Value,_args:Value[],_context:OperationContext,_loc:Location):ValueCompletion=>{throw sentinel});define(realm,'hostFault',{kind:'object',object:fault});
  run('function* f(){return hostFault(yield 1)}var g=f();g.next();',realm,session);let caught=false;try{run('g.next(7)',realm,session)}catch(error){if(error instanceof Error)caught=error===sentinel}const state=session.inspect();check(caught&&state.active===null&&state.calls===0&&state.depth===0,'host call fault restored');
+}
+{
+ const source='function* f(){new F(yield 1)}',realm=new Realm((_line:string)=>{},'script');check(prepareBoundedScript({id:'historical-new',text:source},realm).kind==='ready','historical new admitted');const result=run('var out=0;function F(x){out=x}'+source+'var g=f();g.next();g.next(7).done&&out===7',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'historical new resumes');
 }
 console.log('generator call passed');

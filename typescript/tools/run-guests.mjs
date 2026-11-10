@@ -701,6 +701,7 @@ executeDriver("async-generator-delegate", { stdout: "async generator delegate pa
 executeDriver("generator-member", { stdout: "generator member passed\n" });
 executeDriver("generator-call", { stdout: "generator call passed\n" });
 executeDriver("generator-array", { stdout: "generator array passed\n" });
+executeDriver("generator-new", { stdout: "generator new passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

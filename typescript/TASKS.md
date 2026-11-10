@@ -4130,7 +4130,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-251 — Suspended constructor arguments
 
-Status: **in progress — isolated successor to TS-250**. Owner: Codex catch-up chat, 2026-11-10. Extend retained invocation arguments to new expressions, capturing constructor before argument evaluation and deferring constructor checks/prototype lookup to ordinary construction. Preserve spread, new.target and derived construction behavior through the existing dispatcher. Own syntax/parser, expression frames/dispatch, historical boundary migration, tests/manifests and docs in build/generator-new-draft. Suspended constructor expressions and super calls remain separate. Require both-host/static and abrupt/receiver tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend retained invocation arguments to new expressions, capturing constructor before argument evaluation and deferring constructor checks/prototype lookup to ordinary construction. Preserve spread, new.target and derived construction behavior through the existing dispatcher. Own syntax/parser, expression frames/dispatch, historical boundary migration, tests/manifests and docs in build/generator-new-draft. Suspended constructor expressions and super calls remain separate. Require both-host/static and abrupt/receiver tests.
 
 ## TS-252 — Suspended template substitutions
 

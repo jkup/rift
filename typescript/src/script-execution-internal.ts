@@ -3278,7 +3278,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3293,12 +3293,12 @@ class ExecutionEngine {
                         expression = null;
                         continue;
                     }
-                    if (expression.kind === "call") {
+                    if (expression.kind === "call" || expression.kind === "new") {
                         const reference = this.#expressionReference(expression.callee, null, this.#active().thisValue);
                         const callee = this.#expressionValue(reference, expression.loc);
                         if (callee.type === "throw") return callee;
                         if (callee.type !== "normal") throw new Error("invalid callee completion");
-                        const directEval = expression.callee.kind === "identifier" && expression.callee.name === "eval" &&
+                        const directEval = expression.kind === "call" && expression.callee.kind === "identifier" && expression.callee.name === "eval" &&
                             callee.value.kind === "object" && callee.value.object === this.#active().realm.evalIntrinsic;
                         frames.push({ kind: "call-argument", expression, callee: callee.value,
                             receiver: referenceCallReceiver(reference), directEval, values: [], index: 0 });
@@ -3388,7 +3388,8 @@ class ExecutionEngine {
                     expression = next.kind === "spread" ? next.expression : next;
                     continue;
                 }
-                const called = frame.directEval ? this.#callScript(frame.callee, UNDEFINED, frame.values, frame.expression.loc, true)
+                const called = frame.expression.kind === "new" ? this.#construct(frame.callee, frame.values, frame.expression.loc)
+                    : frame.directEval ? this.#callScript(frame.callee, UNDEFINED, frame.values, frame.expression.loc, true)
                     : this.call(frame.callee, frame.receiver, frame.values, frame.expression.loc);
                 if (called.type === "throw") return called;
                 value = called.value;
