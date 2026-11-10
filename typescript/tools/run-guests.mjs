@@ -736,6 +736,7 @@ executeDriver("generator-optional-chain", { stdout: "generator optional chain pa
 executeDriver("class-evaluation", { stdout: "class evaluation passed\n" });
 executeDriver("generator-class-heritage", { stdout: "generator class heritage passed\n" });
 executeDriver("generator-class-key", { stdout: "generator class key passed\n" });
+executeDriver("template-tokens", { stdout: "template tokens passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

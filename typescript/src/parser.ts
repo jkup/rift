@@ -973,6 +973,14 @@ class Parser {
         const source: FunctionSource = { source: this.source, start: first.start, end: this.token(this.index - 1).end, arrow: true, expressionBody, rest, bodyLoc, ...(asynchronous ? { async: true } : {}) };
         return { kind: "function", loc: first.loc, params, parameters, body, source };
     }
+    templateCooked(token: Token): string {
+        if (token.cooked === undefined) throw new Error("template token lacks cooked text");
+        if (token.cooked === null) {
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "invalid template escape", token.loc);
+            return "";
+        }
+        return token.cooked;
+    }
     chainLink(base: Expr, link: ChainLink): Expr {
         if (base.kind === "chain" && !this.parenthesized.has(base)) { base.links.push(link); return base; }
         return { kind: "chain", loc: base.loc, base, links: [link] };
@@ -1528,8 +1536,7 @@ class Parser {
         }
         if (t.kind === "string") return { kind: "literal", loc, value: t.text };
         if (t.kind === "template" || t.kind === "template-head") {
-            if (t.cooked === undefined) throw new Error("template token lacks cooked text");
-            const strings = [t.cooked], expressions: Expr[] = [];
+            const strings = [this.templateCooked(t)], expressions: Expr[] = [];
             if (t.kind === "template-head") {
                 while (this.error === null) {
                     expressions.push(this.expression(0));
@@ -1538,8 +1545,7 @@ class Parser {
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "expected template continuation", part.loc);
                         break;
                     }
-                    if (part.cooked === undefined) throw new Error("template token lacks cooked text");
-                    strings.push(part.cooked);
+                    strings.push(this.templateCooked(part));
                     if (part.kind === "template-tail") break;
                 }
             }

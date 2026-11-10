@@ -1,7 +1,7 @@
 import { scanRegExpLiteral } from "./regexp-literal.js";
 import type { Rejection } from "./outcomes.js";
 import type { Diagnostic, Location } from "./syntax.js";
-export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly cooked?: string; readonly regexp?: { pattern: string; flags: string } };
+export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly cooked?: string | null; readonly raw?: string; readonly regexp?: { pattern: string; flags: string } };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function digitValue(c: string): number {
@@ -78,7 +78,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
         }
         return source.slice(start, i);
     }
-    function hexDigits(count: number, braced: boolean, loc: Location, message: string): number {
+    function hexDigits(count: number, braced: boolean, loc: Location, message: string, allowInvalid = false): number {
         let value = 0, digits = 0;
         while (i < source.length && (braced ? source.charAt(i) !== "}" : digits < count)) {
             const digit = digitValue(source.charAt(i));
@@ -87,32 +87,33 @@ export function createLexer(source: string, script = false, separatorAudit = fal
             if (value > 0x10ffff) break;
         }
         if (digits === 0 || value > 0x10ffff || (braced ? source.charAt(i) !== "}" : digits !== count)) {
-            fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, message, loc);
-            return 0;
+            if (!allowInvalid) fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, message, loc);
+            return -1;
         }
         if (braced) advance();
         return value;
     }
-    function hexEscape(unit: string, loc: Location, message: string): string {
+    function hexEscape(unit: string, loc: Location, message: string, allowInvalid = false): string | null {
         const braced = unit === "u" && source.charAt(i) === "{";
         if (braced) advance();
-        const value = hexDigits(unit === "x" ? 2 : 4, braced, loc, message);
+        const value = hexDigits(unit === "x" ? 2 : 4, braced, loc, message, allowInvalid);
+        if (value < 0) return null;
         return value <= 0xffff ? String.fromCharCode(value)
             : String.fromCharCode(0xd800 + Math.floor((value - 0x10000) / 1024), 0xdc00 + (value - 0x10000) % 1024);
     }
     function templatePart(initial: boolean, start: number, loc: Location): void {
         advance();
-        let cooked = "";
+        let cooked = "", valid = true;
         while (i < source.length && error === null) {
             let unit = advance();
             if (unit === "`") {
-                tokens.push({ kind: initial ? "template" : "template-tail", text: source.slice(start, i), cooked, loc, start, end: i });
+                tokens.push({ kind: initial ? "template" : "template-tail", text: source.slice(start, i), cooked: valid ? cooked : null, raw: source.slice(start + 1, i - 1).split("\r\n").join("\n").split("\r").join("\n"), loc, start, end: i });
                 if (!initial) templates.pop();
                 return;
             }
             if (unit === "$" && source.charAt(i) === "{") {
                 advance();
-                tokens.push({ kind: initial ? "template-head" : "template-middle", text: source.slice(start, i), cooked, loc, start, end: i });
+                tokens.push({ kind: initial ? "template-head" : "template-middle", text: source.slice(start, i), cooked: valid ? cooked : null, raw: source.slice(start + 1, i - 2).split("\r\n").join("\n").split("\r").join("\n"), loc, start, end: i });
                 if (initial) templates.push(0);
                 if (templates.length > 128) fail({ kind: "resource-limit", guardCode: "parse-depth", count: templates.length, limit: 128 }, "syntax nesting limit exceeded", loc);
                 return;
@@ -131,8 +132,12 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                 else if (unit === "f") unit = "\f";
                 else if (unit === "v") unit = "\v";
                 else if (unit === "0" && !digit(source.charAt(i))) unit = "\0";
-                else if (digit(unit)) fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "invalid template escape", loc);
-                else if (unit === "x" || unit === "u") unit = hexEscape(unit, loc, "invalid template escape");
+                else if (digit(unit)) valid = false;
+                else if (unit === "x" || unit === "u") {
+                    const escaped = hexEscape(unit, loc, "invalid template escape", true);
+                    if (escaped === null) valid = false;
+                    else unit = escaped;
+                }
             } else if (unit === "\r") {
                 if (source.charAt(i) === "\n") advance();
                 unit = "\n";
@@ -237,7 +242,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                         else if (script && unit === "f") unit = "\f";
                         else if (script && unit === "v") unit = "\v";
                         else if (script && unit === "0" && !digit(source.charAt(i))) unit = "\0";
-                        else if (script && (unit === "x" || unit === "u")) unit = hexEscape(unit, loc, "invalid string escape");
+                        else if (script && (unit === "x" || unit === "u")) unit = hexEscape(unit, loc, "invalid string escape") ?? "";
                         else if ((script && digit(unit)) || (!script && unit !== "\\" && unit !== "'" && unit !== '"'))
                             fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "unsupported string escape", loc);
                     }

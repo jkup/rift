@@ -4278,7 +4278,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-286 — Raw template tokens and invalid cooked text
 
-Status: **in progress — isolated successor to TS-285**. Owner: Codex catch-up chat, 2026-11-10. Preserve normalized raw template parts and represent invalid cooked escapes explicitly, deferring their rejection to the ordinary-template parser. Own lexer/parser, semantic lexer tests/manifests and documentation in build/template-tokens-draft. Tagged call execution remains a separate successor. Require both-host static/zero-dynamic and unchanged ordinary template rejection behavior.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Preserve normalized raw template parts and represent invalid cooked escapes explicitly, deferring their rejection to the ordinary-template parser. Own lexer/parser, semantic lexer tests/manifests and documentation in build/template-tokens-draft. Tagged call execution remains a separate successor. Require both-host static/zero-dynamic and unchanged ordinary template rejection behavior.
 
 ## TS-287 — Tagged templates
 
