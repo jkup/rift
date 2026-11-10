@@ -246,6 +246,7 @@ const entries = [
     ["test/class-empty-fields.ts", "class-empty-fields"],
     ["test/temporal-date-duration-days.ts", "temporal-date-duration-days"],
     ["test/temporal-relative-to-option.ts", "temporal-relative-to-option"],
+    ["test/temporal-duration-compare.ts", "temporal-duration-compare"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

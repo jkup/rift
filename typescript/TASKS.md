@@ -4690,7 +4690,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-385 — Exact Temporal Duration comparison with plain relative dates
 
-Status: **in progress — isolated successor to TS-384**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.compare with ordered operand and relativeTo conversion, exact field equality, calendar-unit requirements, constrained ISO calendar day conversion and bounded exact time totals. Support absent/plain relativeTo while explicitly rejecting zoned inputs. Require signed/calendar/tie/range/ordering/Realm tests and native zero-dynamic validation. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-compare-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.compare with ordered operand and relativeTo conversion, exact field equality, calendar-unit requirements, constrained ISO calendar day conversion and bounded exact time totals. Support absent/plain relativeTo while explicitly rejecting zoned inputs. Require signed/calendar/tie/range/ordering/Realm tests and native zero-dynamic validation. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-compare-draft/.
 
 ## TS-386 — Correctly rounded Temporal rational totals
 

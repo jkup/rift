@@ -1,3 +1,4 @@
+import { registerTemporalDurationCompare } from "./temporal-duration-compare.js";
 import { temporalDurationInteger } from "../temporal-duration-fields.js";
 import { registerTemporalDurationConversion } from "./temporal-duration-conversion.js";
 import { registerTemporalDurationString } from "./temporal-duration-string.js";
@@ -75,6 +76,7 @@ export function registerTemporalDuration(realm: Realm, namespace: GuestObject): 
         });
     }
     registerTemporalDurationConversion(realm, constructor);
+    registerTemporalDurationCompare(realm, constructor);
     registerTemporalDurationString(realm);
     registerTemporalDurationArithmetic(realm);
     namespace.bootstrapDefine("Duration", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
