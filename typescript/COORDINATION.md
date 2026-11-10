@@ -2212,3 +2212,9 @@ Incremental lexing, arrow cover parsing, Script token access, RegExp literal sca
 2026-11-10 TS-184 promoted after parser/literal acceptance with 5 changed-file baselines verified. The isolated draft passes 683 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/array-from-draft/build. Combined canonical acceptance remains pending.
 
 2026-11-10 TS-185 promoted after parser/literal acceptance with 7 changed-file baselines verified. The isolated draft passes 684 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/string-repeat-draft/build. Combined canonical acceptance remains pending.
+
+2026-11-10 TS-183–185 integrated as separate commits 212c34d7/2d9c7d1d/0b4fe4d9; 191-entry native gate running. Typecheck, 32 runner tests and ten probes finish before Node readers; tooling/native readers will wait for the entire matrix. TS-186 draft passes 685 Node guests and focused native range mutation/bootstrap checks with zero dynamic coverage. Claimed TS-187 String.raw in a successor draft.
+
+2026-11-10 TS-187 focused String.raw checks pass Node/native with 11394 static statements and zero dynamic; full guest/inventory checks continue. Claimed TS-188 padding, with String.raw baselines retained for any propagation correction. Canonical array factories/repetition remain frozen under their full native gate.
+
+2026-11-10 TS-187 passes 686 Node guests plus native raw/bootstrap/formatting checks. TS-188 passes 687 Node guests plus native padding/bootstrap/formatting checks. Claimed TS-189 bounded weak-storage/clock prerequisite review to choose the next larger parity work from evidence. Native main validation remains frozen.
