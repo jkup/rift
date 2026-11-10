@@ -1630,6 +1630,16 @@ class ExecutionEngine {
             this.depth--;
         }
     }
+    #spreadArguments(input: Value, values: Value[], loc: Location): ThrowCompletion | null {
+        const acquired = getIterator(input, this.context, loc);
+        if (acquired.type === "throw") return acquired;
+        while (true) {
+            const next = iteratorStepValue(acquired.value, this.context, loc);
+            if (next.type === "throw") return next;
+            if (next.done) return null;
+            values.push(next.value);
+        }
+    }
     #arguments(argumentsList: Argument[], env: Environment | null, receiver: Value): { type: "normal"; values: Value[] } | ThrowCompletion {
         const values: Value[] = [];
         for (const arg of argumentsList) {
@@ -1637,14 +1647,8 @@ class ExecutionEngine {
                 if (env !== null) throw new Error("Script argument spread AST requires Script execution");
                 const input = this.#value(arg.expression);
                 if (input.type === "throw") return input;
-                const acquired = getIterator(input.value, this.context, arg.loc);
-                if (acquired.type === "throw") return acquired;
-                while (true) {
-                    const next = iteratorStepValue(acquired.value, this.context, arg.loc);
-                    if (next.type === "throw") return next;
-                    if (next.done) break;
-                    values.push(next.value);
-                }
+                const spread = this.#spreadArguments(input.value, values, arg.loc);
+                if (spread !== null) return spread;
             } else {
                 const value = this.#eval(arg, env, receiver);
                 if (value.type === "throw") return value;
@@ -3296,7 +3300,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3304,6 +3308,19 @@ class ExecutionEngine {
                     if (expression.kind === "await") {
                         frames.push({ kind: "await-operand", expression });
                         expression = expression.value;
+                        continue;
+                    }
+                    if (expression.kind === "call") {
+                        const reference = this.#expressionReference(expression.callee, null, this.#active().thisValue);
+                        const callee = this.#expressionValue(reference, expression.loc);
+                        if (callee.type === "throw") return callee;
+                        if (callee.type !== "normal") throw new Error("invalid callee completion");
+                        const directEval = expression.callee.kind === "identifier" && expression.callee.name === "eval" &&
+                            callee.value.kind === "object" && callee.value.object === this.#active().realm.evalIntrinsic;
+                        frames.push({ kind: "call-argument", expression, callee: callee.value,
+                            receiver: referenceCallReceiver(reference), directEval, values: [], index: 0 });
+                        const arg = expression.args[0];
+                        expression = arg.kind === "spread" ? arg.expression : arg;
                         continue;
                     }
                     if (expression.kind === "member") {
@@ -3352,6 +3369,24 @@ class ExecutionEngine {
             if (frames.length === 0) return normal(value);
             const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "call-argument") {
+                const arg = frame.expression.args[frame.index];
+                if (arg.kind === "spread") {
+                    const spread = this.#spreadArguments(value, frame.values, arg.loc);
+                    if (spread !== null) return spread;
+                } else frame.values.push(value);
+                if (++frame.index < frame.expression.args.length) {
+                    frames.push(frame);
+                    const next = frame.expression.args[frame.index];
+                    expression = next.kind === "spread" ? next.expression : next;
+                    continue;
+                }
+                const called = frame.directEval ? this.#callScript(frame.callee, UNDEFINED, frame.values, frame.expression.loc, true)
+                    : this.call(frame.callee, frame.receiver, frame.values, frame.expression.loc);
+                if (called.type === "throw") return called;
+                value = called.value;
+                continue;
+            }
             if (frame.kind === "member-base") {
                 frames.push({ kind: "member-key", expression: frame.expression, base: value });
                 expression = frame.expression.key;

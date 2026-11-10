@@ -29,6 +29,7 @@ export type ObjectPattern = { kind: "object-pattern"; loc: Location; properties:
 export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "binding"; loc: Location; site: DeclarationSite } | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
 export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[] };
+export type CallExpr = { kind: "call"; loc: Location; callee: Expr; args: Argument[]; suspends?: true };
 export type MemberExpr = { kind: "member"; loc: Location; base: Expr; key: Expr; suspends?: true };
 export type UnaryExpr = { kind: "unary"; loc: Location; op: string; operand: Expr; suspends?: true };
 export type ConditionalExpr = { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr; suspends?: true };
@@ -56,7 +57,7 @@ export type Expr =
     | ConditionalExpr
     | MemberExpr
     | { kind: "new"; loc: Location; callee: Expr; args: Argument[] }
-    | { kind: "call"; loc: Location; callee: Expr; args: Argument[] }
+    | CallExpr
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null; readonly parameters?: readonly FormalParameter[] }
     | { kind: "object"; loc: Location; properties: ObjectProperty[] };
 export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };

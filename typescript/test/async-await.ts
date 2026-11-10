@@ -154,7 +154,7 @@ for(const test of cases){
  check(!drained.fatal&&drained.failures.length===0,"checkpoint: "+test.source);
  string("out",test.after,realm,session);
 }
-for(const text of ['await 1;','function f(){await 1;}','async function f(){await;}','async function f(x=await 1){}','async function f(){return await 1**2;}','async function f(){return foo(await 1);}','async function f(){return ()=>await 1;}'])
+for(const text of ['await 1;','function f(){await 1;}','async function f(){await;}','async function f(x=await 1){}','async function f(){return await 1**2;}','async function f(){return ()=>await 1;}'])
  check(prepareBoundedScript({id:"boundary",text},fresh()).kind === "blocked","await boundary "+text);
 {
  const A=fresh(),B=fresh(),creator=createScriptSession();
@@ -187,5 +187,11 @@ for(const text of ['await 1;','function f(){await 1;}','async function f(){await
  check(failed.fatal&&failed.completed===0&&failed.failures.length===1,"await job start budget");
  check(failed.failures[0].source.unitId==='await-owner'&&failed.failures[0].source.realm===owner,"await job retains suspension source");
  check(!drainScriptJobs(measured).fatal,"independent await job");
+}
+{
+ const source="async function f(){return foo(await 1);}",realm=fresh(),session=createScriptSession();
+ check(prepareBoundedScript({id:"historical-call",text:source},realm).kind==="ready","historical async call admitted");
+ check(run('var out="";function foo(x){return x}'+source+';f().then(x=>out+=x)',realm,session).type==="normal","historical async call setup");
+ const jobs=drainScriptJobs(session);check(!jobs.fatal&&jobs.failures.length===0,"historical async call jobs");string('out','1',realm,session);
 }
 console.log("async await passed");

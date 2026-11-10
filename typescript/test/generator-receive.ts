@@ -47,8 +47,14 @@ const cases: string[] = [
     "function* inner(){yield 1;return 3;}function* f(){try{return yield* inner();}finally{yield 2;}}var g=f();g.next().value===1&&g.next().value===2&&g.next().value===3;"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"receive case "+i);}
-for(const source of ["function* f(){var x=yield 1,y=2;}","function* f(){foo(yield 1);}","function* f(){for(let i=yield 1;;){}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+for(const source of ["function* f(){var x=yield 1,y=2;}","function* f(){for(let i=yield 1;;){}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('function* f(){let x=yield 1;yield ()=>x;return x;}var g=f();g.next();',A);define(B,"g",own(A,"g"));
 const cross=run('var marker={},h=g.next(marker).value;h()===marker&&g.next().value===marker;',B);check(cross.type==="normal"&&cross.value.kind==="boolean"&&cross.value.value,"foreign received binding identity");
+{
+ const source="function* f(){foo(yield 1);}",realm=new Realm((_line:string):void=>{},"script");
+ check(prepareBoundedScript({id:"historical-call",text:source},realm).kind==="ready","historical call admitted");
+ const result=run('function foo(x){return x}'+source+'var g=f();g.next();'+"g.next(7).done",realm);
+ check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"historical call resumes");
+}
 console.log("generator receive passed");

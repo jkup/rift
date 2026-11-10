@@ -54,7 +54,7 @@ for (let i = 0; i < cases.length; i++) {
     const result = run(cases[i], new Realm((_line: string): void => {}, "script"));
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "unary case " + i);
 }
-for (const source of ["function* f(){return -yield 1;}", "function* f(){return typeof yield 1;}", "function* f(){return -(yield 1)**2;}", "function* f(){return foo(-(yield 1));}"])
+for (const source of ["function* f(){return -yield 1;}", "function* f(){return typeof yield 1;}", "function* f(){return -(yield 1)**2;}", ])
     check(prepareBoundedScript({id: "boundary", text: source}, new Realm((_line: string): void => {}, "script")).kind === "blocked", "unary boundary " + source);
 const A = new Realm((_line: string): void => {}, "script"), B = new Realm((_line: string): void => {}, "script");
 const creator = createScriptSession();run('function* f(){return +(yield 1);}var g=f();g.next();var cleaned=false;function* costly(){try{return -(yield 1);}finally{cleaned=true;}}var slow=costly();slow.next();', A, creator);define(B, "g", own(A, "g"));define(B, "slow", own(A, "slow"));
@@ -66,4 +66,10 @@ const stopped = run('slow.next({valueOf(){while(true){}}});', B, createScriptSes
 check(stopped.type === "throw" && stopped.origin.kind === "resource-limit", "unary resource stop");
 const closed = run('!cleaned&&slow.next().done;', A);
 check(closed.type === "normal" && closed.value.kind === "boolean" && closed.value.value, "unary fatal discard");
+{
+ const source="function* f(){return foo(-(yield 1));}",realm=new Realm((_line:string):void=>{},"script");
+ check(prepareBoundedScript({id:"historical-call",text:source},realm).kind==="ready","historical call admitted");
+ const result=run('function foo(x){return x}'+source+'var g=f();g.next();'+"g.next(7).value===-7",realm);
+ check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"historical call resumes");
+}
 console.log("generator unary passed");

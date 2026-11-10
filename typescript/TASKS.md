@@ -4122,7 +4122,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-249 — Suspended call arguments
 
-Status: **in progress — isolated successor to TS-248**. Owner: Codex catch-up chat, 2026-11-10. Preserve captured callee, receiver, direct-eval identity and preceding arguments while later arguments suspend; support spread through the existing iterator protocol. Own syntax/parser, expression frames, argument helper, continuation dispatch, focused tests/manifests and docs in build/generator-call-draft. Suspended callees, constructors, super calls and optional chains remain separate. Require both-host/static checks, argument/getter ordering, direct eval and abrupt cleanup.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Preserve captured callee, receiver, direct-eval identity and preceding arguments while later arguments suspend; support spread through the existing iterator protocol. Own syntax/parser, expression frames, argument helper, continuation dispatch, focused tests/manifests and docs in build/generator-call-draft. Suspended callees, constructors, super calls and optional chains remain separate. Require both-host/static checks, argument/getter ordering, direct eval and abrupt cleanup.
 
 ## TS-250 — Suspended array elements
 

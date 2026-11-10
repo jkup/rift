@@ -62,7 +62,7 @@ for (let i = 0; i < cases.length; i++) {
     const result = run(cases[i], new Realm((_line: string): void => {}, "script"));
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "binary case " + i);
 }
-for (const source of ["function* f(){return 1+yield 2;}", "function* f(){return yield 1+yield 2;}", "function* f(){return new yield 1;}", "function* f(){return foo(yield 1);}"])
+for (const source of ["function* f(){return 1+yield 2;}", "function* f(){return yield 1+yield 2;}", "function* f(){return new yield 1;}", ])
     check(prepareBoundedScript({id: "boundary", text: source}, new Realm((_line: string): void => {}, "script")).kind === "blocked", "binary boundary " + source);
 const A = new Realm((_line: string): void => {}, "script"), B = new Realm((_line: string): void => {}, "script");
 const creator = createScriptSession();
@@ -87,4 +87,10 @@ check(depthClosed.type === "normal" && depthClosed.value.kind === "boolean" && d
 const longSource = 'function* long(){return (yield 1)' + '+1'.repeat(4000) + ';}long().next();';
 const bounded = run(longSource, new Realm((_line: string): void => {}, "script"));
 check(bounded.type === "throw" && bounded.origin.kind === "resource-limit" && bounded.origin.guardCode === "evaluation-depth", "long binary tree has bounded evaluation without parser recursion");
+{
+ const source="function* f(){return foo(yield 1);}",realm=new Realm((_line:string):void=>{},"script");
+ check(prepareBoundedScript({id:"historical-call",text:source},realm).kind==="ready","historical call admitted");
+ const result=run('function foo(x){return x}'+source+'var g=f();g.next();'+"g.next(7).value===7",realm);
+ check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"historical call resumes");
+}
 console.log("generator binary passed");

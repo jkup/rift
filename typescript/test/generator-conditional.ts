@@ -53,12 +53,16 @@ for (let i = 0; i < cases.length; i++) {
     const result = run(cases[i], new Realm((_line: string): void => {}, "script"));
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "conditional case " + i);
 }
-for (const source of [ "function* f(){return foo((yield 1)?2:3);}"])
-    check(prepareBoundedScript({id: "boundary", text: source}, new Realm((_line: string): void => {}, "script")).kind === "blocked", "conditional boundary " + source);
 const A = new Realm((_line: string): void => {}, "script"), B = new Realm((_line: string): void => {}, "script");
 const creator = createScriptSession();run('function* f(){return (yield 1)?null.x:7;}var g=f();g.next();', A, creator);define(B, "g", own(A, "g"));
 const steps = creator.inspect().steps, session = createScriptSession();
 const failed = run('g.next(true);', B, session);
 check(failed.type === "throw" && failed.value.kind === "object" && failed.value.object.getPrototypeOf() === A.getErrorPrototype("TypeError"), "conditional error Realm");
 check(creator.inspect().steps === steps && session.inspect().steps > 0, "conditional current session");
+{
+ const source="function* f(){return foo((yield 1)?2:3);}",realm=new Realm((_line:string):void=>{},"script");
+ check(prepareBoundedScript({id:"historical-call",text:source},realm).kind==="ready","historical call admitted");
+ const result=run('function foo(x){return x}'+source+'var g=f();g.next();'+"g.next(true).value===2",realm);
+ check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"historical call resumes");
+}
 console.log("generator conditional passed");

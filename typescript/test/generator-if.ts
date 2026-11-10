@@ -45,8 +45,6 @@ for (let i=0;i<cases.length;i++) {
  const result=run(cases[i],new Realm((_line:string):void=>{},"script"));
  check(result.type === "normal" && result.value.kind === "boolean" && result.value.value,"if case "+i);
 }
-for(const source of ['function* f(){if(foo(yield 1)){}}'])
- check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind === "blocked","if boundary");
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script"),creator=createScriptSession();
 run('var cleaned=false;function* f(){try{if(yield 1){while(true){}}}finally{cleaned=true;}}var g=f();g.next();',A,creator);
 define(B,"g",own(A,"g"));const steps=creator.inspect().steps,session=createScriptSession({maxSteps:80,maxCalls:16});
@@ -55,4 +53,10 @@ check(stopped.type === "throw" && stopped.origin.kind === "resource-limit","if c
 check(creator.inspect().steps === steps && session.inspect().steps > 0,"if current session");
 const closed=run('!cleaned&&g.next().done;',A);
 check(closed.type === "normal" && closed.value.kind === "boolean" && closed.value.value,"if fatal discard");
+{
+ const source="function* f(){if(foo(yield 1)){}}",realm=new Realm((_line:string):void=>{},"script");
+ check(prepareBoundedScript({id:"historical-call",text:source},realm).kind==="ready","historical call admitted");
+ const result=run('function foo(x){return x}'+source+'var g=f();g.next();'+"g.next(true).done",realm);
+ check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"historical call resumes");
+}
 console.log("generator if passed");
