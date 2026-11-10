@@ -779,6 +779,7 @@ executeDriver("temporal-duration-string", { stdout: "temporal duration string pa
 executeDriver("temporal-duration-balance", { stdout: "temporal duration balance passed\n" });
 executeDriver("temporal-duration-arithmetic", { stdout: "temporal duration arithmetic passed\n" });
 executeDriver("temporal-difference-options", { stdout: "temporal difference options passed\n" });
+executeDriver("temporal-instant-difference", { stdout: "temporal instant difference passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

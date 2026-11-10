@@ -4478,7 +4478,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-334 — Temporal Instant differences
 
-Status: **in progress — isolated successor to TS-333**. Owner: Codex catch-up chat, 2026-11-10. Add Instant.until/since using shared conversion, ordered difference settings, exact signed rounding and Duration balancing. Own Instant difference registration, conversion helper export, focused tests/manifests/docs in build/temporal-instant-difference-draft. Require both directions and signs, epoch endpoints, unsafe Number fields, input-before-options ordering, brands/Realm and full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Instant.until/since using shared conversion, ordered difference settings, exact signed rounding and Duration balancing. Own Instant difference registration, conversion helper export, focused tests/manifests/docs in build/temporal-instant-difference-draft. Require both directions and signs, epoch endpoints, unsafe Number fields, input-before-options ordering, brands/Realm and full Node/native static validation.
 
 ## TS-335 — Temporal PlainTime differences
 

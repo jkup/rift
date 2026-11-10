@@ -6,7 +6,7 @@ import { parseTemporalInstant } from "../temporal-instant-parse.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type OperationContext, type Value, type ValueCompletion } from "../runtime.js";
 
-function toInstantNanoseconds(value: Value, context: OperationContext, loc: Location): BigIntResult {
+export function toInstantNanoseconds(value: Value, context: OperationContext, loc: Location): BigIntResult {
     if (value.kind === "object" && value.object instanceof GuestTemporalInstant)
         return { type: "normal", value: value.object.epochNanoseconds };
     const primitive = toPrimitive(value, "string", context, loc);
