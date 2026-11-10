@@ -2236,3 +2236,5 @@ Array.of, Array.from and String.repeat are accepted (TS-183–185). Node/native 
 2026-11-10 TS-188 promoted after array factory/repetition acceptance with 6 changed-file baselines verified. The isolated draft passes 687 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/string-padding-draft/build. Combined canonical acceptance remains pending.
 
 2026-11-10 TS-190 promoted after array factory/repetition acceptance with 4 changed-file baselines verified. The isolated draft passes 688 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/math-random-draft/build. Combined canonical acceptance remains pending.
+
+2026-11-10 TS-192 focused reviver passes both hosts with zero dynamic coverage, including 5,000 levels of nesting and callback-created cycles stopped by the operation budget. Canonical TS-186/187/188/190 passes typecheck, runner32, ten probes and 688 Node guests; its native matrix remains frozen. Claimed TS-193 to measure JSON scanner concatenation before any allocation change.

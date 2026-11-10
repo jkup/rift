@@ -3871,3 +3871,7 @@ Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-
 
 
 Array.of, Array.from and String.repeat are accepted (TS-183–185). Node/native guests pass 684/684 without skips; all 191 native entries pass static-only compilation and parsed zero-dynamic coverage in 1471527ms, with no retries. Tooling passes 293/293 in 217821.4555ms, runner 32/32, ten probes and typechecking pass. Corpus Node jpRRVk/native 0Lq7yA matches all 225 normalized records and preserves all 179 prior completions (114 reported successes, 65 unchecked; 12 parse errors, 33 runtime errors, one reported failure). The method-length fixture advances but remains incomplete. Evidence: build/array-factories-native-results.json, corpus-comparison.json with the same prefix and array-factories-* logs. Next: separate integration of reviewed range mutation, String.raw, padding and Realm-local random.
+
+## TS-193 — JSON string scanner allocation review
+
+Status: **done — measured; no production change justified**. Owner: Codex catch-up chat, 2026-11-10. Measure the current JSON string scanner on increasing plain/escaped string sizes before deciding whether its per-character concatenation needs replacement. If evidence supports a change, collect contiguous source segments and decoded escapes with one final join, preserving exact parser validation, UTF-16 results and tick order. Own json-parser string scanning, focused tests and notes in build/json-string-draft based on TS-192; no syntax or reviver semantics changes.
