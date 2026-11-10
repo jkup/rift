@@ -4421,3 +4421,19 @@ Status: **in progress — isolated successor to TS-318**. Owner: Codex catch-up 
 ## TS-320 — Temporal PlainTime conversion and comparison
 
 Status: **in progress — isolated successor to TS-319**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.from/compare/equals with branded/string/property-bag conversion, ordered overflow validation and fresh intrinsic from results. Share field regulation with with(). Own conversion builtin, time-field helpers, PlainTime registration/with, focused tests/manifests/docs in build/temporal-plain-time-conversion-draft. Require no primitive coercion, string work budgets, conversion/option order, invalid and cross-Realm cases, full Node and native static/zero-dynamic regressions. Future PlainDateTime/ZonedDateTime brands require explicit conversion branches when introduced.
+
+## TS-321 — Temporal duration record bounds
+
+Status: **in progress — isolated successor to TS-320**. Owner: Codex catch-up chat, 2026-11-10. Add pure ten-field duration records with common-sign validation, calendar-unit bounds and exact normalized-nanosecond bounds. Own duration record module, focused tests/manifests/docs in build/temporal-duration-records-draft. No guest Duration constructor yet. Require mixed signs, every field, unsafe integer boundaries and one-nanosecond threshold cases, full Node and native static/zero-dynamic validation.
+
+## TS-322 — Temporal Duration core
+
+Status: **in progress — isolated successor to TS-321**. Owner: Codex catch-up chat, 2026-11-10. Add Realm-owned Duration construction, ten branded accessors, sign/blank and throwing valueOf. Convert all arguments in order with integral-value rejection, then validate common signs/exact bounds before prototype access. Own duration object/builtin, Realm/prototype fallback/namespace registration, focused tests/manifests/docs in build/temporal-duration-core-draft. Require conversion/abrupt/prototype order, signed bounds, metadata/subclasses/cross-Realm cases, full Node and native static/zero-dynamic regressions. Parsing, formatting and arithmetic remain separate tasks.
+
+## TS-323 — Temporal Duration sign transformations
+
+Status: **in progress — isolated successor to TS-322**. Owner: Codex catch-up chat, 2026-11-10. Add branded negated/abs methods with fresh intrinsic results and positive-zero fields. Own Duration builtin, focused tests/manifests/docs in build/temporal-duration-sign-draft. Require all ten fields, blank and unsafe integers, ignored overrides, metadata/subclasses/Realm cases, full Node and native static/zero-dynamic validation.
+
+## TS-324 — Exact Temporal duration formatting
+
+Status: **in progress — isolated successor to TS-323**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO duration formatting with exact second/subsecond accumulation and shared fractional formatting. Preserve larger fields without balancing them; support auto and explicit 0–9 digits. Own duration formatter, shared time formatter, focused tests/manifests/docs in build/temporal-duration-format-draft. No guest methods yet. Require signed/zero/calendar-only values, unsafe integer carry, all precisions and unchanged Instant/PlainTime formatting, full Node/native static validation.
