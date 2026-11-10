@@ -2438,3 +2438,17 @@ The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound
 2026-11-10: TS-247 passes focused native/static and five native regression suites. Its final Node suite is active. TS-248 claimed for suspended property reads while the next combined async-generator milestone validates; no canonical semantic changes during the matrix.
 
 2026-11-10 TS-247 promoted after async-iteration acceptance with 6 changed-file baselines verified. Isolated evidence passes 737 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/async-generator-delegate-draft/build and build/async-generator-delegate-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-10: TS-248 focused Node and native/static checks pass; full Node and five native regressions are active. TS-249 claimed for suspended call arguments, preserving captured receiver/direct-eval identity and left-to-right argument processing. Combined TS-243–247 matrix remains active and frozen.
+
+2026-11-10: TS-249 focused native/static passes. Seven historical call-argument rejections are explicitly migrated with original source and resumed-result assertions; full Node/native regressions are active. TS-250 claimed for array element/spread suspension using retained arrays and indices, while canonical async-generator validation continues.
+
+2026-11-10: TS-249 final focused native and migrated async checks pass; TS-250 focused Node checks pass and native review is active. TS-251 claimed to reuse retained argument frames for construction, without duplicating constructor semantics.
+
+2026-11-10: TS-251 focused native passes after explicit union-arm assignment; a syntax-type reduction preserves the original SC1090 failure. TS-252 claimed for untagged template substitution suspension, sharing string conversion with ordinary templates.
+
+2026-11-10: TS-252 focused native/static passes, with full Node/regressions active. TS-253 claimed for for-loop tests using the existing loop-test receiver and retained iteration environment. Initializers and updates stay outside this slice.
+
+2026-11-10: Combined TS-243–247 matrix passes 244/244 native static gates without retries; final native guests/tooling are active. TS-248–253 isolated reviews pass, with exact predecessor baselines verified. TS-254 claimed for suspended for-loop updates while acceptance finishes.
+
+2026-11-10 Async generators accepted (TS-243–247): 737/737 guests on each host without skips; all 244 native static-only/zero-dynamic gates pass in 2356203ms without retries. Tooling passes 293/293 in 225767.2475ms; runner32/32 in 1506.8832ms, ten probes and typechecking pass. Corpus node-vi8qwS/native-xJLCVa matches all 225 normalized records and preserves all 188 prior completions, reaching 190 (116 reported successes, 74 unchecked). Newly completed fixtures are switch-scope-test.js (seven reported checks) and test-async-generators.js (unchecked by the corpus runner; separately verified with a counted 37-assertion harness on both hosts). Remaining outcomes: two parse errors, 32 runtime errors and one reported failure. Evidence: build/async-generators-native-results.json, async-generators-corpus-comparison.json and async-generators-* logs. Property reads, call/constructor arguments, arrays, templates and for-loop conditions have isolated reviewed evidence and require combined acceptance.
