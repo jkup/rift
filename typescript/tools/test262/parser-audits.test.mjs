@@ -42,6 +42,23 @@ for (const [driver, directory, count] of [
     else expected.set(snapshot.id, audit);
   }
   assert.equal(expected.size, count);
+  if (driver === 'script-strict-rule-audit') {
+    const row = rows.find(row => row.id === 'X03');
+    assert.equal(row.text, '"use strict"; {function f(){} function f(){}} function g(){/x/;}');
+    expected.set(row.id, {kind: 'eligible', sourceUnits: 64, consumedUnits: 64, candidates: [{
+      ruleCode: 'duplicate-block-lexical-function', scopeStart: 14, scopeEnd: 45,
+      first: {name: 'f', start: 24, end: 25, loc: {line: 1, column: 25}},
+      second: {name: 'f', start: 39, end: 40, loc: {line: 1, column: 40}},
+    }]});
+  } else {
+    const row = rows.find(row => row.id === 'E07');
+    assert.equal(row.text, 'function f(a,a){"use strict";} function g(){/x/;}');
+    expected.set(row.id, {kind: 'eligible', sourceUnits: 49, consumedUnits: 49, candidates: [{
+      ruleCode: 'duplicate-strict-parameter', functionStart: 0, functionEnd: 30,
+      first: {name: 'a', start: 11, end: 12, loc: {line: 1, column: 12}},
+      second: {name: 'a', start: 13, end: 14, loc: {line: 1, column: 14}},
+    }]});
+  }
   if (driver === 'script-strict-parameter-audit') for (const [id, text, column] of [
     ['E08', 'function f(a,a,eval){"use strict";}', 16],
     ['E48', 'function f(a,a,b,eval){"use strict";}', 18],
