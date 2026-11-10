@@ -5,29 +5,34 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted RegExp protocol milestone passes 676/676 guests on each host,
-291/291 tooling checks, and all 183 native static gates without retries.
-The unchanged 225-file C++ corpus has 178 completions: 114 reported successes and
-64 unchecked completions. Remaining outcomes are 14 parse errors, 32 runtime
+The accepted range/formatting/random milestone passes 688/688 guests on each
+host, 293/293 tooling checks, and all 195 native static gates without retries.
+The unchanged 225-file C++ corpus has 179 completions: 114 reported successes and
+65 unchecked completions. Remaining outcomes are 12 parse errors, 33 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
 Test262 conformance score.
 
-Bounded classes include inheritance, explicit derived constructors, new.target
-and super properties. Promise construction, resolution, then/catch/finally, try,
-withResolvers, explicit CLI checkpoints, all/race, AggregateError and
-allSettled/any are accepted.
+Classes, Promise combinators/checkpoints and bounded RegExp protocols/literals
+are accepted. Incremental lexing and arrow cover parsing are integrated.
+Array.of/from/fill/copyWithin, String.raw/repeat/padStart/padEnd and Realm-local
+Math.random are accepted. JSON reviver, JSON.stringify and substring/substr
+have reviewed isolated drafts; their canonical integration gates remain next.
+Unicode regex modes, lookaround, backreferences, named groups and matchAll
+remain unsupported.
 
-The bounded RegExp parser, matching machine, constructor, exec/test, d indices
-and match/search/replace/split protocols are accepted. Regex literal syntax
-uses parser-selected lexical goals. Reviewed incremental lexing, parenthesized
-arrow cover parsing, parser token access and delimiter scanning are ready for
-integration and full validation. Literal admission remains isolated, including
-whole-source early-error certification and fresh intrinsic object evaluation.
-Unicode modes, lookaround, backreferences, named groups and matchAll remain
-unsupported.
-Generators/async, Temporal, weak-reference facilities, class fields and remaining
-destructuring contexts are separate gaps. Preserve the known malformed or
-nonstandard-helper C++ fixtures and the classified disagreements below.
+Prioritize the [generator activation boundary](generator-boundary.md) before
+adding yield/async grammar. Keep explicit completion records and prove that
+resuming from another session restores caller state and uses current budgets.
+Temporal, class fields and remaining destructuring contexts are separate gaps.
+
+The [weak-storage probes](native-host-prerequisites.md) fail the static contract;
+[Date local-time probes](date-host-boundary.md) disagree across named zones on
+Windows; [locale comparison](string-locale-prerequisites.md) violates canonical
+equivalence in the pinned native runtime. These need reviewed backend work,
+not strong-map substitutes, fixed time-zone offsets or ASCII approximations.
+The [JSON scanner measurement](json-scanner-measurement.md) did not justify a
+rewrite. Preserve malformed/nonstandard-helper fixtures and the classified
+disagreements below.
 
 ## Direction
 
