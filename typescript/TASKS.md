@@ -4838,7 +4838,7 @@ TS-420 scope update: the larger native entry exposed SC1090 in constructor metad
 
 ## TS-421 — ZonedDateTime date and exact-time arithmetic
 
-Status: **in progress — isolated successor to TS-420**. Owner: Codex catch-up chat, 2026-11-10. Add/subtract durations with calendar date arithmetic before exact time arithmetic for UTC/fixed offsets. Preserve constrained/rejected month ends, intermediate/final bounds, duration/options ordering and intrinsic allocation. Test endpoint and nanosecond behavior on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-arithmetic-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add/subtract durations with calendar date arithmetic before exact time arithmetic for UTC/fixed offsets. Preserve constrained/rejected month ends, intermediate/final bounds, duration/options ordering and intrinsic allocation. Test endpoint and nanosecond behavior on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-arithmetic-draft/.
 
 ## TS-422 — Round ZonedDateTime local times and days
 
