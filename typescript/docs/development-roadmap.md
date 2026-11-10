@@ -5,10 +5,10 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted generator-yields milestone passes 708/708 guests on each
-host, 293/293 tooling checks, and all 215 native static gates without retries.
-The unchanged 225-file C++ corpus has 181 completions: 114 reported successes and
-67 unchecked completions. Remaining outcomes are 10 parse errors, 33 runtime
+The accepted generator-control milestone passes 716/716 guests on each
+host, 293/293 tooling checks, and all 223 native static gates without retries.
+The unchanged 225-file C++ corpus has 184 completions: 115 reported successes and
+69 unchecked completions. Remaining outcomes are 7 parse errors, 33 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
 Test262 conformance score.
 
@@ -19,18 +19,18 @@ Math.random, JSON reviver/stringify, substring/substr, String.at, trim aliases,
 matchAll, computed object keys, shorthand, globalThis, named functions, separate
 function setup/body execution, prototype setters, object spread and replaceAll
 are accepted. Context and pending-operand probes protect the suspension boundary.
-Binary/reference helpers, generator-start execution, direct yields, block/conditional
-and while/do/for continuations, and generator methods are accepted. Reviewed
-isolated successors add delegation, catch/finally, direct yield binding/return
-receivers, iterator/enumeration loops, labels and switch (716 Node guests plus
-focused native checks). The receiver draft passes the unchanged 88-check original
-generator suite and four other original generator fixtures on both hosts. Suspended
-assignment operands are active isolated work; general nested expressions and async
+Binary/reference helpers and generator execution now include yields, delegation,
+catch/finally, direct binding/return receivers, loops, labels, switch and methods.
+The unchanged original generator suite reports all 88 checks passing on both
+hosts. Isolated successors add suspended assignments, throws and destructuring,
+then formal and arrow binding patterns. Formal patterns pass the unchanged
+generator-destructuring fixture on both hosts; combined acceptance is still
+pending for these successors. General nested expression suspension and async
 remain subsequent work. Unicode regex modes, lookaround, backreferences
 and named groups remain unsupported.
 
-Prioritize the [generator activation boundary](generator-boundary.md) before
-adding yield/async grammar. Keep explicit completion records and prove that
+Keep the [generator activation boundary](generator-boundary.md) intact as
+nested expression/async support expands. Retain explicit completions and prove that
 resuming from another session restores caller state and uses current budgets.
 Temporal, class fields and remaining destructuring contexts are separate gaps.
 
