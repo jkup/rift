@@ -4854,7 +4854,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-425 — Project plain dates and date-times into timezones
 
-Status: **in progress — isolated successor to TS-424**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate/PlainDateTime.toZonedDateTime using exact fixed-offset projection, shared disambiguation validation and intrinsic allocation. Preserve PlainDate wrapper/brand timezone access order, optional plain time, timezone-before-options errors and endpoint semantics. Own src/builtins/temporal.ts, src/builtins/temporal-zoned-conversion.ts and tests/manifests/docs in build/temporal-plain-to-zoned-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate/PlainDateTime.toZonedDateTime using exact fixed-offset projection, shared disambiguation validation and intrinsic allocation. Preserve PlainDate wrapper/brand timezone access order, optional plain time, timezone-before-options errors and endpoint semantics. Own src/builtins/temporal.ts, src/builtins/temporal-zoned-conversion.ts and tests/manifests/docs in build/temporal-plain-to-zoned-draft/.
 
 ## TS-426 — Zoned difference reuse review
 

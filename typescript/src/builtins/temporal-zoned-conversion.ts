@@ -4,6 +4,7 @@ import { GuestTemporalZonedDateTime, createTemporalZonedDateTime, temporalZonedD
 import { parseTemporalZonedDateTime, type TemporalZonedRecord } from "../temporal-zoned-parse.js";
 import { interpretTemporalZonedDateTime, type TemporalOffsetOption } from "../temporal-zoned-interpret.js";
 import { toTemporalTimeZone } from "../temporal-time-zone.js";
+import { temporalDisambiguation } from "../temporal-time-zone-options.js";
 import type { TemporalTimeZone } from "../temporal-time-zone-parse.js";
 import { temporalCalendarWithISODefault } from "../temporal-calendar.js";
 import { readTemporalDateField, mergeTemporalDateFields, type TemporalDateFields } from "../temporal-date-fields.js";
@@ -21,15 +22,8 @@ function conversionOptions(value: Value, context: OperationContext, loc: Locatio
     else if (value.kind === "object") object = value.object;
     else return languageFailure(context.realm, "TypeError", "Temporal options must be an object", loc);
     const receiver: Value = { kind: "object", object };
-    const disambiguation = object.internalGet("disambiguation", receiver, context, loc);
+    const disambiguation = temporalDisambiguation(object, context, loc);
     if (disambiguation.type === "throw") return disambiguation;
-    if (disambiguation.value.kind !== "undefined") {
-        const converted = temporalOptionString(disambiguation.value, context, loc);
-        if (converted.type === "throw") return converted;
-        const text = converted.value;
-        if (text !== "compatible" && text !== "earlier" && text !== "later" && text !== "reject")
-            return languageFailure(context.realm, "RangeError", "invalid disambiguation option", loc);
-    }
     const offset = object.internalGet("offset", receiver, context, loc);
     if (offset.type === "throw") return offset;
     let offsetOption: TemporalOffsetOption = fallback;

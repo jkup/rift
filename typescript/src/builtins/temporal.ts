@@ -13,6 +13,7 @@ import { registerTemporalPlainDate } from "./temporal-plain-date.js";
 import { registerTemporalInstantMethods } from "./temporal-instant-methods.js";
 import { registerTemporalInstantConversion } from "./temporal-instant-conversion.js";
 import type { Realm } from "../realm.js";
+import { registerTemporalPlainToZoned } from "./temporal-plain-to-zoned.js";
 import { createTemporalInstant, temporalInstantValue } from "../temporal-instant-object.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import { toBigInt } from "../numeric.js";
@@ -80,6 +81,7 @@ export function registerTemporal(realm: Realm): void {
     registerTemporalPlainDateTime(realm, namespace);
     registerTemporalDuration(realm, namespace);
     registerTemporalNow(realm, namespace);
+    registerTemporalPlainToZoned(realm);
     registerTemporalZonedDateTime(realm, namespace);
     realm.defineScriptGlobal("Temporal", { value: { kind: "object", object: namespace }, writable: true, enumerable: false, configurable: true });
 }
