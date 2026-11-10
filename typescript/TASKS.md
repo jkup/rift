@@ -4463,3 +4463,31 @@ Status: **in progress — isolated successor to TS-328**. Owner: Codex catch-up 
 ## TS-330 — Temporal Duration string rounding
 
 Status: **in progress — isolated successor to TS-329**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.toString with ordered precision options, signed rounding, balancing to the existing largest unit and exact bounds. Own duration string builtin/helper and registration, focused tests/manifests/docs in build/temporal-duration-string-draft. Require no-round preservation, signed ties and carries, invalid options, boundary overflow, brands/Realm and full Node/native static validation.
+
+## TS-331 — Shared Temporal duration balancing
+
+Status: **in progress — isolated successor to TS-330**. Owner: Codex catch-up chat, 2026-11-10. Extract exact duration balancing and largest-unit selection for shared arithmetic use. Preserve string rounding behavior; support day through nanosecond output fields with bounds/sign validation. Own pure duration balance module, string rounding helper, focused tests/manifests/docs in build/temporal-duration-balance-draft. Require signed carries, every largest unit, exact boundary and Number storage behavior, full Node/native static validation.
+
+## TS-332 — Temporal Duration arithmetic
+
+Status: **in progress — isolated successor to TS-331**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.add/subtract with exact 24-hour-day arithmetic, calendar-unit rejection and balancing to the larger operand unit. Own duration arithmetic builtin/registration and unit selection helper, focused tests/manifests/docs in build/temporal-duration-arithmetic-draft. Require opposite signs, unsafe integers, range bounds, conversion ordering and fresh intrinsic/Realm results; full Node/native static validation.
+
+## TS-333 — Temporal time difference options
+
+Status: **in progress — isolated successor to TS-332**. Owner: Codex catch-up chat, 2026-11-10. Add shared time-only difference settings with ordered option reads, unit relationships and proper-divisor rounding increments. Share unit option parsing without changing existing string behavior. Own option helpers, focused tests/manifests/docs in build/temporal-difference-options-draft. No new guest methods. Require coercion/validation order, every time unit, auto/default largest units, invalid increments and full Node/native static validation.
+
+## TS-334 — Temporal Instant differences
+
+Status: **in progress — isolated successor to TS-333**. Owner: Codex catch-up chat, 2026-11-10. Add Instant.until/since using shared conversion, ordered difference settings, exact signed rounding and Duration balancing. Own Instant difference registration, conversion helper export, focused tests/manifests/docs in build/temporal-instant-difference-draft. Require both directions and signs, epoch endpoints, unsafe Number fields, input-before-options ordering, brands/Realm and full Node/native static validation.
+
+## TS-335 — Temporal PlainTime differences
+
+Status: **in progress — isolated successor to TS-334**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.until/since using shared conversion and exact within-day differences, defaulting to hour units without midnight wrapping. Own PlainTime difference registration and conversion helper export, focused tests/manifests/docs in build/temporal-plain-time-difference-draft. Require signed rounding, day-edge differences, property-bag ordering, options validation, brands/Realm and full Node/native static validation.
+
+## TS-336 — ISO calendar fields and PlainDate bounds
+
+Status: **in progress — isolated successor to TS-335**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO day-of-year, week/year-of-week and PlainDate range checks as prerequisites for date objects. Own ISO calendar fields helper, focused tests/manifests/docs in build/iso-calendar-fields-draft. No guest date registration yet. Require fixed year-boundary cases, leap centuries, a complete Gregorian cycle and representable range edges on Node/native static validation.
+
+## TS-337 — Temporal PlainDate core
+
+Status: **in progress — isolated successor to TS-336**. Owner: Codex catch-up chat, 2026-11-10. Add ISO-only PlainDate construction and branded calendar/date accessors with Realm-owned prototypes. Validate numeric/calendar input before prototype access and extend PlainTime.with brand screening. Own date object/builtin, Realm/constructor/namespace wiring, focused tests/manifests/docs in build/temporal-plain-date-core-draft. Require bounds, conversion ordering, metadata/subclass/Realm behavior and unchanged existing Temporal APIs on full Node/native static validation. Formatting, conversion and arithmetic remain separate tasks.
