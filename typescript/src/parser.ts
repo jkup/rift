@@ -1022,9 +1022,12 @@ class Parser {
                         if (name === "__proto__") cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, message: "prototype literal syntax is unsupported", loc: key.loc };
                     } else {
                         if (!shorthand) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected property value", first.loc);
-                        cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, message: "expected ':', found '" + this.current().text + "'", loc: this.current().loc };
                         value = { kind: "identifier", loc: first.loc, name };
-                        if (this.eat("=")) value = { kind: "assign", loc: first.loc, target: value, value: this.expression(1) };
+                        if (this.at("=")) {
+                        cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, message: "expected ':', found '" + this.current().text + "'", loc: this.current().loc };
+                            this.take();
+                            value = { kind: "assign", loc: first.loc, target: value, value: this.expression(1) };
+                        }
                     }
                     properties.push({ kind: "data", key: computed ? key : name, value });
                     cover.entries.push({ kind: "data", key, value });

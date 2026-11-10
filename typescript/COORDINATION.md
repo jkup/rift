@@ -2264,3 +2264,5 @@ Array fill/copyWithin, String.raw, padStart/padEnd and Realm-local Math.random a
 2026-11-10 TS-200 promoted after JSON/ranges acceptance with 8 changed-file baselines verified. The isolated draft passes 693 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/regexp-matchall-draft/build. Combined canonical acceptance remains pending.
 
 2026-11-10 TS-201 promoted after JSON/ranges acceptance with 11 changed-file baselines verified. The isolated draft passes 694 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/object-keys-draft/build. Combined canonical acceptance remains pending.
+
+2026-11-10 TS-202 promoted after JSON/ranges acceptance with 5 changed-file baselines verified. The isolated draft passes 695 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/object-shorthand-draft/build. Combined canonical acceptance remains pending.

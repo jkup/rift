@@ -3913,7 +3913,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-202 — Object literal shorthand
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Admit ordinary IdentifierReference shorthand while retaining cover-initialized-name rejection in object expressions and existing assignment-pattern defaults. Test lexical reads, abrupt ordering, descriptors, special names and distinction from methods. Own the Script object parser, focused tests/manifests and notes in build/object-shorthand-draft based on TS-201; no prototype setter, spread or named-function-expression expansion.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Admit ordinary IdentifierReference shorthand while retaining cover-initialized-name rejection in object expressions and existing assignment-pattern defaults. Test lexical reads, abrupt ordering, descriptors, special names and distinction from methods. Own the Script object parser, focused tests/manifests and notes in build/object-shorthand-draft based on TS-201; no prototype setter, spread or named-function-expression expansion.
 
 ## TS-203 — Script globalThis binding
 

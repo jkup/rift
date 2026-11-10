@@ -49,9 +49,9 @@ for (const text of [
   "({a:o?.x}=x);",
   "'use strict';({eval}=x);"
 ]) {
-    if (text === "({[key]:1});") {
+    if (text === "({[key]:1});" || text === "var result={a};") {
         const completion = run(text);
-        check(completion.type === "throw" && completion.diagnostic.name === "ReferenceError", "computed key now reads the unbound identifier");
+        check(completion.type === "throw" && completion.diagnostic.name === "ReferenceError", "object property now reads the unbound identifier");
     } else check(prepareBoundedScript({id:"invalid-object",text},new Realm((_line:string)=>{},"script")).kind!=="ready", "reject "+text);
 }
 
