@@ -4702,7 +4702,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-388 — Temporal Duration total with exact plain relative ratios
 
-Status: **in progress — isolated successor to TS-387**. Owner: Codex catch-up chat, 2026-11-10. Expose Duration.prototype.total for every unit with string/options forms, required-unit validation and ordered relativeTo conversion. Reuse exact ratio/calendar helpers and preserve no-relative calendar rejection, receiver branding and defining-Realm errors. Zoned totals remain explicitly unsupported. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-total-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose Duration.prototype.total for every unit with string/options forms, required-unit validation and ordered relativeTo conversion. Reuse exact ratio/calendar helpers and preserve no-relative calendar rejection, receiver branding and defining-Realm errors. Zoned totals remain explicitly unsupported. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-total-draft/.
 
 ## TS-389 — Shared plain relative duration targets
 
