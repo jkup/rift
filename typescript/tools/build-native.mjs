@@ -183,6 +183,7 @@ const entries = [
     ["test/temporal-iso-parser.ts", "temporal-iso-parser"],
     ["test/temporal-plain-time-parse.ts", "temporal-plain-time-parse"],
     ["test/temporal-plain-time-conversion.ts", "temporal-plain-time-conversion"],
+    ["test/temporal-duration-records.ts", "temporal-duration-records"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

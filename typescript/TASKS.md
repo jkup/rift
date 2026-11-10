@@ -4424,7 +4424,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-321 — Temporal duration record bounds
 
-Status: **in progress — isolated successor to TS-320**. Owner: Codex catch-up chat, 2026-11-10. Add pure ten-field duration records with common-sign validation, calendar-unit bounds and exact normalized-nanosecond bounds. Own duration record module, focused tests/manifests/docs in build/temporal-duration-records-draft. No guest Duration constructor yet. Require mixed signs, every field, unsafe integer boundaries and one-nanosecond threshold cases, full Node and native static/zero-dynamic validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add pure ten-field duration records with common-sign validation, calendar-unit bounds and exact normalized-nanosecond bounds. Own duration record module, focused tests/manifests/docs in build/temporal-duration-records-draft. No guest Duration constructor yet. Require mixed signs, every field, unsafe integer boundaries and one-nanosecond threshold cases, full Node and native static/zero-dynamic validation.
 
 ## TS-322 — Temporal Duration core
 
