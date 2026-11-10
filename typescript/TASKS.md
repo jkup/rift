@@ -4683,3 +4683,39 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 Status: **in progress — isolated successor to TS-382**. Owner: Codex catch-up chat, 2026-11-10. Implement and test DateDurationDays for the ISO calendar as the first relative-duration comparison step. Add calendar years/months/weeks with constrain and zero days, then add the original day count exactly; do not impose date endpoint bounds on the final day count. Require leap/calendar/endpoints and Node/native checks before integration. Own  and tests/manifests/docs in build/temporal-date-duration-days-draft/.
 
 2026-11-10 PlainDate/PlainDateTime milestone accepted (TS-341–359): 845/845 guests on each host without skips; all 352 native static-only/zero-dynamic gates pass in 4500997ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-EKRksj/native-mCj886 matches all 225 normalized records and preserves 190 prior completions; 190 complete, 1 records change diagnostics/output. Original fixture bytes remain unchanged. PlainDate conversion, replacement, arithmetic and exact calendar differences are accepted, along with ISO PlainDateTime construction, formatting, parsing, conversion, part/field replacement, rounding and arithmetic. DateTime differences and remaining Temporal APIs are follow-ups. Evidence: build/temporal-date-time-*.
+
+## TS-384 — Plain ISO relativeTo option conversion
+
+Status: **in progress — isolated successor to TS-383**. Owner: Codex catch-up chat, 2026-11-10. Implement relativeTo option conversion for absent values, branded PlainDate/PlainDateTime, ISO strings and property bags. Preserve ordered time/offset/date reads and validation even when time is discarded. Explicitly reject timezone-dependent inputs pending ZonedDateTime. Share the ISO scanner and require coercion, ordering, endpoint and abrupt-completion tests on both hosts. Own src/temporal-iso-parser.ts, src/temporal-plain-date-time-parse.ts and tests/manifests/docs in build/temporal-relative-to-option-draft/.
+
+## TS-385 — Exact Temporal Duration comparison with plain relative dates
+
+Status: **in progress — isolated successor to TS-384**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.compare with ordered operand and relativeTo conversion, exact field equality, calendar-unit requirements, constrained ISO calendar day conversion and bounded exact time totals. Support absent/plain relativeTo while explicitly rejecting zoned inputs. Require signed/calendar/tie/range/ordering/Realm tests and native zero-dynamic validation. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-compare-draft/.
+
+## TS-386 — Correctly rounded Temporal rational totals
+
+Status: **in progress — isolated successor to TS-385**. Owner: Codex catch-up chat, 2026-11-10. Add a bounded exact rational-to-Number helper for Temporal totals, using integer quotient/remainder and ties-to-even. Avoid double rounding through Number(numerator)/Number(denominator). Test signed ties, significand carries, sub-unit fractions and large duration ratios on both hosts. Own  and tests/manifests/docs in build/temporal-ratio-number-draft/.
+
+## TS-387 — Exact plain relative duration totals
+
+Status: **in progress — isolated successor to TS-386**. Owner: Codex catch-up chat, 2026-11-10. Compute plain ISO relative totals for all units using shared calendar windows and a single exact rational conversion. Preserve midnight carry, calendar endpoint validation, equal-target shortcuts and PlainDateTime bounds. Keep public option dispatch separate and test signed/month/year/week fractions plus endpoints on both hosts. Own  and tests/manifests/docs in build/temporal-relative-duration-total-draft/.
+
+## TS-388 — Temporal Duration total with exact plain relative ratios
+
+Status: **in progress — isolated successor to TS-387**. Owner: Codex catch-up chat, 2026-11-10. Expose Duration.prototype.total for every unit with string/options forms, required-unit validation and ordered relativeTo conversion. Reuse exact ratio/calendar helpers and preserve no-relative calendar rejection, receiver branding and defining-Realm errors. Zoned totals remain explicitly unsupported. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-total-draft/.
+
+## TS-389 — Shared plain relative duration targets
+
+Status: **in progress — isolated successor to TS-388**. Owner: Codex catch-up chat, 2026-11-10. Extract the exact midnight/calendar target construction used by Duration.total for reuse in Duration.round. Preserve minimum-date midnight records until the consuming operation applies its equality/range rules. Require direct signed carries, leap dates and full endpoints plus total regressions. Own src/temporal-relative-duration-total.ts and tests/manifests/docs in build/temporal-relative-duration-target-draft/.
+
+## TS-390 — Ordered Temporal Duration rounding options
+
+Status: **in progress — isolated successor to TS-389**. Owner: Codex catch-up chat, 2026-11-10. Implement string/object Duration.round options with ordered largestUnit/relativeTo/increment/mode/smallestUnit reads, duration-derived defaults, unit ordering and date/time increment constraints. Keep calculation separate and verify getter precedence, all units/modes and explicit missing-option errors on both hosts. Own  and tests/manifests/docs in build/temporal-duration-round-options-draft/.
+
+## TS-391 — Temporal Duration rounding with plain relative dates
+
+Status: **in progress — isolated successor to TS-390**. Owner: Codex catch-up chat, 2026-11-10. Expose Duration.round using shared ordered options, exact time rounding and relative date-time calendar rounding. Preserve equal-target shortcuts, full boundary errors, calendar carry, intrinsic result Realm and current duration bounds. Require signed modes, increments, calendar fractions and getter/branding/Realm tests on both hosts. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-round-draft/.
+
+## TS-392 — Clarify historical feature inventory
+
+Status: **done — documentation review**. Owner: Codex catch-up chat, 2026-11-10. Mark the early inventory as historical and direct current scope/acceptance questions to the development roadmap. Preserve historical audit text and evidence. Own docs/feature-inventory.md.

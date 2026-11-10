@@ -1,4 +1,8 @@
-# Current CLI profile
+# Feature history and early profiles
+
+For current accepted behavior and validation, see the [development roadmap](development-roadmap.md). The sections below retain their historical milestone scope; their pending statuses and exclusions are not a current feature list.
+
+## Early CLI profile
 
 As of TS-037 (2026-11-08), the CLI prepares and evaluates bounded Scripts through
 `script-record.ts` and `script-execution.ts`. It supports `var`, ordinary `for`
