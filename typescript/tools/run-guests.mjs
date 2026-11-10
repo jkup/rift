@@ -819,6 +819,7 @@ executeDriver("temporal-plain-year-month-conversion", { stdout: "temporal plain 
 executeDriver("temporal-plain-year-month-fields", { stdout: "temporal plain year month fields passed\n" });
 executeDriver("temporal-plain-year-month-arithmetic", { stdout: "temporal plain year month arithmetic passed\n" });
 executeDriver("temporal-plain-year-month-difference", { stdout: "temporal plain year month difference passed\n" });
+executeDriver("temporal-plain-date-to-year-month", { stdout: "temporal plain date to year month passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

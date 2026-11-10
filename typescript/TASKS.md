@@ -4644,7 +4644,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-374 — Temporal PlainDate to PlainYearMonth conversion
 
-Status: **in progress — isolated successor to TS-373**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainYearMonth using the stored ISO date and normalized reference day one, preserving YearMonth boundary months and intrinsic Realm prototypes. Require branding, ignored getters/arguments, subclass and boundary tests on both hosts. Own src/builtins/temporal-plain-date.ts and tests/manifests/docs in build/temporal-plain-date-to-year-month-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainYearMonth using the stored ISO date and normalized reference day one, preserving YearMonth boundary months and intrinsic Realm prototypes. Require branding, ignored getters/arguments, subclass and boundary tests on both hosts. Own src/builtins/temporal-plain-date.ts and tests/manifests/docs in build/temporal-plain-date-to-year-month-draft/.
 
 ## TS-375 — Temporal PlainMonthDay construction and ISO getters
 

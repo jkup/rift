@@ -1,3 +1,4 @@
+import { registerTemporalPlainDateToYearMonth } from "./temporal-plain-date-to-year-month.js";
 import { registerTemporalPlainDateToDateTime } from "./temporal-plain-date-to-date-time.js";
 import type { Realm } from "../realm.js";
 import { registerTemporalPlainDateDifference } from "./temporal-plain-date-difference.js";
@@ -54,5 +55,6 @@ export function registerTemporalPlainDate(realm: Realm, namespace: GuestObject):
     registerTemporalPlainDateArithmetic(realm);
     registerTemporalPlainDateDifference(realm);
     registerTemporalPlainDateToDateTime(realm);
+    registerTemporalPlainDateToYearMonth(realm);
     namespace.bootstrapDefine("PlainDate", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
