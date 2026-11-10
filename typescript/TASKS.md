@@ -4828,7 +4828,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-419 — Interpret fixed-offset zoned ISO records
 
-Status: **in progress — isolated successor to TS-418**. Owner: Codex catch-up chat, 2026-11-10. Resolve zoned records under reject/prefer/ignore/use offset policies with exact BigInt arithmetic and final Instant bounds. Preserve Z exactness and date-only starts. Validate mismatched offsets and extreme local dates without adding named-zone assumptions. Own  and tests/manifests/docs in build/temporal-zoned-interpret-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resolve zoned records under reject/prefer/ignore/use offset policies with exact BigInt arithmetic and final Instant bounds. Preserve Z exactness and date-only starts. Validate mismatched offsets and extreme local dates without adding named-zone assumptions. Own  and tests/manifests/docs in build/temporal-zoned-interpret-draft/.
 
 ## TS-420 — ZonedDateTime from compare and equals
 

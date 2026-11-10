@@ -278,6 +278,7 @@ const entries = [
     ["test/temporal-zoned-plain-conversion.ts", "temporal-zoned-plain-conversion"],
     ["test/temporal-zoned-with-plain-time.ts", "temporal-zoned-with-plain-time"],
     ["test/temporal-zoned-parse.ts", "temporal-zoned-parse"],
+    ["test/temporal-zoned-interpret.ts", "temporal-zoned-interpret"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

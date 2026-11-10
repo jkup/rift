@@ -1,0 +1,7 @@
+# Fixed-offset zoned interpretation
+
+The pure interpreter resolves parsed local ISO records using exact BigInt arithmetic. Z ignores offset options and denotes an exact UTC instant. Missing offsets and date-only starts use the zone's fixed offset. For numeric offsets, use selects the supplied offset, reject requires equality, and prefer/ignore use the zone when offsets disagree. Instant bounds apply after subtraction. The reject/prefer branches also perform the specification's CheckISODaysRange on the unbalanced local date; use/ignore check after balancing. A 1,596-case Node oracle exposed ten missing prechecks at the minimum date, which were corrected before acceptance.
+
+Every supported zone has a minute-aligned constant offset, so all disambiguation choices select the same candidate and exact/minute offset matching coincide. This simplification is specific to the current UTC/fixed-offset policy. Named zones require candidate enumeration, gap/overlap disambiguation, and preserving parsed matching precision before extending this helper.
+
+Boundary and mismatch tests cover all four offset policies, nanosecond offsets, exact Z behavior, date-only starts, and local dates beyond the UTC Instant limits. Reference: [InterpretISODateTimeOffset](https://tc39.es/proposal-temporal/#sec-temporal-interpretisodatetimeoffset). Public conversion and observable option reads are separate follow-up work.
