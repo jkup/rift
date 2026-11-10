@@ -3867,7 +3867,7 @@ Status: **done — UTC prerequisites pass; named local zones need a shared bound
 
 ## TS-192 — JSON.parse reviver traversal
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement the ECMAScript 2025 two-argument reviver algorithm using an explicit stack, captured array lengths/object enumerable keys, live property reads, deletion/redefinition with false results ignored, original abrupt propagation and operation budgets. Cover root holders, mutation, inherited values, frozen destinations, inserted cycles, deep JSON and borrowed-Realm behavior. Own json-reviver module, JSON registration, focused tests/manifests and notes in build/json-reviver-draft based on TS-190. JSON parse-with-source/context and stringify remain separate features; no host JSON evaluation.
+Status: **done — accepted in combined JSON/ranges milestone**. Owner: Codex catch-up chat, 2026-11-10. Implement the ECMAScript 2025 two-argument reviver algorithm using an explicit stack, captured array lengths/object enumerable keys, live property reads, deletion/redefinition with false results ignored, original abrupt propagation and operation budgets. Cover root holders, mutation, inherited values, frozen destinations, inserted cycles, deep JSON and borrowed-Realm behavior. Own json-reviver module, JSON registration, focused tests/manifests and notes in build/json-reviver-draft based on TS-190. JSON parse-with-source/context and stringify remain separate features; no host JSON evaluation.
 
 
 Array.of, Array.from and String.repeat are accepted (TS-183–185). Node/native guests pass 684/684 without skips; all 191 native entries pass static-only compilation and parsed zero-dynamic coverage in 1471527ms, with no retries. Tooling passes 293/293 in 217821.4555ms, runner 32/32, ten probes and typechecking pass. Corpus Node jpRRVk/native 0Lq7yA matches all 225 normalized records and preserves all 179 prior completions (114 reported successes, 65 unchecked; 12 parse errors, 33 runtime errors, one reported failure). The method-length fixture advances but remains incomplete. Evidence: build/array-factories-native-results.json, corpus-comparison.json with the same prefix and array-factories-* logs. Next: separate integration of reviewed range mutation, String.raw, padding and Realm-local random.
@@ -3878,7 +3878,7 @@ Status: **done — measured; no production change justified**. Owner: Codex catc
 
 ## TS-194 — JSON.stringify
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add the ECMAScript 2025 serializer for current Values: toJSON/replacer ordering, replacer property lists, boxed primitive conversion, gap coercion, well-formed UTF-16 quoting, captured object keys/array lengths, omissions and null array entries, cycle errors and bounded iterative traversal/output. Own json-stringify module, JSON registration/inventories, focused tests/manifests and notes in build/json-stringify-draft based on TS-192. No rawJSON, BigInt or host serialization of guest objects; preserve existing parse behavior.
+Status: **done — accepted in combined JSON/ranges milestone**. Owner: Codex catch-up chat, 2026-11-10. Add the ECMAScript 2025 serializer for current Values: toJSON/replacer ordering, replacer property lists, boxed primitive conversion, gap coercion, well-formed UTF-16 quoting, captured object keys/array lengths, omissions and null array entries, cycle errors and bounded iterative traversal/output. Own json-stringify module, JSON registration/inventories, focused tests/manifests and notes in build/json-stringify-draft based on TS-192. No rawJSON, BigInt or host serialization of guest objects; preserve existing parse behavior.
 
 ## TS-195 — String locale host prerequisites
 
@@ -3890,7 +3890,7 @@ Status: **done — tagged retention viable; detached activation migration requir
 
 ## TS-197 — String substring and substr
 
-Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add standard substring and Annex B substr with ordered receiver/index conversions, clamping versus relative-start semantics, omitted lengths, UTF-16 boundaries, metadata and output budgets. Own String registration/inventories, focused tests/manifests and notes in build/string-ranges-draft based on TS-194. No locale approximation; the original additional-method fixture remains blocked at locale behavior.
+Status: **done — accepted in combined JSON/ranges milestone**. Owner: Codex catch-up chat, 2026-11-10. Add standard substring and Annex B substr with ordered receiver/index conversions, clamping versus relative-start semantics, omitted lengths, UTF-16 boundaries, metadata and output budgets. Own String registration/inventories, focused tests/manifests and notes in build/string-ranges-draft based on TS-194. No locale approximation; the original additional-method fixture remains blocked at locale behavior.
 
 ## TS-198 — Refresh compiler contract boundaries
 
@@ -3898,3 +3898,30 @@ Status: **done — verified evidence and orchestration constraints recorded**. O
 
 
 Array fill/copyWithin, String.raw, padStart/padEnd and Realm-local Math.random are accepted (TS-186/187/188/190). Node/native guests pass 688/688 without skips. All 195 native entries pass static-only compilation and parsed zero-dynamic coverage in 1527639ms with no retries. Tooling passes 293/293 in 217915.4205ms, runner32/32 in 689.0073ms, ten probes and typechecking pass. Corpus Node OZrrBG/native 0e5TDd agrees on all 225 normalized records and preserves all 179 completions (114 reported successes, 65 unchecked; 12 parse errors, 33 runtime errors, one reported failure). builtin-method-lengths.js now reaches the absent Date global. Evidence: build/range-formatting-native-results.json, corpus-comparison.json with the same prefix and range-formatting-* logs. Next: separately integrate reviewed JSON reviver, JSON.stringify and string ranges; host weak-storage, Date local zones and locale comparison constraints remain explicit.
+
+## TS-199 — String at and trim aliases
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add relative UTF-16 String.prototype.at and Annex B trimLeft/trimRight aliases preserving exact function identity with trimStart/trimEnd. Cover conversion order, bounds, lone surrogate results, metadata and alias independence after assignment. Own String registration/inventories, focused tests/manifests and notes in build/string-at-draft based on TS-197; no locale changes.
+
+## TS-200 — RegExp and String matchAll
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Implement species-based matcher creation, String protocol dispatch and a lazy branded RegExp string iterator with captured Realm, abrupt completion and reentry semantics. Cover coercion order, empty Unicode advancement with custom species, original lastIndex isolation, borrowed next, metadata and budgets. Own RegExp iterator/module/Realm wiring, inventories, tests/manifests and notes in build/regexp-matchall-draft based on TS-199. No new RegExp pattern flags or general generator grammar.
+
+## TS-201 — Computed object literal property names
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Extend object literal data/method/accessor keys with ordered expression evaluation and ToPropertyKey, symbol-aware inferred names, metadata/declaration traversal and existing cover-grammar disambiguation. Preserve literal __proto__ rejection and assignment-pattern behavior; computed __proto__ is an ordinary own property. Own syntax/parser/evaluator traversal, focused tests/manifests and notes in build/object-keys-draft based on TS-200. No object spread, shorthand or generator grammar expansion.
+
+## TS-202 — Object literal shorthand
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Admit ordinary IdentifierReference shorthand while retaining cover-initialized-name rejection in object expressions and existing assignment-pattern defaults. Test lexical reads, abrupt ordering, descriptors, special names and distinction from methods. Own the Script object parser, focused tests/manifests and notes in build/object-shorthand-draft based on TS-201; no prototype setter, spread or named-function-expression expansion.
+
+## TS-203 — Script globalThis binding
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Expose the existing Realm global-this value through the standard writable, non-enumerable, configurable global property. Verify replacement/deletion and lexical shadowing leave the actual this binding intact, cross-Realm identity and bootstrap inventories. Own Realm registration, inventories, focused tests/manifests and notes in build/global-this-draft based on TS-202. Preserve legacy globals and host boundaries.
+
+## TS-204 — Named function expressions
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add Script named function expressions with a private immutable self-binding, explicit names overriding contextual inference, strict-name validation and recursion/default-parameter visibility. Distinguish silently ignored non-strict self-writes from strict errors while preserving const semantics. Own function source/parser/materialization, local binding strictness, focused tests/manifests and notes in build/named-functions-draft based on TS-203. No generator/async grammar or host function evaluation.
+
+
+JSON reviver/stringify and substring/substr are accepted (TS-192/194/197). Both hosts pass 691/691 guests without skips. All 198 native entries pass static-only compilation and parsed zero-dynamic coverage in 1589333ms without retries. Tooling passes 293/293 in 241416.1132ms; runner32/32 in 690.1767ms, ten probes and typechecking pass. Corpus Node A7d62C/native ESvnbD matches all 225 normalized records and preserves all 179 completions (114 reported successes, 65 unchecked; 12 parse errors, 33 runtime errors, one reported failure). Evidence: build/json-ranges-native-results.json, corpus-comparison.json with the same prefix and json-ranges-* logs. Next: separately integrate reviewed at/trim aliases, matchAll, computed object keys, shorthand and globalThis. Named function expressions remain an isolated successor.

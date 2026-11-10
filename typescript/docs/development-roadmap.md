@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted range/formatting/random milestone passes 688/688 guests on each
-host, 293/293 tooling checks, and all 195 native static gates without retries.
+The accepted JSON/ranges milestone passes 691/691 guests on each
+host, 293/293 tooling checks, and all 198 native static gates without retries.
 The unchanged 225-file C++ corpus has 179 completions: 114 reported successes and
 65 unchecked completions. Remaining outcomes are 12 parse errors, 33 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -15,10 +15,11 @@ Test262 conformance score.
 Classes, Promise combinators/checkpoints and bounded RegExp protocols/literals
 are accepted. Incremental lexing and arrow cover parsing are integrated.
 Array.of/from/fill/copyWithin, String.raw/repeat/padStart/padEnd and Realm-local
-Math.random are accepted. JSON reviver, JSON.stringify and substring/substr
-have reviewed isolated drafts; their canonical integration gates remain next.
-Unicode regex modes, lookaround, backreferences, named groups and matchAll
-remain unsupported.
+Math.random, JSON reviver/stringify and substring/substr are accepted. String.at,
+trim aliases, matchAll, computed object keys, shorthand and globalThis have
+reviewed isolated drafts awaiting combined integration. Named function expressions
+are the next isolated slice. Unicode regex modes, lookaround, backreferences and
+named groups remain unsupported.
 
 Prioritize the [generator activation boundary](generator-boundary.md) before
 adding yield/async grammar. Keep explicit completion records and prove that

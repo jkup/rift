@@ -2254,3 +2254,7 @@ Array fill/copyWithin, String.raw, padStart/padEnd and Realm-local Math.random a
 2026-11-10 TS-194 promoted after range/formatting/random acceptance with 3 changed-file baselines verified. The isolated draft passes 690 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/json-stringify-draft/build. Combined canonical acceptance remains pending.
 
 2026-11-10 TS-197 promoted after range/formatting/random acceptance with 6 changed-file baselines verified. The isolated draft passes 691 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/string-ranges-draft/build. Combined canonical acceptance remains pending.
+
+2026-11-10 TS-199 isolated review passes 692 Node guests, focused native 11760 static statements with zero dynamic, and both bootstrap/formatting inputs. TS-200 matchAll draft passes its first 693-case Node run and 11929-statement focused static/native gate; expanded abrupt, reentry-Realm and budget cases are being validated before promotion. Canonical TS-192/194/197 remains frozen during its 198-entry native matrix.
+
+2026-11-10 TS-192/194/197 accepted: 691/691 Node/native guests, 198/198 static-only plus zero-dynamic native gates, 293/293 tooling, 32/32 runner, ten probes and typecheck. Unchanged 225-file corpus matches exactly across Node A7d62C/native ESvnbD and preserves 179 completions. Native builds completed before executable readers. TS-199–203 isolated drafts pass 692–696 Node cases and focused native gates; TS-204 named-function work continues separately.
