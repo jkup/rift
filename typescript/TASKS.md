@@ -4462,7 +4462,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-330 — Temporal Duration string rounding
 
-Status: **in progress — isolated successor to TS-329**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.toString with ordered precision options, signed rounding, balancing to the existing largest unit and exact bounds. Own duration string builtin/helper and registration, focused tests/manifests/docs in build/temporal-duration-string-draft. Require no-round preservation, signed ties and carries, invalid options, boundary overflow, brands/Realm and full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.toString with ordered precision options, signed rounding, balancing to the existing largest unit and exact bounds. Own duration string builtin/helper and registration, focused tests/manifests/docs in build/temporal-duration-string-draft. Require no-round preservation, signed ties and carries, invalid options, boundary overflow, brands/Realm and full Node/native static validation.
 
 ## TS-331 — Shared Temporal duration balancing
 
