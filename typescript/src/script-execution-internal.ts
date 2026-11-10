@@ -66,7 +66,8 @@ type FunctionExecution = {
     evaluate: (initializer: Expr, name: string | null) => ValueCompletion;
     initializePattern: (pattern: DestructuringPattern, value: Value, environment: ScriptEnvironment) => ValueCompletion;
 };
-type CallableState = { async: boolean; generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+type ClassFieldRecord = { key: PropertyKey; loc: Location };
+type CallableState = { async: boolean; generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean; instanceFields: ClassFieldRecord[]; staticFields: ClassFieldRecord[] } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
 class ScriptGuestCallable {
@@ -260,7 +261,7 @@ class ExecutableScript {
                 const parent = plan.scopes[scope.parent];
                 if (scope.parent >= scope.id || scope.start < parent.start || scope.end > parent.end ||
                     (node.name !== null && node.source.text.slice(node.name.start, node.name.end) !== node.name.name) ||
-                    (node.constructorMethod !== null && node.elements.filter(element => element.value === node.constructorMethod && !element.isStatic && element.kind === "method").length !== 1))
+                    (node.constructorMethod !== null && node.elements.filter(element => element.kind === "method" && element.value === node.constructorMethod && !element.isStatic).length !== 1))
                     throw new Error("invalid class source range");
                 scopes.set(node, scope.id);
             } else if (scope.kind === "switch") {
@@ -509,6 +510,21 @@ class ExecutableScript {
             throw new Error("invalid class definition association");
         return entry.node;
     }
+    static classFields(constructor: GuestObject, isStatic: boolean, key: ExecutionKey): ClassFieldRecord[] {
+        if (key !== executionKey || constructor.callable?.kind !== "script-guest") throw new Error("invalid class field owner");
+        const callable = constructor.callable, record = callable.record;
+        const info = ScriptGuestCallable.check(callable, record.#activationKey, record).classConstructor;
+        if (info === null) throw new Error("class field owner is not a class constructor");
+        return isStatic ? info.staticFields : info.instanceFields;
+    }
+    static classFieldFrame(constructor: GuestObject, receiver: GuestObject, key: ExecutionKey): ScriptFrameSnapshot {
+        if (key !== executionKey || constructor.callable?.kind !== "script-guest") throw new Error("invalid class field frame");
+        const callable = constructor.callable, record = callable.record;
+        const state = ScriptGuestCallable.check(callable, record.#activationKey, record);
+        if (state.classConstructor === null) throw new Error("missing class field context");
+        return { realm: state.realm, record, scopeId: state.classConstructor.scope, lexical: state.environment, variable: state.environment,
+            strict: true, thisValue: { kind: "object", object: receiver }, function: null, privateEnvironment: null, phase: "body" };
+    }
     static validateClassConstructor(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): void {
         const state = ExecutableScript.state(record, key);
         const metadata = ScriptGuestCallable.check(callable, record.#activationKey, record);
@@ -532,7 +548,7 @@ class ExecutableScript {
         if (budget.type === "throw") return budget;
         const callable = ScriptGuestCallable.create({ homeObject: prototypeObject, async: false, generator: false, key: record.#activationKey, record, realm: state.realm,
             scopeId: bodyScope ?? scopeId, environment, strict: true, lexicalThis: false,
-            classConstructor: { scope: scopeId, bodyScope, derived: node.heritage !== null }, unit: state.plan.unit,
+            classConstructor: { scope: scopeId, bodyScope, derived: node.heritage !== null, instanceFields: [], staticFields: [] }, unit: state.plan.unit,
             start: entry === null ? node.start : entry.source.start, end: entry === null ? node.end : entry.source.end,
             text: node.source.text.slice(node.start, node.end), formals: entry === null ? [] : entry.node.params.slice() });
         const object = new GuestObject(constructorParent, false, callable, callable);
@@ -2129,7 +2145,11 @@ class ExecutionEngine {
             return languageFailure(this.context.realm, "TypeError", "superclass is not a constructor", loc);
         const result = this.#construct({ kind: "object", object: parent }, args, loc, environment.newTarget);
         if (result.type === "throw") return result;
-        return environment.bindThis(result.value, this.context.realm, loc);
+        const bound = environment.bindThis(result.value, this.context.realm, loc);
+        if (bound.type === "throw") return bound;
+        if (result.value.kind !== "object" || environment.callee === null) throw new Error("derived field receiver invariant");
+        const initialized = this.#initializeClassFields(environment.callee, result.value.object, false);
+        return initialized === null ? bound : initialized;
     }
     #superContext(loc: Location): { type: "normal"; homeObject: GuestObject; receiver: Value } | ThrowCompletion {
         const environment = this.#thisEnvironment(this.#active().lexical);
@@ -2279,7 +2299,11 @@ class ExecutionEngine {
         if (constructor.value.kind !== "object") throw new Error("class constructor result invariant");
         return { type: "normal", constructor: constructor.value.object, prototype };
     }
-    #defineClassMethod(element: ClassElement, key: PropertyKey, constructor: GuestObject, prototype: GuestObject): ThrowCompletion | null {
+    #defineClassElement(element: ClassElement, key: PropertyKey, constructor: GuestObject, prototype: GuestObject): ThrowCompletion | null {
+        if (element.kind === "field") {
+            ExecutableScript.classFields(constructor, element.isStatic, executionKey).push({ key, loc: element.key.loc });
+            return null;
+        }
         const propertyName = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
         const name = element.kind === "method" ? propertyName : element.kind + " " + propertyName;
         const method = this.#value(element.value, name);
@@ -2292,6 +2316,44 @@ class ExecutionEngine {
         const defined = object.defineOwnProperty(key, descriptor, this.context, element.value.loc);
         if (defined.type === "throw") return defined;
         return defined.value ? null : languageFailure(this.context.realm, "TypeError", "cannot define class method", element.value.loc);
+    }
+    #initializeClassFields(constructor: GuestObject, receiver: GuestObject, isStatic: boolean): ThrowCompletion | null {
+        const fields = ExecutableScript.classFields(constructor, isStatic, executionKey);
+        if (fields.length === 0) return null;
+        const saved = this.#active(), realm = this.activeContext.realm, inspection = this.#inspectionSource;
+        this.#frame = ExecutableScript.classFieldFrame(constructor, receiver, executionKey);
+        this.activeContext.realm = this.#frame.realm;
+        this.#inspectionSource = null;
+        try {
+            for (const field of fields) {
+                const budget = this.context.tick(field.loc);
+                if (budget.type === "throw") { this.#capture(budget); return budget; }
+                const defined = receiver.defineOwnProperty(field.key, { value: UNDEFINED, writable: true, enumerable: true, configurable: true }, this.context, field.loc);
+                if (defined.type === "throw") { this.#capture(defined); return defined; }
+                if (!defined.value) {
+                    const error = languageFailure(this.context.realm, "TypeError", "cannot define class field", field.loc);
+                    this.#capture(error);
+                    return error;
+                }
+            }
+            return null;
+        } finally {
+            this.#frame = saved;
+            this.activeContext.realm = realm;
+            this.#inspectionSource = inspection;
+        }
+    }
+
+    #finishClass(expr: ClassExpr, environment: ScriptDeclarativeEnvironment, constructor: GuestObject): ValueCompletion {
+        const value: Value = { kind: "object", object: constructor };
+        if (expr.name !== null) {
+            const initialized = environment.initializeBinding(expr.name.name, value, this.context, expr.name.loc);
+            if (initialized.type === "throw") return initialized;
+        }
+        const initialized = this.#initializeClassFields(constructor, constructor, true);
+        if (initialized !== null) return initialized;
+        ExecutableScript.classFields(constructor, true, executionKey).length = 0;
+        return normal(value);
     }
     #classExpression(expr: ClassExpr, inferredName: string | null): ValueCompletion {
         const saved = this.#active();
@@ -2312,20 +2374,15 @@ class ExecutionEngine {
             const created = this.#createClassConstructor(expr, scopeId, environment, inferredName, superclass);
             if (created.type === "throw") return created;
             for (const element of expr.elements) {
-                if (element.value === expr.constructorMethod) continue;
+                if (element.kind !== "field" && element.value === expr.constructorMethod) continue;
                 const keyValue = this.#value(element.key);
                 if (keyValue.type === "throw") return keyValue;
                 const key = toPropertyKey(keyValue.value, this.context, element.key.loc);
                 if (key.type === "throw") return key;
-                const defined = this.#defineClassMethod(element, key.value, created.constructor, created.prototype);
+                const defined = this.#defineClassElement(element, key.value, created.constructor, created.prototype);
                 if (defined !== null) return defined;
             }
-            const value: Value = { kind: "object", object: created.constructor };
-            if (expr.name !== null) {
-                const initialized = environment.initializeBinding(expr.name.name, value, this.context, expr.name.loc);
-                if (initialized.type === "throw") return initialized;
-            }
-            return normal(value);
+            return this.#finishClass(expr, environment, created.constructor);
         } finally { this.#frame = saved; }
     }
     #objectPattern(pattern: ObjectPattern, input: Value, environment: ScriptEnvironment | null): ValueCompletion {
@@ -2891,7 +2948,11 @@ class ExecutionEngine {
                 const parent = callee.object.getPrototypeOf();
                 if (parent === null || parent.constructorSlot === null)
                     return languageFailure(fn.realm, "TypeError", "superclass is not a constructor", loc);
-                return this.#construct({ kind: "object", object: parent }, args, loc, newTarget);
+                const result = this.#construct({ kind: "object", object: parent }, args, loc, newTarget);
+                if (result.type === "throw") return result;
+                if (result.value.kind !== "object") throw new Error("default derived receiver invariant");
+                const initialized = this.#initializeClassFields(callee.object, result.value.object, false);
+                return initialized === null ? result : initialized;
             }
             // Reserve constructor depth before getters; prototype/allocation
             // failures still belong to the caller frame and Realm.
@@ -2902,6 +2963,10 @@ class ExecutionEngine {
             if (budget.type === "throw") { this.#capture(budget); return budget; }
             const receiver: Value = { kind: "object", object: new GuestObject(proto) };
             this.activeContext.realm = fn.realm;
+            if (fn.isClassConstructor) {
+                const initialized = this.#initializeClassFields(callee.object, receiver.object, false);
+                if (initialized !== null) return initialized;
+            }
             if (fn.isDefaultClassConstructor) return normal(receiver);
             const result = this.#executeScriptFunction(callee.object, fn, receiver, args, newTarget);
             if (result.type === "throw") return result;
@@ -3618,14 +3683,14 @@ class ExecutionEngine {
                     const element = frame.expression.elements[frame.index];
                     const key = toPropertyKey(value, this.context, element.key.loc);
                     if (key.type === "throw") return key;
-                    const defined = this.#defineClassMethod(element, key.value, frame.constructor, frame.prototype);
+                    const defined = this.#defineClassElement(element, key.value, frame.constructor, frame.prototype);
                     if (defined !== null) return defined;
                     frame.index++;
                     frame.stage = "next";
                 }
                 while (frame.index < frame.expression.elements.length) {
                     const element = frame.expression.elements[frame.index];
-                    if (element.value === frame.expression.constructorMethod) { frame.index++; continue; }
+                    if (element.kind !== "field" && element.value === frame.expression.constructorMethod) { frame.index++; continue; }
                     if (isSuspendingGeneratorExpression(element.key)) {
                         frame.stage = "key";
                         frames.push(frame);
@@ -3636,16 +3701,14 @@ class ExecutionEngine {
                     if (keyValue.type === "throw") return keyValue;
                     const key = toPropertyKey(keyValue.value, this.context, element.key.loc);
                     if (key.type === "throw") return key;
-                    const defined = this.#defineClassMethod(element, key.value, frame.constructor, frame.prototype);
+                    const defined = this.#defineClassElement(element, key.value, frame.constructor, frame.prototype);
                     if (defined !== null) return defined;
                     frame.index++;
                 }
                 if (expression !== null) continue;
-                value = { kind: "object", object: frame.constructor };
-                if (frame.expression.name !== null) {
-                    const initialized = frame.environment.initializeBinding(frame.expression.name.name, value, this.context, frame.expression.name.loc);
-                    if (initialized.type === "throw") return initialized;
-                }
+                const finished = this.#finishClass(frame.expression, frame.environment, frame.constructor);
+                if (finished.type === "throw") return finished;
+                value = finished.value;
                 continue;
             }
             if (frame.kind === "chain-evaluate") {

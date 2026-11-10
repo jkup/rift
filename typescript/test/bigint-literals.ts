@@ -4,6 +4,7 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import { lex } from "../src/lexer.js";
 function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
 const cases = [
+    "class C{1n;static 0xffn;}var c=new C();Object.hasOwn(c,1)&&c[1]===undefined&&Object.hasOwn(C,255)&&C[255]===undefined",
     "0n===BigInt(0)&&-0n===0n&&typeof 1n===\"bigint\"",
     "9007199254740993n===BigInt(\"9007199254740993\")&&9007199254740993n!==9007199254740992n",
     "0xffn===255n&&0XFFn===255n&&0o777n===511n&&0O777n===511n&&0b101n===5n&&0B101n===5n",
@@ -62,7 +63,7 @@ const invalid = [
     "++1n",
     "1n++",
     "({1n})",
-    "class C{1n}"
+    "class C{1n,}"
 ];
 for (const text of invalid) {
     const prepared = prepareBoundedScript({ id: "bigint-invalid", text }, new Realm((_line: string) => {}, "script"));

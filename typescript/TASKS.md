@@ -4676,7 +4676,7 @@ Status: **in progress — read-only successor planning during Temporal validatio
 
 ## TS-382 — Public class fields without initializers
 
-Status: **in progress — isolated successor to TS-381**. Owner: Codex catch-up chat, 2026-11-10. Implement public instance/static fields without initializers as a bounded first class-field increment. Keep initializer expressions, private fields and static blocks explicitly unsupported. Preserve key evaluation/ASI, own data-property semantics, all constructor paths, static finalization and suspended class keys. Review TS-381 findings and require focused/full Node, native zero-dynamic and constructor/generator regressions. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-execution-internal.ts and tests/manifests/docs in build/class-empty-fields-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement public instance/static fields without initializers as a bounded first class-field increment. Keep initializer expressions, private fields and static blocks explicitly unsupported. Preserve key evaluation/ASI, own data-property semantics, all constructor paths, static finalization and suspended class keys. Review TS-381 findings and require focused/full Node, native zero-dynamic and constructor/generator regressions. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-execution-internal.ts and tests/manifests/docs in build/class-empty-fields-draft/.
 
 ## TS-383 — Exact calendar duration days for relative comparisons
 

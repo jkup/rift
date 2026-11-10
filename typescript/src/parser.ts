@@ -1216,14 +1216,14 @@ class Parser {
         while (!this.at("}") && this.error === null) {
             if (this.eat(";")) continue;
             let isStatic = false;
-            if (this.at("static") && this.token(this.index + 1)?.text !== "(") { this.take(); isStatic = true; }
+            if (this.at("static") && !["(", ";", "}", "="].includes(this.token(this.index + 1).text)) { this.take(); isStatic = true; }
             const first = this.current();
             const asynchronous = this.asyncMethodAhead();
             if (asynchronous) this.take();
             const generator = this.eat("*");
 
             let kind: "method" | "get" | "set" = "method";
-            if (!generator && !asynchronous && (this.at("get") || this.at("set")) && this.token(this.index + 1)?.text !== "(") kind = this.take().text === "get" ? "get" : "set";
+            if (!generator && !asynchronous && (this.at("get") || this.at("set")) && (this.token(this.index + 1).text === "[" || this.token(this.index + 2).text === "(")) kind = this.take().text === "get" ? "get" : "set";
             const token = this.current();
             let key: Expr;
             let literalName: string | null = null;
@@ -1235,7 +1235,22 @@ class Parser {
                 literalName = this.literalPropertyName(token);
                 key = { kind: "literal", loc: token.loc, value: literalName };
             }
-            if (!this.at("(")) { this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class fields and static blocks are unsupported", this.current().loc); break; }
+            if (!this.at("(")) {
+                if (kind !== "method" && lineTerminatorBetween(this.source.text, first, token)) {
+                    elements.push({ kind: "field", isStatic, key: { kind: "literal", loc: first.loc, value: first.text } });
+                    isStatic = false;
+                    kind = "method";
+                }
+                if (generator || asynchronous || kind !== "method" || this.at("=")) {
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class field initializers and static blocks are unsupported", this.current().loc);
+                    break;
+                }
+                if (literalName === "constructor" || (isStatic && literalName === "prototype"))
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid class field name", token.loc);
+                this.statementTerminator();
+                elements.push({ kind: "field", isStatic, key });
+                continue;
+            }
             const fn = this.functionTail(first.loc, first.start, heritage !== null && !isStatic && literalName === "constructor" && kind === "method" ? "derived" : "method", generator, asynchronous);
             if ((kind === "get" && fn.parameters.length !== 0) || (kind === "set" && (fn.parameters.length !== 1 || fn.source.rest === true)))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid class accessor parameters", first.loc);

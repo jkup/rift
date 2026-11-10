@@ -243,6 +243,7 @@ const entries = [
     ["test/temporal-plain-month-day-conversion.ts", "temporal-plain-month-day-conversion"],
     ["test/temporal-plain-month-day-fields.ts", "temporal-plain-month-day-fields"],
     ["test/temporal-plain-date-to-month-day.ts", "temporal-plain-date-to-month-day"],
+    ["test/class-empty-fields.ts", "class-empty-fields"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -554,7 +554,8 @@ class DeclarationCollector {
                 }
                 if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: [] });
                 for (let i = node.elements.length - 1; i >= 0; i--) {
-                    this.expression(node.elements[i].value, id, variableScope);
+                    const element = node.elements[i];
+                    if (element.kind !== "field") this.expression(element.value, id, variableScope);
                     this.expression(node.elements[i].key, id, variableScope);
                 }
                 if (node.heritage !== null) this.expression(node.heritage, id, variableScope);

@@ -28,7 +28,8 @@ export type PatternElement = { pattern: DestructuringPattern; initializer: Expr 
 export type ArrayPattern = { kind: "array-pattern"; loc: Location; elements: (PatternElement | null)[]; rest: DestructuringPattern | null };
 export type ObjectPattern = { kind: "object-pattern"; loc: Location; properties: { key: Expr; computed?: true; element: PatternElement }[]; rest: DestructuringPattern | null };
 export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "binding"; loc: Location; site: DeclarationSite } | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
-export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
+export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> }
+    | { kind: "field"; isStatic: boolean; key: Expr };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[]; suspends?: true };
 export type ArrayExpr = { kind: "array"; loc: Location; elements: ArrayElement[]; suspends?: true };
 export type DestructureExpr = { kind: "destructure"; loc: Location; pattern: ArrayPattern | ObjectPattern; value: Expr; suspends?: true };
