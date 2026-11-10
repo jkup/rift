@@ -4694,7 +4694,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-386 — Correctly rounded Temporal rational totals
 
-Status: **in progress — isolated successor to TS-385**. Owner: Codex catch-up chat, 2026-11-10. Add a bounded exact rational-to-Number helper for Temporal totals, using integer quotient/remainder and ties-to-even. Avoid double rounding through Number(numerator)/Number(denominator). Test signed ties, significand carries, sub-unit fractions and large duration ratios on both hosts. Own  and tests/manifests/docs in build/temporal-ratio-number-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add a bounded exact rational-to-Number helper for Temporal totals, using integer quotient/remainder and ties-to-even. Avoid double rounding through Number(numerator)/Number(denominator). Test signed ties, significand carries, sub-unit fractions and large duration ratios on both hosts. Own  and tests/manifests/docs in build/temporal-ratio-number-draft/.
 
 ## TS-387 — Exact plain relative duration totals
 
