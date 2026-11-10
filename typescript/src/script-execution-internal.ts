@@ -1730,6 +1730,7 @@ class ExecutionEngine {
                 const value = expr.value;
                 if (value === null) return normal({ kind: "null" });
                 if (typeof value === "number") return normal({ kind: "number", value });
+                if (typeof value === "bigint") return normal({ kind: "bigint", value });
                 if (typeof value === "boolean") return normal({ kind: "boolean", value });
                 return normal({ kind: "string", value });
             }

@@ -54,7 +54,7 @@ export type Expr =
     | ChainExpr
     | DestructureExpr
     | ArrayExpr
-    | { kind: "literal"; loc: Location; value: number | string | boolean | null }
+    | { kind: "literal"; loc: Location; value: number | bigint | string | boolean | null }
     | TemplateExpr
     | TemplateObjectExpr
     | { kind: "identifier"; loc: Location; name: string }

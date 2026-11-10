@@ -18,6 +18,14 @@ for (let i = 0; i < sources.length; i++) {
     check(session.inspect().active === null && session.inspect().calls === 0, "radix session restored");
 }
 for (const text of ["0x", "0X", "0b", "0o", "0xG", "0b2", "0b102", "0o8", "0o78", "0x1g", "0b1e2", "0x1n", "0x1_2", "0b_1", "0o7$", "00x1"]) {
+    if (text === "0x1n") {
+        const realm = new Realm((_line: string) => {}, "script");
+        const prepared = prepareBoundedScript({ id: "original-bigint", text }, realm);
+        if (prepared.kind !== "ready") throw new Error("original BigInt radix source");
+        const result = evaluateScript(createScriptSession(), prepared.record).completion;
+        check(result.type === "normal" && sameValue(result.value, { kind: "bigint", value: 1n }), "original radix BigInt now executes");
+        continue;
+    }
     if (text === "0x1_2") { check(lex(text, true).error === null, "separator now supported " + text); continue; }
     check(lex(text, true).error !== null, "reject radix " + text);
 }

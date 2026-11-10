@@ -30,7 +30,9 @@ for (const text of [
 for (const source of ["1_;class C{}", "1_0n", "/1_/", "1_;let x;let x;", "1_;42=1;"]) {
     for (const call of ["eval", "Function"]) {
         const result = run("try{" + call + "(" + JSON.stringify(source) + ")}catch(e){true}");
-        if (source === "1_;class C{}") {
+        if (source === "1_0n") {
+            check(result.type === "normal" && (call === "eval" ? result.value.kind === "bigint" && result.value.value === 10n : result.value.kind === "object"), "original BigInt admitted in dynamic sources");
+        } else if (source === "1_;class C{}") {
             check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original class source permits numeric certification");
             const typed = run("try{" + call + "(" + JSON.stringify(source) + ")}catch(e){e instanceof SyntaxError}");
             check(typed.type === "normal" && typed.value.kind === "boolean" && typed.value.value, "class numeric error is SyntaxError");

@@ -232,6 +232,11 @@ class Parser {
     readonly returnCandidates: ReturnCandidate[] = [];
     regexpError: Diagnostic | null = null;
     constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" | "bounded-numeric-separator-audit" = "legacy", private newTargetAllowed = false, private superContext: SuperContext = "none", private readonly lexer: Lexer | null = null) {}
+    private literalPropertyName(token: Token): string {
+        if (token.kind === "number") return String(Number(token.text.replaceAll("_", "")));
+        if (token.kind === "bigint") return String(BigInt(token.text.slice(0, -1).replaceAll("_", "")));
+        return token.text;
+    }
     private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit"; }
     private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit"; }
     private token(index: number): Token {
@@ -245,7 +250,7 @@ class Parser {
     current(): Token { return this.token(this.index); }
     at(text: string): boolean {
         const t = this.current();
-        return t.kind !== "string" && t.kind !== "number" && t.text === text;
+        return t.kind !== "string" && t.kind !== "number" && t.kind !== "bigint" && t.text === text;
     }
     take(): Token {
         const t = this.current();
@@ -672,9 +677,9 @@ class Parser {
                 this.expect(":");
                 child = this.bindingPattern(bindings);
             } else {
-                if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number")
+                if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number" && token.kind !== "bigint")
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected property name", token.loc);
-                const name = token.kind === "number" ? String(Number(token.text.replaceAll("_", ""))) : token.text;
+                const name = this.literalPropertyName(token);
                 key = { kind: "literal", loc: token.loc, value: name };
                 if (this.token(this.index + 1)?.text === ":") {
                     this.take();
@@ -1219,9 +1224,9 @@ class Parser {
             if (this.eat("[")) { key = this.expression(1); this.expect("]"); }
             else {
                 this.take();
-                if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number")
+                if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number" && token.kind !== "bigint")
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected class method name", token.loc);
-                literalName = token.kind === "number" ? String(Number(token.text.replaceAll("_", ""))) : token.text;
+                literalName = this.literalPropertyName(token);
                 key = { kind: "literal", loc: token.loc, value: literalName };
             }
             if (!this.at("(")) { this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class fields and static blocks are unsupported", this.current().loc); break; }
@@ -1270,9 +1275,9 @@ class Parser {
                     this.expect("]");
                 } else {
                     const token = this.take();
-                    if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number")
+                    if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number" && token.kind !== "bigint")
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", token.loc);
-                    name = token.kind === "number" ? String(Number(token.text.replaceAll("_", ""))) : token.text;
+                    name = this.literalPropertyName(token);
                     key = { kind: "literal", loc: token.loc, value: name };
                     shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async");
                 }
@@ -1556,6 +1561,7 @@ class Parser {
         }
         if (t.kind === "invalid-number" && this.purpose === "bounded-numeric-separator-audit")
             return { kind: "literal", loc, value: 0 };
+        if (t.kind === "bigint") return { kind: "literal", loc, value: BigInt(t.text.slice(0, -1).replaceAll("_", "")) };
         if (t.kind === "number") {
             const literal: Expr = { kind: "literal", loc, value: Number(t.text.replaceAll("_", "")) };
             if (this.purpose === "bounded-numeric-assignment-audit") this.numericTokens.set(literal, t);
@@ -1651,8 +1657,8 @@ class Parser {
                         kind = first.text;
                         key = this.take();
                     }
-                    if (key.kind !== "word" && key.kind !== "string" && key.kind !== "number") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", key.loc);
-                    const name = key.kind === "number" ? String(Number(key.text.replaceAll("_", ""))) : key.text;
+                    if (key.kind !== "word" && key.kind !== "string" && key.kind !== "number" && key.kind !== "bigint") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", key.loc);
+                    const name = this.literalPropertyName(key);
                     if (this.structuralPlan() && this.at("(")) {
                         const fn = this.functionTail(first.loc, first.start, "method");
                         if ((kind === "get" && fn.parameters.length !== 0) || (kind === "set" && (fn.parameters.length !== 1 || fn.source.rest === true)))

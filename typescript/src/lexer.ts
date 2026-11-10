@@ -198,9 +198,11 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                     text += advance();
                     const digitsStart = i;
                     text += numericDigits(radix, false, true);
-                    if (i === digitsStart || digit(source.charAt(i)) || letter(source.charAt(i)))
+                    const bigint = source.charAt(i) === "n";
+                    if (bigint) text += advance();
+                    if (i === digitsStart || (bigint && i === digitsStart + 1) || digit(source.charAt(i)) || letter(source.charAt(i)))
                         fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "invalid radix numeric literal", loc);
-                    tokens.push({ kind: invalidSeparator ? "invalid-number" : "number", text, loc, start, end: i });
+                    tokens.push({ kind: invalidSeparator || error !== null ? "invalid-number" : bigint ? "bigint" : "number", text, loc, start, end: i });
                     continue;
                 }
                 text += numericDigits(10, c !== ".", c !== "0");
@@ -215,8 +217,10 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                     if (!digit(source.charAt(i)) && !(separatorAudit && source.charAt(i) === "_")) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "decimal exponent requires digits", loc);
                     text += numericDigits(10, false, true);
                 }
-                if (letter(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
-                tokens.push({ kind: invalidSeparator ? "invalid-number" : "number", text, loc, start, end: i });
+                const bigint = script && source.charAt(i) === "n" && !text.includes(".") && !text.includes("e") && !text.includes("E");
+                if (bigint) text += advance();
+                if (letter(source.charAt(i)) || (bigint && digit(source.charAt(i)))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
+                tokens.push({ kind: invalidSeparator || error !== null ? "invalid-number" : bigint ? "bigint" : "number", text, loc, start, end: i });
                 continue;
             }
             if (c === "'" || c === '"') {

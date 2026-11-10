@@ -19,6 +19,14 @@ for (let i = 0; i < sources.length; i++) {
 }
 for (const text of ["1e", "1e+", "1e-", "1e+x", "1e 2", "1e\n2", ".5e-", "1e2foo", "1e2_3", "01e2", "0xG", "1_000", "1n"]) {
     const result = lex(text, true);
+    if (text === "1n") {
+        const realm = new Realm((_line: string) => {}, "script");
+        const prepared = prepareBoundedScript({ id: "original-bigint", text }, realm);
+        if (prepared.kind !== "ready") throw new Error("original BigInt decimal source");
+        const completion = evaluateScript(createScriptSession(), prepared.record).completion;
+        check(completion.type === "normal" && sameValue(completion.value, { kind: "bigint", value: 1n }), "original decimal BigInt now executes");
+        continue;
+    }
     if (text === "1e2_3" || text === "1_000") { check(result.error === null, "separator now supported " + text); continue; }
     check(result.error !== null && result.error.phase === "parse", "reject decimal " + text);
 }

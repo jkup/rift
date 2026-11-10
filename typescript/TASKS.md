@@ -4300,7 +4300,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-291 — BigInt literal syntax
 
-Status: **in progress — isolated successor to TS-290**. Owner: Codex catch-up chat, 2026-11-10. Add exact decimal/binary/octal/hex BigInt literals and numeric separators, including literal property names in objects/classes/binding patterns. Preserve invalid suffix/fraction/exponent/leading-zero rejection and legacy profile boundaries. Own lexer/parser/syntax/literal evaluation, focused tests/manifests and documentation in build/bigint-literals-draft. Require full Node and focused native static/zero-dynamic plus numeric parser regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add exact decimal/binary/octal/hex BigInt literals and numeric separators, including literal property names in objects/classes/binding patterns. Preserve invalid suffix/fraction/exponent/leading-zero rejection and legacy profile boundaries. Own lexer/parser/syntax/literal evaluation, focused tests/manifests and documentation in build/bigint-literals-draft. Require full Node and focused native static/zero-dynamic plus numeric parser regressions.
 
 ## TS-292 — BigInt width conversion
 

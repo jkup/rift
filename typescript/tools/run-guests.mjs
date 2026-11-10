@@ -82,7 +82,7 @@ const generated = [
     ["radix-invalid-binary","console.log('must not run');0b102;",2,"parse SyntaxError: invalid radix numeric literal",""],
     ["radix-invalid-octal","0o78;",2,"parse SyntaxError: invalid radix numeric literal",""],
     ["radix-missing-digits","0x;",2,"parse SyntaxError: invalid radix numeric literal",""],
-    ["radix-bigint","0x1n;",2,"parse SyntaxError: invalid radix numeric literal",""],
+    ["radix-bigint","0x1n;",0,"",""],
     ["decimal-exponents","console.log(1e2,1E+2,1e-2,1.e2,.5e2,.5);",0,"","100 100 0.01 100 50 0.5\n"],
     ["decimal-boundaries","console.log(1e999,1e-999,1/(-1e-999),5e-324,9007199254740993e0);",0,"","Infinity 0 -Infinity 5e-324 9007199254740992\n"],
     ["decimal-keys","let o={1e2:'a',100:'b',.5:'c'};console.log(o[100],o[.5],Object.keys(o).join(','));",0,"","b c 100,0.5\n"],
@@ -741,6 +741,7 @@ executeDriver("tagged-templates", { stdout: "tagged templates passed\n" });
 executeDriver("bigint-conversion", { stdout: "bigint conversion passed\n" });
 executeDriver("bigint-arithmetic", { stdout: "bigint arithmetic passed\n" });
 executeDriver("bigint-values", { stdout: "bigint values passed\n" });
+executeDriver("bigint-literals", { stdout: "bigint literals passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

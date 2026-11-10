@@ -42,6 +42,10 @@ const invalid = [
     "0b_1", "0b1_", "0b1__0", "0b1_2", "0o_1", "0o1_", "0o1__2", "0o1_8", "1_0n", "1_0name", "0x1_2n",
 ];
 for (const text of invalid) {
+    if (text === "1_0n" || text === "0x1_2n") {
+        expect(run(text), { kind: "bigint", value: text === "1_0n" ? 10n : 18n }, "original separated BigInt now executes");
+        continue;
+    }
     const result = lex(text, true);
     check(result.error !== null && result.error.phase === "parse", "reject: " + text);
     const realm = new Realm((_line: string) => { throw new Error("preparation executed output"); }, "script");
