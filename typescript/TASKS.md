@@ -4606,7 +4606,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-365 — Temporal PlainDateTime differences
 
-Status: **in progress — isolated successor to TS-364**. Owner: Codex catch-up chat, 2026-11-10. Add until/since using existing DateTime conversion, ordered settings and exact relative rounding. Reverse rounding direction and result for since without swapping calendar operands. Require defaults, asymmetric calendar cases, all signed rounding modes, precise endpoints, conversion/options order and Realm-owned Duration results on both hosts. Own src/builtins/temporal-plain-date-time.ts and tests/manifests/docs in build/temporal-plain-date-time-difference-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add until/since using existing DateTime conversion, ordered settings and exact relative rounding. Reverse rounding direction and result for since without swapping calendar operands. Require defaults, asymmetric calendar cases, all signed rounding modes, precise endpoints, conversion/options order and Realm-owned Duration results on both hosts. Own src/builtins/temporal-plain-date-time.ts and tests/manifests/docs in build/temporal-plain-date-time-difference-draft/.
 
 ## TS-366 — Temporal PlainDate to PlainDateTime conversion
 

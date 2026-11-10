@@ -1,3 +1,4 @@
+import { registerTemporalPlainDateTimeDifference } from "./temporal-plain-date-time-difference.js";
 import { registerTemporalPlainDateTimeArithmetic } from "./temporal-plain-date-time-arithmetic.js";
 import { registerTemporalPlainDateTimeRound } from "./temporal-plain-date-time-round.js";
 import { registerTemporalPlainDateTimeWith } from "./temporal-plain-date-time-with.js";
@@ -60,6 +61,7 @@ export function registerTemporalPlainDateTime(realm: Realm, namespace: GuestObje
     realm.registerBuiltin(prototype, "valueOf", 0, (_receiver, _args, context, loc): ValueCompletion =>
         languageFailure(context.realm, "TypeError", "Temporal.PlainDateTime cannot be converted to a primitive number", loc));
     registerTemporalPlainDateTimeFormat(realm);
+    registerTemporalPlainDateTimeDifference(realm);
     registerTemporalPlainDateTimeArithmetic(realm);
     registerTemporalPlainDateTimeRound(realm);
     registerTemporalPlainDateTimeWith(realm);
