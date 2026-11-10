@@ -12,7 +12,7 @@ export function nativeFunctionString(initialName: string | null): GuestString {
     const accessor = name.startsWith("get ") || name.startsWith("set ");
     const propertyName = accessor ? stringSlice(name, 4, name.length) : name;
     if (accessor && propertyName.length === 0) throw new Error("invalid builtin initial name");
-    if (propertyName !== "[Symbol.toPrimitive]" && propertyName !== "[Symbol.hasInstance]" && propertyName !== "[Symbol.iterator]" && propertyName !== "[Symbol.species]" && propertyName !== "[Symbol.matchAll]" && propertyName !== "[Symbol.match]" && propertyName !== "[Symbol.search]" && propertyName !== "[Symbol.replace]" && propertyName !== "[Symbol.split]") {
+    if (propertyName !== "[Symbol.toPrimitive]" && propertyName !== "[Symbol.hasInstance]" && propertyName !== "[Symbol.iterator]" && propertyName !== "[Symbol.asyncIterator]" && propertyName !== "[Symbol.species]" && propertyName !== "[Symbol.matchAll]" && propertyName !== "[Symbol.match]" && propertyName !== "[Symbol.search]" && propertyName !== "[Symbol.replace]" && propertyName !== "[Symbol.split]") {
         for (let i = 0; i < propertyName.length; i++) {
             const c = propertyName.charAt(i);
             const letter = (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";

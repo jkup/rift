@@ -691,6 +691,7 @@ executeDriver("generator-loop-test", { stdout: "generator loop test passed\n" })
 executeDriver("async-function", { stdout: "async function passed\n" });
 executeDriver("async-await", { stdout: "async await passed\n" });
 executeDriver("async-methods", { stdout: "async methods passed\n" });
+executeDriver("async-iterator", { stdout: "async iterator passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

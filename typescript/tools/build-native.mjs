@@ -106,6 +106,7 @@ const entries = [
     ["test/async-function.ts", "async-function"],
     ["test/async-await.ts", "async-await"],
     ["test/async-methods.ts", "async-methods"],
+    ["test/async-iterator.ts", "async-iterator"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

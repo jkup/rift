@@ -4086,7 +4086,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-241 — Async iterator acquisition and sync adaptation
 
-Status: **in progress — isolated successor to TS-240**. Owner: Codex catch-up chat, 2026-11-10. Implement async iterator preference and sync fallback with Realm-owned AsyncFromSyncIterator prototypes, cached next methods, Promise unwrapping and next/return/throw cleanup rules. Keep retained state data-only and use current operation contexts in reactions. Own async-iterator helper, Realm registration, focused tests/manifests and docs in build/async-iterator-draft. For-await syntax and async generators remain separate. Consult ECMA-262 2025 and pinned engine262 iterator operations; require both-host/static checks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement async iterator preference and sync fallback with Realm-owned AsyncFromSyncIterator prototypes, cached next methods, Promise unwrapping and next/return/throw cleanup rules. Keep retained state data-only and use current operation contexts in reactions. Own async-iterator helper, Realm registration, focused tests/manifests and docs in build/async-iterator-draft. For-await syntax and async generators remain separate. Consult ECMA-262 2025 and pinned engine262 iterator operations; require both-host/static checks.
 
 ## TS-242 — For-await-of loop continuations
 

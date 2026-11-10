@@ -1,3 +1,4 @@
+import { registerAsyncIterators } from "./async-iterator.js";
 import { registerPromise } from "./builtins/promise.js";
 import { registerRegExp } from "./builtins/regexp.js";
 import { registerReflect } from "./builtins/reflect.js";
@@ -62,6 +63,8 @@ export class Realm {
     readonly functionPrototype: GuestObject;
     readonly arrayPrototype: GuestArray;
     readonly iteratorPrototype: GuestObject;
+    readonly asyncIteratorPrototype: GuestObject;
+    readonly asyncFromSyncIteratorPrototype: GuestObject;
     readonly generatorPrototype: GuestObject;
     readonly generatorFunctionPrototype: GuestObject;
     readonly asyncFunctionPrototype: GuestObject;
@@ -104,6 +107,8 @@ export class Realm {
         if (profile === "script") this.restrictedFunctionThrower = registerRestrictedFunctionProperties(this);
         this.arrayPrototype = new GuestArray(this.objectPrototype);
         this.iteratorPrototype = new GuestObject(this.objectPrototype);
+        this.asyncIteratorPrototype = new GuestObject(this.objectPrototype);
+        this.asyncFromSyncIteratorPrototype = new GuestObject(this.asyncIteratorPrototype);
         this.generatorPrototype = new GuestObject(this.iteratorPrototype);
         this.generatorFunctionPrototype = new GuestObject(this.functionPrototype);
         this.asyncFunctionPrototype = new GuestObject(this.functionPrototype);
@@ -172,6 +177,7 @@ export class Realm {
             registerAsyncFunctionConstructor(this);
             registerReflect(this);
             this.promiseConstructor = registerPromise(this);
+            registerAsyncIterators(this);
             registerRegExp(this);
             this.evalIntrinsic = createEvalIntrinsic(this);
             this.defineScriptGlobal("globalThis", { value: this.globalThisValue, writable: true, enumerable: false, configurable: true });
