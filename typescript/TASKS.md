@@ -3955,7 +3955,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-211 — Reference operations independent of execution engines
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Move existing evaluation-reference data and Get/Put/Delete/receiver operations into a semantic helper using the current OperationContext. Keep successful key conversion caching, deferred assignment conversion, strictness, super receivers and lexical binding identity unchanged. Own evaluation-reference.ts, internal evaluator delegation/imports and generator-boundary notes in build/reference-operations-draft based on TS-210. Validate existing optional-chain, super-property, update and delete matrices plus the complete Node suite; no new grammar or saved AST continuation claim.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Move existing evaluation-reference data and Get/Put/Delete/receiver operations into a semantic helper using the current OperationContext. Keep successful key conversion caching, deferred assignment conversion, strictness, super receivers and lexical binding identity unchanged. Own evaluation-reference.ts, internal evaluator delegation/imports and generator-boundary notes in build/reference-operations-draft based on TS-210. Validate existing optional-chain, super-property, update and delete matrices plus the complete Node suite; no new grammar or saved AST continuation claim.
 
 ## TS-212 — Pending compound assignment across sessions
 

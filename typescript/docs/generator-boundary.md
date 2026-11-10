@@ -67,3 +67,11 @@ isolated draft passes 701 Node guests and native numeric-operator, primitive
 conversion, compound-assignment and abstract-equality suites with zero dynamic
 coverage. This prepares a reusable value-operation boundary; it does not itself
 save pending operands or suspend a guest expression.
+
+TS-211 moves reference data and Get/Put/Delete/receiver operations into
+shared semantic helpers. References retain strictness, receiver and the existing
+successful key cache; the current OperationContext supplies dispatch and errors.
+The isolated draft passes 701 Node guests and native optional-chain, super,
+delete and both for-update runtime variants with zero dynamic coverage. This
+removes an engine dependency from retained reference operations without changing
+key-conversion timing or claiming resumable AST evaluation.
