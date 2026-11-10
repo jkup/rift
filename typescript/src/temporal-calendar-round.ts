@@ -9,8 +9,8 @@ export interface CalendarRoundResult {
     readonly expanded: boolean;
 }
 
-function dateDuration(years: number, months: number, weeks: number): DurationFields {
-    return { years: years === 0 ? 0 : years, months: months === 0 ? 0 : months, weeks: weeks === 0 ? 0 : weeks, days: 0,
+export function dateDuration(years: number, months: number, weeks: number, days = 0): DurationFields {
+    return { years: years === 0 ? 0 : years, months: months === 0 ? 0 : months, weeks: weeks === 0 ? 0 : weeks, days: days === 0 ? 0 : days,
         hours: 0, minutes: 0, seconds: 0, milliseconds: 0, microseconds: 0, nanoseconds: 0 };
 }
 

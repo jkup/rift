@@ -4536,7 +4536,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-348 — Relative ISO date rounding
 
-Status: **in progress — isolated successor to TS-347**. Owner: Codex catch-up chat, 2026-11-10. Combine unrounded ISO differences, exact calendar windows, signed day rounding and specified larger-unit carries. Own relative date rounding helper, shared date-duration factory, tests/manifests/docs in build/temporal-date-round-draft. No guest methods yet. Require rounding/carry boundaries, unchanged exact-day behavior, signed and half-even cases, equal dates and representable-window failures on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Combine unrounded ISO differences, exact calendar windows, signed day rounding and specified larger-unit carries. Own relative date rounding helper, shared date-duration factory, tests/manifests/docs in build/temporal-date-round-draft. No guest methods yet. Require rounding/carry boundaries, unchanged exact-day behavior, signed and half-even cases, equal dates and representable-window failures on both hosts.
 
 ## TS-349 — Temporal PlainDate differences
 

@@ -793,6 +793,7 @@ executeDriver("temporal-plain-date-arithmetic", { stdout: "temporal plain date a
 executeDriver("iso-calendar-difference", { stdout: "iso calendar difference passed\n" });
 executeDriver("temporal-date-difference-options", { stdout: "temporal date difference options passed\n" });
 executeDriver("temporal-calendar-round", { stdout: "temporal calendar round passed\n" });
+executeDriver("temporal-date-round", { stdout: "temporal date round passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
