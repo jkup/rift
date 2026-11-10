@@ -2576,3 +2576,21 @@ The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound
 2026-11-10 TS-276 promoted after loop-sources acceptance with 6 changed-file baselines verified. Isolated evidence passes 766 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/generator-super-delete-draft/build and build/generator-super-delete-* logs, retaining initial failures and exact historical-input migrations.
 
 2026-11-10 TS-277 promoted after loop-sources acceptance with 6 changed-file baselines verified. Isolated evidence passes 767 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/async-super-constructor-draft/build and build/async-super-constructor-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-10: TS-282 passes 772 Node guests, focused native validation and six native regressions. TS-283 claimed to share class constructor/method evaluation before adding retained class scopes. Design notes: build/class-suspension-design.md.
+
+2026-11-10: TS-283 passes 773 Node guests and focused native validation; six native regressions continue. TS-284 claimed for suspended class heritage, with explicit expression-scope restoration and named evaluation.
+
+2026-11-10: TS-284 focused native checks pass; full Node and six native regressions continue. TS-285 claimed for computed class keys using the retained class scope and shared method definition helper.
+
+2026-11-10: TS-285 focused native passes; full Node/native regressions continue. TS-286 claimed for raw template tokens and parser-owned invalid escape rejection, preparing tagged templates. Canonical super-expressions validation remains frozen.
+
+2026-11-10: TS-286 focused native passes; full Node and regressions continue. TS-287 claimed for tagged templates, reusing call references and argument suspension instead of a second call evaluator.
+
+2026-11-10: Tagged templates pass777/777 Node, focused native and progressing native regressions. TS-288 claimed for exact BigInt conversion backend; native bigint is already used by radix formatting, but guest conversion semantics and resource behavior require their own evidence.
+
+2026-11-10: TS-288 reviewed Node778/778 and focused native pass after the reduced Realm-import reachability fix. TS-289 claimed for bounded exact BigInt arithmetic; the eleven reviewed TS-278–288 successors remain the next integration batch.
+
+2026-11-10: TS-289 Node779/779 and native arithmetic pass; reviewed Node rerun records the explicit callback signatures that remove a reduced dynamic-adapter issue. TS-290 claimed for guest BigInt values and numeric semantics, using the verified conversion/arithmetic backends. Canonical super-expressions validation and its two scheduled Zig-cache recovery builds remain frozen.
+
+2026-11-10 Super expressions accepted (TS-270–277): 767/767 guests on each host without skips; all 274 native static-only/zero-dynamic gates pass after the 2841348ms matrix and 2 sequential rebuilds for Zig Windows-header cache file-open errors; original failures and retry results are preserved. Tooling passes 293/293 in 231500.7033ms; runner32/32 in 696.928ms, ten probes and typechecking pass. Corpus node-X7W4Ch/native-DXHN3B matches all 225 normalized records and preserves all 190 prior completions (116 reported successes, 74 unchecked). Remaining outcomes: two parse errors, 32 runtime errors and one reported failure. Evidence: build/super-expressions-native-initial-results.json, super-expressions-native-retries.json, super-expressions-native-results.json, super-expressions-corpus-comparison.json and super-expressions-* logs. Nested destructuring, nullish/logical operators, optional chains and class evaluation remain isolated successors requiring combined acceptance.
