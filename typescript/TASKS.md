@@ -4824,7 +4824,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-418 — Parse ZonedDateTime ISO records
 
-Status: **in progress — isolated successor to TS-417**. Owner: Codex catch-up chat, 2026-11-10. Parse zoned ISO strings into exact date/time, timezone, and offset-behavior records using the shared scanner. Require a zone annotation, preserve date-only start-of-day and Z versus numeric offsets, validate ISO calendar annotations, and defer epoch range checks to interpretation. Cover strict grammar and subminute offset precision on both hosts. Own  and tests/manifests/docs in build/temporal-zoned-parse-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse zoned ISO strings into exact date/time, timezone, and offset-behavior records using the shared scanner. Require a zone annotation, preserve date-only start-of-day and Z versus numeric offsets, validate ISO calendar annotations, and defer epoch range checks to interpretation. Cover strict grammar and subminute offset precision on both hosts. Own  and tests/manifests/docs in build/temporal-zoned-parse-draft/.
 
 ## TS-419 — Interpret fixed-offset zoned ISO records
 

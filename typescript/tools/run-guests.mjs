@@ -860,6 +860,7 @@ executeDriver("temporal-zoned-date-time-string", { stdout: "temporal zoned date 
 executeDriver("temporal-instant-time-zone", { stdout: "temporal instant time zone passed\n" });
 executeDriver("temporal-zoned-plain-conversion", { stdout: "temporal zoned plain conversion passed\n" });
 executeDriver("temporal-zoned-with-plain-time", { stdout: "temporal zoned with plain time passed\n" });
+executeDriver("temporal-zoned-parse", { stdout: "temporal zoned parse passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
