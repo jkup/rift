@@ -4568,7 +4568,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-356 — Temporal PlainDateTime part conversion
 
-Status: **in progress — isolated successor to TS-355**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainDate/toPlainTime and withPlainTime/withCalendar using internal records and existing conversion helpers. Own part builtin/registration, tests/manifests/docs in build/temporal-plain-date-time-parts-draft. Require branded behavior, midnight default, lower-bound failure, intrinsic fresh results, ordered time conversion and cross-Realm allocation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainDate/toPlainTime and withPlainTime/withCalendar using internal records and existing conversion helpers. Own part builtin/registration, tests/manifests/docs in build/temporal-plain-date-time-parts-draft. Require branded behavior, midnight default, lower-bound failure, intrinsic fresh results, ordered time conversion and cross-Realm allocation.
 
 ## TS-357 — Temporal PlainDateTime field replacement
 
