@@ -4552,7 +4552,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-352 — Temporal PlainDateTime formatting
 
-Status: **in progress — isolated successor to TS-351**. Owner: Codex catch-up chat, 2026-11-10. Add ordered string precision/calendar options, exact time rounding with calendar-day carry, and intrinsic JSON/non-Intl locale serialization. Share calendar option parsing and ISO formatting with existing date/time paths. Own formatting builtin, shared options/ISO helpers, registration, tests/manifests/docs in build/temporal-plain-date-time-format-draft. Require signed years, all rounding modes, midnight/year carries, strict endpoint failures and observable option order on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ordered string precision/calendar options, exact time rounding with calendar-day carry, and intrinsic JSON/non-Intl locale serialization. Share calendar option parsing and ISO formatting with existing date/time paths. Own formatting builtin, shared options/ISO helpers, registration, tests/manifests/docs in build/temporal-plain-date-time-format-draft. Require signed years, all rounding modes, midnight/year carries, strict endpoint failures and observable option order on both hosts.
 
 ## TS-353 — Temporal PlainDateTime parsing
 

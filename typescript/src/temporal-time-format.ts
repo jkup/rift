@@ -26,7 +26,7 @@ export function formatOffsetInstant(value: bigint, minutes: number, precision: T
     return formatted === null ? null : formatted + offset;
 }
 
-function formatISODateTime(time: ISODateTime, precision: TemporalTimePrecision): string | null {
+export function formatISODateTime(time: ISODateTime, precision: TemporalTimePrecision): string | null {
     const formatted = formatTemporalTime(time, precision);
     return formatted === null ? null : formatISODate(time.date) + "T" + formatted;
 }
@@ -49,4 +49,8 @@ export function formatTemporalFraction(nanoseconds: number, precision: "auto" | 
         while (fraction.endsWith("0")) fraction = fraction.slice(0, -1);
     } else fraction = fraction.slice(0, precision);
     return fraction.length === 0 ? "" : "." + fraction;
+}
+
+export function formatISOCalendarAnnotation(calendarName: string): string {
+    return calendarName === "always" ? "[u-ca=iso8601]" : calendarName === "critical" ? "[!u-ca=iso8601]" : "";
 }

@@ -214,6 +214,7 @@ const entries = [
     ["test/temporal-plain-date-difference.ts", "temporal-plain-date-difference"],
     ["test/iso-date-time.ts", "iso-date-time"],
     ["test/temporal-plain-date-time-core.ts", "temporal-plain-date-time-core"],
+    ["test/temporal-plain-date-time-format.ts", "temporal-plain-date-time-format"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -113,3 +113,14 @@ export function temporalUnitNanoseconds(name: string): bigint | null {
         default: return null;
     }
 }
+
+export function temporalCalendarName(options: GuestObject, context: OperationContext, loc: Location): StringCompletion {
+    const read = options.internalGet("calendarName", { kind: "object", object: options }, context, loc);
+    if (read.type === "throw") return read;
+    if (read.value.kind === "undefined") return { type: "normal", value: "auto" };
+    const option = temporalOptionString(read.value, context, loc);
+    if (option.type === "throw") return option;
+    const name = option.value;
+    return name === "auto" || name === "always" || name === "never" || name === "critical" ? option :
+        languageFailure(context.realm, "RangeError", "invalid calendarName option", loc);
+}
