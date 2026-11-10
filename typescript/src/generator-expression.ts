@@ -2,9 +2,10 @@ import type { EvaluationReference } from "./evaluation-reference.js";
 import type { SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
 import type { GuestObject, PropertyKey, Value } from "./runtime.js";
 
+export type SuperPropertyOperation = { kind: "read" } | { kind: "call"; expression: CallExpr } | { kind: "assignment"; expression: AssignExpr };
 export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "compound-value"; expression: CompoundExpr; reference: EvaluationReference; left: Value }
-    | { kind: "super-key"; expression: SuperMemberExpr; call: CallExpr | null; homeObject: GuestObject; receiver: Value }
+    | { kind: "super-key"; expression: SuperMemberExpr; operation: SuperPropertyOperation; homeObject: GuestObject; receiver: Value }
     | { kind: "update-base"; expression: UpdateExpr }
     | { kind: "update-key"; expression: UpdateExpr; base: Value }
     | { kind: "assignment-base"; expression: AssignExpr | CompoundExpr }

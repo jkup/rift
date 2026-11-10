@@ -138,6 +138,7 @@ const entries = [
     ["test/generator-update.ts", "generator-update"],
     ["test/generator-super-member.ts", "generator-super-member"],
     ["test/generator-super-call.ts", "generator-super-call"],
+    ["test/generator-super-assignment.ts", "generator-super-assignment"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -3355,7 +3355,7 @@ class ExecutionEngine {
                     if (expression.kind === "super-member") {
                         const superContext = this.#superContext(expression.loc);
                         if (superContext.type === "throw") return superContext;
-                        frames.push({ kind: "super-key", expression, call: null, homeObject: superContext.homeObject, receiver: superContext.receiver });
+                        frames.push({ kind: "super-key", expression, operation: { kind: "read" }, homeObject: superContext.homeObject, receiver: superContext.receiver });
                         expression = expression.key;
                         continue;
                     }
@@ -3366,6 +3366,14 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "assign" || expression.kind === "compound") {
+                        if (expression.kind === "assign" && expression.target.kind === "super-member" && isSuspendingGeneratorExpression(expression.target)) {
+                            const superContext = this.#superContext(expression.target.loc);
+                            if (superContext.type === "throw") return superContext;
+                            frames.push({ kind: "super-key", expression: expression.target, operation: { kind: "assignment", expression },
+                                homeObject: superContext.homeObject, receiver: superContext.receiver });
+                            expression = expression.target.key;
+                            continue;
+                        }
                         if (expression.target.kind === "member" && isSuspendingGeneratorExpression(expression.target)) {
                             frames.push({ kind: "assignment-base", expression });
                             expression = expression.target.base;
@@ -3404,7 +3412,7 @@ class ExecutionEngine {
                         if (expression.callee.kind === "super-member") {
                             const superContext = this.#superContext(expression.callee.loc);
                             if (superContext.type === "throw") return superContext;
-                            frames.push({ kind: "super-key", expression: expression.callee, call: expression,
+                            frames.push({ kind: "super-key", expression: expression.callee, operation: { kind: "call", expression },
                                 homeObject: superContext.homeObject, receiver: superContext.receiver });
                             expression = expression.callee.key;
                         } else if (expression.callee.kind === "member") {
@@ -3496,10 +3504,15 @@ class ExecutionEngine {
             }
             if (frame.kind === "super-key") {
                 const reference = this.#superReference(frame.homeObject, frame.receiver, value, frame.expression.loc);
+                if (frame.operation.kind === "assignment") {
+                    frames.push({ kind: "assignment-value", expression: frame.operation.expression, reference });
+                    expression = frame.operation.expression.value;
+                    continue;
+                }
                 const result = getReferenceValue(this.context, reference, frame.expression.loc);
                 if (result.type === "throw") return result;
                 if (result.type !== "normal") throw new Error("invalid super read completion");
-                if (frame.call !== null) frames.push({ kind: "call-target", expression: frame.call, receiver: frame.receiver });
+                if (frame.operation.kind === "call") frames.push({ kind: "call-target", expression: frame.operation.expression, receiver: frame.receiver });
                 value = result.value;
                 continue;
             }
