@@ -848,6 +848,7 @@ executeDriver("date-calendar-setters", { stdout: "date calendar setters passed\n
 executeDriver("date-json", { stdout: "date json passed\n" });
 executeDriver("date-legacy-year", { stdout: "date legacy year passed\n" });
 executeDriver("date-locale", { stdout: "date locale passed\n" });
+executeDriver("temporal-now-core", { stdout: "temporal now core passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

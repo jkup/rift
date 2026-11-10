@@ -4774,7 +4774,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-406 — Temporal Now instant and timezone identity
 
-Status: **in progress — isolated successor to TS-405**. Owner: Codex catch-up chat, 2026-11-10. Create Realm-owned Temporal.Now with instant and timeZoneId, using the existing Realm-local millisecond clock and explicit UTC timezone policy. Validate fresh intrinsic Instant allocation, clock calls, namespace metadata, receiver independence, defining-Realm ownership and host-clock fault boundaries on both hosts. Calendar/timezone projections remain follow-ups. Own src/builtins/temporal.ts and tests/manifests/docs in build/temporal-now-core-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Create Realm-owned Temporal.Now with instant and timeZoneId, using the existing Realm-local millisecond clock and explicit UTC timezone policy. Validate fresh intrinsic Instant allocation, clock calls, namespace metadata, receiver independence, defining-Realm ownership and host-clock fault boundaries on both hosts. Calendar/timezone projections remain follow-ups. Own src/builtins/temporal.ts and tests/manifests/docs in build/temporal-now-core-draft/.
 
 ## TS-407 — UTC and fixed-offset Temporal timezone parsing
 
