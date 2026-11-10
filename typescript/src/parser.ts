@@ -780,6 +780,7 @@ class Parser {
                 else if (statement.kind === "try-finally") pending.push(statement.body, statement.finalizer);
                 else if (statement.kind === "try-catch") pending.push(statement.block, statement.handler);
                 else if (statement.kind === "if") {
+                    this.admitGeneratorExpression(statement.test, supported);
                     pending.push(statement.consequent);
                     if (statement.alternate !== null) pending.push(statement.alternate);
                 } else if ((statement.kind === "return" || statement.kind === "throw") && statement.value !== null) this.admitGeneratorExpression(statement.value, supported);

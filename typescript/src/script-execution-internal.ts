@@ -2511,6 +2511,8 @@ class ExecutionEngine {
                 } finally { this.#frame = saved; }
             }
             case "if": {
+                if (sequences !== null && isSuspendingGeneratorExpression(stmt.test))
+                    return this.#generatorExpression(stmt.test, { kind: "branch", consequent: stmt.consequent, alternate: stmt.alternate });
                 const test = this.#value(stmt.test);
                 if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
                 const branch = truthy(test.value) ? stmt.consequent : stmt.alternate;
@@ -3079,6 +3081,11 @@ class ExecutionEngine {
             const failure = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", continuation.yieldLoc);
             this.#capture(failure);
             return failure;
+        }
+        if (receiver.kind === "branch") {
+            const branch = truthy(value) ? receiver.consequent : receiver.alternate;
+            if (branch !== null) continuation.sequences.push({ kind: "sequence", frame: frame.frame, body: [branch], nextStatement: 0, depth: frame.depth + 1 });
+            return null;
         }
         if (receiver.kind === "return") return this.#unwindGenerator(continuation, { type: "return", value }, callerDepth);
         if (receiver.kind === "throw") {

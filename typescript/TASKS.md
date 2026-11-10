@@ -4064,7 +4064,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-236 — Suspended if conditions
 
-Status: **in progress — isolated successor to TS-235**. Owner: Codex catch-up chat, 2026-11-10. Allow admitted generator expression trees in if conditions, retaining only the branch selection receiver. Preserve single evaluation, lexical environments, abrupt cleanup, nested delegation and current-session budgets. Own parser admission, receiver/scheduling changes, tests/manifests and docs in build/generator-if-draft. Loop conditions remain separate. Require both-host/static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Allow admitted generator expression trees in if conditions, retaining only the branch selection receiver. Preserve single evaluation, lexical environments, abrupt cleanup, nested delegation and current-session budgets. Own parser admission, receiver/scheduling changes, tests/manifests and docs in build/generator-if-draft. Loop conditions remain separate. Require both-host/static validation.
 
 ## TS-237 — Suspended while and do-while conditions
 
