@@ -806,6 +806,7 @@ executeDriver("temporal-plain-date-time-with", { stdout: "temporal plain date ti
 executeDriver("temporal-plain-date-time-round", { stdout: "temporal plain date time round passed\n" });
 executeDriver("temporal-plain-date-time-arithmetic", { stdout: "temporal plain date time arithmetic passed\n" });
 executeDriver("iso-date-time-difference", { stdout: "iso date time difference passed\n" });
+executeDriver("temporal-date-time-difference-options", { stdout: "temporal date time difference options passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

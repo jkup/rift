@@ -4590,7 +4590,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-361 — Ordered Temporal date-time difference options
 
-Status: **in progress — isolated successor to TS-360**. Owner: Codex catch-up chat, 2026-11-10. Resolve shared ordered difference options across all calendar/time units, with day/nanosecond defaults, automatic largest-unit expansion and time-increment divisibility. Share duration-unit mapping with time-only differences. Require full getter/coercion order, unit ordering, calendar increments, invalid-value phases and unchanged Date/Time/Instant settings on both hosts. Own src/temporal-difference-options.ts and tests/manifests/docs in build/temporal-date-time-difference-options-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resolve shared ordered difference options across all calendar/time units, with day/nanosecond defaults, automatic largest-unit expansion and time-increment divisibility. Share duration-unit mapping with time-only differences. Require full getter/coercion order, unit ordering, calendar increments, invalid-value phases and unchanged Date/Time/Instant settings on both hosts. Own src/temporal-difference-options.ts and tests/manifests/docs in build/temporal-date-time-difference-options-draft/.
 
 ## TS-362 — Exact calendar rounding for date-time differences
 

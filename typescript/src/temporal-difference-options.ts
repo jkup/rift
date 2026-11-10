@@ -10,15 +10,19 @@ export interface TimeDifferenceSettings {
     readonly mode: TemporalRoundingMode;
 }
 
-function durationUnit(name: string): DurationUnit {
+export function durationUnit(name: string): DurationUnit {
     switch (name) {
+        case "year": return "years";
+        case "month": return "months";
+        case "week": return "weeks";
+        case "day": return "days";
         case "hour": return "hours";
         case "minute": return "minutes";
         case "second": return "seconds";
         case "millisecond": return "milliseconds";
         case "microsecond": return "microseconds";
         case "nanosecond": return "nanoseconds";
-        default: throw new Error("time difference unit invariant");
+        default: throw new Error("duration unit invariant");
     }
 }
 
