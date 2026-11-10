@@ -4508,7 +4508,7 @@ Status: **done — accepted in temporal-arithmetic-date milestone**. Owner: Code
 
 ## TS-341 — Temporal calendar string parsing
 
-Status: **in progress — isolated successor to TS-340**. Owner: Codex catch-up chat, 2026-11-10. Parse calendar identifiers from bare annotation values and the complete Temporal date/time, time, year-month and month-day string forms. Preserve first calendar annotations and syntax validation without epoch range restrictions. Own calendar parser/shared scanner exports, focused tests/manifests/docs in build/temporal-calendar-parse-draft. No guest calendar conversion yet. Require valid and invalid form coverage, annotations, expanded years, default ISO calendar and native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse calendar identifiers from bare annotation values and the complete Temporal date/time, time, year-month and month-day string forms. Preserve first calendar annotations and syntax validation without epoch range restrictions. Own calendar parser/shared scanner exports, focused tests/manifests/docs in build/temporal-calendar-parse-draft. No guest calendar conversion yet. Require valid and invalid form coverage, annotations, expanded years, default ISO calendar and native static validation.
 
 ## TS-342 — Temporal PlainDate conversion and comparison
 

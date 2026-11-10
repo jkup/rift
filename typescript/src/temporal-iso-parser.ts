@@ -51,7 +51,7 @@ function validAnnotationKey(text: string): boolean {
     return true;
 }
 
-function validAnnotationValue(text: string): boolean {
+export function validAnnotationValue(text: string): boolean {
     let leading = true;
     for (let i = 0; i < text.length; i++) {
         const code = text.charCodeAt(i);
