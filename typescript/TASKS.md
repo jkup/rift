@@ -4286,7 +4286,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-288 — Exact BigInt conversion backend
 
-Status: **in progress — isolated successor to TS-287**. Owner: Codex catch-up chat, 2026-11-10. Add a step-budgeted StringIntegerLiteral scanner and validated integer/radix formatting backend. Verify exact large values, signs, whitespace, invalid grammar, number rounding and native arithmetic seams. Own src/bigint-conversion.ts, tests/manifests and docs in build/bigint-conversion-draft. Guest Value integration, arithmetic guards and builtin exposure are separate follow-ups. Require native static-only/zero-dynamic plus independent expected values; do not reuse host string parsing as an oracle.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add a step-budgeted StringIntegerLiteral scanner and validated integer/radix formatting backend. Verify exact large values, signs, whitespace, invalid grammar, number rounding and native arithmetic seams. Own src/bigint-conversion.ts, tests/manifests and docs in build/bigint-conversion-draft. Guest Value integration, arithmetic guards and builtin exposure are separate follow-ups. Require native static-only/zero-dynamic plus independent expected values; do not reuse host string parsing as an oracle.
 
 ## TS-289 — Budgeted BigInt arithmetic backend
 

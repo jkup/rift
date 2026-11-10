@@ -738,6 +738,7 @@ executeDriver("generator-class-heritage", { stdout: "generator class heritage pa
 executeDriver("generator-class-key", { stdout: "generator class key passed\n" });
 executeDriver("template-tokens", { stdout: "template tokens passed\n" });
 executeDriver("tagged-templates", { stdout: "tagged templates passed\n" });
+executeDriver("bigint-conversion", { stdout: "bigint conversion passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
