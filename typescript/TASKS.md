@@ -4626,7 +4626,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-370 — Temporal PlainYearMonth conversion and comparison
 
-Status: **in progress — isolated successor to TS-369**. Owner: Codex catch-up chat, 2026-11-10. Add from/compare/equals with ordered ISO year-month fields, shared month resolution and month bounds. Preserve reference days on branded copies; normalize string and bag records to day one. Validate overflow after conversion reads, ignore day/era fields, and test intrinsic Realm results and getter precedence on both hosts. Own src/temporal-date-fields.ts, src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-conversion-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add from/compare/equals with ordered ISO year-month fields, shared month resolution and month bounds. Preserve reference days on branded copies; normalize string and bag records to day one. Validate overflow after conversion reads, ignore day/era fields, and test intrinsic Realm results and getter precedence on both hosts. Own src/temporal-date-fields.ts, src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-conversion-draft/.
 
 TS-370 scope refinement: share calendar-with-ISO-default lookup across Date, DateTime and YearMonth conversion so calendar-bearing brands bypass guest calendar getters. Own src/temporal-calendar.ts, src/builtins/temporal-plain-date-conversion.ts, src/builtins/temporal-plain-date-time-conversion.ts as well; test the new YearMonth interactions with existing date conversion.
 

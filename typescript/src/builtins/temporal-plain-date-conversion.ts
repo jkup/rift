@@ -6,7 +6,7 @@ import { isoDateWithinLimits } from "../iso-calendar-fields.js";
 import { GuestTemporalPlainDate, createTemporalPlainDate, temporalPlainDateValue } from "../temporal-plain-date-object.js";
 import { readTemporalDateFields, resolveTemporalDateFields } from "../temporal-date-fields.js";
 import { parseTemporalPlainDate } from "../temporal-plain-date-parse.js";
-import { toTemporalCalendar } from "../temporal-calendar.js";
+import { temporalCalendarWithISODefault } from "../temporal-calendar.js";
 import { temporalOverflowReject } from "../temporal-options.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type Value, type OperationContext, type ThrowCompletion, type ValueCompletion } from "../runtime.js";
 
@@ -16,12 +16,8 @@ export function toDateFields(value: Value, options: Value, context: OperationCon
         if (value.object instanceof GuestTemporalPlainDateTime) date = value.object.dateTime.date;
         else if (value.object instanceof GuestTemporalPlainDate) date = value.object.date;
         else {
-            const calendar = value.object.internalGet("calendar", value, context, loc);
+            const calendar = temporalCalendarWithISODefault(value.object, context, loc);
             if (calendar.type === "throw") return calendar;
-            if (calendar.value.kind !== "undefined") {
-                const converted = toTemporalCalendar(calendar.value, context, loc);
-                if (converted.type === "throw") return converted;
-            }
             const fields = readTemporalDateFields(value.object, context, loc);
             if (fields.type === "throw") return fields;
             const overflow = temporalOverflowReject(options, context, loc);

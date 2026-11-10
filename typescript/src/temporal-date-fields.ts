@@ -48,9 +48,7 @@ export function readTemporalDateField(object: GuestObject, name: keyof TemporalD
     return { type: "normal", value: fields };
 }
 
-export function resolveTemporalDateFields(fields: TemporalDateFields, reject: boolean, context: OperationContext, loc: Location): { type: "normal"; value: ISODate } | ThrowCompletion {
-    if (fields.year === null || fields.day === null || (fields.month === null && fields.monthCode === null))
-        return languageFailure(context.realm, "TypeError", "year, day and month or monthCode are required", loc);
+export function resolveTemporalMonth(fields: TemporalDateFields, reject: boolean, context: OperationContext, loc: Location): { type: "normal"; value: number } | ThrowCompletion {
     let month = fields.month;
     if (fields.monthCode !== null) {
         const code = fields.monthCode, codeMonth = (code.charCodeAt(1) - 48) * 10 + code.charCodeAt(2) - 48;
@@ -59,9 +57,17 @@ export function resolveTemporalDateFields(fields: TemporalDateFields, reject: bo
         month = codeMonth;
     }
     if (month === null) throw new Error("resolved month invariant");
+    return { type: "normal", value: reject ? month : Math.max(1, Math.min(12, month)) };
+}
+
+export function resolveTemporalDateFields(fields: TemporalDateFields, reject: boolean, context: OperationContext, loc: Location): { type: "normal"; value: ISODate } | ThrowCompletion {
+    if (fields.year === null || fields.day === null || (fields.month === null && fields.monthCode === null))
+        return languageFailure(context.realm, "TypeError", "year, day and month or monthCode are required", loc);
+    const resolvedMonth = resolveTemporalMonth(fields, reject, context, loc);
+    if (resolvedMonth.type === "throw") return resolvedMonth;
+    const month = resolvedMonth.value;
     let day = fields.day;
     if (!reject) {
-        month = Math.max(1, Math.min(12, month));
         day = Math.max(1, Math.min(isoDaysInMonth(fields.year, month), day));
     }
     const date = { year: fields.year, month, day };
