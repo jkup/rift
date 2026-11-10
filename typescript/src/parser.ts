@@ -713,24 +713,12 @@ class Parser {
         this.checkParameterDirective(rest, parameters, bodyIndex, loc);
         return { params, parameters, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end, rest, bodyLoc } };
     }
-    arrowAhead(): boolean {
-        let index = this.index;
-        if (this.tokens[index].kind === "word") return this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
-        if (this.tokens[index].kind !== "punct" || this.tokens[index].text !== "(") return false;
-        let depth = 0;
-        for (; this.tokens[index].kind !== "eof"; index++) {
-            const token = this.tokens[index];
-            if (token.kind !== "punct") continue;
-            if (token.text === "(") depth++;
-            if (token.text === ")" && --depth === 0)
-                return this.tokens[index + 1].kind === "punct" && this.tokens[index + 1].text === "=>";
-        }
-        return false;
-    }
     arrow(allowIn: boolean): Expr {
         const first = this.current();
-        const { params, rest, parameters } = this.at("(") ? this.formalParameters(first.loc, true)
-            : { params: [this.name()], rest: false, parameters: [{ site: { name: first.text, start: first.start, end: first.end, loc: first.loc }, initializer: null }] };
+        const name = this.name();
+        return this.arrowBody(first, [name], false, [{ site: { name, start: first.start, end: first.end, loc: first.loc }, initializer: null }], allowIn);
+    }
+    private arrowBody(first: Token, params: string[], rest: boolean, parameters: FormalParameter[], allowIn: boolean): Expr {
         if (this.current().loc.line !== this.tokens[this.index - 1].loc.line)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "line terminator before arrow", this.current().loc);
         this.expect("=>");
@@ -782,8 +770,9 @@ class Parser {
             this.depth--;
             return { kind: "literal", loc, value: null };
         }
-        const arrow = this.structuralPlan() && min <= 1 && this.arrowAhead();
-        let left = arrow ? this.arrow(allowIn) : this.primary(allowIn);
+        const singleArrow = this.structuralPlan() && min <= 1 && this.current().kind === "word" && this.tokens[this.index + 1]?.text === "=>";
+        let left = singleArrow ? this.arrow(allowIn) : this.primary(allowIn, min <= 1);
+        const arrow = singleArrow || (left.kind === "function" && left.source?.arrow === true && !this.parenthesized.has(left));
         // A unary operand may already have consumed the postfix token. Its
         // enclosing expression must not reopen the member/call suffix chain.
         const lastPrimaryToken = this.tokens[this.index - 1];
@@ -1088,7 +1077,43 @@ class Parser {
         }
         return this.expression(1);
     }
-    primary(allowIn: boolean): Expr {
+    private parenthesizedExpression(first: Token, allowIn: boolean, allowArrow: boolean): Expr {
+        const values: { value: Expr; token: Token }[] = [];
+        let rest = false, trailingComma = false;
+        while (this.error === null && !this.at(")")) {
+            rest = this.eat("...");
+            const token = this.current();
+            values.push({ value: this.expression(1), token });
+            if (rest || !this.eat(",")) break;
+            trailingComma = this.at(")");
+        }
+        this.expect(")");
+        if (allowArrow && this.at("=>")) {
+            const params: string[] = [], parameters: FormalParameter[] = [];
+            for (let i = 0; i < values.length; i++) {
+                const { value, token } = values[i];
+                const target = value.kind === "assign" ? value.target : value;
+                if (target.kind !== "identifier" || this.parenthesized.has(value) || this.parenthesized.has(target)) {
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", token.loc);
+                    continue;
+                }
+                if (params.includes(target.name))
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate arrow parameter: " + target.name, first.loc);
+                if (rest && i === values.length - 1 && value.kind === "assign")
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "rest parameter cannot have a default", token.loc);
+                params.push(target.name);
+                parameters.push({ site: { name: target.name, start: token.start, end: token.end, loc: token.loc }, initializer: value.kind === "assign" ? value.value : null });
+            }
+            return this.arrowBody(first, params, rest, parameters, allowIn);
+        }
+        if (values.length === 0 || rest || trailingComma)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid parenthesized expression", first.loc);
+        let value: Expr = values.length === 0 ? { kind: "literal", loc: first.loc, value: null } : values[0].value;
+        for (let i = 1; i < values.length; i++) value = { kind: "binary", loc: value.loc, op: ",", left: value, right: values[i].value };
+        this.parenthesized.set(value, true);
+        return value;
+    }
+    primary(allowIn: boolean, allowArrow = false): Expr {
         const t = this.take();
         const loc = t.loc;
         if (t.kind === "word" && t.text === "super" && this.boundedPlan()) {
@@ -1182,6 +1207,7 @@ class Parser {
             return { kind: "function", loc, params: fn.params, parameters: fn.parameters, body: fn.body, source: fn.source };
         }
         if (t.text === "(") {
+            if (this.structuralPlan()) return this.parenthesizedExpression(t, allowIn, allowArrow);
             const expr = this.expression(0);
             this.expect(")");
             if (this.structuralPlan()) this.parenthesized.set(expr, true);

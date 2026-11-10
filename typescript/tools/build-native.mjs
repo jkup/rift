@@ -53,6 +53,7 @@ const entries = [
     ["test/regexp-replace.ts", "regexp-replace"],
     ["test/regexp-split.ts", "regexp-split"],
     ["test/incremental-lexer.ts", "incremental-lexer"],
+    ["test/arrow-cover.ts", "arrow-cover"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
