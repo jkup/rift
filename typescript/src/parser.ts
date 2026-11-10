@@ -815,7 +815,10 @@ class Parser {
                     this.admitGeneratorExpression(statement.test, supported);
                     pending.push(statement.body);
                 } else if (statement.kind === "for" || statement.kind === "for-lexical") {
-                    if (statement.kind === "for" && statement.initializer !== null && statement.initializer.kind !== "var") this.admitGeneratorExpression(statement.initializer, supported);
+                    if (statement.kind === "for" && statement.initializer !== null) {
+                        if (statement.initializer.kind === "var") pending.push(statement.initializer);
+                        else this.admitGeneratorExpression(statement.initializer, supported);
+                    }
                     if (statement.test !== null) this.admitGeneratorExpression(statement.test, supported);
                     if (statement.update !== null) this.admitGeneratorExpression(statement.update, supported);
                     pending.push(statement.body);

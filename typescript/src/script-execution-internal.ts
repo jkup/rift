@@ -2692,6 +2692,13 @@ class ExecutionEngine {
                 }
             }
             case "for": {
+                if (sequences !== null && stmt.initializer !== null && stmt.initializer.kind === "var" &&
+                    stmt.initializer.declarations.length === 1 && isSuspendingGeneratorExpression(stmt.initializer.declarations[0].init)) {
+                    const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
+                    sequences.push({ kind: "for", frame, statement: stmt, outer: null, first: true, phase: "prepare", depth, labels });
+                    sequences.push({ kind: "sequence", frame, body: [stmt.initializer], nextStatement: 0, depth });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 if (sequences !== null && stmt.initializer !== null && stmt.initializer.kind !== "var" && isSuspendingGeneratorExpression(stmt.initializer))
                     return this.#suspendingExpression(stmt.initializer, { kind: "for-initializer", statement: stmt, labels });
                 if (stmt.initializer !== null) {
