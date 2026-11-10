@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted generator-receivers milestone passes 721/721 guests on each
-host, 293/293 tooling checks, and all 228 native static gates without retries.
+The accepted generator-expressions milestone passes 727/727 guests on each
+host, 293/293 tooling checks, and all 234 native static gates without retries.
 The unchanged 225-file C++ corpus has 185 completions: 115 reported successes and
 70 unchecked completions. Remaining outcomes are 6 parse errors, 33 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -23,10 +23,11 @@ Binary/reference helpers and generator execution now include yields, delegation,
 catch/finally, bindings, assignments, throws, destructuring, loops, labels, switch
 and methods. Formal and arrow binding patterns are accepted. Both hosts complete
 the unchanged generator suite (88 reported checks) and generator-destructuring
-fixture. Isolated successors add binary, conditional, unary and nested-yield
-expression continuations plus suspended if conditions. Their combined validation
-is next; broader expressions and async remain subsequent work. Unicode regex modes, lookaround, backreferences
-and named groups remain unsupported.
+fixture. Binary, conditional, unary and nested-yield expressions plus suspended
+if/while/do-while conditions are accepted. Isolated successors implement async
+functions, await, methods and async iterator acquisition; for-await-of is in
+focused review. Combined async validation is next. Unicode regex modes, lookaround,
+backreferences and named groups remain unsupported.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
