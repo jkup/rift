@@ -160,6 +160,7 @@ class MetadataCollector {
                 }
                 this.expression(expr.callee, strict, parent);
                 break;
+            case "bigint": throw new Error("BigInt literal requires Script metadata");
             case "regexp": throw new Error("RegExp literal requires Script metadata");
             case "literal": case "identifier": case "this": break;
         }

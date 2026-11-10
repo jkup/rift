@@ -17,7 +17,7 @@ function run(text:string,realm:Realm,session:ScriptSession):ValueCompletion {
  return evaluateScript(session,p.record).completion;
 }
 function string(expected:string,realm:Realm,session:ScriptSession):void {
- const r=run("out",realm,session);check(r.type==="normal"&&r.value.kind==="string"&&r.value.value===expected,"expected "+expected+" got "+JSON.stringify(r));
+ const r=run("out",realm,session);check(r.type==="normal"&&r.value.kind==="string"&&r.value.value===expected,"expected "+expected+" got "+(r.type + " " + r.value.kind + (r.value.kind === "string" ? ": " + r.value.value : "")));
 }
 const cases:{source:string;before:string;after:string}[]=[
   {

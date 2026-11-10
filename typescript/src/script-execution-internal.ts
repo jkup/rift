@@ -1726,11 +1726,17 @@ class ExecutionEngine {
                 if (env !== null) throw new Error("RegExp literal requires Script execution");
                 return regExpCreate({ kind: "string", value: expr.pattern }, { kind: "string", value: expr.flags }, this.context, expr.loc);
             }
+            case "bigint": {
+                for (let i = 0; i < expr.value.length; i++) {
+                    const work = this.context.tick(expr.loc);
+                    if (work.type === "throw") return work;
+                }
+                return normal({ kind: "bigint", value: BigInt(expr.value) });
+            }
             case "literal": {
                 const value = expr.value;
                 if (value === null) return normal({ kind: "null" });
                 if (typeof value === "number") return normal({ kind: "number", value });
-                if (typeof value === "bigint") return normal({ kind: "bigint", value });
                 if (typeof value === "boolean") return normal({ kind: "boolean", value });
                 return normal({ kind: "string", value });
             }

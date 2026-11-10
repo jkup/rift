@@ -12,7 +12,7 @@ function run(text: string, realm: Realm, session: ScriptSession): ValueCompletio
 }
 function string(text: string, expected: string, realm: Realm, session: ScriptSession): void {
     const result = run(text, realm, session);
-    check(result.type === "normal" && result.value.kind === "string" && result.value.value === expected, text + " expected " + expected + " actual " + JSON.stringify(result));
+    check(result.type === "normal" && result.value.kind === "string" && result.value.value === expected, text + " expected " + expected + " actual " + (result.type + " " + result.value.kind + (result.value.kind === "string" ? ": " + result.value.value : "")));
 }
 const cases:{source:string;before:string;after:string}[]=[
   {
