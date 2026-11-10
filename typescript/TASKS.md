@@ -4820,7 +4820,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-417 — Replace ZonedDateTime local time
 
-Status: **in progress — isolated successor to TS-416**. Owner: Codex catch-up chat, 2026-11-10. Add withPlainTime and startOfDay for UTC/fixed-offset ZonedDateTime values. Preserve local date, exact offset subtraction, constrained fields, branded time conversion, intrinsic results and Instant boundary errors. Validate getter order and endpoint behavior on both hosts. Own src/builtins/temporal-zoned-date-time-parts.ts and tests/manifests/docs in build/temporal-zoned-with-plain-time-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add withPlainTime and startOfDay for UTC/fixed-offset ZonedDateTime values. Preserve local date, exact offset subtraction, constrained fields, branded time conversion, intrinsic results and Instant boundary errors. Validate getter order and endpoint behavior on both hosts. Own src/builtins/temporal-zoned-date-time-parts.ts and tests/manifests/docs in build/temporal-zoned-with-plain-time-draft/.
 
 ## TS-418 — Parse ZonedDateTime ISO records
 

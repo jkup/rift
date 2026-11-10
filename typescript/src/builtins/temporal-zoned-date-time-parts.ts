@@ -6,9 +6,26 @@ import { createTemporalPlainDate } from "../temporal-plain-date-object.js";
 import { createTemporalPlainTime } from "../temporal-plain-time-object.js";
 import { toTemporalTimeZone } from "../temporal-time-zone.js";
 import { toTemporalCalendar } from "../temporal-calendar.js";
-import { UNDEFINED, type ValueCompletion } from "../runtime.js";
+import { toTimeFieldsOrMidnight } from "./temporal-plain-time-conversion.js";
+import { combineISODateTime } from "../iso-date-time.js";
+import { isoDateTimeToEpochNanoseconds, isValidEpochNanoseconds } from "../iso-calendar.js";
+import { languageFailure, UNDEFINED, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalZonedDateTimeParts(realm: Realm): void {
+    for (const name of ["withPlainTime", "startOfDay"]) {
+        realm.registerBuiltin(realm.temporalZonedDateTimePrototype, name, 0, (receiver, args, context, loc): ValueCompletion => {
+            const object = temporalZonedDateTimeObject(receiver, context, loc);
+            if (object.type === "throw") return object;
+            const date = temporalZonedISODateTime(object.value).date;
+            const time = toTimeFieldsOrMidnight(name === "startOfDay" || args.length === 0 ? UNDEFINED : args[0], context, loc);
+            if (time.type === "throw") return time;
+            const local = isoDateTimeToEpochNanoseconds(combineISODateTime(date, time.value));
+            if (local === null) throw new Error("ZonedDateTime local time invariant");
+            const epoch = local - object.value.timeZone.offsetNanoseconds;
+            if (!isValidEpochNanoseconds(epoch)) return languageFailure(context.realm, "RangeError", "local time outside the Instant range", loc);
+            return createTemporalZonedDateTime(epoch, object.value.timeZone, context.realm.temporalZonedDateTimePrototype, context, loc);
+        });
+    }
     for (const name of ["toInstant", "toPlainDate", "toPlainTime", "toPlainDateTime"]) {
         realm.registerBuiltin(realm.temporalZonedDateTimePrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
             const object = temporalZonedDateTimeObject(receiver, context, loc);
