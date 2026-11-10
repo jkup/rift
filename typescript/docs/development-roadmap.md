@@ -1,27 +1,29 @@
 # Development roadmap
 
-Updated 2026-11-09. The original catch-up review covered history through `ec63ebee` and
+Updated 2026-11-10. The original catch-up review covered history through `ec63ebee` and
 [Claude's review, PR #82](https://github.com/jkup/rift/pull/82).
 
 ## Current checkpoint
 
-The accepted Promise aggregation milestone passes 670/670 guests on each host,
-291/291 tooling checks, and all 177 native static gates. One host audit subclass
-needed a scope-only compiler compatibility fix; its assertions are unchanged.
-The unchanged 225-file C++ corpus has 175 completions: 114 reported successes and
-61 unchecked completions. Remaining outcomes are 14 parse errors, 35 runtime
-errors and one reported failure. These
-are diagnostic fixture results, not a Test262 conformance score.
+The accepted RegExp core milestone passes 673/673 guests on each host,
+291/291 tooling checks, and all 180 native static gates without retries.
+The unchanged 225-file C++ corpus has 177 completions: 114 reported successes and
+63 unchecked completions. Remaining outcomes are 14 parse errors, 33 runtime
+errors and one reported failure. These are diagnostic fixture results, not a
+Test262 conformance score.
 
-Bounded classes now include inheritance, explicit derived constructors, new.target
+Bounded classes include inheritance, explicit derived constructors, new.target
 and super properties. Promise construction, resolution, then/catch/finally, try,
-withResolvers and explicit CLI checkpoints are accepted, along with all/race,
-AggregateError and allSettled/any.
+withResolvers, explicit CLI checkpoints, all/race, AggregateError and
+allSettled/any are accepted.
 
-RegExp backend probes exposed dynamic metadata and flag limits; proceed with a
-bounded pattern parser (accepted) and matching machine. Reviewed matcher,
-construction and exec/test drafts are next for integration and full validation;
-symbol protocols and literal syntax follow separately.
+The bounded RegExp parser, matching machine, constructor and exec/test are
+accepted, including lastIndex and d indices. Reviewed match/search, replacement
+and split protocols are next for integration and full validation. Regex literal
+syntax needs parser-controlled lexical goals: the current eager lexer must not
+classify slash using a preceding-token heuristic. Keep this as an explicit
+architecture review before syntax admission. Unicode modes, lookaround and
+backreferences remain unsupported.
 Generators/async, Temporal, weak-reference facilities, class fields and remaining
 destructuring contexts are separate gaps. Preserve the known malformed or
 nonstandard-helper C++ fixtures and the classified disagreements below.
