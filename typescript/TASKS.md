@@ -4346,7 +4346,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-302 — Complete numeric compound-assignment certification
 
-Status: **in progress — isolated successor to TS-301**. Owner: Codex catch-up chat, 2026-11-10. Extend the token-backed Number/BigInt invalid-target audit to supported exponentiation, bitwise, shift and logical assignment operators. Preserve complete-source vetoes and retained-node isolation; update current expectations for exact historical G4/G5 inputs without modifying frozen evidence. Own parser/audit types, focused and migrated tests/tooling/manifests/docs in build/numeric-compound-audit-draft. Update targets remain separate. Require catchable eval/Function errors, spans, no RHS execution, both-host static checks and full Node/tooling audit validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend the token-backed Number/BigInt invalid-target audit to supported exponentiation, bitwise, shift and logical assignment operators. Preserve complete-source vetoes and retained-node isolation; update current expectations for exact historical G4/G5 inputs without modifying frozen evidence. Own parser/audit types, focused and migrated tests/tooling/manifests/docs in build/numeric-compound-audit-draft. Update targets remain separate. Require catchable eval/Function errors, spans, no RHS execution, both-host static checks and full Node/tooling audit validation.
 
 ## TS-303 — Serializable BigInt literal syntax nodes
 

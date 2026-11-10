@@ -1155,7 +1155,9 @@ class Parser {
                     // Defer only this token-backed failure after the RHS succeeds.
                     // These continued trees have no retained or executable authority.
                     if (this.error === null && this.purpose === "bounded-numeric-assignment-audit" && numeric !== undefined &&
-                        (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=")) {
+                        (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=" ||
+                            op === "**=" || op === "&=" || op === "|=" || op === "^=" || op === "<<=" || op === ">>=" ||
+                            op === ">>>=" || op === "&&=" || op === "||=" || op === "??=")) {
                         this.numericCandidates.push({ ruleCode: "assignment-target",
                             target: { text: numeric.text, start: numeric.start, end: numeric.end,
                                 loc: { line: numeric.loc.line, column: numeric.loc.column } },
