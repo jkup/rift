@@ -4686,7 +4686,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-384 — Plain ISO relativeTo option conversion
 
-Status: **in progress — isolated successor to TS-383**. Owner: Codex catch-up chat, 2026-11-10. Implement relativeTo option conversion for absent values, branded PlainDate/PlainDateTime, ISO strings and property bags. Preserve ordered time/offset/date reads and validation even when time is discarded. Explicitly reject timezone-dependent inputs pending ZonedDateTime. Share the ISO scanner and require coercion, ordering, endpoint and abrupt-completion tests on both hosts. Own src/temporal-iso-parser.ts, src/temporal-plain-date-time-parse.ts and tests/manifests/docs in build/temporal-relative-to-option-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement relativeTo option conversion for absent values, branded PlainDate/PlainDateTime, ISO strings and property bags. Preserve ordered time/offset/date reads and validation even when time is discarded. Explicitly reject timezone-dependent inputs pending ZonedDateTime. Share the ISO scanner and require coercion, ordering, endpoint and abrupt-completion tests on both hosts. Own src/temporal-iso-parser.ts, src/temporal-plain-date-time-parse.ts and tests/manifests/docs in build/temporal-relative-to-option-draft/.
 
 ## TS-385 — Exact Temporal Duration comparison with plain relative dates
 

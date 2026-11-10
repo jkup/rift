@@ -4,6 +4,10 @@ import { TemporalISOScanner, temporalISODate, temporalISOTime, temporalISOAnnota
 import { parseUTCOffset } from "./utc-offset.js";
 
 export function parseTemporalPlainDateTime(text: string): ISODateTime | null {
+    return parseTemporalDateTimeRecord(text)?.value ?? null;
+}
+
+export function parseTemporalDateTimeRecord(text: string): { value: ISODateTime; timeZone: string | null } | null {
     const scanner = new TemporalISOScanner(text);
     const date = temporalISODate(scanner);
     if (date === null) return null;
@@ -20,5 +24,5 @@ export function parseTemporalPlainDateTime(text: string): ISODateTime | null {
     }
     if (!temporalISOAnnotations(scanner)) return null;
     const calendar = scanner.calendar;
-    return calendar === null || (calendar.length === 7 && calendar.toLowerCase() === "iso8601") ? combineISODateTime(date, time) : null;
+    return calendar === null || (calendar.length === 7 && calendar.toLowerCase() === "iso8601") ? { value: combineISODateTime(date, time), timeZone: scanner.timeZone } : null;
 }

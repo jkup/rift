@@ -9,6 +9,7 @@ function alpha(code: number): boolean { return lower(code) || (code >= 65 && cod
 export class TemporalISOScanner {
     index = 0;
     calendar: string | null = null;
+    timeZone: string | null = null;
     constructor(readonly text: string) {}
     peek(): string { return this.text.charAt(this.index); }
     take(text: string): boolean {
@@ -80,6 +81,7 @@ export function temporalISOAnnotations(scanner: TemporalISOScanner): boolean {
             if (content.charAt(0) === "+" || content.charAt(0) === "-") {
                 if (parseUTCOffset(content, false) === null) return false;
             } else if (!validZoneName(content)) return false;
+            scanner.timeZone = content;
         } else {
             const key = content.slice(0, equals), value = content.slice(equals + 1);
             if (!validAnnotationKey(key) || !validAnnotationValue(value)) return false;
