@@ -874,6 +874,11 @@ for(const source of [
         scalar(run('"use strict";Object.getPrototypeOf(o)===null?1:0;',r,s),1);
         continue;
     }
+    if (source === '"use strict";function* f(){}') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "generator preparation is inert");
+        scalar(run(source+'f().next().done?1:0;',r,s),1);
+        continue;
+    }
     if (source === '"use strict";let f=function named(){};') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "named function preparation is inert");
         check(run(source,r,s).type === "normal", "named expression executes");

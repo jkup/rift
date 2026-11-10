@@ -208,3 +208,13 @@ A reduced class method returning a record with an array gives an incorrect nativ
 ## Shared context projection (TS-157)
 
 A structural projection from a required callback property to an optional callback property copies the accompanying mutable Realm field in the pinned native compiler. Node retains the object alias. Matching optional declarations in the writable context and its readonly public view preserves the alias on both hosts. Keep those field shapes aligned; do not treat static coverage as proof of alias semantics. The six-statement original and matched probes, outputs and static-only build/coverage logs are retained in [ts-157](validation/ts-157/README.md).
+
+### Private brand predicates after narrowing (TS-213)
+
+A private-field in check inside a type predicate after instanceof can trigger
+SC1090 in the pinned compiler. Binding the caller argument alone does not fix it.
+Bind the narrowed instance to an explicitly typed local inside the predicate,
+then check the private field on that local. Both the instanceof and private brand
+checks remain. The reduced computed/bound probes and initial failures are in
+build/generator-start-draft/build/brand-probe; the corrected probe and generator
+semantic suite pass static-only compilation with zero dynamic coverage.

@@ -1,6 +1,7 @@
 # Generator suspension boundary
 
-TS-196 prerequisite review, 2026-11-10. Generator grammar remains unsupported.
+TS-196 prerequisite review, 2026-11-10. Generator grammar was unsupported at that checkpoint. TS-213 now admits
+generator bodies without yield; suspension within a body remains unsupported.
 
 The pinned compiler can retain a host Generator in a class, yield tagged values
 with object identity, and receive/return explicit normal, return and throw
@@ -75,3 +76,11 @@ The isolated draft passes 701 Node guests and native optional-chain, super,
 delete and both for-update runtime variants with zero dynamic coverage. This
 removes an engine dependency from retained reference operations without changing
 key-conversion timing or claiming resumable AST evaluation.
+
+TS-213 implements suspended-start generator activation retention and execution
+in a later ScriptSession. The prepared body executes through the existing Script
+statement evaluator with its saved lexical/source frame installed in the current
+engine. Parameters run at call time; the body runs on first next. Current budgets,
+caller cleanup and captured-body error provenance pass both hosts, including host
+faults. No AST continuation survives a yield yet. See [generator start](generator-start.md)
+for the admitted boundary and the remaining suspended-yield work.

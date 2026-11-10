@@ -428,10 +428,11 @@ class Parser {
             return declaration;
         }
         if (this.eat("function")) {
+            const generator = this.structuralPlan() && this.eat("*");
             const token = this.current();
             const name = this.name();
             if (this.structuralPlan()) this.bindings.set(start, [{ site: { name, start: token.start, end: token.end, loc: token.loc }, init: null, initializer: null }]);
-            const fn = this.functionTail(loc, start);
+            const fn = this.functionTail(loc, start, "none", generator);
             return { kind: "function", loc, name, params: fn.params, parameters: fn.parameters, body: fn.body, source: fn.source };
         }
         if (this.eat("if")) {
@@ -703,12 +704,14 @@ class Parser {
         if ((rest || parameters.some(parameter => parameter.initializer !== null)) && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with non-simple parameters", loc);
     }
-    functionTail(loc: Location, start: number, superContext: SuperContext = "none"): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
+    functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
         const savedNewTarget = this.newTargetAllowed;
         const savedSuperContext = this.superContext;
         this.superContext = superContext;
         this.newTargetAllowed = true;
         const { params, rest, parameters } = this.formalParameters(loc, false);
+        if (generator && new Set(params).size !== params.length)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate generator parameter", loc);
         const bodyLoc = this.current().loc;
         this.expect("{");
         const bodyIndex = this.index;
@@ -727,7 +730,7 @@ class Parser {
         this.newTargetAllowed = savedNewTarget;
         this.superContext = savedSuperContext;
         this.checkParameterDirective(rest, parameters, bodyIndex, loc);
-        return { params, parameters, body, source: { source: this.source, start, end: this.token(this.index - 1).end, rest, bodyLoc } };
+        return { params, parameters, body, source: { source: this.source, start, end: this.token(this.index - 1).end, rest, bodyLoc, ...(generator ? { generator: true } : {}) } };
     }
     arrow(allowIn: boolean): Expr {
         const first = this.current();
@@ -1237,12 +1240,13 @@ class Parser {
         if (t.text === "null") return { kind: "literal", loc, value: null };
         if (t.text === "this") return { kind: "this", loc };
         if (t.text === "function") {
+            const generator = this.structuralPlan() && this.eat("*");
             let name: DeclarationSite | undefined;
             if (this.structuralPlan() && !this.at("(")) {
                 const token = this.current();
                 name = { name: this.name(), start: token.start, end: token.end, loc: token.loc };
             }
-            const fn = this.functionTail(loc, t.start);
+            const fn = this.functionTail(loc, t.start, "none", generator);
             return { kind: "function", loc, params: fn.params, parameters: fn.parameters, body: fn.body,
                 source: name === undefined ? fn.source : { ...fn.source, name } };
         }

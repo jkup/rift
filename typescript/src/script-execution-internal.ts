@@ -1,3 +1,4 @@
+import { iteratorResult } from "./iterator-result.js";
 import { getReferenceValue, putReferenceValue, deleteReferenceValue, referenceCallReceiver, type EvaluationReference, type EvaluationReferenceResult, type ExpressionResult } from "./evaluation-reference.js";
 import { applyBinaryOperator } from "./binary-operator.js";
 import { copyDataProperties } from "./copy-data-properties.js";
@@ -58,7 +59,7 @@ type FunctionExecution = {
     enter: (environment: ScriptEnvironment) => void;
     evaluate: (initializer: Expr, name: string) => ValueCompletion;
 };
-type CallableState = { homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+type CallableState = { generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
 class ScriptGuestCallable {
@@ -71,6 +72,7 @@ class ScriptGuestCallable {
         return callable.#state;
     }
     get homeObject(): GuestObject | null { return this.#state.homeObject; }
+    get isGenerator(): boolean { return this.#state.generator; }
     get isClassConstructor(): boolean { return this.#state.classConstructor !== null; }
     get isDerivedClassConstructor(): boolean { return this.#state.classConstructor !== null && this.#state.classConstructor.derived; }
     get isDefaultClassConstructor(): boolean { return this.#state.classConstructor !== null && this.#state.classConstructor.bodyScope === null; }
@@ -520,7 +522,7 @@ class ExecutableScript {
         const entry = bodyScope === null ? null : record.#function(bodyScope);
         const budget = context.tick(node.loc);
         if (budget.type === "throw") return budget;
-        const callable = ScriptGuestCallable.create({ homeObject: prototypeObject, key: record.#activationKey, record, realm: state.realm,
+        const callable = ScriptGuestCallable.create({ homeObject: prototypeObject, generator: false, key: record.#activationKey, record, realm: state.realm,
             scopeId: bodyScope ?? scopeId, environment, strict: true, lexicalThis: false,
             classConstructor: { scope: scopeId, bodyScope, derived: node.heritage !== null }, unit: state.plan.unit,
             start: entry === null ? node.start : entry.source.start, end: entry === null ? node.end : entry.source.end,
@@ -563,12 +565,12 @@ class ExecutableScript {
             if (created.type === "throw") return created;
             environment = namedEnvironment;
         }
-        const callable = ScriptGuestCallable.create({ homeObject: null, classConstructor: null, key: this.#activationKey, record: this, realm: state.realm,
+        const callable = ScriptGuestCallable.create({ homeObject: null, generator: entry.source.generator === true, classConstructor: null, key: this.#activationKey, record: this, realm: state.realm,
             scopeId, environment, strict: entry.scope.strict, lexicalThis: entry.source.arrow === true,
             unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
-        const constructable = entry.source.method !== true && entry.source.arrow !== true;
-        const object = new GuestObject(prototype === null ? state.realm.functionPrototype : prototype, false, callable, constructable ? callable : null);
+        const constructable = entry.source.method !== true && entry.source.arrow !== true && entry.source.generator !== true;
+        const object = new GuestObject(prototype === null ? (entry.source.generator === true ? state.realm.generatorFunctionPrototype : state.realm.functionPrototype) : prototype, false, callable, constructable ? callable : null);
         const value: Value = { kind: "object", object };
         let length = entry.node.params.length - (entry.source.rest === true ? 1 : 0);
         if (entry.node.parameters !== undefined) {
@@ -578,9 +580,9 @@ class ExecutableScript {
         }
         object.bootstrapDefine("length", { value: { kind: "number", value: length }, writable: false, enumerable: false, configurable: true });
         object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
-        if (constructable) {
-            const prototypeObject = new GuestObject(state.realm.objectPrototype);
-            prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
+        if (constructable || entry.source.generator === true) {
+            const prototypeObject = new GuestObject(entry.source.generator === true ? state.realm.generatorPrototype : state.realm.objectPrototype);
+            if (constructable) prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
             object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: true, enumerable: false, configurable: false });
         }
         if (namedEnvironment !== null) {
@@ -1063,13 +1065,13 @@ function copySite(site: DeclarationSite): DeclarationSite {
 export function prepareBoundedScript(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {
     return ExecutableScript.prepare(unit, realm, true);
 }
-function dynamicFunctionRecord(source: string, parametersOnly: boolean, context: OperationContext, loc: Location):
+function dynamicFunctionRecord(source: string, parametersOnly: boolean, context: OperationContext, loc: Location, generator = false):
     { type: "normal"; record: ExecutableScript; scope: number } | ThrowCompletion {
     for (let i = 0; i < source.length; i++) {
         const tick = context.tick(loc);
         if (tick.type === "throw") return tick;
     }
-    const prepared = prepareBoundedScript({ id: "<Function>", text: source }, context.realm);
+    const prepared = prepareBoundedScript({ id: generator ? "<GeneratorFunction>" : "<Function>", text: source }, context.realm);
     if (prepared.kind === "profile-rejected") throw new Error("invalid dynamic function Realm");
     if (prepared.kind === "conflict") return languageFailure(context.realm, "SyntaxError", prepared.diagnostic.message, loc);
     if (prepared.kind === "blocked") {
@@ -1086,19 +1088,19 @@ function dynamicFunctionRecord(source: string, parametersOnly: boolean, context:
         return languageFailure(context.realm, "SyntaxError", "invalid dynamic function source boundary", loc);
     return { type: "normal", record: prepared.record, scope: ExecutableScript.scopeOfNode(prepared.record, node, executionKey) };
 }
-export function createDynamicFunction(parameters: string[], body: string, context: OperationContext, loc: Location, newTarget: GuestObject): ValueCompletion {
-    const prefix = "function anonymous(", middle = "\n) {\n", suffix = "\n}";
+export function createDynamicFunction(parameters: string[], body: string, context: OperationContext, loc: Location, newTarget: GuestObject, generator = false): ValueCompletion {
+    const prefix = generator ? "function* anonymous(" : "function anonymous(", middle = "\n) {\n", suffix = "\n}";
     let length = prefix.length + middle.length + body.length + suffix.length + Math.max(parameters.length - 1, 0);
     for (const parameter of parameters) length += parameter.length;
     if (length > 100000) return resourceFailure("source-units", length, 100000, "dynamic function source exceeds 100000 UTF-16 units", loc);
     const params = parameters.join(",");
-    const parameterRecord = dynamicFunctionRecord(prefix + params + middle + suffix, true, context, loc);
+    const parameterRecord = dynamicFunctionRecord(prefix + params + middle + suffix, true, context, loc, generator);
     if (parameterRecord.type === "throw") return parameterRecord;
-    const bodyRecord = dynamicFunctionRecord(prefix + middle + body + suffix, false, context, loc);
+    const bodyRecord = dynamicFunctionRecord(prefix + middle + body + suffix, false, context, loc, generator);
     if (bodyRecord.type === "throw") return bodyRecord;
-    const complete = dynamicFunctionRecord(prefix + params + middle + body + suffix, false, context, loc);
+    const complete = dynamicFunctionRecord(prefix + params + middle + body + suffix, false, context, loc, generator);
     if (complete.type === "throw") return complete;
-    const prototype = getPrototypeFromConstructor(newTarget, "Function", context, loc);
+    const prototype = getPrototypeFromConstructor(newTarget, generator ? "GeneratorFunction" : "Function", context, loc);
     if (prototype.type === "throw") return prototype;
     // Materialize the declaration without instantiating an anonymous global binding.
     return complete.record.materializeFunction(complete.scope, { kind: "global", record: context.realm.globalEnvironment }, null, context, prototype.value);
@@ -1137,6 +1139,55 @@ export type ScriptFrameSnapshot = { readonly realm: Realm; readonly record: Exec
     readonly scopeId: number; readonly lexical: ScriptEnvironment; readonly variable: ScriptEnvironment;
     readonly strict: boolean; readonly thisValue: Value; readonly function: ScriptGuestCallable | null;
     readonly privateEnvironment: null; readonly phase: "instantiation" | "body" };
+type GeneratorResumeMode = "next" | "return" | "throw";
+export type { GeneratorResumeCallable };
+class GeneratorResumeCallable {
+    readonly kind = "generator-resume";
+    #realm: Realm;
+    #mode: GeneratorResumeMode;
+    private constructor(realm: Realm, mode: GeneratorResumeMode) { this.#realm = realm; this.#mode = mode; }
+    static create(realm: Realm, mode: GeneratorResumeMode): GeneratorResumeCallable { return new GeneratorResumeCallable(realm, mode); }
+    static check(callable: GeneratorResumeCallable): void {
+        if (!(callable instanceof GeneratorResumeCallable) || !(#mode in callable)) throw new Error("invalid generator resume callable");
+    }
+    get realm(): Realm { return this.#realm; }
+    get mode(): GeneratorResumeMode { return this.#mode; }
+}
+export function createGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResumeMode): GuestObject {
+    if (realm.profile !== "script") throw new Error("Script Realm required");
+    const object = new GuestObject(realm.functionPrototype, false, GeneratorResumeCallable.create(realm, mode));
+    object.bootstrapDefine("name", { value: { kind: "string", value: mode }, configurable: true });
+    object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
+    return object;
+}
+class GuestGenerator extends GuestObject {
+    #state: "suspended-start" | "executing" | "completed" = "suspended-start";
+    #activation: PreparedFunctionBody | null;
+    constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
+        super(prototype);
+        if (key !== executionKey) throw new Error("invalid generator allocation");
+        this.#activation = activation;
+    }
+    static is(object: GuestObject): object is GuestGenerator {
+        if (!(object instanceof GuestGenerator)) return false;
+        const branded: GuestGenerator = object;
+        return #state in branded;
+    }
+    get state(): "suspended-start" | "executing" | "completed" { return this.#state; }
+    start(key: ExecutionKey): PreparedFunctionBody {
+        if (key !== executionKey || this.#state !== "suspended-start" || this.#activation === null) throw new Error("invalid generator start");
+        const activation = this.#activation;
+        this.#activation = null;
+        this.#state = "executing";
+        return activation;
+    }
+    complete(key: ExecutionKey): void {
+        if (key !== executionKey) throw new Error("invalid generator completion");
+        this.#state = "completed";
+        this.#activation = null;
+    }
+}
+
 type PreparedFunctionBody = { frame: ScriptFrameSnapshot; body: Stmt[]; environment: ScriptFunctionEnvironment };
 type FunctionPreparation = { type: "normal"; activation: PreparedFunctionBody } | ThrowCompletion;
 export type ScriptSessionSnapshot = { steps: number; calls: number; depth: number;
@@ -1743,7 +1794,7 @@ class ExecutionEngine {
         if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
         if (this.#script) return this.#callScript(callee, receiver, args, loc);
         if (this.context.realm.profile !== "legacy") throw new Error("Script execution unavailable");
-        if (fn.kind === "script-guest" || fn.kind === "bound" || fn.kind === "eval") throw new Error("Script execution unavailable");
+        if (fn.kind === "script-guest" || fn.kind === "bound" || fn.kind === "eval" || fn.kind === "generator-resume") throw new Error("Script execution unavailable");
         if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
         const callerRealm = this.activeContext.realm;
         this.calls++;
@@ -2621,6 +2672,12 @@ class ExecutionEngine {
             const prepared = this.#prepareScriptFunction(callee, fn, receiver, args, newTarget);
             if (prepared.type === "throw") return prepared;
             const activation = prepared.activation;
+            if (fn.isGenerator) {
+                if (constructorLoc === null) throw new Error("generator call location missing");
+                const prototype = getPrototypeFromConstructor(callee, "Generator", this.context, constructorLoc);
+                if (prototype.type === "throw") return prototype;
+                return normal({ kind: "object", object: new GuestGenerator(executionKey, prototype.value, activation) });
+            }
             this.#frame = activation.frame;
             this.activeContext.realm = activation.frame.realm;
             const result = this.#list(activation.body);
@@ -2711,6 +2768,12 @@ class ExecutionEngine {
         this.activeContext.realm = fn.realm;
         this.#frame = { ...saved, realm: fn.realm };
         try {
+            if (fn.kind === "generator-resume") {
+                GeneratorResumeCallable.check(fn);
+                const result = this.#resumeGenerator(receiver, fn.mode, args[0] ?? UNDEFINED, loc);
+                if (result.type === "throw") this.#capture(result);
+                return result;
+            }
             if (fn.kind === "eval") {
                 EvalCallable.check(fn);
                 const result = this.#performEval(args[0] ?? UNDEFINED, directEval, loc);
@@ -2737,7 +2800,7 @@ class ExecutionEngine {
                 ExecutableScript.validateClassConstructor(fn.record, fn, executionKey);
                 return languageFailure(fn.realm, "TypeError", "class constructor requires new", loc);
             }
-            return this.#executeScriptFunction(callee.object, fn, receiver, args);
+            return this.#executeScriptFunction(callee.object, fn, receiver, args, UNDEFINED, loc);
         } finally {
             this.#frame = saved;
             this.activeContext.realm = savedRealm;
@@ -2745,6 +2808,40 @@ class ExecutionEngine {
         }
     }
 
+    #resumeGenerator(receiver: Value, mode: GeneratorResumeMode, value: Value, loc: Location): ValueCompletion {
+        if (receiver.kind !== "object" || !GuestGenerator.is(receiver.object))
+            return languageFailure(this.context.realm, "TypeError", "incompatible generator receiver", loc);
+        const generator = receiver.object;
+        if (generator.state === "executing") return languageFailure(this.context.realm, "TypeError", "generator is already executing", loc);
+        if (mode !== "next") {
+            generator.complete(executionKey);
+            if (mode === "throw") return { type: "throw", origin: { kind: "guest" }, value,
+                diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc } };
+            return iteratorResult(value, true, this.context, loc);
+        }
+        if (generator.state === "completed") return iteratorResult(UNDEFINED, true, this.context, loc);
+        let result: ValueCompletion;
+        try { result = this.#runGeneratorBody(generator.start(executionKey)); }
+        finally { generator.complete(executionKey); }
+        return result.type === "throw" ? result : iteratorResult(result.value, true, this.context, loc);
+    }
+    #runGeneratorBody(activation: PreparedFunctionBody): ValueCompletion {
+        const caller = this.#active(), callerRealm = this.activeContext.realm, inspection = this.#inspectionSource;
+        this.#frame = activation.frame;
+        this.activeContext.realm = activation.frame.realm;
+        this.#inspectionSource = null;
+        try {
+            const result = this.#list(activation.body);
+            if (result.type === "throw") { this.#capture(result); return result; }
+            if (result.type === "return") return normal(result.value);
+            if (result.type === "normal") return normal();
+            throw new Error("invalid generator body completion");
+        } finally {
+            this.#frame = caller;
+            this.activeContext.realm = callerRealm;
+            this.#inspectionSource = inspection;
+        }
+    }
     #boundArguments(fn: BoundCallable, args: Value[], loc: Location): { type: "normal"; args: Value[] } | ThrowCompletion {
         const combined: Value[] = [];
         for (const source of [fn.args, args]) {
