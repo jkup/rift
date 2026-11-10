@@ -4660,7 +4660,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-378 — Temporal PlainMonthDay conversion and equality
 
-Status: **in progress — isolated successor to TS-377**. Owner: Codex catch-up chat, 2026-11-10. Add from/equals with ordered date fields, shared month resolution and reference-year normalization. Use supplied bag year for leap-day regulation but normalize to 1972 without imposing input-year date bounds. Preserve branded reference years, validate overflow after reads and require getter/order/Realm regressions on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-conversion-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add from/equals with ordered date fields, shared month resolution and reference-year normalization. Use supplied bag year for leap-day regulation but normalize to 1972 without imposing input-year date bounds. Preserve branded reference years, validate overflow after reads and require getter/order/Realm regressions on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-conversion-draft/.
 
 ## TS-379 — Temporal PlainMonthDay field replacement and date conversion
 
