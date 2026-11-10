@@ -1,6 +1,7 @@
 import { temporalDurationInteger } from "../temporal-duration-fields.js";
 import { registerTemporalDurationConversion } from "./temporal-duration-conversion.js";
 import { registerTemporalDurationString } from "./temporal-duration-string.js";
+import { registerTemporalDurationArithmetic } from "./temporal-duration-arithmetic.js";
 import type { Realm } from "../realm.js";
 import { formatTemporalDuration } from "../temporal-duration-format.js";
 import { createTemporalDuration, temporalDurationValue } from "../temporal-duration-object.js";
@@ -75,5 +76,6 @@ export function registerTemporalDuration(realm: Realm, namespace: GuestObject): 
     }
     registerTemporalDurationConversion(realm, constructor);
     registerTemporalDurationString(realm);
+    registerTemporalDurationArithmetic(realm);
     namespace.bootstrapDefine("Duration", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }

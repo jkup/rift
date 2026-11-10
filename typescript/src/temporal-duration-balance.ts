@@ -1,11 +1,16 @@
 import { isValidDuration, type DurationFields } from "./temporal-duration.js";
 
 export type DurationUnit = keyof DurationFields;
+const units: DurationUnit[] = ["years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds", "nanoseconds"];
 
 export function largestDurationUnit(value: DurationFields): DurationUnit {
-    const units: DurationUnit[] = ["years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds", "nanoseconds"];
     for (const unit of units) if (value[unit] !== 0) return unit;
     return "nanoseconds";
+}
+
+export function largerDurationUnit(one: DurationUnit, two: DurationUnit): DurationUnit {
+    for (const unit of units) if (unit === one || unit === two) return unit;
+    throw new Error("duration unit invariant");
 }
 
 export function balanceDurationTime(time: bigint, date: DurationFields, largest: DurationUnit): DurationFields | null {

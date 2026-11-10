@@ -4470,7 +4470,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-332 — Temporal Duration arithmetic
 
-Status: **in progress — isolated successor to TS-331**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.add/subtract with exact 24-hour-day arithmetic, calendar-unit rejection and balancing to the larger operand unit. Own duration arithmetic builtin/registration and unit selection helper, focused tests/manifests/docs in build/temporal-duration-arithmetic-draft. Require opposite signs, unsafe integers, range bounds, conversion ordering and fresh intrinsic/Realm results; full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.add/subtract with exact 24-hour-day arithmetic, calendar-unit rejection and balancing to the larger operand unit. Own duration arithmetic builtin/registration and unit selection helper, focused tests/manifests/docs in build/temporal-duration-arithmetic-draft. Require opposite signs, unsafe integers, range bounds, conversion ordering and fresh intrinsic/Realm results; full Node/native static validation.
 
 ## TS-333 — Temporal time difference options
 
