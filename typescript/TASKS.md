@@ -4405,3 +4405,19 @@ Status: **in progress — isolated successor to TS-314**. Owner: Codex catch-up 
 ## TS-316 — Temporal PlainTime rounding
 
 Status: **in progress — isolated successor to TS-315**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.round with ordered options, time-unit increment divisibility and midnight wrap, producing a fresh intrinsic PlainTime. Share rounding increment conversion and time-unit lengths with Instant without changing its distinct day-divisibility rules. Own option helpers, Instant/PlainTime builtins, focused tests/manifests/docs in build/temporal-plain-time-round-draft. Require all units/modes, bounds, abrupt/Realm/subclass cases, full Node and native static/zero-dynamic regressions.
+
+## TS-317 — Temporal PlainTime field replacement
+
+Status: **in progress — isolated successor to TS-316**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.with with partial-object screening, alphabetical field conversion, missing-field preservation and constrain/reject overflow. Share finite integer conversion with the constructor. Own time-field conversion, PlainTime builtin/registration, focused tests/manifests/docs in build/temporal-plain-time-with-draft. Require exact read/coercion/abrupt order, no-field rejection, branding, fresh intrinsic/Realm results, full Node and native static/zero-dynamic regressions. Future Temporal date types must extend partial-object brand screening when introduced.
+
+## TS-318 — Shared Temporal ISO scanner
+
+Status: **in progress — isolated successor to TS-317**. Owner: Codex catch-up chat, 2026-11-10. Extract the reviewed Instant scanner into shared date/time/annotation parsing operations as a prerequisite for PlainTime string conversion. Preserve exact Instant offset and range checks. Own shared scanner, Instant parser, focused tests/manifests/docs in build/temporal-iso-parser-draft. No new guest methods. Require original valid/invalid Instant cases, exact record/index checks, full Node and native static/zero-dynamic regressions.
+
+## TS-319 — Temporal PlainTime string parsing
+
+Status: **in progress — isolated successor to TS-318**. Owner: Codex catch-up chat, 2026-11-10. Add pure TemporalTimeString parsing using the shared ISO scanner: time-only or date/time forms, optional leading T, validated ignored offsets/annotations, no Z designator and required year-month/month-day ambiguity rejection. Own parser, focused tests/manifests/docs in build/temporal-plain-time-parse-draft. No guest conversion methods yet. Require independent valid/invalid records, ambiguity boundaries, expanded dates, leap seconds and full Node/native static validation.
+
+## TS-320 — Temporal PlainTime conversion and comparison
+
+Status: **in progress — isolated successor to TS-319**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.from/compare/equals with branded/string/property-bag conversion, ordered overflow validation and fresh intrinsic from results. Share field regulation with with(). Own conversion builtin, time-field helpers, PlainTime registration/with, focused tests/manifests/docs in build/temporal-plain-time-conversion-draft. Require no primitive coercion, string work budgets, conversion/option order, invalid and cross-Realm cases, full Node and native static/zero-dynamic regressions. Future PlainDateTime/ZonedDateTime brands require explicit conversion branches when introduced.
