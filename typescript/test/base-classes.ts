@@ -67,6 +67,10 @@ for (const text of ["class C extends B{}", "class C{field=1}", "class C{static{}
         check(missing.type === "throw" && missing.diagnostic.name === "ReferenceError", "original heritage lookup occurs during execution");
     } else if (text === "class C{m(){super.x}}") {
         check(prepared.kind === "ready" && run(text).type === "normal", "super property class method declaration");
+    } else if (text === "class C{*m(){}}") {
+        check(prepared.kind === "ready", "generator class preparation is inert");
+        const result = run(text + ";new C().m().next().done;");
+        check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original generator class executes");
     } else check(prepared.kind!=="ready","reject "+text);
 }
 check(auditBoundedScriptNumericAssignments("1=2;class C{field=1}").kind==="blocked","unsupported class element vetoes assignment certification");

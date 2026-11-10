@@ -55,13 +55,14 @@ passes("var o={get\nx(){return 1;}};o.x===1;");
 for (const text of ["({get x(v){}});", "({set x(){}});", "({set x(a,b){}});", "({m(a,a){}});", "({get x:1});", "({[x](){}});", "({m(){return super.x;}});", "({async m(){}});", "({*m(){}});", "({x});", "({__proto__:null});"]) {
     const realm = fresh();
     const prepared = prepareBoundedScript({ id: "invalid", text: "var untouched=1;" + text }, realm);
-    if (text === "({__proto__:null});" || text === "({x});" || text === "({[x](){}});" || text === "({m(){return super.x;}});") check(prepared.kind === "ready", "supported method preparation is inert");
+    if (text === "({*m(){}});" || text === "({__proto__:null});" || text === "({x});" || text === "({[x](){}});" || text === "({m(){return super.x;}});") check(prepared.kind === "ready", "supported method preparation is inert");
     else check(prepared.kind !== "ready", "reject " + text);
     const result = run("typeof untouched==='undefined';", realm);
     check(result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }), "inert rejection");
 }
 check(run("({[x](){}});", fresh()).type === "throw", "computed method reads its key at runtime");
 check(run("({m(){return super.x;}});", fresh()).type === "normal", "original super property literal executes");
+passes("({*m(){}}).m().next().done;");
 check(parse("({m(){}});").error !== null, "legacy method boundary");
 const owner = fresh(), caller = fresh();
 const method = run("({m(){return [];}}).m;", owner);

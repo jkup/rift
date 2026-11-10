@@ -3986,7 +3986,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-218 — Generator methods
 
-Status: **in progress — isolated successor to TS-217**. Owner: Codex catch-up chat, 2026-11-10. Admit object and class generator methods, including computed/static names, using the existing generator function materialization, method home object and continuation machinery. Reject generator constructors and accessor combinations. Preserve unsupported async/delegation/cleanup grammar. Own Script parser, boundary migrations, focused tests/manifests and docs in build/generator-methods-draft; validate both hosts and static coverage.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Admit object and class generator methods, including computed/static names, using the existing generator function materialization, method home object and continuation machinery. Reject generator constructors and accessor combinations. Preserve unsupported async/delegation/cleanup grammar. Own Script parser, boundary migrations, focused tests/manifests and docs in build/generator-methods-draft; validate both hosts and static coverage.
 
 ## TS-219 — Generator yield delegation statements
 

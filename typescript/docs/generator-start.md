@@ -53,3 +53,5 @@ cleanup that yields and iterator delegation are subsequent work.
 TS-214 adds direct generator-body yield statements using an explicit completion
 and saved next-statement cursor. See [direct generator yields](generator-yield.md)
 for the supported boundary and state invariants. Nested suspension is still blocked.
+TS-218 admits object/class generator methods, retaining home objects and the same
+body continuation boundaries. See [generator methods](generator-methods.md).
