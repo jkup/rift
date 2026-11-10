@@ -1,0 +1,54 @@
+import type { Location } from "./syntax.js";
+import type { DurationUnit } from "./temporal-duration-balance.js";
+import type { TemporalRoundingMode } from "./temporal-rounding.js";
+import { temporalUnitOption, temporalRoundingIncrement, temporalRoundingMode, temporalUnitNanoseconds } from "./temporal-options.js";
+import { GuestObject, languageFailure, type Value, type OperationContext, type ThrowCompletion } from "./runtime.js";
+
+export interface TimeDifferenceSettings {
+    readonly largest: DurationUnit;
+    readonly quantum: bigint;
+    readonly mode: TemporalRoundingMode;
+}
+
+function durationUnit(name: string): DurationUnit {
+    switch (name) {
+        case "hour": return "hours";
+        case "minute": return "minutes";
+        case "second": return "seconds";
+        case "millisecond": return "milliseconds";
+        case "microsecond": return "microseconds";
+        case "nanosecond": return "nanoseconds";
+        default: throw new Error("time difference unit invariant");
+    }
+}
+
+export function timeDifferenceSettings(supplied: Value, fallbackLargest: "hour" | "second", context: OperationContext, loc: Location): { type: "normal"; value: TimeDifferenceSettings } | ThrowCompletion {
+    let options: GuestObject;
+    if (supplied.kind === "undefined") options = new GuestObject(null);
+    else if (supplied.kind === "object") options = supplied.object;
+    else return languageFailure(context.realm, "TypeError", "difference options must be an object", loc);
+    const largestRead = temporalUnitOption(options, "largestUnit", context, loc);
+    if (largestRead.type === "throw") return largestRead;
+    const increment = temporalRoundingIncrement(options, context, loc);
+    if (increment.type === "throw") return increment;
+    const mode = temporalRoundingMode(options, context, loc, "trunc");
+    if (mode.type === "throw") return mode;
+    const smallestRead = temporalUnitOption(options, "smallestUnit", context, loc);
+    if (smallestRead.type === "throw") return smallestRead;
+    const smallest = smallestRead.value === "" ? "nanosecond" : smallestRead.value;
+    const smallLength = temporalUnitNanoseconds(smallest);
+    if (smallLength === null) return languageFailure(context.realm, "RangeError", "difference requires time units", loc);
+    let largest = largestRead.value;
+    if (largest === "" || largest === "auto") {
+        const fallbackLength = temporalUnitNanoseconds(fallbackLargest);
+        if (fallbackLength === null) throw new Error("default difference unit invariant");
+        largest = smallLength > fallbackLength ? smallest : fallbackLargest;
+    }
+    const largeLength = temporalUnitNanoseconds(largest);
+    if (largeLength === null || largeLength < smallLength)
+        return languageFailure(context.realm, "RangeError", "largestUnit must be a time unit at least as large as smallestUnit", loc);
+    const maximum = smallest === "hour" ? 24 : smallest === "minute" || smallest === "second" ? 60 : 1000;
+    if (increment.value >= maximum || maximum % increment.value !== 0)
+        return languageFailure(context.realm, "RangeError", "difference increment must properly divide the next unit", loc);
+    return { type: "normal", value: { largest: durationUnit(largest), quantum: BigInt(increment.value) * smallLength, mode: mode.value } };
+}

@@ -38,7 +38,11 @@ export function temporalFractionalDigits(options: GuestObject, context: Operatio
 }
 
 export function temporalSmallestUnit(options: GuestObject, context: OperationContext, loc: Location): { type: "normal"; value: string } | ThrowCompletion {
-    const read = options.internalGet("smallestUnit", { kind: "object", object: options }, context, loc);
+    return temporalUnitOption(options, "smallestUnit", context, loc);
+}
+
+export function temporalUnitOption(options: GuestObject, name: string, context: OperationContext, loc: Location): { type: "normal"; value: string } | ThrowCompletion {
+    const read = options.internalGet(name, { kind: "object", object: options }, context, loc);
     if (read.type === "throw") return read;
     if (read.value.kind === "undefined") return { type: "normal", value: "" };
     const text = temporalOptionString(read.value, context, loc);

@@ -4474,7 +4474,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-333 — Temporal time difference options
 
-Status: **in progress — isolated successor to TS-332**. Owner: Codex catch-up chat, 2026-11-10. Add shared time-only difference settings with ordered option reads, unit relationships and proper-divisor rounding increments. Share unit option parsing without changing existing string behavior. Own option helpers, focused tests/manifests/docs in build/temporal-difference-options-draft. No new guest methods. Require coercion/validation order, every time unit, auto/default largest units, invalid increments and full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add shared time-only difference settings with ordered option reads, unit relationships and proper-divisor rounding increments. Share unit option parsing without changing existing string behavior. Own option helpers, focused tests/manifests/docs in build/temporal-difference-options-draft. No new guest methods. Require coercion/validation order, every time unit, auto/default largest units, invalid increments and full Node/native static validation.
 
 ## TS-334 — Temporal Instant differences
 
