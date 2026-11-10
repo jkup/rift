@@ -141,6 +141,7 @@ const entries = [
     ["test/generator-super-assignment.ts", "generator-super-assignment"],
     ["test/generator-super-compound.ts", "generator-super-compound"],
     ["test/generator-super-update.ts", "generator-super-update"],
+    ["test/generator-super-delete.ts", "generator-super-delete"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

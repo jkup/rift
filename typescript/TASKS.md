@@ -4236,7 +4236,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-276 — Suspended super deletion
 
-Status: **in progress — isolated successor to TS-275**. Owner: Codex catch-up chat, 2026-11-10. Evaluate a suspended computed super reference before reporting the required ReferenceError. Preserve key-expression side effects without key coercion or property reads, abrupt resumption, async behavior and error Realm. Own parser, super frame operation, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-super-delete-draft. Require both-host/static checks and pinned specification/engine review.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Evaluate a suspended computed super reference before reporting the required ReferenceError. Preserve key-expression side effects without key coercion or property reads, abrupt resumption, async behavior and error Realm. Own parser, super frame operation, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-super-delete-draft. Require both-host/static checks and pinned specification/engine review.
 
 ## TS-277 — Suspended super constructor arguments
 

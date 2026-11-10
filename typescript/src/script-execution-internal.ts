@@ -3465,6 +3465,14 @@ class ExecutionEngine {
                         expression = expression.test;
                         continue;
                     }
+                    if (expression.kind === "unary" && expression.op === "delete" && expression.operand.kind === "super-member") {
+                        const superContext = this.#superContext(expression.operand.loc);
+                        if (superContext.type === "throw") return superContext;
+                        frames.push({ kind: "super-key", expression: expression.operand, operation: { kind: "delete", expression },
+                            homeObject: superContext.homeObject, receiver: superContext.receiver });
+                        expression = expression.operand.key;
+                        continue;
+                    }
                     if (expression.kind === "unary" && expression.op === "delete" && expression.operand.kind === "member") {
                         frames.push({ kind: "delete-base", expression });
                         expression = expression.operand.base;
@@ -3512,6 +3520,11 @@ class ExecutionEngine {
             }
             if (frame.kind === "super-key") {
                 const reference = this.#superReference(frame.homeObject, frame.receiver, value, frame.expression.loc);
+                if (frame.operation.kind === "delete") {
+                    const result = deleteReferenceValue(this.context, reference, frame.operation.expression.loc);
+                    if (result.type === "throw") return result;
+                    throw new Error("super deletion did not throw");
+                }
                 if (frame.operation.kind === "update") {
                     const result = this.#updateReference(reference, frame.operation.expression.op, frame.operation.expression.prefix, frame.operation.expression.loc);
                     if (result.type === "throw") return result;
