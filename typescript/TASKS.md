@@ -4494,7 +4494,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-338 — Temporal PlainDate formatting
 
-Status: **in progress — isolated successor to TS-337**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.toString/toJSON/non-Intl toLocaleString with ISO year formatting and calendarName annotations. Share ISO date formatting with existing Instant strings. Own date formatting builtin/registration and shared formatter, focused tests/manifests/docs in build/temporal-plain-date-format-draft. Require expanded years, bounds, option coercion/order, ignored reserved arguments, branded fields and full Node/native static regression validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.toString/toJSON/non-Intl toLocaleString with ISO year formatting and calendarName annotations. Share ISO date formatting with existing Instant strings. Own date formatting builtin/registration and shared formatter, focused tests/manifests/docs in build/temporal-plain-date-format-draft. Require expanded years, bounds, option coercion/order, ignored reserved arguments, branded fields and full Node/native static regression validation.
 
 ## TS-339 — Temporal PlainDate string parsing
 

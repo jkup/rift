@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { registerTemporalPlainDateFormat } from "./temporal-plain-date-format.js";
 import { temporalInteger } from "../temporal-integer.js";
 import { createTemporalPlainDate, temporalPlainDateValue } from "../temporal-plain-date-object.js";
 import { isISOLeapYear, isoDayOfWeek, isoDaysInMonth } from "../iso-calendar.js";
@@ -66,5 +67,6 @@ export function registerTemporalPlainDate(realm: Realm, namespace: GuestObject):
     }
     realm.registerBuiltin(prototype, "valueOf", 0, (_receiver, _args, context, loc): ValueCompletion =>
         languageFailure(context.realm, "TypeError", "Temporal.PlainDate cannot be converted to a primitive number", loc));
+    registerTemporalPlainDateFormat(realm);
     namespace.bootstrapDefine("PlainDate", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }

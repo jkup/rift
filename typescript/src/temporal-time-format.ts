@@ -1,6 +1,6 @@
 import { formatUTCOffsetMinutes } from "./utc-offset.js";
 import type { TimeFields } from "./temporal-time.js";
-import { isoDateTimeFromEpochNanoseconds, isValidEpochNanoseconds, utcDateTimeFromEpochNanoseconds, type ISODateTime } from "./iso-calendar.js";
+import { isoDateTimeFromEpochNanoseconds, isValidEpochNanoseconds, utcDateTimeFromEpochNanoseconds, type ISODateTime, type ISODate } from "./iso-calendar.js";
 
 export type TemporalTimePrecision = "auto" | "minute" | number;
 
@@ -27,9 +27,12 @@ export function formatOffsetInstant(value: bigint, minutes: number, precision: T
 }
 
 function formatISODateTime(time: ISODateTime, precision: TemporalTimePrecision): string | null {
-    const date = time.date;
     const formatted = formatTemporalTime(time, precision);
-    return formatted === null ? null : formatISOYear(date.year) + "-" + String(date.month).padStart(2, "0") + "-" + String(date.day).padStart(2, "0") + "T" + formatted;
+    return formatted === null ? null : formatISODate(time.date) + "T" + formatted;
+}
+
+export function formatISODate(date: ISODate): string {
+    return formatISOYear(date.year) + "-" + String(date.month).padStart(2, "0") + "-" + String(date.day).padStart(2, "0");
 }
 
 export function formatTemporalTime(time: TimeFields, precision: TemporalTimePrecision = "auto"): string | null {
