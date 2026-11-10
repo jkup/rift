@@ -6,7 +6,7 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 ## Current checkpoint
 
 The accepted super-expressions milestone passes 767/767 guests on each
-host, 293/293 tooling checks, and all 274 native static gates without retries.
+host, 293/293 tooling checks, and all 274 native static gates after two recorded Zig-cache recovery builds.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a

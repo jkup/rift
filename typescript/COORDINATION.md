@@ -2616,3 +2616,11 @@ The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound
 2026-11-10 TS-287 promoted after super-expressions acceptance with 8 changed-file baselines verified. Isolated evidence passes 777 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/tagged-templates-draft/build and build/tagged-templates-* logs, retaining initial failures and exact historical-input migrations.
 
 2026-11-10 TS-288 promoted after super-expressions acceptance with 2 changed-file baselines verified. Isolated evidence passes 778 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/bigint-conversion-draft/build and build/bigint-conversion-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-10: TS-290 passes 780/780 Node guests and focused native BigInt execution; native operator/coercion regressions are passing so far. TS-291 is claimed for the isolated literal grammar successor. Canonical expression-contexts validation remains frozen.
+
+2026-11-10: TS-290 passes 11 relevant native regressions and its added exact primitive-throw test. TS-291 focused native syntax passes static/zero-dynamic; full Node/parser regressions continue. TS-292 claimed for bounded BigInt width conversion, following ECMAScript 2025 and engine262 intrinsics at pinned 18cdeb03.
+
+2026-11-10: TS-291 passes 781 Node guests and nine relevant native regressions after exact historical-input migration. TS-292 passes 782 Node guests and native width conversion; shared conversion regressions continue. TS-293 claims bounded ISO/UTC arithmetic as the next Temporal prerequisite; named-zone and local-time backend blockers remain explicit.
+
+2026-11-10: TS-292 five native conversion regressions pass. TS-293 calendar/UTC backend passes focused Node/native including 146097 consecutive days and exact negative nanoseconds. TS-294 claims the minimal Instant object boundary; the old C++ nanosecond-as-Number expectation and constructor-without-new fixtures remain unchanged.
