@@ -4030,7 +4030,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-228 — Throw operands across generator suspension
 
-Status: **in progress — isolated successor to TS-227**. Owner: Codex catch-up chat, 2026-11-10. Support a direct yield/yield-star operand in a throw statement using the existing receiver and unwind machinery. Preserve catch/finally ordering, exact thrown values and source/Realm inspection after cross-session resume. Own parser admission, receiver/execution additions, focused tests/manifests and docs in build/generator-throw-draft. Nested expression suspension remains separate. Require both-host/static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Support a direct yield/yield-star operand in a throw statement using the existing receiver and unwind machinery. Preserve catch/finally ordering, exact thrown values and source/Realm inspection after cross-session resume. Own parser admission, receiver/execution additions, focused tests/manifests and docs in build/generator-throw-draft. Nested expression suspension remains separate. Require both-host/static validation.
 
 ## TS-229 — Destructuring after a suspended initializer
 

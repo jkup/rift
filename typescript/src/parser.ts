@@ -750,7 +750,7 @@ class Parser {
                 else if (statement.kind === "if") {
                     pending.push(statement.consequent);
                     if (statement.alternate !== null) pending.push(statement.alternate);
-                } else if (statement.kind === "return" && statement.value?.kind === "yield") supported.add(statement.value);
+                } else if ((statement.kind === "return" || statement.kind === "throw") && statement.value?.kind === "yield") supported.add(statement.value);
                 else if ((statement.kind === "let" || statement.kind === "const") && statement.init?.kind === "yield") supported.add(statement.init);
                 else if (statement.kind === "var" && statement.declarations.length === 1 && statement.declarations[0].init?.kind === "yield") supported.add(statement.declarations[0].init);
                 else if (statement.kind === "expression") {

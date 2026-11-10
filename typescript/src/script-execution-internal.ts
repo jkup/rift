@@ -2645,8 +2645,8 @@ class ExecutionEngine {
             }
             case "yield": return this.#generatorYield(stmt, null);
             case "return": case "throw": {
-                if (stmt.kind === "return" && stmt.value?.kind === "yield" && sequences !== null)
-                    return this.#generatorYield(stmt.value, { kind: "return" });
+                if (stmt.value?.kind === "yield" && sequences !== null)
+                    return this.#generatorYield(stmt.value, stmt.kind === "return" ? { kind: "return" } : { kind: "throw", loc: stmt.loc });
                 const result = stmt.value === null ? normal() : this.#value(stmt.value);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 if (stmt.kind === "return") return { type: "return", value: result.value };
@@ -2969,6 +2969,12 @@ class ExecutionEngine {
             return failure;
         }
         if (receiver.kind === "return") return this.#unwindGenerator(continuation, { type: "return", value }, callerDepth);
+        if (receiver.kind === "throw") {
+            const abrupt: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value,
+                diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: receiver.loc } };
+            this.#capture(abrupt);
+            return this.#unwindGenerator(continuation, abrupt, callerDepth);
+        }
         if (receiver.kind === "assignment" || receiver.kind === "compound") {
             if (receiver.kind === "compound") {
                 const computed = applyBinaryOperator(receiver.operator, receiver.left, value, this.context, receiver.loc);

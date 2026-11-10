@@ -21,6 +21,7 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+"function* f(){throw yield 1;}var g=f(),marker={},caught;g.next();try{g.next(marker);}catch(e){caught=e;}caught===marker&&g.next().done;",
 "function* f(){var x;x=yield 1;}var g=f();g.next();g.next(7).done;",
     "function* f(){var x=yield 1;var y=yield x+10;return x+y;}var g=f();g.next().value===1&&g.next(5).value===15&&g.next(20).value===25;",
     "function* f(){let x=yield 1;const y=yield x+1;return x+y;}var g=f();g.next();g.next(3).value===4&&g.next(5).value===8;",
@@ -44,7 +45,7 @@ const cases: string[] = [
     "function* inner(){yield 1;return 3;}function* f(){try{return yield* inner();}finally{yield 2;}}var g=f();g.next().value===1&&g.next().value===2&&g.next().value===3;"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"receive case "+i);}
-for(const source of ["function* f(){var x=1+(yield 2);}","function* f(){var x=yield 1,y=2;}","function* f(){foo(yield 1);}","function* f(){throw yield 1;}","function* f(){yield yield 1;}","function* f(){for(let i=yield 1;;){}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+for(const source of ["function* f(){var x=1+(yield 2);}","function* f(){var x=yield 1,y=2;}","function* f(){foo(yield 1);}","function* f(){yield yield 1;}","function* f(){for(let i=yield 1;;){}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('function* f(){let x=yield 1;yield ()=>x;return x;}var g=f();g.next();',A);define(B,"g",own(A,"g"));
 const cross=run('var marker={},h=g.next(marker).value;h()===marker&&g.next().value===marker;',B);check(cross.type==="normal"&&cross.value.kind==="boolean"&&cross.value.value,"foreign received binding identity");

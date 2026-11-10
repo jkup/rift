@@ -4,6 +4,7 @@ import type { ScriptBindingReference, ScriptEnvironment } from "./script-environ
 import type { Location } from "./syntax.js";
 
 export type GeneratorYieldReceiver = { kind: "return" }
+    | { kind: "throw"; loc: Location }
     | { kind: "assignment"; reference: EvaluationReference; loc: Location }
     | { kind: "compound"; reference: EvaluationReference; left: Value; operator: string; loc: Location }
     | { kind: "binding"; reference: ScriptBindingReference }
