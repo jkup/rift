@@ -799,7 +799,10 @@ class Parser {
                 else if (statement.kind === "while" || statement.kind === "do-while") {
                     this.admitGeneratorExpression(statement.test, supported);
                     pending.push(statement.body);
-                } else if (statement.kind === "for" || statement.kind === "for-lexical" || statement.kind === "for-of" || statement.kind === "for-in") pending.push(statement.body);
+                } else if (statement.kind === "for" || statement.kind === "for-lexical") {
+                    if (statement.test !== null) this.admitGeneratorExpression(statement.test, supported);
+                    pending.push(statement.body);
+                } else if (statement.kind === "for-of" || statement.kind === "for-in") pending.push(statement.body);
                 else if (statement.kind === "try-finally") pending.push(statement.body, statement.finalizer);
                 else if (statement.kind === "try-catch") pending.push(statement.block, statement.handler);
                 else if (statement.kind === "if") {

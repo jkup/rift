@@ -2367,18 +2367,15 @@ class ExecutionEngine {
             const updated = this.#value(stmt.update);
             if (updated.type === "throw") { const abrupt: ThrowCompletion = updated; return abrupt; }
         }
-        if (stmt.test !== null) {
-            const test = this.#value(stmt.test);
-            if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
-            return test;
-        }
-        return normal({ kind: "boolean", value: true });
+        return normal();
     }
     #forBody(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null, labels: readonly string[] | null): ScriptStatementCompletion {
         let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
         let first = true;
         while (true) {
-            const test = this.#prepareForIteration(stmt, outer, first);
+            const prepared = this.#prepareForIteration(stmt, outer, first);
+            if (prepared.type === "throw") { const abrupt: ThrowCompletion = prepared; return abrupt; }
+            const test = stmt.test === null ? normal({ kind: "boolean", value: true }) : this.#value(stmt.test);
             if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
             first = false;
             if (!truthy(test.value)) return { type: "normal", payload: value };
@@ -3501,11 +3498,11 @@ class ExecutionEngine {
             return failure;
         }
         if (receiver.kind === "loop-test") {
-            if (frame.kind !== "loop") throw new Error("loop test without loop frame");
+            if (frame.kind !== "loop" && frame.kind !== "for") throw new Error("loop test without loop frame");
             if (!truthy(value)) continuation.sequences.pop();
             else {
                 frame.first = false;
-                continuation.sequences.push({ kind: "sequence", frame: frame.frame, body: [frame.body], nextStatement: 0, depth: frame.depth });
+                continuation.sequences.push({ kind: "sequence", frame: frame.frame, body: [frame.kind === "for" ? frame.statement.body : frame.body], nextStatement: 0, depth: frame.depth });
             }
             return null;
         }
@@ -3802,15 +3799,30 @@ class ExecutionEngine {
                     continue;
                 }
                 if (sequence.kind === "for") {
-                    const test = this.#prepareForIteration(sequence.statement, sequence.outer, sequence.first);
+                    const prepared = this.#prepareForIteration(sequence.statement, sequence.outer, sequence.first);
+                    if (prepared.type === "throw") {
+                        this.#capture(prepared);
+                        const uncaught = this.#unwindContinuation(continuation, prepared, callerDepth);
+                        if (uncaught !== null) return uncaught;
+                        continue;
+                    }
+                    sequence.first = false;
+                    sequence.frame = this.#active();
+                    const expression = sequence.statement.test;
+                    if (expression !== null && isSuspendingGeneratorExpression(expression)) {
+                        mode = "next";
+                        value = UNDEFINED;
+                        const result = this.#startSuspendingExpression(continuation, expression, { kind: "loop-test" }, callerDepth);
+                        if (result !== null) return result;
+                        continue;
+                    }
+                    const test = expression === null ? normal({ kind: "boolean", value: true }) : this.#value(expression);
                     if (test.type === "throw") {
                         this.#capture(test);
                         const uncaught = this.#unwindContinuation(continuation, test, callerDepth);
                         if (uncaught !== null) return uncaught;
                         continue;
                     }
-                    sequence.first = false;
-                    sequence.frame = this.#active();
                     if (!truthy(test.value)) { sequences.pop(); continue; }
                     sequences.push({ kind: "sequence", frame: sequence.frame, body: [sequence.statement.body], nextStatement: 0, depth: sequence.depth });
                     continue;

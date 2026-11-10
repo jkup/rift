@@ -4138,7 +4138,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-253 — Suspended for-loop tests
 
-Status: **in progress — isolated successor to TS-252**. Owner: Codex catch-up chat, 2026-11-10. Extend loop-test receivers to ordinary and lexical for loops, preserving per-iteration environments and update-before-test ordering. Separate iteration preparation from test evaluation so resumed tests do not repeat setup or updates. Own parser, continuation/iteration integration, historical boundary migration, tests/manifests and docs in build/generator-for-test-draft. Initializer and update suspension remain separate. Require both-host/static checks, closures, labels and abrupt cleanup.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend loop-test receivers to ordinary and lexical for loops, preserving per-iteration environments and update-before-test ordering. Separate iteration preparation from test evaluation so resumed tests do not repeat setup or updates. Own parser, continuation/iteration integration, historical boundary migration, tests/manifests and docs in build/generator-for-test-draft. Initializer and update suspension remain separate. Require both-host/static checks, closures, labels and abrupt cleanup.
 
 ## TS-254 — Suspended for-loop updates
 

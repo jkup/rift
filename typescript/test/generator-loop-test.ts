@@ -43,8 +43,6 @@ for(let i=0;i<cases.length;i++){
  const result=run(cases[i],new Realm((_line:string):void=>{},"script"));
  check(result.type === "normal" && result.value.kind === "boolean" && result.value.value,"loop test case "+i);
 }
-for(const source of ['function* f(){for(;yield 1;){}}'])
- check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind === "blocked","loop test boundary");
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script"),creator=createScriptSession();
 run('var cleaned=false;function* f(){try{while((yield 1)+(yield 2)){}}finally{cleaned=true;}}var g=f();g.next();',A,creator);
 define(B,"g",own(A,"g"));run('g.next(1);',B);
@@ -59,5 +57,8 @@ check(closed.type === "normal" && closed.value.kind === "boolean" && closed.valu
  check(prepareBoundedScript({id:"historical-call",text:source},realm).kind==="ready","historical call admitted");
  const result=run('function foo(x){return x}'+source+'var g=f();g.next();'+"g.next(false).done",realm);
  check(result.type==="normal"&&result.value.kind==="boolean"&&result.value.value,"historical call resumes");
+}
+{
+ const source='function* f(){for(;yield 1;){}}',realm=new Realm((_line:string)=>{},'script');check(prepareBoundedScript({id:'historical-for-test',text:source},realm).kind==='ready','historical for test admitted');const result=run(source+'var g=f();g.next().value===1&&g.next(false).done',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'historical for test resumes');
 }
 console.log("generator loop test passed");
