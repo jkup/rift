@@ -4420,7 +4420,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-320 — Temporal PlainTime conversion and comparison
 
-Status: **in progress — isolated successor to TS-319**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.from/compare/equals with branded/string/property-bag conversion, ordered overflow validation and fresh intrinsic from results. Share field regulation with with(). Own conversion builtin, time-field helpers, PlainTime registration/with, focused tests/manifests/docs in build/temporal-plain-time-conversion-draft. Require no primitive coercion, string work budgets, conversion/option order, invalid and cross-Realm cases, full Node and native static/zero-dynamic regressions. Future PlainDateTime/ZonedDateTime brands require explicit conversion branches when introduced.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.from/compare/equals with branded/string/property-bag conversion, ordered overflow validation and fresh intrinsic from results. Share field regulation with with(). Own conversion builtin, time-field helpers, PlainTime registration/with, focused tests/manifests/docs in build/temporal-plain-time-conversion-draft. Require no primitive coercion, string work budgets, conversion/option order, invalid and cross-Realm cases, full Node and native static/zero-dynamic regressions. Future PlainDateTime/ZonedDateTime brands require explicit conversion branches when introduced.
 
 ## TS-321 — Temporal duration record bounds
 
