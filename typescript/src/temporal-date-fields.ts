@@ -14,30 +14,36 @@ export interface TemporalDateFields {
 
 export function readTemporalDateFields(object: GuestObject, context: OperationContext, loc: Location): { type: "normal"; value: TemporalDateFields } | ThrowCompletion {
     const fields: TemporalDateFields = { year: null, month: null, monthCode: null, day: null };
-    for (const name of ["day", "month", "monthCode", "year"]) {
-        const read = object.internalGet(name, { kind: "object", object }, context, loc);
-        if (read.type === "throw") return read;
-        if (read.value.kind === "undefined") continue;
-        if (name === "monthCode") {
-            const primitive = toPrimitive(read.value, "string", context, loc);
-            if (primitive.type === "throw") return primitive;
-            if (primitive.value.kind !== "string") return languageFailure(context.realm, "TypeError", "monthCode must convert to a string", loc);
-            const code = primitive.value.value;
-            const tens = code.charCodeAt(1), ones = code.charCodeAt(2);
-            if ((code.length !== 3 && code.length !== 4) || code.charAt(0) !== "M" ||
-                tens < 48 || tens > 57 || ones < 48 || ones > 57 ||
-                (code.length === 4 && code.charAt(3) !== "L") || code === "M00")
-                return languageFailure(context.realm, "RangeError", "invalid monthCode syntax", loc);
-            fields.monthCode = code;
-        } else {
-            const converted = temporalInteger(read.value, context, loc);
-            if (converted.type === "throw") return converted;
-            if (name !== "year" && converted.value < 1)
-                return languageFailure(context.realm, "RangeError", "month and day must be positive", loc);
-            if (name === "day") fields.day = converted.value;
-            else if (name === "month") fields.month = converted.value;
-            else fields.year = converted.value;
-        }
+    for (const name of ["day", "month", "monthCode", "year"] as const) {
+        const result = readTemporalDateField(object, name, fields, context, loc);
+        if (result.type === "throw") return result;
+    }
+    return { type: "normal", value: fields };
+}
+
+export function readTemporalDateField(object: GuestObject, name: keyof TemporalDateFields, fields: TemporalDateFields, context: OperationContext, loc: Location): { type: "normal"; value: TemporalDateFields } | ThrowCompletion {
+    const read = object.internalGet(name, { kind: "object", object }, context, loc);
+    if (read.type === "throw") return read;
+    if (read.value.kind === "undefined") return { type: "normal", value: fields };
+    if (name === "monthCode") {
+        const primitive = toPrimitive(read.value, "string", context, loc);
+        if (primitive.type === "throw") return primitive;
+        if (primitive.value.kind !== "string") return languageFailure(context.realm, "TypeError", "monthCode must convert to a string", loc);
+        const code = primitive.value.value;
+        const tens = code.charCodeAt(1), ones = code.charCodeAt(2);
+        if ((code.length !== 3 && code.length !== 4) || code.charAt(0) !== "M" ||
+            tens < 48 || tens > 57 || ones < 48 || ones > 57 ||
+            (code.length === 4 && code.charAt(3) !== "L") || code === "M00")
+            return languageFailure(context.realm, "RangeError", "invalid monthCode syntax", loc);
+        fields.monthCode = code;
+    } else {
+        const converted = temporalInteger(read.value, context, loc);
+        if (converted.type === "throw") return converted;
+        if (name !== "year" && converted.value < 1)
+            return languageFailure(context.realm, "RangeError", "month and day must be positive", loc);
+        if (name === "day") fields.day = converted.value;
+        else if (name === "month") fields.month = converted.value;
+        else fields.year = converted.value;
     }
     return { type: "normal", value: fields };
 }

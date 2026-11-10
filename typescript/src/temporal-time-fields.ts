@@ -26,7 +26,11 @@ export function readTemporalTimeFields(object: GuestObject, defaults: TimeFields
 export function regulateTemporalTime(value: TimeFields, supplied: Value, context: OperationContext, loc: Location): { type: "normal"; value: TimeFields } | ThrowCompletion {
     const overflow = temporalOverflowReject(supplied, context, loc);
     if (overflow.type === "throw") return overflow;
-    if (overflow.value) {
+    return regulateTemporalTimeFields(value, overflow.value, context, loc);
+}
+
+export function regulateTemporalTimeFields(value: TimeFields, reject: boolean, context: OperationContext, loc: Location): { type: "normal"; value: TimeFields } | ThrowCompletion {
+    if (reject) {
         if (!isValidTime(value)) return languageFailure(context.realm, "RangeError", "time field is outside its range", loc);
         return { type: "normal", value };
     }

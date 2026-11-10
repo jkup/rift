@@ -4560,7 +4560,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-354 — Ordered Temporal date-time fields
 
-Status: **in progress — isolated successor to TS-353**. Owner: Codex catch-up chat, 2026-11-10. Prepare combined date/time fields in lexical order and resolve them with shared date and time regulation. Extract per-date-field conversion and option-free time regulation without altering existing PlainDate/PlainTime behavior. Own combined/date/time field helpers, tests/manifests/docs in build/temporal-date-time-fields-draft. Require getter/coercion order, deferred required-field checks, defaults, overflow/error precedence and endpoint validation on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Prepare combined date/time fields in lexical order and resolve them with shared date and time regulation. Extract per-date-field conversion and option-free time regulation without altering existing PlainDate/PlainTime behavior. Own combined/date/time field helpers, tests/manifests/docs in build/temporal-date-time-fields-draft. Require getter/coercion order, deferred required-field checks, defaults, overflow/error precedence and endpoint validation on both hosts.
 
 ## TS-355 — Temporal PlainDateTime conversion
 
