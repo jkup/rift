@@ -4458,7 +4458,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-329 — Temporal Instant arithmetic
 
-Status: **in progress — isolated successor to TS-328**. Owner: Codex catch-up chat, 2026-11-10. Add Instant.add/subtract with shared duration conversion, date-unit rejection and exact epoch range checks. Own Instant arithmetic registration, focused tests/manifests/docs in build/temporal-instant-arithmetic-draft. Require signed and unsafe-integer arithmetic, boundary overflow, coercion/brand order, fresh intrinsic/Realm results, full Node and native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Instant.add/subtract with shared duration conversion, date-unit rejection and exact epoch range checks. Own Instant arithmetic registration, focused tests/manifests/docs in build/temporal-instant-arithmetic-draft. Require signed and unsafe-integer arithmetic, boundary overflow, coercion/brand order, fresh intrinsic/Realm results, full Node and native static validation.
 
 ## TS-330 — Temporal Duration string rounding
 
