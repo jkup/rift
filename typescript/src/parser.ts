@@ -750,10 +750,10 @@ class Parser {
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
             }
-            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign") continue;
+            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
-                if (node.kind === "assign") pending.push({ expression: node.value, visited: false });
+                if (node.kind === "assign" || node.kind === "compound") pending.push({ expression: node.value, visited: false });
                 else if (node.kind === "object") {
                     for (let i = node.properties.length - 1; i >= 0; i--) {
                         const property = node.properties[i];
@@ -774,8 +774,11 @@ class Parser {
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
-            } else if (node.kind === "assign") {
-                if (isSuspendingGeneratorExpression(node.value)) node.suspends = true;
+            } else if (node.kind === "assign" || node.kind === "compound") {
+                if (isSuspendingGeneratorExpression(node.value)) {
+                    if (node.kind === "assign") node.suspends = true;
+                    else node.suspends = true;
+                }
             } else if (node.kind === "object") {
                 if (node.properties.some(property => isSuspendingGeneratorExpression(property.value) ||
                     (property.kind !== "spread" && typeof property.key !== "string" && isSuspendingGeneratorExpression(property.key)))) node.suspends = true;

@@ -131,6 +131,7 @@ const entries = [
     ["test/generator-for-binding.ts", "generator-for-binding"],
     ["test/generator-for-source.ts", "generator-for-source"],
     ["test/generator-assignment-value.ts", "generator-assignment-value"],
+    ["test/generator-compound-value.ts", "generator-compound-value"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

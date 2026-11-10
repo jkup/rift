@@ -3325,7 +3325,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3335,13 +3335,18 @@ class ExecutionEngine {
                         expression = expression.value;
                         continue;
                     }
-                    if (expression.kind === "assign") {
+                    if (expression.kind === "assign" || expression.kind === "compound") {
                         const reference = this.#reference(expression.target, null, this.#active().thisValue);
                         if (reference.type === "abrupt") {
                             if (reference.completion.type === "throw") return reference.completion;
                             throw new Error("invalid assignment reference completion");
                         }
-                        frames.push({ kind: "assignment-value", expression, reference: reference.reference });
+                        if (expression.kind === "compound") {
+                            const left = getReferenceValue(this.context, reference.reference, expression.loc);
+                            if (left.type === "throw") return left;
+                            if (left.type !== "normal") throw new Error("invalid compound read completion");
+                            frames.push({ kind: "compound-value", expression, reference: reference.reference, left: left.value });
+                        } else frames.push({ kind: "assignment-value", expression, reference: reference.reference });
                         expression = expression.value;
                         continue;
                     }
@@ -3439,6 +3444,15 @@ class ExecutionEngine {
             if (frames.length === 0) return normal(value);
             const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "compound-value") {
+                const computed = applyBinaryOperator(frame.expression.op, frame.left, value, this.context, frame.expression.loc);
+                if (computed.type === "throw") return computed;
+                const written = putReferenceValue(this.context, frame.reference, computed.value, frame.expression.loc);
+                if (written.type === "throw") return written;
+                if (written.type !== "normal") throw new Error("invalid compound write completion");
+                value = written.value;
+                continue;
+            }
             if (frame.kind === "assignment-value") {
                 const written = putReferenceValue(this.context, frame.reference, value, frame.expression.loc);
                 if (written.type === "throw") return written;
