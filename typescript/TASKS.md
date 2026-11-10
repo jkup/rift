@@ -4576,7 +4576,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-358 — Temporal PlainDateTime rounding
 
-Status: **in progress — isolated successor to TS-357**. Owner: Codex catch-up chat, 2026-11-10. Share ordered PlainTime/PlainDateTime rounding settings and add DateTime.round with exact midnight-based day/time rounding. Require string shorthand, day increment one, proper time divisors, all modes, signed dates, day carries, strict boundaries and getter/error order on both hosts. Own src/builtins/temporal-plain-date-time.ts, src/builtins/temporal-plain-time-round.ts and tests/manifests/docs in build/temporal-plain-date-time-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Share ordered PlainTime/PlainDateTime rounding settings and add DateTime.round with exact midnight-based day/time rounding. Require string shorthand, day increment one, proper time divisors, all modes, signed dates, day carries, strict boundaries and getter/error order on both hosts. Own src/builtins/temporal-plain-date-time.ts, src/builtins/temporal-plain-time-round.ts and tests/manifests/docs in build/temporal-plain-date-time-round-draft/.
 
 ## TS-359 — Temporal PlainDateTime arithmetic
 

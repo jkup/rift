@@ -803,6 +803,7 @@ executeDriver("temporal-date-time-fields", { stdout: "temporal date time fields 
 executeDriver("temporal-plain-date-time-conversion", { stdout: "temporal plain date time conversion passed\n" });
 executeDriver("temporal-plain-date-time-parts", { stdout: "temporal plain date time parts passed\n" });
 executeDriver("temporal-plain-date-time-with", { stdout: "temporal plain date time with passed\n" });
+executeDriver("temporal-plain-date-time-round", { stdout: "temporal plain date time round passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
