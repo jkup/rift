@@ -20,7 +20,10 @@ export function roundTemporalInstant(value: bigint, increment: bigint, mode: Tem
 
 export function roundTemporalInteger(value: bigint, increment: bigint, mode: TemporalRoundingMode): bigint {
     if (value >= 0n) return roundTemporalInstant(value, increment, mode);
-    const reversed = mode === "ceil" ? "floor" : mode === "floor" ? "ceil" :
+    return -roundTemporalInstant(-value, increment, negateTemporalRoundingMode(mode));
+}
+
+export function negateTemporalRoundingMode(mode: TemporalRoundingMode): TemporalRoundingMode {
+    return mode === "ceil" ? "floor" : mode === "floor" ? "ceil" :
         mode === "halfCeil" ? "halfFloor" : mode === "halfFloor" ? "halfCeil" : mode;
-    return -roundTemporalInstant(-value, increment, reversed);
 }

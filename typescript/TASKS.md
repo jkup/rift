@@ -4540,7 +4540,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-349 — Temporal PlainDate differences
 
-Status: **in progress — isolated successor to TS-348**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.until/since using date conversion, ordered settings and exact relative calendar rounding. Share signed rounding-mode reversal with integer rounding. Own difference builtin/registration, rounding helper, tests/manifests/docs in build/temporal-plain-date-difference-draft. Require asymmetric month-end differences, since direction, signed rounding, full date range, conversion/options order, equal dates and Realm results on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.until/since using date conversion, ordered settings and exact relative calendar rounding. Share signed rounding-mode reversal with integer rounding. Own difference builtin/registration, rounding helper, tests/manifests/docs in build/temporal-plain-date-difference-draft. Require asymmetric month-end differences, since direction, signed rounding, full date range, conversion/options order, equal dates and Realm results on both hosts.
 
 ## TS-350 — ISO date-time records and limits
 

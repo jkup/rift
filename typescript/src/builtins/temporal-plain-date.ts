@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { registerTemporalPlainDateDifference } from "./temporal-plain-date-difference.js";
 import { registerTemporalPlainDateArithmetic } from "./temporal-plain-date-arithmetic.js";
 import { registerTemporalPlainDateWith } from "./temporal-plain-date-with.js";
 import { registerTemporalPlainDateConversion } from "./temporal-plain-date-conversion.js";
@@ -74,5 +75,6 @@ export function registerTemporalPlainDate(realm: Realm, namespace: GuestObject):
     registerTemporalPlainDateConversion(realm, constructor);
     registerTemporalPlainDateWith(realm);
     registerTemporalPlainDateArithmetic(realm);
+    registerTemporalPlainDateDifference(realm);
     namespace.bootstrapDefine("PlainDate", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
