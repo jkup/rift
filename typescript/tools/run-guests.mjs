@@ -711,6 +711,7 @@ executeDriver("generator-object", { stdout: "generator object passed\n" });
 executeDriver("generator-constructor", { stdout: "generator constructor passed\n" });
 executeDriver("generator-call-target", { stdout: "generator call target passed\n" });
 executeDriver("generator-delete", { stdout: "generator delete passed\n" });
+executeDriver("generator-for-initializer", { stdout: "generator for initializer passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

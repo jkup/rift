@@ -4172,7 +4172,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-261 — Suspended for-loop expression initializers
 
-Status: **in progress — isolated successor to TS-260**. Owner: Codex catch-up chat, 2026-11-10. Resume ordinary for-loop expression initializers before creating the loop frame. Preserve labels, one-time evaluation, test/update order and abrupt cleanup. Own parser, yield receiver, continuation integration, tests/manifests and docs in build/generator-for-initializer-draft. Declaration initializers remain separate. Require both-host/static, async and current-session tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume ordinary for-loop expression initializers before creating the loop frame. Preserve labels, one-time evaluation, test/update order and abrupt cleanup. Own parser, yield receiver, continuation integration, tests/manifests and docs in build/generator-for-initializer-draft. Declaration initializers remain separate. Require both-host/static, async and current-session tests.
 
 ## TS-262 — Suspended for-loop var initializers
 

@@ -1,12 +1,13 @@
 import type { EvaluationReference } from "./evaluation-reference.js";
 import type { Value } from "./runtime.js";
 import type { ScriptBindingReference, ScriptEnvironment } from "./script-environment.js";
-import type { DestructuringPattern, Location, Stmt, SwitchStmt } from "./syntax.js";
+import type { DestructuringPattern, Location, Stmt, SwitchStmt, ForStmt } from "./syntax.js";
 
 export type GeneratorYieldReceiver = { kind: "return" }
     | { kind: "async-return" }
     | { kind: "loop-test" }
     | { kind: "for-update" }
+    | { kind: "for-initializer"; statement: ForStmt; labels: readonly string[] | null }
     | { kind: "switch-test"; statement: SwitchStmt }
     | { kind: "switch-selector" }
     | { kind: "throw"; loc: Location }

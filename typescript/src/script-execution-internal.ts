@@ -2692,6 +2692,8 @@ class ExecutionEngine {
                 }
             }
             case "for": {
+                if (sequences !== null && stmt.initializer !== null && stmt.initializer.kind !== "var" && isSuspendingGeneratorExpression(stmt.initializer))
+                    return this.#suspendingExpression(stmt.initializer, { kind: "for-initializer", statement: stmt, labels });
                 if (stmt.initializer !== null) {
                     if (stmt.initializer.kind === "var") {
                         const initialized = this.#statement(stmt.initializer);
@@ -3655,6 +3657,11 @@ class ExecutionEngine {
                 return this.#unwindContinuation(continuation, result, callerDepth);
             }
             if (result.type !== "normal") throw new Error("invalid resumed switch setup");
+            return null;
+        }
+        if (receiver.kind === "for-initializer") {
+            continuation.sequences.push({ kind: "for", frame: this.#active(), statement: receiver.statement,
+                outer: null, first: true, phase: "prepare", depth: frame.depth + 1, labels: receiver.labels });
             return null;
         }
         if (receiver.kind === "for-update") {
