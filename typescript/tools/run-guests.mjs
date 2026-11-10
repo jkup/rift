@@ -824,6 +824,7 @@ executeDriver("temporal-plain-month-day-core", { stdout: "temporal plain month d
 executeDriver("temporal-plain-month-day-format", { stdout: "temporal plain month day format passed\n" });
 executeDriver("temporal-plain-month-day-parse", { stdout: "temporal plain month day parse passed\n" });
 executeDriver("temporal-plain-month-day-conversion", { stdout: "temporal plain month day conversion passed\n" });
+executeDriver("temporal-plain-month-day-fields", { stdout: "temporal plain month day fields passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

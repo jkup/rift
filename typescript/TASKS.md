@@ -4664,7 +4664,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-379 — Temporal PlainMonthDay field replacement and date conversion
 
-Status: **in progress — isolated successor to TS-378**. Owner: Codex catch-up chat, 2026-11-10. Add with/toPlainDate using ordered shared date fields. Do not default partial replacement year to the stored reference year; normalize replacement results to 1972. Date conversion reads only year, constrains leap day and applies date bounds. Require empty/Temporal partial rejection, getter precedence, metadata and Realm results on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-fields-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add with/toPlainDate using ordered shared date fields. Do not default partial replacement year to the stored reference year; normalize replacement results to 1972. Date conversion reads only year, constrains leap day and applies date bounds. Require empty/Temporal partial rejection, getter precedence, metadata and Realm results on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-fields-draft/.
 
 ## TS-380 — Temporal PlainDate to PlainMonthDay conversion
 
