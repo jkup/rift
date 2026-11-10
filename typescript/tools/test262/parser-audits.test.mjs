@@ -304,13 +304,15 @@ for (const [driver, directory, count, variants] of [
         operator: {text: '=', start: end, end: end + 1, loc: {line: 1, column: end + 1}},
       }]};
     }
-    const prefix = rows.find(row => row.id === 'U14');
-    assert.equal(prefix.text, '++42;');
-    prefix.expected = {
-      kind: 'blocked', reason: 'grammar-or-resource',
-      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'invalid update target', loc: {line: 1, column: 1}},
-      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.assignment-target'},
-    };
+    for (const [id, text, targetStart, operatorStart] of [['U12', '42++;', 0, 2], ['U14', '++42;', 2, 0]]) {
+      const row = rows.find(row => row.id === id);
+      assert.equal(row.text, text);
+      row.expected = {kind: 'eligible', sourceUnits: 5, consumedUnits: 5, candidates: [{
+        ruleCode: 'assignment-target',
+        target: {text: '42', start: targetStart, end: targetStart + 2, loc: {line: 1, column: targetStart + 1}},
+        operator: {text: '++', start: operatorStart, end: operatorStart + 2, loc: {line: 1, column: operatorStart + 1}},
+      }]};
+    }
     for (const [id, text, operator] of [['G4', '42**=7;', '**='], ['G5', '42&&=7;', '&&=']]) {
       const assignment = rows.find(row => row.id === id);
       assert.equal(assignment.text, text);

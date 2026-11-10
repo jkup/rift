@@ -1029,6 +1029,21 @@ class Parser {
         if (this.structuralPlan() && op === "**") return 13;
         return 0;
     }
+    private deferNumericTarget(target: Expr, operator: Token): boolean {
+        if (this.error !== null || this.purpose !== "bounded-numeric-assignment-audit") return false;
+        const numeric = this.numericTokens.get(target), op = operator.text;
+        if (numeric === undefined) return false;
+        if (op !== "=" && op !== "+=" && op !== "-=" && op !== "*=" && op !== "/=" && op !== "%=" &&
+            op !== "**=" && op !== "&=" && op !== "|=" && op !== "^=" && op !== "<<=" && op !== ">>=" &&
+            op !== ">>>=" && op !== "&&=" && op !== "||=" && op !== "??=" && op !== "++" && op !== "--") return false;
+        // Continued audit trees have no retained or executable authority.
+        this.numericCandidates.push({ ruleCode: "assignment-target",
+            target: { text: numeric.text, start: numeric.start, end: numeric.end,
+                loc: { line: numeric.loc.line, column: numeric.loc.column } },
+            operator: { text: op, start: operator.start, end: operator.end,
+                loc: { line: operator.loc.line, column: operator.loc.column } } });
+        return true;
+    }
     expression(min: number, allowIn = true): Expr {
         const loc = this.current().loc;
         if (++this.depth > 128) {
@@ -1107,7 +1122,7 @@ class Parser {
                 if (lineTerminatorBetween(this.source.text, previous, this.current())) break;
                 const increment = this.take();
                 const operation = increment.text === "++" ? "increment" : "decrement";
-                if (left.kind !== "identifier" && left.kind !== "member" && left.kind !== "super-member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + operation + " target", left.loc);
+                if (left.kind !== "identifier" && left.kind !== "member" && left.kind !== "super-member" && !this.deferNumericTarget(left, increment)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + operation + " target", left.loc);
                 left = { kind: "update", loc: left.loc, target: left, op: increment.text === "++" ? "++" : "--", prefix: false };
                 updated = true;
                 continue;
@@ -1151,19 +1166,8 @@ class Parser {
                     continue;
                 }
                 if (left.kind !== "identifier" && left.kind !== "member" && left.kind !== "super-member") {
-                    const numeric = this.numericTokens.get(left);
-                    // Defer only this token-backed failure after the RHS succeeds.
-                    // These continued trees have no retained or executable authority.
-                    if (this.error === null && this.purpose === "bounded-numeric-assignment-audit" && numeric !== undefined &&
-                        (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=" ||
-                            op === "**=" || op === "&=" || op === "|=" || op === "^=" || op === "<<=" || op === ">>=" ||
-                            op === ">>>=" || op === "&&=" || op === "||=" || op === "??=")) {
-                        this.numericCandidates.push({ ruleCode: "assignment-target",
-                            target: { text: numeric.text, start: numeric.start, end: numeric.end,
-                                loc: { line: numeric.loc.line, column: numeric.loc.column } },
-                            operator: { text: op, start: operatorToken.start, end: operatorToken.end,
-                                loc: { line: operatorToken.loc.line, column: operatorToken.loc.column } } });
-                    } else this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid assignment target", loc);
+                    if (!this.deferNumericTarget(left, operatorToken))
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid assignment target", loc);
                 }
                 if (op === "=") {
                     const eligible = left.kind === "identifier" && !this.parenthesized.has(left);
@@ -1616,7 +1620,7 @@ class Parser {
         }
         if (t.kind === "punct" && (t.text === "++" || t.text === "--") && this.structuralPlan()) {
             const target = this.expression(14, allowIn);
-            if (target.kind !== "identifier" && target.kind !== "member" && target.kind !== "super-member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid update target", loc);
+            if (target.kind !== "identifier" && target.kind !== "member" && target.kind !== "super-member" && !this.deferNumericTarget(target, t)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid update target", loc);
             return { kind: "update", loc, target, op: t.text, prefix: true };
         }
         if ((this.structuralPlan() && t.text === "~") || t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {

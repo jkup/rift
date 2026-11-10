@@ -27,7 +27,7 @@ for (const literal of ["0n", "1n", "9007199254740993n", "0xFFn", "0b10_01n", "0o
         }
     }
 }
-for (const source of ["1n=;", "1n=2n;@", "1n=2n;let x;let x;", "++1n;", "1n++;", "[1n]=[];"]) {
+for (const source of ["1n=;", "1n=2n;@", "1n=2n;let x;let x;", "[1n]=[];"]) {
     check(auditBoundedScriptNumericAssignments(source).kind === "blocked", "preserve bounded rejection: " + source);
 }
 for (const source of ["var x=1n;x=2n;", "({1n:2n})", "1n+2n"]) {

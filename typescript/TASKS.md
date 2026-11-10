@@ -4354,7 +4354,7 @@ Status: **done — accepted in bigint-foundation milestone**. Owner: Codex catch
 
 ## TS-304 — Numeric update-target certification
 
-Status: **in progress — isolated successor to TS-302 with TS-303 storage**. Owner: Codex catch-up chat, 2026-11-10. Certify prefix/postfix increment/decrement of token-backed Number/BigInt literals as syntax errors, sharing the existing numeric target evidence collector. Preserve ASI, invalid suffix chains, complete-source vetoes and ordinary parser results. Own parser/audit types, focused and migrated tests/tooling/manifests/docs in build/numeric-update-audit-draft. Require exact spans, eval/Function catch behavior, historical U12/U14 migration, both-host/static and full Node validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Certify prefix/postfix increment/decrement of token-backed Number/BigInt literals as syntax errors, sharing the existing numeric target evidence collector. Preserve ASI, invalid suffix chains, complete-source vetoes and ordinary parser results. Own parser/audit types, focused and migrated tests/tooling/manifests/docs in build/numeric-update-audit-draft. Require exact spans, eval/Function catch behavior, historical U12/U14 migration, both-host/static and full Node validation.
 
 ## TS-305 — Numeric RegExp backreferences
 

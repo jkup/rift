@@ -208,7 +208,7 @@ export type NumericAssignmentCandidate = {
     readonly ruleCode: "assignment-target";
     readonly target: NumericAssignmentSite;
     readonly operator: {
-        readonly text: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "**=" | "&=" | "|=" | "^=" | "<<=" | ">>=" | ">>>=" | "&&=" | "||=" | "??=";
+        readonly text: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "**=" | "&=" | "|=" | "^=" | "<<=" | ">>=" | ">>>=" | "&&=" | "||=" | "??=" | "++" | "--";
         readonly start: number; readonly end: number; readonly loc: Location;
     };
 };
