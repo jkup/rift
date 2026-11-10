@@ -85,6 +85,7 @@ const entries = [
     ["test/generator-for.ts", "generator-for"],
     ["test/generator-methods.ts", "generator-methods"],
     ["test/generator-delegation.ts", "generator-delegation"],
+    ["test/generator-catch.ts", "generator-catch"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

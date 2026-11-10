@@ -1163,7 +1163,8 @@ export function createGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResu
 type GeneratorSequence = { kind: "sequence"; frame: ScriptFrameSnapshot; body: Stmt[]; nextStatement: number; depth: number };
 type GeneratorLoop = { kind: "loop"; frame: ScriptFrameSnapshot; test: Expr; body: Stmt; testFirst: boolean; first: boolean; depth: number };
 type GeneratorForLoop = { kind: "for"; frame: ScriptFrameSnapshot; statement: ForStmt | ForLexicalStmt; outer: ScriptEnvironment | null; first: boolean; depth: number };
-type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop;
+type GeneratorCatch = { kind: "catch"; frame: ScriptFrameSnapshot; statement: TryCatchStmt; depth: number };
+type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch;
 type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
@@ -2363,6 +2364,12 @@ class ExecutionEngine {
                 return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
             }
             case "try-catch": {
+                if (sequences !== null) {
+                    const depth = sequences[sequences.length - 1].depth + 1;
+                    sequences.push({ kind: "catch", frame: this.#active(), statement: stmt, depth });
+                    sequences.push({ kind: "sequence", frame: this.#active(), body: [stmt.block], nextStatement: 0, depth });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 const result = this.#statement(stmt.block);
                 if (result.type !== "throw" || (result.origin.kind !== "guest" && result.origin.kind !== "engine-diagnostic"))
                     return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
@@ -2886,6 +2893,30 @@ class ExecutionEngine {
         }
         return result.type === "throw" ? result : iteratorResult(result.value, true, this.context, loc);
     }
+    #catchGeneratorThrow(continuation: GeneratorContinuation, failure: ThrowCompletion, callerDepth: number): ThrowCompletion | null {
+        continuation.delegate = null;
+        if (failure.origin.kind !== "guest" && failure.origin.kind !== "engine-diagnostic") return failure;
+        const sequences = continuation.sequences;
+        while (sequences.length !== 0) {
+            const boundary = sequences.pop()!;
+            if (boundary.kind !== "catch") continue;
+            this.#abrupt = null;
+            this.#frame = boundary.frame;
+            this.depth = callerDepth + boundary.depth;
+            const created = ExecutableScript.activateCatch(boundary.frame.record, boundary.statement, boundary.frame.lexical, failure.value, this.context, executionKey);
+            if (created.type === "throw") {
+                this.#capture(created);
+                if (created.origin.kind !== "guest" && created.origin.kind !== "engine-diagnostic") return created;
+                failure = created;
+                continue;
+            }
+            const scopeId = ExecutableScript.scopeOfNode(boundary.frame.record, boundary.statement, executionKey);
+            const frame = { ...boundary.frame, scopeId, lexical: created.environment };
+            sequences.push({ kind: "sequence", frame, body: [boundary.statement.handler], nextStatement: 0, depth: boundary.depth });
+            return null;
+        }
+        return failure;
+    }
     #runGeneratorBody(continuation: GeneratorContinuation, mode: GeneratorResumeMode, value: Value): GeneratorResumeResult {
         const sequences = continuation.sequences;
         const caller = this.#active(), callerRealm = this.activeContext.realm, inspection = this.#inspectionSource, callerDepth = this.depth;
@@ -2900,7 +2931,8 @@ class ExecutionEngine {
                 const result: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value,
                     diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: continuation.yieldLoc } };
                 this.#capture(result);
-                return result;
+                const uncaught = this.#catchGeneratorThrow(continuation, result, callerDepth);
+                if (uncaught !== null) return uncaught;
             }
             while (sequences.length !== 0) {
                 if (continuation.delegate !== null) {
@@ -2915,7 +2947,12 @@ class ExecutionEngine {
                     const delegated = resumeGeneratorDelegate(continuation.delegate.iterator, mode, value, this.context, continuation.delegate.loc);
                     mode = "next";
                     value = UNDEFINED;
-                    if (delegated.type === "throw") { this.#capture(delegated); return delegated; }
+                    if (delegated.type === "throw") {
+                        this.#capture(delegated);
+                        const uncaught = this.#catchGeneratorThrow(continuation, delegated, callerDepth);
+                        if (uncaught !== null) return uncaught;
+                        continue;
+                    }
                     if (delegated.type === "yield") return delegated;
                     continuation.delegate = null;
                     if (delegated.type === "return") return normal(delegated.value);
@@ -2923,9 +2960,15 @@ class ExecutionEngine {
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
                 this.depth = callerDepth + sequence.depth;
+                if (sequence.kind === "catch") { sequences.pop(); continue; }
                 if (sequence.kind === "for") {
                     const test = this.#prepareForIteration(sequence.statement, sequence.outer, sequence.first);
-                    if (test.type === "throw") { this.#capture(test); return test; }
+                    if (test.type === "throw") {
+                        this.#capture(test);
+                        const uncaught = this.#catchGeneratorThrow(continuation, test, callerDepth);
+                        if (uncaught !== null) return uncaught;
+                        continue;
+                    }
                     sequence.first = false;
                     sequence.frame = this.#active();
                     if (!truthy(test.value)) { sequences.pop(); continue; }
@@ -2935,7 +2978,12 @@ class ExecutionEngine {
                 if (sequence.kind === "loop") {
                     if (sequence.testFirst || !sequence.first) {
                         const test = this.#value(sequence.test);
-                        if (test.type === "throw") { this.#capture(test); return test; }
+                        if (test.type === "throw") {
+                            this.#capture(test);
+                            const uncaught = this.#catchGeneratorThrow(continuation, test, callerDepth);
+                            if (uncaught !== null) return uncaught;
+                            continue;
+                        }
                         if (!truthy(test.value)) { sequences.pop(); continue; }
                     }
                     sequence.first = false;
@@ -2945,7 +2993,12 @@ class ExecutionEngine {
                 if (sequence.nextStatement === sequence.body.length) { sequences.pop(); continue; }
                 const statement = sequence.body[sequence.nextStatement++];
                 const result = this.#statement(statement, null, sequences);
-                if (result.type === "throw") { this.#capture(result); return result; }
+                if (result.type === "throw") {
+                    this.#capture(result);
+                    const uncaught = this.#catchGeneratorThrow(continuation, result, callerDepth);
+                    if (uncaught !== null) return uncaught;
+                    continue;
+                }
                 if (result.type === "return") return normal(result.value);
                 if (result.type === "delegate") {
                     continuation.delegate = { iterator: result.iterator, loc: result.loc };
@@ -2963,7 +3016,7 @@ class ExecutionEngine {
                 }
                 if (result.type === "break" || result.type === "continue") {
                     if (result.target !== undefined) throw new Error("label escaped supported generator control flow");
-                    while (sequences.length !== 0 && sequences[sequences.length - 1].kind === "sequence") sequences.pop();
+                    while (sequences.length !== 0 && sequences[sequences.length - 1].kind !== "loop" && sequences[sequences.length - 1].kind !== "for") sequences.pop();
                     if (sequences.length === 0) throw new Error("generator loop control without loop");
                     if (result.type === "break") sequences.pop();
                     continue;

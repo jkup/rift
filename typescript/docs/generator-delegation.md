@@ -23,3 +23,5 @@ are retained as positive execution cases.
 
 References: [ECMAScript yield evaluation](https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html#sec-generator-function-definitions-runtime-semantics-evaluation)
 and [engine262 YieldExpression at 18cdeb03](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/runtime-semantics/YieldExpression.mts).
+TS-220 adds catch boundaries around admitted yields and delegation; see
+[generator catch boundaries](generator-catch.md). Finally remains blocked.

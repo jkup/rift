@@ -670,6 +670,7 @@ executeDriver("generator-loops", { stdout: "generator loops passed\n" });
 executeDriver("generator-for", { stdout: "generator for passed\n" });
 executeDriver("generator-methods", { stdout: "generator methods passed\n" });
 executeDriver("generator-delegation", { stdout: "generator delegation passed\n" });
+executeDriver("generator-catch", { stdout: "generator catch passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

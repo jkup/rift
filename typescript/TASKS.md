@@ -3996,7 +3996,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-220 — Generator catch continuations
 
-Status: **in progress — isolated successor to TS-219**. Owner: Codex catch-up chat, 2026-11-10. Retain try/catch boundaries across yields, route guest throws from resumed statements, loop tests and delegated operations to the nearest active handler, and instantiate catch bindings once in the captured lexical frame. Preserve resource/unsupported stop bypass and host-fault cleanup. Finally, iterator-loop cleanup and expression-position yields remain blocked. Own parser admission, private catch frames, focused tests/manifests and notes in build/generator-catch-draft; require both-host/static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain try/catch boundaries across yields, route guest throws from resumed statements, loop tests and delegated operations to the nearest active handler, and instantiate catch bindings once in the captured lexical frame. Preserve resource/unsupported stop bypass and host-fault cleanup. Finally, iterator-loop cleanup and expression-position yields remain blocked. Own parser admission, private catch frames, focused tests/manifests and notes in build/generator-catch-draft; require both-host/static validation.
 
 ## TS-221 — Generator finally continuations
 
