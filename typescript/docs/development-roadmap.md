@@ -5,9 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted functions/spread milestone passes 701/701 guests on each
-host, 293/293 tooling checks after one historical expectation migration, and all
-208 native static gates without retries.
+The accepted generator-start milestone passes 703/703 guests on each
+host, 293/293 tooling checks, and all 210 native static gates without retries.
 The unchanged 225-file C++ corpus has 179 completions: 114 reported successes and
 65 unchecked completions. Remaining outcomes are 12 parse errors, 33 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -19,11 +18,13 @@ Array.of/from/fill/copyWithin, String.raw/repeat/padStart/padEnd and Realm-local
 Math.random, JSON reviver/stringify, substring/substr, String.at, trim aliases,
 matchAll, computed object keys, shorthand, globalThis, named functions, separate
 function setup/body execution, prototype setters, object spread and replaceAll
-are accepted. The accepted context probe and reviewed pending-operand probe
-protect the suspension boundary. Isolated binary/reference extractions and a
-generator-start implementation pass both hosts; generator bodies without yield
-execute their saved real frame in a later session. Mid-body yield/delegation and
-async remain subsequent work. Unicode regex modes, lookaround, backreferences
+are accepted. Context and pending-operand probes protect the suspension boundary.
+Binary/reference helpers and generator-start execution are accepted: generator
+bodies without yield execute their saved real frame in a later session. Reviewed
+isolated successors support direct yields, blocks/conditionals, while/do/for
+loops and generator methods, with 708 Node guests and focused native checks.
+Yield delegation is active isolated work; expression-level suspension, cleanup
+and async remain subsequent work. Unicode regex modes, lookaround, backreferences
 and named groups remain unsupported.
 
 Prioritize the [generator activation boundary](generator-boundary.md) before
