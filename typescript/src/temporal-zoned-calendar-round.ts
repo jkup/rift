@@ -13,9 +13,9 @@ export interface ZonedDurationNudge {
     readonly expanded: boolean;
 }
 
-interface ZonedCalendarWindow { readonly calendar: CalendarWindow; readonly start: bigint; readonly end: bigint }
+export interface ZonedCalendarWindow { readonly calendar: CalendarWindow; readonly start: bigint; readonly end: bigint }
 
-function windowFor(origin: ISODateTime, zone: TemporalTimeZone, duration: DurationFields, unit: "year" | "month" | "week" | "day", increment: number, sign: number, shifted: boolean): ZonedCalendarWindow | null {
+export function zonedCalendarWindow(origin: ISODateTime, zone: TemporalTimeZone, duration: DurationFields, unit: "year" | "month" | "week" | "day", increment: number, sign: number, shifted: boolean): ZonedCalendarWindow | null {
     let calendar: CalendarWindow | null;
     if (unit === "day") {
         const inner = Math.trunc(duration.days / increment) * increment, outer = inner + sign * increment;
@@ -38,11 +38,11 @@ export function roundZonedCalendarDifference(first: bigint, last: bigint, zone: 
     const origin = isoDateTimeFromEpochNanoseconds(first + zone.offsetNanoseconds);
     if (origin === null) return null;
     const dateSign = durationSign(difference.date), sign = dateSign === 0 ? (difference.time < 0n ? -1 : 1) : dateSign;
-    let shifted = false, window = windowFor(origin, zone, difference.date, unit, increment, sign, false);
+    let shifted = false, window = zonedCalendarWindow(origin, zone, difference.date, unit, increment, sign, false);
     if (window === null) return null;
     if (BigInt(sign) * (last - window.start) < 0n || BigInt(sign) * (last - window.end) > 0n) {
         shifted = true;
-        window = windowFor(origin, zone, difference.date, unit, increment, sign, true);
+        window = zonedCalendarWindow(origin, zone, difference.date, unit, increment, sign, true);
         if (window === null) return null;
     }
     const distance = BigInt(sign) * (last - window.start), span = BigInt(sign) * (window.end - window.start);

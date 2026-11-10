@@ -4886,7 +4886,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-433 — Exact zoned relative duration totals
 
-Status: **in progress — isolated successor to TS-432**. Owner: Codex catch-up chat, 2026-11-10. Compute UTC/fixed-offset relative duration totals with checked calendar windows and exact ratio conversion, before enabling zoned relativeTo in public Duration APIs. Own src/temporal-zoned-calendar-round.ts and tests/manifests/docs in build/temporal-zoned-duration-total-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Compute UTC/fixed-offset relative duration totals with checked calendar windows and exact ratio conversion, before enabling zoned relativeTo in public Duration APIs. Own src/temporal-zoned-calendar-round.ts and tests/manifests/docs in build/temporal-zoned-duration-total-draft/.
 
 ## TS-434 — Keep equal-instant shortcut at the public difference boundary
 
