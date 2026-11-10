@@ -163,6 +163,7 @@ const entries = [
     ["test/bigint-literal-storage.ts", "bigint-literal-storage"],
     ["test/temporal-instant-core.ts", "temporal-instant-core"],
     ["test/temporal-time-format.ts", "temporal-time-format"],
+    ["test/temporal-instant-methods.ts", "temporal-instant-methods"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -4320,7 +4320,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-296 — Temporal.Instant rounding and JSON serialization
 
-Status: **in progress — isolated successor to TS-295**. Owner: Codex catch-up chat, 2026-11-10. Register Instant.round with string/object options, all time units/modes, ordered coercion and increment validation; add branded toJSON and the specified non-Intl toLocaleString fallback. Share receiver/allocation helpers. Own instant object/builtin and new method module, tests/manifests/docs in build/temporal-instant-methods-draft. toString options/timezone resolution, string parsing and duration arithmetic remain separate. Require exact negative rounding, metadata, side-effect/error ordering, subclass/cross-Realm behavior, both-host static/zero-dynamic and full Node.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Register Instant.round with string/object options, all time units/modes, ordered coercion and increment validation; add branded toJSON and the specified non-Intl toLocaleString fallback. Share receiver/allocation helpers. Own instant object/builtin and new method module, tests/manifests/docs in build/temporal-instant-methods-draft. toString options/timezone resolution, string parsing and duration arithmetic remain separate. Require exact negative rounding, metadata, side-effect/error ordering, subclass/cross-Realm behavior, both-host static/zero-dynamic and full Node.
 
 ## TS-297 — BigInt non-Intl locale fallback
 
