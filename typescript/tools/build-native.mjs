@@ -113,6 +113,7 @@ const entries = [
     ["test/async-generator.ts", "async-generator"],
     ["test/async-generator-methods.ts", "async-generator-methods"],
     ["test/async-generator-delegate.ts", "async-generator-delegate"],
+    ["test/generator-member.ts", "generator-member"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

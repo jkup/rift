@@ -698,6 +698,7 @@ executeDriver("async-lexical-conflicts", { stdout: "async lexical conflicts pass
 executeDriver("async-generator", { stdout: "async generator passed\n" });
 executeDriver("async-generator-methods", { stdout: "async generator methods passed\n" });
 executeDriver("async-generator-delegate", { stdout: "async generator delegate passed\n" });
+executeDriver("generator-member", { stdout: "generator member passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

@@ -3296,7 +3296,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3304,6 +3304,11 @@ class ExecutionEngine {
                     if (expression.kind === "await") {
                         frames.push({ kind: "await-operand", expression });
                         expression = expression.value;
+                        continue;
+                    }
+                    if (expression.kind === "member") {
+                        frames.push({ kind: "member-base", expression });
+                        expression = expression.base;
                         continue;
                     }
                     if (expression.kind === "binary") {
@@ -3347,6 +3352,18 @@ class ExecutionEngine {
             if (frames.length === 0) return normal(value);
             const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "member-base") {
+                frames.push({ kind: "member-key", expression: frame.expression, base: value });
+                expression = frame.expression.key;
+                continue;
+            }
+            if (frame.kind === "member-key") {
+                const result = getReferenceValue(this.context, { kind: "property", base: frame.base, key: value, loc: frame.expression.loc }, frame.expression.loc);
+                if (result.type === "throw") return result;
+                if (result.type !== "normal") throw new Error("invalid property read completion");
+                value = result.value;
+                continue;
+            }
             if (frame.kind === "conditional") {
                 frames.push({ kind: "branch", expression: frame.expression });
                 expression = truthy(value) ? frame.expression.consequent : frame.expression.alternate;

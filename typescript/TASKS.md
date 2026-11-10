@@ -4118,7 +4118,7 @@ Status: **done — accepted in async-generators milestone**. Owner: Codex catch-
 
 ## TS-248 — Suspended property reads
 
-Status: **in progress — isolated successor to TS-247**. Owner: Codex catch-up chat, 2026-11-10. Extend detached expression frames to property bases and computed keys, preserving base-before-key evaluation, delayed key coercion, getter receiver identity and abrupt cleanup. Own syntax, parser admission, generator expression frames, continuation integration, tests/manifests and docs in build/generator-member-draft. Calls, optional chains, super properties, writes and reference-specific delete remain separate. Require both-host/static checks, expected-order tests and cross-session restoration.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend detached expression frames to property bases and computed keys, preserving base-before-key evaluation, delayed key coercion, getter receiver identity and abrupt cleanup. Own syntax, parser admission, generator expression frames, continuation integration, tests/manifests and docs in build/generator-member-draft. Calls, optional chains, super properties, writes and reference-specific delete remain separate. Require both-host/static checks, expected-order tests and cross-session restoration.
 
 ## TS-249 — Suspended call arguments
 
