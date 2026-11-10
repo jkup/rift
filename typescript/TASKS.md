@@ -4786,7 +4786,7 @@ Status: **done — accepted in temporal-duration-date milestone**. Owner: Codex 
 
 ## TS-409 — Branded UTC and fixed-offset ZonedDateTime construction
 
-Status: **in progress — isolated successor to TS-408**. Owner: Codex catch-up chat, 2026-11-10. Construct Temporal.ZonedDateTime with exact epoch, supported raw timezone identifiers and ISO calendar. Add core slot getters, Realm prototype fallback, timezone/calendar brand recognition and partial-object rejection. Preserve ordered coercion, direct-identifier grammar, subclassing and intrinsic errors; conversion, formatting, field getters and arithmetic remain follow-ups. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-time-zone-parse.ts, src/temporal-time-zone.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-zoned-date-time-core-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Construct Temporal.ZonedDateTime with exact epoch, supported raw timezone identifiers and ISO calendar. Add core slot getters, Realm prototype fallback, timezone/calendar brand recognition and partial-object rejection. Preserve ordered coercion, direct-identifier grammar, subclassing and intrinsic errors; conversion, formatting, field getters and arithmetic remain follow-ups. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-time-zone-parse.ts, src/temporal-time-zone.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-zoned-date-time-core-draft/.
 
 ## TS-410 — ZonedDateTime ISO fields and fixed-offset day lengths
 

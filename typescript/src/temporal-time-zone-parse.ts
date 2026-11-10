@@ -7,7 +7,7 @@ export interface TemporalTimeZone {
     readonly offsetNanoseconds: bigint;
 }
 
-function identifier(text: string): TemporalTimeZone | null {
+export function parseTemporalTimeZoneIdentifier(text: string): TemporalTimeZone | null {
     if (text.length === 3 && text.toLowerCase() === "utc") return { identifier: "UTC", offsetNanoseconds: 0n };
     const offset = parseUTCOffset(text, false);
     if (offset === null) return null;
@@ -30,13 +30,13 @@ function annotatedZone(scanner: TemporalISOScanner, hasTime: boolean, shortDate 
     }
     if (!temporalISOAnnotations(scanner)) return null;
     if (shortDate && scanner.calendar !== null && scanner.calendar.toLowerCase() !== "iso8601") return null;
-    if (scanner.timeZone !== null) return identifier(scanner.timeZone);
-    if (utc) return identifier("UTC");
-    return offset === null ? null : identifier(offset);
+    if (scanner.timeZone !== null) return parseTemporalTimeZoneIdentifier(scanner.timeZone);
+    if (utc) return parseTemporalTimeZoneIdentifier("UTC");
+    return offset === null ? null : parseTemporalTimeZoneIdentifier(offset);
 }
 
 export function parseTemporalTimeZone(text: string): TemporalTimeZone | null {
-    const direct = identifier(text);
+    const direct = parseTemporalTimeZoneIdentifier(text);
     if (direct !== null) return direct;
     const date = new TemporalISOScanner(text);
     if (temporalISODate(date) !== null) {

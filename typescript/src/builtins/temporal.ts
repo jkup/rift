@@ -1,5 +1,6 @@
 import { registerTemporalPlainMonthDay } from "./temporal-plain-month-day.js";
 import { registerTemporalNow } from "./temporal-now.js";
+import { registerTemporalZonedDateTime } from "./temporal-zoned-date-time.js";
 import { registerTemporalPlainYearMonth } from "./temporal-plain-year-month.js";
 import { registerTemporalPlainDateTime } from "./temporal-plain-date-time.js";
 import { registerTemporalInstantString } from "./temporal-instant-string.js";
@@ -77,5 +78,6 @@ export function registerTemporal(realm: Realm): void {
     registerTemporalPlainDateTime(realm, namespace);
     registerTemporalDuration(realm, namespace);
     registerTemporalNow(realm, namespace);
+    registerTemporalZonedDateTime(realm, namespace);
     realm.defineScriptGlobal("Temporal", { value: { kind: "object", object: namespace }, writable: true, enumerable: false, configurable: true });
 }

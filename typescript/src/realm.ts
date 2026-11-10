@@ -113,6 +113,7 @@ export class Realm {
     readonly numberPrototype: GuestNumber;
     readonly bigintPrototype: GuestObject;
     readonly temporalInstantPrototype: GuestObject;
+    readonly temporalZonedDateTimePrototype: GuestObject;
     readonly datePrototype: GuestObject;
     readonly temporalDurationPrototype: GuestObject;
     readonly temporalPlainTimePrototype: GuestObject;
@@ -163,6 +164,7 @@ export class Realm {
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
         this.bigintPrototype = new GuestObject(this.objectPrototype);
         this.temporalInstantPrototype = new GuestObject(this.objectPrototype);
+        this.temporalZonedDateTimePrototype = new GuestObject(this.objectPrototype);
         this.datePrototype = new GuestObject(this.objectPrototype);
         this.temporalDurationPrototype = new GuestObject(this.objectPrototype);
         this.temporalPlainTimePrototype = new GuestObject(this.objectPrototype);
