@@ -4338,7 +4338,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-300 — Temporal Instant ISO string backend
 
-Status: **in progress — isolated successor to TS-299**. Owner: Codex catch-up chat, 2026-11-10. Parse the complete Instant date/time/required-offset grammar, expanded years, leap-second normalization and RFC 9557 annotations with exact nanosecond offset adjustment before range checking. Own new parser/tests/manifests/docs in build/temporal-instant-parse-draft. Keep guest conversion/registration separate; no host Date/RegExp or named-zone lookup. Require malformed and boundary vectors, critical/duplicate annotation rules, UTC formatter roundtrips, full Node and native static/zero-dynamic checks, and specification/pinned-engine review.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse the complete Instant date/time/required-offset grammar, expanded years, leap-second normalization and RFC 9557 annotations with exact nanosecond offset adjustment before range checking. Own new parser/tests/manifests/docs in build/temporal-instant-parse-draft. Keep guest conversion/registration separate; no host Date/RegExp or named-zone lookup. Require malformed and boundary vectors, critical/duplicate annotation rules, UTC formatter roundtrips, full Node and native static/zero-dynamic checks, and specification/pinned-engine review.
 
 ## TS-301 — Temporal Instant conversion and comparison
 
