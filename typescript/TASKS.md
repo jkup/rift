@@ -3878,7 +3878,7 @@ Status: **done — measured; no production change justified**. Owner: Codex catc
 
 ## TS-194 — JSON.stringify
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add the ECMAScript 2025 serializer for current Values: toJSON/replacer ordering, replacer property lists, boxed primitive conversion, gap coercion, well-formed UTF-16 quoting, captured object keys/array lengths, omissions and null array entries, cycle errors and bounded iterative traversal/output. Own json-stringify module, JSON registration/inventories, focused tests/manifests and notes in build/json-stringify-draft based on TS-192. No rawJSON, BigInt or host serialization of guest objects; preserve existing parse behavior.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add the ECMAScript 2025 serializer for current Values: toJSON/replacer ordering, replacer property lists, boxed primitive conversion, gap coercion, well-formed UTF-16 quoting, captured object keys/array lengths, omissions and null array entries, cycle errors and bounded iterative traversal/output. Own json-stringify module, JSON registration/inventories, focused tests/manifests and notes in build/json-stringify-draft based on TS-192. No rawJSON, BigInt or host serialization of guest objects; preserve existing parse behavior.
 
 ## TS-195 — String locale host prerequisites
 

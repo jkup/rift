@@ -1,3 +1,4 @@
+import { JSONSerializer } from "../json-stringify.js";
 import type { Realm } from "../realm.js";
 import { UNDEFINED, type ValueCompletion } from "../runtime.js";
 import { toPrimitive } from "../primitive-conversion.js";
@@ -21,5 +22,7 @@ export function registerJSON(realm: Realm): void {
             return reviveJSON(result.value, reviver, context, loc);
         return result;
     });
+    realm.registerBuiltin(object, "stringify", 3, (_receiver, args, context, loc): ValueCompletion =>
+        new JSONSerializer(context, loc).stringify(args.length > 0 ? args[0] : UNDEFINED, args.length > 1 ? args[1] : UNDEFINED, args.length > 2 ? args[2] : UNDEFINED));
     realm.defineScriptGlobal("JSON", { value: { kind: "object", object }, writable: true, configurable: true });
 }
