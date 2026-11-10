@@ -684,6 +684,7 @@ executeDriver("formal-pattern", { stdout: "formal pattern passed\n" });
 executeDriver("arrow-pattern", { stdout: "arrow pattern passed\n" });
 executeDriver("generator-binary", { stdout: "generator binary passed\n" });
 executeDriver("generator-conditional", { stdout: "generator conditional passed\n" });
+executeDriver("generator-unary", { stdout: "generator unary passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

@@ -1124,7 +1124,7 @@ function copyStrictness(strictness: StrictnessMetadata): StrictnessMetadata {
 import { stringConcat } from "./strings.js";
 import { GuestArray } from "./array-object.js";
 import { toObject } from "./object-conversion.js";
-import { typeOfValue } from "./typeof.js";
+import { applyUnaryValueOperator } from "./unary-operator.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toNumber, toString, toPropertyKey } from "./conversion.js";
 
@@ -1789,18 +1789,7 @@ class ExecutionEngine {
                 }
                 const result = this.#eval(expr.operand, env, receiver, expr.op === "typeof");
                 if (result.type !== "normal") return result;
-                if (expr.op === "typeof") {
-                    return normal({ kind: "string", value: typeOfValue(result.value) });
-                }
-                if (expr.op === "void") {
-                    return normal();
-                }
-                if (expr.op === "!") return normal({ kind: "boolean", value: !truthy(result.value) });
-                const primitive = toPrimitive(result.value, "number", this.context, expr.loc);
-                if (primitive.type === "throw") return primitive;
-                const number = toNumber(primitive.value, expr.loc, this.context.realm);
-                if (number.type === "throw") return number;
-                return normal({ kind: "number", value: expr.op === "~" ? ~number.value : expr.op === "-" ? -number.value : number.value });
+                return applyUnaryValueOperator(expr.op, result.value, this.context, expr.loc);
             }
             case "conditional": {
                 const test = this.#eval(expr.test, env, receiver);
@@ -2985,7 +2974,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || ((expression.kind === "binary" || expression.kind === "conditional") && expression.suspends === true)) {
+                if (expression.kind === "yield" || ((expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -2998,6 +2987,11 @@ class ExecutionEngine {
                     if (expression.kind === "conditional") {
                         frames.push({ kind: "conditional", expression });
                         expression = expression.test;
+                        continue;
+                    }
+                    if (expression.kind === "unary") {
+                        frames.push({ kind: "unary", expression });
+                        expression = expression.operand;
                         continue;
                     }
                     const yielded = this.#generatorYield(expression, null);
@@ -3026,6 +3020,12 @@ class ExecutionEngine {
                 continue;
             }
             if (frame.kind === "branch") continue;
+            if (frame.kind === "unary") {
+                const computed = applyUnaryValueOperator(frame.expression.op, value, this.context, frame.expression.loc);
+                if (computed.type === "throw") return computed;
+                value = computed.value;
+                continue;
+            }
             const node = frame.expression;
             if (frame.kind === "left") {
                 if ((node.op === "&&" && !truthy(value)) || (node.op === "||" && truthy(value))) continue;

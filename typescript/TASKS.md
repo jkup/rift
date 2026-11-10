@@ -4056,7 +4056,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-234 — Unary value operations across suspension
 
-Status: **in progress — isolated successor to TS-233**. Owner: Codex catch-up chat, 2026-11-10. Extract shared unary Value operations while retaining reference-specific typeof/delete handling in the evaluator, then add unary operand frames to generator expression continuations. Preserve live numeric coercion, signed zero, no-coercion typeof/void/not/delete-value behavior, abrupt discard, current budgets and Realm ownership. Own unary helper, syntax/parser markers, expression-frame evaluation, focused tests/manifests and notes in build/generator-unary-draft. Yielding member/call references remain unsupported. Require both-host/static and ordinary unary regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract shared unary Value operations while retaining reference-specific typeof/delete handling in the evaluator, then add unary operand frames to generator expression continuations. Preserve live numeric coercion, signed zero, no-coercion typeof/void/not/delete-value behavior, abrupt discard, current budgets and Realm ownership. Own unary helper, syntax/parser markers, expression-frame evaluation, focused tests/manifests and notes in build/generator-unary-draft. Yielding member/call references remain unsupported. Require both-host/static and ordinary unary regressions.
 
 ## TS-235 — Nested yield operands
 

@@ -21,6 +21,7 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+    "function* f(){return -(yield 1);}var g=f();g.next().value===1&&g.next(7).value===-7;",
     "function* f(){return (yield 1)?yield 2:yield 3;}var g=f();g.next();g.next(false).value===3&&g.next(7).value===7;",
     "function* f(){return (yield 1)?(yield 2):(yield 3);}var a=f(),b=f();a.next();b.next();a.next(true).value===2&&b.next(false).value===3&&a.next(7).value===7&&b.next(8).value===8;",
     "var trace=\"\";function yes(){trace+=\"T\";return 7;}function no(){trace+=\"F\";return 8;}function* f(){return (yield 1)?yes():no();}var g=f();g.next();var before=trace;before===\"\"&&g.next(true).value===7&&trace===\"T\";",
@@ -50,7 +51,7 @@ for (let i = 0; i < cases.length; i++) {
     const result = run(cases[i], new Realm((_line: string): void => {}, "script"));
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "conditional case " + i);
 }
-for (const source of ["function* f(){return -(yield 1);}", "function* f(){return foo((yield 1)?2:3);}", "function* f(){if(yield 1){}}", "function* f(){yield (yield 1)?2:3;}"])
+for (const source of [ "function* f(){return foo((yield 1)?2:3);}", "function* f(){if(yield 1){}}", "function* f(){yield (yield 1)?2:3;}"])
     check(prepareBoundedScript({id: "boundary", text: source}, new Realm((_line: string): void => {}, "script")).kind === "blocked", "conditional boundary " + source);
 const A = new Realm((_line: string): void => {}, "script"), B = new Realm((_line: string): void => {}, "script");
 const creator = createScriptSession();run('function* f(){return (yield 1)?null.x:7;}var g=f();g.next();', A, creator);define(B, "g", own(A, "g"));

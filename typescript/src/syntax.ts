@@ -28,6 +28,7 @@ export type ObjectPattern = { kind: "object-pattern"; loc: Location; properties:
 export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "binding"; loc: Location; site: DeclarationSite } | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
 export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[] };
+export type UnaryExpr = { kind: "unary"; loc: Location; op: string; operand: Expr; suspends?: true };
 export type ConditionalExpr = { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr; suspends?: true };
 export type BinaryExpr = { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr; suspends?: true };
 export type Expr =
@@ -44,7 +45,7 @@ export type Expr =
     | { kind: "new-target"; loc: Location }
     | { kind: "super-call"; loc: Location; args: Argument[] }
     | { kind: "super-member"; loc: Location; key: Expr }
-    | { kind: "unary"; loc: Location; op: string; operand: Expr }
+    | UnaryExpr
     | BinaryExpr
     | { kind: "assign"; loc: Location; target: Expr; value: Expr }
     | { kind: "update"; loc: Location; target: Expr; op: "++" | "--"; prefix: boolean }

@@ -99,6 +99,7 @@ const entries = [
     ["test/arrow-pattern.ts", "arrow-pattern"],
     ["test/generator-binary.ts", "generator-binary"],
     ["test/generator-conditional.ts", "generator-conditional"],
+    ["test/generator-unary.ts", "generator-unary"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
