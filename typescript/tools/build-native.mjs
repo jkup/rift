@@ -76,6 +76,7 @@ const entries = [
     ["test/object-prototype-literal.ts", "object-prototype-literal"],
     ["test/object-spread.ts", "object-spread"],
     ["test/string-replace-all.ts", "string-replace-all"],
+    ["test/suspension-context.ts", "suspension-context"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
