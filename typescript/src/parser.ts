@@ -1561,7 +1561,11 @@ class Parser {
         }
         if (t.kind === "invalid-number" && this.purpose === "bounded-numeric-separator-audit")
             return { kind: "literal", loc, value: 0 };
-        if (t.kind === "bigint") return { kind: "bigint", loc, value: t.text.slice(0, -1).replaceAll("_", "") };
+        if (t.kind === "bigint") {
+            const literal: Expr = { kind: "bigint", loc, value: t.text.slice(0, -1).replaceAll("_", "") };
+            if (this.purpose === "bounded-numeric-assignment-audit") this.numericTokens.set(literal, t);
+            return literal;
+        }
         if (t.kind === "number") {
             const literal: Expr = { kind: "literal", loc, value: Number(t.text.replaceAll("_", "")) };
             if (this.purpose === "bounded-numeric-assignment-audit") this.numericTokens.set(literal, t);

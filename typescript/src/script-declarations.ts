@@ -237,7 +237,7 @@ export function collectNumericAssignmentAudit(unit: ScriptSourceUnit, body: Stmt
     for (const candidate of candidates) {
         const target = candidate.target, operator = candidate.operator;
         const targetToken = byStart.get(target.start), operatorToken = byStart.get(operator.start);
-        if (targetToken === undefined || targetToken.kind !== "number" || operatorToken === undefined || operatorToken.kind !== "punct" ||
+        if (targetToken === undefined || (targetToken.kind !== "number" && targetToken.kind !== "bigint") || operatorToken === undefined || operatorToken.kind !== "punct" ||
             targetToken.text !== target.text || targetToken.end !== target.end || operatorToken.text !== operator.text || operatorToken.end !== operator.end ||
             targetToken.loc.line !== target.loc.line || targetToken.loc.column !== target.loc.column ||
             operatorToken.loc.line !== operator.loc.line || operatorToken.loc.column !== operator.loc.column ||
