@@ -66,7 +66,7 @@ export type ForLexicalStmt = { kind: "for-lexical"; loc: Location; start: number
 export type ForLexicalBinding = { kind: "lexical"; declarationKind: "let" | "const"; site: DeclarationSite };
 export type ForPatternBinding = { kind: "pattern"; declarationKind: "let" | "const" | "var"; pattern: ArrayPattern | ObjectPattern; sites: DeclarationSite[] };
 export type ForAssignmentPattern = { kind: "assignment-pattern"; loc: Location; pattern: ArrayPattern | ObjectPattern };
-export type ForEachStmt = { kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding | ForPatternBinding | ForAssignmentPattern; iterable: Expr; body: Stmt };
+export type ForEachStmt = { awaited?: true; kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding | ForPatternBinding | ForAssignmentPattern; iterable: Expr; body: Stmt };
 export type Stmt =
     | GeneratorYieldStmt
     | { kind: "class-declaration"; loc: Location; value: ClassExpr }

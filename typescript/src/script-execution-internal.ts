@@ -1,3 +1,4 @@
+import { getAsyncIterator } from "./async-iterator.js";
 import { isSuspendingGeneratorExpression, type GeneratorExpressionFrame } from "./generator-expression.js";
 import { hasParameterExpressions, hasParameterPatterns } from "./formal-parameters.js";
 import type { GeneratorYieldReceiver } from "./generator-yield-receiver.js";
@@ -1181,13 +1182,14 @@ type GeneratorPending = GeneratorAbrupt | { type: "normal" };
 type GeneratorFinally = { kind: "finally"; frame: ScriptFrameSnapshot; statement: TryFinallyStmt; depth: number };
 type GeneratorCleanup = { kind: "cleanup"; frame: ScriptFrameSnapshot; pending: GeneratorPending;
     abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null; depth: number };
-type GeneratorForOf = { kind: "iterator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; iterator: IteratorRecord;
+type GeneratorForOf = { kind: "iterator"; awaiting?: boolean; frame: ScriptFrameSnapshot; statement: ForEachStmt; iterator: IteratorRecord;
     target: Expr | null; lexical: boolean; scopeId: number; depth: number; labels?: readonly string[] | null };
 type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; enumerator: ForInEnumerator;
     target: Expr | null; lexical: boolean; scopeId: number; depth: number; labels?: readonly string[] | null };
 type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number };
-type GeneratorFrame = GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
+type AsyncIteratorCloseFrame = { kind: "async-close"; frame: ScriptFrameSnapshot; loc: Location; depth: number; pending: GeneratorAbrupt; abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null };
+type GeneratorFrame = AsyncIteratorCloseFrame | GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
 type ExecutionContinuation = { sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
 type ContinuationResult = ValueCompletion | { type: "yield"; result: Value } | { type: "await"; value: Value; loc: Location; depth: number };
 type ExpressionContinuationResult = ContinuationResult | { type: "suspended-delegate" };
@@ -2595,7 +2597,7 @@ class ExecutionEngine {
                     if (boxed.type === "throw") return boxed;
                     enumerator = new ForInEnumerator(boxed.value);
                 } else {
-                    const acquired = getIterator(iterable.value, this.context, stmt.loc);
+                    const acquired = stmt.awaited ? getAsyncIterator(iterable.value, this.context, stmt.loc) : getIterator(iterable.value, this.context, stmt.loc);
                     if (acquired.type === "throw") return acquired;
                     iterator = acquired.value;
                 }
@@ -2608,6 +2610,7 @@ class ExecutionEngine {
                     else throw new Error("missing generator loop iterator");
                     return { type: "normal", payload: { kind: "empty" } };
                 }
+                if (stmt.awaited) throw new Error("async loop requires continuation");
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
                 while (true) {
                     if (enumerator === null && iterator === null) throw new Error("missing loop iterator");
@@ -3279,7 +3282,7 @@ class ExecutionEngine {
             body: [boundary.statement.finalizer], nextStatement: 0, depth: boundary.depth });
         this.#abrupt = null;
     }
-    #unwindContinuation(continuation: ExecutionContinuation, completion: GeneratorAbrupt, callerDepth: number): ValueCompletion | null {
+    #unwindContinuation(continuation: ExecutionContinuation, completion: GeneratorAbrupt, callerDepth: number): ContinuationResult | null {
         continuation.delegate = null;
         continuation.receiver = null;
         continuation.expressionFrames.length = 0;
@@ -3291,6 +3294,22 @@ class ExecutionEngine {
                 this.#frame = boundary.frame;
                 this.depth = callerDepth + boundary.depth;
                 if (completion.type === "continue" && this.#continueTarget(completion.target, boundary.labels ?? null)) { sequences.push(boundary); return null; }
+                if (boundary.statement.awaited) {
+                    const close: AsyncIteratorCloseFrame = { kind: "async-close", frame: boundary.frame, loc: boundary.statement.loc,
+                        depth: boundary.depth, pending: completion, abrupt: this.#abrupt, source: this.#lastAbrupt };
+                    const receiver: Value = { kind: "object", object: boundary.iterator.iterator };
+                    const method = boundary.iterator.iterator.internalGet("return", receiver, this.context, close.loc);
+                    if (method.type === "throw") return this.#finishAsyncIteratorClose(continuation, close, method, callerDepth);
+                    if (method.value.kind === "undefined" || method.value.kind === "null") {
+                        if (completion.type === "break" && completion.target === undefined) return null;
+                        continue;
+                    }
+                    const called = this.context.call(method.value, receiver, [], close.loc);
+                    if (called.type === "throw") return this.#finishAsyncIteratorClose(continuation, close, called, callerDepth);
+                    sequences.push(close);
+                    continuation.yieldLoc = close.loc;
+                    return { type: "await", value: called.value, loc: close.loc, depth: close.depth };
+                }
                 if (completion.type === "throw") {
                     const pending = completion, abrupt = this.#abrupt, source = this.#lastAbrupt;
                     completion = iteratorCloseOnThrow(boundary.iterator, pending, this.context, boundary.statement.loc);
@@ -3337,6 +3356,41 @@ class ExecutionEngine {
         if (completion.type === "return") return normal(completion.value);
         throw new Error("generator loop control without loop");
     }
+    #finishAsyncIteratorClose(continuation: ExecutionContinuation, close: AsyncIteratorCloseFrame, result: ValueCompletion, callerDepth: number): ContinuationResult | null {
+        let completion = close.pending;
+        if (result.type === "throw" && fatalPromiseCompletion(result)) { this.#capture(result); return result; }
+        if (completion.type === "throw") { this.#abrupt = close.abrupt; this.#lastAbrupt = close.source; }
+        else if (result.type === "throw") { completion = result; this.#capture(result); }
+        else if (result.value.kind !== "object") {
+            completion = languageFailure(this.context.realm, "TypeError", "async iterator return result must be an object", close.loc);
+            this.#capture(completion);
+        } else if (completion.type === "break" && completion.target === undefined) return null;
+        return this.#unwindContinuation(continuation, completion, callerDepth);
+    }
+    #receiveAsyncIteratorStep(continuation: ExecutionContinuation, loop: GeneratorForOf, result: ValueCompletion, callerDepth: number): ContinuationResult | null {
+        const sequences = continuation.sequences;
+        loop.awaiting = false;
+        let next: ValueCompletion = result;
+        if (next.type === "normal") {
+            if (next.value.kind !== "object") next = languageFailure(this.context.realm, "TypeError", "async iterator result must be an object", loop.statement.loc);
+            else {
+                const object = next.value;
+                const done = object.object.internalGet("done", object, this.context, loop.statement.loc);
+                if (done.type === "throw") next = done;
+                else if (truthy(done.value)) { sequences.pop(); return null; }
+                else next = object.object.internalGet("value", object, this.context, loop.statement.loc);
+            }
+        }
+        if (next.type === "throw") {
+            sequences.pop();
+            this.#capture(next);
+            return this.#unwindContinuation(continuation, next, callerDepth);
+        }
+        const initialized = this.#initializeForEach(loop.statement, loop.frame, loop.scopeId, loop.lexical, loop.target, next.value);
+        if (initialized.type === "throw") { this.#capture(initialized); return this.#unwindContinuation(continuation, initialized, callerDepth); }
+        sequences.push({ kind: "sequence", frame: this.#active(), body: [loop.statement.body], nextStatement: 0, depth: loop.depth });
+        return null;
+    }
     #runContinuation(continuation: ExecutionContinuation, mode: GeneratorResumeMode, value: Value): ContinuationResult {
         const sequences = continuation.sequences;
         const caller = this.#active(), callerRealm = this.activeContext.realm, inspection = this.#inspectionSource, callerDepth = this.depth;
@@ -3345,6 +3399,17 @@ class ExecutionEngine {
         this.activeContext.realm = active.frame.realm;
         this.#inspectionSource = null;
         try {
+            if (active.kind === "async-close" || (active.kind === "iterator" && active.awaiting)) {
+                this.depth = callerDepth + active.depth;
+                const input: ValueCompletion = mode === "throw" ? { type: "throw", origin: { kind: "guest" }, value,
+                    diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: active.kind === "async-close" ? active.loc : active.statement.loc } } : normal(value);
+                let received: ContinuationResult | null;
+                if (active.kind === "async-close") { sequences.pop(); received = this.#finishAsyncIteratorClose(continuation, active, input, callerDepth); }
+                else received = this.#receiveAsyncIteratorStep(continuation, active, input, callerDepth);
+                if (received !== null) return received;
+                mode = "next";
+                value = UNDEFINED;
+            }
             if (mode === "next" && continuation.delegate === null && (continuation.receiver !== null || continuation.expressionFrames.length !== 0)) {
                 const result = this.#receiveSuspension(continuation, value, callerDepth);
                 if (result !== null) return result;
@@ -3412,6 +3477,21 @@ class ExecutionEngine {
                     const result = this.#unwindContinuation(continuation, sequence.pending, callerDepth);
                     if (result !== null) return result;
                     continue;
+                }
+                if (sequence.kind === "async-close") throw new Error("async close resumed without result");
+                if (sequence.kind === "iterator" && sequence.statement.awaited) {
+                    const tick = this.context.tick(sequence.statement.loc);
+                    const next = tick.type === "throw" ? tick : this.context.call(sequence.iterator.nextMethod, { kind: "object", object: sequence.iterator.iterator }, [], sequence.statement.loc);
+                    if (next.type === "throw") {
+                        sequences.pop();
+                        this.#capture(next);
+                        const failed = this.#unwindContinuation(continuation, next, callerDepth);
+                        if (failed !== null) return failed;
+                        continue;
+                    }
+                    sequence.awaiting = true;
+                    continuation.yieldLoc = sequence.statement.loc;
+                    return { type: "await", value: next.value, loc: sequence.statement.loc, depth: sequence.depth };
                 }
                 if (sequence.kind === "iterator" || sequence.kind === "enumerator") {
                     const next = sequence.kind === "iterator" ? iteratorStepValue(sequence.iterator, this.context, sequence.statement.loc)

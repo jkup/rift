@@ -464,6 +464,8 @@ class Parser {
             return { kind: "if", loc, test, consequent, alternate };
         }
         if (this.structuralPlan() && this.eat("for")) {
+            const awaited = this.eat("await");
+            if (awaited && !this.asyncContext) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "for-await requires an async body", loc);
             this.expect("(");
             if ((this.at("let") || this.at("const") || this.at("var")) && (this.token(this.index + 1)?.text === "[" || this.token(this.index + 1)?.text === "{")) {
                 const declarationKind = this.take().text;
@@ -472,7 +474,7 @@ class Parser {
                 const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
                 if (!this.at("of") && !this.at("in")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "pattern loop requires in or of", this.current().loc);
                 const kind = this.take().text === "in" ? "for-in" : "for-of";
-                return this.forEach(kind, loc, start, { kind: "pattern", declarationKind, pattern, sites: bindings.map(binding => binding.site) });
+                return this.forEach(kind, loc, start, { kind: "pattern", declarationKind, pattern, sites: bindings.map(binding => binding.site) }, awaited);
             }
             if ((this.at("let") || this.at("const")) && this.token(this.index + 2)?.kind === "word" && (this.token(this.index + 2)?.text === "of" || this.token(this.index + 2)?.text === "in")) {
                 const declarationKind = this.take().text === "let" ? "let" : "const";
@@ -480,7 +482,7 @@ class Parser {
                 const name = this.name();
                 const kind = this.take().text === "of" ? "for-of" : "for-in";
                 return this.forEach(kind, loc, start, { kind: "lexical", declarationKind,
-                    site: { name, start: token.start, end: token.end, loc: token.loc } });
+                    site: { name, start: token.start, end: token.end, loc: token.loc } }, awaited);
             }
             let lexical: { declarationKind: "let" | "const"; binding: ParsedBinding } | null = null;
             if (this.at("let") || this.at("const")) {
@@ -501,12 +503,13 @@ class Parser {
                 } else if ((initializer.kind === "array" || initializer.kind === "object") && !this.isParenthesized(initializer)) {
                     const pattern = this.assignmentPattern(initializer);
                     if (pattern.kind !== "array-pattern" && pattern.kind !== "object-pattern") throw new Error("loop pattern invariant");
-                    return this.forEach(kind, loc, start, { kind: "assignment-pattern", loc: initializer.loc, pattern });
+                    return this.forEach(kind, loc, start, { kind: "assignment-pattern", loc: initializer.loc, pattern }, awaited);
                 } else if (initializer.kind !== "identifier" && initializer.kind !== "member" && initializer.kind !== "super-member") {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + kind + " assignment target", initializer.loc);
                 }
-                return this.forEach(kind, loc, start, initializer);
+                return this.forEach(kind, loc, start, initializer, awaited);
             }
+            if (awaited) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "for-await requires of", loc);
             this.expect(";");
             const test = this.at(";") ? null : this.expression(0);
             this.expect(";");
@@ -596,13 +599,16 @@ class Parser {
         }
         return { kind: "try-finally", loc, body, finalizer };
     }
-    forEach(kind: "for-of" | "for-in", loc: Location, start: number, head: ForEachStmt["head"]): ForEachStmt {
+    forEach(kind: "for-of" | "for-in", loc: Location, start: number, head: ForEachStmt["head"], awaited = false): ForEachStmt {
+        if (awaited && kind !== "for-of") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "for-await requires of", loc);
         const iterable = this.expression(kind === "for-in" ? 0 : 1);
         this.expect(")");
         this.loops++;
         const body = this.branch("for-body");
         this.loops--;
-        return { kind, loc, start, end: this.token(this.index - 1).end, head, iterable, body };
+        const statement: ForEachStmt = { kind, loc, start, end: this.token(this.index - 1).end, head, iterable, body };
+        if (awaited) statement.awaited = true;
+        return statement;
     }
     varDeclaration(allowIn: boolean): VarStmt {
         const token = this.take();
