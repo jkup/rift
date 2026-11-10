@@ -78,7 +78,14 @@ function string(text: string, expected: string, realm: Realm, session: ScriptSes
     check(result.completed === 1 && failure.completion.value.kind === "object" && failure.completion.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"), "requested job Realm");
     check(failure.source.unitId === "foreign-job" && failure.source.realm === owner, "enqueue source with execution Realm");
 }
-for (const source of ["while(true){}", "eval('async function f(){}')"]) {
+{
+    const realm = fresh(), session = createScriptSession(); install(realm, []);
+    run("var order='';enqueue(()=>{eval('async function f(){}')});enqueue(()=>order+='next')", realm, session);
+    const drained = drainScriptJobs(session);
+    check(!drained.fatal && drained.failures.length === 0 && drained.completed === 2, "async declaration job completes");
+    string("order", "next", realm, createScriptSession());
+}
+for (const source of ["while(true){}", "eval('async function f(){await 1;}')"]) {
     const realm = fresh(), session = createScriptSession({ maxSteps: 200, maxCalls: 32 }); install(realm, []);
     run("var order='';enqueue(()=>{" + source + "});enqueue(()=>order+='wrong')", realm, session);
     const drained = drainScriptJobs(session);

@@ -2,7 +2,7 @@ import type { GuestObject, OperationContext, ErrorName } from "./runtime.js";
 import type { ObjectCompletion } from "./object-conversion.js";
 import type { Location } from "./syntax.js";
 
-export type ConstructorPrototype = "Generator" | "GeneratorFunction" | "RegExp" | "Promise" | "Object" | "Function" | "Array" | "Boolean" | "Number" | "String" | "Map" | "Set" | ErrorName;
+export type ConstructorPrototype = "Generator" | "GeneratorFunction" | "AsyncFunction" | "RegExp" | "Promise" | "Object" | "Function" | "Array" | "Boolean" | "Number" | "String" | "Map" | "Set" | ErrorName;
 
 export function getPrototypeFromConstructor(constructor: GuestObject, intrinsic: ConstructorPrototype,
     context: OperationContext, loc: Location): ObjectCompletion {
@@ -17,6 +17,7 @@ export function getPrototypeFromConstructor(constructor: GuestObject, intrinsic:
     switch (intrinsic) {
         case "Generator": return { type: "normal", value: realm.generatorPrototype };
         case "GeneratorFunction": return { type: "normal", value: realm.generatorFunctionPrototype };
+        case "AsyncFunction": return { type: "normal", value: realm.asyncFunctionPrototype };
         case "RegExp": return { type: "normal", value: realm.regexpPrototype };
         case "Promise": return { type: "normal", value: realm.promisePrototype };
         case "Object": return { type: "normal", value: realm.objectPrototype };

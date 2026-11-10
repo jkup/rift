@@ -291,7 +291,7 @@ function copySite(site: DeclarationSite): DeclarationSite {
 
 class DeclarationCollector {
     readonly arrowScopes = new Set<number>();
-    readonly generatorScopes = new Set<number>();
+    readonly nonLegacyFunctionScopes = new Set<number>();
     readonly restrictedAssignments: { name: string; scope: number; loc: Location }[] = [];
     readonly scopes: MutableScope[] = [];
     readonly declarations: Declaration[] = [];
@@ -375,7 +375,7 @@ class DeclarationCollector {
         if (source.name !== undefined && (source.name.name === "eval" || source.name.name === "arguments"))
             this.restrictedAssignments.push({ name: source.name.name, scope: id, loc: source.name.loc });
         if (source.arrow === true) this.arrowScopes.add(id);
-        if (source.generator === true) this.generatorScopes.add(id);
+        if (source.generator === true || source.async === true) this.nonLegacyFunctionScopes.add(id);
         if (this.nodes !== null) this.nodes.scopes.set(id, { node, body });
         this.functions.push({ scope: id, declaration, start: source.start, end: source.end, strictness });
         this.statements(body, id, id);
@@ -733,7 +733,7 @@ class DeclarationCollector {
         for (const declaration of this.declarations) {
             const scope = this.scopes[declaration.scope];
             if (declaration.kind !== "function" || scope.strict || (scope.kind !== "block" && scope.kind !== "switch")) continue;
-            if (declaration.functionScope !== null && this.generatorScopes.has(declaration.functionScope)) continue;
+            if (declaration.functionScope !== null && this.nonLegacyFunctionScopes.has(declaration.functionScope)) continue;
             const name = declaration.site.name;
             const variableScope = this.scopes[declaration.variableScope];
             let eligible = true;

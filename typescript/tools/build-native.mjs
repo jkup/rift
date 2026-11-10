@@ -103,6 +103,7 @@ const entries = [
     ["test/generator-yield-operand.ts", "generator-yield-operand"],
     ["test/generator-if.ts", "generator-if"],
     ["test/generator-loop-test.ts", "generator-loop-test"],
+    ["test/async-function.ts", "async-function"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

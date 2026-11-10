@@ -5,6 +5,11 @@ import { wellKnownSpecies } from "./symbols.js";
 
 export type PromiseCapability = { promise: Value; resolve: Value; reject: Value };
 type Reaction = { capability: PromiseCapability; handler: Value; reject: boolean };
+export function intrinsicPromiseCapability(realm: Realm): PromiseCapability {
+    const promise = new GuestPromise(realm.promisePrototype);
+    const functions = createResolvingFunctions(promise, realm);
+    return { promise: { kind: "object", object: promise }, resolve: functions.resolve, reject: functions.reject };
+}
 export function isCallable(value: Value): boolean { return value.kind === "object" && value.object.callable !== null; }
 export function fatalPromiseCompletion(result: ThrowCompletion): boolean {
     return result.origin.kind === "resource-limit" || result.origin.kind === "unsupported-operation";

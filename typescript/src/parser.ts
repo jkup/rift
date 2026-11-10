@@ -306,11 +306,15 @@ class Parser {
         this.depth--;
         return result;
     }
+    private asyncFunctionAhead(): boolean {
+        return this.structuralPlan() && this.at("async") && this.token(this.index + 1).text === "function"
+            && this.current().loc.line === this.token(this.index + 1).loc.line;
+    }
     branch(context: LexicalStatementContext): Stmt {
         const keyword = this.current();
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
         if (this.at("const")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: const", keyword.loc);
-        if ((this.at("let") && !auditLet) || this.at("function") || (this.structuralPlan() && this.at("class"))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
+        if ((this.at("let") && !auditLet) || this.at("function") || this.asyncFunctionAhead() || (this.structuralPlan() && this.at("class"))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
         if (auditLet && (this.token(this.index + 1)?.text === "[" || this.token(this.index + 1)?.text === "{"))
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "pattern declarations require a block", keyword.loc);
         const result = this.statement();
@@ -335,7 +339,7 @@ class Parser {
             const token = this.token(index);
             const iteration = token.kind === "word" && (token.text === "for" || token.text === "while" || token.text === "do");
             this.labels.push({ name, iteration });
-            if (this.at("let") || this.at("const") || this.at("function") || this.at("class"))
+            if (this.at("let") || this.at("const") || this.at("function") || this.asyncFunctionAhead() || this.at("class"))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "labelled declarations are unsupported", this.current().loc);
             const body = this.statement();
             this.labels.pop();
@@ -432,13 +436,17 @@ class Parser {
             this.statementTerminator();
             return declaration;
         }
+        const asynchronous = this.asyncFunctionAhead();
+        if (asynchronous) this.take();
         if (this.eat("function")) {
+            if (asynchronous && this.at("*")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generators are unsupported", loc);
             const generator = this.structuralPlan() && this.eat("*");
             const token = this.current();
             const name = this.name();
             if (this.structuralPlan()) this.bindings.set(start, [{ site: { name, start: token.start, end: token.end, loc: token.loc }, init: null, initializer: null }]);
             const fn = this.functionTail(loc, start, "none", generator);
-            return { kind: "function", loc, name, params: fn.params, parameters: fn.parameters, body: fn.body, source: fn.source };
+            const source: FunctionSource = asynchronous ? { ...fn.source, async: true } : fn.source;
+            return { kind: "function", loc, name, params: fn.params, parameters: fn.parameters, body: fn.body, source };
         }
         if (this.eat("if")) {
             this.expect("(");
@@ -1377,7 +1385,10 @@ class Parser {
         if (t.text === "true" || t.text === "false") return { kind: "literal", loc, value: t.text === "true" };
         if (t.text === "null") return { kind: "literal", loc, value: null };
         if (t.text === "this") return { kind: "this", loc };
-        if (t.text === "function") {
+        const asynchronous = this.structuralPlan() && t.text === "async" && this.at("function") && t.loc.line === this.current().loc.line;
+        if (asynchronous) this.take();
+        if (t.text === "function" || asynchronous) {
+            if (asynchronous && this.at("*")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generators are unsupported", loc);
             const generator = this.structuralPlan() && this.eat("*");
             let name: DeclarationSite | undefined;
             if (this.structuralPlan() && !this.at("(")) {
@@ -1385,8 +1396,9 @@ class Parser {
                 name = { name: this.name(), start: token.start, end: token.end, loc: token.loc };
             }
             const fn = this.functionTail(loc, t.start, "none", generator);
+            const source: FunctionSource = asynchronous ? { ...fn.source, async: true } : fn.source;
             return { kind: "function", loc, params: fn.params, parameters: fn.parameters, body: fn.body,
-                source: name === undefined ? fn.source : { ...fn.source, name } };
+                source: name === undefined ? source : { ...source, name } };
         }
         if (t.text === "(") {
             if (this.structuralPlan()) return this.parenthesizedExpression(t, allowIn, allowArrow);

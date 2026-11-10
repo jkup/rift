@@ -1,7 +1,7 @@
 import { registerPromise } from "./builtins/promise.js";
 import { registerRegExp } from "./builtins/regexp.js";
 import { registerReflect } from "./builtins/reflect.js";
-import { registerFunctionConstructor, registerGeneratorFunctionConstructor } from "./builtins/function-constructor.js";
+import { registerFunctionConstructor, registerGeneratorFunctionConstructor, registerAsyncFunctionConstructor } from "./builtins/function-constructor.js";
 import { registerURI } from "./builtins/uri.js";
 import { registerArrayFlat } from "./builtins/array-flat.js";
 import { registerArrayIterators } from "./builtins/array-iterator.js";
@@ -64,6 +64,7 @@ export class Realm {
     readonly iteratorPrototype: GuestObject;
     readonly generatorPrototype: GuestObject;
     readonly generatorFunctionPrototype: GuestObject;
+    readonly asyncFunctionPrototype: GuestObject;
     readonly arrayIteratorPrototype: GuestObject;
     readonly stringIteratorPrototype: GuestObject;
     readonly regexpStringIteratorPrototype: GuestObject;
@@ -104,6 +105,7 @@ export class Realm {
         this.iteratorPrototype = new GuestObject(this.objectPrototype);
         this.generatorPrototype = new GuestObject(this.iteratorPrototype);
         this.generatorFunctionPrototype = new GuestObject(this.functionPrototype);
+        this.asyncFunctionPrototype = new GuestObject(this.functionPrototype);
         this.arrayIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.stringIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.regexpStringIteratorPrototype = new GuestObject(this.iteratorPrototype);
@@ -166,6 +168,7 @@ export class Realm {
         if (profile === "script") {
             registerFunctionConstructor(this);
             registerGeneratorFunctionConstructor(this);
+            registerAsyncFunctionConstructor(this);
             registerReflect(this);
             registerPromise(this);
             registerRegExp(this);
