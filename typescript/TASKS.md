@@ -4218,7 +4218,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-272 — Suspended super method targets
 
-Status: **in progress — isolated successor to TS-271**. Owner: Codex catch-up chat, 2026-11-10. Extend the retained super-key frame to method calls, preserving actual this and reading the method before arguments. Share super context capture and existing call-argument dispatch. Own parser, frame/context integration, historical boundary migration, tests/manifests and docs in build/generator-super-call-draft. Super writes/updates/deletion remain separate. Require both-host/static, getter/order/prototype and Realm tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend the retained super-key frame to method calls, preserving actual this and reading the method before arguments. Share super context capture and existing call-argument dispatch. Own parser, frame/context integration, historical boundary migration, tests/manifests and docs in build/generator-super-call-draft. Super writes/updates/deletion remain separate. Require both-host/static, getter/order/prototype and Realm tests.
 
 ## TS-273 — Suspended super assignment targets
 

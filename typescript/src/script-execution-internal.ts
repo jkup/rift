@@ -2107,6 +2107,13 @@ class ExecutionEngine {
         }
         return result;
     }
+    #superContext(loc: Location): { type: "normal"; homeObject: GuestObject; receiver: Value } | ThrowCompletion {
+        const environment = this.#thisEnvironment(this.#active().lexical);
+        if (!(environment instanceof FunctionActivation) || environment.callable.homeObject === null) throw new Error("invalid super property environment");
+        const receiver = environment.getThisBinding(this.context.realm, loc);
+        if (receiver.type === "throw") return receiver;
+        return { type: "normal", homeObject: environment.callable.homeObject, receiver: receiver.value };
+    }
     #superReference(homeObject: GuestObject, receiver: Value, key: Value, loc: Location): EvaluationReference {
         const parent = homeObject.getPrototypeOf();
         const base: Value = parent === null ? { kind: "null" } : { kind: "object", object: parent };
@@ -2121,13 +2128,11 @@ class ExecutionEngine {
             return { type: "reference", reference: { kind: "script", binding: result.reference } };
         }
         if (expr.kind === "super-member") {
-            const environment = this.#thisEnvironment(this.#active().lexical);
-            if (!(environment instanceof FunctionActivation) || environment.callable.homeObject === null) throw new Error("invalid super property environment");
-            const actualThis = environment.getThisBinding(this.context.realm, expr.loc);
-            if (actualThis.type === "throw") return { type: "abrupt", completion: actualThis };
+            const superContext = this.#superContext(expr.loc);
+            if (superContext.type === "throw") return { type: "abrupt", completion: superContext };
             const key = this.#eval(expr.key, null, receiver);
             if (key.type !== "normal") return { type: "abrupt", completion: key };
-            return { type: "reference", reference: this.#superReference(environment.callable.homeObject, actualThis.value, key.value, expr.loc) };
+            return { type: "reference", reference: this.#superReference(superContext.homeObject, superContext.receiver, key.value, expr.loc) };
         }
         if (expr.kind === "member") {
             const strict = this.#active().strict;
@@ -3348,11 +3353,9 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "super-member") {
-                        const environment = this.#thisEnvironment(this.#active().lexical);
-                        if (!(environment instanceof FunctionActivation) || environment.callable.homeObject === null) throw new Error("invalid suspended super environment");
-                        const receiver = environment.getThisBinding(this.context.realm, expression.loc);
-                        if (receiver.type === "throw") return receiver;
-                        frames.push({ kind: "super-key", expression, homeObject: environment.callable.homeObject, receiver: receiver.value });
+                        const superContext = this.#superContext(expression.loc);
+                        if (superContext.type === "throw") return superContext;
+                        frames.push({ kind: "super-key", expression, call: null, homeObject: superContext.homeObject, receiver: superContext.receiver });
                         expression = expression.key;
                         continue;
                     }
@@ -3398,7 +3401,13 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "call" && isSuspendingGeneratorExpression(expression.callee)) {
-                        if (expression.callee.kind === "member") {
+                        if (expression.callee.kind === "super-member") {
+                            const superContext = this.#superContext(expression.callee.loc);
+                            if (superContext.type === "throw") return superContext;
+                            frames.push({ kind: "super-key", expression: expression.callee, call: expression,
+                                homeObject: superContext.homeObject, receiver: superContext.receiver });
+                            expression = expression.callee.key;
+                        } else if (expression.callee.kind === "member") {
                             frames.push({ kind: "call-base", expression });
                             expression = expression.callee.base;
                         } else {
@@ -3490,6 +3499,7 @@ class ExecutionEngine {
                 const result = getReferenceValue(this.context, reference, frame.expression.loc);
                 if (result.type === "throw") return result;
                 if (result.type !== "normal") throw new Error("invalid super read completion");
+                if (frame.call !== null) frames.push({ kind: "call-target", expression: frame.call, receiver: frame.receiver });
                 value = result.value;
                 continue;
             }

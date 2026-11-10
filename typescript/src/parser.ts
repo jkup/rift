@@ -776,7 +776,7 @@ class Parser {
                         if (element !== null) pending.push({ expression: element.kind === "spread" ? element.expression : element, visited: false });
                     }
                 } else if (node.kind === "call" || node.kind === "new") {
-                    if (node.kind !== "call" || node.callee.kind !== "super-member") pending.push({ expression: node.callee, visited: false });
+                    pending.push({ expression: node.callee, visited: false });
                     for (let i = node.args.length - 1; i >= 0; i--) { const arg = node.args[i]; pending.push({ expression: arg.kind === "spread" ? arg.expression : arg, visited: false }); }
                 } else if (node.kind === "member") pending.push({ expression: node.key, visited: false }, { expression: node.base, visited: false });
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
