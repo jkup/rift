@@ -198,6 +198,7 @@ const entries = [
     ["test/temporal-difference-options.ts", "temporal-difference-options"],
     ["test/temporal-instant-difference.ts", "temporal-instant-difference"],
     ["test/temporal-plain-time-difference.ts", "temporal-plain-time-difference"],
+    ["test/iso-calendar-fields.ts", "iso-calendar-fields"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

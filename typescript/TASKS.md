@@ -4486,7 +4486,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-336 — ISO calendar fields and PlainDate bounds
 
-Status: **in progress — isolated successor to TS-335**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO day-of-year, week/year-of-week and PlainDate range checks as prerequisites for date objects. Own ISO calendar fields helper, focused tests/manifests/docs in build/iso-calendar-fields-draft. No guest date registration yet. Require fixed year-boundary cases, leap centuries, a complete Gregorian cycle and representable range edges on Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO day-of-year, week/year-of-week and PlainDate range checks as prerequisites for date objects. Own ISO calendar fields helper, focused tests/manifests/docs in build/iso-calendar-fields-draft. No guest date registration yet. Require fixed year-boundary cases, leap centuries, a complete Gregorian cycle and representable range edges on Node/native static validation.
 
 ## TS-337 — Temporal PlainDate core
 
