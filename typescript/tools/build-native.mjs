@@ -55,6 +55,7 @@ const entries = [
     ["test/incremental-lexer.ts", "incremental-lexer"],
     ["test/arrow-cover.ts", "arrow-cover"],
     ["test/parser-token-stream.ts", "parser-token-stream"],
+    ["test/regexp-literal-scan.ts", "regexp-literal-scan"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -2185,3 +2185,5 @@ RegExp/String match/search, replacement and split accepted (eb84c261, 807b7fb0, 
 2026-11-10 TS-178 promoted after RegExp protocol acceptance with all 3 changed-file baselines verified. The isolated draft passes 678 Node guests and focused both-host execution with parsed zero-dynamic coverage. Evidence remains under build/arrow-cover-draft/build. Full canonical acceptance remains pending.
 
 2026-11-10 TS-179 promoted after RegExp protocol acceptance with all 3 changed-file baselines verified. The isolated draft passes 679 Node guests and focused both-host execution with parsed zero-dynamic coverage. Evidence remains under build/parser-token-draft/build. Full canonical acceptance remains pending.
+
+2026-11-10 TS-180 promoted after RegExp protocol acceptance with all 2 changed-file baselines verified. The isolated draft passes 680 Node guests and focused both-host execution with parsed zero-dynamic coverage. Evidence remains under build/regexp-literal-scan-draft/build. Full canonical acceptance remains pending.

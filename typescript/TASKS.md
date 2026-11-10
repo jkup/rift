@@ -3811,7 +3811,7 @@ Draft review: 679/679 Node guests pass. Focused incremental parser checks pass b
 
 ## TS-180 — RegExp literal delimiter scanning
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Implement a bounded standalone scanner for regex literal bodies and flag text, preserving raw escapes and UTF-16 ranges. Cover slash inside classes, escaped delimiters, all line terminators, unterminated forms, ASCII flag tokens and explicit unsupported non-ASCII boundaries. No parser admission or mutable global constructor use. Own scanner, focused tests/manifests and notes in build/regexp-literal-scan-draft, based on reviewed TS-179. Parser-selected rescanning, pattern/flag early validation and literal evaluation remain the next slice.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement a bounded standalone scanner for regex literal bodies and flag text, preserving raw escapes and UTF-16 ranges. Cover slash inside classes, escaped delimiters, all line terminators, unterminated forms, ASCII flag tokens and explicit unsupported non-ASCII boundaries. No parser admission or mutable global constructor use. Own scanner, focused tests/manifests and notes in build/regexp-literal-scan-draft, based on reviewed TS-179. Parser-selected rescanning, pattern/flag early validation and literal evaluation remain the next slice.
 
 Draft review: 680/680 Node guests pass. Standalone literal scanning passes focused expected-result tests on both hosts at 77 static statements, zero dynamic. Evidence: build/regexp-literal-scan-draft/build/scan-reviewed.json and scan-node-reviewed.log. No literal syntax admission is claimed.
 
