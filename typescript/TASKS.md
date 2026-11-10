@@ -4882,7 +4882,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-432 — ZonedDateTime until and since
 
-Status: **in progress — isolated successor to TS-431**. Owner: Codex catch-up chat, 2026-11-10. Expose checked zoned differences with ordered conversion/options, default hour balancing, calendar-zone equality, since rounding polarity and defining-Realm Duration allocation. Own src/temporal-date-time-difference-options.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-difference-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose checked zoned differences with ordered conversion/options, default hour balancing, calendar-zone equality, since rounding polarity and defining-Realm Duration allocation. Own src/temporal-date-time-difference-options.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-difference-draft/.
 
 ## TS-433 — Exact zoned relative duration totals
 

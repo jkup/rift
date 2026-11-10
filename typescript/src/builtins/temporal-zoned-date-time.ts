@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { registerTemporalZonedDifference } from "./temporal-zoned-difference.js";
 import { registerTemporalZonedWith } from "./temporal-zoned-with.js";
 import { registerTemporalZonedTransition } from "./temporal-zoned-transition.js";
 import { registerTemporalZonedRound } from "./temporal-zoned-round.js";
@@ -64,5 +65,6 @@ export function registerTemporalZonedDateTime(realm: Realm, namespace: GuestObje
     registerTemporalZonedRound(realm);
     registerTemporalZonedTransition(realm);
     registerTemporalZonedWith(realm);
+    registerTemporalZonedDifference(realm);
     namespace.bootstrapDefine("ZonedDateTime", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
