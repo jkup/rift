@@ -4808,7 +4808,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-414 — ZonedDateTime string formatting and precision options
 
-Status: **in progress — isolated successor to TS-413**. Owner: Codex catch-up chat, 2026-11-10. Implement ZonedDateTime toString/toJSON and non-Intl locale fallback with exact instant rounding, local offset projection, calendar/timezone annotations and ordered display options. Validate all rounding modes, precision, day carry, option getter/error order, invalid receivers and intrinsic Realm errors on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-string-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement ZonedDateTime toString/toJSON and non-Intl locale fallback with exact instant rounding, local offset projection, calendar/timezone annotations and ordered display options. Validate all rounding modes, precision, day carry, option getter/error order, invalid receivers and intrinsic Realm errors on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-string-draft/.
 
 ## TS-415 — Shared Instant string timezone conversion
 

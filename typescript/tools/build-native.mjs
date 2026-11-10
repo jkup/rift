@@ -273,6 +273,7 @@ const entries = [
     ["test/temporal-zoned-date-time-parts.ts", "temporal-zoned-date-time-parts"],
     ["test/temporal-zoned-factories.ts", "temporal-zoned-factories"],
     ["test/date-to-temporal-instant.ts", "date-to-temporal-instant"],
+    ["test/temporal-zoned-date-time-string.ts", "temporal-zoned-date-time-string"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
