@@ -14,3 +14,5 @@ Script execution; host faults still escape with caller restoration.
 Tests cover nested handlers, rethrows, catch closures and eval, delegated errors,
 loop control and tests, foreign Realm bindings and resource-stop bypass. Finally
 and expression-level suspension remain outside this slice.
+TS-221 extends unwinding through finally and retains pending completions across
+cleanup yields; see [generator finally continuations](generator-finally.md).

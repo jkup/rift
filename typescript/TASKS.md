@@ -4000,7 +4000,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-221 — Generator finally continuations
 
-Status: **in progress — isolated successor to TS-220**. Owner: Codex catch-up chat, 2026-11-10. Unwind explicit generator control records through finally, retain pending return/throw/break/continue across cleanup yields, preserve abrupt source provenance, and let new cleanup completions override pending ones. Keep fatal resource/unsupported stops and host faults outside guest cleanup. Own parser admission, private completion/unwind records, focused tests/manifests and notes in build/generator-finally-draft. Iterator-loop cleanup and expression-position yields remain blocked. Require both-host semantics and static gates before integration.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Unwind explicit generator control records through finally, retain pending return/throw/break/continue across cleanup yields, preserve abrupt source provenance, and let new cleanup completions override pending ones. Keep fatal resource/unsupported stops and host faults outside guest cleanup. Own parser admission, private completion/unwind records, focused tests/manifests and notes in build/generator-finally-draft. Iterator-loop cleanup and expression-position yields remain blocked. Require both-host semantics and static gates before integration.
 
 ## TS-222 — Direct yield expressions in bindings and returns
 

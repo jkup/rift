@@ -21,6 +21,8 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+"function* f(){try{yield 1;}catch(e){yield e;}finally{}}var g=f();g.next();g.return();g.next().done;",
+"function* f(){try{yield 1;}finally{}}var g=f();g.next();g.return();g.next().done;",
     "var marker={};function* f(){try{yield 1;yield 2;}catch(e){yield e;}yield 3;}var g=f();g.next().value===1&&g.throw(marker).value===marker&&g.next().value===3&&g.next().done;",
     "var marker={};function* f(){try{yield 1;throw marker;}catch(e){yield e;}yield 3;}var g=f();g.next().value===1&&g.next().value===marker&&g.next().value===3;",
     "function* f(){try{yield 1;}catch(e){yield 2;}yield 3;}Array.from(f()).join(\",\")===\"1,3\";",
@@ -40,7 +42,7 @@ const cases: string[] = [
     "var marker={};function* f(){try{yield 1;}catch(e){throw marker;}}var g=f(),caught;g.next();try{g.throw(2);}catch(e){caught=e;}caught===marker&&g.next().done;"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"catch case "+i);}
-for(const source of ["function* f(){try{yield 1;}finally{}}","function* f(){try{yield 1;}catch(e){yield e;}finally{}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+for(const source of []){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('var caught=false;function* f(){try{yield 1;}catch(e){yield e instanceof TypeError;yield ()=>e;}}var g=f();g.next();function* costly(){try{yield 1;while(true){}}catch(e){caught=true;yield 2;}}var slow=costly();slow.next();',A);
 define(B,"g",own(A,"g"));define(B,"slow",own(A,"slow"));define(B,"errorA",{kind:"object",object:A.createError("TypeError","caught")});

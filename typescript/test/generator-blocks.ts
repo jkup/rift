@@ -21,6 +21,7 @@ function define(realm: Realm, name: string, value: Value): void {
     realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
 }
 const cases: string[] = [
+"function* f(){try{{yield 1;}}finally{}}var g=f();g.next();g.return();g.next().done;",
 "function* f(){while(true){if(true)yield 1;}}var g=f();g.next().value===1&&g.return().done;",
     "function* f(){let x=1;{let x=2;yield ()=>++x;yield x;}yield x;}var g=f(),h=g.next().value;h()===3&&g.next().value===3&&g.next().value===1&&g.next().done;",
     "var n=0;function* f(){if(++n===1){yield 2;yield 3;}else{yield 4;}yield n;}var g=f();g.next().value===2&&g.next().value===3&&g.next().value===1&&n===1;",
@@ -35,7 +36,7 @@ const cases: string[] = [
     "function* f(){{let x=2;yield eval(\"x\");yield eval(\"x+=2\");}return typeof x;}var g=f();g.next().value===2&&g.next().value===4&&g.next().value===\"undefined\";"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"block case "+i);}
-for(const source of ["function* f(){try{{yield 1;}}finally{}}","function* f(){label:{yield 1;}}","function* f(){switch(1){case 1:yield 1;}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+for(const source of ["function* f(){label:{yield 1;}}","function* f(){switch(1){case 1:yield 1;}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('function* f(){{let x=2;yield ()=>++x;yield x;}yield 9;}var g=f();',A);
 define(B,"g",own(A,"g"));
