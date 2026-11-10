@@ -4324,7 +4324,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-297 — BigInt non-Intl locale fallback
 
-Status: **in progress — isolated successor to TS-296**. Owner: Codex catch-up chat, 2026-11-10. Add the own BigInt.prototype.toLocaleString method with strict BigInt branding, reserved-argument non-observation and the explicitly permitted non-Intl decimal fallback. Own BigInt builtin/tests/manifests/docs in build/bigint-locale-draft. Do not approximate locale-sensitive string operations or claim Intl support. Require metadata, override resistance, exact large values, Realm errors, full Node and native static/zero-dynamic validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add the own BigInt.prototype.toLocaleString method with strict BigInt branding, reserved-argument non-observation and the explicitly permitted non-Intl decimal fallback. Own BigInt builtin/tests/manifests/docs in build/bigint-locale-draft. Do not approximate locale-sensitive string operations or claim Intl support. Require metadata, override resistance, exact large values, Realm errors, full Node and native static/zero-dynamic validation.
 
 ## TS-298 — Exact UTC offset grammar backend
 

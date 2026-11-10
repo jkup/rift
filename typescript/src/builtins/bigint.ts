@@ -58,5 +58,9 @@ export function registerBigInt(realm: Realm): void {
         if (radix < 2 || radix > 36) return languageFailure(context.realm, "RangeError", "BigInt radix must be between 2 and 36", loc);
         return normal({ kind: "string", value: bigintToString(value.value, radix) });
     });
+    realm.registerBuiltin(realm.bigintPrototype, "toLocaleString", 0, (receiver, _args, context, loc): ValueCompletion => {
+        const value = thisBigIntValue(receiver, context, loc);
+        return value.type === "throw" ? value : normal({ kind: "string", value: bigintToString(value.value, 10) });
+    });
     realm.defineScriptGlobal("BigInt", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
