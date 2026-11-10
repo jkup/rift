@@ -4548,7 +4548,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-351 — Temporal PlainDateTime core
 
-Status: **in progress — isolated successor to TS-350**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDateTime construction, branded date/time accessors and Realm prototypes. Share calendar accessor values with PlainDate and extend existing date/time/calendar conversion and partial-object screening for the new brand. Own object/builtin/calendar fields, Realm/constructor/namespace wiring, conversion helpers and tests/manifests/docs in build/temporal-plain-date-time-core-draft. Require nine-field conversion order, calendar-before-range/prototype checks, exact bounds, subclasses and cross-Realm behavior on both hosts. Formatting and new DateTime conversion methods remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDateTime construction, branded date/time accessors and Realm prototypes. Share calendar accessor values with PlainDate and extend existing date/time/calendar conversion and partial-object screening for the new brand. Own object/builtin/calendar fields, Realm/constructor/namespace wiring, conversion helpers and tests/manifests/docs in build/temporal-plain-date-time-core-draft. Require nine-field conversion order, calendar-before-range/prototype checks, exact bounds, subclasses and cross-Realm behavior on both hosts. Formatting and new DateTime conversion methods remain separate.
 
 ## TS-352 — Temporal PlainDateTime formatting
 

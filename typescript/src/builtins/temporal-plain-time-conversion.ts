@@ -1,3 +1,4 @@
+import { GuestTemporalPlainDateTime } from "../temporal-plain-date-time-object.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
 import type { TimeFields } from "../temporal-time.js";
@@ -9,7 +10,8 @@ import { languageFailure, normal, UNDEFINED, type GuestObject, type Value, type 
 export function toTimeFields(value: Value, options: Value, context: OperationContext, loc: Location): { type: "normal"; value: TimeFields } | ThrowCompletion {
     let fields: TimeFields;
     if (value.kind === "object") {
-        if (value.object instanceof GuestTemporalPlainTime) fields = value.object.time;
+        if (value.object instanceof GuestTemporalPlainDateTime) fields = value.object.dateTime;
+        else if (value.object instanceof GuestTemporalPlainTime) fields = value.object.time;
         else {
             const read = readTemporalTimeFields(value.object, { hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }, context, loc);
             if (read.type === "throw") return read;

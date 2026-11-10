@@ -1,3 +1,4 @@
+import { registerTemporalPlainDateTime } from "./temporal-plain-date-time.js";
 import { registerTemporalInstantString } from "./temporal-instant-string.js";
 import { registerTemporalInstantArithmetic } from "./temporal-instant-arithmetic.js";
 import { registerTemporalInstantDifference } from "./temporal-instant-difference.js";
@@ -68,6 +69,7 @@ export function registerTemporal(realm: Realm): void {
     namespace.bootstrapDefine("Instant", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     registerTemporalPlainTime(realm, namespace);
     registerTemporalPlainDate(realm, namespace);
+    registerTemporalPlainDateTime(realm, namespace);
     registerTemporalDuration(realm, namespace);
     realm.defineScriptGlobal("Temporal", { value: { kind: "object", object: namespace }, writable: true, enumerable: false, configurable: true });
 }

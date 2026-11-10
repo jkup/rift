@@ -6,8 +6,8 @@ import { registerTemporalPlainDateConversion } from "./temporal-plain-date-conve
 import { registerTemporalPlainDateFormat } from "./temporal-plain-date-format.js";
 import { temporalInteger } from "../temporal-integer.js";
 import { createTemporalPlainDate, temporalPlainDateValue } from "../temporal-plain-date-object.js";
-import { isISOLeapYear, isoDayOfWeek, isoDaysInMonth } from "../iso-calendar.js";
-import { isoDateWithinLimits, isoDayOfYear, isoWeekOfYear } from "../iso-calendar-fields.js";
+import { temporalCalendarField, temporalCalendarFields } from "./temporal-calendar-fields.js";
+import { isoDateWithinLimits } from "../iso-calendar-fields.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type ValueCompletion } from "../runtime.js";
@@ -37,35 +37,11 @@ export function registerTemporalPlainDate(realm: Realm, namespace: GuestObject):
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: prototype }, writable: false, enumerable: false, configurable: false });
     prototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     prototype.bootstrapDefine(wellKnownToStringTag, { value: { kind: "string", value: "Temporal.PlainDate" }, writable: false, enumerable: false, configurable: true });
-    const names = ["calendarId", "era", "eraYear", "year", "month", "monthCode", "day", "dayOfWeek", "dayOfYear", "weekOfYear", "yearOfWeek", "daysInWeek", "daysInMonth", "daysInYear", "monthsInYear", "inLeapYear"];
-    for (const name of names) {
+    for (const name of temporalCalendarFields) {
         const getter = realm.createBuiltin("get " + name, 0, (receiver, _args, context, loc): ValueCompletion => {
             const date = temporalPlainDateValue(receiver, context, loc);
             if (date.type === "throw") return date;
-            const value = date.value;
-            switch (name) {
-                case "calendarId": return normal({ kind: "string", value: "iso8601" });
-                case "era": case "eraYear": return normal(UNDEFINED);
-                case "year": return normal({ kind: "number", value: value.year });
-                case "month": return normal({ kind: "number", value: value.month });
-                case "day": return normal({ kind: "number", value: value.day });
-                case "monthCode": return normal({ kind: "string", value: "M" + String(value.month).padStart(2, "0") });
-                case "daysInWeek": return normal({ kind: "number", value: 7 });
-                case "monthsInYear": return normal({ kind: "number", value: 12 });
-                case "daysInMonth": return normal({ kind: "number", value: isoDaysInMonth(value.year, value.month) });
-                case "daysInYear": return normal({ kind: "number", value: isISOLeapYear(value.year) ? 366 : 365 });
-                case "inLeapYear": return normal({ kind: "boolean", value: isISOLeapYear(value.year) });
-                case "dayOfWeek": case "dayOfYear": {
-                    const day = name === "dayOfWeek" ? isoDayOfWeek(value) : isoDayOfYear(value);
-                    if (day === null) throw new Error("PlainDate field invariant");
-                    return normal({ kind: "number", value: day });
-                }
-                default: {
-                    const week = isoWeekOfYear(value);
-                    if (week === null) throw new Error("PlainDate week invariant");
-                    return normal({ kind: "number", value: name === "weekOfYear" ? week.week : week.year });
-                }
-            }
+            return normal(temporalCalendarField(date.value, name));
         });
         prototype.bootstrapDefine(name, { get: { kind: "object", object: getter }, set: UNDEFINED, enumerable: false, configurable: true });
     }
