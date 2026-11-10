@@ -2,7 +2,7 @@ import type { GuestObject, OperationContext, ErrorName } from "./runtime.js";
 import type { ObjectCompletion } from "./object-conversion.js";
 import type { Location } from "./syntax.js";
 
-export type ConstructorPrototype = "Temporal.PlainDateTime" | "Temporal.PlainDate" | "Temporal.Duration" | "Temporal.PlainTime" | "Temporal.Instant" | "Generator" | "GeneratorFunction" | "AsyncFunction" | "AsyncGenerator" | "AsyncGeneratorFunction" | "RegExp" | "Promise" | "Object" | "Function" | "Array" | "Boolean" | "Number" | "String" | "Map" | "Set" | ErrorName;
+export type ConstructorPrototype = "Temporal.PlainYearMonth" | "Temporal.PlainDateTime" | "Temporal.PlainDate" | "Temporal.Duration" | "Temporal.PlainTime" | "Temporal.Instant" | "Generator" | "GeneratorFunction" | "AsyncFunction" | "AsyncGenerator" | "AsyncGeneratorFunction" | "RegExp" | "Promise" | "Object" | "Function" | "Array" | "Boolean" | "Number" | "String" | "Map" | "Set" | ErrorName;
 
 export function getPrototypeFromConstructor(constructor: GuestObject, intrinsic: ConstructorPrototype,
     context: OperationContext, loc: Location): ObjectCompletion {
@@ -16,6 +16,7 @@ export function getPrototypeFromConstructor(constructor: GuestObject, intrinsic:
     const realm = callable.realm;
     switch (intrinsic) {
         case "Temporal.PlainDateTime": return { type: "normal", value: realm.temporalPlainDateTimePrototype };
+        case "Temporal.PlainYearMonth": return { type: "normal", value: realm.temporalPlainYearMonthPrototype };
         case "Temporal.PlainDate": return { type: "normal", value: realm.temporalPlainDatePrototype };
         case "Temporal.Duration": return { type: "normal", value: realm.temporalDurationPrototype };
         case "Temporal.PlainTime": return { type: "normal", value: realm.temporalPlainTimePrototype };

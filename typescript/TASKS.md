@@ -4614,7 +4614,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-367 — Temporal PlainYearMonth construction and ISO getters
 
-Status: **in progress — isolated successor to TS-366**. Owner: Codex catch-up chat, 2026-11-10. Introduce branded Realm-owned ISO PlainYearMonth construction, reference-day validation, month-level bounds and calendar getters. Wire constructor fallback, calendar-bearing recognition and partial-object rejection. Formatting, parsing and methods remain separate. Require coercion order, bounds, subclass/Realm behavior and native static coverage. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-plain-year-month-core-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Introduce branded Realm-owned ISO PlainYearMonth construction, reference-day validation, month-level bounds and calendar getters. Wire constructor fallback, calendar-bearing recognition and partial-object rejection. Formatting, parsing and methods remain separate. Require coercion order, bounds, subclass/Realm behavior and native static coverage. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/temporal.ts, src/temporal-calendar.ts, src/temporal-partial.ts and tests/manifests/docs in build/temporal-plain-year-month-core-draft/.
 
 ## TS-368 — Temporal PlainYearMonth formatting
 
