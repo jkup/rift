@@ -4804,7 +4804,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-413 — Date to Temporal Instant conversion
 
-Status: **in progress — isolated successor to TS-412**. Owner: Codex catch-up chat, 2026-11-10. Add Date.prototype.toTemporalInstant with slot branding, invalid-date RangeError and exact millisecond-to-nanosecond scaling. Preserve intrinsic Realm allocation, ignored arguments and guest-hook bypass, and validate both time limits and Date mutations on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-to-temporal-instant-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Date.prototype.toTemporalInstant with slot branding, invalid-date RangeError and exact millisecond-to-nanosecond scaling. Preserve intrinsic Realm allocation, ignored arguments and guest-hook bypass, and validate both time limits and Date mutations on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-to-temporal-instant-draft/.
 
 ## TS-414 — ZonedDateTime string formatting and precision options
 
