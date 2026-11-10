@@ -250,6 +250,7 @@ const entries = [
     ["test/temporal-ratio-number.ts", "temporal-ratio-number"],
     ["test/temporal-relative-duration-total.ts", "temporal-relative-duration-total"],
     ["test/temporal-duration-total.ts", "temporal-duration-total"],
+    ["test/temporal-relative-duration-target.ts", "temporal-relative-duration-target"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

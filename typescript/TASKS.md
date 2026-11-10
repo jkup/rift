@@ -4706,7 +4706,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-389 — Shared plain relative duration targets
 
-Status: **in progress — isolated successor to TS-388**. Owner: Codex catch-up chat, 2026-11-10. Extract the exact midnight/calendar target construction used by Duration.total for reuse in Duration.round. Preserve minimum-date midnight records until the consuming operation applies its equality/range rules. Require direct signed carries, leap dates and full endpoints plus total regressions. Own src/temporal-relative-duration-total.ts and tests/manifests/docs in build/temporal-relative-duration-target-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract the exact midnight/calendar target construction used by Duration.total for reuse in Duration.round. Preserve minimum-date midnight records until the consuming operation applies its equality/range rules. Require direct signed carries, leap dates and full endpoints plus total regressions. Own src/temporal-relative-duration-total.ts and tests/manifests/docs in build/temporal-relative-duration-target-draft/.
 
 ## TS-390 — Ordered Temporal Duration rounding options
 
