@@ -1188,11 +1188,13 @@ type GeneratorForOf = { kind: "iterator"; awaiting?: boolean; frame: ScriptFrame
     target: Expr | null; lexical: boolean; scopeId: number; depth: number; labels?: readonly string[] | null };
 type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; enumerator: ForInEnumerator;
     target: Expr | null; lexical: boolean; scopeId: number; depth: number; labels?: readonly string[] | null };
+type GeneratorForSource = { kind: "for-source"; frame: ScriptFrameSnapshot; outer: ScriptFrameSnapshot; statement: ForEachStmt;
+    lexical: boolean; scopeId: number; depth: number; labels: readonly string[] | null };
 type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number;
     selection: { statement: SwitchStmt; discriminant: Value; nextClause: number; fallback: number } | null };
 type AsyncIteratorCloseFrame = { kind: "async-close"; frame: ScriptFrameSnapshot; loc: Location; depth: number; pending: GeneratorAbrupt; abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null };
-type GeneratorFrame = AsyncIteratorCloseFrame | GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
+type GeneratorFrame = GeneratorForSource | AsyncIteratorCloseFrame | GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
 type ExecutionContinuation = { asyncGenerator?: true; sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; asynchronous: AsyncDelegate | null; loc: Location; depth: number } | null };
 type ContinuationResult = ValueCompletion | { type: "async-delegate-yield"; value: Value } | { type: "yield"; result: Value } | { type: "await"; value: Value; loc: Location; depth: number };
 type ExpressionContinuationResult = ContinuationResult | { type: "suspended-delegate" };
@@ -2461,6 +2463,61 @@ class ExecutionEngine {
     #continueTarget(target: string | undefined, labels: readonly string[] | null): boolean {
         return target === undefined || (labels !== null && labels.includes(target));
     }
+    #forEachBody(stmt: ForEachStmt, iterable: Value, saved: ScriptFrameSnapshot, scopeId: number, lexical: boolean,
+        labels: readonly string[] | null, sequences: GeneratorFrame[] | null): ScriptStatementCompletion {
+        let iterator: IteratorRecord | null = null;
+        let enumerator: ForInEnumerator | null = null;
+        if (stmt.kind === "for-in") {
+            if (iterable.kind === "null" || iterable.kind === "undefined")
+                return { type: "normal", payload: { kind: "value", value: UNDEFINED } };
+            const boxed = toObject(iterable, this.context, stmt.loc);
+            if (boxed.type === "throw") return boxed;
+            enumerator = new ForInEnumerator(boxed.value);
+        } else {
+            const acquired = stmt.awaited ? getAsyncIterator(iterable, this.context, stmt.loc) : getIterator(iterable, this.context, stmt.loc);
+            if (acquired.type === "throw") return acquired;
+            iterator = acquired.value;
+        }
+        const target: Expr | null = stmt.head.kind === "lexical" || stmt.head.kind === "pattern" || stmt.head.kind === "assignment-pattern" ? null : stmt.head.kind === "var"
+            ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name } : stmt.head;
+        if (sequences !== null) {
+            const depth = sequences[sequences.length - 1].depth + 1;
+            if (iterator !== null) sequences.push({ kind: "iterator", frame: saved, statement: stmt, iterator, target, lexical, scopeId, depth, labels });
+            else if (enumerator !== null) sequences.push({ kind: "enumerator", frame: saved, statement: stmt, enumerator, target, lexical, scopeId, depth, labels });
+            else throw new Error("missing generator loop iterator");
+            return { type: "normal", payload: { kind: "empty" } };
+        }
+        if (stmt.awaited) throw new Error("async loop requires continuation");
+        let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
+        while (true) {
+            if (enumerator === null && iterator === null) throw new Error("missing loop iterator");
+            const next = iterator !== null ? iteratorStepValue(iterator, this.context, stmt.loc) : enumerator!.next(this.context, stmt.loc);
+            if (next.type === "throw") return next;
+            if (next.done) return { type: "normal", payload: value };
+            let result: ScriptStatementCompletion;
+            try {
+                const initialized = this.#initializeForEach(stmt, saved, scopeId, lexical, target, next.value);
+                if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; result = abrupt; }
+                else result = this.#statement(stmt.body);
+            } finally { this.#frame = saved; }
+            if (result.type === "throw") {
+                const abrupt: ThrowCompletion = result;
+                return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
+            }
+            if (result.type === "break" || result.type === "return" ||
+                (result.type === "continue" && !this.#continueTarget(result.target, labels))) {
+                if (iterator !== null) {
+                    const closed = iteratorCloseNormally(iterator, this.context, stmt.loc);
+                    if (closed.type === "throw") { const abrupt: ThrowCompletion = closed; return abrupt; }
+                }
+                if (result.type === "break" && result.target === undefined)
+                    return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
+                return updateScriptEmpty(result, value);
+            }
+            if (result.type === "yield" || result.type === "delegate" || result.type === "generator-expression") throw new Error("yield escaped a supported generator sequence");
+            if (result.payload.kind !== "empty") value = result.payload;
+        }
+    }
     #scriptStatement(stmt: Stmt, labels: readonly string[] | null, sequences: GeneratorFrame[] | null): ScriptStatementCompletion {
         switch (stmt.kind) {
             case "class-declaration": {
@@ -2629,67 +2686,23 @@ class ExecutionEngine {
                 const saved = this.#active();
                 const lexical = lexicalLoopBindings(stmt) !== null;
                 const scopeId = lexical ? ExecutableScript.scopeOfNode(saved.record, stmt, executionKey) : saved.scopeId;
-                let iterable: ValueCompletion;
+                let sourceFrame = saved;
                 if (lexical) {
                     const created = ExecutableScript.activateLoop(saved.record, stmt, saved.lexical, null, this.context, executionKey);
                     if (created.type === "throw") return created;
-                    this.#frame = { ...saved, scopeId, lexical: created.environment };
-                    try { iterable = this.#value(stmt.iterable); }
-                    finally { this.#frame = saved; }
-                } else iterable = this.#value(stmt.iterable);
-                if (iterable.type === "throw") { const abrupt: ThrowCompletion = iterable; return abrupt; }
-                let iterator: IteratorRecord | null = null;
-                let enumerator: ForInEnumerator | null = null;
-                if (stmt.kind === "for-in") {
-                    if (iterable.value.kind === "null" || iterable.value.kind === "undefined")
-                        return { type: "normal", payload: { kind: "value", value: UNDEFINED } };
-                    const boxed = toObject(iterable.value, this.context, stmt.loc);
-                    if (boxed.type === "throw") return boxed;
-                    enumerator = new ForInEnumerator(boxed.value);
-                } else {
-                    const acquired = stmt.awaited ? getAsyncIterator(iterable.value, this.context, stmt.loc) : getIterator(iterable.value, this.context, stmt.loc);
-                    if (acquired.type === "throw") return acquired;
-                    iterator = acquired.value;
+                    sourceFrame = { ...saved, scopeId, lexical: created.environment };
                 }
-                const target: Expr | null = stmt.head.kind === "lexical" || stmt.head.kind === "pattern" || stmt.head.kind === "assignment-pattern" ? null : stmt.head.kind === "var"
-                    ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name } : stmt.head;
-                if (sequences !== null) {
-                    const depth = sequences[sequences.length - 1].depth + 1;
-                    if (iterator !== null) sequences.push({ kind: "iterator", frame: saved, statement: stmt, iterator, target, lexical, scopeId, depth, labels });
-                    else if (enumerator !== null) sequences.push({ kind: "enumerator", frame: saved, statement: stmt, enumerator, target, lexical, scopeId, depth, labels });
-                    else throw new Error("missing generator loop iterator");
+                if (sequences !== null && isSuspendingGeneratorExpression(stmt.iterable)) {
+                    sequences.push({ kind: "for-source", frame: sourceFrame, outer: saved, statement: stmt,
+                        lexical, scopeId, depth: sequences[sequences.length - 1].depth + 1, labels });
                     return { type: "normal", payload: { kind: "empty" } };
                 }
-                if (stmt.awaited) throw new Error("async loop requires continuation");
-                let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
-                while (true) {
-                    if (enumerator === null && iterator === null) throw new Error("missing loop iterator");
-                    const next = iterator !== null ? iteratorStepValue(iterator, this.context, stmt.loc) : enumerator!.next(this.context, stmt.loc);
-                    if (next.type === "throw") return next;
-                    if (next.done) return { type: "normal", payload: value };
-                    let result: ScriptStatementCompletion;
-                    try {
-                        const initialized = this.#initializeForEach(stmt, saved, scopeId, lexical, target, next.value);
-                        if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; result = abrupt; }
-                        else result = this.#statement(stmt.body);
-                    } finally { this.#frame = saved; }
-                    if (result.type === "throw") {
-                        const abrupt: ThrowCompletion = result;
-                        return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
-                    }
-                    if (result.type === "break" || result.type === "return" ||
-                        (result.type === "continue" && !this.#continueTarget(result.target, labels))) {
-                        if (iterator !== null) {
-                            const closed = iteratorCloseNormally(iterator, this.context, stmt.loc);
-                            if (closed.type === "throw") { const abrupt: ThrowCompletion = closed; return abrupt; }
-                        }
-                        if (result.type === "break" && result.target === undefined)
-                            return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
-                        return updateScriptEmpty(result, value);
-                    }
-                    if (result.type === "yield" || result.type === "delegate" || result.type === "generator-expression") throw new Error("yield escaped a supported generator sequence");
-                    if (result.payload.kind !== "empty") value = result.payload;
-                }
+                let iterable: ValueCompletion;
+                this.#frame = sourceFrame;
+                try { iterable = this.#value(stmt.iterable); }
+                finally { this.#frame = saved; }
+                if (iterable.type === "throw") { const abrupt: ThrowCompletion = iterable; return abrupt; }
+                return this.#forEachBody(stmt, iterable.value, saved, scopeId, lexical, labels, sequences);
             }
             case "for": {
                 if (sequences !== null && stmt.initializer !== null && stmt.initializer.kind === "var" &&
@@ -3673,6 +3686,18 @@ class ExecutionEngine {
             if (result.type !== "normal") throw new Error("invalid resumed switch setup");
             return null;
         }
+        if (receiver.kind === "for-source") {
+            if (frame.kind !== "for-source") throw new Error("iterable without source frame");
+            continuation.sequences.pop();
+            this.#frame = frame.outer;
+            const result = this.#forEachBody(frame.statement, value, frame.outer, frame.scopeId, frame.lexical, frame.labels, continuation.sequences);
+            if (result.type === "throw") {
+                this.#capture(result);
+                return this.#unwindContinuation(continuation, result, callerDepth);
+            }
+            if (result.type !== "normal") throw new Error("invalid resumed iteration setup");
+            return null;
+        }
         if (receiver.kind === "for-initializer") {
             continuation.sequences.push({ kind: "for", frame: this.#active(), statement: receiver.statement,
                 outer: null, first: true, phase: "prepare", depth: frame.depth + 1, labels: receiver.labels });
@@ -4058,6 +4083,13 @@ class ExecutionEngine {
                     }
                     if (!truthy(test.value)) { sequences.pop(); continue; }
                     sequences.push({ kind: "sequence", frame: sequence.frame, body: [sequence.statement.body], nextStatement: 0, depth: sequence.depth });
+                    continue;
+                }
+                if (sequence.kind === "for-source") {
+                    mode = "next";
+                    value = UNDEFINED;
+                    const result = this.#startSuspendingExpression(continuation, sequence.statement.iterable, { kind: "for-source" }, callerDepth);
+                    if (result !== null) return result;
                     continue;
                 }
                 if (sequence.kind === "loop") {

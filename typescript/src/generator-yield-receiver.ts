@@ -7,6 +7,7 @@ export type GeneratorYieldReceiver = { kind: "return" }
     | { kind: "async-return" }
     | { kind: "loop-test" }
     | { kind: "for-update" }
+    | { kind: "for-source" }
     | { kind: "for-initializer"; statement: ForStmt; labels: readonly string[] | null }
     | { kind: "switch-test"; statement: SwitchStmt }
     | { kind: "switch-selector" }

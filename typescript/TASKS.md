@@ -4186,7 +4186,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-264 — Suspended for-in/of source expressions
 
-Status: **in progress — isolated successor to TS-263**. Owner: Codex catch-up chat, 2026-11-10. Retain the temporary head environment while a for-in/of source suspends, restore the outer environment before iterator acquisition, then reuse ordinary iteration. Cover lexical TDZ, assignment/var heads, enumeration, async iteration and abrupt cleanup. Own parser, source frame/receiver, shared loop setup, historical boundaries, tests/manifests and docs in build/generator-for-source-draft. Require both-host/static, scope/order/close tests and pinned engine review.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain the temporary head environment while a for-in/of source suspends, restore the outer environment before iterator acquisition, then reuse ordinary iteration. Cover lexical TDZ, assignment/var heads, enumeration, async iteration and abrupt cleanup. Own parser, source frame/receiver, shared loop setup, historical boundaries, tests/manifests and docs in build/generator-for-source-draft. Require both-host/static, scope/order/close tests and pinned engine review.
 
 ## TS-265 — Suspended assignment-expression values
 

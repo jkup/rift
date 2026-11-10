@@ -166,8 +166,9 @@ const cases:{source:string;before:string;after:string}[]=[
     "after": "c7"
   }
 ];
+cases.push({source:'var p=Promise.resolve([7]);async function f(){for await(let x of await p){}}f().then(()=>out="done")',before:'',after:'done'});
 for(const test of cases){const realm=fresh(),session=createScriptSession();check(run("var out='';"+test.source,realm,session).type==="normal","setup "+test.source);string("out",test.before,realm,session);const drained=drainScriptJobs(session);check(!drained.fatal&&drained.failures.length===0,"jobs "+test.source);string("out",test.after,realm,session);}
-for(const text of ['for await(let x of []){}','function f(){for await(let x of []){}}','async function f(){for await(let x in []){}}','async function f(){for await(;;){}}','async function f(){for await(var x=1 of []){}}','async function f(){for await(let x of await p){}}'])check(prepareBoundedScript({id:"boundary",text},fresh()).kind==="blocked","for-await boundary "+text);
+for(const text of ['for await(let x of []){}','function f(){for await(let x of []){}}','async function f(){for await(let x in []){}}','async function f(){for await(;;){}}','async function f(){for await(var x=1 of []){}}'])check(prepareBoundedScript({id:"boundary",text},fresh()).kind==="blocked","for-await boundary "+text);
 {
  const owner=fresh(),caller=fresh(),creator=createScriptSession();
  check(run('var out="",c=Promise.withResolvers();var o={[Symbol.asyncIterator](){return this},next(){return {value:7}},return(){out+="c";return c.promise}};async function f(){try{for await(let x of o){throw x}}catch(e){out+=e}}var p=f();',owner,creator).type==="normal","pending cleanup setup");

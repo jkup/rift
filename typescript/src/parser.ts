@@ -823,7 +823,10 @@ class Parser {
                     if (statement.test !== null) this.admitGeneratorExpression(statement.test, supported);
                     if (statement.update !== null) this.admitGeneratorExpression(statement.update, supported);
                     pending.push(statement.body);
-                } else if (statement.kind === "for-of" || statement.kind === "for-in") pending.push(statement.body);
+                } else if (statement.kind === "for-of" || statement.kind === "for-in") {
+                    this.admitGeneratorExpression(statement.iterable, supported);
+                    pending.push(statement.body);
+                }
                 else if (statement.kind === "try-finally") pending.push(statement.body, statement.finalizer);
                 else if (statement.kind === "try-catch") pending.push(statement.block, statement.handler);
                 else if (statement.kind === "if") {
