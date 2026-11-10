@@ -218,3 +218,13 @@ then check the private field on that local. Both the instanceof and private bran
 checks remain. The reduced computed/bound probes and initial failures are in
 build/generator-start-draft/build/brand-probe; the corrected probe and generator
 semantic suite pass static-only compilation with zero dynamic coverage.
+
+## BigInt snapshot boundary (TS-303)
+
+The pinned compiler rejects host JSON.stringify of record unions containing a
+bigint field (SC1090), even when a particular input contains only Numbers.
+BigInt literal AST nodes therefore store validated normalized text; evaluation
+charges its length before constructing the exact numeric value. The committed
+bigint-literal-storage test checks native snapshots and resource behavior.
+The original failure and two-statement before/after reduction remain in
+build/bigint-literal-storage-draft/build. This does not change guest JSON semantics.

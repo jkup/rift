@@ -4351,3 +4351,19 @@ Status: **in progress — isolated successor to TS-301**. Owner: Codex catch-up 
 ## TS-303 — Serializable BigInt literal syntax nodes
 
 Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. The native assignment-audit driver rejects JSON.stringify of AST unions containing host bigint even for Number-only inputs (SC1090). Reduce the compiler boundary; retain validated normalized BigInt text in a distinct syntax node and construct the guest numeric value under runtime budget. Own syntax/parser/evaluator/metadata/declaration traversal, focused tests/manifests/docs in build/bigint-literal-storage-draft based on canonical TS-293. Preserve snapshot shape for existing literals and exact BigInt semantics. Propagate this representation change into isolated successors only after their readers finish. Require full Node, native snapshot-driver/static validation and a fresh canonical acceptance matrix; retain initial failure evidence.
+
+## TS-304 — Numeric update-target certification
+
+Status: **in progress — isolated successor to TS-302 with TS-303 storage**. Owner: Codex catch-up chat, 2026-11-10. Certify prefix/postfix increment/decrement of token-backed Number/BigInt literals as syntax errors, sharing the existing numeric target evidence collector. Preserve ASI, invalid suffix chains, complete-source vetoes and ordinary parser results. Own parser/audit types, focused and migrated tests/tooling/manifests/docs in build/numeric-update-audit-draft. Require exact spans, eval/Function catch behavior, historical U12/U14 migration, both-host/static and full Node validation.
+
+## TS-305 — Numeric RegExp backreferences
+
+Status: **in progress — isolated successor to TS-304**. Owner: Codex catch-up chat, 2026-11-10. Parse valid numeric backreferences using a budgeted capture-count scan and execute them against captured UTF-16 spans, preserving ignoreCase, unmatched/forward references, backtracking and repeat clearing. Own RegExp syntax/matcher, focused and historical boundary tests/manifests/docs in build/regexp-backreference-draft. Keep out-of-range legacy numeric escapes, character-class numeric escapes, named groups/references, lookaround and Unicode modes explicitly unsupported. Require fixed semantic/capture/indices cases, resource checks, full Node and native static/zero-dynamic plus RegExp regressions.
+
+## TS-306 — Temporal Instant string options
+
+Status: **in progress — isolated successor to TS-305**. Owner: Codex catch-up chat, 2026-11-10. Implement Instant.toString with exact precision and rounding, ordered options, UTC and direct fixed-minute offsets, including local dates beyond Instant endpoints. Own shared Temporal option/format helpers, builtin, capability codecs, focused tests/manifests/docs in build/temporal-instant-string-draft. Named zones and other time-zone identifier grammars remain explicit unsupported operations. Require Node/native semantic cases, prior Temporal regressions, codec checks and full Node.
+
+## TS-307 — Native manifest integrity
+
+Status: **in progress — validation repair**. Owner: Codex catch-up chat, 2026-11-10. Review found multiple new test paths nested inside the bigint-values pair, silently omitted by tuple destructuring. Repair manifest entries, fail before builds on malformed/duplicate tuples and compare driver scheduling with declared native names. Preserve the running manifest and its actual result; complete omitted/misnamed entries separately with explicit composite provenance or rerun. Propagate corrected baselines to isolated successors. No milestone acceptance until every declared gate and native guest is verified.

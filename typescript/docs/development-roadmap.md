@@ -740,3 +740,9 @@ Review follow-up TS-299: BigInt literal assignment targets currently escape the
 existing Number-literal SyntaxError certification in eval. A bounded extension
 is under isolated validation; exponentiation, logical assignments and update
 target certification remain separate scope. Evidence: build/bigint-invalid-target-review.json.
+
+BigInt integration review found a native host-JSON limitation in syntax snapshots
+and two test diagnostics. TS-303 repairs it with text-backed BigInt literal nodes
+and unchanged semantic assertions. The initial 290-entry matrix was cancelled
+after 117 completed entries and preserved as partial evidence; fresh 291-entry
+validation is required before publication. No partial matrix is counted as passing.
