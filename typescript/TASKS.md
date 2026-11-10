@@ -4549,3 +4549,19 @@ Status: **in progress — isolated successor to TS-349**. Owner: Codex catch-up 
 ## TS-351 — Temporal PlainDateTime core
 
 Status: **in progress — isolated successor to TS-350**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDateTime construction, branded date/time accessors and Realm prototypes. Share calendar accessor values with PlainDate and extend existing date/time/calendar conversion and partial-object screening for the new brand. Own object/builtin/calendar fields, Realm/constructor/namespace wiring, conversion helpers and tests/manifests/docs in build/temporal-plain-date-time-core-draft. Require nine-field conversion order, calendar-before-range/prototype checks, exact bounds, subclasses and cross-Realm behavior on both hosts. Formatting and new DateTime conversion methods remain separate.
+
+## TS-352 — Temporal PlainDateTime formatting
+
+Status: **in progress — isolated successor to TS-351**. Owner: Codex catch-up chat, 2026-11-10. Add ordered string precision/calendar options, exact time rounding with calendar-day carry, and intrinsic JSON/non-Intl locale serialization. Share calendar option parsing and ISO formatting with existing date/time paths. Own formatting builtin, shared options/ISO helpers, registration, tests/manifests/docs in build/temporal-plain-date-time-format-draft. Require signed years, all rounding modes, midnight/year carries, strict endpoint failures and observable option order on both hosts.
+
+## TS-353 — Temporal PlainDateTime parsing
+
+Status: **in progress — isolated successor to TS-352**. Owner: Codex catch-up chat, 2026-11-10. Share ISO date/optional-time parsing between PlainDate and PlainDateTime, retaining exact fractions, annotation rules, ignored numeric offsets, leap-second normalization and rejection of Z. Keep range validation separate for observable option ordering in later conversion. Own parser, PlainDate wrapper, tests/manifests/docs in build/temporal-plain-date-time-parse-draft. Require grammar boundaries, signed years, syntax/range separation and date-parser regressions on both hosts.
+
+## TS-354 — Ordered Temporal date-time fields
+
+Status: **in progress — isolated successor to TS-353**. Owner: Codex catch-up chat, 2026-11-10. Prepare combined date/time fields in lexical order and resolve them with shared date and time regulation. Extract per-date-field conversion and option-free time regulation without altering existing PlainDate/PlainTime behavior. Own combined/date/time field helpers, tests/manifests/docs in build/temporal-date-time-fields-draft. Require getter/coercion order, deferred required-field checks, defaults, overflow/error precedence and endpoint validation on both hosts.
+
+## TS-355 — Temporal PlainDateTime conversion
+
+Status: **in progress — isolated successor to TS-354**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDateTime.from/compare/equals using branded conversion, shared ISO parsing and ordered property-bag fields. Preserve option phases, intrinsic allocation, range checks and string work budgets. Own conversion builtin/registration, tests/manifests/docs in build/temporal-plain-date-time-conversion-draft. Require clone isolation, PlainDate midnight conversion, getter order, error precedence and cross-Realm behavior on both hosts.
