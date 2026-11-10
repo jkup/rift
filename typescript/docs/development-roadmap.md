@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted temporal-regexp milestone passes 799/799 guests on each
-host, 295/295 tooling checks, and all 306 native static gates.
+The accepted plain-time-duration milestone passes 813/813 guests on each
+host, 295/295 tooling checks, and all 320 native static gates.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -738,3 +738,5 @@ Functions/spread accepted (TS-204–209): 701/701 guests on each host without sk
 Resolved BigInt review: TS-299, TS-302 and TS-304 now certify numeric assignment, compound-assignment and update targets. TS-303 stores BigInt syntax as exact numeric text, preserving native JSON snapshots. TS-307 guards native manifest entries, and TS-312 narrows the idle dispatch history projection without changing its wire output. The bigint-foundation acceptance retains the initial failures, corrected manifest supplement and complete 291-gate evidence.
 
 The temporal-regexp milestone passes all 306 native gates directly. Its 225-record corpus comparison preserves 190 completions; nine incomplete Temporal fixtures advance diagnostics. The Instant fixture additionally expects Number epochNanoseconds and false for malformed equals input, contrary to the implemented specification. Preserve those original fixtures and use standards-correct expected-result tests for new Temporal behavior.
+
+2026-11-10 PlainTime/Duration milestone accepted (TS-314–327): 813/813 guests on each host without skips; all 320 native static-only/zero-dynamic gates pass in 3832978ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-GNoOVK/native-dyLrNQ matches all 225 normalized records, preserving all 190 prior completions; 1 records change diagnostics/output. Original fixture bytes remain unchanged. PlainTime parsing, formatting, rounding, conversion and field replacement, plus Duration core/conversion/parsing/serialization are accepted. Arithmetic and option-aware Duration strings remain isolated successors. Evidence: build/plain-time-duration-*; initial sandbox probe failure retained separately, followed by all ten passing with Zig access.
