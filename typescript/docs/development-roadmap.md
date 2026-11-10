@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted temporal-arithmetic-date milestone passes 826/826 guests on each
-host, 295/295 tooling checks, and all 333 native static gates.
+The accepted temporal-date-time milestone passes 845/845 guests on each
+host, 295/295 tooling checks, and all 352 native static gates.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -742,3 +742,5 @@ The temporal-regexp milestone passes all 306 native gates directly. Its 225-reco
 2026-11-10 PlainTime/Duration milestone accepted (TS-314–327): 813/813 guests on each host without skips; all 320 native static-only/zero-dynamic gates pass in 3832978ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-GNoOVK/native-dyLrNQ matches all 225 normalized records, preserving all 190 prior completions; 1 records change diagnostics/output. Original fixture bytes remain unchanged. PlainTime parsing, formatting, rounding, conversion and field replacement, plus Duration core/conversion/parsing/serialization are accepted. Arithmetic and option-aware Duration strings remain isolated successors. Evidence: build/plain-time-duration-*; initial sandbox probe failure retained separately, followed by all ten passing with Zig access.
 
 2026-11-10 Temporal arithmetic/date milestone accepted (TS-328–340): 826/826 guests on each host without skips; all 333 native static-only/zero-dynamic gates pass in 4153817ms plus 22524ms for an unchanged string-split linker/cache retry; initial failure evidence is retained. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-iUdnDj/native-tePdc4 matches all 225 normalized records, preserving all 190 prior completions; 2 records change diagnostics/output. Original fixture bytes remain unchanged. PlainTime/Instant arithmetic and differences, Duration arithmetic/string rounding, ISO calendar fields and PlainDate construction/formatting/parsing are accepted. PlainDate conversion methods, calendar arithmetic and remaining Temporal APIs are still pending. Evidence: build/temporal-arithmetic-date-*.
+
+2026-11-10 PlainDate/PlainDateTime milestone accepted (TS-341–359): 845/845 guests on each host without skips; all 352 native static-only/zero-dynamic gates pass in 4500997ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-EKRksj/native-mCj886 matches all 225 normalized records and preserves 190 prior completions; 190 complete, 1 records change diagnostics/output. Original fixture bytes remain unchanged. PlainDate conversion, replacement, arithmetic and exact calendar differences are accepted, along with ISO PlainDateTime construction, formatting, parsing, conversion, part/field replacement, rounding and arithmetic. DateTime differences and remaining Temporal APIs are follow-ups. Evidence: build/temporal-date-time-*.
