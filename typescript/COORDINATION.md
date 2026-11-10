@@ -2218,3 +2218,7 @@ Incremental lexing, arrow cover parsing, Script token access, RegExp literal sca
 2026-11-10 TS-187 focused String.raw checks pass Node/native with 11394 static statements and zero dynamic; full guest/inventory checks continue. Claimed TS-188 padding, with String.raw baselines retained for any propagation correction. Canonical array factories/repetition remain frozen under their full native gate.
 
 2026-11-10 TS-187 passes 686 Node guests plus native raw/bootstrap/formatting checks. TS-188 passes 687 Node guests plus native padding/bootstrap/formatting checks. Claimed TS-189 bounded weak-storage/clock prerequisite review to choose the next larger parity work from evidence. Native main validation remains frozen.
+
+2026-11-10 TS-189 review retained exact weak-storage dynamic coverage and WeakRef SC2020, with pinned runtime source confirming the ScrDyn handle boundary. Date/clock and host random basic probes pass static coverage. Claimed TS-190 Realm-local Math.random; this closes the next method-inventory gap after padding without sharing mutable guest generator state across Realms.
+
+2026-11-10 TS-190 focused native random passes 11509 static statements and zero dynamic, including independent C vectors and budget tests through the supported Script execution API. Claimed TS-191 Date host-boundary review while the canonical 191-entry matrix finishes; no guest Date implementation is assumed from the earlier clock smoke test.

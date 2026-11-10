@@ -3856,3 +3856,11 @@ Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-
 ## TS-189 — Native weak-storage and clock prerequisites
 
 Status: **done — weak storage blocked; clock/seed prerequisites identified**. Owner: Codex catch-up chat, 2026-11-10. Before choosing WeakMap/WeakSet/WeakRef or Date work, probe the pinned compiler's typed weak-storage and clock primitives in isolation. Distinguish static compilation/basic behavior from actual weak retention or time-zone guarantees; inspect authoritative compiler implementation where available. Own build/native-capability-review probes and a concise docs/native-host-prerequisites.md decision record; no guest globals, compiler upgrades or simulated weak collections. Verify any suspected original-fixture disagreements against the pinned specification before recording them. Date.UTC.length is 7 in ECMAScript 2025 and Node; the fixture is correct.
+
+## TS-190 — Realm-local Math.random
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add Math.random with lazy per-Realm state, a reviewed 32-bit xoshiro128** transition, 53-bit floating output and a host-backed seed boundary. Verify reference vectors independently, zero-seed handling, metadata, ignored arguments/receiver, borrowed-method Realm selection, budget-before-state effects and deterministic Realm isolation. Own random-state module, Realm/Math integration, tests/manifests and design notes in build/math-random-draft, based on reviewed TS-188. No crypto guarantees, guest seeding API, weak-storage fallback or clock globals.
+
+## TS-191 — Date host boundary review
+
+Status: **done — UTC prerequisites pass; named local zones need a shared boundary**. Owner: Codex catch-up chat, 2026-11-10. Expand the clock smoke probe to invalid values, TimeClip endpoints, expanded-year ISO forms, UTC field extraction and construction, parsing offsets, mutation and local-time transitions. Compare fixed expected values on both hosts and inspect pinned runtime source for discrepancies before choosing a guest Date boundary. Own build/date-host-review and docs/date-host-boundary.md only; no guest Date registration or compiler upgrade. Explicitly separate portable UTC behavior from platform/time-zone assumptions.
