@@ -2162,3 +2162,5 @@ RegExp matcher, construction and execution accepted (e108d370, 15b9a602, 3e6040a
 2026-11-10 TS-174 promoted after RegExp core acceptance with all 7 changed-file baselines verified. The isolated draft passes 674 Node guests and focused both-host execution with parsed zero-dynamic coverage. Evidence remains under build/regexp-match-search-draft/build. Full canonical acceptance remains pending.
 
 2026-11-10 TS-175 promoted after RegExp core acceptance with all 7 changed-file baselines verified. The isolated draft passes 675 Node guests and focused both-host execution with parsed zero-dynamic coverage. Evidence remains under build/regexp-replacement-draft/build. Full canonical acceptance remains pending.
+
+2026-11-10 TS-176 promoted after RegExp core acceptance with all 4 changed-file baselines verified. The isolated draft passes 676 Node guests and focused both-host execution with parsed zero-dynamic coverage. Evidence remains under build/regexp-split-draft/build. Full canonical acceptance remains pending.
