@@ -4034,7 +4034,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-229 — Destructuring after a suspended initializer
 
-Status: **in progress — isolated successor to TS-228**. Owner: Codex catch-up chat, 2026-11-10. Support direct yield/yield-star initializers in array/object declarations and destructuring assignment statements. Retain the pattern and lexical initialization environment, then reuse the shared pattern executor on normal resumption. Cover TDZ, defaults, iterator close, computed keys/targets, abrupt discard and foreign-session ownership. Own parser admission, receiver/execution additions, focused tests/manifests and docs in build/generator-pattern-draft. Yields inside patterns/defaults and formal parameter patterns remain separate. Require both-host/static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Support direct yield/yield-star initializers in array/object declarations and destructuring assignment statements. Retain the pattern and lexical initialization environment, then reuse the shared pattern executor on normal resumption. Cover TDZ, defaults, iterator close, computed keys/targets, abrupt discard and foreign-session ownership. Own parser admission, receiver/execution additions, focused tests/manifests and docs in build/generator-pattern-draft. Yields inside patterns/defaults and formal parameter patterns remain separate. Require both-host/static validation.
 
 ## TS-230 — Formal binding patterns
 

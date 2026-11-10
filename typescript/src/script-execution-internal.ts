@@ -2444,6 +2444,8 @@ class ExecutionEngine {
                 const expression = stmt.expression;
                 if (sequences !== null) {
                     if (expression.kind === "yield") return this.#generatorYield(expression, null);
+                    if (expression.kind === "destructure" && expression.value.kind === "yield")
+                        return this.#generatorYield(expression.value, { kind: "pattern", pattern: expression.pattern, environment: null });
                     if ((expression.kind === "assign" || expression.kind === "compound") && expression.value.kind === "yield") {
                         const reference = this.#reference(expression.target, null, this.#active().thisValue);
                         if (reference.type === "abrupt") {
@@ -2461,6 +2463,8 @@ class ExecutionEngine {
                 return scriptExpressionCompletion(this.#value(expression));
             }
             case "pattern-declaration": {
+                if (stmt.init.kind === "yield" && sequences !== null)
+                    return this.#generatorYield(stmt.init, { kind: "pattern", pattern: stmt.pattern, environment: stmt.declarationKind === "var" ? null : this.#active().lexical });
                 const input = this.#value(stmt.init);
                 if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
                 const initialized = this.#initializePattern(stmt.pattern, null, input.value, stmt.declarationKind === "var" ? null : this.#active().lexical, null);
@@ -2974,6 +2978,14 @@ class ExecutionEngine {
                 diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: receiver.loc } };
             this.#capture(abrupt);
             return this.#unwindGenerator(continuation, abrupt, callerDepth);
+        }
+        if (receiver.kind === "pattern") {
+            const initialized = this.#initializePattern(receiver.pattern, null, value, receiver.environment, null);
+            if (initialized.type === "throw") {
+                this.#capture(initialized);
+                return this.#unwindGenerator(continuation, initialized, callerDepth);
+            }
+            return null;
         }
         if (receiver.kind === "assignment" || receiver.kind === "compound") {
             if (receiver.kind === "compound") {
