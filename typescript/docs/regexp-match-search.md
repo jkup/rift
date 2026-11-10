@@ -1,0 +1,11 @@
+# Match and search protocols
+
+String.prototype.match/search first reject nullish receivers, then look up the corresponding symbol method on a non-nullish pattern. Custom methods receive the original receiver and pattern, before receiver coercion. The fallback converts the receiver and uses intrinsic RegExpCreate, which initializes from pattern coercion without the public constructor's identity/cloning shortcuts or the mutable global RegExp binding. The newly created object's current symbol method is then invoked.
+
+RegExp Symbol.match converts input, reads/coerces flags, and delegates non-global matches to RegExpExec. Global matching resets lastIndex, collects full-match strings into a fresh method-Realm array, and advances empty matches. Generic u/v flags advance over surrogate pairs, even though Unicode pattern construction remains unsupported. Custom exec methods and result getters remain observable; a nonprogressing implementation exhausts the operation budget.
+
+Symbol.search saves lastIndex without coercing it, resets it only when it is not positive zero, then executes. It restores the original value by SameValue before reading the result's index. This preserves negative zero, NaN and object identity. An abrupt exec does not run restoration; this is deliberately not a finally block. All writes use throwing Set semantics.
+
+Builtin registration uses the same explicit four-argument wrappers as other methods. Passing the named match/search helpers directly caused one dynamic adapter in scriptc despite a successful static-only build and matching execution. The initial report is retained as `build/regexp-match-search-draft/build/match-search-initial-dynamic.json`; the wrappers remove that adapter.
+
+Semantics follow [ECMAScript 2025 Symbol.match](https://262.ecma-international.org/16.0/#sec-regexp.prototype-%symbol.match%), [Symbol.search](https://262.ecma-international.org/16.0/#sec-regexp.prototype-%symbol.search%) and their String dispatch algorithms. Review against [engine262 at 18cdeb03](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/intrinsics/RegExpPrototype.mts) identified its older match advancement checking u alone; this implementation also checks v as the published specification requires. Replace, split, matchAll and literals remain separate tasks.

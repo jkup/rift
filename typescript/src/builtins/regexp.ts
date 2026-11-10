@@ -1,5 +1,6 @@
 import type { Realm } from "../realm.js";
 import { registerRegExpExecution } from "./regexp-execution.js";
+import { registerRegExpMatchSearch } from "./regexp-match-search.js";
 import { GuestObject, normal, languageFailure, unsupportedFailure, truthy, UNDEFINED, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import { GuestRegExp, isRegExp } from "../regexp-object.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
@@ -41,6 +42,14 @@ function constructRegExp(target: GuestObject, args: Value[], called: boolean, co
     }
     const prototype = getPrototypeFromConstructor(target, "RegExp", context, loc);
     if (prototype.type === "throw") return prototype;
+    return initializeRegExp(prototype.value, source, flags, context, loc);
+}
+
+export function regExpCreate(source: Value, flags: Value, context: OperationContext, loc: Location): ValueCompletion {
+    return initializeRegExp(context.realm.regexpPrototype, source, flags, context, loc);
+}
+
+function initializeRegExp(prototype: GuestObject, source: Value, flags: Value, context: OperationContext, loc: Location): ValueCompletion {
     const allocation = context.tick(loc);
     if (allocation.type === "throw") return allocation;
     const text: StringCompletion = source.kind === "undefined" ? { type: "normal", value: "" } : regExpString(source, context, loc);
@@ -63,7 +72,7 @@ function constructRegExp(target: GuestObject, args: Value[], called: boolean, co
         : unsupportedFailure("runtime.regexp-pattern", "SyntaxError", parsed.message, loc);
     const compiled = compileRegExpPattern(parsed.pattern, { ignoreCase: seen.includes("i"), multiline: seen.includes("m"), dotAll: seen.includes("s") }, context, loc);
     if (compiled.kind === "abrupt") return compiled.completion;
-    return normal({ kind: "object", object: new GuestRegExp(prototype.value, text.value, options.value, compiled.program) });
+    return normal({ kind: "object", object: new GuestRegExp(prototype, text.value, options.value, compiled.program) });
 }
 
 function escapedSource(source: string, context: OperationContext, loc: Location): StringCompletion {
@@ -136,5 +145,6 @@ export function registerRegExp(realm: Realm): void {
         return options.type === "throw" ? options : normal({ kind: "string", value: "/" + text.value + "/" + options.value });
     });
     registerRegExpExecution(realm);
+    registerRegExpMatchSearch(realm);
     realm.defineScriptGlobal("RegExp", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
