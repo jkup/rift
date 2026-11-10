@@ -752,6 +752,7 @@ executeDriver("bigint-locale", { stdout: "bigint locale passed\n" });
 executeDriver("utc-offset", { stdout: "utc offset passed\n" });
 executeDriver("bigint-assignment-audit", { stdout: "bigint assignment audit passed\n" });
 executeDriver("temporal-instant-parse", { stdout: "temporal instant parse passed\n" });
+executeDriver("temporal-instant-conversion", { stdout: "temporal instant conversion passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

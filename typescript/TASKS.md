@@ -4342,7 +4342,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-301 — Temporal Instant conversion and comparison
 
-Status: **in progress — isolated successor to TS-300**. Owner: Codex catch-up chat, 2026-11-10. Add Instant.from, Instant.compare and prototype.equals with branded fast paths, string-hint primitive conversion, exact parsing, resource charging and ordered abrupt propagation. Own new conversion/builtin module, registration, tests/manifests/docs in build/temporal-instant-conversion-draft. Preserve receiver-first branding, base allocation/defining Realm and clone identity; no ZonedDateTime implementation or implicit numeric/string coercion. Require both-host/static, full Node and relevant native regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Instant.from, Instant.compare and prototype.equals with branded fast paths, string-hint primitive conversion, exact parsing, resource charging and ordered abrupt propagation. Own new conversion/builtin module, registration, tests/manifests/docs in build/temporal-instant-conversion-draft. Preserve receiver-first branding, base allocation/defining Realm and clone identity; no ZonedDateTime implementation or implicit numeric/string coercion. Require both-host/static, full Node and relevant native regressions.
 
 ## TS-302 — Complete numeric compound-assignment certification
 

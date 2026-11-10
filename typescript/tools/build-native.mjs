@@ -168,6 +168,7 @@ const entries = [
     ["test/utc-offset.ts", "utc-offset"],
     ["test/bigint-assignment-audit.ts", "bigint-assignment-audit"],
     ["test/temporal-instant-parse.ts", "temporal-instant-parse"],
+    ["test/temporal-instant-conversion.ts", "temporal-instant-conversion"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

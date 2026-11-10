@@ -1,4 +1,5 @@
 import { registerTemporalInstantMethods } from "./temporal-instant-methods.js";
+import { registerTemporalInstantConversion } from "./temporal-instant-conversion.js";
 import type { Realm } from "../realm.js";
 import { createTemporalInstant, temporalInstantValue } from "../temporal-instant-object.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
@@ -54,6 +55,7 @@ export function registerTemporal(realm: Realm): void {
     realm.registerBuiltin(prototype, "valueOf", 0, (_receiver, _args, context, loc): ValueCompletion =>
         languageFailure(context.realm, "TypeError", "Temporal.Instant cannot be converted to a primitive number", loc));
     registerTemporalInstantMethods(realm);
+    registerTemporalInstantConversion(realm, constructor);
     namespace.bootstrapDefine("Instant", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     realm.defineScriptGlobal("Temporal", { value: { kind: "object", object: namespace }, writable: true, enumerable: false, configurable: true });
 }
