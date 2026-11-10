@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted super-expressions milestone passes 767/767 guests on each
-host, 293/293 tooling checks, and all 274 native static gates after two recorded Zig-cache recovery builds.
+The accepted expression-contexts milestone passes 778/778 guests on each
+host, 293/293 tooling checks, and all 285 native static gates without retries.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -30,9 +30,10 @@ are accepted. Suspended property reads, call/constructor arguments, arrays, temp
 for-loop conditions are accepted. For-loop declaration/expression initializers, iteration sources, nested
 assignments, compound/property targets and var declaration lists are accepted.
 Property updates, computed super reads/calls/writes/updates/deletion and async
-super constructor arguments are accepted. Isolated successors add nested
-destructuring values, nullish/logical operators, optional-chain suspension and
-shared class evaluation. Combined validation continues. Unicode regex modes, lookaround,
+super constructor arguments are accepted. Nested destructuring values,
+nullish/logical operators, optional chains and class heritage/computed keys
+now preserve suspended evaluation contexts. Tagged templates preserve call references and cache frozen arrays per Realm/site.
+An exact BigInt conversion backend passes; guest numeric integration remains next. Unicode regex modes, lookaround,
 backreferences and named groups remain unsupported.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
@@ -734,3 +735,8 @@ Iteration/objects accepted (TS-199–203): 696/696 guests on each host without s
 ### TS-204–209 checkpoint
 
 Functions/spread accepted (TS-204–209): 701/701 guests on each host without skips, 208/208 native static-only/zero-dynamic gates in 1658613ms without retries, and 293/293 tooling checks in 217585.0237ms. The initial tooling run was 292/293: the preserved E37 named-function input now exposes its strict duplicate-parameter audit candidate; its exact expectation migration, complete both-host audit and full tooling rerun pass. Runner32/32 in 663.8071ms, ten probes and typechecking pass. Node ze6MwK/native OtfzoY match all 225 normalized corpus records and preserve all 179 completions (114 reported successes, 65 unchecked). Evidence: build/functions-spread-native-results.json, corpus-comparison.json with the same prefix, and functions-spread-* logs including initial failures. Binary/reference extraction, pending operands and generator-start execution remain reviewed isolated successors. Generator bodies containing yield remain unsupported.
+
+Review follow-up TS-299: BigInt literal assignment targets currently escape the
+existing Number-literal SyntaxError certification in eval. A bounded extension
+is under isolated validation; exponentiation, logical assignments and update
+target certification remain separate scope. Evidence: build/bigint-invalid-target-review.json.

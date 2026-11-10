@@ -311,13 +311,15 @@ for (const [driver, directory, count, variants] of [
       diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'invalid update target', loc: {line: 1, column: 1}},
       rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.assignment-target'},
     };
-    const exponent = rows.find(row => row.id === 'G4');
-    assert.equal(exponent.text, '42**=7;');
-    exponent.expected = {
-      kind: 'blocked', reason: 'grammar-or-resource',
-      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'invalid assignment target', loc: {line: 1, column: 1}},
-      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.assignment-target'},
-    };
+    for (const [id, text] of [['G4', '42**=7;'], ['G5', '42&&=7;']]) {
+      const assignment = rows.find(row => row.id === id);
+      assert.equal(assignment.text, text);
+      assignment.expected = {
+        kind: 'blocked', reason: 'grammar-or-resource',
+        diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'invalid assignment target', loc: {line: 1, column: 1}},
+        rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.assignment-target'},
+      };
+    }
     const sequence = rows.find(row => row.id === 'G15');
     assert.equal(sequence.text, '(42,43)=7;');
     sequence.expected = {
