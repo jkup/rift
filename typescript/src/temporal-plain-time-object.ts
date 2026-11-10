@@ -1,10 +1,6 @@
 import type { Location } from "./syntax.js";
+import type { TimeFields } from "./temporal-time.js";
 import { GuestObject, languageFailure, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext } from "./runtime.js";
-
-export type TimeFields = {
-    readonly hour: number; readonly minute: number; readonly second: number;
-    readonly millisecond: number; readonly microsecond: number; readonly nanosecond: number;
-};
 
 export class GuestTemporalPlainTime extends GuestObject {
     constructor(readonly time: TimeFields, proto: GuestObject | null) { super(proto); }

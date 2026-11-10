@@ -1,5 +1,5 @@
 import { formatUTCOffsetMinutes } from "./utc-offset.js";
-import type { TimeFields } from "./temporal-plain-time-object.js";
+import type { TimeFields } from "./temporal-time.js";
 import { isoDateTimeFromEpochNanoseconds, isValidEpochNanoseconds, utcDateTimeFromEpochNanoseconds, type ISODateTime } from "./iso-calendar.js";
 
 export type TemporalTimePrecision = "auto" | "minute" | number;

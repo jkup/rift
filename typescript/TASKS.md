@@ -4396,7 +4396,7 @@ Status: **done — accepted in temporal-regexp milestone**. Owner: Codex catch-u
 
 ## TS-314 — Temporal time record arithmetic
 
-Status: **in progress — isolated successor to TS-313**. Owner: Codex catch-up chat, 2026-11-10. Extract pure six-field time records and exact within-day nanosecond conversion from ISO date-time helpers, sharing validation and record types with PlainTime/formatting. Own temporal-time module, ISO/calendar/object/builtin/type imports, focused tests/manifests/docs in build/temporal-time-draft. No new guest methods in this prerequisite. Require fixed bounds, every minute round trips, fractions and unchanged calendar/Instant/PlainTime behavior on Node/native with full Node validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract pure six-field time records and exact within-day nanosecond conversion from ISO date-time helpers, sharing validation and record types with PlainTime/formatting. Own temporal-time module, ISO/calendar/object/builtin/type imports, focused tests/manifests/docs in build/temporal-time-draft. No new guest methods in this prerequisite. Require fixed bounds, every minute round trips, fractions and unchanged calendar/Instant/PlainTime behavior on Node/native with full Node validation.
 
 ## TS-315 — Temporal PlainTime string options
 

@@ -1,9 +1,11 @@
+import { NANOSECONDS_PER_DAY, isValidTime, timeFromNanoseconds, timeToNanoseconds } from "./temporal-time.js";
+export { NANOSECONDS_PER_DAY } from "./temporal-time.js";
+
 export type ISODate = { year: number; month: number; day: number };
 export type ISODateTime = {
     date: ISODate; hour: number; minute: number; second: number;
     millisecond: number; microsecond: number; nanosecond: number;
 };
-export const NANOSECONDS_PER_DAY = 86400000000000n;
 export const MAX_EPOCH_NANOSECONDS = 8640000000000000000000n;
 const monthStarts = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 
@@ -50,13 +52,8 @@ export function isoDayOfWeek(date: ISODate): number | null {
     return day === null ? null : ((day + 3) % 7 + 7) % 7 + 1;
 }
 
-function inRange(value: number, limit: number): boolean {
-    return Number.isInteger(value) && value >= 0 && value < limit;
-}
-
 export function isValidISOTime(time: ISODateTime): boolean {
-    return inRange(time.hour, 24) && inRange(time.minute, 60) && inRange(time.second, 60) &&
-        inRange(time.millisecond, 1000) && inRange(time.microsecond, 1000) && inRange(time.nanosecond, 1000);
+    return isValidTime(time);
 }
 
 export function isValidEpochNanoseconds(value: bigint): boolean {
@@ -74,19 +71,17 @@ export function isoDateTimeFromEpochNanoseconds(value: bigint): ISODateTime | nu
     if (within < 0n) { day--; within += NANOSECONDS_PER_DAY; }
     const date = epochDayToISODate(Number(day));
     if (date === null) throw new Error("bounded epoch day invariant");
-    const seconds = Number(within / 1000000000n), fraction = Number(within % 1000000000n);
-    return {
-        date, hour: Math.floor(seconds / 3600), minute: Math.floor(seconds / 60) % 60, second: seconds % 60,
-        millisecond: Math.floor(fraction / 1000000), microsecond: Math.floor(fraction / 1000) % 1000, nanosecond: fraction % 1000,
-    };
+    const time = timeFromNanoseconds(within);
+    if (time === null) throw new Error("within-day nanoseconds invariant");
+    return { date, hour: time.hour, minute: time.minute, second: time.second,
+        millisecond: time.millisecond, microsecond: time.microsecond, nanosecond: time.nanosecond };
 }
 
 export function epochNanosecondsFromUTC(time: ISODateTime): bigint | null {
-    if (!isValidISOTime(time)) return null;
+    const within = timeToNanoseconds(time);
+    if (within === null) return null;
     const day = isoDateToEpochDay(time.date);
     if (day === null) return null;
-    const seconds = time.hour * 3600 + time.minute * 60 + time.second;
-    const fraction = time.millisecond * 1000000 + time.microsecond * 1000 + time.nanosecond;
-    const value = BigInt(day) * NANOSECONDS_PER_DAY + BigInt(seconds) * 1000000000n + BigInt(fraction);
+    const value = BigInt(day) * NANOSECONDS_PER_DAY + within;
     return isValidEpochNanoseconds(value) ? value : null;
 }

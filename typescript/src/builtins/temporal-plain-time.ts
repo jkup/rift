@@ -1,7 +1,8 @@
 import type { Realm } from "../realm.js";
 import { formatTemporalTime } from "../temporal-time-format.js";
 import type { Location } from "../syntax.js";
-import { createTemporalPlainTime, temporalPlainTimeValue, type TimeFields } from "../temporal-plain-time-object.js";
+import { createTemporalPlainTime, temporalPlainTimeValue } from "../temporal-plain-time-object.js";
+import type { TimeFields } from "../temporal-time.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toNumber, type NumberCompletion } from "../conversion.js";
