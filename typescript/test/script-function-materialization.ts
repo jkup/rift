@@ -217,7 +217,7 @@ console.log("N04 PASS");
 for (const text of ["let x=function named(){};", "function f(a=1){}", "function f(...a){}", "let x=()=>1;", "let x={m(){}};", "let x={[k]:1};", "function f(a,a){}"]) {
     for (const prefix of ["", "if(false){"]) {
         const p = prepareStrictScript({ id: "blocked", text: '"use strict";' + prefix + text + (prefix === "" ? "" : "}") }, A);
-        check(p.kind === (text === "let x={m(){}};" || text === "let x=()=>1;" || text === "function f(...a){}" || text === "function f(a=1){}" ? "ready" : "blocked"), "N05 current boundary " + text);
+        check(p.kind === (text === "let x={[k]:1};" || text === "let x={m(){}};" || text === "let x=()=>1;" || text === "function f(...a){}" || text === "function f(a=1){}" ? "ready" : "blocked"), "N05 current boundary " + text);
         if (p.kind === "ready" && (text === "function f(...a){}" || text === "function f(a=1){}")) {
             const f = object(p.record.materializeFunction(p.record.inspect().functions[0].scope, global, null, new Budget(A).context));
             const length = f.getOwnProperty("length");

@@ -861,6 +861,13 @@ for(const source of [
     '"use strict";let o={__proto__:null};','"use strict";++x;','"use strict";1,2;'
 ]) {
     const r=fresh(),s=createScriptSession();const prepared=prepareStrictScript({id:"negative",text:source},r);
+    if (source === '"use strict";let o={[x]:1};') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "computed key preparation is inert");
+        run('"use strict";var x="key";',r,s);
+        check(run(source,r,s).type === "normal", "computed key executes");
+        scalar(run('"use strict";o.key;',r,s),1);
+        continue;
+    }
     if (source === '"use strict";class C{}') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "class preparation is inert");
         check(run(source,r,s).type === "normal", "original class source executes");

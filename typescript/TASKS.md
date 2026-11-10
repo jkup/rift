@@ -3909,7 +3909,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-201 — Computed object literal property names
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Extend object literal data/method/accessor keys with ordered expression evaluation and ToPropertyKey, symbol-aware inferred names, metadata/declaration traversal and existing cover-grammar disambiguation. Preserve literal __proto__ rejection and assignment-pattern behavior; computed __proto__ is an ordinary own property. Own syntax/parser/evaluator traversal, focused tests/manifests and notes in build/object-keys-draft based on TS-200. No object spread, shorthand or generator grammar expansion.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extend object literal data/method/accessor keys with ordered expression evaluation and ToPropertyKey, symbol-aware inferred names, metadata/declaration traversal and existing cover-grammar disambiguation. Preserve literal __proto__ rejection and assignment-pattern behavior; computed __proto__ is an ordinary own property. Own syntax/parser/evaluator traversal, focused tests/manifests and notes in build/object-keys-draft based on TS-200. No object spread, shorthand or generator grammar expansion.
 
 ## TS-202 — Object literal shorthand
 

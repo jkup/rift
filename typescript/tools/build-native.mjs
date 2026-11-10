@@ -69,6 +69,7 @@ const entries = [
     ["test/string-ranges.ts", "string-ranges"],
     ["test/string-at.ts", "string-at"],
     ["test/regexp-match-all.ts", "regexp-match-all"],
+    ["test/object-computed-keys.ts", "object-computed-keys"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

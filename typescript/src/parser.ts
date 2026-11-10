@@ -990,16 +990,14 @@ class Parser {
                 let key: Expr;
                 let name = "";
                 let shorthand = false;
+                if ((this.at("get") || this.at("set")) && ![":", "(", "=", ",", "}"].includes(this.token(this.index + 1).text))
+                    kind = this.take().text === "get" ? "get" : "set";
+                const computed = this.at("[");
                 if (this.eat("[")) {
                     key = this.expression(1);
                     this.expect("]");
-                    cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, message: "expected literal property name", loc: first.loc };
                 } else {
-                    let token = this.take();
-                    if (token.kind === "word" && (token.text === "get" || token.text === "set") && !this.at(":") && !this.at("(") && !this.at("=") && !this.at(",") && !this.at("}")) {
-                        kind = token.text;
-                        token = this.take();
-                    }
+                    const token = this.take();
                     if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number")
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", token.loc);
                     name = token.kind === "number" ? String(Number(token.text.replaceAll("_", ""))) : token.text;
@@ -1014,7 +1012,7 @@ class Parser {
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate method parameter", first.loc);
                     const value: Expr = { kind: "function", loc: first.loc, params: fn.params, parameters: fn.parameters, body: fn.body,
                         source: { source: fn.source.source, start: fn.source.start, end: fn.source.end, method: true, rest: fn.source.rest, bodyLoc: fn.source.bodyLoc } };
-                    properties.push({ kind, key: name, value });
+                    properties.push({ kind, key: computed ? key : name, value });
                     cover.entries.push({ kind: "method", key, value });
                 } else {
                     if (kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
@@ -1028,7 +1026,7 @@ class Parser {
                         value = { kind: "identifier", loc: first.loc, name };
                         if (this.eat("=")) value = { kind: "assign", loc: first.loc, target: value, value: this.expression(1) };
                     }
-                    properties.push({ kind: "data", key: name, value });
+                    properties.push({ kind: "data", key: computed ? key : name, value });
                     cover.entries.push({ kind: "data", key, value });
                 }
             }

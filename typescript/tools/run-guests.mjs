@@ -357,7 +357,7 @@ lineCase("object-numeric-rounding", "let o={9007199254740993:7,9007199254740992:
 lineCase("object-numeric-format", "let o={1000000000000000000000:7,0.0000001:11}; console.log(o['1e+21'],o['1e-7'],o['0.0000001']);", {stdout:"7 11 undefined\n"});
 lineCase("object-numeric-zero", "let o={0.0:7,'0.0':11}; console.log(o[0],o[-0],o['0.0']);", {stdout:"7 7 11\n"});
 lineCase("object-negative-key", "let o={-1:2};", {status:2,errorContains:"parse SyntaxError: expected literal property name"});
-lineCase("object-computed-key", "console.log('no'); let o={[1]:2};", {status:2,errorContains:"parse SyntaxError: expected literal property name"});
+lineCase("object-computed-key", "console.log('no'); let o={[1]:2};", {stdout:"no\n"});
 lineCase("object-exponent-key", "let o={1e2:7};console.log(o[100]);", {stdout:"7\n"});
 lineCase("array-predicate-basic", "function positive(x){return x>0;} console.log([1,2,3].every(positive),[1,-2,3].every(positive),[-1,-2].some(positive),[-1,2].some(positive),[].every(positive),[].some(positive));", {stdout:"true false false true true false\n"});
 lineCase("array-predicate-short-circuit", "let a=[]; console.log([1,2,3].every(function(x){a.push(x);return x<2;}),a.join()); a=[]; console.log([1,2,3].some(function(x){a.push(x);return x===2;}),a.join());", {stdout:"false 1,2\ntrue 1,2\n"});
@@ -654,6 +654,7 @@ executeDriver("json-stringify", { stdout: "JSON stringify passed\n" });
 executeDriver("string-ranges", { stdout: "String ranges passed\n" });
 executeDriver("string-at", { stdout: "String at passed\n" });
 executeDriver("regexp-match-all", { stdout: "RegExp matchAll passed\n" });
+executeDriver("object-computed-keys", { stdout: "Object computed keys passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

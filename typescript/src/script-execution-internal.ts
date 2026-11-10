@@ -1603,7 +1603,17 @@ class ExecutionEngine {
             case "object": {
                 const object = this.context.realm.createObject();
                 for (const property of expr.properties) {
-                    const name = property.kind === "data" ? property.key : property.kind + " " + property.key;
+                    let key: PropertyKey;
+                    if (typeof property.key === "string") key = property.key;
+                    else {
+                        const evaluated = this.#eval(property.key, env, receiver);
+                        if (evaluated.type !== "normal") return evaluated;
+                        const converted = toPropertyKey(evaluated.value, this.context, property.key.loc);
+                        if (converted.type === "throw") return converted;
+                        key = converted.value;
+                    }
+                    const propertyName = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
+                    const name = property.kind === "data" ? propertyName : property.kind + " " + propertyName;
                     const value = this.#eval(property.value, env, receiver, false, name);
                     if (value.type !== "normal") return value;
                     if (this.#script && property.value.kind === "function" && property.value.source?.method === true)
@@ -1611,7 +1621,7 @@ class ExecutionEngine {
                     const descriptor = property.kind === "get" ? { get: value.value, enumerable: true, configurable: true }
                         : property.kind === "set" ? { set: value.value, enumerable: true, configurable: true }
                         : { value: value.value, writable: true, enumerable: true, configurable: true };
-                    const defined = object.defineOwnProperty(property.key, descriptor, this.context, expr.loc);
+                    const defined = object.defineOwnProperty(key, descriptor, this.context, expr.loc);
                     if (defined.type === "throw") return defined;
                     if (!defined.value) throw new Error("fresh object property definition failed");
                 }

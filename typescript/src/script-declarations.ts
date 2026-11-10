@@ -557,7 +557,13 @@ class DeclarationCollector {
                     if (item !== null) this.expression(item.kind === "spread" ? item.expression : item, scope, variableScope);
                 }
                 break;
-            case "object": for (let i = node.properties.length - 1; i >= 0; i--) this.expression(node.properties[i].value, scope, variableScope); break;
+            case "object":
+                for (let i = node.properties.length - 1; i >= 0; i--) {
+                    const property = node.properties[i];
+                    this.expression(property.value, scope, variableScope);
+                    if (typeof property.key !== "string") this.expression(property.key, scope, variableScope);
+                }
+                break;
             case "template": for (let i = node.expressions.length - 1; i >= 0; i--) this.expression(node.expressions[i], scope, variableScope); break;
             case "update": this.expression(node.target, scope, variableScope); break;
             case "unary":
