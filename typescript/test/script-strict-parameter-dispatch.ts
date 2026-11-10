@@ -92,7 +92,10 @@ function controls(): void {
         const index = reverse ? 2 - i : i, realm = new Realm((_line: string) => { throw new Error("ready print"); }, "script");
         const unit = { id: "same", text: sameTexts[index] }, result = prepareBoundedScript(unit, realm);
         if (index === 0) check(result.kind === "blocked" && result.rejection.kind === "syntax-error" && result.rejection.ruleCode === "duplicate-strict-parameter", "same id strict");
-        if (index === 1) check(result.kind === "blocked" && result.rejection.kind === "unsupported-syntax" && result.rejection.capabilityCode === "parse.duplicate-parameter", "same id sloppy");
+        if (index === 1) {
+            if (result.kind !== "ready") throw new Error("sloppy duplicate parameters must be admitted");
+            check(evaluateScript(createScriptSession(), result.record).completion.type === "normal", "same id sloppy function executes");
+        }
         if (index === 2) {
             if (result.kind !== "ready") throw new Error("ready control");
             unit.text = "throw 19;"; unit.id = "changed";
