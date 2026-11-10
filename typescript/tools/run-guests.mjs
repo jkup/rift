@@ -646,6 +646,7 @@ executeDriver("array-of", { stdout: "Array.of passed\n" });
 executeDriver("array-from", { stdout: "Array.from passed\n" });
 executeDriver("string-repeat", { stdout: "String repeat passed\n" });
 executeDriver("array-range", { stdout: "Array range mutation passed\n" });
+executeDriver("string-raw", { stdout: "String raw passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

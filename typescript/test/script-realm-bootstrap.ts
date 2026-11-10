@@ -93,7 +93,7 @@ function inventory(a: Realm): void {
                 if (name === "Number") keys(f, numberKeys);
                 else if (name === "Array") keys(f, ["name", "length", "prototype", "isArray", "of", "from"]);
                 else if (name === "Object") keys(f, objectConstructorKeys());
-                else if (name === "String") keys(f, ["name", "length", "prototype", "fromCharCode", "fromCodePoint"]);
+                else if (name === "String") keys(f, ["name", "length", "prototype", "fromCharCode", "fromCodePoint", "raw"]);
                 else keys(f, ["name", "length", "prototype"]);
                 if(name==="Array"){method(a,f,"isArray","isArray",1);method(a,f,"of","of",0);method(a,f,"from","from",1);}
                 if (name === "Object") {

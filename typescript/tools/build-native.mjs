@@ -61,6 +61,7 @@ const entries = [
     ["test/array-from.ts", "array-from"],
     ["test/string-repeat.ts", "string-repeat"],
     ["test/array-range.ts", "array-range"],
+    ["test/string-raw.ts", "string-raw"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

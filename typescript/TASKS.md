@@ -3847,7 +3847,7 @@ Incremental lexing, arrow cover parsing, Script token access, RegExp literal sca
 
 ## TS-187 — String.raw construction
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add generic String.raw with template/raw boxing, captured literal length, ordered literal/substitution coercion, omitted substitutions and explicit output/iteration budgets. Preserve abrupt evaluation order, inherited/raw indexed properties and UTF-16 values. Own string-construction registration, constructor inventories, tests/manifests and notes in build/string-raw-draft, based on reviewed TS-186. Tagged-template parsing remains a separate grammar slice.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add generic String.raw with template/raw boxing, captured literal length, ordered literal/substitution coercion, omitted substitutions and explicit output/iteration budgets. Preserve abrupt evaluation order, inherited/raw indexed properties and UTF-16 values. Own string-construction registration, constructor inventories, tests/manifests and notes in build/string-raw-draft, based on reviewed TS-186. Tagged-template parsing remains a separate grammar slice.
 
 ## TS-188 — String padding
 
