@@ -74,6 +74,31 @@ Require focused Node/native execution and zero-dynamic coverage, then the full
 canonical guest/tooling/runner/probe/corpus gates before publication. The original
 225 fixtures do not establish field conformance; keep expected-result tests.
 
+## Initializer context follow-up
+
+TS-436 reviewed the accepted empty-field execution path before enabling expressions.
+`classFieldFrame` currently records the receiver in the frame but leaves its lexical
+environment at the class definition environment. Script `this` and `new.target`
+evaluation walk `#thisEnvironment(frame.lexical)`; they do not read that frame's
+receiver. Evaluating an initializer directly in this frame would therefore find an
+outer function's receiver/new.target, or global this. Arrow closures would retain
+the same wrong lexical environment. This is harmless for empty fields, which only
+define undefined, but blocks adding initializer evaluation in place.
+
+`#superContext` additionally requires a FunctionActivation with a callable home
+object. An initializer needs its own lexical this/new.target/home-object boundary,
+with instance fields using the prototype and static fields using the constructor.
+Planner scopes and retained validation must associate initializer expressions and
+nested closures with that boundary. Do not enable parsing before these paths agree.
+
+Seven independent Node reference checks cover instance/arrow this and new.target,
+static/instance super receivers, all computed keys before initializers, inferred
+anonymous names, base fields before parameter defaults, replacement objects from
+parent constructors, and derived this remaining bound after an initializer throws.
+Evidence: `build/check-class-initializer-context.mjs` and
+`build/class-initializer-context-oracle.json`. These are reference checks for the next
+implementation, not passing Rift initializer tests.
+
 ## Sources
 
 - Existing docs/class-design.md and the current parser, declaration collector,

@@ -4883,3 +4883,21 @@ Status: **in progress — isolated successor to TS-430**. Owner: Codex catch-up 
 ## TS-432 — ZonedDateTime until and since
 
 Status: **in progress — isolated successor to TS-431**. Owner: Codex catch-up chat, 2026-11-10. Expose checked zoned differences with ordered conversion/options, default hour balancing, calendar-zone equality, since rounding polarity and defining-Realm Duration allocation. Own src/temporal-date-time-difference-options.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-difference-draft/.
+
+## TS-433 — Exact zoned relative duration totals
+
+Status: **in progress — isolated successor to TS-432**. Owner: Codex catch-up chat, 2026-11-10. Compute UTC/fixed-offset relative duration totals with checked calendar windows and exact ratio conversion, before enabling zoned relativeTo in public Duration APIs. Own src/temporal-zoned-calendar-round.ts and tests/manifests/docs in build/temporal-zoned-duration-total-draft/.
+
+## TS-434 — Keep equal-instant shortcut at the public difference boundary
+
+Status: **in progress — isolated successor to TS-433**. Owner: Codex catch-up chat, 2026-11-10. Keep ZonedDateTime until/since equal-epoch shortcuts in the builtin while allowing the shared relative rounding helper to validate zero-duration calendar windows for Duration.round. Own src/temporal-zoned-difference-round.ts, src/builtins/temporal-zoned-difference.ts, test/temporal-zoned-difference-round.ts, docs/temporal-zoned-difference-round.md and tests/manifests/docs in build/temporal-zoned-zero-round-draft/.
+
+## TS-435 — Zoned relativeTo for Duration APIs
+
+Status: **in progress — isolated successor to TS-434**. Owner: Codex catch-up chat, 2026-11-10. Convert branded, string and property-bag zoned relativeTo values in observable field order, then support Duration compare/total/round through checked zoned arithmetic and exact calendar rounding. Own src/temporal-relative-to-option.ts, src/temporal-duration-round-options.ts, src/builtins/temporal-duration-compare.ts, src/builtins/temporal-duration-total.ts, src/builtins/temporal-duration-round.ts, test/temporal-relative-to-option.ts and tests/manifests/docs in build/temporal-zoned-relative-to-draft/.
+
+TS-435 additionally owns the historical duration compare/total/round and round-options tests listed in build/ts435.json; original sources are retained before updating formerly unsupported-zone expectations.
+
+## TS-436 — Class initializer lexical context review
+
+Status: **done — read-only implementation review**. Owner: Codex catch-up chat, 2026-11-10. The empty-field frame cannot directly execute initializers: Script this/new.target walk the captured lexical environment, and super requires a home-object activation. Recorded the required initializer boundary and seven independent reference checks in docs/class-fields-review.md. No syntax or runtime feature enabled.
