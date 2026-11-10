@@ -3932,7 +3932,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-206 — Object literal prototype setters
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Implement non-computed __proto__: object/null setters, primitive no-op and no own property, with duplicate setter rejection deferred through cover grammar. Preserve computed/method/accessor/shorthand __proto__ as ordinary properties and assignment-pattern duplicate keys. Own object property AST/parser/evaluation, existing rejection migrations and focused tests/manifests in build/object-prototype-draft based on TS-205; no spread or legacy parser expansion.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement non-computed __proto__: object/null setters, primitive no-op and no own property, with duplicate setter rejection deferred through cover grammar. Preserve computed/method/accessor/shorthand __proto__ as ordinary properties and assignment-pattern duplicate keys. Own object property AST/parser/evaluation, existing rejection migrations and focused tests/manifests in build/object-prototype-draft based on TS-205; no spread or legacy parser expansion.
 
 ## TS-207 — Object spread and shared data-property copying
 

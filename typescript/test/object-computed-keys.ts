@@ -41,6 +41,10 @@ for (const text of [
 ]) {
     const realm = new Realm((_line: string) => {}, "script");
     const prepared = prepareBoundedScript({id: "bad-computed-key", text}, realm);
-    if (prepared.kind === "ready") throw new Error("accepted invalid or unsupported input: " + text);
+    if (text === "({__proto__:null})") {
+        if (prepared.kind !== "ready") throw new Error("prototype setter must prepare");
+        const result = evaluateScript(createScriptSession(), prepared.record).completion;
+        if (result.type !== "normal" || result.value.kind !== "object" || result.value.object.getPrototypeOf() !== null) throw new Error("prototype setter result");
+    } else if (prepared.kind === "ready") throw new Error("accepted invalid or unsupported input: " + text);
 }
 console.log("Object computed keys passed");

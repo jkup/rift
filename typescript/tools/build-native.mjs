@@ -73,6 +73,7 @@ const entries = [
     ["test/object-shorthand.ts", "object-shorthand"],
     ["test/global-this.ts", "global-this"],
     ["test/named-function-expressions.ts", "named-function-expressions"],
+    ["test/object-prototype-literal.ts", "object-prototype-literal"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

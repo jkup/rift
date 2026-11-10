@@ -314,7 +314,7 @@ const generated = [
     ["comment", "/* unterminated", 2, "parse SyntaxError: unterminated comment"],
     ["number", "console.log(01);", 2, "parse SyntaxError: leading-zero numbers are unsupported"],
     ["exponent", "console.log(1e2);", 0, "", "100\n"],
-    ["proto", "let o={__proto__: null};", 2, "parse SyntaxError: prototype literal syntax is unsupported"],
+    ["proto", "let o={__proto__: null};", 0, "", ""],
     ["coercion", "console.log(1 + '2');", 0, "", "12\n"],
     ["primitive-base", "console.log(null.x);", 1, "runtime TypeError: cannot convert null or undefined to object"],
     ["detached", "'use strict'; let o={x:1, f:function(){return this.x;}}; let f=o.f; f();", 1, "runtime TypeError: cannot convert null or undefined to object"],
@@ -658,6 +658,7 @@ executeDriver("object-computed-keys", { stdout: "Object computed keys passed\n" 
 executeDriver("object-shorthand", { stdout: "Object shorthand passed\n" });
 executeDriver("global-this", { stdout: "Global this passed\n" });
 executeDriver("named-function-expressions", { stdout: "Named function expressions passed\n" });
+executeDriver("object-prototype-literal", { stdout: "Object prototype literals passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

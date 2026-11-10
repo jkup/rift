@@ -861,6 +861,12 @@ for(const source of [
     '"use strict";let o={__proto__:null};','"use strict";++x;','"use strict";1,2;'
 ]) {
     const r=fresh(),s=createScriptSession();const prepared=prepareStrictScript({id:"negative",text:source},r);
+    if (source === '"use strict";let o={__proto__:null};') {
+        check(prepared.kind === "ready" && s.inspect().steps === 0, "prototype setter preparation is inert");
+        check(run(source,r,s).type === "normal", "prototype setter executes");
+        scalar(run('"use strict";Object.getPrototypeOf(o)===null?1:0;',r,s),1);
+        continue;
+    }
     if (source === '"use strict";let f=function named(){};') {
         check(prepared.kind === "ready" && s.inspect().steps === 0, "named function preparation is inert");
         check(run(source,r,s).type === "normal", "named expression executes");

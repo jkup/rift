@@ -977,6 +977,7 @@ class Parser {
     }
     private objectExpression(loc: Location): Expr {
         const properties: ObjectProperty[] = [];
+        let prototypeSetter = false;
         const cover: ObjectCover = { entries: [], trailingComma: false, unsupported: null };
         while (!this.at("}") && this.error === null) {
             if (this.at("...")) {
@@ -986,7 +987,7 @@ class Parser {
                 cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, message: "expected literal property name", loc: spread.loc };
             } else {
                 const first = this.current();
-                let kind: "data" | "get" | "set" = "data";
+                let kind: "data" | "get" | "set" | "prototype" = "data";
                 let key: Expr;
                 let name = "";
                 let shorthand = false;
@@ -1019,7 +1020,11 @@ class Parser {
                     let value: Expr;
                     if (this.eat(":")) {
                         value = this.expression(1);
-                        if (name === "__proto__") cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, message: "prototype literal syntax is unsupported", loc: key.loc };
+                        if (!computed && name === "__proto__") {
+                            if (prototypeSetter) cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, message: "duplicate prototype setter", loc: key.loc };
+                            prototypeSetter = true;
+                            kind = "prototype";
+                        }
                     } else {
                         if (!shorthand) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected property value", first.loc);
                         value = { kind: "identifier", loc: first.loc, name };
@@ -1029,7 +1034,7 @@ class Parser {
                             value = { kind: "assign", loc: first.loc, target: value, value: this.expression(1) };
                         }
                     }
-                    properties.push({ kind: "data", key: computed ? key : name, value });
+                    properties.push({ kind, key: computed ? key : name, value });
                     cover.entries.push({ kind: "data", key, value });
                 }
             }

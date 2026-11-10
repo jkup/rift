@@ -1627,9 +1627,17 @@ class ExecutionEngine {
                         key = converted.value;
                     }
                     const propertyName = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
-                    const name = property.kind === "data" ? propertyName : property.kind + " " + propertyName;
+                    const name = property.kind === "prototype" ? null : property.kind === "data" ? propertyName : property.kind + " " + propertyName;
                     const value = this.#eval(property.value, env, receiver, false, name);
                     if (value.type !== "normal") return value;
+                    if (property.kind === "prototype") {
+                        if (value.value.kind === "object" || value.value.kind === "null") {
+                            const changed = object.internalSetPrototypeOf(value.value.kind === "null" ? null : value.value.object, this.context, expr.loc);
+                            if (changed.type === "throw") return changed;
+                            if (!changed.value) throw new Error("fresh object prototype invariant");
+                        }
+                        continue;
+                    }
                     if (this.#script && property.value.kind === "function" && property.value.source?.method === true)
                         ExecutableScript.makeMethod(value.value, object, executionKey);
                     const descriptor = property.kind === "get" ? { get: value.value, enumerable: true, configurable: true }
