@@ -709,6 +709,7 @@ executeDriver("generator-switch-test", { stdout: "generator switch test passed\n
 executeDriver("generator-switch-case", { stdout: "generator switch case passed\n" });
 executeDriver("generator-object", { stdout: "generator object passed\n" });
 executeDriver("generator-constructor", { stdout: "generator constructor passed\n" });
+executeDriver("generator-call-target", { stdout: "generator call target passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

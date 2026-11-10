@@ -5,6 +5,9 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "object-property"; expression: ObjectExpr; object: GuestObject; index: number; stage: "next" | "key" | "ready" | "value"; key: PropertyKey | null }
     | { kind: "template-substitution"; expression: TemplateExpr; index: number; text: string }
     | { kind: "array-element"; expression: ArrayExpr; object: GuestObject; index: number; nextIndex: number }
+    | { kind: "call-target"; expression: CallExpr; receiver: Value }
+    | { kind: "call-base"; expression: CallExpr }
+    | { kind: "call-key"; expression: CallExpr; base: Value }
     | { kind: "constructor"; expression: NewExpr }
     | { kind: "call-argument"; expression: CallExpr | NewExpr; callee: Value; receiver: Value; directEval: boolean; values: Value[]; index: number }
     | { kind: "member-base"; expression: MemberExpr }

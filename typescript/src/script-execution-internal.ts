@@ -3321,6 +3321,16 @@ class ExecutionEngine {
                         expression = null;
                         continue;
                     }
+                    if (expression.kind === "call" && isSuspendingGeneratorExpression(expression.callee)) {
+                        if (expression.callee.kind === "member") {
+                            frames.push({ kind: "call-base", expression });
+                            expression = expression.callee.base;
+                        } else {
+                            frames.push({ kind: "call-target", expression, receiver: UNDEFINED });
+                            expression = expression.callee;
+                        }
+                        continue;
+                    }
                     if (expression.kind === "new" && isSuspendingGeneratorExpression(expression.callee)) {
                         frames.push({ kind: "constructor", expression });
                         expression = expression.callee;
@@ -3465,6 +3475,34 @@ class ExecutionEngine {
                 const finished = finishArrayLiteral(frame.object, frame.nextIndex, this.context, frame.expression.loc);
                 if (finished.type === "throw") return finished;
                 value = finished.value;
+                continue;
+            }
+            if (frame.kind === "call-base") {
+                if (frame.expression.callee.kind !== "member") throw new Error("call base without member");
+                frames.push({ kind: "call-key", expression: frame.expression, base: value });
+                expression = frame.expression.callee.key;
+                continue;
+            }
+            if (frame.kind === "call-key") {
+                const loc = frame.expression.callee.loc;
+                const result = getReferenceValue(this.context, { kind: "property", base: frame.base, key: value, loc }, loc);
+                if (result.type === "throw") return result;
+                if (result.type !== "normal") throw new Error("invalid method read completion");
+                frames.push({ kind: "call-target", expression: frame.expression, receiver: frame.base });
+                value = result.value;
+                continue;
+            }
+            if (frame.kind === "call-target") {
+                if (frame.expression.args.length === 0) {
+                    const called = this.call(value, frame.receiver, [], frame.expression.loc);
+                    if (called.type === "throw") return called;
+                    value = called.value;
+                    continue;
+                }
+                frames.push({ kind: "call-argument", expression: frame.expression, callee: value,
+                    receiver: frame.receiver, directEval: false, values: [], index: 0 });
+                const arg = frame.expression.args[0];
+                expression = arg.kind === "spread" ? arg.expression : arg;
                 continue;
             }
             if (frame.kind === "constructor") {

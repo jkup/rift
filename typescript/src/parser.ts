@@ -768,7 +768,7 @@ class Parser {
                         if (element !== null) pending.push({ expression: element.kind === "spread" ? element.expression : element, visited: false });
                     }
                 } else if (node.kind === "call" || node.kind === "new") {
-                    if (node.kind === "new") pending.push({ expression: node.callee, visited: false });
+                    pending.push({ expression: node.callee, visited: false });
                     for (let i = node.args.length - 1; i >= 0; i--) { const arg = node.args[i]; pending.push({ expression: arg.kind === "spread" ? arg.expression : arg, visited: false }); }
                 } else if (node.kind === "member") pending.push({ expression: node.key, visited: false }, { expression: node.base, visited: false });
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
@@ -782,7 +782,7 @@ class Parser {
             } else if (node.kind === "array") {
                 if (node.elements.some(element => element !== null && isSuspendingGeneratorExpression(element.kind === "spread" ? element.expression : element))) node.suspends = true;
             } else if (node.kind === "call" || node.kind === "new") {
-                if ((node.kind === "new" && isSuspendingGeneratorExpression(node.callee)) || node.args.some(arg => isSuspendingGeneratorExpression(arg.kind === "spread" ? arg.expression : arg))) {
+                if (isSuspendingGeneratorExpression(node.callee) || node.args.some(arg => isSuspendingGeneratorExpression(arg.kind === "spread" ? arg.expression : arg))) {
                     if (node.kind === "call") node.suspends = true;
                     else node.suspends = true;
                 }

@@ -4164,7 +4164,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-259 — Suspended call targets
 
-Status: **in progress — isolated successor to TS-258**. Owner: Codex catch-up chat, 2026-11-10. Resume call targets before arguments, retaining a member receiver and obtaining its method exactly once. Preserve GetValue ordering, delayed callability checks, abrupt completion and async resumption. Own parser, expression frames, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-call-target-draft. Require both-host/static and order/Realm tests. Optional chains and super references remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume call targets before arguments, retaining a member receiver and obtaining its method exactly once. Preserve GetValue ordering, delayed callability checks, abrupt completion and async resumption. Own parser, expression frames, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-call-target-draft. Require both-host/static and order/Realm tests. Optional chains and super references remain separate.
 
 ## TS-260 — Suspended property deletion
 
