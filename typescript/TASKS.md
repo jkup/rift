@@ -4870,7 +4870,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-429 — Checked zoned time rounding and day carry
 
-Status: **in progress — isolated successor to TS-428**. Owner: Codex catch-up chat, 2026-11-10. Round zoned difference time remainders through checked current and adjacent local day endpoints, preserving signed rounding and day carry for fixed-offset zones. Own  and tests/manifests/docs in build/temporal-zoned-time-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Round zoned difference time remainders through checked current and adjacent local day endpoints, preserving signed rounding and day carry for fixed-offset zones. Own  and tests/manifests/docs in build/temporal-zoned-time-round-draft/.
 
 ## TS-430 — Checked zoned calendar carry
 
