@@ -261,6 +261,7 @@ const entries = [
     ["test/date-core.ts", "date-core"],
     ["test/date-getters.ts", "date-getters"],
     ["test/date-time-setters.ts", "date-time-setters"],
+    ["test/date-calendar-setters.ts", "date-calendar-setters"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

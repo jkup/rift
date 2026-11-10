@@ -4758,7 +4758,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-402 — Date calendar setters and invalid-date recovery
 
-Status: **in progress — isolated successor to TS-401**. Owner: Codex catch-up chat, 2026-11-10. Implement local/UTC setFullYear, setMonth and setDate using original time-slot snapshots, ordered coercion and clipped calendar balancing. Distinguish FullYear recovery from invalid Month/Date behavior, preserve year zero and time within day, and validate Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-calendar-setters-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement local/UTC setFullYear, setMonth and setDate using original time-slot snapshots, ordered coercion and clipped calendar balancing. Distinguish FullYear recovery from invalid Month/Date behavior, preserve year zero and time within day, and validate Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-calendar-setters-draft/.
 
 ## TS-403 — Generic Date JSON serialization
 
