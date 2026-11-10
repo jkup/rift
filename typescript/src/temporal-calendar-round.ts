@@ -14,7 +14,7 @@ export function dateDuration(years: number, months: number, weeks: number, days 
         hours: 0, minutes: 0, seconds: 0, milliseconds: 0, microseconds: 0, nanoseconds: 0 };
 }
 
-interface CalendarWindow {
+export interface CalendarWindow {
     readonly inner: number;
     readonly outer: number;
     readonly start: DurationFields;
@@ -23,7 +23,7 @@ interface CalendarWindow {
     readonly endDay: number;
 }
 
-function calendarWindow(origin: ISODate, duration: DurationFields, unit: "year" | "month" | "week", increment: number, sign: number, shifted: boolean): CalendarWindow | null {
+export function calendarWindow(origin: ISODate, duration: DurationFields, unit: "year" | "month" | "week", increment: number, sign: number, shifted: boolean): CalendarWindow | null {
     let count: number;
     if (unit === "year") count = duration.years;
     else if (unit === "month") count = duration.months;
@@ -52,11 +52,16 @@ export function roundCalendarDateDifference(origin: ISODate, destination: ISODat
         if (window === null) return null;
     }
     const distance = BigInt(sign * (target - window.startDay)), span = BigInt(sign * (window.endDay - window.startDay));
+    const outer = roundCalendarWindow(window, distance, span, increment, sign, mode);
+    return { duration: outer ? window.end : window.start, epochDay: outer ? window.endDay : window.startDay, expanded: shifted || outer };
+}
+
+export function roundCalendarWindow(window: CalendarWindow, distance: bigint, span: bigint, increment: number, sign: number, mode: TemporalRoundingMode): boolean {
     if (span <= 0n || distance < 0n || distance > span) throw new Error("calendar rounding window invariant");
     const quantum = BigInt(increment) * span;
     const numerator = BigInt(window.inner) * span + BigInt(sign * increment) * distance;
     const rounded = roundTemporalInteger(numerator, quantum, mode) / span;
     const outer = rounded === BigInt(window.outer);
     if (!outer && rounded !== BigInt(window.inner)) throw new Error("calendar rounding endpoint invariant");
-    return { duration: outer ? window.end : window.start, epochDay: outer ? window.endDay : window.startDay, expanded: shifted || outer };
+    return outer;
 }

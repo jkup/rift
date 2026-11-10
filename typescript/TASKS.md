@@ -4594,7 +4594,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-362 — Exact calendar rounding for date-time differences
 
-Status: **in progress — isolated successor to TS-361**. Owner: Codex catch-up chat, 2026-11-10. Share calendar window construction and exact endpoint selection with date-only rounding, then add date-time calendar nudges with nanosecond distances and preserved origin time. Require fractional-day ties, signed half-even parity, variable month/year lengths, shifted windows, calendar bounds and internal endpoints outside public DateTime bounds. Public until/since and time-unit nudging remain separate. Own src/temporal-calendar-round.ts and tests/manifests/docs in build/temporal-calendar-date-time-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Share calendar window construction and exact endpoint selection with date-only rounding, then add date-time calendar nudges with nanosecond distances and preserved origin time. Require fractional-day ties, signed half-even parity, variable month/year lengths, shifted windows, calendar bounds and internal endpoints outside public DateTime bounds. Public until/since and time-unit nudging remain separate. Own src/temporal-calendar-round.ts and tests/manifests/docs in build/temporal-calendar-date-time-round-draft/.
 
 ## TS-363 — Exact day/time nudging for date-time differences
 
