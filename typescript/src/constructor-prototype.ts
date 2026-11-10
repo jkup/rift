@@ -2,7 +2,7 @@ import type { GuestObject, OperationContext, ErrorName } from "./runtime.js";
 import type { ObjectCompletion } from "./object-conversion.js";
 import type { Location } from "./syntax.js";
 
-export type ConstructorPrototype = "Temporal.PlainTime" | "Temporal.Instant" | "Generator" | "GeneratorFunction" | "AsyncFunction" | "AsyncGenerator" | "AsyncGeneratorFunction" | "RegExp" | "Promise" | "Object" | "Function" | "Array" | "Boolean" | "Number" | "String" | "Map" | "Set" | ErrorName;
+export type ConstructorPrototype = "Temporal.Duration" | "Temporal.PlainTime" | "Temporal.Instant" | "Generator" | "GeneratorFunction" | "AsyncFunction" | "AsyncGenerator" | "AsyncGeneratorFunction" | "RegExp" | "Promise" | "Object" | "Function" | "Array" | "Boolean" | "Number" | "String" | "Map" | "Set" | ErrorName;
 
 export function getPrototypeFromConstructor(constructor: GuestObject, intrinsic: ConstructorPrototype,
     context: OperationContext, loc: Location): ObjectCompletion {
@@ -15,6 +15,7 @@ export function getPrototypeFromConstructor(constructor: GuestObject, intrinsic:
     // Bound callable metadata retains its target's Realm; proxies are unsupported.
     const realm = callable.realm;
     switch (intrinsic) {
+        case "Temporal.Duration": return { type: "normal", value: realm.temporalDurationPrototype };
         case "Temporal.PlainTime": return { type: "normal", value: realm.temporalPlainTimePrototype };
         case "Temporal.Instant": return { type: "normal", value: realm.temporalInstantPrototype };
         case "Generator": return { type: "normal", value: realm.generatorPrototype };

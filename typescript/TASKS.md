@@ -4428,7 +4428,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-322 — Temporal Duration core
 
-Status: **in progress — isolated successor to TS-321**. Owner: Codex catch-up chat, 2026-11-10. Add Realm-owned Duration construction, ten branded accessors, sign/blank and throwing valueOf. Convert all arguments in order with integral-value rejection, then validate common signs/exact bounds before prototype access. Own duration object/builtin, Realm/prototype fallback/namespace registration, focused tests/manifests/docs in build/temporal-duration-core-draft. Require conversion/abrupt/prototype order, signed bounds, metadata/subclasses/cross-Realm cases, full Node and native static/zero-dynamic regressions. Parsing, formatting and arithmetic remain separate tasks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Realm-owned Duration construction, ten branded accessors, sign/blank and throwing valueOf. Convert all arguments in order with integral-value rejection, then validate common signs/exact bounds before prototype access. Own duration object/builtin, Realm/prototype fallback/namespace registration, focused tests/manifests/docs in build/temporal-duration-core-draft. Require conversion/abrupt/prototype order, signed bounds, metadata/subclasses/cross-Realm cases, full Node and native static/zero-dynamic regressions. Parsing, formatting and arithmetic remain separate tasks.
 
 ## TS-323 — Temporal Duration sign transformations
 
