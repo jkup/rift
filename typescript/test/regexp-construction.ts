@@ -33,6 +33,7 @@ const cases: { source: string; expected: string }[] = [
     { source: "RegExp(null).source+':'+RegExp(12).source+':'+RegExp(undefined,undefined).source", expected: "null:12:(?:)" },
 ];
 for (const test of cases) string(test.source, test.expected);
+string("RegExp('(?=a)').source", "(?=a)");
 for (const source of ["RegExp('[')", "RegExp('a','gg')", "RegExp('a','q')", "RegExp('a','uv')"]) {
     string("try{" + source + ";'wrong'}catch(e){String(e instanceof SyntaxError)}", "true");
 }
@@ -41,7 +42,7 @@ for (const source of ["RegExp(Symbol())", "RegExp('a',Symbol())", "RegExp.protot
     "Object.getOwnPropertyDescriptor(RegExp.prototype,'flags').get.call(1)", "'abc'.includes(RegExp('a'))", "'abc'.startsWith(RegExp('a'))", "'abc'.endsWith(RegExp('a'))"]) {
     string("try{" + source + ";'wrong'}catch(e){String(e instanceof TypeError)}", "true");
 }
-for (const source of ["RegExp('a','u')", "RegExp('a','v')", "RegExp('(?=a)')"]) {
+for (const source of ["RegExp('a','u')", "RegExp('a','v')"]) {
     const realm = fresh(), prepared = prepareBoundedScript({ id: "regexp-unsupported", text: "try{" + source + "}catch(e){'caught'}" }, realm);
     if (prepared.kind !== "ready") throw new Error("unsupported prepare");
     const result = evaluateScript(createScriptSession(), prepared.record).completion;

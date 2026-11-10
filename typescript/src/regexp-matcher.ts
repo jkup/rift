@@ -6,6 +6,7 @@ import type { Location } from "./syntax.js";
 export type RegExpMatchFlags = { ignoreCase: boolean; multiline: boolean; dotAll: boolean };
 type Instruction = { kind: "character"; value: number } | { kind: "dot" }
     | { kind: "backreference"; index: number }
+    | { kind: "lookahead"; negative: boolean; end: number } | { kind: "lookahead-end" }
     | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean; folded: Set<number> | null }
     | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
     | { kind: "split"; first: number; second: number } | { kind: "jump"; target: number }
@@ -91,6 +92,12 @@ class PatternCompiler {
             if (atom.index !== 0) this.emit({ kind: "save", slot: atom.index * 2 });
             this.disjunction(atom.body);
             if (atom.index !== 0) this.emit({ kind: "save", slot: atom.index * 2 + 1 });
+        } else if (atom.kind === "lookahead") {
+            const assertion = { kind: "lookahead" as const, negative: atom.negative, end: 0 };
+            this.emit(assertion);
+            this.disjunction(atom.body);
+            this.emit({ kind: "lookahead-end" });
+            assertion.end = this.instructions.length;
         } else if (atom.kind === "character") {
             this.emit({ kind: "character", value: this.flags.ignoreCase ? canonicalize(atom.value) : atom.value });
         } else if (atom.kind === "class") {
@@ -114,6 +121,7 @@ export function compileRegExpPattern(pattern: RegExpPattern, flags: RegExpMatchF
 function word(code: number): boolean { return code >= 48 && code <= 57 || code >= 65 && code <= 90 || code >= 97 && code <= 122 || code === 95; }
 function lineTerminator(code: number): boolean { return code === 10 || code === 13 || code === 0x2028 || code === 0x2029; }
 type MatchState = { pc: number; position: number; captures: number[]; marks: number[] };
+type AssertionFrame = { resume: MatchState; backtrackDepth: number; negative: boolean };
 
 class PatternMatcher {
     private failure: ThrowCompletion | null = null;
@@ -150,12 +158,25 @@ class PatternMatcher {
             for (let i = 0; i < this.program.marks; i++) { if (!this.tick()) break; marks.push(-1); }
             let state: MatchState = { pc: 0, position: attempt, captures, marks };
             const stack: MatchState[] = [];
+            const assertions: AssertionFrame[] = [];
             while (this.tick()) {
                 const instruction = this.program.instructions[state.pc++];
                 let accepted = true;
                 if (instruction.kind === "match") {
                     state.captures[0] = attempt; state.captures[1] = state.position;
                     return { kind: "match", start: attempt, end: state.position, captures: state.captures };
+                } else if (instruction.kind === "lookahead") {
+                    assertions.push({ resume: { pc: instruction.end, position: state.position, captures: this.copy(state.captures), marks: this.copy(state.marks) },
+                        backtrackDepth: stack.length, negative: instruction.negative });
+                } else if (instruction.kind === "lookahead-end") {
+                    const assertion = assertions.pop();
+                    if (assertion === undefined) throw new Error("lookahead frame invariant");
+                    const captures = state.captures;
+                    // A successful lookahead commits its first match; later failure cannot re-enter it.
+                    stack.length = assertion.backtrackDepth;
+                    state = assertion.resume;
+                    if (assertion.negative) accepted = false;
+                    else state.captures = captures;
                 } else if (instruction.kind === "jump") state.pc = instruction.target;
                 else if (instruction.kind === "split") {
                     stack.push({ pc: instruction.second, position: state.position, captures: this.copy(state.captures), marks: this.copy(state.marks) });
@@ -190,11 +211,20 @@ class PatternMatcher {
                         : instruction.kind === "dot" ? this.program.flags.dotAll || !lineTerminator(code) : this.inClass(instruction, canonical);
                     if (accepted) state.position++;
                 }
-                if (!accepted) {
+                while (!accepted && this.tick()) {
+                    const assertion = assertions.length === 0 ? undefined : assertions[assertions.length - 1];
+                    if (assertion !== undefined && stack.length === assertion.backtrackDepth) {
+                        assertions.pop();
+                        state = assertion.resume;
+                        accepted = assertion.negative;
+                        continue;
+                    }
                     const previous = stack.pop();
                     if (previous === undefined) break;
                     state = previous;
+                    accepted = true;
                 }
+                if (!accepted) break;
             }
             if (sticky) break;
         }

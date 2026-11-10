@@ -4370,7 +4370,7 @@ Status: **done — accepted in bigint-foundation milestone**. Owner: Codex catch
 
 ## TS-308 — RegExp lookahead assertions
 
-Status: **in progress — isolated successor to TS-306**. Owner: Codex catch-up chat, 2026-11-10. Add positive/negative lookahead with explicit matcher assertion frames and atomic backtracking boundaries, zero-width position restoration and correct capture propagation/discard. Own syntax/matcher, exact historical admission migrations, focused tests/manifests/docs in build/regexp-lookahead-draft. Keep lookbehind, quantified legacy assertions, named groups and Unicode modes explicitly unsupported. Require nested/backtracking/capture/resource cases, both-host static validation, prior RegExp regressions and full Node.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add positive/negative lookahead with explicit matcher assertion frames and atomic backtracking boundaries, zero-width position restoration and correct capture propagation/discard. Own syntax/matcher, exact historical admission migrations, focused tests/manifests/docs in build/regexp-lookahead-draft. Keep lookbehind, quantified legacy assertions, named groups and Unicode modes explicitly unsupported. Require nested/backtracking/capture/resource cases, both-host static validation, prior RegExp regressions and full Node.
 
 ## TS-309 — BigInt codec expectation review
 

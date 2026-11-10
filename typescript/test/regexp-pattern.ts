@@ -20,7 +20,7 @@ function ready(source: string): RegExpPattern {
     check(result.pattern.source === source, "original pattern source");
     return result.pattern;
 }
-for (const source of ["", "abc", ".", "[]", "[^]", "[a-zA-Z0-9_]", "[-a]", "[a-]", "[--a]", "[a-b-c]",
+for (const source of ["(?=a)", "(?!a)", "", "abc", ".", "[]", "[^]", "[a-zA-Z0-9_]", "[-a]", "[a-]", "[--a]", "[a-b-c]",
     "a*", "a+?", "a??", "a{0}", "a{2,}", "a{2,4}?", "a{2", "a{2,3", "a{a}", "{", "}", "]",
     "(?:)", "(hello|goodbye)", "(ab)+", "^hello$", "\\bword\\B", "[\\d\\D\\s\\S\\w\\W]", "\\xZZ", "\\uXXYY",
     "(\\d{4})-(\\d{2})-(\\d{2})", "a\nb", "a\u2028b", "😀", "\ud800"]) ready(source);
@@ -28,7 +28,7 @@ for (const source of ["*", "+", "?", "a**", "a+*", "a???", "{1}", "[", "[a", "[z
     const result = parse(source);
     check(result.kind === "syntax-error", "proven invalid pattern: " + source);
 }
-for (const source of ["(?=a)", "(?!a)", "(?<=a)", "(?<name>a)", "(?i:a)", "\\k<x>", "\\07", "\\c_", "[\\d-a]", "[a-\\d]", "a{9007199254740992}"]) {
+for (const source of ["(?<=a)", "(?<name>a)", "(?i:a)", "\\k<x>", "\\07", "\\c_", "[\\d-a]", "[a-\\d]", "a{9007199254740992}"]) {
     check(parse(source).kind === "unsupported", "unsupported pattern: " + source);
 }
 for (const test of [

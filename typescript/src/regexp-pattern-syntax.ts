@@ -2,6 +2,7 @@ export type RegExpClassPart = { kind: "range"; from: number; to: number }
     | { kind: "builtin"; name: "digit" | "word" | "space"; inverted: boolean };
 export type RegExpAtom = { kind: "character"; value: number } | { kind: "dot" }
     | { kind: "backreference"; index: number }
+    | { kind: "lookahead"; negative: boolean; body: RegExpDisjunction }
     | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean }
     | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
     | { kind: "group"; index: number; body: RegExpDisjunction };
@@ -73,6 +74,9 @@ class PatternParser {
             if (quantifier !== null && atom.kind === "assertion") {
                 this.reject("syntax-error", "assertion cannot be quantified"); break;
             }
+            if (quantifier !== null && atom.kind === "lookahead") {
+                this.reject("unsupported", "quantified legacy lookahead is unsupported"); break;
+            }
             terms.push({ atom, min: quantifier === null ? 1 : quantifier.min, max: quantifier === null ? 1 : quantifier.max,
                 lazy: quantifier !== null && quantifier.lazy, captureFrom, captureTo: this.captures });
         }
@@ -99,9 +103,11 @@ class PatternParser {
                 return null;
             }
             let index = 0;
+            let lookahead = false, negative = false;
             if (this.current() === "?") {
                 this.take();
-                if (this.current() !== ":") return this.reject("unsupported", "lookaround, named and modifier groups are unsupported");
+                if (this.current() === "=" || this.current() === "!") { lookahead = true; negative = this.current() === "!"; }
+                else if (this.current() !== ":") return this.reject("unsupported", "lookbehind, named and modifier groups are unsupported");
                 this.take();
             } else index = ++this.captures;
             const body = this.disjunction();
@@ -109,7 +115,7 @@ class PatternParser {
             if (this.failure !== null) return null;
             if (this.current() !== ")") return this.reject("syntax-error", "unterminated group");
             this.take();
-            return { kind: "group", index, body };
+            return lookahead ? { kind: "lookahead", negative, body } : { kind: "group", index, body };
         }
         return { kind: "character", value: char.charCodeAt(0) };
     }

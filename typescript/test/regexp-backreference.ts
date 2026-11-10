@@ -50,7 +50,8 @@ expect("()()()()()()()()()(x)\\10", "xx", ["xx", "", "", "", "", "", "", "", "",
 expect("\\(a\\)(b)\\1", "(a)bb", ["(a)bb", "b"]);
 expect("[(](b)\\1", "(bb", ["(bb", "b"]);
 expect("(?:a)(b)\\1", "abb", ["abb", "b"]);
-for (const source of ["\\1", "(a)\\2", "(a)\\11", "[\\1](a)", "\\07", "\\k<x>", "(?<x>a)\\1", "(?=a)(a)\\1"]) {
+expect("(?=a)(a)\\1", "aa", ["aa", "a"]);
+for (const source of ["\\1", "(a)\\2", "(a)\\11", "[\\1](a)", "\\07", "\\k<x>", "(?<x>a)\\1"]) {
     check(parseRegExpPattern(source, context(), loc).kind === "unsupported", "retained boundary: " + source);
 }
 const stopped = parseRegExpPattern("(a)\\1" + "x".repeat(1000), context(30), loc);
