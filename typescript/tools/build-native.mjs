@@ -187,6 +187,7 @@ const entries = [
     ["test/temporal-duration-core.ts", "temporal-duration-core"],
     ["test/temporal-duration-sign.ts", "temporal-duration-sign"],
     ["test/temporal-duration-format.ts", "temporal-duration-format"],
+    ["test/temporal-duration-serialization.ts", "temporal-duration-serialization"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

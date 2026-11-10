@@ -770,6 +770,7 @@ executeDriver("temporal-duration-records", { stdout: "temporal duration records 
 executeDriver("temporal-duration-core", { stdout: "temporal duration core passed\n" });
 executeDriver("temporal-duration-sign", { stdout: "temporal duration sign passed\n" });
 executeDriver("temporal-duration-format", { stdout: "temporal duration format passed\n" });
+executeDriver("temporal-duration-serialization", { stdout: "temporal duration serialization passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

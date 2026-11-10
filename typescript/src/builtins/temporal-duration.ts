@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { formatTemporalDuration } from "../temporal-duration-format.js";
 import { createTemporalDuration, temporalDurationValue } from "../temporal-duration-object.js";
 import { durationSign, isValidDuration, type DurationFields } from "../temporal-duration.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
@@ -63,6 +64,15 @@ export function registerTemporalDuration(realm: Realm, namespace: GuestObject): 
                 hours: signedField(value.hours, sign), minutes: signedField(value.minutes, sign), seconds: signedField(value.seconds, sign),
                 milliseconds: signedField(value.milliseconds, sign), microseconds: signedField(value.microseconds, sign), nanoseconds: signedField(value.nanoseconds, sign),
             }, context.realm.temporalDurationPrototype, context, loc);
+        });
+    }
+    for (const name of ["toJSON", "toLocaleString"]) {
+        realm.registerBuiltin(prototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
+            const duration = temporalDurationValue(receiver, context, loc);
+            if (duration.type === "throw") return duration;
+            const formatted = formatTemporalDuration(duration.value);
+            if (formatted === null) throw new Error("duration formatting invariant");
+            return normal({ kind: "string", value: formatted });
         });
     }
     namespace.bootstrapDefine("Duration", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });

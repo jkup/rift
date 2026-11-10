@@ -4440,7 +4440,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-325 — Temporal Duration serialization
 
-Status: **in progress — isolated successor to TS-324**. Owner: Codex catch-up chat, 2026-11-10. Expose branded Duration.toJSON and non-Intl toLocaleString through the exact formatter, ignoring reserved arguments and public overrides. Own Duration builtin, focused tests/manifests/docs in build/temporal-duration-serialization-draft. Require exact signs/fractions/bounds, JSON protocol, metadata/subclasses/Realm cases, full Node and native static/zero-dynamic validation. Option-aware toString remains separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose branded Duration.toJSON and non-Intl toLocaleString through the exact formatter, ignoring reserved arguments and public overrides. Own Duration builtin, focused tests/manifests/docs in build/temporal-duration-serialization-draft. Require exact signs/fractions/bounds, JSON protocol, metadata/subclasses/Realm cases, full Node and native static/zero-dynamic validation. Option-aware toString remains separate.
 
 ## TS-326 — Temporal duration string parsing
 
