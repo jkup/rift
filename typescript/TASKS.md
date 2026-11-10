@@ -4228,7 +4228,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-274 — Suspended super compound-assignment targets
 
-Status: **in progress — isolated successor to TS-273**. Owner: Codex catch-up chat, 2026-11-10. Resume a super key, read the old value before the RHS, then retain the reference through compound assignment. Preserve actual this, prototype capture after the key, deferred key conversion and getter-before-RHS behavior. Own parser, super-frame operation tag, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-super-compound-draft. Update/delete super targets remain separate. Require both-host/static, setter/order/prototype and Realm tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume a super key, read the old value before the RHS, then retain the reference through compound assignment. Preserve actual this, prototype capture after the key, deferred key conversion and getter-before-RHS behavior. Own parser, super-frame operation tag, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-super-compound-draft. Update/delete super targets remain separate. Require both-host/static, setter/order/prototype and Realm tests.
 
 ## TS-275 — Suspended super update targets
 

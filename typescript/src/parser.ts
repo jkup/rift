@@ -760,7 +760,7 @@ class Parser {
                 }
                 else if (node.kind === "assign" || node.kind === "compound") {
                     pending.push({ expression: node.value, visited: false });
-                    if (node.kind === "assign" || node.target.kind !== "super-member") pending.push({ expression: node.target, visited: false });
+                    pending.push({ expression: node.target, visited: false });
                 }
                 else if (node.kind === "object") {
                     for (let i = node.properties.length - 1; i >= 0; i--) {

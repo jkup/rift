@@ -3366,10 +3366,10 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "assign" || expression.kind === "compound") {
-                        if (expression.kind === "assign" && expression.target.kind === "super-member" && isSuspendingGeneratorExpression(expression.target)) {
+                        if (expression.target.kind === "super-member" && isSuspendingGeneratorExpression(expression.target)) {
                             const superContext = this.#superContext(expression.target.loc);
                             if (superContext.type === "throw") return superContext;
-                            frames.push({ kind: "super-key", expression: expression.target, operation: { kind: "assignment", expression },
+                            frames.push({ kind: "super-key", expression: expression.target, operation: expression.kind === "assign" ? { kind: "assignment", expression } : { kind: "compound", expression },
                                 homeObject: superContext.homeObject, receiver: superContext.receiver });
                             expression = expression.target.key;
                             continue;
@@ -3512,6 +3512,11 @@ class ExecutionEngine {
                 const result = getReferenceValue(this.context, reference, frame.expression.loc);
                 if (result.type === "throw") return result;
                 if (result.type !== "normal") throw new Error("invalid super read completion");
+                if (frame.operation.kind === "compound") {
+                    frames.push({ kind: "compound-value", expression: frame.operation.expression, reference, left: result.value });
+                    expression = frame.operation.expression.value;
+                    continue;
+                }
                 if (frame.operation.kind === "call") frames.push({ kind: "call-target", expression: frame.operation.expression, receiver: frame.receiver });
                 value = result.value;
                 continue;
