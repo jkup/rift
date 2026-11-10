@@ -4770,7 +4770,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-405 — Date locale fallback methods
 
-Status: **in progress — isolated successor to TS-404**. Owner: Codex catch-up chat, 2026-11-10. Add Date toLocaleString, toLocaleDateString and toLocaleTimeString using deterministic English/UTC fallback strings while ECMA-402 remains unsupported. Ignore reserved argument positions, preserve branding and invalid-date behavior, and validate cross-Realm errors and method metadata on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-locale-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Date toLocaleString, toLocaleDateString and toLocaleTimeString using deterministic English/UTC fallback strings while ECMA-402 remains unsupported. Ignore reserved argument positions, preserve branding and invalid-date behavior, and validate cross-Realm errors and method metadata on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-locale-draft/.
 
 ## TS-406 — Temporal Now instant and timezone identity
 
