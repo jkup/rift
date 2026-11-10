@@ -4668,7 +4668,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-380 — Temporal PlainDate to PlainMonthDay conversion
 
-Status: **in progress — isolated successor to TS-379**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainMonthDay from stored ISO month/day with reference year 1972. Require leap-day preservation, full date endpoints, ignored guest fields/arguments, branding and intrinsic Realm result tests on both hosts. Own src/builtins/temporal-plain-date.ts and tests/manifests/docs in build/temporal-plain-date-to-month-day-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainMonthDay from stored ISO month/day with reference year 1972. Require leap-day preservation, full date endpoints, ignored guest fields/arguments, branding and intrinsic Realm result tests on both hosts. Own src/builtins/temporal-plain-date.ts and tests/manifests/docs in build/temporal-plain-date-to-month-day-draft/.
 
 ## TS-381 — Public class field architecture review
 
