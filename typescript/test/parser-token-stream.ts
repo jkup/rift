@@ -1,5 +1,5 @@
 import { lex } from "../src/lexer.js";
-import { parseBoundedScriptDeclarationPlan } from "../src/parser.js";
+import { auditBoundedScriptStrictParameters, parse, parseBoundedScriptDeclarationPlan } from "../src/parser.js";
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
@@ -39,5 +39,17 @@ for (const text of [
 for (const text of ["", "/* comment */", "var x=1;", "function f(){'use strict';return 1}", "var f=(x)=>x;"]) {
     const plan = parseBoundedScriptDeclarationPlan({ id: "complete-source", text });
     check(plan.kind !== "blocked", "complete plan: " + text);
+}
+for (const text of [
+    'function f(a,a=1){"use strict";}', 'function f(a,...a){"use strict";}',
+    'var f=(a,a=1)=>{"use strict";};', 'var f=(...a=1)=>{"use strict";};',
+]) {
+    const audit = auditBoundedScriptStrictParameters(text);
+    check(audit.kind === "blocked", "earlier parameter rejection does not inspect incomplete directive tokens");
+    check(parse(text).error !== null, "legacy lookahead remains bounded by EOF after rejection");
+}
+for (const text of ['function f(a=1){"use strict";}', 'var f=(a=1)=>{"use strict";};']) {
+    const plan = parseBoundedScriptDeclarationPlan({ id: "non-simple-directive", text });
+    check(plan.kind === "blocked" && plan.diagnostic.message === "strict directive with non-simple parameters", "completed non-simple parameter directive remains rejected");
 }
 console.log("Parser token stream passed");

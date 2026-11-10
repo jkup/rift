@@ -695,6 +695,7 @@ class Parser {
         return { params, rest, parameters };
     }
     checkParameterDirective(rest: boolean, parameters: FormalParameter[], bodyIndex: number, loc: Location): void {
+        if (this.error !== null) return;
         if ((rest || parameters.some(parameter => parameter.initializer !== null)) && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with non-simple parameters", loc);
     }
