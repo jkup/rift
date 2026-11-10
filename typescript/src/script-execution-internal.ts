@@ -1174,7 +1174,9 @@ type GeneratorCleanup = { kind: "cleanup"; frame: ScriptFrameSnapshot; pending: 
     abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null; depth: number };
 type GeneratorForOf = { kind: "iterator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; iterator: IteratorRecord;
     target: Expr | null; lexical: boolean; scopeId: number; depth: number };
-type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf;
+type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; enumerator: ForInEnumerator;
+    target: Expr | null; lexical: boolean; scopeId: number; depth: number };
+type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn;
 type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
@@ -2514,10 +2516,11 @@ class ExecutionEngine {
                 }
                 const target: Expr | null = stmt.head.kind === "lexical" || stmt.head.kind === "pattern" || stmt.head.kind === "assignment-pattern" ? null : stmt.head.kind === "var"
                     ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name } : stmt.head;
-                if (sequences !== null && stmt.kind === "for-of") {
-                    if (iterator === null) throw new Error("missing generator loop iterator");
-                    sequences.push({ kind: "iterator", frame: saved, statement: stmt, iterator, target, lexical, scopeId,
-                        depth: sequences[sequences.length - 1].depth + 1 });
+                if (sequences !== null) {
+                    const depth = sequences[sequences.length - 1].depth + 1;
+                    if (iterator !== null) sequences.push({ kind: "iterator", frame: saved, statement: stmt, iterator, target, lexical, scopeId, depth });
+                    else if (enumerator !== null) sequences.push({ kind: "enumerator", frame: saved, statement: stmt, enumerator, target, lexical, scopeId, depth });
+                    else throw new Error("missing generator loop iterator");
                     return { type: "normal", payload: { kind: "empty" } };
                 }
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
@@ -2977,7 +2980,7 @@ class ExecutionEngine {
                 this.#scheduleGeneratorFinally(continuation, boundary, completion);
                 return null;
             }
-            if ((boundary.kind === "loop" || boundary.kind === "for") && (completion.type === "break" || completion.type === "continue")) {
+            if ((boundary.kind === "loop" || boundary.kind === "for" || boundary.kind === "enumerator") && (completion.type === "break" || completion.type === "continue")) {
                 if (completion.target !== undefined) throw new Error("label escaped supported generator control flow");
                 if (completion.type === "continue") sequences.push(boundary);
                 return null;
@@ -3076,8 +3079,9 @@ class ExecutionEngine {
                     if (result !== null) return result;
                     continue;
                 }
-                if (sequence.kind === "iterator") {
-                    const next = iteratorStepValue(sequence.iterator, this.context, sequence.statement.loc);
+                if (sequence.kind === "iterator" || sequence.kind === "enumerator") {
+                    const next = sequence.kind === "iterator" ? iteratorStepValue(sequence.iterator, this.context, sequence.statement.loc)
+                        : sequence.enumerator.next(this.context, sequence.statement.loc);
                     if (next.type === "throw") {
                         sequences.pop();
                         this.#capture(next);

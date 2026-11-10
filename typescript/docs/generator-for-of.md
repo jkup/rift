@@ -20,3 +20,5 @@ Tests cover bindings/patterns, closures, TDZ, next caching, loop control, nested
 close order, yielding finally, failed steps/initialization, cleanup precedence,
 foreign throw provenance and resource-stop bypass. For-in suspension, labels
 and nested expression continuations remain subsequent work.
+TS-224 retains for-in enumeration across yields without iterator-close behavior;
+see [generator for-in enumeration](generator-for-in.md).

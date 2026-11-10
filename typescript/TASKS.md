@@ -4012,7 +4012,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-224 — Generator for-in enumeration continuations
 
-Status: **in progress — isolated successor to TS-223**. Owner: Codex catch-up chat, 2026-11-10. Retain the existing ForInEnumerator across yields, share iteration binding setup, and route break/continue/return/throw through enclosing cleanup without inventing iterator-return behavior for enumeration. Cover deleted keys, prototype shadowing, lexical cells, nullish inputs and nested iterator/finally ordering. Own parser admission, private enumeration records, focused tests/manifests and notes in build/generator-for-in-draft. Labelled and nested expression yields remain separate. Require both-host/static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain the existing ForInEnumerator across yields, share iteration binding setup, and route break/continue/return/throw through enclosing cleanup without inventing iterator-return behavior for enumeration. Cover deleted keys, prototype shadowing, lexical cells, nullish inputs and nested iterator/finally ordering. Own parser admission, private enumeration records, focused tests/manifests and notes in build/generator-for-in-draft. Labelled and nested expression yields remain separate. Require both-host/static validation.
 
 ## TS-225 — Labelled generator control flow
 
