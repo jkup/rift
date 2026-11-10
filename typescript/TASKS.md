@@ -4448,7 +4448,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-327 — Temporal Duration conversion and field replacement
 
-Status: **in progress — isolated successor to TS-326**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.from and with using ordered integral field conversion, exact bounds and the ISO parser; share constructor conversion. Own duration field helper/conversion builtin and registration, focused tests/manifests/docs in build/temporal-duration-conversion-draft. Require branded cloning versus public with reads, missing fields, no primitive coercion, string budgets, abrupt/sign validation, metadata/subclasses/Realm cases, full Node and native static/zero-dynamic regressions. Duration arithmetic/comparison remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Duration.from and with using ordered integral field conversion, exact bounds and the ISO parser; share constructor conversion. Own duration field helper/conversion builtin and registration, focused tests/manifests/docs in build/temporal-duration-conversion-draft. Require branded cloning versus public with reads, missing fields, no primitive coercion, string budgets, abrupt/sign validation, metadata/subclasses/Realm cases, full Node and native static/zero-dynamic regressions. Duration arithmetic/comparison remain separate.
 
 ## TS-328 — Temporal PlainTime arithmetic
 

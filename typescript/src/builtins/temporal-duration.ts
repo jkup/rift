@@ -1,10 +1,10 @@
+import { temporalDurationInteger } from "../temporal-duration-fields.js";
+import { registerTemporalDurationConversion } from "./temporal-duration-conversion.js";
 import type { Realm } from "../realm.js";
 import { formatTemporalDuration } from "../temporal-duration-format.js";
 import { createTemporalDuration, temporalDurationValue } from "../temporal-duration-object.js";
 import { durationSign, isValidDuration, type DurationFields } from "../temporal-duration.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
-import { toPrimitive } from "../primitive-conversion.js";
-import { toNumber } from "../conversion.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type ValueCompletion } from "../runtime.js";
 
@@ -19,12 +19,9 @@ export function registerTemporalDuration(realm: Realm, namespace: GuestObject): 
             for (let i = 0; i < 10; i++) {
                 const value = i < args.length ? args[i] : UNDEFINED;
                 if (value.kind === "undefined") { fields.push(0); continue; }
-                const primitive = toPrimitive(value, "number", context, loc);
-                if (primitive.type === "throw") return primitive;
-                const converted = toNumber(primitive.value, loc, context.realm);
+                const converted = temporalDurationInteger(value, context, loc);
                 if (converted.type === "throw") return converted;
-                if (!Number.isInteger(converted.value)) return languageFailure(context.realm, "RangeError", "duration fields must be finite integers", loc);
-                fields.push(converted.value === 0 ? 0 : converted.value);
+                fields.push(converted.value);
             }
             const duration: DurationFields = { years: fields[0], months: fields[1], weeks: fields[2], days: fields[3], hours: fields[4],
                 minutes: fields[5], seconds: fields[6], milliseconds: fields[7], microseconds: fields[8], nanoseconds: fields[9] };
@@ -75,5 +72,6 @@ export function registerTemporalDuration(realm: Realm, namespace: GuestObject): 
             return normal({ kind: "string", value: formatted });
         });
     }
+    registerTemporalDurationConversion(realm, constructor);
     namespace.bootstrapDefine("Duration", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
