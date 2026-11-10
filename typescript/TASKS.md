@@ -4516,7 +4516,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-343 — Temporal PlainDate field and calendar replacement
 
-Status: **in progress — isolated successor to TS-342**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.with and withCalendar using ordered date fields, ISO month/monthCode replacement, shared overflow and calendar conversion. Share partial Temporal object screening with PlainTime.with. Own date replacement builtin/registration, partial-object helper, PlainTime.with and tests/manifests/docs in build/temporal-plain-date-with-draft. Require empty partial rejection before options, brand/calendar/timeZone ordering, month replacement conflicts, boundaries and fresh intrinsic/Realm results on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.with and withCalendar using ordered date fields, ISO month/monthCode replacement, shared overflow and calendar conversion. Share partial Temporal object screening with PlainTime.with. Own date replacement builtin/registration, partial-object helper, PlainTime.with and tests/manifests/docs in build/temporal-plain-date-with-draft. Require empty partial rejection before options, brand/calendar/timeZone ordering, month replacement conflicts, boundaries and fresh intrinsic/Realm results on both hosts.
 
 ## TS-344 — Temporal PlainDate arithmetic
 
