@@ -4466,7 +4466,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-331 — Shared Temporal duration balancing
 
-Status: **in progress — isolated successor to TS-330**. Owner: Codex catch-up chat, 2026-11-10. Extract exact duration balancing and largest-unit selection for shared arithmetic use. Preserve string rounding behavior; support day through nanosecond output fields with bounds/sign validation. Own pure duration balance module, string rounding helper, focused tests/manifests/docs in build/temporal-duration-balance-draft. Require signed carries, every largest unit, exact boundary and Number storage behavior, full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract exact duration balancing and largest-unit selection for shared arithmetic use. Preserve string rounding behavior; support day through nanosecond output fields with bounds/sign validation. Own pure duration balance module, string rounding helper, focused tests/manifests/docs in build/temporal-duration-balance-draft. Require signed carries, every largest unit, exact boundary and Number storage behavior, full Node/native static validation.
 
 ## TS-332 — Temporal Duration arithmetic
 

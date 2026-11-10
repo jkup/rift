@@ -193,6 +193,7 @@ const entries = [
     ["test/temporal-plain-time-arithmetic.ts", "temporal-plain-time-arithmetic"],
     ["test/temporal-instant-arithmetic.ts", "temporal-instant-arithmetic"],
     ["test/temporal-duration-string.ts", "temporal-duration-string"],
+    ["test/temporal-duration-balance.ts", "temporal-duration-balance"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
