@@ -6,6 +6,7 @@ import type { DestructuringPattern, Location, Stmt } from "./syntax.js";
 export type GeneratorYieldReceiver = { kind: "return" }
     | { kind: "async-return" }
     | { kind: "loop-test" }
+    | { kind: "for-update" }
     | { kind: "throw"; loc: Location }
     | { kind: "branch"; consequent: Stmt; alternate: Stmt | null }
     | { kind: "pattern"; pattern: DestructuringPattern; environment: ScriptEnvironment | null }

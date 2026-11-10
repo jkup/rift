@@ -1177,7 +1177,7 @@ export function createGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResu
 }
 type GeneratorSequence = { kind: "sequence"; frame: ScriptFrameSnapshot; body: Stmt[]; nextStatement: number; depth: number; labels?: readonly string[] | null };
 type GeneratorLoop = { kind: "loop"; frame: ScriptFrameSnapshot; test: Expr; body: Stmt; testFirst: boolean; first: boolean; depth: number; labels?: readonly string[] | null };
-type GeneratorForLoop = { kind: "for"; frame: ScriptFrameSnapshot; statement: ForStmt | ForLexicalStmt; outer: ScriptEnvironment | null; first: boolean; depth: number; labels?: readonly string[] | null };
+type GeneratorForLoop = { kind: "for"; frame: ScriptFrameSnapshot; statement: ForStmt | ForLexicalStmt; outer: ScriptEnvironment | null; first: boolean; phase: "prepare" | "test"; depth: number; labels?: readonly string[] | null };
 type GeneratorCatch = { kind: "catch"; frame: ScriptFrameSnapshot; statement: TryCatchStmt; depth: number };
 type GeneratorAbrupt = { type: "return"; value: Value } | { type: "break" | "continue"; target?: string } | ThrowCompletion;
 type GeneratorPending = GeneratorAbrupt | { type: "normal" };
@@ -2352,7 +2352,7 @@ class ExecutionEngine {
         if (assigned.type !== "normal") throw new Error("invalid loop assignment completion");
         return normal(assigned.value);
     }
-    #prepareForIteration(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null, first: boolean): ValueCompletion {
+    #prepareForIteration(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null): ValueCompletion {
         if (stmt.kind === "for-lexical" && stmt.declarationKind === "let") {
             const frame = this.#active();
             if (!(frame.lexical instanceof ScriptDeclarativeEnvironment) || outer === null)
@@ -2363,18 +2363,18 @@ class ExecutionEngine {
             if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
             this.#frame = { ...frame, lexical: created.environment };
         }
-        if (!first && stmt.update !== null) {
-            const updated = this.#value(stmt.update);
-            if (updated.type === "throw") { const abrupt: ThrowCompletion = updated; return abrupt; }
-        }
         return normal();
     }
     #forBody(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null, labels: readonly string[] | null): ScriptStatementCompletion {
         let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
         let first = true;
         while (true) {
-            const prepared = this.#prepareForIteration(stmt, outer, first);
+            const prepared = this.#prepareForIteration(stmt, outer);
             if (prepared.type === "throw") { const abrupt: ThrowCompletion = prepared; return abrupt; }
+            if (!first && stmt.update !== null) {
+                const updated = this.#value(stmt.update);
+                if (updated.type === "throw") { const abrupt: ThrowCompletion = updated; return abrupt; }
+            }
             const test = stmt.test === null ? normal({ kind: "boolean", value: true }) : this.#value(stmt.test);
             if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
             first = false;
@@ -2683,7 +2683,7 @@ class ExecutionEngine {
                     }
                 }
                 if (sequences !== null) {
-                    sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: null, first: true, depth: sequences[sequences.length - 1].depth + 1, labels });
+                    sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: null, first: true, phase: "prepare", depth: sequences[sequences.length - 1].depth + 1, labels });
                     return { type: "normal", payload: { kind: "empty" } };
                 }
                 return this.#forBody(stmt, null, labels);
@@ -2700,7 +2700,7 @@ class ExecutionEngine {
                     const initialized = created.environment.initializeBinding(binding.site.name, value.value, this.context, binding.site.loc);
                     if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
                     if (sequences !== null) {
-                        sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: saved.lexical, first: true, depth: sequences[sequences.length - 1].depth + 1, labels });
+                        sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: saved.lexical, first: true, phase: "prepare", depth: sequences[sequences.length - 1].depth + 1, labels });
                         return { type: "normal", payload: { kind: "empty" } };
                     }
                     return this.#forBody(stmt, saved.lexical, labels);
@@ -3497,6 +3497,10 @@ class ExecutionEngine {
             this.#capture(failure);
             return failure;
         }
+        if (receiver.kind === "for-update") {
+            if (frame.kind !== "for" || frame.phase !== "test") throw new Error("for update without test phase");
+            return null;
+        }
         if (receiver.kind === "loop-test") {
             if (frame.kind !== "loop" && frame.kind !== "for") throw new Error("loop test without loop frame");
             if (!truthy(value)) continuation.sequences.pop();
@@ -3799,15 +3803,36 @@ class ExecutionEngine {
                     continue;
                 }
                 if (sequence.kind === "for") {
-                    const prepared = this.#prepareForIteration(sequence.statement, sequence.outer, sequence.first);
-                    if (prepared.type === "throw") {
-                        this.#capture(prepared);
-                        const uncaught = this.#unwindContinuation(continuation, prepared, callerDepth);
-                        if (uncaught !== null) return uncaught;
-                        continue;
+                    if (sequence.phase === "prepare") {
+                        const prepared = this.#prepareForIteration(sequence.statement, sequence.outer);
+                        if (prepared.type === "throw") {
+                            this.#capture(prepared);
+                            const uncaught = this.#unwindContinuation(continuation, prepared, callerDepth);
+                            if (uncaught !== null) return uncaught;
+                            continue;
+                        }
+                        const update = sequence.first ? null : sequence.statement.update;
+                        sequence.first = false;
+                        sequence.frame = this.#active();
+                        sequence.phase = "test";
+                        if (update !== null && isSuspendingGeneratorExpression(update)) {
+                            mode = "next";
+                            value = UNDEFINED;
+                            const result = this.#startSuspendingExpression(continuation, update, { kind: "for-update" }, callerDepth);
+                            if (result !== null) return result;
+                            continue;
+                        }
+                        if (update !== null) {
+                            const updated = this.#value(update);
+                            if (updated.type === "throw") {
+                                this.#capture(updated);
+                                const uncaught = this.#unwindContinuation(continuation, updated, callerDepth);
+                                if (uncaught !== null) return uncaught;
+                                continue;
+                            }
+                        }
                     }
-                    sequence.first = false;
-                    sequence.frame = this.#active();
+                    sequence.phase = "prepare";
                     const expression = sequence.statement.test;
                     if (expression !== null && isSuspendingGeneratorExpression(expression)) {
                         mode = "next";
