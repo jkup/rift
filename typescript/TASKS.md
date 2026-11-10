@@ -4766,7 +4766,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-404 — Legacy Date setYear
 
-Status: **in progress — isolated successor to TS-403**. Owner: Codex catch-up chat, 2026-11-10. Implement Annex B setYear with original-slot snapshot, invalid-date recovery and the 0–99 year mapping. Validate fractional years, mutation during coercion, clipping, branding and defining-Realm errors on both hosts. Own src/builtins/date-calendar-setters.ts, src/builtins/date.ts and tests/manifests/docs in build/date-legacy-year-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement Annex B setYear with original-slot snapshot, invalid-date recovery and the 0–99 year mapping. Validate fractional years, mutation during coercion, clipping, branding and defining-Realm errors on both hosts. Own src/builtins/date-calendar-setters.ts, src/builtins/date.ts and tests/manifests/docs in build/date-legacy-year-draft/.
 
 ## TS-405 — Date locale fallback methods
 

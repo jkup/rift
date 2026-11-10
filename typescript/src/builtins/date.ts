@@ -1,4 +1,6 @@
 import { registerDateGetters } from "./date-getters.js";
+import { registerDateTimeSetters } from "./date-time-setters.js";
+import { registerDateCalendarSetters } from "./date-calendar-setters.js";
 import { registerDateJSON } from "./date-json.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
@@ -106,5 +108,3 @@ export function registerDate(realm: Realm): void {
     });
     prototype.bootstrapDefine(wellKnownToPrimitive, { value: { kind: "object", object: primitive }, writable: false, enumerable: false, configurable: true });
 }
-import { registerDateTimeSetters } from "./date-time-setters.js";
-import { registerDateCalendarSetters } from "./date-calendar-setters.js";

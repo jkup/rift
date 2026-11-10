@@ -846,6 +846,7 @@ executeDriver("date-getters", { stdout: "date getters passed\n" });
 executeDriver("date-time-setters", { stdout: "date time setters passed\n" });
 executeDriver("date-calendar-setters", { stdout: "date calendar setters passed\n" });
 executeDriver("date-json", { stdout: "date json passed\n" });
+executeDriver("date-legacy-year", { stdout: "date legacy year passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
