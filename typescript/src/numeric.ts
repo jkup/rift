@@ -1,3 +1,6 @@
+import { stringToBigInt } from "./bigint-conversion.js";
+import { languageFailure } from "./runtime.js";
+import type { BigIntResult } from "./bigint-arithmetic.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toNumber } from "./conversion.js";
 import type { OperationContext, ThrowCompletion, Value } from "./runtime.js";
@@ -34,4 +37,19 @@ export function compareNumeric(left: NumericValue, right: NumericValue): number 
     if (left.kind !== "number" || right.kind !== "number") throw new Error("numeric comparison kind invariant");
     if (Number.isNaN(left.value) || Number.isNaN(right.value)) return null;
     return left.value < right.value ? -1 : left.value > right.value ? 1 : 0;
+}
+
+export function toBigInt(value: Value, context: OperationContext, loc: Location): BigIntResult {
+    const primitive = toPrimitive(value, "number", context, loc);
+    if (primitive.type === "throw") return primitive;
+    value = primitive.value;
+    if (value.kind === "bigint") return { type: "normal", value: value.value };
+    if (value.kind === "boolean") return { type: "normal", value: value.value ? 1n : 0n };
+    if (value.kind === "string") {
+        const parsed = stringToBigInt(value.value, context, loc);
+        if (parsed.type === "throw") return parsed;
+        if (parsed.value === null) return languageFailure(context.realm, "SyntaxError", "invalid BigInt string", loc);
+        return { type: "normal", value: parsed.value };
+    }
+    return languageFailure(context.realm, "TypeError", "value cannot be converted to BigInt", loc);
 }

@@ -53,3 +53,16 @@ export function bigintOperation(op: BigIntOperator, left: bigint, right: bigint,
         case "^": return { type: "normal", value: left ^ right };
     }
 }
+
+export function bigintTruncate(bits: number, value: bigint, signed: boolean, context: OperationContext, loc: Location): BigIntResult {
+    if (bits === 0 || value === 0n) return { type: "normal", value: 0n };
+    const size = width(value);
+    if (signed ? size < BigInt(bits) : value >= 0n && size <= BigInt(bits))
+        return { type: "normal", value };
+    const modulus = bigintOperation("<<", 1n, BigInt(bits), context, loc);
+    if (modulus.type === "throw") return modulus;
+    const remainder = bigintOperation("%", value, modulus.value, context, loc);
+    if (remainder.type === "throw") return remainder;
+    const positive = remainder.value < 0n ? remainder.value + modulus.value : remainder.value;
+    return { type: "normal", value: signed && positive >= (modulus.value >> 1n) ? positive - modulus.value : positive };
+}

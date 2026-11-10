@@ -4304,7 +4304,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-292 — BigInt width conversion
 
-Status: **in progress — isolated successor to TS-291**. Owner: Codex catch-up chat, 2026-11-10. Add ToIndex and ToBigInt conversion helpers and BigInt.asIntN/asUintN with exact modulo semantics, descriptors and conversion order. Short-circuit representable values at huge widths; charge allocating negative-to-unsigned conversions before host work. Own conversion/numeric/arithmetic/builtin helpers, focused tests/manifests/docs in build/bigint-width-draft. Require both-host static/zero-dynamic, full Node and relevant native regressions including cross-Realm errors and resource completions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ToIndex and ToBigInt conversion helpers and BigInt.asIntN/asUintN with exact modulo semantics, descriptors and conversion order. Short-circuit representable values at huge widths; charge allocating negative-to-unsigned conversions before host work. Own conversion/numeric/arithmetic/builtin helpers, focused tests/manifests/docs in build/bigint-width-draft. Require both-host static/zero-dynamic, full Node and relevant native regressions including cross-Realm errors and resource completions.
 
 ## TS-293 — ISO calendar and UTC nanosecond backend
 

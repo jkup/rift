@@ -131,3 +131,13 @@ export function toPropertyKey(value: Value, context: OperationContext, loc: Loca
     if (primitive.value.kind === "symbol") return { type: "normal", value: primitive.value.value };
     return toString(primitive.value, loc, context.realm);
 }
+
+export function toIndex(value: Value, context: OperationContext, loc: Location): NumberCompletion {
+    const primitive = toPrimitive(value, "number", context, loc);
+    if (primitive.type === "throw") return primitive;
+    const integer = toIntegerOrInfinity(primitive.value, loc, context.realm);
+    if (integer.type === "throw") return integer;
+    if (integer.value < 0 || integer.value > 9007199254740991)
+        return languageFailure(context.realm, "RangeError", "index outside the safe integer range", loc);
+    return { type: "normal", value: integer.value === 0 ? 0 : integer.value };
+}

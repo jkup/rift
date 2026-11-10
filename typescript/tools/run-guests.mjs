@@ -742,6 +742,7 @@ executeDriver("bigint-conversion", { stdout: "bigint conversion passed\n" });
 executeDriver("bigint-arithmetic", { stdout: "bigint arithmetic passed\n" });
 executeDriver("bigint-values", { stdout: "bigint values passed\n" });
 executeDriver("bigint-literals", { stdout: "bigint literals passed\n" });
+executeDriver("bigint-width", { stdout: "bigint width passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

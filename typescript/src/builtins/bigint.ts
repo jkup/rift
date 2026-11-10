@@ -1,11 +1,12 @@
 import type { Realm } from "../realm.js";
 import { GuestBigInt } from "../primitive-objects.js";
 import { toPrimitive } from "../primitive-conversion.js";
-import { toIntegerOrInfinity } from "../conversion.js";
-import { stringToBigInt, bigintToString } from "../bigint-conversion.js";
+import { toIntegerOrInfinity, toIndex } from "../conversion.js";
+import { bigintToString } from "../bigint-conversion.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import { languageFailure, normal, UNDEFINED, type OperationContext, type Value, type ValueCompletion } from "../runtime.js";
-import type { BigIntResult } from "../bigint-arithmetic.js";
+import { bigintTruncate, type BigIntResult } from "../bigint-arithmetic.js";
+import { toBigInt } from "../numeric.js";
 import type { Location } from "../syntax.js";
 
 function thisBigIntValue(value: Value, context: OperationContext, loc: Location): BigIntResult {
@@ -19,20 +20,23 @@ export function registerBigInt(realm: Realm): void {
         const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
         if (primitive.type === "throw") return primitive;
         const value = primitive.value;
-        if (value.kind === "bigint") return normal(value);
-        if (value.kind === "boolean") return normal({ kind: "bigint", value: value.value ? 1n : 0n });
         if (value.kind === "number") {
             if (!Number.isInteger(value.value)) return languageFailure(context.realm, "RangeError", "BigInt requires an integral number", loc);
             return normal({ kind: "bigint", value: BigInt(value.value) });
         }
-        if (value.kind === "string") {
-            const parsed = stringToBigInt(value.value, context, loc);
-            if (parsed.type === "throw") return parsed;
-            if (parsed.value === null) return languageFailure(context.realm, "SyntaxError", "invalid BigInt string", loc);
-            return normal({ kind: "bigint", value: parsed.value });
-        }
-        return languageFailure(context.realm, "TypeError", "value cannot be converted to BigInt", loc);
+        const converted = toBigInt(value, context, loc);
+        return converted.type === "throw" ? converted : normal({ kind: "bigint", value: converted.value });
     });
+    for (const name of ["asIntN", "asUintN"]) {
+        realm.registerBuiltin(constructor, name, 2, (_receiver, args, context, loc): ValueCompletion => {
+            const bits = toIndex(args.length === 0 ? UNDEFINED : args[0], context, loc);
+            if (bits.type === "throw") return bits;
+            const value = toBigInt(args.length < 2 ? UNDEFINED : args[1], context, loc);
+            if (value.type === "throw") return value;
+            const result = bigintTruncate(bits.value, value.value, name === "asIntN", context, loc);
+            return result.type === "throw" ? result : normal({ kind: "bigint", value: result.value });
+        });
+    }
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.bigintPrototype }, writable: false, enumerable: false, configurable: false });
     realm.bigintPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     realm.bigintPrototype.bootstrapDefine(wellKnownToStringTag, { value: { kind: "string", value: "BigInt" }, writable: false, enumerable: false, configurable: true });
