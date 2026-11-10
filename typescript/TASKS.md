@@ -4801,3 +4801,49 @@ Status: **in progress — isolated successor to TS-410**. Owner: Codex catch-up 
 Status: **in progress — isolated successor to TS-411**. Owner: Codex catch-up chat, 2026-11-10. Add Now.zonedDateTimeISO and Instant.toZonedDateTimeISO using supported timezone conversion and intrinsic ZonedDateTime allocation. Preserve clock/argument order, default UTC only for Now, exact epochs, branded timezone inputs, ignored extras and defining-Realm clocks/prototypes. Own src/builtins/temporal-now.ts, src/builtins/temporal.ts and tests/manifests/docs in build/temporal-zoned-factories-draft/.
 
 2026-11-10 DateTime differences / YearMonth / MonthDay milestone accepted (TS-360–380 and TS-382): 867/867 guests on each host without skips; all 374 native static-only/zero-dynamic gates pass in 4936802ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-EGRfd0/native-cZs4ci matches all 225 normalized records and preserves 190 prior completions; 190 complete, 2 records change diagnostics/output. Original fixture bytes remain unchanged. Exact PlainDateTime differences and ISO PlainYearMonth/PlainMonthDay construction, parsing, formatting, conversion, replacement and supported arithmetic/differences are accepted. PlainDate part conversions and shared calendar-bearing lookup are included. Public fields without initializers are included, with constructor timing, suspended keys and execution-budget checks. Initializer expressions, private fields, static blocks, ZonedDateTime, relative Duration APIs and locale-aware formatting remain follow-ups. Evidence: build/temporal-year-month-day-*.
+
+## TS-413 — Date to Temporal Instant conversion
+
+Status: **in progress — isolated successor to TS-412**. Owner: Codex catch-up chat, 2026-11-10. Add Date.prototype.toTemporalInstant with slot branding, invalid-date RangeError and exact millisecond-to-nanosecond scaling. Preserve intrinsic Realm allocation, ignored arguments and guest-hook bypass, and validate both time limits and Date mutations on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-to-temporal-instant-draft/.
+
+## TS-414 — ZonedDateTime string formatting and precision options
+
+Status: **in progress — isolated successor to TS-413**. Owner: Codex catch-up chat, 2026-11-10. Implement ZonedDateTime toString/toJSON and non-Intl locale fallback with exact instant rounding, local offset projection, calendar/timezone annotations and ordered display options. Validate all rounding modes, precision, day carry, option getter/error order, invalid receivers and intrinsic Realm errors on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-string-draft/.
+
+## TS-415 — Shared Instant string timezone conversion
+
+Status: **in progress — isolated successor to TS-414**. Owner: Codex catch-up chat, 2026-11-10. Use shared Temporal timezone conversion for Instant formatting, including ISO timezone strings and ZonedDateTime slots. Preserve unit-validation precedence, default Z versus explicit UTC offsets, exact rounding and defining-Realm failures. Update the earlier unsupported-only baseline and validate both hosts. Own src/builtins/temporal-instant-string.ts, test/temporal-instant-string.ts and tests/manifests/docs in build/temporal-instant-time-zone-draft/.
+
+## TS-416 — Zoned slots in plain Temporal conversions
+
+Status: **in progress — isolated successor to TS-415**. Owner: Codex catch-up chat, 2026-11-10. Recognize ZonedDateTime slots in shared PlainTime, PlainDate and PlainDateTime conversions without guest getters. Cover local offset projection, overflow validation, compare/equals callers, intrinsic allocation and Realm boundaries on both hosts. Own src/builtins/temporal-plain-time-conversion.ts, src/builtins/temporal-plain-date-conversion.ts, src/builtins/temporal-plain-date-time-conversion.ts and tests/manifests/docs in build/temporal-zoned-plain-conversion-draft/.
+
+## TS-417 — Replace ZonedDateTime local time
+
+Status: **in progress — isolated successor to TS-416**. Owner: Codex catch-up chat, 2026-11-10. Add withPlainTime and startOfDay for UTC/fixed-offset ZonedDateTime values. Preserve local date, exact offset subtraction, constrained fields, branded time conversion, intrinsic results and Instant boundary errors. Validate getter order and endpoint behavior on both hosts. Own src/builtins/temporal-zoned-date-time-parts.ts and tests/manifests/docs in build/temporal-zoned-with-plain-time-draft/.
+
+## TS-418 — Parse ZonedDateTime ISO records
+
+Status: **in progress — isolated successor to TS-417**. Owner: Codex catch-up chat, 2026-11-10. Parse zoned ISO strings into exact date/time, timezone, and offset-behavior records using the shared scanner. Require a zone annotation, preserve date-only start-of-day and Z versus numeric offsets, validate ISO calendar annotations, and defer epoch range checks to interpretation. Cover strict grammar and subminute offset precision on both hosts. Own  and tests/manifests/docs in build/temporal-zoned-parse-draft/.
+
+## TS-419 — Interpret fixed-offset zoned ISO records
+
+Status: **in progress — isolated successor to TS-418**. Owner: Codex catch-up chat, 2026-11-10. Resolve zoned records under reject/prefer/ignore/use offset policies with exact BigInt arithmetic and final Instant bounds. Preserve Z exactness and date-only starts. Validate mismatched offsets and extreme local dates without adding named-zone assumptions. Own  and tests/manifests/docs in build/temporal-zoned-interpret-draft/.
+
+## TS-420 — ZonedDateTime from compare and equals
+
+Status: **in progress — isolated successor to TS-419**. Owner: Codex catch-up chat, 2026-11-10. Integrate exact zoned parsing/interpretation with branded and field-bag conversion. Implement from, compare and equals with alphabetical field/coercion and option order, intrinsic allocation and UTC/fixed-offset ISO semantics. Cover mismatched offsets, constraints, invalid input, endpoint and Realm behavior on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-conversion-draft/.
+
+TS-420 scope update: the larger native entry exposed SC1090 in constructor metadata identity checks. Own src/script-execution-internal.ts for explicit callable discriminant narrowing, retaining both slot identity checks. Initial build/coverage evidence is preserved. A small isolated union-identity probe compiles; the full entry reproduces the graph-sensitive failure. Add constructor regressions before acceptance. The TS-419 oracle also exposed missing CheckISODaysRange prechecks in reject/prefer; both successor snapshots are corrected and their earlier evidence retained.
+
+## TS-421 — ZonedDateTime date and exact-time arithmetic
+
+Status: **in progress — isolated successor to TS-420**. Owner: Codex catch-up chat, 2026-11-10. Add/subtract durations with calendar date arithmetic before exact time arithmetic for UTC/fixed offsets. Preserve constrained/rejected month ends, intermediate/final bounds, duration/options ordering and intrinsic allocation. Test endpoint and nanosecond behavior on both hosts. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-arithmetic-draft/.
+
+## TS-422 — Round ZonedDateTime local times and days
+
+Status: **in progress — isolated successor to TS-421**. Owner: Codex catch-up chat, 2026-11-10. Round supported zoned values with ordered options, exact local rounding and day-boundary validation. Preserve nanosecond identity fast path, fixed-offset interpretation prechecks, all rounding modes, intrinsic allocation and endpoints. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-round-draft/.
+
+## TS-423 — Validate zoned transition queries
+
+Status: **in progress — isolated successor to TS-422**. Owner: Codex catch-up chat, 2026-11-10. Implement getTimeZoneTransition for supported UTC and fixed-offset zones, which have no transitions. Preserve required direction conversion, option access and receiver/error ordering, metadata and cross-Realm errors before returning null. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-transition-draft/.
