@@ -4020,7 +4020,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-226 — Generator switch continuations
 
-Status: **in progress — isolated successor to TS-225**. Owner: Codex catch-up chat, 2026-11-10. Retain switch break boundaries and selected clause sequences across yields, sharing the existing discriminant/selector evaluation and CaseBlock lexical instantiation. Preserve fallthrough, TDZ, default ordering and outer continue/label/finally behavior without rescanning selectors. Own parser admission, private switch scheduling/unwind, tests/manifests and notes in build/generator-switch-draft. Yield in selectors/discriminants and nested expression suspension remain blocked. Require both-host/static checks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain switch break boundaries and selected clause sequences across yields, sharing the existing discriminant/selector evaluation and CaseBlock lexical instantiation. Preserve fallthrough, TDZ, default ordering and outer continue/label/finally behavior without rescanning selectors. Own parser admission, private switch scheduling/unwind, tests/manifests and notes in build/generator-switch-draft. Yield in selectors/discriminants and nested expression suspension remain blocked. Require both-host/static checks.
 
 ## TS-227 — Suspended assignment references and compound operands
 

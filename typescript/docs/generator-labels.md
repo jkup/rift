@@ -12,3 +12,5 @@ continue targets.
 Tests cover chained labels, block breaks, nested loop continues, yielding finally,
 iterator close order, for-in targets and cleanup overriding pending control.
 Switch and nested expression suspension remain subsequent work.
+TS-226 retains switch selection, clause sequences and shared CaseBlock scope;
+see [generator switch continuations](generator-switch.md).

@@ -743,6 +743,7 @@ class Parser {
                 supported.add(statement);
                 if (statement.kind === "block") pending.push(...statement.body);
                 else if (statement.kind === "labelled") pending.push(statement.body);
+                else if (statement.kind === "switch") for (const clause of statement.caseBlock.clauses) pending.push(...clause.body);
                 else if (statement.kind === "while" || statement.kind === "do-while" || statement.kind === "for" || statement.kind === "for-lexical" || statement.kind === "for-of" || statement.kind === "for-in") pending.push(statement.body);
                 else if (statement.kind === "try-finally") pending.push(statement.body, statement.finalizer);
                 else if (statement.kind === "try-catch") pending.push(statement.block, statement.handler);

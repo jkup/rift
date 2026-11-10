@@ -1177,7 +1177,8 @@ type GeneratorForOf = { kind: "iterator"; frame: ScriptFrameSnapshot; statement:
 type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; enumerator: ForInEnumerator;
     target: Expr | null; lexical: boolean; scopeId: number; depth: number; labels?: readonly string[] | null };
 type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
-type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
+type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number };
+type GeneratorFrame = GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
 type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
@@ -2376,6 +2377,13 @@ class ExecutionEngine {
                         if (equal(discriminant.value, selector.value)) { selected = i; break; }
                     }
                     if (selected < 0) selected = fallback;
+                    if (sequences !== null) {
+                        const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
+                        sequences.push({ kind: "switch", frame, depth });
+                        if (selected >= 0) for (let i = clauses.length - 1; i >= selected; i--)
+                            sequences.push({ kind: "sequence", frame, body: clauses[i].body, nextStatement: 0, depth });
+                        return { type: "normal", payload: { kind: "empty" } };
+                    }
                     let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
                     if (selected >= 0) for (let i = selected; i < clauses.length; i++) {
                         const result = updateScriptEmpty(this.#list(clauses[i].body), value);
@@ -2987,6 +2995,7 @@ class ExecutionEngine {
                 this.#scheduleGeneratorFinally(continuation, boundary, completion);
                 return null;
             }
+            if (boundary.kind === "switch" && completion.type === "break" && completion.target === undefined) return null;
             if (boundary.kind === "label" && completion.type === "break" && completion.target === boundary.name) return null;
             if (boundary.kind === "loop" || boundary.kind === "for" || boundary.kind === "enumerator") {
                 if (completion.type === "break" && completion.target === undefined) return null;
@@ -3072,7 +3081,7 @@ class ExecutionEngine {
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
                 this.depth = callerDepth + sequence.depth;
-                if (sequence.kind === "catch" || sequence.kind === "label") { sequences.pop(); continue; }
+                if (sequence.kind === "catch" || sequence.kind === "label" || sequence.kind === "switch") { sequences.pop(); continue; }
                 if (sequence.kind === "finally") {
                     sequences.pop();
                     this.#scheduleGeneratorFinally(continuation, sequence, { type: "normal" });
