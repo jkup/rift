@@ -1072,7 +1072,7 @@ class Parser {
             const asynchronous = this.asyncMethodAhead();
             if (asynchronous) this.take();
             const generator = this.eat("*");
-            if (asynchronous && generator) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generators are unsupported", first.loc);
+
             let kind: "method" | "get" | "set" = "method";
             if (!generator && !asynchronous && (this.at("get") || this.at("set")) && this.token(this.index + 1)?.text !== "(") kind = this.take().text === "get" ? "get" : "set";
             const token = this.current();
@@ -1119,7 +1119,7 @@ class Parser {
                 const asynchronous = this.asyncMethodAhead();
                 if (asynchronous) this.take();
                 const generator = this.eat("*");
-                if (asynchronous && generator) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generators are unsupported", first.loc);
+
                 let kind: "data" | "get" | "set" | "prototype" = "data";
                 let key: Expr;
                 let name = "";

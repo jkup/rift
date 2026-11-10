@@ -121,12 +121,13 @@ const cases: {source:string;before:string;after:string}[] = [
         "after": "7"
     }
 ];
+cases.push({source:"var o={async *f(){}};o.f().next().then(r=>out+=r.done);class C{async *f(){}}new C().f().next().then(r=>out+=r.done);",before:"",after:"truetrue"});
 for(const test of cases){
  const realm=fresh(),session=createScriptSession();
  check(run("var out='';"+test.source,realm,session).type === "normal","setup: "+test.source);
  string("out",test.before,realm,session);const drained=drainScriptJobs(session);
  check(!drained.fatal&&drained.failures.length===0,"checkpoint: "+test.source);string("out",test.after,realm,session);
 }
-for(const text of ['class C{async constructor(){}}','var o={async *f(){}}','class C{async *f(){}}','var o={async get f(){}}','class C{async set f(x){}}','var o={async f(a,a){}}','var o={async\nf(){}}','var o={async(){await 1;}}','class C{static async prototype(){}}'])
+for(const text of ['class C{async constructor(){}}','var o={async get f(){}}','class C{async set f(x){}}','var o={async f(a,a){}}','var o={async\nf(){}}','var o={async(){await 1;}}','class C{static async prototype(){}}'])
  check(prepareBoundedScript({id:"boundary",text},fresh()).kind === "blocked","async method boundary "+text);
 console.log("async methods passed");

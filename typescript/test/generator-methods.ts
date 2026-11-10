@@ -39,5 +39,8 @@ const cases: string[] = [
     "class C{*f(a){arguments[0]=9;yield a;}}new C().f(2).next().value===2;"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"method case "+i);}
-for(const source of ["class C{*constructor(){}}","var o={get *f(){}};","var o={*f:1};","var o={*f(a,a){}};","class C{static *prototype(){}}","var o={async *f(){}};"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+for(const source of ["class C{*constructor(){}}","var o={get *f(){}};","var o={*f:1};","var o={*f(a,a){}};","class C{static *prototype(){}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 console.log("generator methods passed");
+
+const asyncMethod=run("var o={async *f(){}};o.f().next() instanceof Promise;",new Realm((_line:string):void=>{},"script"));
+check(asyncMethod.type==="normal"&&asyncMethod.value.kind==="boolean"&&asyncMethod.value.value,"original async generator method executes");

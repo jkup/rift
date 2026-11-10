@@ -4108,7 +4108,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-246 — Async generator methods
 
-Status: **in progress — isolated successor to TS-245**. Owner: Codex catch-up chat, 2026-11-10. Admit async generator object/class methods using existing home objects and async generator queues, preserving computed names, super receivers, metadata and constructor/accessor restrictions. Own parser, focused tests/manifests, historical method boundary migrations and docs in build/async-generator-methods-draft. Delegation remains separate. Require both-host/static checks and unchanged original async-generator fixture with explicit assertion harness accounting.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Admit async generator object/class methods using existing home objects and async generator queues, preserving computed names, super receivers, metadata and constructor/accessor restrictions. Own parser, focused tests/manifests, historical method boundary migrations and docs in build/async-generator-methods-draft. Delegation remains separate. Require both-host/static checks and unchanged original async-generator fixture with explicit assertion harness accounting.
 
 ## TS-247 — Async generator yield-star delegation
 
