@@ -4367,3 +4367,15 @@ Status: **in progress — isolated successor to TS-305**. Owner: Codex catch-up 
 ## TS-307 — Native manifest integrity
 
 Status: **in progress — validation repair**. Owner: Codex catch-up chat, 2026-11-10. Review found multiple new test paths nested inside the bigint-values pair, silently omitted by tuple destructuring. Repair manifest entries, fail before builds on malformed/duplicate tuples and compare driver scheduling with declared native names. Preserve the running manifest and its actual result; complete omitted/misnamed entries separately with explicit composite provenance or rerun. Propagate corrected baselines to isolated successors. No milestone acceptance until every declared gate and native guest is verified.
+
+## TS-308 — RegExp lookahead assertions
+
+Status: **in progress — isolated successor to TS-306**. Owner: Codex catch-up chat, 2026-11-10. Add positive/negative lookahead with explicit matcher assertion frames and atomic backtracking boundaries, zero-width position restoration and correct capture propagation/discard. Own syntax/matcher, exact historical admission migrations, focused tests/manifests/docs in build/regexp-lookahead-draft. Keep lookbehind, quantified legacy assertions, named groups and Unicode modes explicitly unsupported. Require nested/backtracking/capture/resource cases, both-host static validation, prior RegExp regressions and full Node.
+
+## TS-309 — BigInt codec expectation review
+
+Status: **in progress — validation repair**. Owner: Codex catch-up chat, 2026-11-10. The focused exact-codec review detects the intentional BigInt value-kind addition from TS-290, but its current expectation omitted that approved change. Preserve the historical base and initial failure; narrowly extend the current expected predicate and rerun codec/full tooling. No runtime or protocol widening beyond the integrated BigInt value kind. Prepared correction is in build/native-manifest-repair/script-observe-codec.test.mjs and already passes the isolated successor codec suite.
+
+## TS-310 — Temporal PlainTime core
+
+Status: **in progress — isolated successor to TS-308**. Owner: Codex catch-up chat, 2026-11-10. Add a branded Realm-owned PlainTime with new-only constructor, ordered finite/truncated numeric conversions, post-conversion time validation, subclass/newTarget behavior, six immutable internal time fields and branded accessors/valueOf. Own object/builtin modules, Realm/prototype fallback, namespace registration, focused tests/manifests/docs in build/temporal-plain-time-core-draft. Parsing, arithmetic, comparison and formatting remain separate follow-ups. Require abrupt/prototype order, exact bounds, metadata, cross-Realm tests and both-host/static plus full Node checks.
