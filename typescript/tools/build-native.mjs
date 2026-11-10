@@ -144,6 +144,7 @@ const entries = [
     ["test/generator-super-delete.ts", "generator-super-delete"],
     ["test/async-super-constructor.ts", "async-super-constructor"],
     ["test/generator-destructure-value.ts", "generator-destructure-value"],
+    ["test/nullish-coalescing.ts", "nullish-coalescing"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

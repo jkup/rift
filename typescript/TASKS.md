@@ -4248,7 +4248,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-279 — Nullish coalescing
 
-Status: **in progress — isolated successor to TS-278**. Owner: Codex catch-up chat, 2026-11-10. Add Script nullish coalescing with exact null/undefined short-circuit behavior, grammar rejection for unparenthesized logical mixing, and existing explicit suspension frames. Preserve falsy values, operand order, thrown completions and async resumption. Own lexer/parser, ordinary/suspended binary evaluation, tests/manifests and docs in build/nullish-coalescing-draft. Logical assignment remains separate. Require both-host/static, grammar and effect-order tests plus pinned engine review.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Script nullish coalescing with exact null/undefined short-circuit behavior, grammar rejection for unparenthesized logical mixing, and existing explicit suspension frames. Preserve falsy values, operand order, thrown completions and async resumption. Own lexer/parser, ordinary/suspended binary evaluation, tests/manifests and docs in build/nullish-coalescing-draft. Logical assignment remains separate. Require both-host/static, grammar and effect-order tests plus pinned engine review.
 
 ## TS-280 — Logical assignment
 

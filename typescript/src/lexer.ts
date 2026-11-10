@@ -265,7 +265,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
             } else if (script && two === "?." && !digit(source.charAt(i + 2))) {
                 advance(); advance();
                 tokens.push({ kind: "punct", text: two, loc, start, end: i });
-            } else if (script && ["++", "--", "**", "<<", ">>", "&=", "|=", "^=", "=>"].includes(two)) {
+            } else if (script && ["++", "--", "**", "<<", ">>", "&=", "|=", "^=", "=>", "??"].includes(two)) {
                 advance();
                 advance();
                 tokens.push({ kind: "punct", text: two, loc, start, end: i });

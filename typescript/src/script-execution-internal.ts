@@ -1899,9 +1899,10 @@ class ExecutionEngine {
                 if (left.type !== "normal") return left;
                 if (expr.op === "&&" && !truthy(left.value)) return left;
                 if (expr.op === "||" && truthy(left.value)) return left;
+                if (expr.op === "??" && left.value.kind !== "null" && left.value.kind !== "undefined") return left;
                 const right = this.#eval(expr.right, env, receiver);
                 if (right.type !== "normal") return right;
-                if (expr.op === "&&" || expr.op === "||" || expr.op === ",") return right;
+                if (expr.op === "??" || expr.op === "&&" || expr.op === "||" || expr.op === ",") return right;
                 if (expr.op === "instanceof") return instanceofOperator(left.value, right.value, this.context, expr.loc);
                 return this.binary(expr.op, left.value, right.value, expr.loc);
             }
@@ -3814,12 +3815,13 @@ class ExecutionEngine {
             }
             const node = frame.expression;
             if (frame.kind === "left") {
-                if ((node.op === "&&" && !truthy(value)) || (node.op === "||" && truthy(value))) continue;
+                if ((node.op === "&&" && !truthy(value)) || (node.op === "||" && truthy(value)) ||
+                    (node.op === "??" && value.kind !== "null" && value.kind !== "undefined")) continue;
                 frames.push({ kind: "right", expression: node, left: value });
                 expression = node.right;
                 continue;
             }
-            if (node.op === "&&" || node.op === "||" || node.op === ",") continue;
+            if (node.op === "??" || node.op === "&&" || node.op === "||" || node.op === ",") continue;
             const computed = node.op === "instanceof" ? instanceofOperator(frame.left, value, this.context, node.loc)
                 : applyBinaryOperator(node.op, frame.left, value, this.context, node.loc);
             if (computed.type === "throw") return computed;

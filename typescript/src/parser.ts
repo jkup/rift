@@ -963,7 +963,7 @@ class Parser {
         if (this.structuralPlan() && ["**=", "&=", "|=", "^=", "<<=", ">>=", ">>>="].includes(op)) return 1;
         if (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=") return 1;
         if (op === "?") return 2;
-        if (op === "||") return 3;
+        if (op === "||" || (this.structuralPlan() && op === "??")) return 3;
         if (op === "&&") return 4;
         if (this.structuralPlan() && op === "|") return 5;
         if (this.structuralPlan() && op === "^") return 6;
@@ -1078,6 +1078,14 @@ class Parser {
             if (op === "**" && (left.kind === "unary" || left.kind === "await") && !this.parenthesized.has(left))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unparenthesized unary exponentiation base", left.loc);
             const right = this.expression(precedence === 1 || op === "**" ? precedence : precedence + 1, allowIn);
+            if (op === "??" || op === "&&" || op === "||") {
+                for (const operand of [left, right]) {
+                    if (operand.kind !== "binary" || this.parenthesized.has(operand)) continue;
+                    if ((op === "??" && (operand.op === "&&" || operand.op === "||")) ||
+                        (op !== "??" && operand.op === "??"))
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "nullish and logical operators require parentheses", operatorToken.loc);
+                }
+            }
             if (precedence === 1) {
                 if (op === "=" && (left.kind === "array" || left.kind === "object") && this.structuralPlan() && !this.isParenthesized(left)) {
                     const pattern = this.assignmentPattern(left);

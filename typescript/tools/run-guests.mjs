@@ -453,7 +453,7 @@ for (const [name, source, expected] of [
     ["assignment-target", "(true ? a : b) = 1;", { status: 2, error: "1:1: parse SyntaxError: invalid assignment target" }],
     ["unchosen-syntax", "console.log('no'); true ? 1 :;", { status: 2, error: "1:30: parse SyntaxError: unsupported or unexpected syntax: ;" }],
     ["optional-chain", "true?.x;", { status: 0, stdout: "" }],
-    ["nullish", "true ?? 1;", { status: 2, error: "1:7: parse SyntaxError: unsupported or unexpected syntax: ?" }],
+    ["nullish", "true ?? 1;", { stdout: "" }],
     ["comma", "true ? 1, 2 : 3;", { status: 2, error: "1:9: parse SyntaxError: expected ':', found ','" }],
     ["abrupt-test", "missing ? console.log('no') : console.log('no');", { status: 1, error: "1:1: runtime ReferenceError: missing is not defined" }],
     ["abrupt-consequent", "true ? missing : console.log('no'); console.log('after');", { status: 1, error: "1:8: runtime ReferenceError: missing is not defined" }],
@@ -729,6 +729,7 @@ executeDriver("generator-super-update", { stdout: "generator super update passed
 executeDriver("generator-super-delete", { stdout: "generator super delete passed\n" });
 executeDriver("async-super-constructor", { stdout: "async super constructor passed\n" });
 executeDriver("generator-destructure-value", { stdout: "generator destructure value passed\n" });
+executeDriver("nullish-coalescing", { stdout: "nullish coalescing passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
