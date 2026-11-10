@@ -4416,7 +4416,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-319 — Temporal PlainTime string parsing
 
-Status: **in progress — isolated successor to TS-318**. Owner: Codex catch-up chat, 2026-11-10. Add pure TemporalTimeString parsing using the shared ISO scanner: time-only or date/time forms, optional leading T, validated ignored offsets/annotations, no Z designator and required year-month/month-day ambiguity rejection. Own parser, focused tests/manifests/docs in build/temporal-plain-time-parse-draft. No guest conversion methods yet. Require independent valid/invalid records, ambiguity boundaries, expanded dates, leap seconds and full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add pure TemporalTimeString parsing using the shared ISO scanner: time-only or date/time forms, optional leading T, validated ignored offsets/annotations, no Z designator and required year-month/month-day ambiguity rejection. Own parser, focused tests/manifests/docs in build/temporal-plain-time-parse-draft. No guest conversion methods yet. Require independent valid/invalid records, ambiguity boundaries, expanded dates, leap seconds and full Node/native static validation.
 
 ## TS-320 — Temporal PlainTime conversion and comparison
 
