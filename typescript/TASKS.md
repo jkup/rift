@@ -4762,7 +4762,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-403 — Generic Date JSON serialization
 
-Status: **in progress — isolated successor to TS-402**. Owner: Codex catch-up chat, 2026-11-10. Implement generic Date.prototype.toJSON with ToObject, numeric primitive conversion, non-finite null short-circuit and observable toISOString invocation. Validate JSON.stringify integration, non-Date receivers, coercion order, abrupt completions and defining-Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-json-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement generic Date.prototype.toJSON with ToObject, numeric primitive conversion, non-finite null short-circuit and observable toISOString invocation. Validate JSON.stringify integration, non-Date receivers, coercion order, abrupt completions and defining-Realm errors on both hosts. Own src/builtins/date.ts and tests/manifests/docs in build/date-json-draft/.
 
 ## TS-404 — Legacy Date setYear
 

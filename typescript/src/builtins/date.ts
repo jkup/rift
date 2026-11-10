@@ -1,4 +1,5 @@
 import { registerDateGetters } from "./date-getters.js";
+import { registerDateJSON } from "./date-json.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
 import { GuestDate, dateObject } from "../date-object.js";
@@ -33,6 +34,7 @@ export function registerDate(realm: Realm): void {
     registerDateGetters(realm);
     registerDateTimeSetters(realm);
     registerDateCalendarSetters(realm);
+    registerDateJSON(realm);
     const constructor = realm.createBuiltinConstructor("Date", 7,
         (_receiver, _args, context, _loc): ValueCompletion => normal({ kind: "string", value: formatDateString(currentDateMilliseconds(context.realm), "display") }),
         (_callee, newTarget, args, context, loc): ValueCompletion => {
