@@ -1,3 +1,4 @@
+import { registerTemporalInstantString } from "./temporal-instant-string.js";
 import { registerTemporalInstantMethods } from "./temporal-instant-methods.js";
 import { registerTemporalInstantConversion } from "./temporal-instant-conversion.js";
 import type { Realm } from "../realm.js";
@@ -56,6 +57,7 @@ export function registerTemporal(realm: Realm): void {
         languageFailure(context.realm, "TypeError", "Temporal.Instant cannot be converted to a primitive number", loc));
     registerTemporalInstantMethods(realm);
     registerTemporalInstantConversion(realm, constructor);
+    registerTemporalInstantString(realm);
     namespace.bootstrapDefine("Instant", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
     realm.defineScriptGlobal("Temporal", { value: { kind: "object", object: namespace }, writable: true, enumerable: false, configurable: true });
 }

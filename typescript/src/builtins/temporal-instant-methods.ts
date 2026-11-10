@@ -1,17 +1,13 @@
+import { temporalOptionString, temporalRoundingMode } from "../temporal-options.js";
 import type { Realm } from "../realm.js";
 import { createTemporalInstant, temporalInstantValue } from "../temporal-instant-object.js";
 import { toPrimitive } from "../primitive-conversion.js";
-import { toNumber, toString, type NumberCompletion, type StringCompletion } from "../conversion.js";
+import { toNumber, type NumberCompletion } from "../conversion.js";
 import { NANOSECONDS_PER_DAY } from "../iso-calendar.js";
-import { roundTemporalInstant, type TemporalRoundingMode } from "../temporal-rounding.js";
+import { roundTemporalInstant } from "../temporal-rounding.js";
 import { formatUTCInstant } from "../temporal-time-format.js";
-import { languageFailure, normal, UNDEFINED, GuestObject, type OperationContext, type ThrowCompletion, type Value, type ValueCompletion } from "../runtime.js";
+import { languageFailure, normal, UNDEFINED, GuestObject, type OperationContext, type Value, type ValueCompletion } from "../runtime.js";
 import type { Location } from "../syntax.js";
-
-function optionString(value: Value, context: OperationContext, loc: Location): StringCompletion {
-    const primitive = toPrimitive(value, "string", context, loc);
-    return primitive.type === "throw" ? primitive : toString(primitive.value, loc, context.realm);
-}
 
 function roundingIncrement(options: GuestObject, context: OperationContext, loc: Location): NumberCompletion {
     const read = options.internalGet("roundingIncrement", { kind: "object", object: options }, context, loc);
@@ -25,18 +21,6 @@ function roundingIncrement(options: GuestObject, context: OperationContext, loc:
     if (!Number.isFinite(integer) || integer < 1 || integer > 1000000000)
         return languageFailure(context.realm, "RangeError", "invalid rounding increment", loc);
     return { type: "normal", value: integer };
-}
-
-function roundingMode(options: GuestObject, context: OperationContext, loc: Location): { type: "normal"; value: TemporalRoundingMode } | ThrowCompletion {
-    const read = options.internalGet("roundingMode", { kind: "object", object: options }, context, loc);
-    if (read.type === "throw") return read;
-    if (read.value.kind === "undefined") return { type: "normal", value: "halfExpand" };
-    const converted = optionString(read.value, context, loc);
-    if (converted.type === "throw") return converted;
-    const mode = converted.value;
-    if (mode === "ceil" || mode === "floor" || mode === "expand" || mode === "trunc" || mode === "halfCeil" ||
-        mode === "halfFloor" || mode === "halfExpand" || mode === "halfTrunc" || mode === "halfEven") return { type: "normal", value: mode };
-    return languageFailure(context.realm, "RangeError", "invalid rounding mode", loc);
 }
 
 function unitNanoseconds(name: string): bigint | null {
@@ -75,12 +59,12 @@ export function registerTemporalInstantMethods(realm: Realm): void {
         else return languageFailure(context.realm, "TypeError", "round requires a unit string or options object", loc);
         const increment = roundingIncrement(options, context, loc);
         if (increment.type === "throw") return increment;
-        const mode = roundingMode(options, context, loc);
+        const mode = temporalRoundingMode(options, context, loc, "halfExpand");
         if (mode.type === "throw") return mode;
         const read = options.internalGet("smallestUnit", { kind: "object", object: options }, context, loc);
         if (read.type === "throw") return read;
         if (read.value.kind === "undefined") return languageFailure(context.realm, "TypeError", "smallestUnit is required", loc);
-        const unit = optionString(read.value, context, loc);
+        const unit = temporalOptionString(read.value, context, loc);
         if (unit.type === "throw") return unit;
         const length = unitNanoseconds(unit.value);
         if (length === null) return languageFailure(context.realm, "RangeError", "rounding requires a time unit", loc);

@@ -65,6 +65,11 @@ export function isValidEpochNanoseconds(value: bigint): boolean {
 
 export function utcDateTimeFromEpochNanoseconds(value: bigint): ISODateTime | null {
     if (!isValidEpochNanoseconds(value)) return null;
+    return isoDateTimeFromEpochNanoseconds(value);
+}
+
+export function isoDateTimeFromEpochNanoseconds(value: bigint): ISODateTime | null {
+    if (value < -MAX_EPOCH_NANOSECONDS - NANOSECONDS_PER_DAY || value >= MAX_EPOCH_NANOSECONDS + NANOSECONDS_PER_DAY) return null;
     let day = value / NANOSECONDS_PER_DAY, within = value % NANOSECONDS_PER_DAY;
     if (within < 0n) { day--; within += NANOSECONDS_PER_DAY; }
     const date = epochDayToISODate(Number(day));

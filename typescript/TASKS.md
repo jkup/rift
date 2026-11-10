@@ -4362,7 +4362,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-306 — Temporal Instant string options
 
-Status: **in progress — isolated successor to TS-305**. Owner: Codex catch-up chat, 2026-11-10. Implement Instant.toString with exact precision and rounding, ordered options, UTC and direct fixed-minute offsets, including local dates beyond Instant endpoints. Own shared Temporal option/format helpers, builtin, capability codecs, focused tests/manifests/docs in build/temporal-instant-string-draft. Named zones and other time-zone identifier grammars remain explicit unsupported operations. Require Node/native semantic cases, prior Temporal regressions, codec checks and full Node.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement Instant.toString with exact precision and rounding, ordered options, UTC and direct fixed-minute offsets, including local dates beyond Instant endpoints. Own shared Temporal option/format helpers, builtin, capability codecs, focused tests/manifests/docs in build/temporal-instant-string-draft. Named zones and other time-zone identifier grammars remain explicit unsupported operations. Require Node/native semantic cases, prior Temporal regressions, codec checks and full Node.
 
 ## TS-307 — Native manifest integrity
 
