@@ -4308,7 +4308,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-293 — ISO calendar and UTC nanosecond backend
 
-Status: **in progress — isolated successor to TS-292**. Owner: Codex catch-up chat, 2026-11-10. Add exact bounded Gregorian date/epoch-day conversion and UTC nanosecond decomposition/composition as prerequisites for Temporal. Own new src/iso-calendar.ts, tests/manifests/docs in build/iso-calendar-draft. Verify leap centuries, negative years, epoch boundaries, a full 400-year cycle and submillisecond negative times against fixed expected values on both hosts. No guest Date/Temporal exposure, timezone approximation, host date parsing or non-ISO calendar behavior.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add exact bounded Gregorian date/epoch-day conversion and UTC nanosecond decomposition/composition as prerequisites for Temporal. Own new src/iso-calendar.ts, tests/manifests/docs in build/iso-calendar-draft. Verify leap centuries, negative years, epoch boundaries, a full 400-year cycle and submillisecond negative times against fixed expected values on both hosts. No guest Date/Temporal exposure, timezone approximation, host date parsing or non-ISO calendar behavior.
 
 ## TS-294 — Temporal.Instant construction and epoch accessors
 
