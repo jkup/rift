@@ -4602,7 +4602,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
  Pure unit-length arithmetic moves to temporal-time.ts with the options-module export retained; native isolated-import evidence exposed the runtime dependency.
 ## TS-364 — Relative ISO date-time rounding
 
-Status: **in progress — isolated successor to TS-363**. Owner: Codex catch-up chat, 2026-11-10. Combine exact unrounded differences with calendar/day/time nudges and specified larger-calendar carries. Extract the carry helper shared with PlainDate rounding. Require no-op nanosecond behavior, signed ties, day-to-month/year carries, internal boundary semantics and existing date rounding regressions. Guest until/since remain separate. Own src/temporal-date-round.ts, src/temporal-difference-options.ts, src/temporal-duration-balance.ts and tests/manifests/docs in build/temporal-relative-date-time-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Combine exact unrounded differences with calendar/day/time nudges and specified larger-calendar carries. Extract the carry helper shared with PlainDate rounding. Require no-op nanosecond behavior, signed ties, day-to-month/year carries, internal boundary semantics and existing date rounding regressions. Guest until/since remain separate. Own src/temporal-date-round.ts, src/temporal-difference-options.ts, src/temporal-duration-balance.ts and tests/manifests/docs in build/temporal-relative-date-time-round-draft/.
 
 ## TS-365 — Temporal PlainDateTime differences
 

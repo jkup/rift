@@ -1,6 +1,9 @@
 import { isoDateToEpochDay, type ISODate } from "./iso-calendar.js";
 import { differenceISODate, type DateDifferenceUnit } from "./iso-calendar-difference.js";
-import { addTemporalDate } from "./temporal-date-arithmetic.js";
+import { combineISODateTime } from "./iso-date-time.js";
+import { carryCalendarDifference } from "./temporal-calendar-carry.js";
+import { durationUnit } from "./temporal-duration-balance.js";
+import { NANOSECONDS_PER_DAY } from "./temporal-time.js";
 import { dateDuration, roundCalendarDateDifference } from "./temporal-calendar-round.js";
 import { roundTemporalInteger, type TemporalRoundingMode } from "./temporal-rounding.js";
 import type { DurationFields } from "./temporal-duration.js";
@@ -28,22 +31,8 @@ export function roundDateDifference(origin: ISODate, destination: ISODate, large
         nudged = result.epochDay;
     }
     if (!expanded || smallest === "year" || smallest === "week") return duration;
-    const units: ("week" | "month" | "year")[] = [];
-    if (smallest === "day") {
-        if (largest === "week") units.push("week");
-        else if (largest === "month" || largest === "year") units.push("month");
-    }
-    if (largest === "year") units.push("year");
-    for (const unit of units) {
-        const candidate: DurationFields = unit === "year" ? dateDuration(duration.years + sign, 0, 0) :
-            unit === "month" ? dateDuration(duration.years, duration.months + sign, 0) :
-                dateDuration(duration.years, duration.months, duration.weeks + sign);
-        const end = addTemporalDate(origin, candidate, false, false);
-        if (end === null) return null;
-        const day = isoDateToEpochDay(end);
-        if (day === null) throw new Error("date carry epoch invariant");
-        if (sign * (nudged - day) < 0) return duration;
-        duration = candidate;
-    }
-    return duration;
+    const midnight = combineISODateTime(origin, { hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
+    const carried = carryCalendarDifference(midnight, { date: duration, time: 0n }, BigInt(nudged) * NANOSECONDS_PER_DAY,
+        durationUnit(largest), smallest === "month" ? "month" : "day", sign);
+    return carried === null ? null : carried.date;
 }

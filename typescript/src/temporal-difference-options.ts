@@ -1,5 +1,5 @@
 import type { Location } from "./syntax.js";
-import type { DurationUnit } from "./temporal-duration-balance.js";
+import { durationUnit, type DurationUnit } from "./temporal-duration-balance.js";
 import type { TemporalRoundingMode } from "./temporal-rounding.js";
 import { temporalUnitOption, temporalRoundingIncrement, temporalRoundingMode, temporalUnitNanoseconds } from "./temporal-options.js";
 import { GuestObject, languageFailure, type Value, type OperationContext, type ThrowCompletion } from "./runtime.js";
@@ -10,21 +10,7 @@ export interface TimeDifferenceSettings {
     readonly mode: TemporalRoundingMode;
 }
 
-export function durationUnit(name: string): DurationUnit {
-    switch (name) {
-        case "year": return "years";
-        case "month": return "months";
-        case "week": return "weeks";
-        case "day": return "days";
-        case "hour": return "hours";
-        case "minute": return "minutes";
-        case "second": return "seconds";
-        case "millisecond": return "milliseconds";
-        case "microsecond": return "microseconds";
-        case "nanosecond": return "nanoseconds";
-        default: throw new Error("duration unit invariant");
-    }
-}
+export { durationUnit } from "./temporal-duration-balance.js";
 
 export interface DifferenceOptions {
     readonly largest: string;

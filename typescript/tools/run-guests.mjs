@@ -809,6 +809,7 @@ executeDriver("iso-date-time-difference", { stdout: "iso date time difference pa
 executeDriver("temporal-date-time-difference-options", { stdout: "temporal date time difference options passed\n" });
 executeDriver("temporal-calendar-date-time-round", { stdout: "temporal calendar date time round passed\n" });
 executeDriver("temporal-day-time-round", { stdout: "temporal day time round passed\n" });
+executeDriver("temporal-relative-date-time-round", { stdout: "temporal relative date time round passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
