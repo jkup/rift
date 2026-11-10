@@ -4710,7 +4710,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-390 — Ordered Temporal Duration rounding options
 
-Status: **in progress — isolated successor to TS-389**. Owner: Codex catch-up chat, 2026-11-10. Implement string/object Duration.round options with ordered largestUnit/relativeTo/increment/mode/smallestUnit reads, duration-derived defaults, unit ordering and date/time increment constraints. Keep calculation separate and verify getter precedence, all units/modes and explicit missing-option errors on both hosts. Own  and tests/manifests/docs in build/temporal-duration-round-options-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement string/object Duration.round options with ordered largestUnit/relativeTo/increment/mode/smallestUnit reads, duration-derived defaults, unit ordering and date/time increment constraints. Keep calculation separate and verify getter precedence, all units/modes and explicit missing-option errors on both hosts. Own  and tests/manifests/docs in build/temporal-duration-round-options-draft/.
 
 ## TS-391 — Temporal Duration rounding with plain relative dates
 
