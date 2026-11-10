@@ -3936,7 +3936,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-207 — Object spread and shared data-property copying
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add object literal spread with ordered expression evaluation, nullish skipping, boxed primitive own keys, captured key order/live descriptors and getters, symbol copying and data-property definition. Share CopyDataProperties with existing object rest while preserving its budgets and exclusions. Own object AST/parser/traversals/evaluation, one copy helper, rejection migrations and tests/manifests in build/object-spread-draft based on TS-206. No object-pattern grammar changes or host Object.assign on guest objects.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add object literal spread with ordered expression evaluation, nullish skipping, boxed primitive own keys, captured key order/live descriptors and getters, symbol copying and data-property definition. Share CopyDataProperties with existing object rest while preserving its budgets and exclusions. Own object AST/parser/traversals/evaluation, one copy helper, rejection migrations and tests/manifests in build/object-spread-draft based on TS-206. No object-pattern grammar changes or host Object.assign on guest objects.
 
 ## TS-208 — String replaceAll
 

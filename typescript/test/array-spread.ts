@@ -49,7 +49,8 @@ for(const text of ['[...];','[. . .[]];','[..[]];','[...[],...];','f(...[]);','n
         check(run(text, realm).type === 'normal', 'array rest pattern admitted');
         const assigned = run('Array.isArray(x)&&x.length===0;', realm);
         check(assigned.type === 'normal' && assigned.value.kind === 'boolean' && assigned.value.value, 'array rest pattern value');
-    } else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
+    } else if(text==='({...x});')passes('var x={a:7};'+text+'({...x}).a===7;');
+    else check(prepareBoundedScript({id:'unsupported',text},fresh()).kind !== 'ready','reject '+text);
 check(parse('[...[1]];').error !== null,'legacy parser unchanged');
 const owner=fresh(),caller=fresh();
 const f=run('function f(x){return [...x];}f;',owner);check(f.type==='normal','foreign setup');if(f.type==='normal')caller.defineScriptGlobal('f',{value:f.value});

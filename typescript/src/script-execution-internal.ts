@@ -1,3 +1,4 @@
+import { copyDataProperties } from "./copy-data-properties.js";
 import { regExpCreate } from "./builtins/regexp.js";
 import type { SuperContext } from "./syntax.js";
 import { getPrototypeFromConstructor } from "./constructor-prototype.js";
@@ -1617,6 +1618,13 @@ class ExecutionEngine {
             case "object": {
                 const object = this.context.realm.createObject();
                 for (const property of expr.properties) {
+                    if (property.kind === "spread") {
+                        const source = this.#eval(property.value, env, receiver);
+                        if (source.type !== "normal") return source;
+                        const copied = copyDataProperties(object, source.value, null, this.context, property.loc);
+                        if (copied.type === "throw") return copied;
+                        continue;
+                    }
                     let key: PropertyKey;
                     if (typeof property.key === "string") key = property.key;
                     else {
@@ -2262,19 +2270,8 @@ class ExecutionEngine {
                 return target.completion;
             }
             const rest = this.context.realm.createObject();
-            const receiver: Value = { kind: "object", object: boxed.value };
-            for (const key of boxed.value.ownPropertyKeys()) {
-                const tick = this.context.tick(pattern.rest.loc);
-                if (tick.type === "throw") return tick;
-                if (excluded.has(key)) continue;
-                const descriptor = boxed.value.getOwnProperty(key);
-                if (descriptor === undefined || !descriptor.enumerable) continue;
-                const value = boxed.value.internalGet(key, receiver, this.context, pattern.rest.loc);
-                if (value.type === "throw") return value;
-                const defined = rest.defineOwnProperty(key, { value: value.value, writable: true, enumerable: true, configurable: true }, this.context, pattern.rest.loc);
-                if (defined.type === "throw") return defined;
-                if (!defined.value) throw new Error("fresh rest object invariant");
-            }
+            const copied = copyDataProperties(rest, { kind: "object", object: boxed.value }, excluded, this.context, pattern.rest.loc);
+            if (copied.type === "throw") return copied;
             return this.#initializePattern(pattern.rest, null, { kind: "object", object: rest }, environment, target === null ? null : target.reference);
         } finally { this.depth--; }
     }

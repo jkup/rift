@@ -984,7 +984,7 @@ class Parser {
                 const spread = this.take();
                 const value = this.expression(1);
                 cover.entries.push({ kind: "rest", value });
-                cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, message: "expected literal property name", loc: spread.loc };
+                properties.push({ kind: "spread", loc: spread.loc, value });
             } else {
                 const first = this.current();
                 let kind: "data" | "get" | "set" | "prototype" = "data";

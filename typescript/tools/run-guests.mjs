@@ -659,6 +659,7 @@ executeDriver("object-shorthand", { stdout: "Object shorthand passed\n" });
 executeDriver("global-this", { stdout: "Global this passed\n" });
 executeDriver("named-function-expressions", { stdout: "Named function expressions passed\n" });
 executeDriver("object-prototype-literal", { stdout: "Object prototype literals passed\n" });
+executeDriver("object-spread", { stdout: "Object spread passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

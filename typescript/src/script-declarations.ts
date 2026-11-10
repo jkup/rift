@@ -563,7 +563,7 @@ class DeclarationCollector {
                 for (let i = node.properties.length - 1; i >= 0; i--) {
                     const property = node.properties[i];
                     this.expression(property.value, scope, variableScope);
-                    if (typeof property.key !== "string") this.expression(property.key, scope, variableScope);
+                    if (property.kind !== "spread" && typeof property.key !== "string") this.expression(property.key, scope, variableScope);
                 }
                 break;
             case "template": for (let i = node.expressions.length - 1; i >= 0; i--) this.expression(node.expressions[i], scope, variableScope); break;

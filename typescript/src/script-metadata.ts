@@ -140,7 +140,7 @@ class MetadataCollector {
                 for (let i = expr.properties.length - 1; i >= 0; i--) {
                     const property = expr.properties[i];
                     this.expression(property.value, strict, parent);
-                    if (typeof property.key !== "string") this.expression(property.key, strict, parent);
+                    if (property.kind !== "spread" && typeof property.key !== "string") this.expression(property.key, strict, parent);
                 }
                 break;
             case "template": for (let i = expr.expressions.length - 1; i >= 0; i--) this.expression(expr.expressions[i], strict, parent); break;
