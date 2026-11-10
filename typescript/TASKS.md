@@ -4778,7 +4778,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-407 — UTC and fixed-offset Temporal timezone parsing
 
-Status: **in progress — isolated successor to TS-406**. Owner: Codex catch-up chat, 2026-11-10. Resolve supported Temporal timezone strings from UTC names, minute offsets and ISO date/time/year-month/month-day forms. Share the ISO scanner, preserve annotation precedence and syntax checks, reject sub-minute timezone identifiers and unavailable named zones, and validate all supported grammar branches on both hosts. Own  and tests/manifests/docs in build/temporal-time-zone-parse-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resolve supported Temporal timezone strings from UTC names, minute offsets and ISO date/time/year-month/month-day forms. Share the ISO scanner, preserve annotation precedence and syntax checks, reject sub-minute timezone identifiers and unavailable named zones, and validate all supported grammar branches on both hosts. Own  and tests/manifests/docs in build/temporal-time-zone-parse-draft/.
 
 ## TS-408 — Temporal Now plain ISO projections
 
