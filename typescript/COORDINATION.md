@@ -2500,3 +2500,27 @@ The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound
 2026-11-10 TS-260 promoted after suspended-expressions acceptance with 6 changed-file baselines verified. Isolated evidence passes 750 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/generator-delete-draft/build and build/generator-delete-* logs, retaining initial failures and exact historical-input migrations.
 
 2026-11-10 TS-261 promoted after suspended-expressions acceptance with 5 changed-file baselines verified. Isolated evidence passes 751 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/generator-for-initializer-draft/build and build/generator-for-initializer-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-10: TS-262 focused native/static passes; full Node and regressions are running. TS-263 claimed for suspended lexical for-loop initializers, preserving the initializer environment before per-iteration cloning.
+
+2026-11-10: TS-263 focused native/static passes; Node and regressions are running. TS-264 claimed for suspended for-in/of sources. Reviewed pinned engine262 LabelledEvaluation.mts ForInOfHeadEvaluation: temporary uninitialized head bindings, outer environment restoration, then enumeration/iterator acquisition.
+
+2026-11-10: TS-264 focused native/static passes; full Node and iteration regressions are running. TS-265 claimed for nested assignment RHS suspension, reusing captured references and PutValue.
+
+2026-11-10: TS-265 focused Node tests pass; native and full Node validation are running. TS-266 claimed for nested compound RHS suspension, preserving old-value reads before RHS and coercion after RHS.
+
+2026-11-10: TS-266 focused Node tests pass; native and full Node validation are running. TS-267 claimed for multiple suspended var initializers, reusing ordinary single-declaration execution.
+
+2026-11-10: TS-267 focused Node tests pass; native and full Node validation are running. TS-268 claimed for suspended property assignment targets, retaining the existing deferred-key reference semantics.
+
+2026-11-10: TS-268 focused Node tests pass; full Node validation is running. TS-269 claimed for suspended compound targets, reusing retained references and old-value reads.
+
+2026-11-10: TS-268 focused native/static and all 758 Node guests pass; TS-269 focused Node tests pass. TS-270 claimed for suspended prefix/postfix targets, sharing existing numeric update semantics.
+
+2026-11-10: TS-270 focused Node tests pass; native validation is queued after TS-269 regressions. TS-271 claimed for suspended super reads. Reviewed ECMAScript 2025 SuperProperty and pinned engine262 SuperProperty.mts: actual this before key evaluation, GetSuperBase afterward, and deferred key conversion. Existing ordinary ordering matches that contract.
+
+2026-11-10: TS-271 passes all 761 Node guests; native validation is queued. TS-272 claimed for suspended super method targets, following SuperProperty then EvaluateCall reference receiver ordering.
+
+2026-11-10: TS-272 focused Node tests pass; full Node validation is running. TS-273 claimed for suspended super assignment targets, retaining the existing explicit super receiver through PutValue.
+
+2026-11-10 Control expressions accepted (TS-254–261): 751/751 guests on each host without skips; all 258 native static-only/zero-dynamic gates pass in 2700554ms without retries. Tooling passes 293/293 in 241267.9358ms; runner32/32 in 691.3426ms, ten probes and typechecking pass. Corpus node-wYNCGS/native-Wk7gJm matches all 225 normalized records and preserves all 190 prior completions (116 reported successes, 74 unchecked). Remaining outcomes: two parse errors, 32 runtime errors and one reported failure. Evidence: build/control-expressions-native-results.json, control-expressions-corpus-comparison.json and control-expressions-* logs. Declaration initializers, iteration sources, nested assignments and property assignment targets remain isolated successors requiring combined acceptance.
