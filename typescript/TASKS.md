@@ -4580,7 +4580,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-359 — Temporal PlainDateTime arithmetic
 
-Status: **in progress — isolated successor to TS-358**. Owner: Codex catch-up chat, 2026-11-10. Add exact PlainDateTime.add/subtract with nanosecond time balancing and calendar-day carries through the existing ISO date arithmetic helper. Preserve duration/option order, month regulation, signed carries and strict bounds. Require sub-day borrow, leap/month-end carries, large exact time amounts, mixed calendar/time durations and native static validation. Own src/builtins/temporal-plain-date-time.ts and tests/manifests/docs in build/temporal-plain-date-time-arithmetic-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add exact PlainDateTime.add/subtract with nanosecond time balancing and calendar-day carries through the existing ISO date arithmetic helper. Preserve duration/option order, month regulation, signed carries and strict bounds. Require sub-day borrow, leap/month-end carries, large exact time amounts, mixed calendar/time durations and native static validation. Own src/builtins/temporal-plain-date-time.ts and tests/manifests/docs in build/temporal-plain-date-time-arithmetic-draft/.
 
 ## TS-360 — Exact ISO date-time differences
 
