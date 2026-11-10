@@ -4874,7 +4874,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-430 — Checked zoned calendar carry
 
-Status: **in progress — isolated successor to TS-429**. Owner: Codex catch-up chat, 2026-11-10. Carry expanded zoned rounded differences into weeks, months and years while validating each candidate calendar boundary as an Instant. Own  and tests/manifests/docs in build/temporal-zoned-calendar-carry-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Carry expanded zoned rounded differences into weeks, months and years while validating each candidate calendar boundary as an Instant. Own  and tests/manifests/docs in build/temporal-zoned-calendar-carry-draft/.
 
 ## TS-431 — Compose zoned difference rounding
 

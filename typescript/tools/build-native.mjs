@@ -288,6 +288,7 @@ const entries = [
     ["test/temporal-zoned-difference-record.ts", "temporal-zoned-difference-record"],
     ["test/temporal-zoned-calendar-round.ts", "temporal-zoned-calendar-round"],
     ["test/temporal-zoned-time-round.ts", "temporal-zoned-time-round"],
+    ["test/temporal-zoned-calendar-carry.ts", "temporal-zoned-calendar-carry"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
