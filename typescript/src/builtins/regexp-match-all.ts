@@ -2,7 +2,7 @@ import type { Realm } from "../realm.js";
 import { normal, languageFailure, UNDEFINED, type GuestObject, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import { GuestRegExpStringIterator } from "../regexp-string-iterator.js";
 import { regExpSpecies } from "../regexp-species.js";
-import { isRegExp } from "../regexp-object.js";
+import { requireGlobalRegExp } from "../regexp-global-check.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toObject } from "../object-conversion.js";
 import { toLength } from "../conversion.js";
@@ -43,18 +43,10 @@ function stringMatchAll(receiver: Value, args: Value[], context: OperationContex
     if (receiver.kind === "null" || receiver.kind === "undefined") return languageFailure(context.realm, "TypeError", "String matchAll receiver is nullish", loc);
     const pattern = args.length === 0 ? UNDEFINED : args[0];
     if (pattern.kind !== "null" && pattern.kind !== "undefined") {
-        const regexp = isRegExp(pattern, context, loc);
-        if (regexp.type === "throw") return regexp;
+        const checked = requireGlobalRegExp(pattern, "matchAll", context, loc);
+        if (checked.type === "throw") return checked;
         const boxed = toObject(pattern, context, loc);
         if (boxed.type === "throw") return boxed;
-        if (regexp.value) {
-            const property = boxed.value.internalGet("flags", pattern, context, loc);
-            if (property.type === "throw") return property;
-            if (property.value.kind === "undefined" || property.value.kind === "null") return languageFailure(context.realm, "TypeError", "matchAll flags are nullish", loc);
-            const flags = regExpString(property.value, context, loc);
-            if (flags.type === "throw") return flags;
-            if (!flags.value.includes("g")) return languageFailure(context.realm, "TypeError", "String matchAll requires a global RegExp", loc);
-        }
         const method = boxed.value.internalGet(wellKnownMatchAll, pattern, context, loc);
         if (method.type === "throw") return method;
         if (method.value.kind !== "undefined" && method.value.kind !== "null") {

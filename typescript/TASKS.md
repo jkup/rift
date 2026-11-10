@@ -3940,7 +3940,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-208 — String replaceAll
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add replaceAll with the RegExp-global prerequisite before custom Symbol.replace dispatch, ordered string/replacement conversion, non-overlapping UTF-16 positions (including empty search), functional replacement and existing substitution/output budgets. Share the global-RegExp validation with matchAll and preserve replace behavior. Own RegExp replacement registration, one protocol helper, inventories and focused tests/manifests in build/string-replaceall-draft based on TS-207. No matcher flag or pattern expansion.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add replaceAll with the RegExp-global prerequisite before custom Symbol.replace dispatch, ordered string/replacement conversion, non-overlapping UTF-16 positions (including empty search), functional replacement and existing substitution/output budgets. Share the global-RegExp validation with matchAll and preserve replace behavior. Own RegExp replacement registration, one protocol helper, inventories and focused tests/manifests in build/string-replaceall-draft based on TS-207. No matcher flag or pattern expansion.
 
 ## TS-209 — Current-session suspension prerequisite probe
 

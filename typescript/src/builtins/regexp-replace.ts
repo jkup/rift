@@ -1,3 +1,4 @@
+import { requireGlobalRegExp } from "../regexp-global-check.js";
 import type { Realm } from "../realm.js";
 import { GuestObject, normal, languageFailure, UNDEFINED, type Value, type ValueCompletion, type OperationContext, type ThrowCompletion } from "../runtime.js";
 import { toObject } from "../object-conversion.js";
@@ -132,10 +133,41 @@ function replaceRegExp(receiver: Value, args: Value[], context: OperationContext
     return suffix !== null ? suffix : normal({ kind: "string", value: output.finish() });
 }
 
-function replaceString(receiver: Value, args: Value[], context: OperationContext, loc: Location): ValueCompletion {
+function replaceAllMatches(input: string, needle: string, replacement: Replacement, context: OperationContext, loc: Location): ValueCompletion {
+    const positions: number[] = [], advance = Math.max(1, needle.length);
+    let start = 0;
+    while (start <= input.length) {
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const position = input.indexOf(needle, start);
+        if (position < 0) break;
+        positions.push(position);
+        start = position + advance;
+    }
+    if (positions.length === 0) return normal({ kind: "string", value: input });
+    const output = new ReplacementText(context, loc);
+    let end = 0;
+    for (const position of positions) {
+        const text = replacementForMatch(replacement, needle, input, position, [], UNDEFINED, context, loc);
+        if (text.type === "throw") return text;
+        const prefix = output.append(input.slice(end, position));
+        if (prefix !== null) return prefix;
+        const replaced = output.append(text.value);
+        if (replaced !== null) return replaced;
+        end = position + needle.length;
+    }
+    const suffix = output.append(input.slice(end));
+    return suffix !== null ? suffix : normal({ kind: "string", value: output.finish() });
+}
+
+function replaceString(receiver: Value, args: Value[], all: boolean, context: OperationContext, loc: Location): ValueCompletion {
     if (receiver.kind === "null" || receiver.kind === "undefined") return languageFailure(context.realm, "TypeError", "String replace receiver is nullish", loc);
     const search = args.length === 0 ? UNDEFINED : args[0], replacementValue = args.length < 2 ? UNDEFINED : args[1];
     if (search.kind !== "null" && search.kind !== "undefined") {
+        if (all) {
+            const checked = requireGlobalRegExp(search, "replaceAll", context, loc);
+            if (checked.type === "throw") return checked;
+        }
         const boxed = toObject(search, context, loc);
         if (boxed.type === "throw") return boxed;
         const method = boxed.value.internalGet(wellKnownReplace, search, context, loc);
@@ -151,6 +183,7 @@ function replaceString(receiver: Value, args: Value[], context: OperationContext
     if (needle.type === "throw") return needle;
     const replacement = prepareReplacement(replacementValue, context, loc);
     if (replacement.type === "throw") return replacement;
+    if (all) return replaceAllMatches(input.value, needle.value, replacement.value, context, loc);
     const position = input.value.indexOf(needle.value);
     if (position < 0) return normal({ kind: "string", value: input.value });
     const text = replacementForMatch(replacement.value, needle.value, input.value, position, [], UNDEFINED, context, loc);
@@ -166,5 +199,6 @@ function replaceString(receiver: Value, args: Value[], context: OperationContext
 export function registerRegExpReplace(realm: Realm): void {
     const method = realm.createBuiltin("[Symbol.replace]", 2, (receiver, args, context, loc) => replaceRegExp(receiver, args, context, loc));
     realm.regexpPrototype.bootstrapDefine(wellKnownReplace, { value: { kind: "object", object: method }, writable: true, enumerable: false, configurable: true });
-    realm.registerBuiltin(realm.stringPrototype, "replace", 2, (receiver, args, context, loc) => replaceString(receiver, args, context, loc));
+    realm.registerBuiltin(realm.stringPrototype, "replace", 2, (receiver, args, context, loc) => replaceString(receiver, args, false, context, loc));
+    realm.registerBuiltin(realm.stringPrototype, "replaceAll", 2, (receiver, args, context, loc) => replaceString(receiver, args, true, context, loc));
 }
