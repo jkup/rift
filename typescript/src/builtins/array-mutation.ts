@@ -24,6 +24,61 @@ function moveProperty(object: GuestObject, from: string, to: string, context: Op
     return written.type === "throw" ? written : normal();
 }
 
+export function registerArrayRangeMutators(realm: Realm): void {
+    realm.registerBuiltin(realm.arrayPrototype, "fill", 1, (receiver, args, context, loc) => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        const start = toClampedIndex(args.length < 2 ? UNDEFINED : args[1], length.value, context, loc);
+        if (start.type === "throw") return start;
+        let end = length.value;
+        if (args.length > 2 && args[2].kind !== "undefined") {
+            const converted = toClampedIndex(args[2], length.value, context, loc);
+            if (converted.type === "throw") return converted;
+            end = converted.value;
+        }
+        const value = args.length === 0 ? UNDEFINED : args[0];
+        for (let k = start.value; k < end; k++) {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+            const written = boxed.value.set(numberToString(k), value, context, loc);
+            if (written.type === "throw") return written;
+        }
+        return normal({ kind: "object", object: boxed.value });
+    });
+    realm.registerBuiltin(realm.arrayPrototype, "copyWithin", 2, (receiver, args, context, loc) => {
+        const boxed = toObject(receiver, context, loc);
+        if (boxed.type === "throw") return boxed;
+        const length = lengthOfArrayLike(boxed.value, context, loc);
+        if (length.type === "throw") return length;
+        const target = toClampedIndex(args.length === 0 ? UNDEFINED : args[0], length.value, context, loc);
+        if (target.type === "throw") return target;
+        const start = toClampedIndex(args.length < 2 ? UNDEFINED : args[1], length.value, context, loc);
+        if (start.type === "throw") return start;
+        let end = length.value;
+        if (args.length > 2 && args[2].kind !== "undefined") {
+            const converted = toClampedIndex(args[2], length.value, context, loc);
+            if (converted.type === "throw") return converted;
+            end = converted.value;
+        }
+        let from = start.value, to = target.value;
+        let count = Math.min(end - from, length.value - to);
+        const direction = from < to && to < from + count ? -1 : 1;
+        if (direction === -1) { from += count - 1; to += count - 1; }
+        while (count > 0) {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+            const moved = moveProperty(boxed.value, numberToString(from), numberToString(to), context, loc);
+            if (moved.type === "throw") return moved;
+            from += direction;
+            to += direction;
+            count--;
+        }
+        return normal({ kind: "object", object: boxed.value });
+    });
+}
+
 export function registerArrayMutators(realm: Realm): void {
     realm.registerBuiltin(realm.arrayPrototype, "push", 1, (receiver, args, context, loc) => {
         const boxed = toObject(receiver, context, loc);

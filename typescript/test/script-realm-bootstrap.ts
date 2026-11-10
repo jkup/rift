@@ -52,7 +52,7 @@ function inventory(a: Realm): void {
     const lists: PropertyKey[][] = [
         ["valueOf","toString","constructor","hasOwnProperty","propertyIsEnumerable","isPrototypeOf","toLocaleString"],
         ["name","length","caller","arguments","bind","call","apply","toString","constructor",wellKnownHasInstance],
-        ["length","join","toLocaleString","toString","push","pop","shift","unshift","reverse","splice","slice","concat","sort","toReversed","toSorted","toSpliced","with",
+        ["length","join","toLocaleString","toString","push","pop","shift","unshift","reverse","splice","fill","copyWithin","slice","concat","sort","toReversed","toSorted","toSpliced","with",
             "flat","flatMap","at","indexOf","includes","lastIndexOf",
             "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownIterator],
         ["toString","valueOf","constructor"],

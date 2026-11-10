@@ -30,7 +30,7 @@ import { registerString, registerStringConversions, registerStringMethods } from
 import { registerStringHTML } from "./builtins/string-html.js";
 import { registerStringWellFormed } from "./builtins/string-wellformed.js";
 import { registerArray, registerArrayConversions } from "./builtins/array.js";
-import { registerArrayMutators, registerArraySplice } from "./builtins/array-mutation.js";
+import { registerArrayMutators, registerArraySplice, registerArrayRangeMutators } from "./builtins/array-mutation.js";
 import { registerArraySearch } from "./builtins/array-search.js";
 import { registerArrayPredicates } from "./builtins/array-predicate.js";
 import {registerMath} from "./builtins/math.js";
@@ -115,6 +115,7 @@ export class Realm {
         registerArrayMutators(this);
         if (profile === "script") {
             registerArraySplice(this);
+            registerArrayRangeMutators(this);
             registerArraySlice(this);
             registerArrayConcat(this);
             registerArraySort(this);
