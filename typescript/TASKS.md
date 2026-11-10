@@ -4734,7 +4734,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-396 — Date ISO string parsing under UTC policy
 
-Status: **in progress — isolated successor to TS-395**. Owner: Codex catch-up chat, 2026-11-10. Parse ECMAScript Date Time String Format using engine-owned calendar/time primitives, including reduced dates, expanded years, exact millisecond fields, 24:00 and numeric offsets. Apply clipping only after offset subtraction; reject malformed fields and negative-zero expanded years. No host Date.parse or Temporal annotation grammar. Own  and tests/manifests/docs in build/date-iso-parse-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Parse ECMAScript Date Time String Format using engine-owned calendar/time primitives, including reduced dates, expanded years, exact millisecond fields, 24:00 and numeric offsets. Apply clipping only after offset subtraction; reject malformed fields and negative-zero expanded years. No host Date.parse or Temporal annotation grammar. Own  and tests/manifests/docs in build/date-iso-parse-draft/.
 
 ## TS-397 — Engine-owned UTC Date formatting
 

@@ -255,6 +255,7 @@ const entries = [
     ["test/temporal-duration-round.ts", "temporal-duration-round"],
     ["test/date-time-core.ts", "date-time-core"],
     ["test/date-calendar.ts", "date-calendar"],
+    ["test/date-iso-parse.ts", "date-iso-parse"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
