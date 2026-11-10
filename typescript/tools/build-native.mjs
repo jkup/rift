@@ -128,6 +128,7 @@ const entries = [
     ["test/generator-delete.ts", "generator-delete"],
     ["test/generator-for-initializer.ts", "generator-for-initializer"],
     ["test/generator-for-var.ts", "generator-for-var"],
+    ["test/generator-for-binding.ts", "generator-for-binding"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

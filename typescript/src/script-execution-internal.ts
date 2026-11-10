@@ -2723,6 +2723,13 @@ class ExecutionEngine {
                 this.#frame = { ...saved, lexical: created.environment };
                 try {
                     const binding = stmt.binding;
+                    if (sequences !== null && binding.init !== null && isSuspendingGeneratorExpression(binding.init)) {
+                        const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
+                        const initialization: Stmt = { kind: stmt.declarationKind, name: binding.site.name, init: binding.init, loc: binding.site.loc };
+                        sequences.push({ kind: "for", frame, statement: stmt, outer: saved.lexical, first: true, phase: "prepare", depth, labels });
+                        sequences.push({ kind: "sequence", frame, body: [initialization], nextStatement: 0, depth });
+                        return { type: "normal", payload: { kind: "empty" } };
+                    }
                     const value = binding.init === null ? normal() : this.#value(binding.init, binding.site.name);
                     if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
                     const initialized = created.environment.initializeBinding(binding.site.name, value.value, this.context, binding.site.loc);

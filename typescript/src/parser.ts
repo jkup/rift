@@ -815,6 +815,7 @@ class Parser {
                     this.admitGeneratorExpression(statement.test, supported);
                     pending.push(statement.body);
                 } else if (statement.kind === "for" || statement.kind === "for-lexical") {
+                    if (statement.kind === "for-lexical" && statement.binding.init !== null) this.admitGeneratorExpression(statement.binding.init, supported);
                     if (statement.kind === "for" && statement.initializer !== null) {
                         if (statement.initializer.kind === "var") pending.push(statement.initializer);
                         else this.admitGeneratorExpression(statement.initializer, supported);

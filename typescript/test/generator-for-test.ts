@@ -42,7 +42,7 @@ for(let i=0;i<cases.length;i++){const result=run(cases[i],new Realm((_line:strin
 for(const source of ['async function f(){for(let i=0;await Promise.resolve(i<2);i++)out+=i}f()', 'async function* f(){for(let i=0;await Promise.resolve(i<2);i++)yield i}var g=f();g.next().then(r=>out+=r.value);g.next().then(r=>out+=r.value)']){
  const realm=new Realm((_line:string)=>{},'script'),session=createScriptSession();check(run('var out="";'+source,realm,session).type==='normal','async setup');const jobs=drainScriptJobs(session);check(!jobs.fatal&&jobs.failures.length===0,'async jobs');const result=run('out==="01"',realm,session);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'async for test result');
 }
-for(const source of ['function* f(){for(let i=yield 1;;){}}'])check(prepareBoundedScript({id:'boundary',text:source},new Realm((_line:string)=>{},'script')).kind==='blocked','for test boundary '+source);
+{const realm=new Realm((_line:string)=>{},'script');const result=run('function* f(){for(let i=yield 1;;){}}var g=f();g.next().value===1&&g.return(7).value===7',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'original lexical initializer boundary');}
 {
  const source='function* f(){for(;;yield 1){}}',realm=new Realm((_line:string)=>{},'script');check(prepareBoundedScript({id:'historical-for-update',text:source},realm).kind==='ready','historical update admitted');const result=run(source+'var g=f();g.next().value===1&&g.next().value===1&&g.return(7).done',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'historical update resumes');
 }

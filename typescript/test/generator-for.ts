@@ -40,7 +40,7 @@ const cases: string[] = [
     "function* f(){for(let i=0;i<2;i++){var j=0;while(j++<2){yield i*10+j;continue;}}}Array.from(f()).join(\",\")===\"1,2,11,12\";"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"for case "+i);}
-for(const source of ["function* f(){for(let i=yield 1;;){}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+{const realm=new Realm((_line:string)=>{},'script');const result=run('function* f(){for(let i=yield 1;;){}}var g=f();g.next().value===1&&g.return(7).value===7',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'original lexical initializer boundary');}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('function* f(){for(let i=0;i<2;i++){yield ()=>i;}}var g=f();',A);define(B,"g",own(A,"g"));
 run('var a=g.next().value;',B);const cross=run('var b=g.next().value;a()===0&&b()===1&&g.next().done;',B);

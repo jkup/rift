@@ -4182,7 +4182,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-263 — Suspended lexical for-loop initializers
 
-Status: **in progress — isolated successor to TS-262**. Owner: Codex catch-up chat, 2026-11-10. Run a lexical loop initializer in its uninitialized loop environment, then enter ordinary per-iteration preparation. Reuse declaration initialization receivers and preserve TDZ, const behavior, closures, labels and abrupt restoration. Own parser, retained initialization sequence, historical boundaries, tests/manifests and docs in build/generator-for-binding-draft. Require both-host/static, scope and async tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Run a lexical loop initializer in its uninitialized loop environment, then enter ordinary per-iteration preparation. Reuse declaration initialization receivers and preserve TDZ, const behavior, closures, labels and abrupt restoration. Own parser, retained initialization sequence, historical boundaries, tests/manifests and docs in build/generator-for-binding-draft. Require both-host/static, scope and async tests.
 
 ## TS-264 — Suspended for-in/of source expressions
 
