@@ -4524,7 +4524,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-345 — ISO calendar difference backend
 
-Status: **in progress — isolated successor to TS-344**. Owner: Codex catch-up chat, 2026-11-10. Add bounded constant-time ISO calendar differences in years/months/weeks/days, preserving unclamped candidate comparison before residual-day calculation. Own pure difference helper, tests/manifests/docs in build/iso-calendar-difference-draft. No guest methods yet. Require asymmetric leap/month-end examples, signed results, full-range inputs and calendar-cycle reconstruction on both hosts. Date difference options/rounding remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add bounded constant-time ISO calendar differences in years/months/weeks/days, preserving unclamped candidate comparison before residual-day calculation. Own pure difference helper, tests/manifests/docs in build/iso-calendar-difference-draft. No guest methods yet. Require asymmetric leap/month-end examples, signed results, full-range inputs and calendar-cycle reconstruction on both hosts. Date difference options/rounding remain separate.
 
 ## TS-346 — Temporal date difference options
 
