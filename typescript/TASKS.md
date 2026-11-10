@@ -3805,7 +3805,7 @@ Draft review: 678/678 Node guests pass. Focused arrow cover semantics pass both 
 
 ## TS-179 — Incremental Script parser token access
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Connect structural Script parsing to the incremental lexer, replace direct indexed lookahead with a token accessor, and retain the completed token array for declarations/directives/audits. Preserve eager lexical-error precedence by finishing scanning after parser rejection. Keep legacy parse/return-audit entry points and syntax admission unchanged. Own parser, focused tests/manifests and notes in build/parser-token-draft, based on reviewed TS-177/178. Literal rescanning and admission remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Connect structural Script parsing to the incremental lexer, replace direct indexed lookahead with a token accessor, and retain the completed token array for declarations/directives/audits. Preserve eager lexical-error precedence by finishing scanning after parser rejection. Keep legacy parse/return-audit entry points and syntax admission unchanged. Own parser, focused tests/manifests and notes in build/parser-token-draft, based on reviewed TS-177/178. Literal rescanning and admission remain separate.
 
 Draft review: 679/679 Node guests pass. Focused incremental parser checks pass both hosts at 11055 static statements, zero dynamic. Nine parser/plan/audit APIs preserve all 3069 results across 341 fixture sources, including lexical diagnostics and rejection precedence. Evidence: build/parser-token-draft/build/token-reviewed.json, token-node-reviewed.log and parser-compatibility.json.
 
