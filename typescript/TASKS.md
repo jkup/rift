@@ -4532,7 +4532,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-347 — Exact calendar rounding windows
 
-Status: **in progress — isolated successor to TS-346**. Owner: Codex catch-up chat, 2026-11-10. Add pure year/month/week rounding windows for ISO date differences using actual calendar-day distances and exact rational rounding. Preserve window shifts, range failures and carry signals for later relative-duration balancing. Own rounding helper, tests/manifests/docs in build/temporal-calendar-round-draft. No guest methods yet. Require signed ties, half-even parity, variable month/year lengths, exact-boundary behavior and native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add pure year/month/week rounding windows for ISO date differences using actual calendar-day distances and exact rational rounding. Preserve window shifts, range failures and carry signals for later relative-duration balancing. Own rounding helper, tests/manifests/docs in build/temporal-calendar-round-draft. No guest methods yet. Require signed ties, half-even parity, variable month/year lengths, exact-boundary behavior and native static validation.
 
 ## TS-348 — Relative ISO date rounding
 
