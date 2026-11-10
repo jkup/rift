@@ -864,6 +864,7 @@ executeDriver("temporal-zoned-parse", { stdout: "temporal zoned parse passed\n" 
 executeDriver("temporal-zoned-interpret", { stdout: "temporal zoned interpret passed\n" });
 executeDriver("temporal-zoned-conversion", { stdout: "temporal zoned conversion passed\n" });
 executeDriver("temporal-zoned-arithmetic", { stdout: "temporal zoned arithmetic passed\n" });
+executeDriver("temporal-zoned-round", { stdout: "temporal zoned round passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

@@ -4842,7 +4842,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-422 — Round ZonedDateTime local times and days
 
-Status: **in progress — isolated successor to TS-421**. Owner: Codex catch-up chat, 2026-11-10. Round supported zoned values with ordered options, exact local rounding and day-boundary validation. Preserve nanosecond identity fast path, fixed-offset interpretation prechecks, all rounding modes, intrinsic allocation and endpoints. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Round supported zoned values with ordered options, exact local rounding and day-boundary validation. Preserve nanosecond identity fast path, fixed-offset interpretation prechecks, all rounding modes, intrinsic allocation and endpoints. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-round-draft/.
 
 ## TS-423 — Validate zoned transition queries
 
