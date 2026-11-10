@@ -4491,3 +4491,15 @@ Status: **in progress — isolated successor to TS-335**. Owner: Codex catch-up 
 ## TS-337 — Temporal PlainDate core
 
 Status: **in progress — isolated successor to TS-336**. Owner: Codex catch-up chat, 2026-11-10. Add ISO-only PlainDate construction and branded calendar/date accessors with Realm-owned prototypes. Validate numeric/calendar input before prototype access and extend PlainTime.with brand screening. Own date object/builtin, Realm/constructor/namespace wiring, focused tests/manifests/docs in build/temporal-plain-date-core-draft. Require bounds, conversion ordering, metadata/subclass/Realm behavior and unchanged existing Temporal APIs on full Node/native static validation. Formatting, conversion and arithmetic remain separate tasks.
+
+## TS-338 — Temporal PlainDate formatting
+
+Status: **in progress — isolated successor to TS-337**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate.toString/toJSON/non-Intl toLocaleString with ISO year formatting and calendarName annotations. Share ISO date formatting with existing Instant strings. Own date formatting builtin/registration and shared formatter, focused tests/manifests/docs in build/temporal-plain-date-format-draft. Require expanded years, bounds, option coercion/order, ignored reserved arguments, branded fields and full Node/native static regression validation.
+
+## TS-339 — Temporal PlainDate string parsing
+
+Status: **in progress — isolated successor to TS-338**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO PlainDate string parsing with optional validated time/offset, no Z, and first calendar annotation retention. Preserve existing Instant/PlainTime annotation behavior. Own date parser/shared scanner, focused tests/manifests/docs in build/temporal-plain-date-parse-draft. No guest conversion yet; date range validation remains separate to preserve future options ordering. Require compact/expanded dates, ignored time/zone fields, critical/duplicate annotations and full Node/native static regressions.
+
+## TS-340 — Temporal ISO date field conversion
+
+Status: **in progress — isolated successor to TS-339**. Owner: Codex catch-up chat, 2026-11-10. Add ordered day/month/monthCode/year field conversion and ISO date resolution for future PlainDate conversion and replacement. Keep field reads separate from overflow and required-field checks. Own date field helper, focused tests/manifests/docs in build/temporal-date-fields-draft. Require coercion order, month-code syntax versus calendar validation phases, missing fields, leap days and range limits on both hosts. No guest methods yet.
