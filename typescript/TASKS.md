@@ -3959,7 +3959,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-212 — Pending compound assignment across sessions
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add a host-only semantic probe that retains a reference and captured left Value, then completes the operation in another ScriptSession using current budgets and the captured operation Realm. Exercise once-only key/Get effects, RHS mutation of coercion and setters, abrupt RHS identity, errors and resource cleanup. Use the TS-210/211 shared operations; no host evaluation of guest source, new yield grammar or claim of AST frame transfer. Own one focused test/manifests and suspension notes in build/pending-expression-draft based on TS-211.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add a host-only semantic probe that retains a reference and captured left Value, then completes the operation in another ScriptSession using current budgets and the captured operation Realm. Exercise once-only key/Get effects, RHS mutation of coercion and setters, abrupt RHS identity, errors and resource cleanup. Use the TS-210/211 shared operations; no host evaluation of guest source, new yield grammar or claim of AST frame transfer. Own one focused test/manifests and suspension notes in build/pending-expression-draft based on TS-211.
 
 ## TS-213 — Generator start and detached body execution
 

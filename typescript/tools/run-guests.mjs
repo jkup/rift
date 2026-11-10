@@ -662,6 +662,7 @@ executeDriver("object-prototype-literal", { stdout: "Object prototype literals p
 executeDriver("object-spread", { stdout: "Object spread passed\n" });
 executeDriver("string-replace-all", { stdout: "String replaceAll passed\n" });
 executeDriver("suspension-context", { stdout: "suspension context passed\n" });
+executeDriver("pending-expression", { stdout: "pending expression state passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
