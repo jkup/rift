@@ -4862,7 +4862,7 @@ Status: **done — review documented; zoned differences require a separate imple
 
 ## TS-427 — Exact zoned calendar difference records
 
-Status: **in progress — isolated successor to TS-426**. Owner: Codex catch-up chat, 2026-11-10. Implement the unrounded calendar/time split for fixed-offset zoned instants with checked intermediate epochs, following DifferenceZonedDateTime. Preserve signed local-time borrowing and ISO calendar differences; validate offset endpoints and same-day fast paths before public until/since integration. Own  and tests/manifests/docs in build/temporal-zoned-difference-record-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement the unrounded calendar/time split for fixed-offset zoned instants with checked intermediate epochs, following DifferenceZonedDateTime. Preserve signed local-time borrowing and ISO calendar differences; validate offset endpoints and same-day fast paths before public until/since integration. Own  and tests/manifests/docs in build/temporal-zoned-difference-record-draft/.
 
 ## TS-428 — Checked zoned calendar rounding windows
 

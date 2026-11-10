@@ -285,6 +285,7 @@ const entries = [
     ["test/temporal-zoned-transition.ts", "temporal-zoned-transition"],
     ["test/temporal-zoned-with.ts", "temporal-zoned-with"],
     ["test/temporal-plain-to-zoned.ts", "temporal-plain-to-zoned"],
+    ["test/temporal-zoned-difference-record.ts", "temporal-zoned-difference-record"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
