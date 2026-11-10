@@ -4082,7 +4082,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-240 — Async object and class methods
 
-Status: **in progress — isolated successor to TS-239**. Owner: Codex catch-up chat, 2026-11-10. Admit async method prefixes with the correct no-line-terminator and contextual-name distinctions, reuse async function/await execution and method home objects, and reject async constructors/accessors/generator combinations. Own parser, focused tests/manifests, historical method boundary migration and docs in build/async-methods-draft. Async arrows/generators remain separate. Require both-host/static checks and original async-methods fixture.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Admit async method prefixes with the correct no-line-terminator and contextual-name distinctions, reuse async function/await execution and method home objects, and reject async constructors/accessors/generator combinations. Own parser, focused tests/manifests, historical method boundary migration and docs in build/async-methods-draft. Async arrows/generators remain separate. Require both-host/static checks and original async-methods fixture.
 
 ## TS-241 — Async iterator acquisition and sync adaptation
 

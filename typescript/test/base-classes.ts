@@ -67,6 +67,9 @@ for (const text of ["class C extends B{}", "class C{field=1}", "class C{static{}
         check(missing.type === "throw" && missing.diagnostic.name === "ReferenceError", "original heritage lookup occurs during execution");
     } else if (text === "class C{m(){super.x}}") {
         check(prepared.kind === "ready" && run(text).type === "normal", "super property class method declaration");
+    } else if (text === "class C{async m(){}}") {
+        check(prepared.kind === "ready", "async class preparation is inert");
+        expect(text + ";new C().m() instanceof Promise;");
     } else if (text === "class C{*m(){}}") {
         check(prepared.kind === "ready", "generator class preparation is inert");
         const result = run(text + ";new C().m().next().done;");

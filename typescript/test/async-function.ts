@@ -174,6 +174,11 @@ const cases: {source:string;before:string;after:string}[] = [
         "source": "async function f(){await 1;}f().then(v=>out+=v===undefined);",
         "before": "",
         "after": "true"
+    },
+    {
+        "source": "var o={async f(){}};o.f().then(v=>out+=v===undefined);",
+        "before": "",
+        "after": "true"
     }
 ];
 for(const test of cases){
@@ -184,7 +189,7 @@ for(const test of cases){
  check(!drained.fatal&&drained.failures.length===0,"checkpoint: "+test.source);
  string("out",test.after,realm,session);
 }
-for(const text of ['async function* f(){}','var f=async()=>7;','var o={async f(){}}','if(true) async function f(){}','label: async function f(){}','async\nfunction f(){}'])
+for(const text of ['async function* f(){}','var f=async()=>7;','if(true) async function f(){}','label: async function f(){}','async\nfunction f(){}'])
  check(prepareBoundedScript({id:"boundary",text},fresh()).kind === "blocked","async boundary "+text);
 {
  const realm=fresh(),session=createScriptSession({maxSteps:100,maxCalls:16});

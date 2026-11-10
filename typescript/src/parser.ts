@@ -312,6 +312,11 @@ class Parser {
         return this.structuralPlan() && this.at("async") && this.token(this.index + 1).text === "function"
             && this.current().loc.line === this.token(this.index + 1).loc.line;
     }
+    private asyncMethodAhead(): boolean {
+        const next = this.token(this.index + 1);
+        return this.at("async") && this.current().loc.line === next.loc.line
+            && !["(", ":", "=", ",", "}", ";"].includes(next.text);
+    }
     branch(context: LexicalStatementContext): Stmt {
         const keyword = this.current();
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
@@ -1049,9 +1054,12 @@ class Parser {
             let isStatic = false;
             if (this.at("static") && this.token(this.index + 1)?.text !== "(") { this.take(); isStatic = true; }
             const first = this.current();
+            const asynchronous = this.asyncMethodAhead();
+            if (asynchronous) this.take();
             const generator = this.eat("*");
+            if (asynchronous && generator) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generators are unsupported", first.loc);
             let kind: "method" | "get" | "set" = "method";
-            if (!generator && (this.at("get") || this.at("set")) && this.token(this.index + 1)?.text !== "(") kind = this.take().text === "get" ? "get" : "set";
+            if (!generator && !asynchronous && (this.at("get") || this.at("set")) && this.token(this.index + 1)?.text !== "(") kind = this.take().text === "get" ? "get" : "set";
             const token = this.current();
             let key: Expr;
             let literalName: string | null = null;
@@ -1064,15 +1072,16 @@ class Parser {
                 key = { kind: "literal", loc: token.loc, value: literalName };
             }
             if (!this.at("(")) { this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class fields and static blocks are unsupported", this.current().loc); break; }
-            const fn = this.functionTail(first.loc, first.start, heritage !== null && !isStatic && literalName === "constructor" && kind === "method" ? "derived" : "method", generator);
+            const fn = this.functionTail(first.loc, first.start, heritage !== null && !isStatic && literalName === "constructor" && kind === "method" ? "derived" : "method", generator, asynchronous);
             if ((kind === "get" && fn.parameters.length !== 0) || (kind === "set" && (fn.parameters.length !== 1 || fn.source.rest === true)))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid class accessor parameters", first.loc);
             if (new Set(fn.params).size !== fn.params.length)
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate class method parameter", first.loc);
+            const methodSource: FunctionSource = asynchronous ? { ...fn.source, async: true } : fn.source;
             const value: Extract<Expr, { kind: "function" }> = { kind: "function", loc: first.loc, params: fn.params, parameters: fn.parameters, body: fn.body,
-                source: { ...fn.source, method: true } };
+                source: { ...methodSource, method: true } };
             if (!isStatic && literalName === "constructor") {
-                if (generator || kind !== "method" || constructorMethod !== null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid or duplicate constructor", first.loc);
+                if (generator || asynchronous || kind !== "method" || constructorMethod !== null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid or duplicate constructor", first.loc);
                 constructorMethod = value;
             } else if (isStatic && literalName === "prototype") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "static prototype method is invalid", first.loc);
             elements.push({ kind, isStatic, key, value });
@@ -1092,12 +1101,15 @@ class Parser {
                 properties.push({ kind: "spread", loc: spread.loc, value });
             } else {
                 const first = this.current();
+                const asynchronous = this.asyncMethodAhead();
+                if (asynchronous) this.take();
                 const generator = this.eat("*");
+                if (asynchronous && generator) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generators are unsupported", first.loc);
                 let kind: "data" | "get" | "set" | "prototype" = "data";
                 let key: Expr;
                 let name = "";
                 let shorthand = false;
-                if (!generator && (this.at("get") || this.at("set")) && ![":", "(", "=", ",", "}"].includes(this.token(this.index + 1).text))
+                if (!generator && !asynchronous && (this.at("get") || this.at("set")) && ![":", "(", "=", ",", "}"].includes(this.token(this.index + 1).text))
                     kind = this.take().text === "get" ? "get" : "set";
                 const computed = this.at("[");
                 if (this.eat("[")) {
@@ -1112,17 +1124,18 @@ class Parser {
                     shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval");
                 }
                 if (this.at("(")) {
-                    const fn = this.functionTail(first.loc, first.start, "method", generator);
+                    const fn = this.functionTail(first.loc, first.start, "method", generator, asynchronous);
                     if ((kind === "get" && fn.parameters.length !== 0) || (kind === "set" && (fn.parameters.length !== 1 || fn.source.rest === true)))
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
                     if (new Set(fn.params).size !== fn.params.length)
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate method parameter", first.loc);
+                    const methodSource: FunctionSource = asynchronous ? { ...fn.source, async: true } : fn.source;
                     const value: Expr = { kind: "function", loc: first.loc, params: fn.params, parameters: fn.parameters, body: fn.body,
-                        source: { ...fn.source, method: true } };
+                        source: { ...methodSource, method: true } };
                     properties.push({ kind, key: computed ? key : name, value });
                     cover.entries.push({ kind: "method", key, value });
                 } else {
-                    if (generator || kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
+                    if (generator || asynchronous || kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
                     let value: Expr;
                     if (this.eat(":")) {
                         value = this.expression(1);
