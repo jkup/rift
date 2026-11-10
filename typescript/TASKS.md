@@ -4444,7 +4444,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-326 — Temporal duration string parsing
 
-Status: **in progress — isolated successor to TS-325**. Owner: Codex catch-up chat, 2026-11-10. Add a bounded manual ISO duration scanner with ordered units, ASCII signs/designators and exact terminal hour/minute/second fractions. Validate common duration bounds and normalize zero fields. Own duration parser, focused tests/manifests/docs in build/temporal-duration-parse-draft. No guest Duration.from yet. Require grammar ordering/duplicates, comma/dot fractions, nanosecond accuracy, boundaries and full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add a bounded manual ISO duration scanner with ordered units, ASCII signs/designators and exact terminal hour/minute/second fractions. Validate common duration bounds and normalize zero fields. Own duration parser, focused tests/manifests/docs in build/temporal-duration-parse-draft. No guest Duration.from yet. Require grammar ordering/duplicates, comma/dot fractions, nanosecond accuracy, boundaries and full Node/native static validation.
 
 ## TS-327 — Temporal Duration conversion and field replacement
 
