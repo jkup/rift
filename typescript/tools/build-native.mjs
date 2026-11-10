@@ -165,6 +165,7 @@ const entries = [
     ["test/temporal-time-format.ts", "temporal-time-format"],
     ["test/temporal-instant-methods.ts", "temporal-instant-methods"],
     ["test/bigint-locale.ts", "bigint-locale"],
+    ["test/utc-offset.ts", "utc-offset"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

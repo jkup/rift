@@ -4328,7 +4328,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-298 — Exact UTC offset grammar backend
 
-Status: **in progress — isolated successor to TS-297**. Owner: Codex catch-up chat, 2026-11-10. Add bounded exact UTCOffset scanning with hour/minute/optional second/fraction forms, consistent basic/extended separators, negative-zero offsets and minute-only mode; add normalized fixed-minute formatting. Own new src/utc-offset.ts, tests/manifests/docs in build/utc-offset-draft. No host date/regex parsing or named-zone inference. Require malformed/boundary vectors, exact subsecond offsets, exhaustive minute roundtrips, full Node and native static/zero-dynamic.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add bounded exact UTCOffset scanning with hour/minute/optional second/fraction forms, consistent basic/extended separators, negative-zero offsets and minute-only mode; add normalized fixed-minute formatting. Own new src/utc-offset.ts, tests/manifests/docs in build/utc-offset-draft. No host date/regex parsing or named-zone inference. Require malformed/boundary vectors, exact subsecond offsets, exhaustive minute roundtrips, full Node and native static/zero-dynamic.
 
 ## TS-299 — BigInt invalid-assignment certification
 

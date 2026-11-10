@@ -749,6 +749,7 @@ executeDriver("temporal-instant-core", { stdout: "temporal instant core passed\n
 executeDriver("temporal-time-format", { stdout: "temporal time format passed\n" });
 executeDriver("temporal-instant-methods", { stdout: "temporal instant methods passed\n" });
 executeDriver("bigint-locale", { stdout: "bigint locale passed\n" });
+executeDriver("utc-offset", { stdout: "utc offset passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
