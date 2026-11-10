@@ -8,6 +8,7 @@ function alpha(code: number): boolean { return lower(code) || (code >= 65 && cod
 
 export class TemporalISOScanner {
     index = 0;
+    calendar: string | null = null;
     constructor(readonly text: string) {}
     peek(): string { return this.text.charAt(this.index); }
     take(text: string): boolean {
@@ -84,6 +85,7 @@ export function temporalISOAnnotations(scanner: TemporalISOScanner): boolean {
             if (!validAnnotationKey(key) || !validAnnotationValue(value)) return false;
             if (key === "u-ca") {
                 if (calendarSeen && (calendarCritical || critical)) return false;
+                if (!calendarSeen) scanner.calendar = value;
                 calendarSeen = true;
                 calendarCritical = critical;
             } else if (critical) return false;

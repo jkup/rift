@@ -4498,7 +4498,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-339 — Temporal PlainDate string parsing
 
-Status: **in progress — isolated successor to TS-338**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO PlainDate string parsing with optional validated time/offset, no Z, and first calendar annotation retention. Preserve existing Instant/PlainTime annotation behavior. Own date parser/shared scanner, focused tests/manifests/docs in build/temporal-plain-date-parse-draft. No guest conversion yet; date range validation remains separate to preserve future options ordering. Require compact/expanded dates, ignored time/zone fields, critical/duplicate annotations and full Node/native static regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO PlainDate string parsing with optional validated time/offset, no Z, and first calendar annotation retention. Preserve existing Instant/PlainTime annotation behavior. Own date parser/shared scanner, focused tests/manifests/docs in build/temporal-plain-date-parse-draft. No guest conversion yet; date range validation remains separate to preserve future options ordering. Require compact/expanded dates, ignored time/zone fields, critical/duplicate annotations and full Node/native static regressions.
 
 ## TS-340 — Temporal ISO date field conversion
 

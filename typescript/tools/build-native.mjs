@@ -201,6 +201,7 @@ const entries = [
     ["test/iso-calendar-fields.ts", "iso-calendar-fields"],
     ["test/temporal-plain-date-core.ts", "temporal-plain-date-core"],
     ["test/temporal-plain-date-format.ts", "temporal-plain-date-format"],
+    ["test/temporal-plain-date-parse.ts", "temporal-plain-date-parse"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
