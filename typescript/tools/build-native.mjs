@@ -125,6 +125,7 @@ const entries = [
     ["test/generator-object.ts", "generator-object"],
     ["test/generator-constructor.ts", "generator-constructor"],
     ["test/generator-call-target.ts", "generator-call-target"],
+    ["test/generator-delete.ts", "generator-delete"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

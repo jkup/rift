@@ -15,6 +15,8 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "right"; expression: BinaryExpr; left: Value }
     | { kind: "conditional"; expression: ConditionalExpr }
     | { kind: "branch"; expression: ConditionalExpr }
+    | { kind: "delete-base"; expression: UnaryExpr }
+    | { kind: "delete-key"; expression: UnaryExpr; base: Value }
     | { kind: "unary"; expression: UnaryExpr }
     | { kind: "yield-operand"; expression: GeneratorYieldStmt }
     | { kind: "await-operand"; expression: AwaitExpr };

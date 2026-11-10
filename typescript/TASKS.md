@@ -4168,7 +4168,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-260 — Suspended property deletion
 
-Status: **in progress — isolated successor to TS-259**. Owner: Codex catch-up chat, 2026-11-10. Retain property bases and keys across suspension without reading a deleted property. Preserve key conversion ordering, strict deletion checks, abrupt completion and async resumption. Own parser, expression frames, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-delete-draft. Require both-host/static and order/Realm tests. Optional chains and super references remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain property bases and keys across suspension without reading a deleted property. Preserve key conversion ordering, strict deletion checks, abrupt completion and async resumption. Own parser, expression frames, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-delete-draft. Require both-host/static and order/Realm tests. Optional chains and super references remain separate.
 
 ## TS-261 — Suspended for-loop expression initializers
 

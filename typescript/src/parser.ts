@@ -751,7 +751,6 @@ class Parser {
                 continue;
             }
             if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object") continue;
-            if (node.kind === "unary" && node.op === "delete" && node.operand.kind === "member") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
                 if (node.kind === "object") {

@@ -3364,6 +3364,11 @@ class ExecutionEngine {
                         expression = expression.test;
                         continue;
                     }
+                    if (expression.kind === "unary" && expression.op === "delete" && expression.operand.kind === "member") {
+                        frames.push({ kind: "delete-base", expression });
+                        expression = expression.operand.base;
+                        continue;
+                    }
                     if (expression.kind === "unary") {
                         frames.push({ kind: "unary", expression });
                         expression = expression.operand;
@@ -3475,6 +3480,21 @@ class ExecutionEngine {
                 const finished = finishArrayLiteral(frame.object, frame.nextIndex, this.context, frame.expression.loc);
                 if (finished.type === "throw") return finished;
                 value = finished.value;
+                continue;
+            }
+            if (frame.kind === "delete-base") {
+                if (frame.expression.operand.kind !== "member") throw new Error("delete base without member");
+                frames.push({ kind: "delete-key", expression: frame.expression, base: value });
+                expression = frame.expression.operand.key;
+                continue;
+            }
+            if (frame.kind === "delete-key") {
+                const loc = frame.expression.operand.loc;
+                const result = deleteReferenceValue(this.context, { kind: "script-property",
+                    reference: { kind: "property", base: frame.base, key: value, loc }, strict: this.#active().strict }, frame.expression.loc);
+                if (result.type === "throw") return result;
+                if (result.type !== "normal") throw new Error("invalid property deletion completion");
+                value = result.value;
                 continue;
             }
             if (frame.kind === "call-base") {
