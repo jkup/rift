@@ -750,11 +750,13 @@ class Parser {
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
             }
-            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new") continue;
+            if (node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template") continue;
             if (node.kind === "unary" && node.op === "delete" && node.operand.kind === "member") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
-                if (node.kind === "array") {
+                if (node.kind === "template") {
+                    for (let i = node.expressions.length - 1; i >= 0; i--) pending.push({ expression: node.expressions[i], visited: false });
+                } else if (node.kind === "array") {
                     for (let i = node.elements.length - 1; i >= 0; i--) {
                         const element = node.elements[i];
                         if (element !== null) pending.push({ expression: element.kind === "spread" ? element.expression : element, visited: false });
@@ -765,6 +767,8 @@ class Parser {
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
+            } else if (node.kind === "template") {
+                if (node.expressions.some(expression => isSuspendingGeneratorExpression(expression))) node.suspends = true;
             } else if (node.kind === "array") {
                 if (node.elements.some(element => element !== null && isSuspendingGeneratorExpression(element.kind === "spread" ? element.expression : element))) node.suspends = true;
             } else if (node.kind === "call" || node.kind === "new") {

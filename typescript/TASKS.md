@@ -4134,7 +4134,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-252 — Suspended template substitutions
 
-Status: **in progress — isolated successor to TS-251**. Owner: Codex catch-up chat, 2026-11-10. Retain preceding template text while substitutions suspend, converting each completed substitution before starting the next. Preserve string-hint coercion, Symbol errors, abrupt interruption and async resumption. Own syntax/parser, expression frames, shared template conversion, tests/manifests and docs in build/generator-template-draft. Tagged templates remain separate. Require both-host/static and coercion/order tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain preceding template text while substitutions suspend, converting each completed substitution before starting the next. Preserve string-hint coercion, Symbol errors, abrupt interruption and async resumption. Own syntax/parser, expression frames, shared template conversion, tests/manifests and docs in build/generator-template-draft. Tagged templates remain separate. Require both-host/static and coercion/order tests.
 
 ## TS-253 — Suspended for-loop tests
 
