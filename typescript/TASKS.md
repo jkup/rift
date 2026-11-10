@@ -4412,7 +4412,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-318 — Shared Temporal ISO scanner
 
-Status: **in progress — isolated successor to TS-317**. Owner: Codex catch-up chat, 2026-11-10. Extract the reviewed Instant scanner into shared date/time/annotation parsing operations as a prerequisite for PlainTime string conversion. Preserve exact Instant offset and range checks. Own shared scanner, Instant parser, focused tests/manifests/docs in build/temporal-iso-parser-draft. No new guest methods. Require original valid/invalid Instant cases, exact record/index checks, full Node and native static/zero-dynamic regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract the reviewed Instant scanner into shared date/time/annotation parsing operations as a prerequisite for PlainTime string conversion. Preserve exact Instant offset and range checks. Own shared scanner, Instant parser, focused tests/manifests/docs in build/temporal-iso-parser-draft. No new guest methods. Require original valid/invalid Instant cases, exact record/index checks, full Node and native static/zero-dynamic regressions.
 
 ## TS-319 — Temporal PlainTime string parsing
 

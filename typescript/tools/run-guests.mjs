@@ -763,6 +763,7 @@ executeDriver("temporal-time", { stdout: "temporal time passed\n" });
 executeDriver("temporal-plain-time-string", { stdout: "temporal plain time string passed\n" });
 executeDriver("temporal-plain-time-round", { stdout: "temporal plain time round passed\n" });
 executeDriver("temporal-plain-time-with", { stdout: "temporal plain time with passed\n" });
+executeDriver("temporal-iso-parser", { stdout: "temporal iso parser passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
