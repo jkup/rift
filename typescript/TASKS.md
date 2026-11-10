@@ -4816,7 +4816,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-416 — Zoned slots in plain Temporal conversions
 
-Status: **in progress — isolated successor to TS-415**. Owner: Codex catch-up chat, 2026-11-10. Recognize ZonedDateTime slots in shared PlainTime, PlainDate and PlainDateTime conversions without guest getters. Cover local offset projection, overflow validation, compare/equals callers, intrinsic allocation and Realm boundaries on both hosts. Own src/builtins/temporal-plain-time-conversion.ts, src/builtins/temporal-plain-date-conversion.ts, src/builtins/temporal-plain-date-time-conversion.ts and tests/manifests/docs in build/temporal-zoned-plain-conversion-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Recognize ZonedDateTime slots in shared PlainTime, PlainDate and PlainDateTime conversions without guest getters. Cover local offset projection, overflow validation, compare/equals callers, intrinsic allocation and Realm boundaries on both hosts. Own src/builtins/temporal-plain-time-conversion.ts, src/builtins/temporal-plain-date-conversion.ts, src/builtins/temporal-plain-date-time-conversion.ts and tests/manifests/docs in build/temporal-zoned-plain-conversion-draft/.
 
 ## TS-417 — Replace ZonedDateTime local time
 

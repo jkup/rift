@@ -1,4 +1,5 @@
 import { GuestTemporalPlainDateTime } from "../temporal-plain-date-time-object.js";
+import { GuestTemporalZonedDateTime, temporalZonedISODateTime } from "../temporal-zoned-date-time-object.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
 import type { TimeFields } from "../temporal-time.js";
@@ -12,6 +13,7 @@ export function toTimeFields(value: Value, options: Value, context: OperationCon
     if (value.kind === "object") {
         if (value.object instanceof GuestTemporalPlainDateTime) fields = value.object.dateTime;
         else if (value.object instanceof GuestTemporalPlainTime) fields = value.object.time;
+        else if (value.object instanceof GuestTemporalZonedDateTime) fields = temporalZonedISODateTime(value.object);
         else {
             const read = readTemporalTimeFields(value.object, { hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }, context, loc);
             if (read.type === "throw") return read;

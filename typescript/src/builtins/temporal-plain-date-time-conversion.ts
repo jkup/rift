@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { GuestTemporalZonedDateTime, temporalZonedISODateTime } from "../temporal-zoned-date-time-object.js";
 import type { Location } from "../syntax.js";
 import { isoDateTimeToEpochNanoseconds, type ISODateTime } from "../iso-calendar.js";
 import { combineISODateTime, isoDateTimeWithinLimits } from "../iso-date-time.js";
@@ -14,6 +15,7 @@ export function toDateTimeFields(value: Value, options: Value, context: Operatio
     let dateTime: ISODateTime;
     if (value.kind === "object") {
         if (value.object instanceof GuestTemporalPlainDateTime) dateTime = value.object.dateTime;
+        else if (value.object instanceof GuestTemporalZonedDateTime) dateTime = temporalZonedISODateTime(value.object);
         else if (value.object instanceof GuestTemporalPlainDate)
             dateTime = combineISODateTime(value.object.date, { hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
         else {

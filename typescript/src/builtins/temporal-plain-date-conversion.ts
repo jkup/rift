@@ -1,4 +1,5 @@
 import { GuestTemporalPlainDateTime } from "../temporal-plain-date-time-object.js";
+import { GuestTemporalZonedDateTime, temporalZonedISODateTime } from "../temporal-zoned-date-time-object.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
 import type { ISODate } from "../iso-calendar.js";
@@ -15,6 +16,7 @@ export function toDateFields(value: Value, options: Value, context: OperationCon
     if (value.kind === "object") {
         if (value.object instanceof GuestTemporalPlainDateTime) date = value.object.dateTime.date;
         else if (value.object instanceof GuestTemporalPlainDate) date = value.object.date;
+        else if (value.object instanceof GuestTemporalZonedDateTime) date = temporalZonedISODateTime(value.object).date;
         else {
             const calendar = temporalCalendarWithISODefault(value.object, context, loc);
             if (calendar.type === "throw") return calendar;
