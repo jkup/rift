@@ -4746,7 +4746,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-399 — Branded Date construction and core methods
 
-Status: **in progress — isolated successor to TS-398**. Owner: Codex catch-up chat, 2026-11-10. Install Date with clipped mutable time slots, all constructor forms, UTC default timezone, host-clock isolation, now/parse/UTC and core formatting/value conversion methods. Add Date branding/prototype fallback and generic Symbol.toPrimitive semantics. Preserve coercion order, cloning without hooks, intrinsic Realm errors, subclass construction and legacy-profile isolation. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/object.ts and tests/manifests/docs in build/date-core-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Install Date with clipped mutable time slots, all constructor forms, UTC default timezone, host-clock isolation, now/parse/UTC and core formatting/value conversion methods. Add Date branding/prototype fallback and generic Symbol.toPrimitive semantics. Preserve coercion order, cloning without hooks, intrinsic Realm errors, subclass construction and legacy-profile isolation. Own src/realm.ts, src/constructor-prototype.ts, src/builtins/object.ts and tests/manifests/docs in build/date-core-draft/.
 
 ## TS-400 — Date UTC and local field getters
 

@@ -1,3 +1,4 @@
+import { GuestDate } from "../date-object.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestArguments } from "../arguments-object.js";
@@ -99,6 +100,7 @@ export function registerObjectToString(realm: Realm): Value {
         else if (object.callable !== null) tag = "Function";
         else if (object instanceof GuestError) tag = "Error";
         else if (object instanceof GuestRegExp) tag = "RegExp";
+        else if (object instanceof GuestDate) tag = "Date";
         else if (object instanceof GuestBoolean) tag = "Boolean";
         else if (object instanceof GuestNumber) tag = "Number";
         else if (object instanceof GuestStringObject) tag = "String";

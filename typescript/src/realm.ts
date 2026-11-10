@@ -1,3 +1,4 @@
+import { registerDate } from "./builtins/date.js";
 import { registerTemporal } from "./builtins/temporal.js";
 import { registerBigInt } from "./builtins/bigint.js";
 import type { TemplateObjectExpr } from "./syntax.js";
@@ -78,6 +79,7 @@ export class Realm {
         return normal({ kind: "object", object: template });
     }
     randomState: RandomState | null = null;
+    clockMilliseconds: (() => number) | null = null;
     private legacyGlobal: Environment | null = null;
     private scriptGlobal: GlobalEnvironment | null = null;
     private errorPrototypes: Map<ErrorName, GuestObject> = new Map();
@@ -111,6 +113,7 @@ export class Realm {
     readonly numberPrototype: GuestNumber;
     readonly bigintPrototype: GuestObject;
     readonly temporalInstantPrototype: GuestObject;
+    readonly datePrototype: GuestObject;
     readonly temporalDurationPrototype: GuestObject;
     readonly temporalPlainTimePrototype: GuestObject;
     readonly temporalPlainDateTimePrototype: GuestObject;
@@ -160,6 +163,7 @@ export class Realm {
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
         this.bigintPrototype = new GuestObject(this.objectPrototype);
         this.temporalInstantPrototype = new GuestObject(this.objectPrototype);
+        this.datePrototype = new GuestObject(this.objectPrototype);
         this.temporalDurationPrototype = new GuestObject(this.objectPrototype);
         this.temporalPlainTimePrototype = new GuestObject(this.objectPrototype);
         this.temporalPlainDateTimePrototype = new GuestObject(this.objectPrototype);
@@ -251,6 +255,7 @@ export class Realm {
             registerSet(this);
             registerSetIterators(this);
             registerTemporal(this);
+            registerDate(this);
         }
     }
     get global(): Environment {
