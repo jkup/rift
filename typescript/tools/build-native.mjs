@@ -253,6 +253,7 @@ const entries = [
     ["test/temporal-relative-duration-target.ts", "temporal-relative-duration-target"],
     ["test/temporal-duration-round-options.ts", "temporal-duration-round-options"],
     ["test/temporal-duration-round.ts", "temporal-duration-round"],
+    ["test/date-time-core.ts", "date-time-core"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

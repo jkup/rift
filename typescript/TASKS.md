@@ -4726,7 +4726,7 @@ Status: **done — local-time discrepancies recorded; UTC/clock boundary reviewe
 
 ## TS-394 — Date time clipping and UTC field primitives
 
-Status: **in progress — isolated successor to TS-393**. Owner: Codex catch-up chat, 2026-11-10. Add engine-owned Date time clipping, UTC field decomposition, ordered floating-point MakeTime/MakeDate and two-digit year expansion. Reuse the bounded ISO calendar backend and keep Date's zero-based months explicit. Test negative milliseconds, full clip endpoints, NaN/infinity and prescribed floating-point ordering before guest API registration. Own  and tests/manifests/docs in build/date-time-core-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add engine-owned Date time clipping, UTC field decomposition, ordered floating-point MakeTime/MakeDate and two-digit year expansion. Reuse the bounded ISO calendar backend and keep Date's zero-based months explicit. Test negative milliseconds, full clip endpoints, NaN/infinity and prescribed floating-point ordering before guest API registration. Own  and tests/manifests/docs in build/date-time-core-draft/.
 
 ## TS-395 — Date calendar construction with month and day overflow
 
