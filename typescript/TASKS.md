@@ -3951,7 +3951,7 @@ Iteration/objects accepted (TS-199–203): 696/696 guests on each host without s
 
 ## TS-210 — Binary value operations independent of execution engines
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Extract the existing binary value operation implementation into a stateless helper taking captured operands, current OperationContext and source location. Preserve ordinary/compound expression evaluation order, exact coercion/completion identity, current Realm errors and budgets; retain the legacy evaluator forwarding method. Own binary-operator.ts, script-execution-internal imports/forwarder and generator-boundary notes in build/binary-operations-draft. Validate existing numeric, equality, primitive conversion and compound-assignment suites on both hosts. No guest grammar or suspension claims.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract the existing binary value operation implementation into a stateless helper taking captured operands, current OperationContext and source location. Preserve ordinary/compound expression evaluation order, exact coercion/completion identity, current Realm errors and budgets; retain the legacy evaluator forwarding method. Own binary-operator.ts, script-execution-internal imports/forwarder and generator-boundary notes in build/binary-operations-draft. Validate existing numeric, equality, primitive conversion and compound-assignment suites on both hosts. No guest grammar or suspension claims.
 
 ## TS-211 — Reference operations independent of execution engines
 

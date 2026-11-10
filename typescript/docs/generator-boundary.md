@@ -57,3 +57,13 @@ pending expression state can be transferred. Next: represent pending evaluation
 operands and completions explicitly, and validate resume with current-session
 budgets before exposing yield. C++ generator statement-skipping resumption is
 not adopted; it cannot establish once-only compound-expression side effects.
+
+TS-210 extracts captured-value binary operations into applyBinaryOperator. It
+accepts only operand Values, the current OperationContext and a source location;
+no execution engine or frame is retained. Ordinary and compound expressions
+share the helper through the existing evaluator method. Evaluation order,
+coercion order, exact completions and resource charges are unchanged. The
+isolated draft passes 701 Node guests and native numeric-operator, primitive
+conversion, compound-assignment and abstract-equality suites with zero dynamic
+coverage. This prepares a reusable value-operation boundary; it does not itself
+save pending operands or suspend a guest expression.

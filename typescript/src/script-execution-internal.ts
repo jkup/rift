@@ -1,3 +1,4 @@
+import { applyBinaryOperator } from "./binary-operator.js";
 import { copyDataProperties } from "./copy-data-properties.js";
 import { regExpCreate } from "./builtins/regexp.js";
 import type { SuperContext } from "./syntax.js";
@@ -1107,9 +1108,8 @@ function copyStrictness(strictness: StrictnessMetadata): StrictnessMetadata {
             loc: { line: d.loc.line, column: d.loc.column }, raw: d.raw, useStrict: d.useStrict })) };
 }
 
-import { stringConcat, stringCompare } from "./strings.js";
+import { stringConcat } from "./strings.js";
 import { GuestArray } from "./array-object.js";
-import { isLooselyEqual } from "./abstract-equality.js";
 import { toObject } from "./object-conversion.js";
 import { deleteReference } from "./delete-reference.js";
 import { typeOfValue } from "./typeof.js";
@@ -1780,109 +1780,8 @@ class ExecutionEngine {
             this.calls--;
         }
     }
-    binary(op: string, left: Value, right: Value, loc: Location): Completion {
-        if (op === "in") {
-            // Both operands are captured; reject a primitive RHS before key hooks.
-            if (right.kind !== "object") {
-                return languageFailure(this.context.realm, "TypeError", "right operand of in must be an object", loc);
-            }
-            const key = toPropertyKey(left, this.context, loc);
-            if (key.type === "throw") {
-                return key;
-            }
-            const present = right.object.internalHasProperty(key.value, loc);
-            if (present.type === "throw") {
-                return present;
-            }
-            return normal({ kind: "boolean", value: present.value });
-        }
-        if (op === "+") {
-            // Convert both captured Values before selecting concatenation.
-            const leftPrimitive = toPrimitive(left, "default", this.context, loc);
-            if (leftPrimitive.type === "throw") return leftPrimitive;
-            const rightPrimitive = toPrimitive(right, "default", this.context, loc);
-            if (rightPrimitive.type === "throw") return rightPrimitive;
-            left = leftPrimitive.value;
-            right = rightPrimitive.value;
-            if (left.kind === "string" || right.kind === "string") {
-                const a = toString(left, loc, this.context.realm);
-                if (a.type === "throw") return a;
-                const b = toString(right, loc, this.context.realm);
-                if (b.type === "throw") return b;
-                return normal({ kind: "string", value: stringConcat(a.value, b.value) });
-            }
-            const a = toNumber(left, loc, this.context.realm);
-            if (a.type === "throw") return a;
-            const b = toNumber(right, loc, this.context.realm);
-            if (b.type === "throw") return b;
-            return normal({ kind: "number", value: a.value + b.value });
-        }
-        if (op === "-" || op === "*" || op === "/" || op === "%" || op === "**" ||
-            op === "&" || op === "|" || op === "^" || op === "<<" || op === ">>" || op === ">>>") {
-            // Both operand evaluations/GetValue have finished. Conversion is
-            // left-to-right, so an abrupt RHS evaluation precedes either conversion.
-            const leftPrimitive = toPrimitive(left, "number", this.context, loc);
-            if (leftPrimitive.type === "throw") return leftPrimitive;
-            const a = toNumber(leftPrimitive.value, loc, this.context.realm);
-            if (a.type === "throw") return a;
-            const rightPrimitive = toPrimitive(right, "number", this.context, loc);
-            if (rightPrimitive.type === "throw") return rightPrimitive;
-            const b = toNumber(rightPrimitive.value, loc, this.context.realm);
-            if (b.type === "throw") return b;
-            switch (op) {
-                case "-": return normal({ kind: "number", value: a.value - b.value });
-                case "*": return normal({ kind: "number", value: a.value * b.value });
-                case "/": return normal({ kind: "number", value: a.value / b.value });
-                case "%": return normal({ kind: "number", value: a.value % b.value });
-                case "**": return normal({ kind: "number", value: Math.pow(a.value, b.value) });
-                case "&": return normal({ kind: "number", value: a.value & b.value });
-                case "|": return normal({ kind: "number", value: a.value | b.value });
-                case "^": return normal({ kind: "number", value: a.value ^ b.value });
-                case "<<": return normal({ kind: "number", value: a.value << b.value });
-                case ">>": return normal({ kind: "number", value: a.value >> b.value });
-                case ">>>": return normal({ kind: "number", value: a.value >>> b.value });
-            }
-        }
-        if (op === "==" || op === "!=") {
-            // Values were captured in source order; fixed 2025 13.11.1 reverses
-            // helper arguments, without reevaluating either operand.
-            const result = isLooselyEqual(right, left, this.context, loc);
-            if (result.type === "throw") return result;
-            return normal({ kind: "boolean", value: op === "!=" ? !result.value : result.value });
-        }
-        if (op === "===" || op === "!==") return normal({ kind: "boolean", value: op === "===" ? equal(left, right) : !equal(left, right) });
-        if (op === "<" || op === ">" || op === "<=" || op === ">=") {
-            const leftPrimitive = toPrimitive(left, "number", this.context, loc);
-            if (leftPrimitive.type === "throw") return leftPrimitive;
-            const rightPrimitive = toPrimitive(right, "number", this.context, loc);
-            if (rightPrimitive.type === "throw") return rightPrimitive;
-            left = leftPrimitive.value;
-            right = rightPrimitive.value;
-            // Keep source order even for > and <=. Once both values are primitive,
-            // numeric conversion has no guest effects; reverse only the relation.
-            let order: number | null;
-            if (left.kind === "string" && right.kind === "string") {
-                order = stringCompare(left.value, right.value);
-            } else {
-                const a = toNumber(left, loc, this.context.realm);
-                if (a.type === "throw") return a;
-                const b = toNumber(right, loc, this.context.realm);
-                if (b.type === "throw") return b;
-                if (Number.isNaN(a.value) || Number.isNaN(b.value)) order = null;
-                else if (a.value < b.value) order = -1;
-                else if (a.value > b.value) order = 1;
-                else order = 0;
-            }
-            // Unordered is distinct from equal: every NaN comparison is false.
-            if (order === null) return normal({ kind: "boolean", value: false });
-            switch (op) {
-                case "<": return normal({ kind: "boolean", value: order < 0 });
-                case ">": return normal({ kind: "boolean", value: order > 0 });
-                case "<=": return normal({ kind: "boolean", value: order <= 0 });
-                case ">=": return normal({ kind: "boolean", value: order >= 0 });
-            }
-        }
-        throw new Error("unknown binary operator: " + op);
+    binary(op: string, left: Value, right: Value, loc: Location): ValueCompletion {
+        return applyBinaryOperator(op, left, right, this.context, loc);
     }
     #active(): ScriptFrameSnapshot {
         if (!this.#script || this.#frame === null) throw new Error("inactive Script session");
