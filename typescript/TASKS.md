@@ -4274,7 +4274,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-285 — Suspended computed class keys
 
-Status: **in progress — isolated successor to TS-284**. Owner: Codex catch-up chat, 2026-11-10. Retain constructor/prototype and class scope while computed method/accessor keys suspend, preserving key conversion, method order, inner-name TDZ and completion cleanup. Own parser, class constructor/element frames, continuation integration, historical boundaries, tests/manifests and docs in build/generator-class-key-draft. Class fields/private names remain separate. Require both-host/static, names/descriptors/home-object/async/Realm tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain constructor/prototype and class scope while computed method/accessor keys suspend, preserving key conversion, method order, inner-name TDZ and completion cleanup. Own parser, class constructor/element frames, continuation integration, historical boundaries, tests/manifests and docs in build/generator-class-key-draft. Class fields/private names remain separate. Require both-host/static, names/descriptors/home-object/async/Realm tests.
 
 ## TS-286 — Raw template tokens and invalid cooked text
 

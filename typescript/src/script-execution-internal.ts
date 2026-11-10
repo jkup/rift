@@ -3481,7 +3481,6 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "class") {
-                        if (expression.heritage === null) throw new Error("suspended class without heritage");
                         const outer = this.#active(), scopeId = ExecutableScript.scopeOfNode(outer.record, expression, executionKey);
                         const environment = new ScriptDeclarativeEnvironment(outer.lexical);
                         if (expression.name !== null) {
@@ -3490,7 +3489,7 @@ class ExecutionEngine {
                         }
                         const frame: ScriptFrameSnapshot = { ...outer, scopeId, lexical: environment, strict: true };
                         frames.push({ kind: "class-scope", expression, outer, frame });
-                        frames.push({ kind: "class-heritage", expression, environment, scopeId, name });
+                        frames.push({ kind: "class-constructor", expression, environment, scopeId, name });
                         this.#frame = frame;
                         expression = expression.heritage;
                         continue;
@@ -3593,19 +3592,43 @@ class ExecutionEngine {
                 this.#frame = frame.outer;
                 continue;
             }
-            if (frame.kind === "class-heritage") {
-                const created = this.#createClassConstructor(frame.expression, frame.scopeId, frame.environment, frame.name, value);
+            if (frame.kind === "class-constructor") {
+                const created = this.#createClassConstructor(frame.expression, frame.scopeId, frame.environment, frame.name,
+                    frame.expression.heritage === null ? null : value);
                 if (created.type === "throw") return created;
-                for (const element of frame.expression.elements) {
-                    if (element.value === frame.expression.constructorMethod) continue;
+                frames.push({ kind: "class-element", expression: frame.expression, environment: frame.environment,
+                    constructor: created.constructor, prototype: created.prototype, index: 0, stage: "next" });
+                continue;
+            }
+            if (frame.kind === "class-element") {
+                if (frame.stage === "key") {
+                    const element = frame.expression.elements[frame.index];
+                    const key = toPropertyKey(value, this.context, element.key.loc);
+                    if (key.type === "throw") return key;
+                    const defined = this.#defineClassMethod(element, key.value, frame.constructor, frame.prototype);
+                    if (defined !== null) return defined;
+                    frame.index++;
+                    frame.stage = "next";
+                }
+                while (frame.index < frame.expression.elements.length) {
+                    const element = frame.expression.elements[frame.index];
+                    if (element.value === frame.expression.constructorMethod) { frame.index++; continue; }
+                    if (isSuspendingGeneratorExpression(element.key)) {
+                        frame.stage = "key";
+                        frames.push(frame);
+                        expression = element.key;
+                        break;
+                    }
                     const keyValue = this.#value(element.key);
                     if (keyValue.type === "throw") return keyValue;
                     const key = toPropertyKey(keyValue.value, this.context, element.key.loc);
                     if (key.type === "throw") return key;
-                    const defined = this.#defineClassMethod(element, key.value, created.constructor, created.prototype);
+                    const defined = this.#defineClassMethod(element, key.value, frame.constructor, frame.prototype);
                     if (defined !== null) return defined;
+                    frame.index++;
                 }
-                value = { kind: "object", object: created.constructor };
+                if (expression !== null) continue;
+                value = { kind: "object", object: frame.constructor };
                 if (frame.expression.name !== null) {
                     const initialized = frame.environment.initializeBinding(frame.expression.name.name, value, this.context, frame.expression.name.loc);
                     if (initialized.type === "throw") return initialized;

@@ -17,7 +17,8 @@ export type SuperPropertyOperation = { kind: "read" }
     | { kind: "chain"; expression: ChainExpr; consumer: ChainConsumer };
 export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "class-scope"; expression: ClassExpr; outer: ScriptFrameSnapshot; frame: ScriptFrameSnapshot }
-    | { kind: "class-heritage"; expression: ClassExpr; environment: ScriptDeclarativeEnvironment; scopeId: number; name: string | null }
+    | { kind: "class-constructor"; expression: ClassExpr; environment: ScriptDeclarativeEnvironment; scopeId: number; name: string | null }
+    | { kind: "class-element"; expression: ClassExpr; environment: ScriptDeclarativeEnvironment; constructor: GuestObject; prototype: GuestObject; index: number; stage: "next" | "key" }
     | { kind: "chain-evaluate"; expression: ChainExpr; consumer: ChainConsumer }
     | { kind: "chain-base-value"; expression: ChainExpr; consumer: ChainConsumer }
     | { kind: "chain-reference-base"; expression: ChainExpr; consumer: ChainConsumer }

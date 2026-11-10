@@ -755,6 +755,7 @@ class Parser {
                 pending.push({ expression: node, visited: true });
                 if (node.kind === "class") {
                     if (node.heritage !== null) pending.push({ expression: node.heritage, visited: false });
+                    for (const element of node.elements) pending.push({ expression: element.key, visited: false });
                 }
                 else if (node.kind === "chain") {
                     pending.push({ expression: node.base, visited: false });
@@ -796,7 +797,7 @@ class Parser {
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
             } else if (node.kind === "class") {
-                if (isSuspendingGeneratorExpression(node.heritage)) node.suspends = true;
+                if (isSuspendingGeneratorExpression(node.heritage) || node.elements.some(element => isSuspendingGeneratorExpression(element.key))) node.suspends = true;
             } else if (node.kind === "chain") {
                 if (isSuspendingGeneratorExpression(node.base) || node.links.some(link => link.kind === "member"
                     ? isSuspendingGeneratorExpression(link.key)
