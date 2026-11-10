@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted async-generators milestone passes 737/737 guests on each
-host, 293/293 tooling checks, and all 244 native static gates without retries.
+The accepted suspended-expressions milestone passes 743/743 guests on each
+host, 293/293 tooling checks, and all 250 native static gates without retries.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -26,15 +26,24 @@ the unchanged generator suite (88 reported checks) and generator-destructuring
 fixture. Binary, conditional, unary and nested-yield expressions plus suspended
 if/while/do-while conditions are accepted. Async functions, await, methods, async iterator acquisition and for-await-of are
 accepted. Async arrows, lexical conflicts, generator queues, methods and delegation
-are accepted. Isolated successors add suspended property reads, call/constructor
-arguments, arrays, templates and for-loop conditions. Their combined validation
-is next. Unicode regex modes, lookaround,
+are accepted. Suspended property reads, call/constructor arguments, arrays, templates and
+for-loop conditions are accepted. Isolated successors add for-loop updates,
+switch discriminants/selectors, object literals and constructor/call targets.
+Their combined validation is next. Unicode regex modes, lookaround,
 backreferences and named groups remain unsupported.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
 resuming from another session restores caller state and uses current budgets.
 Temporal, class fields and remaining destructuring contexts are separate gaps.
+
+Temporal fixture audit (2026-11-10): eight of the nine original Temporal fixtures
+call constructors without new, including test-temporal-plain-date.js:28 and
+test-temporal-duration.js:28. The [current Temporal constructor contract](https://tc39.es/proposal-temporal/#sec-temporal-plaindate)
+requires TypeError for those calls. Keep these corpus bytes unchanged and add
+standards-correct tests separately when implementing Temporal; making every old
+fixture pass would preserve incorrect constructor behavior. BigInt and reviewed
+calendar/time-zone support remain independent prerequisites for the relevant types.
 
 The [weak-storage probes](native-host-prerequisites.md) fail the static contract;
 [Date local-time probes](date-host-boundary.md) disagree across named zones on

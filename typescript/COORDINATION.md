@@ -2464,3 +2464,23 @@ The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound
 2026-11-10 TS-252 promoted after async-generators acceptance with 6 changed-file baselines verified. Isolated evidence passes 742 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/generator-template-draft/build and build/generator-template-* logs, retaining initial failures and exact historical-input migrations.
 
 2026-11-10 TS-253 promoted after async-generators acceptance with 5 changed-file baselines verified. Isolated evidence passes 743 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/generator-for-test-draft/build and build/generator-for-test-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-10: TS-254 focused native/static and initial full Node pass; additional context/regression checks are active. TS-255 claimed for suspended switch discriminants, extracting the existing switch body path so scope creation still follows discriminant completion.
+
+2026-11-10: TS-255 focused native/static passes; full Node and switch/label regressions are active. TS-256 claimed for suspended case selectors after reviewing engine262 SwitchStatement.mts at 18cdeb03c363eb31d775648a0d070bdc8a26ced1, including default placement and skipped selectors after a match.
+
+2026-11-10: Read-only Temporal corpus audit finds constructor calls without new in eight of nine fixtures (duration, phase5, plain-date-time, plain-date, plain-month-day, plain-time, plain-year-month and zoned-date-time). Checked the July 2026 Stage 4 Temporal constructor algorithms, which require TypeError without NewTarget. Roadmap records this parity limitation; no corpus or engine changes.
+
+2026-11-10: TS-256 focused native/static and all 746 Node guests pass; regressions are active. TS-257 claimed for object literal property suspension. Reviewed ECMA-262 PropertyDefinitionEvaluation: computed-key conversion precedes values, spread uses CopyDataProperties, and prototype setters exclude anonymous name inference (already correct in the ordinary path).
+
+2026-11-10: TS-257 focused native/static passes; full Node and object regressions are running. TS-258 claimed for suspended constructor expressions, following EvaluateNew ordering.
+
+2026-11-10: TS-258 focused native/static passes; Node and constructor regressions are running. TS-259 claimed for suspended call targets, preserving EvaluateCall references and argument order.
+
+2026-11-10: TS-259 focused native/static passes; Node and call-target regressions are running after migrating the historical member-call rejection. TS-260 claimed for suspended property deletion, preserving references, key conversion and strict deletion behavior.
+
+2026-11-10: TS-260 focused native/static and all 750 Node guests pass; deletion regressions are running. TS-261 claimed for suspended ordinary for-loop expression initializers. Declaration initialization remains outside this slice.
+
+2026-11-10: TS-261 focused native/static, all 751 Node guests and five native regressions pass. TS-262 claimed for suspended single-var for-loop initializers using ordinary declaration receivers.
+
+2026-11-10 Suspended expressions accepted (TS-248–253): 743/743 guests on each host without skips; all 250 native static-only/zero-dynamic gates pass in 2492208ms without retries. Tooling passes 293/293 in 236708.8422ms; runner32/32 in 700.9701ms, ten probes and typechecking pass. Corpus node-EMsPbh/native-0huE15 matches all 225 normalized records and preserves all 190 prior completions (116 reported successes, 74 unchecked). Remaining outcomes: two parse errors, 32 runtime errors and one reported failure. Evidence: build/suspended-expressions-native-results.json, suspended-expressions-corpus-comparison.json and suspended-expressions-* logs. For-loop updates, switch selection, object literals and constructor/call targets remain isolated successors requiring combined acceptance.
