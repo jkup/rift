@@ -4148,7 +4148,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-255 — Suspended switch discriminants
 
-Status: **in progress — isolated successor to TS-254**. Owner: Codex catch-up chat, 2026-11-10. Resume switch discriminants before creating the CaseBlock environment, sharing existing clause selection and body execution. Preserve outer-scope reads, selector TDZ, default/fallthrough, labels and abrupt cleanup. Own parser, switch receiver/helper, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-switch-test-draft. Case-selector suspension remains separate. Require both-host/static and scope/order tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume switch discriminants before creating the CaseBlock environment, sharing existing clause selection and body execution. Preserve outer-scope reads, selector TDZ, default/fallthrough, labels and abrupt cleanup. Own parser, switch receiver/helper, continuation integration, historical boundary migration, tests/manifests and docs in build/generator-switch-test-draft. Case-selector suspension remains separate. Require both-host/static and scope/order tests.
 
 ## TS-256 — Suspended switch selectors
 

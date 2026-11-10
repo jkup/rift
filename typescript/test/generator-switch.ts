@@ -36,10 +36,13 @@ const cases: string[] = [
     "function* f(){for(const x of [1,2]){switch(x){case 1:yield x;continue;case 2:yield x;break;}yield 9;}}Array.from(f()).join(\",\")===\"1,2,9\";"
 ];
 for(let i=0;i<cases.length;i++){const r=run(cases[i],new Realm((_line:string):void=>{},"script"));check(r.type==="normal"&&r.value.kind==="boolean"&&r.value.value,"switch case "+i);}
-for(const source of ["function* f(){switch(yield 1){case 1:yield 2;}}","function* f(){switch(1){case yield 1:yield 2;}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
+for(const source of ["function* f(){switch(1){case yield 1:yield 2;}}"]){check(prepareBoundedScript({id:"boundary",text:source},new Realm((_line:string):void=>{},"script")).kind==="blocked","boundary "+source);}
 const A=new Realm((_line:string):void=>{},"script"),B=new Realm((_line:string):void=>{},"script");
 run('function* f(){switch(1){case 1:let x=2;yield ()=>++x;case 2:yield x;}}var g=f();',A);define(B,"g",own(A,"g"));
 const cross=run('var h=g.next().value;h()===3&&g.next().value===3&&g.next().done;',B);check(cross.type==="normal"&&cross.value.kind==="boolean"&&cross.value.value,"foreign CaseBlock cells");
 const conflict=prepareBoundedScript({id:"duplicate-case",text:"function* f(){switch(1){case 1:let x;yield 1;case 2:let x;}}"},new Realm((_line:string):void=>{},"script"));
 check(conflict.kind==="conflict"&&conflict.conflict.kind==="duplicate-lexical"&&conflict.diagnostic.phase==="parse","shared CaseBlock lexical conflict");
+{
+ const source="function* f(){switch(yield 1){case 1:yield 2;}}",realm=new Realm((_line:string)=>{},'script');check(prepareBoundedScript({id:'historical-switch-test',text:source},realm).kind==='ready','historical switch admitted');const result=run(source+'var g=f();g.next().value===1&&g.next(1).value===2&&g.next().done',realm);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'historical switch resumes');
+}
 console.log("generator switch passed");

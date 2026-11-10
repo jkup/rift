@@ -25,7 +25,7 @@ import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, ChainExpr, Argument, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
+import type { Expr, ChainExpr, Argument, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt, SwitchStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type PropertyKey, type ValueCompletion, type ThrowCompletion, type OperationContext, type ScriptJob, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, putScriptBinding } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
@@ -2385,6 +2385,42 @@ class ExecutionEngine {
             if (result.payload.kind !== "empty") value = result.payload;
         }
     }
+    #switchBody(stmt: SwitchStmt, discriminant: Value, sequences: GeneratorFrame[] | null): ScriptStatementCompletion {
+        const saved = this.#active();
+        const scopeId = ExecutableScript.scopeOfNode(saved.record, stmt, executionKey);
+        const created = saved.record.createBlockEnvironment(scopeId, saved.lexical, this.context);
+        if (created.type === "throw") return created;
+        this.#frame = { ...saved, scopeId, lexical: created.environment };
+        try {
+            const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
+            if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
+            const clauses = stmt.caseBlock.clauses;
+            let selected = -1, fallback = -1;
+            for (let i = 0; i < clauses.length; i++) {
+                const test = clauses[i].test;
+                if (test === null) { fallback = i; continue; }
+                const selector = this.#value(test);
+                if (selector.type === "throw") { const abrupt: ThrowCompletion = selector; return abrupt; }
+                if (equal(discriminant, selector.value)) { selected = i; break; }
+            }
+            if (selected < 0) selected = fallback;
+            if (sequences !== null) {
+                const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
+                sequences.push({ kind: "switch", frame, depth });
+                if (selected >= 0) for (let i = clauses.length - 1; i >= selected; i--)
+                    sequences.push({ kind: "sequence", frame, body: clauses[i].body, nextStatement: 0, depth });
+                return { type: "normal", payload: { kind: "empty" } };
+            }
+            let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
+            if (selected >= 0) for (let i = selected; i < clauses.length; i++) {
+                const result = updateScriptEmpty(this.#list(clauses[i].body), value);
+                if (result.type === "break" && result.target === undefined) return { type: "normal", payload: result.payload };
+                if (result.type !== "normal") return result;
+                if (result.payload.kind !== "empty") value = result.payload;
+            }
+            return { type: "normal", payload: value };
+        } finally { this.#frame = saved; }
+    }
     #copyLegacyFunction(stmt: Stmt): ValueCompletion {
         const frame = this.#active();
         const declaration = ExecutableScript.legacyDeclaration(frame.record, stmt, executionKey);
@@ -2434,44 +2470,11 @@ class ExecutionEngine {
                 return result;
             }
             case "switch": {
-                // The discriminant belongs to the surrounding environment; all
-                // selectors and clause bodies share one initialized CaseBlock.
+                if (sequences !== null && isSuspendingGeneratorExpression(stmt.discriminant))
+                    return this.#suspendingExpression(stmt.discriminant, { kind: "switch-test", statement: stmt });
                 const discriminant = this.#value(stmt.discriminant);
                 if (discriminant.type === "throw") { const abrupt: ThrowCompletion = discriminant; return abrupt; }
-                const saved = this.#active();
-                const scopeId = ExecutableScript.scopeOfNode(saved.record, stmt, executionKey);
-                const created = saved.record.createBlockEnvironment(scopeId, saved.lexical, this.context);
-                if (created.type === "throw") return created;
-                this.#frame = { ...saved, scopeId, lexical: created.environment };
-                try {
-                    const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
-                    if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
-                    const clauses = stmt.caseBlock.clauses;
-                    let selected = -1, fallback = -1;
-                    for (let i = 0; i < clauses.length; i++) {
-                        const test = clauses[i].test;
-                        if (test === null) { fallback = i; continue; }
-                        const selector = this.#value(test);
-                        if (selector.type === "throw") { const abrupt: ThrowCompletion = selector; return abrupt; }
-                        if (equal(discriminant.value, selector.value)) { selected = i; break; }
-                    }
-                    if (selected < 0) selected = fallback;
-                    if (sequences !== null) {
-                        const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
-                        sequences.push({ kind: "switch", frame, depth });
-                        if (selected >= 0) for (let i = clauses.length - 1; i >= selected; i--)
-                            sequences.push({ kind: "sequence", frame, body: clauses[i].body, nextStatement: 0, depth });
-                        return { type: "normal", payload: { kind: "empty" } };
-                    }
-                    let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
-                    if (selected >= 0) for (let i = selected; i < clauses.length; i++) {
-                        const result = updateScriptEmpty(this.#list(clauses[i].body), value);
-                        if (result.type === "break" && result.target === undefined) return { type: "normal", payload: result.payload };
-                        if (result.type !== "normal") return result;
-                        if (result.payload.kind !== "empty") value = result.payload;
-                    }
-                    return { type: "normal", payload: value };
-                } finally { this.#frame = saved; }
+                return this.#switchBody(stmt, discriminant.value, sequences);
             }
             case "try-finally": {
                 if (sequences !== null) {
@@ -3496,6 +3499,15 @@ class ExecutionEngine {
             const failure = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", continuation.yieldLoc);
             this.#capture(failure);
             return failure;
+        }
+        if (receiver.kind === "switch-test") {
+            const result = this.#switchBody(receiver.statement, value, continuation.sequences);
+            if (result.type === "throw") {
+                this.#capture(result);
+                return this.#unwindContinuation(continuation, result, callerDepth);
+            }
+            if (result.type !== "normal") throw new Error("invalid resumed switch setup");
+            return null;
         }
         if (receiver.kind === "for-update") {
             if (frame.kind !== "for" || frame.phase !== "test") throw new Error("for update without test phase");

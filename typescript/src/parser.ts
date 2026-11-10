@@ -795,7 +795,10 @@ class Parser {
                 if (statement.kind === "yield") this.admitGeneratorExpression(statement, supported);
                 else if (statement.kind === "block") pending.push(...statement.body);
                 else if (statement.kind === "labelled") pending.push(statement.body);
-                else if (statement.kind === "switch") for (const clause of statement.caseBlock.clauses) pending.push(...clause.body);
+                else if (statement.kind === "switch") {
+                    this.admitGeneratorExpression(statement.discriminant, supported);
+                    for (const clause of statement.caseBlock.clauses) pending.push(...clause.body);
+                }
                 else if (statement.kind === "while" || statement.kind === "do-while") {
                     this.admitGeneratorExpression(statement.test, supported);
                     pending.push(statement.body);
