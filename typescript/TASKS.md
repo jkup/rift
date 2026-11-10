@@ -4240,7 +4240,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-277 — Suspended super constructor arguments
 
-Status: **in progress — isolated successor to TS-276**. Owner: Codex catch-up chat, 2026-11-10. Retain the derived constructor environment and superclass before suspended argument evaluation in async arrows. Share argument/spread accumulation and ordinary construction/binding, preserving new.target, late constructor checks and duplicate-this errors. Own syntax/parser, argument frame, shared super construction, tests/manifests and docs in build/async-super-constructor-draft. Require both-host/static, ordering, async rejection and Realm/budget checks plus pinned engine review.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain the derived constructor environment and superclass before suspended argument evaluation in async arrows. Share argument/spread accumulation and ordinary construction/binding, preserving new.target, late constructor checks and duplicate-this errors. Own syntax/parser, argument frame, shared super construction, tests/manifests and docs in build/async-super-constructor-draft. Require both-host/static, ordering, async rejection and Realm/budget checks plus pinned engine review.
 
 ## TS-278 — Suspended destructuring assignment expressions
 

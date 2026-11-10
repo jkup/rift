@@ -1,5 +1,6 @@
+import type { ScriptEnvironment } from "./script-environment.js";
 import type { EvaluationReference } from "./evaluation-reference.js";
-import type { SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
+import type { SuperCallExpr, SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
 import type { GuestObject, PropertyKey, Value } from "./runtime.js";
 
 export type SuperPropertyOperation = { kind: "read" }
@@ -23,6 +24,7 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "call-base"; expression: CallExpr }
     | { kind: "call-key"; expression: CallExpr; base: Value }
     | { kind: "constructor"; expression: NewExpr }
+    | { kind: "super-argument"; expression: SuperCallExpr; environment: ScriptEnvironment; parent: GuestObject | null; values: Value[]; index: number }
     | { kind: "call-argument"; expression: CallExpr | NewExpr; callee: Value; receiver: Value; directEval: boolean; values: Value[]; index: number }
     | { kind: "member-base"; expression: MemberExpr }
     | { kind: "member-key"; expression: MemberExpr; base: Value }
@@ -36,5 +38,5 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "await-operand"; expression: AwaitExpr };
 export function isSuspendingGeneratorExpression(expression: Expr | null): boolean {
     return expression !== null && (expression.kind === "yield" || expression.kind === "await" ||
-        ((expression.kind === "array" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
+        ((expression.kind === "super-call" || expression.kind === "array" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
 }

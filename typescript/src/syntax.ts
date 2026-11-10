@@ -30,6 +30,7 @@ export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "bindi
 export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[] };
 export type ArrayExpr = { kind: "array"; loc: Location; elements: ArrayElement[]; suspends?: true };
+export type SuperCallExpr = { kind: "super-call"; loc: Location; args: Argument[]; suspends?: true };
 export type SuperMemberExpr = { kind: "super-member"; loc: Location; key: Expr; suspends?: true };
 export type UpdateExpr = { kind: "update"; loc: Location; target: Expr; op: "++" | "--"; prefix: boolean; suspends?: true };
 export type CompoundExpr = { kind: "compound"; loc: Location; target: Expr; value: Expr; op: "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "<<" | ">>" | ">>>"; suspends?: true };
@@ -55,7 +56,7 @@ export type Expr =
     | { kind: "identifier"; loc: Location; name: string }
     | { kind: "this"; loc: Location }
     | { kind: "new-target"; loc: Location }
-    | { kind: "super-call"; loc: Location; args: Argument[] }
+    | SuperCallExpr
     | SuperMemberExpr
     | UnaryExpr
     | BinaryExpr

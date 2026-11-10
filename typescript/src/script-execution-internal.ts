@@ -1840,17 +1840,11 @@ class ExecutionEngine {
             }
             case "super-call": {
                 if (!this.#script) throw new Error("Script super call unavailable");
-                const environment = this.#thisEnvironment(this.#active().lexical);
-                if (!(environment instanceof FunctionActivation) || !environment.callable.isDerivedClassConstructor || environment.callee === null)
-                    throw new Error("invalid super call environment");
-                const parent = environment.callee.getPrototypeOf();
+                const environment = this.#superCallEnvironment();
+                const parent = environment.callee!.getPrototypeOf();
                 const args = this.#arguments(expr.args, env, receiver);
                 if (args.type === "throw") return args;
-                if (parent === null || parent.constructorSlot === null)
-                    return languageFailure(this.context.realm, "TypeError", "superclass is not a constructor", expr.loc);
-                const result = this.#construct({ kind: "object", object: parent }, args.values, expr.loc, environment.newTarget);
-                if (result.type === "throw") return result;
-                return environment.bindThis(result.value, this.context.realm, expr.loc);
+                return this.#finishSuperCall(environment, parent, args.values, expr.loc);
             }
             case "new": {
                 if (!this.#script) throw new Error("Script construction unavailable");
@@ -2106,6 +2100,20 @@ class ExecutionEngine {
             }
         }
         return result;
+    }
+    #superCallEnvironment(): FunctionActivation {
+        const environment = this.#thisEnvironment(this.#active().lexical);
+        if (!(environment instanceof FunctionActivation) || !environment.callable.isDerivedClassConstructor || environment.callee === null)
+            throw new Error("invalid super call environment");
+        return environment;
+    }
+    #finishSuperCall(environment: ScriptEnvironment, parent: GuestObject | null, args: Value[], loc: Location): ValueCompletion {
+        if (!(environment instanceof FunctionActivation)) throw new Error("invalid retained super call environment");
+        if (parent === null || parent.constructorSlot === null)
+            return languageFailure(this.context.realm, "TypeError", "superclass is not a constructor", loc);
+        const result = this.#construct({ kind: "object", object: parent }, args, loc, environment.newTarget);
+        if (result.type === "throw") return result;
+        return environment.bindThis(result.value, this.context.realm, loc);
     }
     #superContext(loc: Location): { type: "normal"; homeObject: GuestObject; receiver: Value } | ThrowCompletion {
         const environment = this.#thisEnvironment(this.#active().lexical);
@@ -3342,7 +3350,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3435,6 +3443,13 @@ class ExecutionEngine {
                     if (expression.kind === "new" && isSuspendingGeneratorExpression(expression.callee)) {
                         frames.push({ kind: "constructor", expression });
                         expression = expression.callee;
+                        continue;
+                    }
+                    if (expression.kind === "super-call") {
+                        const environment = this.#superCallEnvironment();
+                        frames.push({ kind: "super-argument", expression, environment, parent: environment.callee!.getPrototypeOf(), values: [], index: 0 });
+                        const arg = expression.args[0];
+                        expression = arg.kind === "spread" ? arg.expression : arg;
                         continue;
                     }
                     if (expression.kind === "call" || expression.kind === "new") {
@@ -3726,19 +3741,22 @@ class ExecutionEngine {
                 expression = arg.kind === "spread" ? arg.expression : arg;
                 continue;
             }
-            if (frame.kind === "call-argument") {
+            if (frame.kind === "call-argument" || frame.kind === "super-argument") {
                 const arg = frame.expression.args[frame.index];
                 if (arg.kind === "spread") {
                     const spread = this.#spreadArguments(value, frame.values, arg.loc);
                     if (spread !== null) return spread;
                 } else frame.values.push(value);
-                if (++frame.index < frame.expression.args.length) {
+                if (frame.kind === "call-argument") frame.index++;
+                else if (frame.kind === "super-argument") frame.index++;
+                if (frame.index < frame.expression.args.length) {
                     frames.push(frame);
                     const next = frame.expression.args[frame.index];
                     expression = next.kind === "spread" ? next.expression : next;
                     continue;
                 }
-                const called = frame.expression.kind === "new" ? this.#construct(frame.callee, frame.values, frame.expression.loc)
+                const called = frame.kind === "super-argument" ? this.#finishSuperCall(frame.environment, frame.parent, frame.values, frame.expression.loc)
+                    : frame.expression.kind === "new" ? this.#construct(frame.callee, frame.values, frame.expression.loc)
                     : frame.directEval ? this.#callScript(frame.callee, UNDEFINED, frame.values, frame.expression.loc, true)
                     : this.call(frame.callee, frame.receiver, frame.values, frame.expression.loc);
                 if (called.type === "throw") return called;
