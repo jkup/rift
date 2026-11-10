@@ -1,6 +1,6 @@
 import type { TemporalTimePrecision } from "./temporal-time-format.js";
 import { toPrimitive } from "./primitive-conversion.js";
-import { toString, type StringCompletion } from "./conversion.js";
+import { toString, toNumber, type NumberCompletion, type StringCompletion } from "./conversion.js";
 import type { TemporalRoundingMode } from "./temporal-rounding.js";
 import { languageFailure, type GuestObject, type OperationContext, type ThrowCompletion, type Value } from "./runtime.js";
 import type { Location } from "./syntax.js";
@@ -64,6 +64,33 @@ export function temporalStringPrecision(unit: string, digits: "auto" | number): 
         case "millisecond": return 3;
         case "microsecond": return 6;
         case "nanosecond": return 9;
+        default: return null;
+    }
+}
+
+export function temporalRoundingIncrement(options: GuestObject, context: OperationContext, loc: Location): NumberCompletion {
+    const read = options.internalGet("roundingIncrement", { kind: "object", object: options }, context, loc);
+    if (read.type === "throw") return read;
+    if (read.value.kind === "undefined") return { type: "normal", value: 1 };
+    const primitive = toPrimitive(read.value, "number", context, loc);
+    if (primitive.type === "throw") return primitive;
+    const converted = toNumber(primitive.value, loc, context.realm);
+    if (converted.type === "throw") return converted;
+    const integer = Math.trunc(converted.value);
+    if (!Number.isFinite(integer) || integer < 1 || integer > 1000000000)
+        return languageFailure(context.realm, "RangeError", "invalid rounding increment", loc);
+    return { type: "normal", value: integer };
+}
+
+export function temporalUnitNanoseconds(name: string): bigint | null {
+    const unit = name.endsWith("s") ? name.slice(0, -1) : name;
+    switch (unit) {
+        case "hour": return 3600000000000n;
+        case "minute": return 60000000000n;
+        case "second": return 1000000000n;
+        case "millisecond": return 1000000n;
+        case "microsecond": return 1000n;
+        case "nanosecond": return 1n;
         default: return null;
     }
 }

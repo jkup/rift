@@ -4404,7 +4404,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-316 — Temporal PlainTime rounding
 
-Status: **in progress — isolated successor to TS-315**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.round with ordered options, time-unit increment divisibility and midnight wrap, producing a fresh intrinsic PlainTime. Share rounding increment conversion and time-unit lengths with Instant without changing its distinct day-divisibility rules. Own option helpers, Instant/PlainTime builtins, focused tests/manifests/docs in build/temporal-plain-time-round-draft. Require all units/modes, bounds, abrupt/Realm/subclass cases, full Node and native static/zero-dynamic regressions.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainTime.round with ordered options, time-unit increment divisibility and midnight wrap, producing a fresh intrinsic PlainTime. Share rounding increment conversion and time-unit lengths with Instant without changing its distinct day-divisibility rules. Own option helpers, Instant/PlainTime builtins, focused tests/manifests/docs in build/temporal-plain-time-round-draft. Require all units/modes, bounds, abrupt/Realm/subclass cases, full Node and native static/zero-dynamic regressions.
 
 ## TS-317 — Temporal PlainTime field replacement
 

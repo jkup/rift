@@ -1,40 +1,10 @@
-import { temporalOptionString, temporalRoundingMode } from "../temporal-options.js";
+import { temporalOptionString, temporalRoundingMode, temporalRoundingIncrement, temporalUnitNanoseconds } from "../temporal-options.js";
 import type { Realm } from "../realm.js";
 import { createTemporalInstant, temporalInstantValue } from "../temporal-instant-object.js";
-import { toPrimitive } from "../primitive-conversion.js";
-import { toNumber, type NumberCompletion } from "../conversion.js";
 import { NANOSECONDS_PER_DAY } from "../iso-calendar.js";
 import { roundTemporalInstant } from "../temporal-rounding.js";
 import { formatUTCInstant } from "../temporal-time-format.js";
-import { languageFailure, normal, UNDEFINED, GuestObject, type OperationContext, type Value, type ValueCompletion } from "../runtime.js";
-import type { Location } from "../syntax.js";
-
-function roundingIncrement(options: GuestObject, context: OperationContext, loc: Location): NumberCompletion {
-    const read = options.internalGet("roundingIncrement", { kind: "object", object: options }, context, loc);
-    if (read.type === "throw") return read;
-    if (read.value.kind === "undefined") return { type: "normal", value: 1 };
-    const primitive = toPrimitive(read.value, "number", context, loc);
-    if (primitive.type === "throw") return primitive;
-    const converted = toNumber(primitive.value, loc, context.realm);
-    if (converted.type === "throw") return converted;
-    const integer = Math.trunc(converted.value);
-    if (!Number.isFinite(integer) || integer < 1 || integer > 1000000000)
-        return languageFailure(context.realm, "RangeError", "invalid rounding increment", loc);
-    return { type: "normal", value: integer };
-}
-
-function unitNanoseconds(name: string): bigint | null {
-    const unit = name.endsWith("s") ? name.slice(0, -1) : name;
-    switch (unit) {
-        case "hour": return 3600000000000n;
-        case "minute": return 60000000000n;
-        case "second": return 1000000000n;
-        case "millisecond": return 1000000n;
-        case "microsecond": return 1000n;
-        case "nanosecond": return 1n;
-        default: return null;
-    }
-}
+import { languageFailure, normal, UNDEFINED, GuestObject, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalInstantMethods(realm: Realm): void {
     const prototype = realm.temporalInstantPrototype;
@@ -57,7 +27,7 @@ export function registerTemporalInstantMethods(realm: Realm): void {
             options.bootstrapDefine("smallestUnit", { value: roundTo, writable: true, enumerable: true, configurable: true });
         } else if (roundTo.kind === "object") options = roundTo.object;
         else return languageFailure(context.realm, "TypeError", "round requires a unit string or options object", loc);
-        const increment = roundingIncrement(options, context, loc);
+        const increment = temporalRoundingIncrement(options, context, loc);
         if (increment.type === "throw") return increment;
         const mode = temporalRoundingMode(options, context, loc, "halfExpand");
         if (mode.type === "throw") return mode;
@@ -66,7 +36,7 @@ export function registerTemporalInstantMethods(realm: Realm): void {
         if (read.value.kind === "undefined") return languageFailure(context.realm, "TypeError", "smallestUnit is required", loc);
         const unit = temporalOptionString(read.value, context, loc);
         if (unit.type === "throw") return unit;
-        const length = unitNanoseconds(unit.value);
+        const length = temporalUnitNanoseconds(unit.value);
         if (length === null) return languageFailure(context.realm, "RangeError", "rounding requires a time unit", loc);
         const quantum = BigInt(increment.value) * length;
         if (quantum > NANOSECONDS_PER_DAY || NANOSECONDS_PER_DAY % quantum !== 0n)
