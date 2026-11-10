@@ -37,10 +37,13 @@ export function formatTemporalTime(time: TimeFields, precision: TemporalTimePrec
     let result = String(time.hour).padStart(2, "0") + ":" + String(time.minute).padStart(2, "0");
     if (precision === "minute") return result;
     result += ":" + String(time.second).padStart(2, "0");
-    let fraction = String(time.millisecond * 1000000 + time.microsecond * 1000 + time.nanosecond).padStart(9, "0");
+    return result + formatTemporalFraction(time.millisecond * 1000000 + time.microsecond * 1000 + time.nanosecond, precision);
+}
+
+export function formatTemporalFraction(nanoseconds: number, precision: "auto" | number): string {
+    let fraction = String(nanoseconds).padStart(9, "0");
     if (precision === "auto") {
         while (fraction.endsWith("0")) fraction = fraction.slice(0, -1);
     } else fraction = fraction.slice(0, precision);
-    if (fraction.length !== 0) result += "." + fraction;
-    return result;
+    return fraction.length === 0 ? "" : "." + fraction;
 }

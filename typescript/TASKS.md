@@ -4436,7 +4436,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-324 — Exact Temporal duration formatting
 
-Status: **in progress — isolated successor to TS-323**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO duration formatting with exact second/subsecond accumulation and shared fractional formatting. Preserve larger fields without balancing them; support auto and explicit 0–9 digits. Own duration formatter, shared time formatter, focused tests/manifests/docs in build/temporal-duration-format-draft. No guest methods yet. Require signed/zero/calendar-only values, unsafe integer carry, all precisions and unchanged Instant/PlainTime formatting, full Node/native static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add pure ISO duration formatting with exact second/subsecond accumulation and shared fractional formatting. Preserve larger fields without balancing them; support auto and explicit 0–9 digits. Own duration formatter, shared time formatter, focused tests/manifests/docs in build/temporal-duration-format-draft. No guest methods yet. Require signed/zero/calendar-only values, unsafe integer carry, all precisions and unchanged Instant/PlainTime formatting, full Node/native static validation.
 
 ## TS-325 — Temporal Duration serialization
 
