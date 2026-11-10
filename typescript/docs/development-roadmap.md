@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted bigint-foundation milestone passes 784/784 guests on each
-host, 294/294 tooling checks, and all 291 native static gates with the recorded manifest and audit-test repairs.
+The accepted temporal-regexp milestone passes 799/799 guests on each
+host, 295/295 tooling checks, and all 306 native static gates.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -33,8 +33,7 @@ Property updates, computed super reads/calls/writes/updates/deletion and async
 super constructor arguments are accepted. Nested destructuring values,
 nullish/logical operators, optional chains and class heritage/computed keys
 now preserve suspended evaluation contexts. Tagged templates preserve call references and cache frozen arrays per Realm/site.
-Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; guest Temporal objects remain isolated successors. Unicode regex modes, lookaround,
-backreferences and named groups remain unsupported.
+Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric backreferences and lookahead are accepted; Unicode regex modes, lookbehind and named groups remain unsupported.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
@@ -736,16 +735,6 @@ Iteration/objects accepted (TS-199–203): 696/696 guests on each host without s
 
 Functions/spread accepted (TS-204–209): 701/701 guests on each host without skips, 208/208 native static-only/zero-dynamic gates in 1658613ms without retries, and 293/293 tooling checks in 217585.0237ms. The initial tooling run was 292/293: the preserved E37 named-function input now exposes its strict duplicate-parameter audit candidate; its exact expectation migration, complete both-host audit and full tooling rerun pass. Runner32/32 in 663.8071ms, ten probes and typechecking pass. Node ze6MwK/native OtfzoY match all 225 normalized corpus records and preserve all 179 completions (114 reported successes, 65 unchecked). Evidence: build/functions-spread-native-results.json, corpus-comparison.json with the same prefix, and functions-spread-* logs including initial failures. Binary/reference extraction, pending operands and generator-start execution remain reviewed isolated successors. Generator bodies containing yield remain unsupported.
 
-Review follow-up TS-299: BigInt literal assignment targets currently escape the
-existing Number-literal SyntaxError certification in eval. A bounded extension
-is under isolated validation; exponentiation, logical assignments and update
-target certification remain separate scope. Evidence: build/bigint-invalid-target-review.json.
+Resolved BigInt review: TS-299, TS-302 and TS-304 now certify numeric assignment, compound-assignment and update targets. TS-303 stores BigInt syntax as exact numeric text, preserving native JSON snapshots. TS-307 guards native manifest entries, and TS-312 narrows the idle dispatch history projection without changing its wire output. The bigint-foundation acceptance retains the initial failures, corrected manifest supplement and complete 291-gate evidence.
 
-BigInt integration review found a native host-JSON limitation in syntax snapshots
-and two test diagnostics. TS-303 repairs it with text-backed BigInt literal nodes
-and unchanged semantic assertions. The initial matrix was cancelled after 117
-completed entries and preserved as partial evidence. TS-307 then found malformed
-manifest tuples: the fresh scheduled run contains 287 entries, not the intended
-291. Five corrected builds replace one misnamed output and supply four omitted
-entries. Acceptance requires an explicit composite report covering all 291 gates,
-both complete guest suites and tooling; partial evidence is not acceptance.
+The temporal-regexp milestone passes all 306 native gates directly. Its 225-record corpus comparison preserves 190 completions; nine incomplete Temporal fixtures advance diagnostics. The Instant fixture additionally expects Number epochNanoseconds and false for malformed equals input, contrary to the implemented specification. Preserve those original fixtures and use standards-correct expected-result tests for new Temporal behavior.
