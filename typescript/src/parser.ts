@@ -750,10 +750,11 @@ class Parser {
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
             }
-            if (node.kind !== "super-call" && node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update" && node.kind !== "super-member") continue;
+            if (node.kind !== "destructure" && node.kind !== "super-call" && node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update" && node.kind !== "super-member") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
-                if (node.kind === "super-call") {
+                if (node.kind === "destructure") pending.push({ expression: node.value, visited: false });
+                else if (node.kind === "super-call") {
                     for (let i = node.args.length - 1; i >= 0; i--) { const arg = node.args[i]; pending.push({ expression: arg.kind === "spread" ? arg.expression : arg, visited: false }); }
                 }
                 else if (node.kind === "super-member") pending.push({ expression: node.key, visited: false });
@@ -784,6 +785,8 @@ class Parser {
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
+            } else if (node.kind === "destructure") {
+                if (isSuspendingGeneratorExpression(node.value)) node.suspends = true;
             } else if (node.kind === "super-call") {
                 if (node.args.some(arg => isSuspendingGeneratorExpression(arg.kind === "spread" ? arg.expression : arg))) node.suspends = true;
             } else if (node.kind === "super-member") {
@@ -862,8 +865,7 @@ class Parser {
                 }
                 else if (statement.kind === "expression") {
                     const expression = statement.expression;
-                    if (expression.kind === "destructure") this.admitGeneratorExpression(expression.value, supported);
-                    else this.admitGeneratorExpression(expression, supported);
+                    this.admitGeneratorExpression(expression, supported);
                 }
             }
             for (const expression of this.awaits) if (!supported.has(expression))

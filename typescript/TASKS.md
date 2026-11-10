@@ -4244,7 +4244,7 @@ Status: **done — accepted in super-expressions milestone**. Owner: Codex catch
 
 ## TS-278 — Suspended destructuring assignment expressions
 
-Status: **in progress — isolated successor to TS-277**. Owner: Codex catch-up chat, 2026-11-10. Resume a destructuring RHS in nested expression positions, then reuse ordinary pattern assignment and return the original RHS value. Preserve delayed target resolution, iterator closing, computed-key/default ordering, strict errors and abrupt completion. Own syntax/parser, expression frame, continuation integration, tests/manifests and docs in build/generator-destructure-value-draft. Suspension inside patterns remains separate. Require both-host/static, async and Realm/budget tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Resume a destructuring RHS in nested expression positions, then reuse ordinary pattern assignment and return the original RHS value. Preserve delayed target resolution, iterator closing, computed-key/default ordering, strict errors and abrupt completion. Own syntax/parser, expression frame, continuation integration, tests/manifests and docs in build/generator-destructure-value-draft. Suspension inside patterns remains separate. Require both-host/static, async and Realm/budget tests.
 
 ## TS-279 — Nullish coalescing
 

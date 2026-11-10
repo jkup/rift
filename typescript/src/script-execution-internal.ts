@@ -3350,7 +3350,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3445,6 +3445,11 @@ class ExecutionEngine {
                         expression = expression.callee;
                         continue;
                     }
+                    if (expression.kind === "destructure") {
+                        frames.push({ kind: "destructure-value", expression });
+                        expression = expression.value;
+                        continue;
+                    }
                     if (expression.kind === "super-call") {
                         const environment = this.#superCallEnvironment();
                         frames.push({ kind: "super-argument", expression, environment, parent: environment.callee!.getPrototypeOf(), values: [], index: 0 });
@@ -3531,6 +3536,11 @@ class ExecutionEngine {
                 if (written.type === "throw") return written;
                 if (written.type !== "normal") throw new Error("invalid compound write completion");
                 value = written.value;
+                continue;
+            }
+            if (frame.kind === "destructure-value") {
+                const assigned = this.#initializePattern(frame.expression.pattern, null, value, null, null);
+                if (assigned.type === "throw") return assigned;
                 continue;
             }
             if (frame.kind === "super-key") {

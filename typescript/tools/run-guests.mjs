@@ -728,6 +728,7 @@ executeDriver("generator-super-compound", { stdout: "generator super compound pa
 executeDriver("generator-super-update", { stdout: "generator super update passed\n" });
 executeDriver("generator-super-delete", { stdout: "generator super delete passed\n" });
 executeDriver("async-super-constructor", { stdout: "async super constructor passed\n" });
+executeDriver("generator-destructure-value", { stdout: "generator destructure value passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });
