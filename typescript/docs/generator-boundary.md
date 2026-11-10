@@ -1,0 +1,46 @@
+# Generator suspension boundary
+
+TS-196 prerequisite review, 2026-11-10. Generator grammar remains unsupported.
+
+The pinned compiler can retain a host Generator in a class, yield tagged values
+with object identity, and receive/return explicit normal, return and throw
+records. The reduced probe passes both hosts with 26 static statements and zero
+dynamic coverage. It extends the numeric suspension smoke test; it does not
+establish that a suspended Rift evaluation can safely be resumed.
+
+The current evaluator assumes synchronous completion. ExecutionEngine owns the
+active Script frame, operation Realm, call/depth counters, source inspection
+state and jobs. Statement/call boundaries restore these in finally blocks;
+OperationContext helpers and execution permits are tied to that active engine.
+A stored host generator closing over an old engine cannot simply be resumed
+from a later ScriptSession or a foreign caller. It could retain stale budget,
+permission or Realm state even if a small native suspension probe passes.
+
+The next implementation boundary should be a detached Script activation and
+explicit resume protocol. Retain record/scope identity, environments, this,
+references, pending evaluation operands and pending completion state. Each
+resume must install that activation in the current execution context and restore
+the caller on yield, completion or fault. Budgets belong to the current resume;
+no hidden suspended call depth should charge unrelated callers. Prove this
+boundary with ordinary synchronous evaluation before adding yield syntax.
+
+Subsequent slices can add suspended-start/executing/suspended-yield/completed
+states, generator object/prototype metadata and next/return/throw dispatch,
+then expression/statement continuations. Finally blocks, iterator closing,
+per-iteration lexical environments and yield delegation must preserve pending
+completion identity and execute side effects once. Async functions and async
+generators should build on the same continuation boundary, not a separate
+interpreter or a replay of earlier statements.
+
+The original generator corpus includes obsolete phase-2 placeholder commentary
+as well as real yield/resume, return-value, loop and destructuring assertions.
+Do not implement a completed iterator merely to make the placeholder file
+finish. Keep the unchanged corpus and add independent semantic expectations,
+including reentrant next, resume from another session/Realm, abrupt resumption,
+cleanup that yields, resource stops and suspension inside compound expressions.
+
+Evidence: build/generator-boundary-review/tagged.ts and results.json;
+probes/suspension.ts; src/script-execution-internal.ts call, #statement, #list,
+ActiveOperationContext and ScriptSession boundaries. No guest feature is
+accepted by this note, and host generators remain an implementation option
+only after the activation/lifetime constraints are resolved.

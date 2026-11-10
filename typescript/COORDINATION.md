@@ -2242,3 +2242,5 @@ Array.of, Array.from and String.repeat are accepted (TS-183–185). Node/native 
 2026-11-10 TS-193 native scanner measurements scale approximately linearly; no parser rewrite is justified. The reviewed benchmark is fully static after annotating its throwing mock callback. Claimed TS-194 JSON.stringify while the range/formatting/random gate continues.
 
 2026-11-10 TS-194 focused JSON.stringify passes both hosts with zero dynamic coverage. Added fixed UTF-16 output literals before final focused rerun. Claimed TS-195 locale host prerequisites because string_additional_methods.js remains blocked at locale casing; avoid guessing whether the pinned native host can implement it faithfully.
+
+2026-11-10 TS-192 passes 689/689 Node guests after restoring the isolated fixture/example directories, with focused native reviver semantics and zero dynamic coverage. TS-194 passes 690/690 Node guests and focused native stringify semantics/coverage, including fixed surrogate literals. Both remain isolated until canonical range/formatting/random acceptance. TS-195 records a native canonical-equivalence failure instead of shipping locale comparison based on passing smoke tests.

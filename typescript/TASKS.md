@@ -3883,3 +3883,7 @@ Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-
 ## TS-195 — String locale host prerequisites
 
 Status: **done — casing prerequisites pass; comparison blocked by native canonical-equivalence failures**. Owner: Codex catch-up chat, 2026-11-10. Probe pinned static support and actual behavior for locale case mapping and comparison, including Turkish casing, Greek context, Unicode comparison and explicit locales. Determine whether a trustworthy common host boundary can close the remaining string-method fixture; do not replace locale behavior with ASCII/code-unit approximations. Own build/string-locale-review and a concise decision note; no guest registrations or toolchain changes.
+
+## TS-196 — Generator suspension boundary review
+
+Status: **done — tagged retention viable; detached activation migration required before yield**. Owner: Codex catch-up chat, 2026-11-10. Review current synchronous evaluator boundaries and original generator/async fixtures before grammar expansion. Probe retained host generators carrying tagged values and explicit completion records under the pinned static gate. Record a concrete continuation migration boundary and required invariants, distinguishing the existing numeric suspension smoke probe from whole-engine feasibility. Own build/generator-boundary-review and docs/generator-boundary.md; no generator grammar or placeholder guest iterators in this task.
