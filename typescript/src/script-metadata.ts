@@ -153,6 +153,7 @@ class MetadataCollector {
                 }
                 this.expression(expr.callee, strict, parent);
                 break;
+            case "regexp": throw new Error("RegExp literal requires Script metadata");
             case "literal": case "identifier": case "this": break;
         }
     }

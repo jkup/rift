@@ -26,7 +26,7 @@ const modes = one(['script-observation','conformance']);
 const variants = one(['strict','non-strict','raw']);
 const guards = {'source-units':'sourceUnits','parse-depth':'parseDepth',steps:'steps',calls:'calls','evaluation-depth':'evaluationDepth'};
 const syntaxCodes = ['lex.indeterminate-comment','lex.leading-zero','lex.numeric-literal',
-  'lex.indeterminate-string-newline','lex.string-escape','lex.indeterminate-string-end','lex.operator','lex.character',
+  'lex.indeterminate-string-newline','lex.string-escape','lex.indeterminate-string-end','lex.operator','lex.character','lex.regexp-literal','parse.regexp-pattern',
   'parse.expected-token','parse.binding-identifier','parse.duplicate-binding','parse.declaration-statement',
   'parse.return-context','parse.line-terminator','parse.throw-expression','parse.loop-context','parse.duplicate-parameter',
   'parse.property-name','parse.assignment-target','parse.delete-identifier','parse.array-spread','parse.object-key',
@@ -70,7 +70,7 @@ function constructorShape(c) {
 function resultShape(x,parent=false) {
   if (x===null || typeof x!=='object') return false;
   const fields={normal:{},throw:{phase:one(['runtime']),original:originalShape,constructor:constructorShape},
-    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target','lexical-declaration-statement','numeric-separator'])},
+    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target','lexical-declaration-statement','numeric-separator','regexp-literal'])},
     'unsupported-syntax':{capabilityCode:one(syntaxCodes)},
     'unsupported-operation':{phase:one(['runtime']),capabilityCode:one(runtimeCodes)},
     'unsupported-profile':{reasonCode:one(['strict','realm'])},

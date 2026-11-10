@@ -34,9 +34,13 @@ for (const source of ["1_;class C{}", "1_0n", "/1_/", "1_;let x;let x;", "1_;42=
             check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original class source permits numeric certification");
             const typed = run("try{" + call + "(" + JSON.stringify(source) + ")}catch(e){e instanceof SyntaxError}");
             check(typed.type === "normal" && typed.value.kind === "boolean" && typed.value.value, "class numeric error is SyntaxError");
+        } else if (source === "/1_/") {
+            check(result.type === "normal" && result.value.kind === "object", "original regex source is now admitted");
         } else check(result.type === "throw" && result.origin.kind === "unsupported-operation", "uncertified input stays fatal: " + source);
     }
 }
+const regex = run("eval('/1_/').test('1_') && Function('return /1_/')().source==='1_'");
+check(regex.type === "normal" && regex.value.kind === "boolean" && regex.value.value, "regex underscores are pattern text in both dynamic sources");
 const strict = run("function f(){'use strict';try{eval('var arguments;1_')}catch(e){true}}f()");
 check(strict.type === "throw" && strict.origin.kind === "unsupported-operation", "inherited scope veto stays fatal");
 const large = run("try{eval(input)}catch(e){true}", "1_;" + " ".repeat(100001));

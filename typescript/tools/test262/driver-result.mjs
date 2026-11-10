@@ -6,7 +6,7 @@ const keys = (value, names) => value !== null && typeof value === 'object' && !A
   Object.keys(value).length === names.length && names.every(name => Object.hasOwn(value, name));
 const integer = x => Number.isSafeInteger(x) && x >= 0;
 const capabilities = new Set(['lex.indeterminate-comment','lex.leading-zero','lex.numeric-literal',
-  'lex.indeterminate-string-newline','lex.string-escape','lex.indeterminate-string-end','lex.operator','lex.character',
+  'lex.indeterminate-string-newline','lex.string-escape','lex.indeterminate-string-end','lex.operator','lex.character','lex.regexp-literal','parse.regexp-pattern',
   'parse.expected-token','parse.binding-identifier','parse.duplicate-binding','parse.declaration-statement',
   'parse.return-context','parse.line-terminator','parse.throw-expression','parse.loop-context','parse.duplicate-parameter',
   'parse.property-name','parse.assignment-target','parse.delete-identifier','parse.array-spread','parse.object-key',

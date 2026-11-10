@@ -1,3 +1,4 @@
+import { regExpCreate } from "./builtins/regexp.js";
 import type { SuperContext } from "./syntax.js";
 import { getPrototypeFromConstructor } from "./constructor-prototype.js";
 import type { ClassExpr } from "./syntax.js";
@@ -1462,6 +1463,10 @@ class ExecutionEngine {
             case "class": {
                 if (env !== null) throw new Error("class requires Script execution");
                 return this.#classExpression(expr, name);
+            }
+            case "regexp": {
+                if (env !== null) throw new Error("RegExp literal requires Script execution");
+                return regExpCreate({ kind: "string", value: expr.pattern }, { kind: "string", value: expr.flags }, this.context, expr.loc);
             }
             case "literal": {
                 const value = expr.value;

@@ -30,7 +30,7 @@ test('T07 mode, body, stage and location must describe a possible driver operati
   ];
   const parsing = [
     { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'return-outside-function' },
-    { kind: 'unsupported-syntax', capabilityCode: 'lex.character' },
+    ...['lex.character','lex.regexp-literal','parse.regexp-pattern'].map(capabilityCode => ({ kind: 'unsupported-syntax', capabilityCode })),
     { kind: 'unsupported-syntax', capabilityCode: 'parse.return-context' },
     { kind: 'resource-limit', guardCode: 'source-units', count: 100001, limit: 100000 },
     { kind: 'resource-limit', guardCode: 'parse-depth', count: 129, limit: 128 },

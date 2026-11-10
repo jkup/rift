@@ -1,6 +1,7 @@
+import { scanRegExpLiteral } from "./regexp-literal.js";
 import type { Rejection } from "./outcomes.js";
 import type { Diagnostic, Location } from "./syntax.js";
-export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly cooked?: string };
+export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly cooked?: string; readonly regexp?: { pattern: string; flags: string } };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function digitValue(c: string): number {
@@ -26,7 +27,7 @@ function lexSource(source: string, script: boolean, separatorAudit: boolean): Le
     return lexer.result();
 }
 
-export type Lexer = { next: () => Token; result: () => LexResult };
+export type Lexer = { rescanRegExp: (token: Token) => Token; next: () => Token; result: () => LexResult };
 
 export function createLexer(source: string, script = false, separatorAudit = false): Lexer {
     const tokens: Token[] = [];
@@ -285,5 +286,23 @@ export function createLexer(source: string, script = false, separatorAudit = fal
         tokens.push(eof);
         return eof;
     }
-    return { next: () => next(), result: () => ({ tokens, error, rejection }) };
+    function rescanRegExp(token: Token): Token {
+        if (error !== null || tokens[tokens.length - 1] !== token || i !== token.end || token.kind !== "punct" || (token.text !== "/" && token.text !== "/="))
+            throw new Error("RegExp rescan requires the current slash token without lookahead");
+        const result = scanRegExpLiteral(source, token.start);
+        if (result.kind === "resource-limit") throw new Error("lexer source guard invariant");
+        if (result.kind !== "ready") {
+            i = result.offset;
+            column = token.loc.column + i - token.start;
+            fail({ kind: "unsupported-syntax", capabilityCode: "lex.regexp-literal" }, result.message, { line, column });
+            return token;
+        }
+        column += result.end - i;
+        i = result.end;
+        const literal: Token = { kind: "regexp", text: source.slice(token.start, i), loc: token.loc, start: token.start, end: i,
+            regexp: { pattern: result.pattern, flags: result.flags } };
+        tokens[tokens.length - 1] = literal;
+        return literal;
+    }
+    return { next: () => next(), rescanRegExp: (token) => rescanRegExp(token), result: () => ({ tokens, error, rejection }) };
 }

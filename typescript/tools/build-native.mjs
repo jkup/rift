@@ -56,6 +56,7 @@ const entries = [
     ["test/arrow-cover.ts", "arrow-cover"],
     ["test/parser-token-stream.ts", "parser-token-stream"],
     ["test/regexp-literal-scan.ts", "regexp-literal-scan"],
+    ["test/regexp-literals.ts", "regexp-literals"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

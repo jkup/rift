@@ -1,3 +1,4 @@
+import { validateRegExpLiteral } from "./regexp-literal-validation.js";
 import type { SuperContext } from "./syntax.js";
 import type { ClassExpr, ClassElement } from "./syntax.js";
 import type { DestructuringPattern, ArrayPattern, ObjectPattern, PatternElement } from "./syntax.js";
@@ -196,6 +197,8 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
         return { kind: "blocked", goal: "Script", unit: source, rejection: parsed.rejection, diagnostic: parsed.error };
     }
     if (parser.current().kind !== "eof" || parser.current().start !== source.text.length || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
+    if (parser.regexpError !== null) return { kind: "blocked", goal: "Script", unit: source,
+        rejection: { kind: "syntax-error", ruleCode: "regexp-literal" }, diagnostic: parser.regexpError };
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
     return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates, lexicalCandidates: parser.lexicalCandidates };
 }
@@ -219,6 +222,7 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
+    regexpError: Diagnostic | null = null;
     constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" | "bounded-numeric-separator-audit" = "legacy", private newTargetAllowed = false, private superContext: SuperContext = "none", private readonly lexer: Lexer | null = null) {}
     private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit"; }
     private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit"; }
@@ -1125,9 +1129,21 @@ class Parser {
         this.parenthesized.set(value, true);
         return value;
     }
+    private regexpLiteral(slash: Token): Expr {
+        if (this.lexer === null) throw new Error("RegExp literal requires incremental lexing");
+        const token = this.lexer.rescanRegExp(slash);
+        if (token.regexp === undefined) return { kind: "literal", loc: slash.loc, value: null };
+        const { pattern, flags } = token.regexp;
+        const result = validateRegExpLiteral(pattern, flags);
+        if (result.kind === "syntax-error") this.regexpError ??= { phase: "parse", name: "SyntaxError", message: result.message, loc: token.loc };
+        else if (result.kind === "unsupported") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.regexp-pattern" }, result.message, token.loc);
+        else if (result.kind === "resource-limit") this.fail(result.origin, result.message, token.loc);
+        return { kind: "regexp", loc: token.loc, pattern, flags };
+    }
     primary(allowIn: boolean, allowArrow = false): Expr {
         const t = this.take();
         const loc = t.loc;
+        if (this.structuralPlan() && t.kind === "punct" && (t.text === "/" || t.text === "/=")) return this.regexpLiteral(t);
         if (t.kind === "word" && t.text === "super" && this.boundedPlan()) {
             if (this.superContext !== "none" && (this.at(".") || this.at("["))) {
                 let key: Expr;
