@@ -228,6 +228,7 @@ const entries = [
     ["test/temporal-day-time-round.ts", "temporal-day-time-round"],
     ["test/temporal-relative-date-time-round.ts", "temporal-relative-date-time-round"],
     ["test/temporal-plain-date-time-difference.ts", "temporal-plain-date-time-difference"],
+    ["test/temporal-plain-date-to-date-time.ts", "temporal-plain-date-to-date-time"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

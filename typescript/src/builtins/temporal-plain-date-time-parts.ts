@@ -4,7 +4,7 @@ import { createTemporalPlainDate } from "../temporal-plain-date-object.js";
 import { createTemporalPlainTime } from "../temporal-plain-time-object.js";
 import { combineISODateTime, isoDateTimeWithinLimits } from "../iso-date-time.js";
 import { toTemporalCalendar } from "../temporal-calendar.js";
-import { toTimeFields } from "./temporal-plain-time-conversion.js";
+import { toTimeFieldsOrMidnight } from "./temporal-plain-time-conversion.js";
 import { languageFailure, UNDEFINED, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalPlainDateTimeParts(realm: Realm): void {
@@ -25,14 +25,9 @@ export function registerTemporalPlainDateTimeParts(realm: Realm): void {
     realm.registerBuiltin(realm.temporalPlainDateTimePrototype, "withPlainTime", 0, (receiver, args, context, loc): ValueCompletion => {
         const value = temporalPlainDateTimeValue(receiver, context, loc);
         if (value.type === "throw") return value;
-        const supplied = args.length === 0 ? UNDEFINED : args[0];
-        let time = { hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 };
-        if (supplied.kind !== "undefined") {
-            const converted = toTimeFields(supplied, UNDEFINED, context, loc);
-            if (converted.type === "throw") return converted;
-            time = converted.value;
-        }
-        const result = combineISODateTime(value.value.date, time);
+        const time = toTimeFieldsOrMidnight(args.length === 0 ? UNDEFINED : args[0], context, loc);
+        if (time.type === "throw") return time;
+        const result = combineISODateTime(value.value.date, time.value);
         return isoDateTimeWithinLimits(result) ? createTemporalPlainDateTime(result, context.realm.temporalPlainDateTimePrototype, context, loc) :
             languageFailure(context.realm, "RangeError", "date-time is outside its range", loc);
     });

@@ -4610,7 +4610,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-366 — Temporal PlainDate to PlainDateTime conversion
 
-Status: **in progress — isolated successor to TS-365**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainDateTime with optional midnight, ordered time conversion and exact DateTime bounds. Share ToTimeRecordOrMidnight with DateTime.withPlainTime. Require branding, conversion order, intrinsic Realm results and boundary checks on both hosts. Own src/builtins/temporal-plain-date.ts, src/builtins/temporal-plain-time-conversion.ts, src/builtins/temporal-plain-date-time-parts.ts and tests/manifests/docs in build/temporal-plain-date-to-date-time-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add toPlainDateTime with optional midnight, ordered time conversion and exact DateTime bounds. Share ToTimeRecordOrMidnight with DateTime.withPlainTime. Require branding, conversion order, intrinsic Realm results and boundary checks on both hosts. Own src/builtins/temporal-plain-date.ts, src/builtins/temporal-plain-time-conversion.ts, src/builtins/temporal-plain-date-time-parts.ts and tests/manifests/docs in build/temporal-plain-date-to-date-time-draft/.
 
 ## TS-367 — Temporal PlainYearMonth construction and ISO getters
 

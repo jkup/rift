@@ -29,6 +29,11 @@ export function toTimeFields(value: Value, options: Value, context: OperationCon
     return regulateTemporalTime(fields, options, context, loc);
 }
 
+export function toTimeFieldsOrMidnight(value: Value, context: OperationContext, loc: Location): { type: "normal"; value: TimeFields } | ThrowCompletion {
+    return value.kind === "undefined" ? { type: "normal", value: { hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 } } :
+        toTimeFields(value, UNDEFINED, context, loc);
+}
+
 function compareTime(left: TimeFields, right: TimeFields): number {
     const names: (keyof TimeFields)[] = ["hour", "minute", "second", "millisecond", "microsecond", "nanosecond"];
     for (const name of names) {
