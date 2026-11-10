@@ -4206,7 +4206,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-269 — Suspended compound-assignment targets
 
-Status: **in progress — isolated successor to TS-268**. Owner: Codex catch-up chat, 2026-11-10. Retain a property base while its compound-assignment key suspends, then read the old value before the RHS. Preserve cached key conversion and getter order, strictness, setter lookup and abrupt behavior. Own parser, expression frames, continuation integration, historical boundaries, tests/manifests and docs in build/generator-compound-target-draft. Update and super targets remain separate. Require both-host/static and reference/order/Realm tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain a property base while its compound-assignment key suspends, then read the old value before the RHS. Preserve cached key conversion and getter order, strictness, setter lookup and abrupt behavior. Own parser, expression frames, continuation integration, historical boundaries, tests/manifests and docs in build/generator-compound-target-draft. Update and super targets remain separate. Require both-host/static and reference/order/Realm tests.
 
 ## TS-270 — Suspended update targets
 

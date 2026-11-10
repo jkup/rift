@@ -719,6 +719,7 @@ executeDriver("generator-assignment-value", { stdout: "generator assignment valu
 executeDriver("generator-compound-value", { stdout: "generator compound value passed\n" });
 executeDriver("generator-var-list", { stdout: "generator var list passed\n" });
 executeDriver("generator-assignment-target", { stdout: "generator assignment target passed\n" });
+executeDriver("generator-compound-target", { stdout: "generator compound target passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

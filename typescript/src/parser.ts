@@ -755,7 +755,7 @@ class Parser {
                 pending.push({ expression: node, visited: true });
                 if (node.kind === "assign" || node.kind === "compound") {
                     pending.push({ expression: node.value, visited: false });
-                    if (node.kind === "assign") pending.push({ expression: node.target, visited: false });
+                    pending.push({ expression: node.target, visited: false });
                 }
                 else if (node.kind === "object") {
                     for (let i = node.properties.length - 1; i >= 0; i--) {
@@ -778,7 +778,7 @@ class Parser {
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
             } else if (node.kind === "assign" || node.kind === "compound") {
-                if (isSuspendingGeneratorExpression(node.value) || (node.kind === "assign" && isSuspendingGeneratorExpression(node.target))) {
+                if (isSuspendingGeneratorExpression(node.value) || isSuspendingGeneratorExpression(node.target)) {
                     if (node.kind === "assign") node.suspends = true;
                     else node.suspends = true;
                 }
@@ -849,7 +849,7 @@ class Parser {
                 }
                 else if (statement.kind === "expression") {
                     const expression = statement.expression;
-                    if (expression.kind === "compound" || expression.kind === "destructure") this.admitGeneratorExpression(expression.value, supported);
+                    if (expression.kind === "destructure") this.admitGeneratorExpression(expression.value, supported);
                     else this.admitGeneratorExpression(expression, supported);
                 }
             }

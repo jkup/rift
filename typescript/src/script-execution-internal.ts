@@ -3342,7 +3342,7 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "assign" || expression.kind === "compound") {
-                        if (expression.kind === "assign" && expression.target.kind === "member" && isSuspendingGeneratorExpression(expression.target)) {
+                        if (expression.target.kind === "member" && isSuspendingGeneratorExpression(expression.target)) {
                             frames.push({ kind: "assignment-base", expression });
                             expression = expression.target.base;
                             continue;
@@ -3473,7 +3473,12 @@ class ExecutionEngine {
             if (frame.kind === "assignment-key") {
                 const reference: EvaluationReference = { kind: "script-property", strict: this.#active().strict,
                     reference: { kind: "property", base: frame.base, key: value, loc: frame.expression.target.loc } };
-                frames.push({ kind: "assignment-value", expression: frame.expression, reference });
+                if (frame.expression.kind === "compound") {
+                    const left = getReferenceValue(this.context, reference, frame.expression.loc);
+                    if (left.type === "throw") return left;
+                    if (left.type !== "normal") throw new Error("invalid compound target read");
+                    frames.push({ kind: "compound-value", expression: frame.expression, reference, left: left.value });
+                } else frames.push({ kind: "assignment-value", expression: frame.expression, reference });
                 expression = frame.expression.value;
                 continue;
             }
