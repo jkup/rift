@@ -4520,7 +4520,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-344 — Temporal PlainDate arithmetic
 
-Status: **in progress — isolated successor to TS-343**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDate.add/subtract with year/month regulation followed by weeks/days and exact whole-day time balancing. Own pure date arithmetic helper, builtin/registration, tests/manifests/docs in build/temporal-plain-date-arithmetic-draft. Require signed month/year boundaries, leap overflow, sub-day truncation, unsafe subsecond inputs, input/options ordering, bounds and Realm results on both hosts. Date differences and non-ISO calendars remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ISO PlainDate.add/subtract with year/month regulation followed by weeks/days and exact whole-day time balancing. Own pure date arithmetic helper, builtin/registration, tests/manifests/docs in build/temporal-plain-date-arithmetic-draft. Require signed month/year boundaries, leap overflow, sub-day truncation, unsafe subsecond inputs, input/options ordering, bounds and Realm results on both hosts. Date differences and non-ISO calendars remain separate.
 
 ## TS-345 — ISO calendar difference backend
 
