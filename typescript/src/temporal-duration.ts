@@ -29,8 +29,11 @@ export function isValidDuration(duration: DurationFields): boolean {
         if (Math.abs(value) >= Number(durationNanosecondLimit)) return false;
     }
     if (Math.abs(duration.years) >= 4294967296 || Math.abs(duration.months) >= 4294967296 || Math.abs(duration.weeks) >= 4294967296) return false;
-    const nanoseconds = BigInt(duration.days) * 86400000000000n + BigInt(duration.hours) * 3600000000000n +
-        BigInt(duration.minutes) * 60000000000n + BigInt(duration.seconds) * 1000000000n +
-        BigInt(duration.milliseconds) * 1000000n + BigInt(duration.microseconds) * 1000n + BigInt(duration.nanoseconds);
+    const nanoseconds = BigInt(duration.days) * 86400000000000n + durationTimeNanoseconds(duration);
     return nanoseconds > -durationNanosecondLimit && nanoseconds < durationNanosecondLimit;
+}
+
+export function durationTimeNanoseconds(duration: DurationFields): bigint {
+    return BigInt(duration.hours) * 3600000000000n + BigInt(duration.minutes) * 60000000000n + BigInt(duration.seconds) * 1000000000n +
+        BigInt(duration.milliseconds) * 1000000n + BigInt(duration.microseconds) * 1000n + BigInt(duration.nanoseconds);
 }
