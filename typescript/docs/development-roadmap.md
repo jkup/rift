@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted expression-contexts milestone passes 778/778 guests on each
-host, 293/293 tooling checks, and all 285 native static gates without retries.
+The accepted bigint-foundation milestone passes 784/784 guests on each
+host, 294/294 tooling checks, and all 291 native static gates with the recorded manifest and audit-test repairs.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -33,7 +33,7 @@ Property updates, computed super reads/calls/writes/updates/deletion and async
 super constructor arguments are accepted. Nested destructuring values,
 nullish/logical operators, optional chains and class heritage/computed keys
 now preserve suspended evaluation contexts. Tagged templates preserve call references and cache frozen arrays per Realm/site.
-An exact BigInt conversion backend passes; guest numeric integration remains next. Unicode regex modes, lookaround,
+Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; guest Temporal objects remain isolated successors. Unicode regex modes, lookaround,
 backreferences and named groups remain unsupported.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
@@ -743,6 +743,9 @@ target certification remain separate scope. Evidence: build/bigint-invalid-targe
 
 BigInt integration review found a native host-JSON limitation in syntax snapshots
 and two test diagnostics. TS-303 repairs it with text-backed BigInt literal nodes
-and unchanged semantic assertions. The initial 290-entry matrix was cancelled
-after 117 completed entries and preserved as partial evidence; fresh 291-entry
-validation is required before publication. No partial matrix is counted as passing.
+and unchanged semantic assertions. The initial matrix was cancelled after 117
+completed entries and preserved as partial evidence. TS-307 then found malformed
+manifest tuples: the fresh scheduled run contains 287 entries, not the intended
+291. Five corrected builds replace one misnamed output and supply four omitted
+entries. Acceptance requires an explicit composite report covering all 291 gates,
+both complete guest suites and tooling; partial evidence is not acceptance.
