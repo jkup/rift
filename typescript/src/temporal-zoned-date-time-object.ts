@@ -1,9 +1,16 @@
 import type { Location } from "./syntax.js";
 import type { TemporalTimeZone } from "./temporal-time-zone-parse.js";
+import { isoDateTimeFromEpochNanoseconds, type ISODateTime } from "./iso-calendar.js";
 import { GuestObject, languageFailure, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext } from "./runtime.js";
 
 export class GuestTemporalZonedDateTime extends GuestObject {
     constructor(readonly epochNanoseconds: bigint, readonly timeZone: TemporalTimeZone, proto: GuestObject | null) { super(proto); }
+}
+
+export function temporalZonedISODateTime(value: GuestTemporalZonedDateTime): ISODateTime {
+    const result = isoDateTimeFromEpochNanoseconds(value.epochNanoseconds + value.timeZone.offsetNanoseconds);
+    if (result === null) throw new Error("ZonedDateTime local projection invariant");
+    return result;
 }
 
 export function temporalZonedDateTimeObject(receiver: Value, context: OperationContext, loc: Location): { type: "normal"; value: GuestTemporalZonedDateTime } | ThrowCompletion {

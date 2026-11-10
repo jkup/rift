@@ -4790,7 +4790,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-410 — ZonedDateTime ISO fields and fixed-offset day lengths
 
-Status: **in progress — isolated successor to TS-409**. Owner: Codex catch-up chat, 2026-11-10. Expose local ISO calendar/time and offset getters from ZonedDateTime slots. Share exact epoch projection, preserve getter branding and Realm errors, and implement hoursInDay range checks for both local midnights before returning the fixed 24-hour length. Validate offset day rollover, nanosecond precision and both epoch endpoints. Own src/temporal-zoned-date-time-object.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-fields-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose local ISO calendar/time and offset getters from ZonedDateTime slots. Share exact epoch projection, preserve getter branding and Realm errors, and implement hoursInDay range checks for both local midnights before returning the fixed 24-hour length. Validate offset day rollover, nanosecond precision and both epoch endpoints. Own src/temporal-zoned-date-time-object.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-date-time-fields-draft/.
 
 ## TS-411 — ZonedDateTime projections and timezone/calendar replacement
 

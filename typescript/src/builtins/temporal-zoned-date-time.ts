@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { registerTemporalZonedDateTimeFields } from "./temporal-zoned-date-time-fields.js";
 import { createTemporalZonedDateTime, temporalZonedDateTimeObject } from "../temporal-zoned-date-time-object.js";
 import { parseTemporalTimeZoneIdentifier } from "../temporal-time-zone-parse.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
@@ -48,5 +49,6 @@ export function registerTemporalZonedDateTime(realm: Realm, namespace: GuestObje
         prototype.bootstrapDefine(name, { get: { kind: "object", object: getter }, set: UNDEFINED, enumerable: false, configurable: true });
     }
     realm.registerBuiltin(prototype, "valueOf", 0, (_receiver, _args, context, loc): ValueCompletion => languageFailure(context.realm, "TypeError", "Temporal.ZonedDateTime cannot be converted to a primitive number", loc));
+    registerTemporalZonedDateTimeFields(realm);
     namespace.bootstrapDefine("ZonedDateTime", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
