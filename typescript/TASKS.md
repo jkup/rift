@@ -4432,7 +4432,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-323 — Temporal Duration sign transformations
 
-Status: **in progress — isolated successor to TS-322**. Owner: Codex catch-up chat, 2026-11-10. Add branded negated/abs methods with fresh intrinsic results and positive-zero fields. Own Duration builtin, focused tests/manifests/docs in build/temporal-duration-sign-draft. Require all ten fields, blank and unsafe integers, ignored overrides, metadata/subclasses/Realm cases, full Node and native static/zero-dynamic validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add branded negated/abs methods with fresh intrinsic results and positive-zero fields. Own Duration builtin, focused tests/manifests/docs in build/temporal-duration-sign-draft. Require all ten fields, blank and unsafe integers, ignored overrides, metadata/subclasses/Realm cases, full Node and native static/zero-dynamic validation.
 
 ## TS-324 — Exact Temporal duration formatting
 

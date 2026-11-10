@@ -7,6 +7,8 @@ import { toNumber } from "../conversion.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type ValueCompletion } from "../runtime.js";
 
+function signedField(value: number, sign: number): number { return value === 0 ? 0 : value * sign; }
+
 export function registerTemporalDuration(realm: Realm, namespace: GuestObject): void {
     const prototype = realm.temporalDurationPrototype;
     const constructor = realm.createBuiltinConstructor("Duration", 0,
@@ -51,5 +53,17 @@ export function registerTemporalDuration(realm: Realm, namespace: GuestObject): 
     }
     realm.registerBuiltin(prototype, "valueOf", 0, (_receiver, _args, context, loc): ValueCompletion =>
         languageFailure(context.realm, "TypeError", "Temporal.Duration cannot be converted to a primitive number", loc));
+    for (const name of ["negated", "abs"]) {
+        realm.registerBuiltin(prototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
+            const duration = temporalDurationValue(receiver, context, loc);
+            if (duration.type === "throw") return duration;
+            const value = duration.value, sign = name === "negated" || durationSign(value) < 0 ? -1 : 1;
+            return createTemporalDuration({
+                years: signedField(value.years, sign), months: signedField(value.months, sign), weeks: signedField(value.weeks, sign), days: signedField(value.days, sign),
+                hours: signedField(value.hours, sign), minutes: signedField(value.minutes, sign), seconds: signedField(value.seconds, sign),
+                milliseconds: signedField(value.milliseconds, sign), microseconds: signedField(value.microseconds, sign), nanoseconds: signedField(value.nanoseconds, sign),
+            }, context.realm.temporalDurationPrototype, context, loc);
+        });
+    }
     namespace.bootstrapDefine("Duration", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }
