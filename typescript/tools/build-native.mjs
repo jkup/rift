@@ -174,6 +174,7 @@ const entries = [
     ["test/regexp-backreference.ts", "regexp-backreference"],
     ["test/temporal-instant-string.ts", "temporal-instant-string"],
     ["test/regexp-lookahead.ts", "regexp-lookahead"],
+    ["test/temporal-plain-time-core.ts", "temporal-plain-time-core"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

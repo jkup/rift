@@ -4378,7 +4378,7 @@ Status: **done — accepted in bigint-foundation milestone**. Owner: Codex catch
 
 ## TS-310 — Temporal PlainTime core
 
-Status: **in progress — isolated successor to TS-308**. Owner: Codex catch-up chat, 2026-11-10. Add a branded Realm-owned PlainTime with new-only constructor, ordered finite/truncated numeric conversions, post-conversion time validation, subclass/newTarget behavior, six immutable internal time fields and branded accessors/valueOf. Own object/builtin modules, Realm/prototype fallback, namespace registration, focused tests/manifests/docs in build/temporal-plain-time-core-draft. Parsing, arithmetic, comparison and formatting remain separate follow-ups. Require abrupt/prototype order, exact bounds, metadata, cross-Realm tests and both-host/static plus full Node checks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add a branded Realm-owned PlainTime with new-only constructor, ordered finite/truncated numeric conversions, post-conversion time validation, subclass/newTarget behavior, six immutable internal time fields and branded accessors/valueOf. Own object/builtin modules, Realm/prototype fallback, namespace registration, focused tests/manifests/docs in build/temporal-plain-time-core-draft. Parsing, arithmetic, comparison and formatting remain separate follow-ups. Require abrupt/prototype order, exact bounds, metadata, cross-Realm tests and both-host/static plus full Node checks.
 
 ## TS-311 — Temporal PlainTime serialization
 

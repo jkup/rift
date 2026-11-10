@@ -1,4 +1,5 @@
 import { registerTemporalInstantString } from "./temporal-instant-string.js";
+import { registerTemporalPlainTime } from "./temporal-plain-time.js";
 import { registerTemporalInstantMethods } from "./temporal-instant-methods.js";
 import { registerTemporalInstantConversion } from "./temporal-instant-conversion.js";
 import type { Realm } from "../realm.js";
@@ -59,5 +60,6 @@ export function registerTemporal(realm: Realm): void {
     registerTemporalInstantConversion(realm, constructor);
     registerTemporalInstantString(realm);
     namespace.bootstrapDefine("Instant", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+    registerTemporalPlainTime(realm, namespace);
     realm.defineScriptGlobal("Temporal", { value: { kind: "object", object: namespace }, writable: true, enumerable: false, configurable: true });
 }
