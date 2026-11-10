@@ -2440,8 +2440,26 @@ class ExecutionEngine {
                 if (copied.type === "throw") { const abrupt: ThrowCompletion = copied; return abrupt; }
                 return { type: "normal", payload: { kind: "empty" } };
             }
-            case "expression": return stmt.expression.kind === "yield" && sequences !== null
-                ? this.#generatorYield(stmt.expression, null) : scriptExpressionCompletion(this.#value(stmt.expression));
+            case "expression": {
+                const expression = stmt.expression;
+                if (sequences !== null) {
+                    if (expression.kind === "yield") return this.#generatorYield(expression, null);
+                    if ((expression.kind === "assign" || expression.kind === "compound") && expression.value.kind === "yield") {
+                        const reference = this.#reference(expression.target, null, this.#active().thisValue);
+                        if (reference.type === "abrupt") {
+                            if (reference.completion.type === "throw") { const abrupt: ThrowCompletion = reference.completion; return abrupt; }
+                            throw new Error("invalid suspended assignment reference");
+                        }
+                        if (expression.kind === "assign")
+                            return this.#generatorYield(expression.value, { kind: "assignment", reference: reference.reference, loc: expression.loc });
+                        const left = getReferenceValue(this.context, reference.reference, expression.loc);
+                        if (left.type === "throw") { const abrupt: ThrowCompletion = left; return abrupt; }
+                        if (left.type !== "normal") throw new Error("invalid suspended compound operand");
+                        return this.#generatorYield(expression.value, { kind: "compound", reference: reference.reference, left: left.value, operator: expression.op, loc: expression.loc });
+                    }
+                }
+                return scriptExpressionCompletion(this.#value(expression));
+            }
             case "pattern-declaration": {
                 const input = this.#value(stmt.init);
                 if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
@@ -2951,6 +2969,23 @@ class ExecutionEngine {
             return failure;
         }
         if (receiver.kind === "return") return this.#unwindGenerator(continuation, { type: "return", value }, callerDepth);
+        if (receiver.kind === "assignment" || receiver.kind === "compound") {
+            if (receiver.kind === "compound") {
+                const computed = applyBinaryOperator(receiver.operator, receiver.left, value, this.context, receiver.loc);
+                if (computed.type === "throw") {
+                    this.#capture(computed);
+                    return this.#unwindGenerator(continuation, computed, callerDepth);
+                }
+                value = computed.value;
+            }
+            const written = putReferenceValue(this.context, receiver.reference, value, receiver.loc);
+            if (written.type === "throw") {
+                this.#capture(written);
+                return this.#unwindGenerator(continuation, written, callerDepth);
+            }
+            if (written.type !== "normal") throw new Error("invalid resumed assignment completion");
+            return null;
+        }
         const written = receiver.kind === "binding" ? putScriptBinding(receiver.reference, value, this.context)
             : receiver.environment.kind === "global" ? receiver.environment.record.initializeBinding(receiver.name, value, this.context, receiver.loc)
             : receiver.environment.initializeBinding(receiver.name, value, this.context, receiver.loc);

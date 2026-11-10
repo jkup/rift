@@ -753,7 +753,11 @@ class Parser {
                 } else if (statement.kind === "return" && statement.value?.kind === "yield") supported.add(statement.value);
                 else if ((statement.kind === "let" || statement.kind === "const") && statement.init?.kind === "yield") supported.add(statement.init);
                 else if (statement.kind === "var" && statement.declarations.length === 1 && statement.declarations[0].init?.kind === "yield") supported.add(statement.declarations[0].init);
-                else if (statement.kind === "expression" && statement.expression.kind === "yield") supported.add(statement.expression);
+                else if (statement.kind === "expression") {
+                    const expression = statement.expression;
+                    if (expression.kind === "yield") supported.add(expression);
+                    else if ((expression.kind === "assign" || expression.kind === "compound") && expression.value.kind === "yield") supported.add(expression.value);
+                }
             }
             for (const expression of this.generatorYields) if (!supported.has(expression))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "yield in this expression or control flow is unsupported", expression.loc);
