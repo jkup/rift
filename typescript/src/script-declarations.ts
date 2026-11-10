@@ -696,11 +696,17 @@ class DeclarationCollector {
         }
         for (const scope of this.scopes) {
             if (!scope.strict) {
+                const nonLegacyNames = new Set<string>();
+                for (const id of scope.lexicalDeclarations) {
+                    const declaration = this.declarations[id];
+                    if (declaration.functionScope !== null && this.nonLegacyFunctionScopes.has(declaration.functionScope))
+                        nonLegacyNames.add(declaration.site.name);
+                }
                 const functions = new Set<string>();
                 for (const id of scope.lexicalDeclarations) {
                     const declaration = this.declarations[id];
                     if (declaration.kind !== "function") continue;
-                    if (functions.has(declaration.site.name)) return { kind: "blocked", goal: "Script", unit: this.unit,
+                    if (functions.has(declaration.site.name) && !nonLegacyNames.has(declaration.site.name)) return { kind: "blocked", goal: "Script", unit: this.unit,
                         rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
                         diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate sloppy block functions are unsupported", loc: declaration.site.loc } };
                     functions.add(declaration.site.name);

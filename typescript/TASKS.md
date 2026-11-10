@@ -4100,7 +4100,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-244 — Duplicate async/generator lexical declarations
 
-Status: **in progress — isolated successor to TS-243**. Owner: Codex catch-up chat, 2026-11-10. Distinguish async/generator block or switch function duplicates from the unsupported Annex B ordinary-function duplicate case. Route fully parsed non-legacy conflicts through existing catchable SyntaxError preparation, preserving inert preparation, eval Realm and unsupported/resource vetoes. Own declaration collector, focused tests/manifests and docs in build/async-lexical-conflicts-draft. Ordinary sloppy duplicate block functions remain separate. Require both-host/static checks and unchanged switch-scope fixture.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Distinguish async/generator block or switch function duplicates from the unsupported Annex B ordinary-function duplicate case. Route fully parsed non-legacy conflicts through existing catchable SyntaxError preparation, preserving inert preparation, eval Realm and unsupported/resource vetoes. Own declaration collector, focused tests/manifests and docs in build/async-lexical-conflicts-draft. Ordinary sloppy duplicate block functions remain separate. Require both-host/static checks and unchanged switch-scope fixture.
 
 ## TS-245 — Async generator request queues
 
