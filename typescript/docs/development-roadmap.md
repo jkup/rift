@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted control-expressions milestone passes 751/751 guests on each
-host, 293/293 tooling checks, and all 258 native static gates without retries.
+The accepted loop-sources milestone passes 759/759 guests on each
+host, 293/293 tooling checks, and all 266 native static gates without retries.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -27,10 +27,10 @@ fixture. Binary, conditional, unary and nested-yield expressions plus suspended
 if/while/do-while conditions are accepted. Async functions, await, methods, async iterator acquisition and for-await-of are
 accepted. Async arrows, lexical conflicts, generator queues, methods and delegation
 are accepted. Suspended property reads, call/constructor arguments, arrays, templates and
-for-loop conditions are accepted. For-loop updates/expression initializers, switch selection, object literals,
-constructor/call targets and property deletion are accepted. Isolated successors
-add declaration initializers, iteration sources, nested assignments, property
-assignment/update targets and computed super reads. Combined validation continues. Unicode regex modes, lookaround,
+for-loop conditions are accepted. For-loop declaration/expression initializers, iteration sources, nested
+assignments, compound/property targets and var declaration lists are accepted.
+Isolated successors add property updates, computed super reads/calls/writes/updates/
+deletion and async super constructor arguments. Combined validation continues. Unicode regex modes, lookaround,
 backreferences and named groups remain unsupported.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as

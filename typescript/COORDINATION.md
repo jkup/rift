@@ -2540,3 +2540,23 @@ The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound
 2026-11-10 TS-268 promoted after control-expressions acceptance with 8 changed-file baselines verified. Isolated evidence passes 758 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/generator-assignment-target-draft/build and build/generator-assignment-target-* logs, retaining initial failures and exact historical-input migrations.
 
 2026-11-10 TS-269 promoted after control-expressions acceptance with 6 changed-file baselines verified. Isolated evidence passes 759 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/generator-compound-target-draft/build and build/generator-compound-target-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-10: TS-273 passes all 763 Node guests, focused native validation and five native regressions. TS-274 claimed for suspended super compound targets.
+
+2026-11-10: TS-274 focused Node/native checks pass; full Node and native regressions are running. TS-275 claimed for computed super updates using the shared ordinary update helper.
+
+2026-11-10: TS-275 focused Node/native checks pass; full Node and native regressions are running. TS-276 claimed for super deletion: ECMA-262 2025 and pinned engine262 reject the completed super reference before ToObject/ToPropertyKey or property access.
+
+2026-11-10: TS-276 passes 766 Node guests and focused native validation; native regressions continue. TS-277 claimed for async-arrow super constructor arguments, following pinned engine262 SuperCall ordering.
+
+2026-11-10: TS-277 native focused checks pass after reducing SC1045/SC1090 to a small union-index mutation probe. TS-278 claimed for nested destructuring assignment RHS suspension.
+
+2026-11-10: TS-278 passes 768 Node guests and focused native validation; regressions continue. TS-279 claimed for nullish coalescing, a missing ordinary Script operator using the existing short-circuit continuation path.
+
+2026-11-10: TS-279 focused native checks pass. The full Node suite identified one old expected rejection for true ?? 1; its bytes are preserved and the expectation migrated. TS-280 claimed for ordinary logical assignments.
+
+2026-11-10: TS-280 focused Node checks pass; full Node/native validation is running. TS-281 claimed to admit logical assignment suspension through existing compound frames.
+
+2026-11-10: TS-278–281 isolated evidence passes 768–771 Node guests and focused/native regression checks, with exact historical boundary migrations. TS-282 claimed for optional-chain suspension. Pinned engine262 OptionalExpression retains both a base value and reference; final references must survive grouped calls/deletion and nested chains.
+
+2026-11-10 Loop sources and assignments accepted (TS-262–269): 759/759 guests on each host without skips; all 266 native static-only/zero-dynamic gates pass in 2759600ms without retries. Tooling passes 293/293 in 226611.6225ms; runner32/32 in 714.5096ms, ten probes and typechecking pass. Corpus node-BMCkMa/native-3mnLOe matches all 225 normalized records and preserves all 190 prior completions (116 reported successes, 74 unchecked). Remaining outcomes: two parse errors, 32 runtime errors and one reported failure. Evidence: build/loop-sources-native-results.json, loop-sources-corpus-comparison.json and loop-sources-* logs. Update targets, computed super operations and async super constructor arguments remain isolated successors requiring combined acceptance.
