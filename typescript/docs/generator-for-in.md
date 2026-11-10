@@ -10,3 +10,5 @@ enumeration record, while return/throw proceed to enclosing finally or for-of
 cleanup. Tests cover key order, deleted keys, prototype shadowing, bindings and
 patterns, TDZ, foreign-session cells and nested cleanup. Labelled and nested
 expression suspension remain subsequent work.
+TS-225 retains label boundaries and iteration target sets across suspension;
+see [labelled generator control flow](generator-labels.md).

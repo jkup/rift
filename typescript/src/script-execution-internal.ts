@@ -1163,9 +1163,9 @@ export function createGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResu
     object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
     return object;
 }
-type GeneratorSequence = { kind: "sequence"; frame: ScriptFrameSnapshot; body: Stmt[]; nextStatement: number; depth: number };
-type GeneratorLoop = { kind: "loop"; frame: ScriptFrameSnapshot; test: Expr; body: Stmt; testFirst: boolean; first: boolean; depth: number };
-type GeneratorForLoop = { kind: "for"; frame: ScriptFrameSnapshot; statement: ForStmt | ForLexicalStmt; outer: ScriptEnvironment | null; first: boolean; depth: number };
+type GeneratorSequence = { kind: "sequence"; frame: ScriptFrameSnapshot; body: Stmt[]; nextStatement: number; depth: number; labels?: readonly string[] | null };
+type GeneratorLoop = { kind: "loop"; frame: ScriptFrameSnapshot; test: Expr; body: Stmt; testFirst: boolean; first: boolean; depth: number; labels?: readonly string[] | null };
+type GeneratorForLoop = { kind: "for"; frame: ScriptFrameSnapshot; statement: ForStmt | ForLexicalStmt; outer: ScriptEnvironment | null; first: boolean; depth: number; labels?: readonly string[] | null };
 type GeneratorCatch = { kind: "catch"; frame: ScriptFrameSnapshot; statement: TryCatchStmt; depth: number };
 type GeneratorAbrupt = { type: "return"; value: Value } | { type: "break" | "continue"; target?: string } | ThrowCompletion;
 type GeneratorPending = GeneratorAbrupt | { type: "normal" };
@@ -1173,10 +1173,11 @@ type GeneratorFinally = { kind: "finally"; frame: ScriptFrameSnapshot; statement
 type GeneratorCleanup = { kind: "cleanup"; frame: ScriptFrameSnapshot; pending: GeneratorPending;
     abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null; depth: number };
 type GeneratorForOf = { kind: "iterator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; iterator: IteratorRecord;
-    target: Expr | null; lexical: boolean; scopeId: number; depth: number };
+    target: Expr | null; lexical: boolean; scopeId: number; depth: number; labels?: readonly string[] | null };
 type GeneratorForIn = { kind: "enumerator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; enumerator: ForInEnumerator;
-    target: Expr | null; lexical: boolean; scopeId: number; depth: number };
-type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn;
+    target: Expr | null; lexical: boolean; scopeId: number; depth: number; labels?: readonly string[] | null };
+type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
+type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
 type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
@@ -2342,6 +2343,12 @@ class ExecutionEngine {
             }
             case "labelled": {
                 const current = labels === null ? [stmt.name] : [...labels, stmt.name];
+                if (sequences !== null) {
+                    const depth = sequences[sequences.length - 1].depth + 1;
+                    sequences.push({ kind: "label", frame: this.#active(), name: stmt.name, depth });
+                    sequences.push({ kind: "sequence", frame: this.#active(), body: [stmt.body], nextStatement: 0, depth, labels: current });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 const result = this.#statement(stmt.body, current);
                 if (result.type === "break" && result.target === stmt.name) return { type: "normal", payload: result.payload };
                 return result;
@@ -2518,8 +2525,8 @@ class ExecutionEngine {
                     ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name } : stmt.head;
                 if (sequences !== null) {
                     const depth = sequences[sequences.length - 1].depth + 1;
-                    if (iterator !== null) sequences.push({ kind: "iterator", frame: saved, statement: stmt, iterator, target, lexical, scopeId, depth });
-                    else if (enumerator !== null) sequences.push({ kind: "enumerator", frame: saved, statement: stmt, enumerator, target, lexical, scopeId, depth });
+                    if (iterator !== null) sequences.push({ kind: "iterator", frame: saved, statement: stmt, iterator, target, lexical, scopeId, depth, labels });
+                    else if (enumerator !== null) sequences.push({ kind: "enumerator", frame: saved, statement: stmt, enumerator, target, lexical, scopeId, depth, labels });
                     else throw new Error("missing generator loop iterator");
                     return { type: "normal", payload: { kind: "empty" } };
                 }
@@ -2564,7 +2571,7 @@ class ExecutionEngine {
                     }
                 }
                 if (sequences !== null) {
-                    sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: null, first: true, depth: sequences[sequences.length - 1].depth + 1 });
+                    sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: null, first: true, depth: sequences[sequences.length - 1].depth + 1, labels });
                     return { type: "normal", payload: { kind: "empty" } };
                 }
                 return this.#forBody(stmt, null, labels);
@@ -2581,7 +2588,7 @@ class ExecutionEngine {
                     const initialized = created.environment.initializeBinding(binding.site.name, value.value, this.context, binding.site.loc);
                     if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
                     if (sequences !== null) {
-                        sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: saved.lexical, first: true, depth: sequences[sequences.length - 1].depth + 1 });
+                        sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: saved.lexical, first: true, depth: sequences[sequences.length - 1].depth + 1, labels });
                         return { type: "normal", payload: { kind: "empty" } };
                     }
                     return this.#forBody(stmt, saved.lexical, labels);
@@ -2590,7 +2597,7 @@ class ExecutionEngine {
             case "while": case "do-while": {
                 if (sequences !== null) {
                     sequences.push({ kind: "loop", frame: this.#active(), test: stmt.test, body: stmt.body,
-                        testFirst: stmt.kind === "while", first: true, depth: sequences[sequences.length - 1].depth + 1 });
+                        testFirst: stmt.kind === "while", first: true, depth: sequences[sequences.length - 1].depth + 1, labels });
                     return { type: "normal", payload: { kind: "empty" } };
                 }
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
@@ -2962,7 +2969,7 @@ class ExecutionEngine {
             if (boundary.kind === "iterator") {
                 this.#frame = boundary.frame;
                 this.depth = callerDepth + boundary.depth;
-                if (completion.type === "continue" && completion.target === undefined) { sequences.push(boundary); return null; }
+                if (completion.type === "continue" && this.#continueTarget(completion.target, boundary.labels ?? null)) { sequences.push(boundary); return null; }
                 if (completion.type === "throw") {
                     const pending = completion, abrupt = this.#abrupt, source = this.#lastAbrupt;
                     completion = iteratorCloseOnThrow(boundary.iterator, pending, this.context, boundary.statement.loc);
@@ -2980,10 +2987,13 @@ class ExecutionEngine {
                 this.#scheduleGeneratorFinally(continuation, boundary, completion);
                 return null;
             }
-            if ((boundary.kind === "loop" || boundary.kind === "for" || boundary.kind === "enumerator") && (completion.type === "break" || completion.type === "continue")) {
-                if (completion.target !== undefined) throw new Error("label escaped supported generator control flow");
-                if (completion.type === "continue") sequences.push(boundary);
-                return null;
+            if (boundary.kind === "label" && completion.type === "break" && completion.target === boundary.name) return null;
+            if (boundary.kind === "loop" || boundary.kind === "for" || boundary.kind === "enumerator") {
+                if (completion.type === "break" && completion.target === undefined) return null;
+                if (completion.type === "continue" && this.#continueTarget(completion.target, boundary.labels ?? null)) {
+                    sequences.push(boundary);
+                    return null;
+                }
             }
             if (boundary.kind !== "catch" || completion.type !== "throw") continue;
             this.#abrupt = null;
@@ -3062,7 +3072,7 @@ class ExecutionEngine {
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
                 this.depth = callerDepth + sequence.depth;
-                if (sequence.kind === "catch") { sequences.pop(); continue; }
+                if (sequence.kind === "catch" || sequence.kind === "label") { sequences.pop(); continue; }
                 if (sequence.kind === "finally") {
                     sequences.pop();
                     this.#scheduleGeneratorFinally(continuation, sequence, { type: "normal" });
@@ -3131,7 +3141,7 @@ class ExecutionEngine {
                 }
                 if (sequence.nextStatement === sequence.body.length) { sequences.pop(); continue; }
                 const statement = sequence.body[sequence.nextStatement++];
-                const result = this.#statement(statement, null, sequences);
+                const result = this.#statement(statement, sequence.labels ?? null, sequences);
                 if (result.type === "throw") {
                     this.#capture(result);
                     const uncaught = this.#unwindGenerator(continuation, result, callerDepth);

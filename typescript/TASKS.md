@@ -4016,7 +4016,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-225 — Labelled generator control flow
 
-Status: **in progress — isolated successor to TS-224**. Owner: Codex catch-up chat, 2026-11-10. Retain label boundaries and loop target sets across suspension so labelled break/continue unwind the correct finally and iterator records. Preserve parser rejection of invalid continue targets and normal synchronous label behavior. Own parser admission, private label/loop records and unwind, focused tests/manifests and docs in build/generator-labels-draft. Switch and nested expression yields remain separate. Require both-host/static validation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain label boundaries and loop target sets across suspension so labelled break/continue unwind the correct finally and iterator records. Preserve parser rejection of invalid continue targets and normal synchronous label behavior. Own parser admission, private label/loop records and unwind, focused tests/manifests and docs in build/generator-labels-draft. Switch and nested expression yields remain separate. Require both-host/static validation.
 
 ## TS-226 — Generator switch continuations
 

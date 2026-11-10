@@ -90,6 +90,7 @@ const entries = [
     ["test/generator-receive.ts", "generator-receive"],
     ["test/generator-for-of.ts", "generator-for-of"],
     ["test/generator-for-in.ts", "generator-for-in"],
+    ["test/generator-labels.ts", "generator-labels"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
