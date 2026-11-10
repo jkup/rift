@@ -4400,7 +4400,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-315 — Temporal PlainTime string options
 
-Status: **in progress — isolated successor to TS-314**. Owner: Codex catch-up chat, 2026-11-10. Add branded PlainTime.toString with exact precision/rounding and midnight wrap; share fractional digits, unit and precision option operations with Instant while preserving its time-zone getter order. Own Temporal option helpers, Instant/PlainTime string builtins and registration, focused tests/manifests/docs in build/temporal-plain-time-string-draft. No PlainTime.round/conversion/arithmetic in this task. Require option/abrupt order, all modes and widths, day carry, Realm and unchanged Instant regressions on both hosts plus full Node.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add branded PlainTime.toString with exact precision/rounding and midnight wrap; share fractional digits, unit and precision option operations with Instant while preserving its time-zone getter order. Own Temporal option helpers, Instant/PlainTime string builtins and registration, focused tests/manifests/docs in build/temporal-plain-time-string-draft. No PlainTime.round/conversion/arithmetic in this task. Require option/abrupt order, all modes and widths, day carry, Realm and unchanged Instant regressions on both hosts plus full Node.
 
 ## TS-316 — Temporal PlainTime rounding
 

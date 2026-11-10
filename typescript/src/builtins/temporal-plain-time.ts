@@ -1,3 +1,4 @@
+import { registerTemporalPlainTimeString } from "./temporal-plain-time-string.js";
 import type { Realm } from "../realm.js";
 import { formatTemporalTime } from "../temporal-time-format.js";
 import type { Location } from "../syntax.js";
@@ -62,5 +63,6 @@ export function registerTemporalPlainTime(realm: Realm, namespace: GuestObject):
             return normal({ kind: "string", value: formatted });
         });
     }
+    registerTemporalPlainTimeString(realm);
     namespace.bootstrapDefine("PlainTime", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }

@@ -1,3 +1,4 @@
+import type { TemporalTimePrecision } from "./temporal-time-format.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toString, type StringCompletion } from "./conversion.js";
 import type { TemporalRoundingMode } from "./temporal-rounding.js";
@@ -19,4 +20,50 @@ export function temporalRoundingMode(options: GuestObject, context: OperationCon
     if (mode === "ceil" || mode === "floor" || mode === "expand" || mode === "trunc" || mode === "halfCeil" ||
         mode === "halfFloor" || mode === "halfExpand" || mode === "halfTrunc" || mode === "halfEven") return { type: "normal", value: mode };
     return languageFailure(context.realm, "RangeError", "invalid rounding mode", loc);
+}
+
+export function temporalFractionalDigits(options: GuestObject, context: OperationContext, loc: Location): { type: "normal"; value: "auto" | number } | ThrowCompletion {
+    const read = options.internalGet("fractionalSecondDigits", { kind: "object", object: options }, context, loc);
+    if (read.type === "throw") return read;
+    if (read.value.kind === "undefined") return { type: "normal", value: "auto" };
+    if (read.value.kind !== "number") {
+        const text = temporalOptionString(read.value, context, loc);
+        if (text.type === "throw") return text;
+        if (text.value === "auto") return { type: "normal", value: "auto" };
+    } else {
+        const digits = Math.floor(read.value.value);
+        if (Number.isFinite(digits) && digits >= 0 && digits <= 9) return { type: "normal", value: digits };
+    }
+    return languageFailure(context.realm, "RangeError", "invalid fractional second digits", loc);
+}
+
+export function temporalSmallestUnit(options: GuestObject, context: OperationContext, loc: Location): { type: "normal"; value: string } | ThrowCompletion {
+    const read = options.internalGet("smallestUnit", { kind: "object", object: options }, context, loc);
+    if (read.type === "throw") return read;
+    if (read.value.kind === "undefined") return { type: "normal", value: "" };
+    const text = temporalOptionString(read.value, context, loc);
+    if (text.type === "throw") return text;
+    if (text.value.length <= 12) {
+        const unit = text.value.endsWith("s") ? text.value.slice(0, -1) : text.value;
+        if (unit === "year" || unit === "month" || unit === "week" || unit === "day" || unit === "hour" ||
+            unit === "minute" || unit === "second" || unit === "millisecond" || unit === "microsecond" || unit === "nanosecond" || text.value === "auto")
+            return { type: "normal", value: unit };
+    }
+    return languageFailure(context.realm, "RangeError", "invalid Temporal unit", loc);
+}
+
+export function temporalPrecisionNanoseconds(precision: TemporalTimePrecision): bigint {
+    return typeof precision === "number" ? BigInt(Math.pow(10, 9 - precision)) : precision === "minute" ? 60000000000n : 1n;
+}
+
+export function temporalStringPrecision(unit: string, digits: "auto" | number): TemporalTimePrecision | null {
+    switch (unit) {
+        case "": return digits;
+        case "minute": return "minute";
+        case "second": return 0;
+        case "millisecond": return 3;
+        case "microsecond": return 6;
+        case "nanosecond": return 9;
+        default: return null;
+    }
 }
