@@ -4636,7 +4636,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-372 — Temporal PlainYearMonth arithmetic
 
-Status: **in progress — isolated successor to TS-371**. Owner: Codex catch-up chat, 2026-11-10. Add/subtract year-and-month durations using first-day calendar arithmetic and intrinsic YearMonth results. Reject nonzero week/day/time components after options validation. Require signed carries, reference-day normalization, first-day endpoint behavior, option precedence and Realm tests on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-arithmetic-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add/subtract year-and-month durations using first-day calendar arithmetic and intrinsic YearMonth results. Reject nonzero week/day/time components after options validation. Require signed carries, reference-day normalization, first-day endpoint behavior, option precedence and Realm tests on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-arithmetic-draft/.
 
 ## TS-373 — Temporal PlainYearMonth differences
 

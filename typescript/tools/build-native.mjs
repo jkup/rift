@@ -234,6 +234,7 @@ const entries = [
     ["test/temporal-plain-year-month-parse.ts", "temporal-plain-year-month-parse"],
     ["test/temporal-plain-year-month-conversion.ts", "temporal-plain-year-month-conversion"],
     ["test/temporal-plain-year-month-fields.ts", "temporal-plain-year-month-fields"],
+    ["test/temporal-plain-year-month-arithmetic.ts", "temporal-plain-year-month-arithmetic"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
