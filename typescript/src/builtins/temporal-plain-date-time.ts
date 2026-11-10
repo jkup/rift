@@ -1,3 +1,4 @@
+import { registerTemporalPlainDateTimeConversion } from "./temporal-plain-date-time-conversion.js";
 import { registerTemporalPlainDateTimeFormat } from "./temporal-plain-date-time-format.js";
 import type { Realm } from "../realm.js";
 import type { TimeFields } from "../temporal-time.js";
@@ -55,5 +56,6 @@ export function registerTemporalPlainDateTime(realm: Realm, namespace: GuestObje
     realm.registerBuiltin(prototype, "valueOf", 0, (_receiver, _args, context, loc): ValueCompletion =>
         languageFailure(context.realm, "TypeError", "Temporal.PlainDateTime cannot be converted to a primitive number", loc));
     registerTemporalPlainDateTimeFormat(realm);
+    registerTemporalPlainDateTimeConversion(realm, constructor);
     namespace.bootstrapDefine("PlainDateTime", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }

@@ -4564,7 +4564,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-355 — Temporal PlainDateTime conversion
 
-Status: **in progress — isolated successor to TS-354**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDateTime.from/compare/equals using branded conversion, shared ISO parsing and ordered property-bag fields. Preserve option phases, intrinsic allocation, range checks and string work budgets. Own conversion builtin/registration, tests/manifests/docs in build/temporal-plain-date-time-conversion-draft. Require clone isolation, PlainDate midnight conversion, getter order, error precedence and cross-Realm behavior on both hosts.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDateTime.from/compare/equals using branded conversion, shared ISO parsing and ordered property-bag fields. Preserve option phases, intrinsic allocation, range checks and string work budgets. Own conversion builtin/registration, tests/manifests/docs in build/temporal-plain-date-time-conversion-draft. Require clone isolation, PlainDate midnight conversion, getter order, error precedence and cross-Realm behavior on both hosts.
 
 ## TS-356 — Temporal PlainDateTime part conversion
 

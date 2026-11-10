@@ -800,6 +800,7 @@ executeDriver("temporal-plain-date-time-core", { stdout: "temporal plain date ti
 executeDriver("temporal-plain-date-time-format", { stdout: "temporal plain date time format passed\n" });
 executeDriver("temporal-plain-date-time-parse", { stdout: "temporal plain date time parse passed\n" });
 executeDriver("temporal-date-time-fields", { stdout: "temporal date time fields passed\n" });
+executeDriver("temporal-plain-date-time-conversion", { stdout: "temporal plain date time conversion passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
