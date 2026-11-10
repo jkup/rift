@@ -79,9 +79,9 @@ for (const text of ["", " ", "undefined", "NaN", "Infinity", "+1", "01", "-01", 
     const thrown = run(realm,"let marker={};try{JSON.parse({toString:function(){throw marker;}});}catch(e){e===marker;}");
     check(thrown.type === "normal" && sameValue(thrown.value,{kind:"boolean",value:true}),"JSON conversion throw identity");
     const reviver = run(fresh(),"JSON.parse('0',function(){throw 9;});");
-    check(reviver.type === "throw" && reviver.origin.kind === "unsupported-operation" && reviver.origin.capabilityCode === "runtime.json-reviver","reviver explicit and uncalled");
+    check(reviver.type === "throw" && reviver.value.kind === "number" && reviver.value.value === 9,"reviver throw identity");
     const malformed = run(fresh(),"JSON.parse('[',function(){});");
-    check(malformed.type === "throw" && malformed.origin.kind === "engine-diagnostic" && malformed.diagnostic.name === "SyntaxError","syntax precedes reviver limitation");
+    check(malformed.type === "throw" && malformed.origin.kind === "engine-diagnostic" && malformed.diagnostic.name === "SyntaxError","syntax precedes reviver");
 }
 for (const text of ['"' + "a".repeat(2000) + '"', " ".repeat(2000) + "0", "1".repeat(2000), "[" + "0,".repeat(1000) + "0]", "[".repeat(1000) + "0" + "]".repeat(1000)]) {
     const bounded = parse(text, 50);

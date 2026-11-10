@@ -64,6 +64,7 @@ const entries = [
     ["test/string-raw.ts", "string-raw"],
     ["test/string-padding.ts", "string-padding"],
     ["test/math-random.ts", "math-random"],
+    ["test/json-reviver.ts", "json-reviver"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

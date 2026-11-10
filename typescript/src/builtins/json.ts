@@ -1,8 +1,9 @@
 import type { Realm } from "../realm.js";
-import { UNDEFINED, unsupportedFailure, type ValueCompletion } from "../runtime.js";
+import { UNDEFINED, type ValueCompletion } from "../runtime.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString } from "../conversion.js";
 import { wellKnownToStringTag } from "../symbols.js";
+import { reviveJSON } from "../json-reviver.js";
 import { JSONParser } from "../json-parser.js";
 
 export function registerJSON(realm: Realm): void {
@@ -17,7 +18,7 @@ export function registerJSON(realm: Realm): void {
         if (result.type === "throw") return result;
         const reviver = args.length > 1 ? args[1] : UNDEFINED;
         if (reviver.kind === "object" && reviver.object.callable !== null)
-            return unsupportedFailure("runtime.json-reviver", "TypeError", "JSON.parse reviver is unsupported", loc);
+            return reviveJSON(result.value, reviver, context, loc);
         return result;
     });
     realm.defineScriptGlobal("JSON", { value: { kind: "object", object }, writable: true, configurable: true });
