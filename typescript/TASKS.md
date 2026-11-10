@@ -3887,3 +3887,11 @@ Status: **done — casing prerequisites pass; comparison blocked by native canon
 ## TS-196 — Generator suspension boundary review
 
 Status: **done — tagged retention viable; detached activation migration required before yield**. Owner: Codex catch-up chat, 2026-11-10. Review current synchronous evaluator boundaries and original generator/async fixtures before grammar expansion. Probe retained host generators carrying tagged values and explicit completion records under the pinned static gate. Record a concrete continuation migration boundary and required invariants, distinguishing the existing numeric suspension smoke probe from whole-engine feasibility. Own build/generator-boundary-review and docs/generator-boundary.md; no generator grammar or placeholder guest iterators in this task.
+
+## TS-197 — String substring and substr
+
+Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add standard substring and Annex B substr with ordered receiver/index conversions, clamping versus relative-start semantics, omitted lengths, UTF-16 boundaries, metadata and output budgets. Own String registration/inventories, focused tests/manifests and notes in build/string-ranges-draft based on TS-194. No locale approximation; the original additional-method fixture remains blocked at locale behavior.
+
+## TS-198 — Refresh compiler contract boundaries
+
+Status: **done — verified evidence and orchestration constraints recorded**. Owner: Codex catch-up chat, 2026-11-10. Replace obsolete unprobed-scale wording with accepted integration evidence, record the native executable-reader serialization rule, and link the measured weak-storage, Date and locale boundaries. Preserve historical results and distinguish static lowering from semantic correctness. Own docs/compiler-contract.md and task/coordinator notes; no runtime changes.

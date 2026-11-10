@@ -74,10 +74,10 @@ Not a benchmark; one machine, one workload, recorded to set expectations.
 
 The compiled interpreter is about 3× slower than the same TypeScript under Node's JIT on this workload. Startup and footprint favour native; throughput does not. Claims about speed should say which.
 
-## Not yet probed
+## Remaining platform and scaling questions
 
-- A realistically large program (thousands of lines, many modules): build time and diagnostics at scale.
-- Deep recursion through the evaluator itself, where each guest call costs several host frames.
+- Build performance beyond the current integrated engine. The accepted TS-183–185 milestone compiles 191 entries, with full-engine drivers exceeding 11,000 analyzed static statements and zero dynamic operations. That matrix took 1,471,527 ms with two workers; reachable statement counts are not source-line counts. Evidence: build/array-factories-native-results.json and its build log.
+- Recursion beyond the evaluator's explicit call/depth limits. Existing bounded recursion checks do not prove arbitrary native-stack safety.
 - Long-running memory with large retained graphs rather than short-lived cycles.
 - Native interop for regex or Temporal.
 - macOS and Linux lanes.
@@ -188,6 +188,14 @@ dynamic statement; the full version has none.
 ### Shared Node emission directory
 
 run-probes.mjs invokes TypeScript with tsconfig.json and rewrites build/node. Do not overlap it, typecheck or build:node with a Node guest or Node fixture run. Finish emission first; Node guest/fixture runs may then overlap a native build on frozen source. TS-100 initially overlapped probes and Node guests: one module import reported a missing registerMath export during emission (build/object-reflection-node.log). With no source change, the serialized rerun passed 587/587 (build/object-reflection-node-corrected.log); retain the initial failure and avoid the race rather than adding automatic retries.
+
+### Native executable replacement
+
+Finish the entire native build matrix before starting native guest, corpus or tooling readers. On Windows an active executable reader can prevent the compiler from replacing that binary. TS-177–182 retained one EPERM rename failure from overlapping tooling; an unchanged isolated rebuild and later installation passed. Keep the initial failure and retry evidence distinct. Build successors in isolated drafts while canonical source is frozen, and validate their baselines before integration.
+
+### Measured host boundaries
+
+Static-only compilation is not a substitute for semantic checks. The [weak-storage review](native-host-prerequisites.md) finds dynamic-tier handles for WeakMap/WeakSet and no WeakRef lowering. The [Date review](date-host-boundary.md) passes broader UTC checks but finds named-zone and historical local-time disagreements on Windows. The [String locale review](string-locale-prerequisites.md) finds default comparison violating canonical equivalence even though its smoke tests and static gate pass. These are feature prerequisites, not permission to emulate weak storage with strong maps or approximate locale semantics.
 
 ### Initializer predicate callback (TS-143)
 
