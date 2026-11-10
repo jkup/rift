@@ -149,6 +149,7 @@ const entries = [
     ["test/generator-logical-assignment.ts", "generator-logical-assignment"],
     ["test/generator-optional-chain.ts", "generator-optional-chain"],
     ["test/class-evaluation.ts", "class-evaluation"],
+    ["test/generator-class-heritage.ts", "generator-class-heritage"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -4270,7 +4270,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-284 — Suspended class heritage
 
-Status: **in progress — isolated successor to TS-283**. Owner: Codex catch-up chat, 2026-11-10. Retain strict class scope and inner-name TDZ through suspended heritage, then reuse shared construction/method helpers. Restore outer scope on normal/abrupt/delegated resumption and preserve anonymous class naming in declarations, assignments and object properties. Own syntax/parser, completion naming, class scope/heritage frames, continuation cleanup, tests/manifests and docs in build/generator-class-heritage-draft. Suspended computed class keys remain separate. Require both-host/static, TDZ/closure/strictness/naming/order/Realm tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain strict class scope and inner-name TDZ through suspended heritage, then reuse shared construction/method helpers. Restore outer scope on normal/abrupt/delegated resumption and preserve anonymous class naming in declarations, assignments and object properties. Own syntax/parser, completion naming, class scope/heritage frames, continuation cleanup, tests/manifests and docs in build/generator-class-heritage-draft. Suspended computed class keys remain separate. Require both-host/static, TDZ/closure/strictness/naming/order/Realm tests.
 
 ## TS-285 — Suspended computed class keys
 

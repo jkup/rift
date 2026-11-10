@@ -1,6 +1,7 @@
-import type { ScriptEnvironment } from "./script-environment.js";
+import type { ScriptFrameSnapshot } from "./script-execution-internal.js";
+import type { ScriptEnvironment, ScriptDeclarativeEnvironment } from "./script-environment.js";
 import type { EvaluationReference, ExpressionResult } from "./evaluation-reference.js";
-import type { ChainExpr, ChainCallLink, DestructureExpr, SuperCallExpr, SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
+import type { ClassExpr, ChainExpr, ChainCallLink, DestructureExpr, SuperCallExpr, SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
 import type { GuestObject, PropertyKey, Value } from "./runtime.js";
 
 export type ChainConsumer = { kind: "value" }
@@ -15,6 +16,8 @@ export type SuperPropertyOperation = { kind: "read" }
     | { kind: "delete"; expression: UnaryExpr }
     | { kind: "chain"; expression: ChainExpr; consumer: ChainConsumer };
 export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
+    | { kind: "class-scope"; expression: ClassExpr; outer: ScriptFrameSnapshot; frame: ScriptFrameSnapshot }
+    | { kind: "class-heritage"; expression: ClassExpr; environment: ScriptDeclarativeEnvironment; scopeId: number; name: string | null }
     | { kind: "chain-evaluate"; expression: ChainExpr; consumer: ChainConsumer }
     | { kind: "chain-base-value"; expression: ChainExpr; consumer: ChainConsumer }
     | { kind: "chain-reference-base"; expression: ChainExpr; consumer: ChainConsumer }
@@ -51,5 +54,5 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "await-operand"; expression: AwaitExpr };
 export function isSuspendingGeneratorExpression(expression: Expr | null): boolean {
     return expression !== null && (expression.kind === "yield" || expression.kind === "await" ||
-        ((expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "array" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
+        ((expression.kind === "class" || expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "array" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
 }

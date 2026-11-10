@@ -2561,6 +2561,8 @@ class ExecutionEngine {
         switch (stmt.kind) {
             case "class-declaration": {
                 if (stmt.value.name === null) throw new Error("class declaration name missing");
+                if (sequences !== null && isSuspendingGeneratorExpression(stmt.value))
+                    return this.#suspendingExpression(stmt.value, { kind: "initialization", environment: this.#active().lexical, name: stmt.value.name.name, loc: stmt.loc });
                 const result = this.#value(stmt.value);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 const env = this.#active().lexical, name = stmt.value.name.name;
@@ -2667,7 +2669,7 @@ class ExecutionEngine {
             }
             case "let": case "const": {
                 if (stmt.init !== null && isSuspendingGeneratorExpression(stmt.init) && sequences !== null)
-                    return this.#suspendingExpression(stmt.init, { kind: "initialization", environment: this.#active().lexical, name: stmt.name, loc: stmt.loc });
+                    return this.#suspendingExpression(stmt.init, { kind: "initialization", environment: this.#active().lexical, name: stmt.name, loc: stmt.loc }, stmt.name);
                 const result = stmt.init === null ? normal() : this.#value(stmt.init, stmt.name);
                 if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
                 const env = this.#active().lexical;
@@ -2689,7 +2691,7 @@ class ExecutionEngine {
                     if (ref.type === "throw") return ref;
                     if (isSuspendingGeneratorExpression(declaration.init) && sequences !== null) {
                         if (stmt.declarations.length !== 1) throw new Error("unsupported suspended declaration list");
-                        return this.#suspendingExpression(declaration.init, { kind: "binding", reference: ref.reference });
+                        return this.#suspendingExpression(declaration.init, { kind: "binding", reference: ref.reference }, declaration.name);
                     }
                     const value = this.#value(declaration.init, declaration.name);
                     if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
@@ -3339,10 +3341,10 @@ class ExecutionEngine {
         }
         return result.type === "throw" ? result : iteratorResult(result.value, true, this.context, loc);
     }
-    #suspendingExpression(expression: Expr, receiver: GeneratorYieldReceiver | null): ScriptStatementCompletion {
+    #suspendingExpression(expression: Expr, receiver: GeneratorYieldReceiver | null, name: string | null = null): ScriptStatementCompletion {
         if (expression.kind === "yield") return this.#generatorYield(expression, receiver);
         if (!isSuspendingGeneratorExpression(expression)) throw new Error("invalid suspended expression");
-        return { type: "generator-expression", expression, receiver };
+        return { type: "generator-expression", expression, receiver, name };
     }
     #beginDelegate(continuation: ExecutionContinuation, value: Value, loc: Location, depth: number): ThrowCompletion | null {
         const acquired = continuation.asyncGenerator ? getAsyncIterator(value, this.context, loc) : getIterator(value, this.context, loc);
@@ -3358,7 +3360,7 @@ class ExecutionEngine {
         if (expression.delegate === true) return { type: "delegate", value: value.value, loc: expression.loc, receiver };
         return { type: "yield", value: value.value, loc: expression.loc, receiver };
     }
-    #evaluateSuspendingExpression(continuation: ExecutionContinuation, expression: Expr | null, value: Value, callerDepth: number): ExpressionContinuationResult {
+    #evaluateSuspendingExpression(continuation: ExecutionContinuation, expression: Expr | null, value: Value, callerDepth: number, inferredName: string | null = null): ExpressionContinuationResult {
         const frames = continuation.expressionFrames;
         const sequence = continuation.sequences[continuation.sequences.length - 1];
         const baseDepth = callerDepth + sequence.depth + 1;
@@ -3370,7 +3372,9 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                const name = inferredName;
+                inferredName = null;
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "class" || expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3431,6 +3435,9 @@ class ExecutionEngine {
                             }
                             frames.push({ kind: "compound-value", expression, reference: reference.reference, left: left.value });
                         } else frames.push({ kind: "assignment-value", expression, reference: reference.reference });
+                        if ((expression.kind === "assign" || expression.op === "&&" || expression.op === "||" || expression.op === "??") &&
+                            expression.target.kind === "identifier" && ExecutableScript.assignmentMayName(this.#active().record, expression, executionKey))
+                            inferredName = expression.target.name;
                         expression = expression.value;
                         continue;
                     }
@@ -3471,6 +3478,21 @@ class ExecutionEngine {
                     if (expression.kind === "new" && isSuspendingGeneratorExpression(expression.callee)) {
                         frames.push({ kind: "constructor", expression });
                         expression = expression.callee;
+                        continue;
+                    }
+                    if (expression.kind === "class") {
+                        if (expression.heritage === null) throw new Error("suspended class without heritage");
+                        const outer = this.#active(), scopeId = ExecutableScript.scopeOfNode(outer.record, expression, executionKey);
+                        const environment = new ScriptDeclarativeEnvironment(outer.lexical);
+                        if (expression.name !== null) {
+                            const created = environment.createImmutableBinding(expression.name.name, expression.name.loc);
+                            if (created.type === "throw") return created;
+                        }
+                        const frame: ScriptFrameSnapshot = { ...outer, scopeId, lexical: environment, strict: true };
+                        frames.push({ kind: "class-scope", expression, outer, frame });
+                        frames.push({ kind: "class-heritage", expression, environment, scopeId, name });
+                        this.#frame = frame;
+                        expression = expression.heritage;
                         continue;
                     }
                     if (expression.kind === "chain") {
@@ -3559,7 +3581,7 @@ class ExecutionEngine {
                     if (result.type === "throw") return result;
                     return { type: "yield", result: result.value };
                 }
-                const evaluated = this.#value(expression);
+                const evaluated = this.#value(expression, name);
                 if (evaluated.type === "throw") return evaluated;
                 value = evaluated.value;
                 expression = null;
@@ -3567,6 +3589,29 @@ class ExecutionEngine {
             if (frames.length === 0) return normal(value);
             const frame = frames.pop()!;
             this.depth = baseDepth + frames.length + 1;
+            if (frame.kind === "class-scope") {
+                this.#frame = frame.outer;
+                continue;
+            }
+            if (frame.kind === "class-heritage") {
+                const created = this.#createClassConstructor(frame.expression, frame.scopeId, frame.environment, frame.name, value);
+                if (created.type === "throw") return created;
+                for (const element of frame.expression.elements) {
+                    if (element.value === frame.expression.constructorMethod) continue;
+                    const keyValue = this.#value(element.key);
+                    if (keyValue.type === "throw") return keyValue;
+                    const key = toPropertyKey(keyValue.value, this.context, element.key.loc);
+                    if (key.type === "throw") return key;
+                    const defined = this.#defineClassMethod(element, key.value, created.constructor, created.prototype);
+                    if (defined !== null) return defined;
+                }
+                value = { kind: "object", object: created.constructor };
+                if (frame.expression.name !== null) {
+                    const initialized = frame.environment.initializeBinding(frame.expression.name.name, value, this.context, frame.expression.name.loc);
+                    if (initialized.type === "throw") return initialized;
+                }
+                continue;
+            }
             if (frame.kind === "chain-evaluate") {
                 const base = frame.expression.base;
                 if (isSuspendingGeneratorExpression(base)) {
@@ -3805,6 +3850,7 @@ class ExecutionEngine {
                         frame.stage = "value";
                         frames.push(frame);
                         expression = property.value;
+                        inferredName = this.#objectPropertyName(property, frame.key);
                         break;
                     }
                     const evaluated = this.#value(property.value, this.#objectPropertyName(property, frame.key));
@@ -3985,9 +4031,9 @@ class ExecutionEngine {
             value = computed.value;
         }
     }
-    #startSuspendingExpression(continuation: ExecutionContinuation, expression: Expr, receiver: GeneratorYieldReceiver | null, callerDepth: number): ContinuationResult | null {
+    #startSuspendingExpression(continuation: ExecutionContinuation, expression: Expr, receiver: GeneratorYieldReceiver | null, callerDepth: number, name: string | null = null): ContinuationResult | null {
         continuation.receiver = receiver;
-        const evaluated = this.#evaluateSuspendingExpression(continuation, expression, UNDEFINED, callerDepth);
+        const evaluated = this.#evaluateSuspendingExpression(continuation, expression, UNDEFINED, callerDepth, name);
         if (evaluated.type === "yield" || evaluated.type === "await" || evaluated.type === "async-delegate-yield") return evaluated;
         if (evaluated.type === "suspended-delegate") return null;
         if (evaluated.type === "throw") {
@@ -4121,6 +4167,10 @@ class ExecutionEngine {
     #unwindContinuation(continuation: ExecutionContinuation, completion: GeneratorAbrupt, callerDepth: number): ContinuationResult | null {
         continuation.delegate = null;
         continuation.receiver = null;
+        for (let i = continuation.expressionFrames.length - 1; i >= 0; i--) {
+            const scope = continuation.expressionFrames[i];
+            if (scope.kind === "class-scope") this.#frame = scope.outer;
+        }
         continuation.expressionFrames.length = 0;
         if (completion.type === "throw" && completion.origin.kind !== "guest" && completion.origin.kind !== "engine-diagnostic") return completion;
         const sequences = continuation.sequences;
@@ -4227,11 +4277,18 @@ class ExecutionEngine {
         sequences.push({ kind: "sequence", frame: this.#active(), body: [loop.statement.body], nextStatement: 0, depth: loop.depth });
         return null;
     }
+    #expressionContext(continuation: ExecutionContinuation, fallback: ScriptFrameSnapshot): ScriptFrameSnapshot {
+        for (let i = continuation.expressionFrames.length - 1; i >= 0; i--) {
+            const scope = continuation.expressionFrames[i];
+            if (scope.kind === "class-scope") return scope.frame;
+        }
+        return fallback;
+    }
     #runContinuation(continuation: ExecutionContinuation, mode: GeneratorResumeMode, value: Value): ContinuationResult {
         const sequences = continuation.sequences;
         const caller = this.#active(), callerRealm = this.activeContext.realm, inspection = this.#inspectionSource, callerDepth = this.depth;
         const active = sequences[sequences.length - 1];
-        this.#frame = active.frame;
+        this.#frame = this.#expressionContext(continuation, active.frame);
         this.activeContext.realm = active.frame.realm;
         this.#inspectionSource = null;
         try {
@@ -4266,7 +4323,7 @@ class ExecutionEngine {
             while (sequences.length !== 0) {
                 if (continuation.delegate !== null) {
                     const frame = sequences[sequences.length - 1];
-                    this.#frame = frame.frame;
+                    this.#frame = this.#expressionContext(continuation, frame.frame);
                     this.depth = callerDepth + continuation.delegate.depth;
                     if (this.depth > 256) {
                         const failure = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", continuation.delegate.loc);
@@ -4479,7 +4536,7 @@ class ExecutionEngine {
                 if (result.type === "generator-expression") {
                     mode = "next";
                     value = UNDEFINED;
-                    const received = this.#startSuspendingExpression(continuation, result.expression, result.receiver, callerDepth);
+                    const received = this.#startSuspendingExpression(continuation, result.expression, result.receiver, callerDepth, result.name ?? null);
                     if (received !== null) return received;
                     continue;
                 }

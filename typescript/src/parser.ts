@@ -750,10 +750,13 @@ class Parser {
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
             }
-            if (node.kind !== "chain" && node.kind !== "destructure" && node.kind !== "super-call" && node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update" && node.kind !== "super-member") continue;
+            if (node.kind !== "class" && node.kind !== "chain" && node.kind !== "destructure" && node.kind !== "super-call" && node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update" && node.kind !== "super-member") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
-                if (node.kind === "chain") {
+                if (node.kind === "class") {
+                    if (node.heritage !== null) pending.push({ expression: node.heritage, visited: false });
+                }
+                else if (node.kind === "chain") {
                     pending.push({ expression: node.base, visited: false });
                     for (const link of node.links) {
                         if (link.kind === "member") pending.push({ expression: link.key, visited: false });
@@ -792,6 +795,8 @@ class Parser {
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
+            } else if (node.kind === "class") {
+                if (isSuspendingGeneratorExpression(node.heritage)) node.suspends = true;
             } else if (node.kind === "chain") {
                 if (isSuspendingGeneratorExpression(node.base) || node.links.some(link => link.kind === "member"
                     ? isSuspendingGeneratorExpression(link.key)
@@ -837,7 +842,8 @@ class Parser {
             while (pending.length !== 0) {
                 const statement = pending.pop()!;
                 supported.add(statement);
-                if (statement.kind === "yield") this.admitGeneratorExpression(statement, supported);
+                if (statement.kind === "class-declaration") this.admitGeneratorExpression(statement.value, supported);
+                else if (statement.kind === "yield") this.admitGeneratorExpression(statement, supported);
                 else if (statement.kind === "block") pending.push(...statement.body);
                 else if (statement.kind === "labelled") pending.push(statement.body);
                 else if (statement.kind === "switch") {
