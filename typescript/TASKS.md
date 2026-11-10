@@ -4782,7 +4782,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-408 — Temporal Now plain ISO projections
 
-Status: **in progress — isolated successor to TS-407**. Owner: Codex catch-up chat, 2026-11-10. Add Now.plainDateTimeISO, plainDateISO and plainTimeISO with UTC/fixed-offset timezone conversion before clock access. Share intrinsic allocation and bounded ISO epoch conversion, reject non-string coercion and unavailable names, preserve defining-Realm clocks/prototypes and endpoint shifts, and validate on both hosts. Own src/builtins/temporal-now.ts and tests/manifests/docs in build/temporal-now-plain-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Now.plainDateTimeISO, plainDateISO and plainTimeISO with UTC/fixed-offset timezone conversion before clock access. Share intrinsic allocation and bounded ISO epoch conversion, reject non-string coercion and unavailable names, preserve defining-Realm clocks/prototypes and endpoint shifts, and validate on both hosts. Own src/builtins/temporal-now.ts and tests/manifests/docs in build/temporal-now-plain-draft/.
 
 ## TS-409 — Branded UTC and fixed-offset ZonedDateTime construction
 

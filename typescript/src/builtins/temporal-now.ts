@@ -1,8 +1,13 @@
 import type { Realm } from "../realm.js";
 import { currentDateMilliseconds } from "../date-clock.js";
 import { createTemporalInstant } from "../temporal-instant-object.js";
+import { toTemporalTimeZone } from "../temporal-time-zone.js";
+import { isoDateTimeFromEpochNanoseconds } from "../iso-calendar.js";
+import { createTemporalPlainDateTime } from "../temporal-plain-date-time-object.js";
+import { createTemporalPlainDate } from "../temporal-plain-date-object.js";
+import { createTemporalPlainTime } from "../temporal-plain-time-object.js";
 import { wellKnownToStringTag } from "../symbols.js";
-import { normal, type GuestObject, type ValueCompletion } from "../runtime.js";
+import { normal, UNDEFINED, type GuestObject, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalNow(realm: Realm, namespace: GuestObject): void {
     const now = realm.createObject();
@@ -12,5 +17,18 @@ export function registerTemporalNow(realm: Realm, namespace: GuestObject): void 
         const nanoseconds = BigInt(currentDateMilliseconds(context.realm)) * 1000000n;
         return createTemporalInstant(nanoseconds, context.realm.temporalInstantPrototype, context, loc);
     });
+    for (const name of ["plainDateTimeISO", "plainDateISO", "plainTimeISO"]) {
+        realm.registerBuiltin(now, name, 0, (_receiver, args, context, loc): ValueCompletion => {
+            const supplied = args.length === 0 ? UNDEFINED : args[0];
+            const zone = toTemporalTimeZone(supplied.kind === "undefined" ? { kind: "string", value: "UTC" } : supplied, context, loc);
+            if (zone.type === "throw") return zone;
+            const epoch = BigInt(currentDateMilliseconds(context.realm)) * 1000000n;
+            const value = isoDateTimeFromEpochNanoseconds(epoch + zone.value.offsetNanoseconds);
+            if (value === null) throw new Error("Now timezone projection invariant");
+            if (name === "plainDateISO") return createTemporalPlainDate(value.date, context.realm.temporalPlainDatePrototype, context, loc);
+            if (name === "plainTimeISO") return createTemporalPlainTime(value, context.realm.temporalPlainTimePrototype, context, loc);
+            return createTemporalPlainDateTime(value, context.realm.temporalPlainDateTimePrototype, context, loc);
+        });
+    }
     namespace.bootstrapDefine("Now", { value: { kind: "object", object: now }, writable: true, enumerable: false, configurable: true });
 }

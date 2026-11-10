@@ -267,6 +267,7 @@ const entries = [
     ["test/date-locale.ts", "date-locale"],
     ["test/temporal-now-core.ts", "temporal-now-core"],
     ["test/temporal-time-zone-parse.ts", "temporal-time-zone-parse"],
+    ["test/temporal-now-plain.ts", "temporal-now-plain"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
