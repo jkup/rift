@@ -1,3 +1,4 @@
+import { registerRegExpMatchAll } from "./regexp-match-all.js";
 import type { Realm } from "../realm.js";
 import { registerRegExpExecution } from "./regexp-execution.js";
 import { registerRegExpMatchSearch } from "./regexp-match-search.js";
@@ -150,5 +151,6 @@ export function registerRegExp(realm: Realm): void {
     registerRegExpMatchSearch(realm);
     registerRegExpReplace(realm);
     registerRegExpSplit(realm, constructor);
+    registerRegExpMatchAll(realm, constructor);
     realm.defineScriptGlobal("RegExp", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }

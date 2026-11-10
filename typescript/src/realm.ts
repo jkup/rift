@@ -64,6 +64,7 @@ export class Realm {
     readonly iteratorPrototype: GuestObject;
     readonly arrayIteratorPrototype: GuestObject;
     readonly stringIteratorPrototype: GuestObject;
+    readonly regexpStringIteratorPrototype: GuestObject;
     readonly promisePrototype: GuestObject;
     readonly regexpPrototype: GuestObject;
     readonly mapPrototype: GuestObject;
@@ -101,6 +102,7 @@ export class Realm {
         this.iteratorPrototype = new GuestObject(this.objectPrototype);
         this.arrayIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.stringIteratorPrototype = new GuestObject(this.iteratorPrototype);
+        this.regexpStringIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.promisePrototype = new GuestObject(this.objectPrototype);
         this.regexpPrototype = new GuestObject(this.objectPrototype);
         this.mapPrototype = new GuestObject(this.objectPrototype);

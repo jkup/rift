@@ -3905,7 +3905,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-200 — RegExp and String matchAll
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Implement species-based matcher creation, String protocol dispatch and a lazy branded RegExp string iterator with captured Realm, abrupt completion and reentry semantics. Cover coercion order, empty Unicode advancement with custom species, original lastIndex isolation, borrowed next, metadata and budgets. Own RegExp iterator/module/Realm wiring, inventories, tests/manifests and notes in build/regexp-matchall-draft based on TS-199. No new RegExp pattern flags or general generator grammar.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement species-based matcher creation, String protocol dispatch and a lazy branded RegExp string iterator with captured Realm, abrupt completion and reentry semantics. Cover coercion order, empty Unicode advancement with custom species, original lastIndex isolation, borrowed next, metadata and budgets. Own RegExp iterator/module/Realm wiring, inventories, tests/manifests and notes in build/regexp-matchall-draft based on TS-199. No new RegExp pattern flags or general generator grammar.
 
 ## TS-201 — Computed object literal property names
 

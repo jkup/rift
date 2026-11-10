@@ -653,6 +653,7 @@ executeDriver("json-reviver", { stdout: "JSON reviver passed\n" });
 executeDriver("json-stringify", { stdout: "JSON stringify passed\n" });
 executeDriver("string-ranges", { stdout: "String ranges passed\n" });
 executeDriver("string-at", { stdout: "String at passed\n" });
+executeDriver("regexp-match-all", { stdout: "RegExp matchAll passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

@@ -68,6 +68,7 @@ const entries = [
     ["test/json-stringify.ts", "json-stringify"],
     ["test/string-ranges.ts", "string-ranges"],
     ["test/string-at.ts", "string-at"],
+    ["test/regexp-match-all.ts", "regexp-match-all"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
