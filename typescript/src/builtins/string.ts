@@ -2,10 +2,10 @@ import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestStringObject } from "../primitive-objects.js";
 import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
-import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, isStringWhitespace, stringLowerCase, stringUpperCase, stringRepeat, type GuestString } from "../strings.js";
+import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, isStringWhitespace, stringLowerCase, stringUpperCase, stringRepeat, stringConcat, type GuestString } from "../strings.js";
 import type { Location } from "../syntax.js";
 import { toPrimitive } from "../primitive-conversion.js";
-import { toString, toNumber, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
+import { toString, toNumber, toIntegerOrInfinity, toLength, type NumberCompletion } from "../conversion.js";
 import { symbolDescriptiveString } from "../symbols.js";
 import { registerStringConstruction } from "./string-construction.js";
 import type { GuestObject, OperationContext, ValueCompletion } from "../runtime.js";
@@ -89,6 +89,35 @@ function sliceIndex(index: number, length: number): number {
     return Math.min(Math.max(index < 0 ? length + index : index, 0), length);
 }
 
+function registerStringPadding(realm: Realm, name: string, start: boolean): void {
+    realm.registerBuiltin(realm.stringPrototype, name, 1, (receiver, args, context, loc): ValueCompletion => {
+        const text = stringReceiver(receiver, context, loc);
+        if (text.type === "throw") return text;
+        const primitiveLength = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
+        if (primitiveLength.type === "throw") return primitiveLength;
+        const length = toLength(primitiveLength.value, loc, context.realm);
+        if (length.type === "throw") return length;
+        if (length.value <= stringLength(text.value)) return normal({ kind: "string", value: text.value });
+        let filler = " ";
+        if (args.length > 1 && args[1].kind !== "undefined") {
+            const primitive = toPrimitive(args[1], "string", context, loc);
+            if (primitive.type === "throw") return primitive;
+            const converted = toString(primitive.value, loc, context.realm);
+            if (converted.type === "throw") return converted;
+            filler = converted.value;
+        }
+        if (stringLength(filler) === 0) return normal({ kind: "string", value: text.value });
+        for (let i = 0; i < length.value; i++) {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+        }
+        const needed = length.value - stringLength(text.value);
+        const padding = stringConcat(stringRepeat(filler, Math.floor(needed / stringLength(filler))),
+            stringSlice(filler, 0, needed % stringLength(filler)));
+        return normal({ kind: "string", value: start ? stringConcat(padding, text.value) : stringConcat(text.value, padding) });
+    });
+}
+
 function registerStringTrim(realm: Realm, name: string, where: "start" | "end" | "both"): void {
     realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
         const text = stringReceiver(receiver, context, loc);
@@ -115,6 +144,8 @@ function registerStringTrim(realm: Realm, name: string, where: "start" | "end" |
 
 export function registerStringMethods(realm: Realm): void {
     if (realm.profile === "script") {
+        registerStringPadding(realm, "padStart", true);
+        registerStringPadding(realm, "padEnd", false);
         realm.registerBuiltin(realm.stringPrototype, "repeat", 1, (receiver, args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);
             if (text.type === "throw") return text;

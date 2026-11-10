@@ -3851,7 +3851,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-188 — String padding
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add padStart/padEnd with receiver/length/filler conversion order, ToLength clamping, early-return suppression of filler coercion, UTF-16 truncation and precharged output allocation. Reuse the reviewed doubling helper without constructing excess filler. Own String methods/inventories, focused tests/manifests and notes in build/string-padding-draft, based on reviewed TS-187. Locale-sensitive methods and normalization remain separate.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add padStart/padEnd with receiver/length/filler conversion order, ToLength clamping, early-return suppression of filler coercion, UTF-16 truncation and precharged output allocation. Reuse the reviewed doubling helper without constructing excess filler. Own String methods/inventories, focused tests/manifests and notes in build/string-padding-draft, based on reviewed TS-187. Locale-sensitive methods and normalization remain separate.
 
 ## TS-189 — Native weak-storage and clock prerequisites
 
