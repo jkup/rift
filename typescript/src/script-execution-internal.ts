@@ -2913,8 +2913,9 @@ class ExecutionEngine {
         if (callee.kind !== "object" || callee.object.constructorSlot === null) return languageFailure(this.context.realm, "TypeError", "value is not a constructor", loc);
         if (newTarget.kind !== "object" || newTarget.object.constructorSlot === null) return languageFailure(this.context.realm, "TypeError", "newTarget is not a constructor", loc);
         const fn = callee.object.constructorSlot;
+        const callable = callee.object.callable;
         if (fn.kind === "bound") {
-            if (fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile || fn.target.constructorSlot === null)
+            if (callable === null || callable.kind !== "bound" || fn !== callable || fn.realm.profile !== saved.realm.profile || fn.target.constructorSlot === null)
                 throw new Error("invalid bound constructor metadata");
             if (this.calls >= this.maxCalls) {
                 const result = resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
@@ -2930,7 +2931,7 @@ class ExecutionEngine {
             } finally { this.calls--; }
         }
         if (fn.kind === "builtin-constructor") return this.#constructBuiltin(callee.object, fn, args, loc, newTarget.object);
-        if (fn.kind !== "script-guest" || fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile)
+        if (fn.kind !== "script-guest" || callable === null || callable.kind !== "script-guest" || fn !== callable || fn.realm.profile !== saved.realm.profile)
             throw new Error("invalid Script constructor metadata");
         if (fn.isClassConstructor) ExecutableScript.validateClassConstructor(fn.record, fn, executionKey);
         else ExecutableScript.readFunction(fn.record, fn, executionKey);
