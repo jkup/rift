@@ -5,8 +5,8 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted temporal-year-month-day milestone passes 867/867 guests on each
-host, 295/295 tooling checks, and all 374 native static gates.
+The accepted temporal-duration-date milestone passes 891/891 guests on each
+host, 295/295 tooling checks, and all 398 native static gates.
 The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -754,3 +754,5 @@ The temporal-regexp milestone passes all 306 native gates directly. Its 225-reco
 Zoned difference review (TS-426): direct reuse of the plain date-time difference rounder is not ready. A 1296-case read-only experiment found 192 missing zoned boundary failures and four differences caused by Node's pre-consensus calendar-window behavior. Preserve Rift's corrected calendar-added window start (TC39 proposal-temporal PR3319); implement checked zoned windows/day spans before adding until/since. See [review](temporal-zoned-difference-review.md). Existing acceptance counts and original corpus fixtures are unchanged.
 
 Initializer follow-up (TS-436): the empty-field frame does not establish the lexical this/new.target/super boundary needed by initializer expressions and arrows. Implement that boundary with planner/retained-source validation before enabling initializers. Seven reference cases and concrete execution sites are recorded in [the class field review](class-fields-review.md).
+
+2026-11-10 Duration / Date milestone accepted (TS-383–391 and TS-394–408): 891/891 guests on each host without skips; all 398 native static-only/zero-dynamic gates pass in 5372423ms. Tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-2WBg8D/native-GsRAAE matches all 225 normalized records and preserves 190 prior completions; 190 complete, 3 records change diagnostics/output. Original fixture bytes remain unchanged. Temporal Duration comparison, total and round support plain relative dates with exact arithmetic. Date supports clipped construction, ISO and required display-string parsing, UTC fields/formatting, setters, generic JSON and locale fallbacks. Date uses UTC as its default timezone and a Realm-local clock seam. Temporal.Now exposes instants, the UTC timezone identity and plain ISO projections for UTC/fixed-offset timezone strings. Zoned relativeTo, ZonedDateTime, system/IANA timezones, ECMA-402 formatting and arbitrary legacy date parsing remain follow-ups. Evidence: build/temporal-duration-date-*.
