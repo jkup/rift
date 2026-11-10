@@ -2234,3 +2234,5 @@ Array.of, Array.from and String.repeat are accepted (TS-183–185). Node/native 
 2026-11-10 TS-187 promoted after array factory/repetition acceptance with 5 changed-file baselines verified. The isolated draft passes 686 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/string-raw-draft/build. Combined canonical acceptance remains pending.
 
 2026-11-10 TS-188 promoted after array factory/repetition acceptance with 6 changed-file baselines verified. The isolated draft passes 687 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/string-padding-draft/build. Combined canonical acceptance remains pending.
+
+2026-11-10 TS-190 promoted after array factory/repetition acceptance with 4 changed-file baselines verified. The isolated draft passes 688 Node guests and focused both-host checks with parsed zero-dynamic coverage. Evidence: build/math-random-draft/build. Combined canonical acceptance remains pending.

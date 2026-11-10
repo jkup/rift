@@ -3859,7 +3859,7 @@ Status: **done — weak storage blocked; clock/seed prerequisites identified**. 
 
 ## TS-190 — Realm-local Math.random
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Add Math.random with lazy per-Realm state, a reviewed 32-bit xoshiro128** transition, 53-bit floating output and a host-backed seed boundary. Verify reference vectors independently, zero-seed handling, metadata, ignored arguments/receiver, borrowed-method Realm selection, budget-before-state effects and deterministic Realm isolation. Own random-state module, Realm/Math integration, tests/manifests and design notes in build/math-random-draft, based on reviewed TS-188. No crypto guarantees, guest seeding API, weak-storage fallback or clock globals.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add Math.random with lazy per-Realm state, a reviewed 32-bit xoshiro128** transition, 53-bit floating output and a host-backed seed boundary. Verify reference vectors independently, zero-seed handling, metadata, ignored arguments/receiver, borrowed-method Realm selection, budget-before-state effects and deterministic Realm isolation. Own random-state module, Realm/Math integration, tests/manifests and design notes in build/math-random-draft, based on reviewed TS-188. No crypto guarantees, guest seeding API, weak-storage fallback or clock globals.
 
 ## TS-191 — Date host boundary review
 

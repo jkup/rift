@@ -48,10 +48,12 @@ import type { ExecutableScript } from "./script-record.js";
 import { consumeScriptBuiltinPermit, consumeScriptConstructorPermit, createEvalIntrinsic } from "./script-execution-internal.js";
 import type { ScriptEnvironment } from "./script-environment.js";
 import type { OperationContext } from "./runtime.js";
+import type { RandomState } from "./random.js";
 
 export type Output = (line: string) => void;
 export type RealmProfile = "legacy" | "script";
 export class Realm {
+    randomState: RandomState | null = null;
     private legacyGlobal: Environment | null = null;
     private scriptGlobal: GlobalEnvironment | null = null;
     private errorPrototypes: Map<ErrorName, GuestObject> = new Map();

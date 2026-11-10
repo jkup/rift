@@ -4,6 +4,7 @@ import {toNumber, type NumberCompletion} from "../conversion.js";
 import {normal, UNDEFINED, type Value, type OperationContext, type ValueCompletion} from "../runtime.js";
 import type {Location} from "../syntax.js";
 import {wellKnownToStringTag} from "../symbols.js";
+import {createRandomState} from "../random.js";
 
 function numericArgument(value: Value, context: OperationContext, loc: Location): NumberCompletion {
     const tick = context.tick(loc);
@@ -116,6 +117,16 @@ export function registerMath(realm: Realm): void {
             sum = next;
         }
         return normal({kind: "number", value: largest * Math.sqrt(sum)});
+    });
+    realm.registerBuiltin(object, "random", 0, (_receiver, _args, context, loc): ValueCompletion => {
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        let state = context.realm.randomState;
+        if (state === null) {
+            state = createRandomState();
+            context.realm.randomState = state;
+        }
+        return normal({kind: "number", value: state.next()});
     });
     realm.defineScriptGlobal("Math", {value: {kind: "object", object}, writable: true, configurable: true});
 }
