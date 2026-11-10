@@ -3928,7 +3928,7 @@ JSON reviver/stringify and substring/substr are accepted (TS-192/194/197). Both 
 
 ## TS-205 — Separate function instantiation from body execution
 
-Status: **in progress — isolated draft**. Owner: Codex catch-up chat, 2026-11-10. Extract a prepared function-body record containing source body, lexical/variable frame and activation environment, with no retained ExecutionEngine or OperationContext. Keep synchronous evaluation and exact setup budgets unchanged; install/restore the current execution frame around preparation/body evaluation and preserve derived-constructor and abrupt-source semantics. Own script-execution-internal and generator-boundary notes in build/function-body-draft based on TS-204, validated through existing exact setup-prefix, foreign-Realm, reentry and constructor suites. No yield grammar, suspension claim or exported resume authority.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Extract a prepared function-body record containing source body, lexical/variable frame and activation environment, with no retained ExecutionEngine or OperationContext. Keep synchronous evaluation and exact setup budgets unchanged; install/restore the current execution frame around preparation/body evaluation and preserve derived-constructor and abrupt-source semantics. Own script-execution-internal and generator-boundary notes in build/function-body-draft based on TS-204, validated through existing exact setup-prefix, foreign-Realm, reentry and constructor suites. No yield grammar, suspension claim or exported resume authority.
 
 ## TS-206 — Object literal prototype setters
 

@@ -44,3 +44,16 @@ probes/suspension.ts; src/script-execution-internal.ts call, #statement, #list,
 ActiveOperationContext and ScriptSession boundaries. No guest feature is
 accepted by this note, and host generators remain an implementation option
 only after the activation/lifetime constraints are resolved.
+
+TS-205 isolated implementation separates function instantiation from body
+execution. PreparedFunctionBody stores the body AST, body frame and function
+environment; it stores no engine, operation callbacks, budget or pending permit.
+Preparation and execution restore the caller frame/Realm in finally blocks, and
+retain the existing abrupt-source capture and derived-constructor behavior.
+The draft passes all 697 Node guests and native Script execution/constructor
+matrices, including exact setup prefixes and cross-Realm/reentry traces.
+This is a synchronous foundation, not a suspension implementation or proof that
+pending expression state can be transferred. Next: represent pending evaluation
+operands and completions explicitly, and validate resume with current-session
+budgets before exposing yield. C++ generator statement-skipping resumption is
+not adopted; it cannot establish once-only compound-expression side effects.

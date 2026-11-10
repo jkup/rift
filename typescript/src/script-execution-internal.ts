@@ -1143,6 +1143,8 @@ export type ScriptFrameSnapshot = { readonly realm: Realm; readonly record: Exec
     readonly scopeId: number; readonly lexical: ScriptEnvironment; readonly variable: ScriptEnvironment;
     readonly strict: boolean; readonly thisValue: Value; readonly function: ScriptGuestCallable | null;
     readonly privateEnvironment: null; readonly phase: "instantiation" | "body" };
+type PreparedFunctionBody = { frame: ScriptFrameSnapshot; body: Stmt[]; environment: ScriptFunctionEnvironment };
+type FunctionPreparation = { type: "normal"; activation: PreparedFunctionBody } | ThrowCompletion;
 export type ScriptSessionSnapshot = { steps: number; calls: number; depth: number;
     active: ScriptFrameSnapshot | null; lastAbrupt: ScriptSourceSnapshot | null };
 type BuiltinPermit = { kind: "call"; context: OperationContext; realm: Realm; invoke: Builtin; receiver: Value;
@@ -2711,14 +2713,13 @@ class ExecutionEngine {
             this.calls = savedCalls;
         }
     }
-    #executeScriptFunction(callee: GuestObject, fn: ScriptGuestCallable, receiver: Value, args: Value[], newTarget: Value = UNDEFINED, constructorLoc: Location | null = null): ValueCompletion {
-        const caller = this.#active();
-        const savedInspectionSource = this.#inspectionSource;
-        this.#inspectionSource = null;
+    #prepareScriptFunction(callee: GuestObject, fn: ScriptGuestCallable, receiver: Value, args: Value[], newTarget: Value): FunctionPreparation {
+        const caller = this.#active(), callerRealm = this.activeContext.realm;
+        this.activeContext.realm = fn.realm;
         try {
             const record = fn.record;
             const source = ExecutableScript.readFunction(record, fn, executionKey);
-            // Allocation failures already belong to the callee code/Realm.
+            // Setup failures retain the callee's source and instantiation phase.
             this.#frame = { realm: fn.realm, record, scopeId: source.scopeId, lexical: fn.environment,
                 variable: fn.environment, strict: fn.strict, thisValue: receiver, function: fn,
                 privateEnvironment: null, phase: "instantiation" };
@@ -2733,18 +2734,34 @@ class ExecutionEngine {
                 }, executionKey)
                 : record.instantiateFunction(created.environment, args, this.context);
             if (setup.type === "throw") { this.#capture(setup); return setup; }
-            this.#frame = { ...this.#active(), lexical: record.functionBodyEnvironment(created.environment),
+            const frame: ScriptFrameSnapshot = { ...this.#active(), lexical: record.functionBodyEnvironment(created.environment),
                 variable: record.functionVariableEnvironment(created.environment), phase: "body" };
-            const result = this.#list(source.body);
+            return { type: "normal", activation: { frame, body: source.body, environment: created.environment } };
+        } finally {
+            this.#frame = caller;
+            this.activeContext.realm = callerRealm;
+        }
+    }
+    #executeScriptFunction(callee: GuestObject, fn: ScriptGuestCallable, receiver: Value, args: Value[], newTarget: Value = UNDEFINED, constructorLoc: Location | null = null): ValueCompletion {
+        const caller = this.#active(), callerRealm = this.activeContext.realm;
+        const savedInspectionSource = this.#inspectionSource;
+        this.#inspectionSource = null;
+        try {
+            const prepared = this.#prepareScriptFunction(callee, fn, receiver, args, newTarget);
+            if (prepared.type === "throw") return prepared;
+            const activation = prepared.activation;
+            this.#frame = activation.frame;
+            this.activeContext.realm = activation.frame.realm;
+            const result = this.#list(activation.body);
             if (result.type === "throw") { this.#capture(result); return result; }
             if (fn.isDerivedClassConstructor) {
-                if (!(created.environment instanceof FunctionActivation) || constructorLoc === null) throw new Error("invalid derived activation");
+                if (!(activation.environment instanceof FunctionActivation) || constructorLoc === null) throw new Error("invalid derived activation");
                 this.#frame = caller;
                 this.activeContext.realm = caller.realm;
                 if (result.type === "return" && result.value.kind === "object") return normal(result.value);
                 const completion = result.type === "return" && result.value.kind !== "undefined"
                     ? languageFailure(caller.realm, "TypeError", "derived constructor must return an object or undefined", constructorLoc)
-                    : created.environment.getThisBinding(caller.realm, constructorLoc);
+                    : activation.environment.getThisBinding(caller.realm, constructorLoc);
                 if (completion.type === "throw") this.#capture(completion);
                 return completion;
             }
@@ -2752,6 +2769,8 @@ class ExecutionEngine {
             if (result.type === "normal") return normal();
             throw new Error("invalid Script function completion");
         } finally {
+            this.#frame = caller;
+            this.activeContext.realm = callerRealm;
             this.#inspectionSource = savedInspectionSource;
         }
     }
