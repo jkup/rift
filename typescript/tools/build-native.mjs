@@ -50,6 +50,7 @@ const entries = [
     ["test/regexp-construction.ts", "regexp-construction"],
     ["test/regexp-execution.ts", "regexp-execution"],
     ["test/regexp-match-search.ts", "regexp-match-search"],
+    ["test/regexp-replace.ts", "regexp-replace"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

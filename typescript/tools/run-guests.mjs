@@ -635,6 +635,7 @@ executeDriver("regexp-matcher", { stdout: "RegExp matcher passed\n" });
 executeDriver("regexp-construction", { stdout: "RegExp construction passed\n" });
 executeDriver("regexp-execution", { stdout: "RegExp execution passed\n" });
 executeDriver("regexp-match-search", { stdout: "RegExp match/search passed\n" });
+executeDriver("regexp-replace", { stdout: "RegExp replacement passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
 executeDriver("iterator-step", { stdout: "Iterator step passed\n" });

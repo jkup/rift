@@ -1,6 +1,7 @@
 import type { Realm } from "../realm.js";
 import { registerRegExpExecution } from "./regexp-execution.js";
 import { registerRegExpMatchSearch } from "./regexp-match-search.js";
+import { registerRegExpReplace } from "./regexp-replace.js";
 import { GuestObject, normal, languageFailure, unsupportedFailure, truthy, UNDEFINED, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import { GuestRegExp, isRegExp } from "../regexp-object.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
@@ -146,5 +147,6 @@ export function registerRegExp(realm: Realm): void {
     });
     registerRegExpExecution(realm);
     registerRegExpMatchSearch(realm);
+    registerRegExpReplace(realm);
     realm.defineScriptGlobal("RegExp", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
 }

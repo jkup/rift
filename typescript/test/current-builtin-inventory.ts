@@ -39,7 +39,7 @@ export function objectConstructorKeys(): string[] {
 
 export function prototypeMethodLength(name: string, numberPrototype: boolean): number {
     if (name === "toString") return numberPrototype ? 1 : 0;
-    if (["split", "toSpliced", "with", "slice", "apply", "splice"].includes(name)) return 2;
+    if (["replace", "split", "toSpliced", "with", "slice", "apply", "splice"].includes(name)) return 2;
     if ([
         "toFixed", "toExponential", "toPrecision", "flatMap", "toSorted", "sort", "anchor", "fontcolor", "fontsize", "link",
         "concat", "propertyIsEnumerable", "isPrototypeOf", "hasOwnProperty", "call", "bind",

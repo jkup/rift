@@ -58,7 +58,7 @@ function inventory(a: Realm): void {
         ["toString","valueOf","constructor"],
         ["toString","valueOf","toLocaleString","toFixed","toExponential","toPrecision","constructor"],
         ["length","toString","valueOf","codePointAt","trim","trimStart","trimEnd","toLowerCase","toUpperCase",
-            "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","anchor","big","blink","bold","fixed","fontcolor","fontsize","italics","link","small","strike","sub","sup","isWellFormed","toWellFormed","match","search","constructor","includes","startsWith","endsWith",wellKnownIterator],
+            "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","anchor","big","blink","bold","fixed","fontcolor","fontsize","italics","link","small","strike","sub","sup","isWellFormed","toWellFormed","match","search","replace","constructor","includes","startsWith","endsWith",wellKnownIterator],
         ["toString","valueOf","constructor","description",wellKnownToPrimitive,wellKnownToStringTag],
     ];
     for(let i=0;i<prototypes.length;i++) {
