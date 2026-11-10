@@ -4652,7 +4652,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-376 — Temporal PlainMonthDay formatting
 
-Status: **in progress — isolated successor to TS-375**. Owner: Codex catch-up chat, 2026-11-10. Add ISO MonthDay string/JSON/locale fallback formatting, including stored reference years for always/critical annotations. Require default leap-year output, signed reference years, ignored locale arguments, branding, ordered options and Realm error tests on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-format-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add ISO MonthDay string/JSON/locale fallback formatting, including stored reference years for always/critical annotations. Require default leap-year output, signed reference years, ignored locale arguments, branding, ordered options and Realm error tests on both hosts. Own src/builtins/temporal-plain-month-day.ts and tests/manifests/docs in build/temporal-plain-month-day-format-draft/.
 
 ## TS-377 — Temporal PlainMonthDay ISO parsing
 
