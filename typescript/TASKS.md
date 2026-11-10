@@ -4714,7 +4714,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-391 — Temporal Duration rounding with plain relative dates
 
-Status: **in progress — isolated successor to TS-390**. Owner: Codex catch-up chat, 2026-11-10. Expose Duration.round using shared ordered options, exact time rounding and relative date-time calendar rounding. Preserve equal-target shortcuts, full boundary errors, calendar carry, intrinsic result Realm and current duration bounds. Require signed modes, increments, calendar fractions and getter/branding/Realm tests on both hosts. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose Duration.round using shared ordered options, exact time rounding and relative date-time calendar rounding. Preserve equal-target shortcuts, full boundary errors, calendar carry, intrinsic result Realm and current duration bounds. Require signed modes, increments, calendar fractions and getter/branding/Realm tests on both hosts. Own src/builtins/temporal-duration.ts and tests/manifests/docs in build/temporal-duration-round-draft/.
 
 ## TS-392 — Clarify historical feature inventory
 
