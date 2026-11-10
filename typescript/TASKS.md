@@ -4640,7 +4640,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-373 — Temporal PlainYearMonth differences
 
-Status: **in progress — isolated successor to TS-372**. Owner: Codex catch-up chat, 2026-11-10. Add until/since with year/month-only ordered settings, first-day calendar differences and exact relative rounding. Preserve equal-record shortcut and skip rounding for the exact default month increment. Require signed calendar ties, minimum-month first-day checks, option order and Realm Duration results on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-difference-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add until/since with year/month-only ordered settings, first-day calendar differences and exact relative rounding. Preserve equal-record shortcut and skip rounding for the exact default month increment. Require signed calendar ties, minimum-month first-day checks, option order and Realm Duration results on both hosts. Own src/builtins/temporal-plain-year-month.ts and tests/manifests/docs in build/temporal-plain-year-month-difference-draft/.
 
 ## TS-374 — Temporal PlainDate to PlainYearMonth conversion
 

@@ -1,3 +1,4 @@
+import { registerTemporalPlainYearMonthDifference } from "./temporal-plain-year-month-difference.js";
 import { registerTemporalPlainYearMonthArithmetic } from "./temporal-plain-year-month-arithmetic.js";
 import { registerTemporalPlainYearMonthFields } from "./temporal-plain-year-month-fields.js";
 import { registerTemporalPlainYearMonthConversion } from "./temporal-plain-year-month-conversion.js";
@@ -47,6 +48,7 @@ export function registerTemporalPlainYearMonth(realm: Realm, namespace: GuestObj
     realm.registerBuiltin(prototype, "valueOf", 0, (_receiver, _args, context, loc): ValueCompletion =>
         languageFailure(context.realm, "TypeError", "Temporal.PlainYearMonth cannot be converted to a primitive number", loc));
     registerTemporalPlainYearMonthFormat(realm);
+    registerTemporalPlainYearMonthDifference(realm);
     registerTemporalPlainYearMonthArithmetic(realm);
     registerTemporalPlainYearMonthFields(realm);
     registerTemporalPlainYearMonthConversion(realm, constructor);
