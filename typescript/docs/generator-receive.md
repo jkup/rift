@@ -22,3 +22,5 @@ unchanged original generator-test.js passes all 88 checks on both Node and nativ
 Rift; four other original generator fixtures also match. Snapshot hashes and
 static coverage evidence are in build/original-generators-reviewed.json in the
 isolated draft. The complete Node lane passes 712/712 without skips.
+TS-223 adds for-of continuation records and iterator cleanup during unwinding;
+see [generator for-of iteration](generator-for-of.md).

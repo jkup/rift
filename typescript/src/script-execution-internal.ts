@@ -1172,7 +1172,9 @@ type GeneratorPending = GeneratorAbrupt | { type: "normal" };
 type GeneratorFinally = { kind: "finally"; frame: ScriptFrameSnapshot; statement: TryFinallyStmt; depth: number };
 type GeneratorCleanup = { kind: "cleanup"; frame: ScriptFrameSnapshot; pending: GeneratorPending;
     abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null; depth: number };
-type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup;
+type GeneratorForOf = { kind: "iterator"; frame: ScriptFrameSnapshot; statement: ForEachStmt; iterator: IteratorRecord;
+    target: Expr | null; lexical: boolean; scopeId: number; depth: number };
+type GeneratorFrame = GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf;
 type GeneratorContinuation = { sequences: GeneratorFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location } | null };
 type GeneratorResumeResult = ValueCompletion | { type: "yield"; result: Value };
 class GuestGenerator extends GuestObject {
@@ -2248,6 +2250,22 @@ class ExecutionEngine {
             return result;
         } finally { this.depth = savedDepth; }
     }
+    #initializeForEach(stmt: ForEachStmt, saved: ScriptFrameSnapshot, scopeId: number, lexical: boolean, target: Expr | null, value: Value): ValueCompletion {
+        if (lexical) {
+            const created = ExecutableScript.activateLoop(saved.record, stmt, saved.lexical, value, this.context, executionKey);
+            if (created.type === "throw") return created;
+            this.#frame = { ...saved, scopeId, lexical: created.environment };
+            return stmt.head.kind === "pattern" ? this.#initializePattern(stmt.head.pattern, null, value, created.environment, null) : normal();
+        }
+        if (stmt.head.kind === "pattern" || stmt.head.kind === "assignment-pattern")
+            return this.#initializePattern(stmt.head.pattern, null, value, null, null);
+        if (target === null) throw new Error("missing loop assignment target");
+        const reference = this.#reference(target, null, saved.thisValue);
+        const assigned = reference.type === "abrupt" ? reference.completion : putReferenceValue(this.context, reference.reference, value, target.loc);
+        if (assigned.type === "throw") { const abrupt: ThrowCompletion = assigned; return abrupt; }
+        if (assigned.type !== "normal") throw new Error("invalid loop assignment completion");
+        return normal(assigned.value);
+    }
     #prepareForIteration(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null, first: boolean): ValueCompletion {
         if (stmt.kind === "for-lexical" && stmt.declarationKind === "let") {
             const frame = this.#active();
@@ -2496,6 +2514,12 @@ class ExecutionEngine {
                 }
                 const target: Expr | null = stmt.head.kind === "lexical" || stmt.head.kind === "pattern" || stmt.head.kind === "assignment-pattern" ? null : stmt.head.kind === "var"
                     ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name } : stmt.head;
+                if (sequences !== null && stmt.kind === "for-of") {
+                    if (iterator === null) throw new Error("missing generator loop iterator");
+                    sequences.push({ kind: "iterator", frame: saved, statement: stmt, iterator, target, lexical, scopeId,
+                        depth: sequences[sequences.length - 1].depth + 1 });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
                 while (true) {
                     if (enumerator === null && iterator === null) throw new Error("missing loop iterator");
@@ -2503,33 +2527,11 @@ class ExecutionEngine {
                     if (next.type === "throw") return next;
                     if (next.done) return { type: "normal", payload: value };
                     let result: ScriptStatementCompletion;
-                    if (lexical) {
-                        const created = ExecutableScript.activateLoop(saved.record, stmt, saved.lexical, next.value, this.context, executionKey);
-                        if (created.type === "throw") {
-                            const abrupt: ThrowCompletion = created;
-                            return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
-                        }
-                        this.#frame = { ...saved, scopeId, lexical: created.environment };
-                        try {
-                            const initialized = stmt.head.kind === "pattern" ? this.#initializePattern(stmt.head.pattern, null, next.value, created.environment, null) : normal();
-                            if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; result = abrupt; }
-                            else result = this.#statement(stmt.body);
-                        } finally { this.#frame = saved; }
-                    } else if (stmt.head.kind === "pattern" || stmt.head.kind === "assignment-pattern") {
-                        const initialized = this.#initializePattern(stmt.head.pattern, null, next.value, null, null);
+                    try {
+                        const initialized = this.#initializeForEach(stmt, saved, scopeId, lexical, target, next.value);
                         if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; result = abrupt; }
                         else result = this.#statement(stmt.body);
-                    } else {
-                        if (target === null) throw new Error("missing loop assignment target");
-                        const reference = this.#reference(target, null, saved.thisValue);
-                        const assigned = reference.type === "abrupt" ? reference.completion : putReferenceValue(this.context, reference.reference, next.value, target.loc);
-                        if (assigned.type === "throw") {
-                            const abrupt: ThrowCompletion = assigned;
-                            return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
-                        }
-                        if (assigned.type !== "normal") throw new Error("invalid loop assignment completion");
-                        result = this.#statement(stmt.body);
-                    }
+                    } finally { this.#frame = saved; }
                     if (result.type === "throw") {
                         const abrupt: ThrowCompletion = result;
                         return iterator === null ? abrupt : iteratorCloseOnThrow(iterator, abrupt, this.context, stmt.loc);
@@ -2954,6 +2956,23 @@ class ExecutionEngine {
         const sequences = continuation.sequences;
         while (sequences.length !== 0) {
             const boundary = sequences.pop()!;
+            if (boundary.kind === "iterator") {
+                this.#frame = boundary.frame;
+                this.depth = callerDepth + boundary.depth;
+                if (completion.type === "continue" && completion.target === undefined) { sequences.push(boundary); return null; }
+                if (completion.type === "throw") {
+                    const pending = completion, abrupt = this.#abrupt, source = this.#lastAbrupt;
+                    completion = iteratorCloseOnThrow(boundary.iterator, pending, this.context, boundary.statement.loc);
+                    if (completion === pending) { this.#abrupt = abrupt; this.#lastAbrupt = source; }
+                    else this.#capture(completion);
+                } else {
+                    const closed = iteratorCloseNormally(boundary.iterator, this.context, boundary.statement.loc);
+                    if (closed.type === "throw") { this.#capture(closed); completion = closed; }
+                    else if (completion.type === "break" && completion.target === undefined) return null;
+                }
+                if (completion.type === "throw" && completion.origin.kind !== "guest" && completion.origin.kind !== "engine-diagnostic") return completion;
+                continue;
+            }
             if (boundary.kind === "finally") {
                 this.#scheduleGeneratorFinally(continuation, boundary, completion);
                 return null;
@@ -3055,6 +3074,26 @@ class ExecutionEngine {
                     }
                     const result = this.#unwindGenerator(continuation, sequence.pending, callerDepth);
                     if (result !== null) return result;
+                    continue;
+                }
+                if (sequence.kind === "iterator") {
+                    const next = iteratorStepValue(sequence.iterator, this.context, sequence.statement.loc);
+                    if (next.type === "throw") {
+                        sequences.pop();
+                        this.#capture(next);
+                        const result = this.#unwindGenerator(continuation, next, callerDepth);
+                        if (result !== null) return result;
+                        continue;
+                    }
+                    if (next.done) { sequences.pop(); continue; }
+                    const initialized = this.#initializeForEach(sequence.statement, sequence.frame, sequence.scopeId, sequence.lexical, sequence.target, next.value);
+                    if (initialized.type === "throw") {
+                        this.#capture(initialized);
+                        const result = this.#unwindGenerator(continuation, initialized, callerDepth);
+                        if (result !== null) return result;
+                        continue;
+                    }
+                    sequences.push({ kind: "sequence", frame: this.#active(), body: [sequence.statement.body], nextStatement: 0, depth: sequence.depth });
                     continue;
                 }
                 if (sequence.kind === "for") {

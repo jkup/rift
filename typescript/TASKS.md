@@ -4008,7 +4008,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-223 — Generator for-of continuations and iterator cleanup
 
-Status: **in progress — isolated successor to TS-222**. Owner: Codex catch-up chat, 2026-11-10. Retain for-of iterator/iteration state across yields, share binding initialization with synchronous loops, and close active iterators during return/throw/break unwinding with correct precedence and finally ordering. Preserve no-close behavior for next/done failures and normal exhaustion, same-loop continue and fatal engine stops. Own parser admission, loop records/shared binding setup/unwind, tests/manifests and notes in build/generator-for-of-draft. For-in, labelled suspension and nested expression yields remain separate. Require both-host/static checks.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Retain for-of iterator/iteration state across yields, share binding initialization with synchronous loops, and close active iterators during return/throw/break unwinding with correct precedence and finally ordering. Preserve no-close behavior for next/done failures and normal exhaustion, same-loop continue and fatal engine stops. Own parser admission, loop records/shared binding setup/unwind, tests/manifests and notes in build/generator-for-of-draft. For-in, labelled suspension and nested expression yields remain separate. Require both-host/static checks.
 
 ## TS-224 — Generator for-in enumeration continuations
 
