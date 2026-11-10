@@ -48,7 +48,7 @@ for(const expression of [
  'Temporal.Duration.compare({years:1,seconds:9007199254740991},{days:1},{relativeTo:"2020-01-01"})',
  'Temporal.Duration.compare({years:-1,seconds:-9007199254740991},{days:-1},{relativeTo:"2020-01-01"})',
  'Temporal.Duration.compare("PT0S","PT0S",{relativeTo:"bad"})',
- 'Temporal.Duration.compare("PT0S","PT0S",{relativeTo:"2020-01-01[UTC]"})',
+ 'Temporal.Duration.compare("PT0S","PT0S",{relativeTo:"2020-01-01[Invalid/Zone]"})',
 ])passes('var ok=false;try{'+expression+'}catch(e){ok=e instanceof RangeError}ok');
 for(const expression of ['Temporal.Duration.compare()','Temporal.Duration.compare("PT0S")','Temporal.Duration.compare("PT0S","PT0S",null)','new Temporal.Duration.compare("PT0S","PT0S")'])passes('var ok=false;try{'+expression+'}catch(e){ok=e instanceof TypeError}ok');
 const owner=new Realm((_line:string)=>{},"script"),caller=new Realm((_line:string)=>{},"script");

@@ -4894,7 +4894,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-435 — Zoned relativeTo for Duration APIs
 
-Status: **in progress — isolated successor to TS-434**. Owner: Codex catch-up chat, 2026-11-10. Convert branded, string and property-bag zoned relativeTo values in observable field order, then support Duration compare/total/round through checked zoned arithmetic and exact calendar rounding. Own src/temporal-relative-to-option.ts, src/temporal-duration-round-options.ts, src/builtins/temporal-duration-compare.ts, src/builtins/temporal-duration-total.ts, src/builtins/temporal-duration-round.ts, test/temporal-relative-to-option.ts and tests/manifests/docs in build/temporal-zoned-relative-to-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Convert branded, string and property-bag zoned relativeTo values in observable field order, then support Duration compare/total/round through checked zoned arithmetic and exact calendar rounding. Own src/temporal-relative-to-option.ts, src/temporal-duration-round-options.ts, src/builtins/temporal-duration-compare.ts, src/builtins/temporal-duration-total.ts, src/builtins/temporal-duration-round.ts, test/temporal-relative-to-option.ts and tests/manifests/docs in build/temporal-zoned-relative-to-draft/.
 
 TS-435 additionally owns the historical duration compare/total/round and round-options tests listed in build/ts435.json; original sources are retained before updating formerly unsupported-zone expectations.
 

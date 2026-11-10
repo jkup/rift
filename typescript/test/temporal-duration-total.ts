@@ -37,7 +37,7 @@ for(const text of [
  '1/new Temporal.Duration().total("second")===Infinity',
 ])passes(text);
 for(const options of ['undefined','null','1','true','{}','{unit:undefined}'])passes('var ok=false;try{new Temporal.Duration().total('+options+')}catch(e){ok=e instanceof TypeError}ok');
-for(const options of ['"auto"','"bad"','"year"','"month"','"week"','{unit:"day",relativeTo:"2020-01-01[UTC]"}'])passes('var ok=false;try{new Temporal.Duration().total('+options+')}catch(e){ok=e instanceof RangeError}ok');
+for(const options of ['"auto"','"bad"','"year"','"month"','"week"','{unit:"day",relativeTo:"2020-01-01[Invalid/Zone]"}'])passes('var ok=false;try{new Temporal.Duration().total('+options+')}catch(e){ok=e instanceof RangeError}ok');
 for(const expression of [
  'Temporal.Duration.from("P1Y").total("day")',
  'Temporal.Duration.from("P1D").total({unit:"day",relativeTo:"+275760-09-13"})',

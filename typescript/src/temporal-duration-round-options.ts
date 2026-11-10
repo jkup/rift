@@ -1,14 +1,13 @@
-import type { ISODate } from "./iso-calendar.js";
 import type { DurationFields } from "./temporal-duration.js";
 import { largestDurationUnit, largerDurationUnit, durationUnit, type DurationUnit } from "./temporal-duration-balance.js";
 import { temporalUnitOption, temporalRoundingIncrement, temporalRoundingMode } from "./temporal-options.js";
-import { temporalRelativeToOption } from "./temporal-relative-to-option.js";
+import { temporalRelativeToOption, type TemporalRelativeTo } from "./temporal-relative-to-option.js";
 import type { TemporalRoundingMode } from "./temporal-rounding.js";
 import type { Location } from "./syntax.js";
 import { GuestObject, languageFailure, type Value, type OperationContext, type ThrowCompletion } from "./runtime.js";
 
 export interface DurationRoundSettings {
-    readonly relativeTo: ISODate | null;
+    readonly relativeTo: TemporalRelativeTo | null;
     readonly largest: DurationUnit;
     readonly smallest: DurationUnit;
     readonly increment: number;

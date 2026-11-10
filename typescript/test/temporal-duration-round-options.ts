@@ -11,7 +11,7 @@ function passes(text: string): void {
         if(duration.type==="throw")return duration;
         const result=durationRoundSettings(args.length===0?UNDEFINED:args[0],duration.value,context,loc);
         if(result.type==="throw")return result;
-        const v=result.value,date=v.relativeTo;
+        const v=result.value,date=v.relativeTo!==null&&v.relativeTo.kind==="plain"?v.relativeTo.date:null;
         return normal({kind:"string",value:v.largest+":"+v.smallest+":"+v.increment+":"+v.mode+":"+(date===null?"none":date.year+"-"+date.month+"-"+date.day)});
     });
     const prepared=prepareBoundedScript({id:"duration-round-options",text},realm);

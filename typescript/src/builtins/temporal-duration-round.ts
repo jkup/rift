@@ -4,6 +4,8 @@ import { durationTimeNanoseconds, type DurationFields } from "../temporal-durati
 import { durationRoundSettings } from "../temporal-duration-round-options.js";
 import { relativeDurationTarget } from "../temporal-relative-duration-target.js";
 import { roundDateTimeDifference } from "../temporal-relative-date-time-round.js";
+import { addTemporalZonedDateTime } from "../temporal-zoned-arithmetic.js";
+import { roundZonedDateTimeDifference } from "../temporal-zoned-difference-round.js";
 import { isoDateTimeToEpochNanoseconds } from "../iso-calendar.js";
 import { dateDuration } from "../temporal-calendar-round.js";
 import { balanceDurationTime } from "../temporal-duration-balance.js";
@@ -19,8 +21,15 @@ export function registerTemporalDurationRound(realm: Realm): void {
         if (read.type === "throw") return read;
         const options = read.value, fields = duration.value;
         let result: DurationFields | null;
-        if (options.relativeTo !== null) {
-            const target = relativeDurationTarget(fields, options.relativeTo);
+        if (options.relativeTo !== null && options.relativeTo.kind === "zoned") {
+            const relative = options.relativeTo;
+            const last = addTemporalZonedDateTime(relative.epoch, relative.timeZone, fields, false, false);
+            if (last === null) return languageFailure(context.realm, "RangeError", "relative duration target overflows", loc);
+            const rounded = roundZonedDateTimeDifference(relative.epoch, last, relative.timeZone, options.largest, options.smallest, options.increment, options.mode);
+            const calendarUnit = options.largest === "years" || options.largest === "months" || options.largest === "weeks" || options.largest === "days";
+            result = rounded === null ? null : balanceDurationTime(rounded.time, rounded.date, calendarUnit ? "hours" : options.largest);
+        } else if (options.relativeTo !== null) {
+            const target = relativeDurationTarget(fields, options.relativeTo.date);
             if (target === null) return languageFailure(context.realm, "RangeError", "relative duration target overflows", loc);
             const first = isoDateTimeToEpochNanoseconds(target.origin), last = isoDateTimeToEpochNanoseconds(target.destination);
             if (first === null || last === null) throw new Error("duration round epoch invariant");

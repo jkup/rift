@@ -6,6 +6,7 @@ import { temporalUnitOption } from "../temporal-options.js";
 import { NANOSECONDS_PER_DAY, temporalUnitNanoseconds } from "../temporal-time.js";
 import { temporalRatioToNumber } from "../temporal-ratio-number.js";
 import { totalRelativeDuration } from "../temporal-relative-duration-total.js";
+import { totalZonedRelativeDuration } from "../temporal-zoned-duration-total.js";
 import { GuestObject, languageFailure, normal, UNDEFINED, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalDurationTotal(realm: Realm): void {
@@ -27,7 +28,8 @@ export function registerTemporalDurationTotal(realm: Realm): void {
         if (unit === "") return languageFailure(context.realm, "TypeError", "total requires a unit", loc);
         if (unit === "auto") return languageFailure(context.realm, "RangeError", "total unit cannot be auto", loc);
         if (relative.value !== null) {
-            const value = totalRelativeDuration(fields, relative.value, unit);
+            const value = relative.value.kind === "plain" ? totalRelativeDuration(fields, relative.value.date, unit) :
+                totalZonedRelativeDuration(fields, relative.value.epoch, relative.value.timeZone, unit);
             return value === null ? languageFailure(context.realm, "RangeError", "relative duration total overflows", loc) : normal({ kind: "number", value });
         }
         if (fields.years !== 0 || fields.months !== 0 || fields.weeks !== 0 || unit === "year" || unit === "month" || unit === "week")

@@ -8,8 +8,11 @@ function passes(text: string): void {
     realm.registerBuiltin(realm.globalObject, "relative", 1, (_receiver, args, context, loc): ValueCompletion => {
         const result = temporalRelativeToOption(args.length === 0 ? UNDEFINED : args[0], context, loc);
         if (result.type === "throw") return result;
-        const date = result.value;
-        return normal({ kind: "string", value: date === null ? "none" : date.year+":"+date.month+":"+date.day });
+        const relative = result.value;
+        if (relative === null) return normal({ kind: "string", value: "none" });
+        if (relative.kind === "zoned") return normal({ kind: "string", value: "zoned:"+relative.timeZone.identifier });
+        const date = relative.date;
+        return normal({ kind: "string", value: date.year+":"+date.month+":"+date.day });
     });
     const prepared = prepareBoundedScript({ id: "relative-option", text }, realm);
     if (prepared.kind !== "ready") throw new Error("prepare: " + text);
@@ -19,6 +22,9 @@ function passes(text: string): void {
 for(const text of [
  'relative()==="none"&&relative({})==="none"&&relative({relativeTo:undefined})==="none"',
  'relative({relativeTo:"2020-02-29"})==="2020:2:29"',
+ 'relative({relativeTo:"2020-01-01[UTC]"})==="zoned:UTC"',
+ 'relative({relativeTo:"2020-01-01[+01:00]"})==="zoned:+01:00"',
+ 'relative({relativeTo:{year:2020,month:2,day:1,timeZone:"UTC"}})==="zoned:UTC"',
  'relative({relativeTo:"20200229T235960.123456789+0130[u-ca=ISO8601]"})==="2020:2:29"',
  'relative({relativeTo:"2020-02-29T23:59:59.999999999-23:59"})==="2020:2:29"',
  'relative({relativeTo:{year:2020,month:2,day:31,hour:100,minute:-3}})==="2020:2:29"',
@@ -37,6 +43,6 @@ for(const text of [
 ]) passes(text);
 for(const value of ['null','1','true','"x"']) passes('var ok=false;try{relative('+value+')}catch(e){ok=e instanceof TypeError}ok');
 for(const value of ['null','1','true','1n','Symbol()']) passes('var ok=false;try{relative({relativeTo:'+value+'})}catch(e){ok=e instanceof TypeError}ok');
-for(const value of ['"2021-02-29"','"2020-01-01T24:00"','"2020-01-01T00:00Z"','"2020-01-01[UTC]"','"2020-01-01[+01:00]"','"2020-01-01[u-ca=hebrew]"','"-271821-04-18"','"+275760-09-14"','{year:2020,month:0,day:1}','{year:2020,month:2,day:1,second:Infinity}','{year:2020,month:2,day:1,offset:"+24:00"}','{year:2020,month:2,day:1,timeZone:"UTC"}']) passes('var ok=false;try{relative({relativeTo:'+value+'})}catch(e){ok=e instanceof RangeError}ok');
+for(const value of ['"2021-02-29"','"2020-01-01T24:00"','"2020-01-01T00:00Z"','"2020-01-01[Invalid/Zone]"','"2020-01-01[u-ca=hebrew]"','"-271821-04-18"','"+275760-09-14"','{year:2020,month:0,day:1}','{year:2020,month:2,day:1,second:Infinity}','{year:2020,month:2,day:1,offset:"+24:00"}','{year:2020,month:2,day:1,timeZone:"Invalid/Zone"}']) passes('var ok=false;try{relative({relativeTo:'+value+'})}catch(e){ok=e instanceof RangeError}ok');
 for(const value of ['{}','{year:2020,month:2}','{year:2020,month:2,day:1,offset:1}','{year:2020,month:2,day:1,hour:1n}']) passes('var ok=false;try{relative({relativeTo:'+value+'})}catch(e){ok=e instanceof TypeError}ok');
 console.log("temporal relative to option passed");

@@ -3,6 +3,7 @@ import { toTemporalDurationFields } from "../temporal-duration-fields.js";
 import { durationTimeNanoseconds, type DurationFields } from "../temporal-duration.js";
 import { temporalDateDurationDays } from "../temporal-date-duration-days.js";
 import { temporalRelativeToOption } from "../temporal-relative-to-option.js";
+import { addTemporalZonedDateTime } from "../temporal-zoned-arithmetic.js";
 import { NANOSECONDS_PER_DAY } from "../temporal-time.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type ValueCompletion } from "../runtime.js";
 
@@ -26,9 +27,17 @@ export function registerTemporalDurationCompare(realm: Realm, constructor: Guest
             right.years !== 0 || right.months !== 0 || right.weeks !== 0;
         if (calendar && relative.value === null)
             return languageFailure(context.realm, "RangeError", "calendar duration comparison requires relativeTo", loc);
-        const leftDays = calendar && relative.value !== null ? temporalDateDurationDays(left, relative.value) : BigInt(left.days);
+        if (relative.value !== null && relative.value.kind === "zoned" && (calendar || left.days !== 0 || right.days !== 0)) {
+            const first = addTemporalZonedDateTime(relative.value.epoch, relative.value.timeZone, left, false, false);
+            if (first === null) return languageFailure(context.realm, "RangeError", "relative duration target overflows", loc);
+            const last = addTemporalZonedDateTime(relative.value.epoch, relative.value.timeZone, right, false, false);
+            return last === null ? languageFailure(context.realm, "RangeError", "relative duration target overflows", loc) :
+                normal({ kind: "number", value: first < last ? -1 : first > last ? 1 : 0 });
+        }
+        const plain = relative.value !== null && relative.value.kind === "plain" ? relative.value.date : null;
+        const leftDays = calendar && plain !== null ? temporalDateDurationDays(left, plain) : BigInt(left.days);
         if (leftDays === null) return languageFailure(context.realm, "RangeError", "relative duration date overflows", loc);
-        const rightDays = calendar && relative.value !== null ? temporalDateDurationDays(right, relative.value) : BigInt(right.days);
+        const rightDays = calendar && plain !== null ? temporalDateDurationDays(right, plain) : BigInt(right.days);
         if (rightDays === null) return languageFailure(context.realm, "RangeError", "relative duration date overflows", loc);
         const leftTime = durationTimeNanoseconds(left) + leftDays * NANOSECONDS_PER_DAY;
         const rightTime = durationTimeNanoseconds(right) + rightDays * NANOSECONDS_PER_DAY;

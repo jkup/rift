@@ -46,7 +46,7 @@ for(const expression of [
  'Temporal.Duration.from("PT0.000000001S").round({smallestUnit:"nanosecond",relativeTo:"-271821-04-19"})',
  'Temporal.Duration.from("PT9007199254740991.999999999S").round("second")',
  'Temporal.Duration.from("-PT9007199254740991.999999999S").round("second")',
- 'new Temporal.Duration().round({smallestUnit:"hour",relativeTo:"2020-01-01[UTC]"})',
+ 'new Temporal.Duration().round({smallestUnit:"hour",relativeTo:"2020-01-01[Invalid/Zone]"})',
 ])passes('var ok=false;try{'+expression+'}catch(e){ok=e instanceof RangeError}ok');
 for(const options of ['undefined','null','1','true'])passes('var ok=false;try{new Temporal.Duration().round('+options+')}catch(e){ok=e instanceof TypeError}ok');
 const owner=new Realm((_line:string)=>{},"script"),caller=new Realm((_line:string)=>{},"script");
