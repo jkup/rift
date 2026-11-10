@@ -4847,3 +4847,15 @@ Status: **in progress — isolated successor to TS-421**. Owner: Codex catch-up 
 ## TS-423 — Validate zoned transition queries
 
 Status: **in progress — isolated successor to TS-422**. Owner: Codex catch-up chat, 2026-11-10. Implement getTimeZoneTransition for supported UTC and fixed-offset zones, which have no transitions. Preserve required direction conversion, option access and receiver/error ordering, metadata and cross-Realm errors before returning null. Own src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-transition-draft/.
+
+## TS-424 — Replace ZonedDateTime fields
+
+Status: **in progress — isolated successor to TS-423**. Owner: Codex catch-up chat, 2026-11-10. Add with() through shared ordered zoned field resolution with partial-object rejection, local defaults and month/monthCode merging. Preserve prefer-offset defaults, explicit offset policies, option ordering, intrinsic allocation and endpoint prechecks. Own src/builtins/temporal-zoned-conversion.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-with-draft/.
+
+## TS-425 — Project plain dates and date-times into timezones
+
+Status: **in progress — isolated successor to TS-424**. Owner: Codex catch-up chat, 2026-11-10. Add PlainDate/PlainDateTime.toZonedDateTime using exact fixed-offset projection, shared disambiguation validation and intrinsic allocation. Preserve PlainDate wrapper/brand timezone access order, optional plain time, timezone-before-options errors and endpoint semantics. Own src/builtins/temporal.ts, src/builtins/temporal-zoned-conversion.ts and tests/manifests/docs in build/temporal-plain-to-zoned-draft/.
+
+## TS-426 — Zoned difference reuse review
+
+Status: **done — review documented; zoned differences require a separate implementation**. Owner: Codex catch-up chat, 2026-11-10. Review plain date-time difference reuse before implementing zoned differences; distinguish upstream calendar-window oracle differences from required zoned boundary checks. Own docs/temporal-zoned-difference-review.md and the roadmap review note. No semantic source changes or new guest gate in this task.
