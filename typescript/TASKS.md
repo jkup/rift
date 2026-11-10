@@ -4038,7 +4038,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-230 — Formal binding patterns
 
-Status: **in progress — isolated successor to TS-229**. Owner: Codex catch-up chat, 2026-11-10. Add explicit pattern formal metadata and reuse binding initialization at call time for ordinary/generator functions and methods. Separate parameter count/length, bound names, IsSimpleParameterList and ContainsExpression; preserve arguments mapping, TDZ, defaults/closures, iterator close, early conflicts and generator call timing. Own syntax/parser, formal helpers, declaration/execution integration, focused tests/manifests and docs in build/formal-pattern-draft. Parenthesized arrow cover grammar may remain a separate boundary. Consult ECMA-262 2025 FDI and engine262 18cdeb03 FDI; require full both-host/static acceptance and unchanged original generator-destructuring-test.js.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add explicit pattern formal metadata and reuse binding initialization at call time for ordinary/generator functions and methods. Separate parameter count/length, bound names, IsSimpleParameterList and ContainsExpression; preserve arguments mapping, TDZ, defaults/closures, iterator close, early conflicts and generator call timing. Own syntax/parser, formal helpers, declaration/execution integration, focused tests/manifests and docs in build/formal-pattern-draft. Parenthesized arrow cover grammar may remain a separate boundary. Consult ECMA-262 2025 FDI and engine262 18cdeb03 FDI; require full both-host/static acceptance and unchanged original generator-destructuring-test.js.
 
 ## TS-231 — Arrow formal binding patterns
 

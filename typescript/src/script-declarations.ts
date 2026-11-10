@@ -1,3 +1,4 @@
+import { hasParameterExpressions } from "./formal-parameters.js";
 import type { DestructuringPattern } from "./syntax.js";
 import { parseDeclarationPlan } from "./parser.js";
 import { scriptPrologue } from "./script-prologue.js";
@@ -360,13 +361,17 @@ class DeclarationCollector {
         if (source === null || source.bodyLoc === undefined || node.kind !== "function" || node.parameters === undefined)
             throw new Error("parsed function missing parameter/source metadata");
         const index = this.tokenIndex(source.bodyLoc);
-        const formals = node.parameters.map(parameter => parameter.site);
-        const hasInitializers = node.parameters.some(parameter => parameter.initializer !== null);
+        const formals: DeclarationSite[] = [];
+        for (const parameter of node.parameters) {
+            if (parameter.kind === "identifier") formals.push(parameter.site);
+            else formals.push(...parameter.bindings);
+        }
+        const parameterExpressions = hasParameterExpressions(node.parameters);
         const inheritedStrict = this.scopes[scope].strict;
         const strictness: StrictnessMetadata = source.expressionBody === true
             ? { ownStrict: false, inheritedStrict, strict: inheritedStrict, directives: [] }
             : scriptPrologue(this.unit.text, this.tokens, index + 1, inheritedStrict);
-        const id = this.scope("function", scope, hasInitializers ? source.start : this.tokens[index].start, source.end, strictness.strict, formals);
+        const id = this.scope("function", scope, parameterExpressions ? source.start : this.tokens[index].start, source.end, strictness.strict, formals);
         if (source.name !== undefined && (source.name.name === "eval" || source.name.name === "arguments"))
             this.restrictedAssignments.push({ name: source.name.name, scope: id, loc: source.name.loc });
         if (source.arrow === true) this.arrowScopes.add(id);
@@ -375,7 +380,9 @@ class DeclarationCollector {
         this.functions.push({ scope: id, declaration, start: source.start, end: source.end, strictness });
         this.statements(body, id, id);
         for (let i = node.parameters.length - 1; i >= 0; i--) {
-            const initializer = node.parameters[i].initializer;
+            const parameter = node.parameters[i];
+            if (parameter.kind === "pattern") this.pattern(parameter.pattern, id, id);
+            const initializer = parameter.initializer;
             if (initializer !== null) this.expression(initializer, id, id);
         }
     }

@@ -4,7 +4,8 @@ export type FunctionSource = { readonly source: SourceText; readonly start: numb
     readonly name?: DeclarationSite; readonly generator?: boolean; readonly arrow?: boolean; readonly expressionBody?: boolean; readonly rest?: boolean; readonly bodyLoc?: Location };
 export type Location = { line: number; column: number };
 export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
-export type FormalParameter = { readonly site: DeclarationSite; readonly initializer: Expr | null };
+export type FormalParameter = { readonly kind: "identifier"; readonly site: DeclarationSite; readonly initializer: Expr | null }
+    | { readonly kind: "pattern"; readonly pattern: ArrayPattern | ObjectPattern; readonly bindings: readonly DeclarationSite[]; readonly initializer: Expr | null };
 export type GeneratorYieldStmt = { kind: "yield"; loc: Location; value: Expr | null; delegate?: true };
 export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
 export type SwitchClause = { loc: Location; start: number; end: number; test: Expr | null; body: Stmt[] };
@@ -23,7 +24,7 @@ export type ObjectProperty = { kind: "data" | "get" | "set" | "prototype"; key: 
     | { kind: "spread"; loc: Location; value: Expr };
 export type PatternElement = { pattern: DestructuringPattern; initializer: Expr | null };
 export type ArrayPattern = { kind: "array-pattern"; loc: Location; elements: (PatternElement | null)[]; rest: DestructuringPattern | null };
-export type ObjectPattern = { kind: "object-pattern"; loc: Location; properties: { key: Expr; element: PatternElement }[]; rest: DestructuringPattern | null };
+export type ObjectPattern = { kind: "object-pattern"; loc: Location; properties: { key: Expr; computed?: true; element: PatternElement }[]; rest: DestructuringPattern | null };
 export type DestructuringPattern = ArrayPattern | ObjectPattern | { kind: "binding"; loc: Location; site: DeclarationSite } | { kind: "target"; loc: Location; target: Expr; inferredName: string | null };
 export type ClassElement = { kind: "method" | "get" | "set"; isStatic: boolean; key: Expr; value: Extract<Expr, { kind: "function" }> };
 export type ClassExpr = { kind: "class"; loc: Location; source: SourceText; start: number; end: number; name: DeclarationSite | null; heritage: Expr | null; constructorMethod: Extract<Expr, { kind: "function" }> | null; elements: ClassElement[] };

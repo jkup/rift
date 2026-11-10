@@ -1,3 +1,4 @@
+import { hasParameterExpressions, hasParameterPatterns } from "./formal-parameters.js";
 import type { GeneratorYieldReceiver } from "./generator-yield-receiver.js";
 import type { GeneratorYieldStmt } from "./syntax.js";
 import type { TryFinallyStmt } from "./syntax.js";
@@ -20,7 +21,7 @@ import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, ChainExpr, Argument, Stmt, FunctionSource, FormalParameter, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
+import type { Expr, ChainExpr, Argument, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type PropertyKey, type ValueCompletion, type ThrowCompletion, type OperationContext, type ScriptJob, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, putScriptBinding } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
@@ -53,15 +54,11 @@ export function createEvalIntrinsic(realm: Realm): GuestObject {
     object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, writable: false, enumerable: false, configurable: true });
     return object;
 }
-function hasParameterInitializers(parameters: readonly FormalParameter[] | undefined): boolean {
-    if (parameters === undefined) return false;
-    for (const parameter of parameters) if (parameter.initializer !== null) return true;
-    return false;
-}
 type FunctionExecution = {
     callee: GuestObject;
     enter: (environment: ScriptEnvironment) => void;
-    evaluate: (initializer: Expr, name: string) => ValueCompletion;
+    evaluate: (initializer: Expr, name: string | null) => ValueCompletion;
+    initializePattern: (pattern: DestructuringPattern, value: Value, environment: ScriptEnvironment) => ValueCompletion;
 };
 type CallableState = { generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
@@ -358,12 +355,12 @@ class ExecutableScript {
     static readRoot(record: ExecutableScript, key: ExecutionKey): Stmt[] {
         return ExecutableScript.state(record, key).nodes.body;
     }
-    static readFunction(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): { scopeId: number; body: Stmt[]; hasInitializers: boolean; needsArguments: boolean } {
+    static readFunction(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): { scopeId: number; body: Stmt[]; needsParameterExecution: boolean; needsArguments: boolean } {
         ExecutableScript.state(record, key);
         const metadata = ScriptGuestCallable.check(callable, record.#activationKey, record);
         const entry = record.#function(metadata.scopeId);
         return { scopeId: metadata.scopeId, body: entry.node.body,
-            hasInitializers: hasParameterInitializers(entry.node.parameters), needsArguments: record.#needsArguments(metadata.scopeId) };
+            needsParameterExecution: hasParameterExpressions(entry.node.parameters) || hasParameterPatterns(entry.node.parameters), needsArguments: record.#needsArguments(metadata.scopeId) };
     }
     static instantiateFunctionForExecution(record: ExecutableScript, environment: ScriptFunctionEnvironment,
         args: Value[], context: OperationContext, execution: FunctionExecution, key: ExecutionKey): ValueCompletion {
@@ -469,7 +466,7 @@ class ExecutableScript {
         const entry = this.#function(scopeId);
         if (entry.source.arrow === true) return false;
         for (const formal of entry.scope.formals) if (formal.name === "arguments") return false;
-        if (!hasParameterInitializers(entry.node.parameters)) {
+        if (!hasParameterExpressions(entry.node.parameters)) {
             if (entry.scope.lexicalNames.includes("arguments")) return false;
             for (const id of entry.scope.varDeclarations) {
                 const declaration = state.plan.declarations[id];
@@ -533,7 +530,7 @@ class ExecutableScript {
             text: node.source.text.slice(node.start, node.end), formals: entry === null ? [] : entry.node.params.slice() });
         const object = new GuestObject(constructorParent, false, callable, callable);
         const value: Value = { kind: "object", object };
-        let length = entry === null ? 0 : entry.node.params.length - (entry.source.rest === true ? 1 : 0);
+        let length = entry === null ? 0 : entry.node.parameters!.length - (entry.source.rest === true ? 1 : 0);
         if (entry !== null && entry.node.parameters !== undefined) {
             for (let i = 0; i < entry.node.parameters.length; i++) if (entry.node.parameters[i].initializer !== null) { length = i; break; }
         }
@@ -576,7 +573,7 @@ class ExecutableScript {
         const constructable = entry.source.method !== true && entry.source.arrow !== true && entry.source.generator !== true;
         const object = new GuestObject(prototype === null ? (entry.source.generator === true ? state.realm.generatorFunctionPrototype : state.realm.functionPrototype) : prototype, false, callable, constructable ? callable : null);
         const value: Value = { kind: "object", object };
-        let length = entry.node.params.length - (entry.source.rest === true ? 1 : 0);
+        let length = entry.node.parameters!.length - (entry.source.rest === true ? 1 : 0);
         if (entry.node.parameters !== undefined) {
             for (let i = 0; i < entry.node.parameters.length; i++) {
                 if (entry.node.parameters[i].initializer !== null) { length = i; break; }
@@ -641,8 +638,9 @@ class ExecutableScript {
         const state = this.#readState();
         const entry = this.#function(metadata.scopeId);
         const parameters = entry.node.parameters;
-        const hasInitializers = hasParameterInitializers(parameters);
-        if (hasInitializers && execution === null) throw new Error("default parameter initialization requires Script execution");
+        const parameterExpressions = hasParameterExpressions(parameters);
+        const hasPatterns = hasParameterPatterns(parameters);
+        if ((parameterExpressions || hasPatterns) && execution === null) throw new Error("default parameter initialization requires Script execution");
         const needsArguments = this.#needsArguments(metadata.scopeId);
         if (needsArguments && (execution === null || execution.callee.callable !== environment.callable))
             throw new Error("arguments initialization requires Script execution");
@@ -665,15 +663,15 @@ class ExecutableScript {
         }
         winners.reverse();
         let parameterEnvironment: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment = environment;
-        if (hasInitializers && !metadata.strict) {
+        if (parameterExpressions && !metadata.strict) {
             const tick = this.#setupTick(context, entry.node.loc);
             if (tick.type === "throw") return tick;
             parameterEnvironment = new ScriptDeclarativeEnvironment(environment);
         }
-        if (hasInitializers && execution !== null) execution.enter(parameterEnvironment);
+        if ((parameterExpressions || hasPatterns) && execution !== null) execution.enter(parameterEnvironment);
         const parameterNames = new Set(entry.scope.formals.map(formal => formal.name));
         const hasDuplicates = parameterNames.size !== entry.scope.formals.length;
-        if (hasDuplicates && (metadata.strict || hasInitializers || entry.source.rest === true))
+        if (hasDuplicates && (metadata.strict || parameterExpressions || hasPatterns || entry.source.rest === true))
             throw new Error("invalid duplicate parameter activation");
         for (const formal of entry.scope.formals) {
             const tick = this.#setupTick(context, formal.loc);
@@ -690,7 +688,7 @@ class ExecutableScript {
         }
         if (needsArguments) {
             if (execution === null) throw new Error("missing arguments execution");
-            const mapped = !metadata.strict && !hasInitializers && entry.source.rest !== true;
+            const mapped = !metadata.strict && !parameterExpressions && !hasPatterns && entry.source.rest !== true;
             const cells: (ScriptBindingCell | null)[] = [];
             if (mapped) {
                 const last = new Map<string, number>();
@@ -708,38 +706,45 @@ class ExecutableScript {
             const initialized = parameterEnvironment.initializeBinding("arguments", object.value, context, entry.node.loc);
             if (initialized.type === "throw") return initialized;
         }
-        for (let i = 0; i < entry.scope.formals.length; i++) {
-            const formal = entry.scope.formals[i];
-            const tick = this.#setupTick(context, formal.loc);
+        for (let i = 0; i < parameters!.length; i++) {
+            const parameter = parameters![i];
+            const loc = parameter.kind === "identifier" ? parameter.site.loc : parameter.pattern.loc;
+            const tick = this.#setupTick(context, loc);
             if (tick.type === "throw") return tick;
             let value = i < argumentsList.length ? argumentsList[i] : UNDEFINED;
-            const initializer = parameters === undefined ? null : parameters[i].initializer;
+            const initializer = parameter.initializer;
             if (value.kind === "undefined" && initializer !== null) {
                 if (execution === null) throw new Error("missing parameter execution");
-                const evaluated = execution.evaluate(initializer, formal.name);
+                const evaluated = execution.evaluate(initializer, parameter.kind === "identifier" ? parameter.site.name : null);
                 if (evaluated.type === "throw") return evaluated;
                 value = evaluated.value;
             }
-            if (entry.source.rest === true && i === entry.scope.formals.length - 1) {
+            if (entry.source.rest === true && i === parameters!.length - 1) {
                 const array = state.realm.createArray();
                 for (let j = i; j < argumentsList.length; j++) {
-                    const copyTick = this.#setupTick(context, formal.loc);
+                    const copyTick = this.#setupTick(context, loc);
                     if (copyTick.type === "throw") return copyTick;
                     const defined = array.defineOwnProperty(String(j - i), {
                         value: argumentsList[j], writable: true, enumerable: true, configurable: true,
-                    }, context, formal.loc);
+                    }, context, loc);
                     if (defined.type === "throw") return defined;
                     if (!defined.value) throw new Error("fresh rest array element invariant");
                 }
                 value = { kind: "object", object: array };
             }
+            if (parameter.kind === "pattern") {
+                if (execution === null) throw new Error("missing parameter pattern execution");
+                const initialized = execution.initializePattern(parameter.pattern, value, parameterEnvironment);
+                if (initialized.type === "throw") return initialized;
+                continue;
+            }
             const initialized = hasDuplicates
-                ? parameterEnvironment.setMutableBinding(formal.name, value, context, formal.loc, false)
-                : parameterEnvironment.initializeBinding(formal.name, value, context, formal.loc);
+                ? parameterEnvironment.setMutableBinding(parameter.site.name, value, context, loc, false)
+                : parameterEnvironment.initializeBinding(parameter.site.name, value, context, loc);
             if (initialized.type === "throw") return initialized;
         }
         let variableEnvironment: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment = parameterEnvironment;
-        if (hasInitializers) {
+        if (parameterExpressions) {
             const tick = this.#setupTick(context, entry.node.loc);
             if (tick.type === "throw") return tick;
             variableEnvironment = new ScriptDeclarativeEnvironment(parameterEnvironment);
@@ -758,7 +763,7 @@ class ExecutableScript {
             const initializeTick = this.#setupTick(context, site.loc);
             if (initializeTick.type === "throw") return initializeTick;
             let initialValue = UNDEFINED;
-            if (hasInitializers && !selected.has(site.name)) {
+            if (parameterExpressions && !selected.has(site.name)) {
                 const parameter = parameterEnvironment.hasBinding(site.name, site.loc);
                 if (parameter.type === "throw") return parameter;
                 if (parameter.value) {
@@ -2763,11 +2768,12 @@ class ExecutionEngine {
             const created = record.createFunctionEnvironment(fn, receiver, this.context, newTarget, callee);
             if (created.type === "throw") { this.#capture(created); return created; }
             this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
-            const setup = source.hasInitializers || source.needsArguments
+            const setup = source.needsParameterExecution || source.needsArguments
                 ? ExecutableScript.instantiateFunctionForExecution(record, created.environment, args, this.context, {
                     callee,
                     enter: (environment: ScriptEnvironment): void => { this.#frame = { ...this.#active(), lexical: environment, variable: environment }; },
-                    evaluate: (initializer: Expr, name: string): ValueCompletion => this.#value(initializer, name),
+                    evaluate: (initializer: Expr, name: string | null): ValueCompletion => this.#value(initializer, name),
+                    initializePattern: (pattern: DestructuringPattern, value: Value, environment: ScriptEnvironment): ValueCompletion => this.#initializePattern(pattern, null, value, environment, null),
                 }, executionKey)
                 : record.instantiateFunction(created.environment, args, this.context);
             if (setup.type === "throw") { this.#capture(setup); return setup; }

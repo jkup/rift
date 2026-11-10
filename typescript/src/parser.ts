@@ -10,6 +10,7 @@ import type { ScriptSourceUnit } from "./script-metadata.js";
 import { scriptPrologue, lineTerminatorBetween } from "./script-prologue.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, createLexer, type Lexer, type Token } from "./lexer.js";
+import { hasParameterPatterns } from "./formal-parameters.js";
 import type { Diagnostic, Expr, ChainLink, ObjectProperty, ArrayElement, Argument, Location, Stmt, SourceText, FunctionSource, FormalParameter, DeclarationSite, SwitchClause, VarStmt, ForEachStmt, TryFinallyStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
@@ -642,7 +643,8 @@ class Parser {
             const token = this.current();
             let key: Expr;
             let child: DestructuringPattern;
-            if (this.eat("[")) {
+            const computed = this.eat("[");
+            if (computed) {
                 key = this.expression(1);
                 this.expect("]");
                 this.expect(":");
@@ -659,7 +661,7 @@ class Parser {
                 } else child = this.bindingName(bindings);
             }
             const initializer = this.eat("=") ? this.expression(1) : null;
-            pattern.properties.push({ key, element: { pattern: child, initializer } });
+            pattern.properties.push({ key, ...(computed ? { computed: true as const } : {}), element: { pattern: child, initializer } });
             if (!this.eat(",")) break;
         }
         this.expect("}");
@@ -687,29 +689,35 @@ class Parser {
             do {
                 rest = this.structuralPlan() && this.eat("...");
                 const token = this.current();
-                const name = this.name();
-                if (params.includes(name) && (arrow || !this.boundedPlan()))
-                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, (arrow ? "duplicate arrow parameter: " : "duplicate parameter: ") + name, loc);
-                params.push(name);
+                const bindings: ParsedBinding[] = [];
+                const pattern = this.structuralPlan() ? this.bindingPattern(bindings) : this.bindingName(bindings);
+                for (const binding of bindings) {
+                    if (params.includes(binding.site.name) && (arrow || !this.boundedPlan()))
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate parameter: " + binding.site.name, loc);
+                    params.push(binding.site.name);
+                }
                 let initializer: Expr | null = null;
                 if (this.structuralPlan() && this.eat("=")) {
                     if (rest) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "rest parameter cannot have a default", token.loc);
                     initializer = this.expression(1);
                 }
-                parameters.push({ site: { name, start: token.start, end: token.end, loc: token.loc }, initializer });
+                if (pattern.kind === "binding") parameters.push({ kind: "identifier", site: pattern.site, initializer });
+                else if (pattern.kind === "array-pattern" || pattern.kind === "object-pattern")
+                    parameters.push({ kind: "pattern", pattern, bindings: bindings.map(binding => binding.site), initializer });
+                else throw new Error("invalid formal binding pattern");
                 if (rest) break;
             } while (this.error === null && this.eat(",") && !(arrow && this.at(")")));
         }
         this.expect(")");
         if (rest && new Set(params).size !== params.length)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate rest parameter list", loc);
-        if (parameters.some(parameter => parameter.initializer !== null) && new Set(params).size !== params.length)
+        if ((hasParameterPatterns(parameters) || parameters.some(parameter => parameter.initializer !== null)) && new Set(params).size !== params.length)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate default parameter list", loc);
         return { params, rest, parameters };
     }
     checkParameterDirective(rest: boolean, parameters: FormalParameter[], bodyIndex: number, loc: Location): void {
         if (this.error !== null) return;
-        if ((rest || parameters.some(parameter => parameter.initializer !== null)) && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
+        if ((rest || hasParameterPatterns(parameters) || parameters.some(parameter => parameter.initializer !== null)) && scriptPrologue(this.source.text, this.tokens, bodyIndex, false).ownStrict)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "strict directive with non-simple parameters", loc);
     }
     functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
@@ -776,7 +784,7 @@ class Parser {
     arrow(allowIn: boolean): Expr {
         const first = this.current();
         const name = this.name();
-        return this.arrowBody(first, [name], false, [{ site: { name, start: first.start, end: first.end, loc: first.loc }, initializer: null }], allowIn);
+        return this.arrowBody(first, [name], false, [{ kind: "identifier", site: { name, start: first.start, end: first.end, loc: first.loc }, initializer: null }], allowIn);
     }
     private arrowBody(first: Token, params: string[], rest: boolean, parameters: FormalParameter[], allowIn: boolean): Expr {
         const savedGenerator = this.generatorContext;
@@ -1008,7 +1016,7 @@ class Parser {
             }
             if (!this.at("(")) { this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class fields and static blocks are unsupported", this.current().loc); break; }
             const fn = this.functionTail(first.loc, first.start, heritage !== null && !isStatic && literalName === "constructor" && kind === "method" ? "derived" : "method", generator);
-            if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
+            if ((kind === "get" && fn.parameters.length !== 0) || (kind === "set" && (fn.parameters.length !== 1 || fn.source.rest === true)))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid class accessor parameters", first.loc);
             if (new Set(fn.params).size !== fn.params.length)
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate class method parameter", first.loc);
@@ -1056,7 +1064,7 @@ class Parser {
                 }
                 if (this.at("(")) {
                     const fn = this.functionTail(first.loc, first.start, "method", generator);
-                    if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
+                    if ((kind === "get" && fn.parameters.length !== 0) || (kind === "set" && (fn.parameters.length !== 1 || fn.source.rest === true)))
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
                     if (new Set(fn.params).size !== fn.params.length)
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate method parameter", first.loc);
@@ -1173,7 +1181,7 @@ class Parser {
                 if (rest && i === values.length - 1 && value.kind === "assign")
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "rest parameter cannot have a default", token.loc);
                 params.push(target.name);
-                parameters.push({ site: { name: target.name, start: token.start, end: token.end, loc: token.loc }, initializer: value.kind === "assign" ? value.value : null });
+                parameters.push({ kind: "identifier", site: { name: target.name, start: token.start, end: token.end, loc: token.loc }, initializer: value.kind === "assign" ? value.value : null });
             }
             return this.arrowBody(first, params, rest, parameters, allowIn);
         }
@@ -1368,7 +1376,7 @@ class Parser {
                     const name = key.kind === "number" ? String(Number(key.text.replaceAll("_", ""))) : key.text;
                     if (this.structuralPlan() && this.at("(")) {
                         const fn = this.functionTail(first.loc, first.start, "method");
-                        if ((kind === "get" && fn.params.length !== 0) || (kind === "set" && (fn.params.length !== 1 || fn.source.rest === true)))
+                        if ((kind === "get" && fn.parameters.length !== 0) || (kind === "set" && (fn.parameters.length !== 1 || fn.source.rest === true)))
                             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "invalid accessor parameter list", first.loc);
                         if (new Set(fn.params).size !== fn.params.length)
                             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate method parameter", first.loc);

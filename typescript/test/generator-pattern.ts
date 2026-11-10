@@ -43,7 +43,7 @@ for (let i = 0; i < cases.length; i++) {
     const result = run(cases[i], new Realm((_line: string): void => {}, "script"));
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "pattern case " + i);
 }
-for (const source of ["function* f(){let [x=yield 1]=[];}", "function* f(){({[yield 1]:x}={});}", "function* f([x]){yield x;}"]) {
+for (const source of ["function* f(){let [x=yield 1]=[];}", "function* f(){({[yield 1]:x}={});}"]) {
     check(prepareBoundedScript({id: "boundary", text: source}, new Realm((_line: string): void => {}, "script")).kind === "blocked", "pattern boundary");
 }
 const A = new Realm((_line: string): void => {}, "script"), B = new Realm((_line: string): void => {}, "script");
@@ -54,4 +54,6 @@ const steps = creator.inspect().steps, session = createScriptSession();
 const failed = run('g.next(null);', B, session);
 check(failed.type === "throw" && failed.value.kind === "object" && failed.value.object.getPrototypeOf() === A.getErrorPrototype("TypeError"), "pattern error Realm");
 check(creator.inspect().steps === steps && session.inspect().steps > 0, "pattern current session");
+const formal = run("function* f([x]){yield x;}f([7]).next().value===7;", new Realm((_line: string): void => {}, "script"));
+check(formal.type === "normal" && formal.value.kind === "boolean" && formal.value.value, "preserved generator formal input");
 console.log("generator pattern passed");

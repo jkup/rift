@@ -63,7 +63,7 @@ passes("var f=(a=1)=>'use strict';f()==='use strict';");
 for (const text of [
     "function f(a=1){'use strict';}", "function f(a=1){'other';'use strict';}", "(a=1)=>{'use strict';};",
     "var o={m(a=1){'use strict';}};", "function f(a=1,a){}", "function f(a,a=1){}", "(a=1,a)=>a;",
-    "function f(a=){}", "function f(...a=1){}", "function f(a=1){let a;}", "function f([a]=[]){}",
+    "function f(a=){}", "function f(...a=1){}", "function f(a=1){let a;}",
 ]) {
     const realm = fresh();
     check(prepareBoundedScript({ id: "invalid-default", text: "var effect=1;" + text }, realm).kind !== "ready", "reject: " + text);
@@ -112,4 +112,5 @@ for (const text of [
 const recursive = run("function f(a=f()){}f();", fresh(), 5000);
 check(recursive.type === "throw" && recursive.origin.kind === "resource-limit", "recursive defaults bounded");
 check(parse("function f(a=1){}").error !== null, "legacy defaults unchanged");
+expect(run("function f([a]=[]){}f();", fresh()), {kind: "undefined"}, "preserved pattern default input");
 console.log("Default parameters passed");

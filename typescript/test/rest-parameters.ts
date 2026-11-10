@@ -52,7 +52,7 @@ passes("var effects=0;Object.defineProperty(Array.prototype,'0',{set(v){effects+
 for (const text of [
     "function f(...a,b){}", "function f(...a,){}", "function f(...a=[]){}", "function f(...a,...b){}",
     "function f(a,...a){}", "function f(a,a,...b){}", "function f(...a){'use strict';}",
-    "function f(...a){'other';'use strict';}", "function f(...a){let a;}", "function f(...[a]){}",
+    "function f(...a){'other';'use strict';}", "function f(...a){let a;}",
     "(...a,b)=>a;", "(...a,)=>a;", "(...a=[])=>a;", "(a,...a)=>a;", "(...a)=>{'use strict';};",
     "var o={set x(...a){}};", "var o={get x(...a){}};", "var o={f(...a){'use strict';}};",
 ]) {
@@ -76,4 +76,5 @@ for (const text of [
     expect(run("entered;", realm), { kind: "boolean", value: false }, "rest exhaustion precedes body");
 }
 check(parse("function f(...a){}").error !== null, "legacy rest unchanged");
+expect(run("function f(...[a]){}f(7);", fresh()), {kind: "undefined"}, "preserved rest pattern input");
 console.log("Rest parameters passed");
