@@ -110,6 +110,7 @@ const entries = [
     ["test/for-await.ts", "for-await"],
     ["test/async-arrow.ts", "async-arrow"],
     ["test/async-lexical-conflicts.ts", "async-lexical-conflicts"],
+    ["test/async-generator.ts", "async-generator"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

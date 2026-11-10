@@ -446,7 +446,6 @@ class Parser {
         const asynchronous = this.asyncFunctionAhead();
         if (asynchronous) this.take();
         if (this.eat("function")) {
-            if (asynchronous && this.at("*")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generators are unsupported", loc);
             const generator = this.structuralPlan() && this.eat("*");
             const token = this.current();
             const name = this.name();
@@ -828,6 +827,8 @@ class Parser {
         this.asyncContext = asynchronous;
         const body = this.list(true, params);
         this.admitSuspendingBody(body);
+        if (generator && asynchronous) for (const expression of this.generatorYields)
+            if (expression.delegate) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generator delegation is unsupported", expression.loc);
         this.generatorContext = savedGenerator;
         this.generatorYields = savedYields;
         this.asyncContext = savedAsync;
@@ -1446,7 +1447,6 @@ class Parser {
         const asynchronous = this.structuralPlan() && t.text === "async" && this.at("function") && t.loc.line === this.current().loc.line;
         if (asynchronous) this.take();
         if (t.text === "function" || asynchronous) {
-            if (asynchronous && this.at("*")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "async generators are unsupported", loc);
             const generator = this.structuralPlan() && this.eat("*");
             let name: DeclarationSite | undefined;
             if (this.structuralPlan() && !this.at("(")) {

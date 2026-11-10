@@ -2,7 +2,7 @@ import { wellKnownToStringTag } from "../symbols.js";
 import type { Realm } from "../realm.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString } from "../conversion.js";
-import { createDynamicFunction, createGeneratorResumeIntrinsic, type DynamicFunctionKind } from "../script-execution-internal.js";
+import { createDynamicFunction, createGeneratorResumeIntrinsic, createAsyncGeneratorResumeIntrinsic, type DynamicFunctionKind } from "../script-execution-internal.js";
 import type { GuestObject, Value, ValueCompletion, OperationContext } from "../runtime.js";
 import type { Location } from "../syntax.js";
 
@@ -61,4 +61,22 @@ export function registerAsyncFunctionConstructor(realm: Realm): void {
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.asyncFunctionPrototype } });
     realm.asyncFunctionPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, configurable: true });
     realm.asyncFunctionPrototype.bootstrapDefine(wellKnownToStringTag, { value: { kind: "string", value: "AsyncFunction" }, configurable: true });
+}
+
+export function registerAsyncGeneratorFunctionConstructor(realm: Realm): void {
+    const constructor: GuestObject = realm.createBuiltinConstructor("AsyncGeneratorFunction", 1,
+        (_receiver, args, context, loc): ValueCompletion => construct(args, context, loc, constructor, "async-generator"),
+        (_callee, newTarget, args, context, loc): ValueCompletion => construct(args, context, loc, newTarget, "async-generator"));
+    const parent = realm.globalObject.getOwnProperty("Function");
+    if (parent === undefined || parent.kind !== "data" || parent.value.kind !== "object") throw new Error("Function intrinsic missing");
+    const linked = constructor.setPrototypeOf(parent.value.object);
+    if (!linked.value) throw new Error("AsyncGeneratorFunction prototype invariant");
+    constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.asyncGeneratorFunctionPrototype } });
+    realm.asyncGeneratorFunctionPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, configurable: true });
+    realm.asyncGeneratorFunctionPrototype.bootstrapDefine("prototype", { value: { kind: "object", object: realm.asyncGeneratorPrototype }, configurable: true });
+    realm.asyncGeneratorFunctionPrototype.bootstrapDefine(wellKnownToStringTag, { value: { kind: "string", value: "AsyncGeneratorFunction" }, configurable: true });
+    realm.asyncGeneratorPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: realm.asyncGeneratorFunctionPrototype }, configurable: true });
+    realm.asyncGeneratorPrototype.bootstrapDefine(wellKnownToStringTag, { value: { kind: "string", value: "AsyncGenerator" }, configurable: true });
+    for (const mode of ["next", "return", "throw"] as const)
+        realm.asyncGeneratorPrototype.bootstrapDefine(mode, { value: { kind: "object", object: createAsyncGeneratorResumeIntrinsic(realm, mode) }, writable: true, configurable: true });
 }

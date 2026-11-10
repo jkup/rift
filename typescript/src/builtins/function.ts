@@ -31,6 +31,7 @@ export function functionSourceString(callable: Callable): string {
         case "builtin": return nativeFunctionString(callable.initialName);
         case "bound": return nativeFunctionString(null);
         case "eval": return nativeFunctionString("eval");
+        case "async-generator": return nativeFunctionString(callable.mode);
         case "async-resume": return nativeFunctionString(null);
         case "generator-resume": return nativeFunctionString(callable.mode);
         case "script-guest": return callable.sourceText();

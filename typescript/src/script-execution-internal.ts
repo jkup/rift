@@ -574,7 +574,7 @@ class ExecutableScript {
             unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
         const constructable = entry.source.method !== true && entry.source.arrow !== true && entry.source.generator !== true && entry.source.async !== true;
-        const object = new GuestObject(prototype === null ? (entry.source.async === true ? state.realm.asyncFunctionPrototype : entry.source.generator === true ? state.realm.generatorFunctionPrototype : state.realm.functionPrototype) : prototype, false, callable, constructable ? callable : null);
+        const object = new GuestObject(prototype === null ? (entry.source.async === true ? (entry.source.generator === true ? state.realm.asyncGeneratorFunctionPrototype : state.realm.asyncFunctionPrototype) : entry.source.generator === true ? state.realm.generatorFunctionPrototype : state.realm.functionPrototype) : prototype, false, callable, constructable ? callable : null);
         const value: Value = { kind: "object", object };
         let length = entry.node.parameters!.length - (entry.source.rest === true ? 1 : 0);
         if (entry.node.parameters !== undefined) {
@@ -585,7 +585,7 @@ class ExecutableScript {
         object.bootstrapDefine("length", { value: { kind: "number", value: length }, writable: false, enumerable: false, configurable: true });
         object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
         if (constructable || entry.source.generator === true) {
-            const prototypeObject = new GuestObject(entry.source.generator === true ? state.realm.generatorPrototype : state.realm.objectPrototype);
+            const prototypeObject = new GuestObject(entry.source.generator === true ? (entry.source.async === true ? state.realm.asyncGeneratorPrototype : state.realm.generatorPrototype) : state.realm.objectPrototype);
             if (constructable) prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
             object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: true, enumerable: false, configurable: false });
         }
@@ -1077,14 +1077,14 @@ function copySite(site: DeclarationSite): DeclarationSite {
 export function prepareBoundedScript(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {
     return ExecutableScript.prepare(unit, realm, true);
 }
-export type DynamicFunctionKind = "ordinary" | "generator" | "async";
+export type DynamicFunctionKind = "ordinary" | "generator" | "async" | "async-generator";
 function dynamicFunctionRecord(source: string, parametersOnly: boolean, context: OperationContext, loc: Location, kind: DynamicFunctionKind):
     { type: "normal"; record: ExecutableScript; scope: number } | ThrowCompletion {
     for (let i = 0; i < source.length; i++) {
         const tick = context.tick(loc);
         if (tick.type === "throw") return tick;
     }
-    const prepared = prepareBoundedScript({ id: kind === "async" ? "<AsyncFunction>" : kind === "generator" ? "<GeneratorFunction>" : "<Function>", text: source }, context.realm);
+    const prepared = prepareBoundedScript({ id: kind === "async-generator" ? "<AsyncGeneratorFunction>" : kind === "async" ? "<AsyncFunction>" : kind === "generator" ? "<GeneratorFunction>" : "<Function>", text: source }, context.realm);
     if (prepared.kind === "profile-rejected") throw new Error("invalid dynamic function Realm");
     if (prepared.kind === "conflict") return languageFailure(context.realm, "SyntaxError", prepared.diagnostic.message, loc);
     if (prepared.kind === "blocked") {
@@ -1102,7 +1102,7 @@ function dynamicFunctionRecord(source: string, parametersOnly: boolean, context:
     return { type: "normal", record: prepared.record, scope: ExecutableScript.scopeOfNode(prepared.record, node, executionKey) };
 }
 export function createDynamicFunction(parameters: string[], body: string, context: OperationContext, loc: Location, newTarget: GuestObject, kind: DynamicFunctionKind = "ordinary"): ValueCompletion {
-    const prefix = kind === "async" ? "async function anonymous(" : kind === "generator" ? "function* anonymous(" : "function anonymous(", middle = "\n) {\n", suffix = "\n}";
+    const prefix = kind === "async-generator" ? "async function* anonymous(" : kind === "async" ? "async function anonymous(" : kind === "generator" ? "function* anonymous(" : "function anonymous(", middle = "\n) {\n", suffix = "\n}";
     let length = prefix.length + middle.length + body.length + suffix.length + Math.max(parameters.length - 1, 0);
     for (const parameter of parameters) length += parameter.length;
     if (length > 100000) return resourceFailure("source-units", length, 100000, "dynamic function source exceeds 100000 UTF-16 units", loc);
@@ -1113,7 +1113,7 @@ export function createDynamicFunction(parameters: string[], body: string, contex
     if (bodyRecord.type === "throw") return bodyRecord;
     const complete = dynamicFunctionRecord(prefix + params + middle + body + suffix, false, context, loc, kind);
     if (complete.type === "throw") return complete;
-    const prototype = getPrototypeFromConstructor(newTarget, kind === "async" ? "AsyncFunction" : kind === "generator" ? "GeneratorFunction" : "Function", context, loc);
+    const prototype = getPrototypeFromConstructor(newTarget, kind === "async-generator" ? "AsyncGeneratorFunction" : kind === "async" ? "AsyncFunction" : kind === "generator" ? "GeneratorFunction" : "Function", context, loc);
     if (prototype.type === "throw") return prototype;
     // Materialize the declaration without instantiating an anonymous global binding.
     return complete.record.materializeFunction(complete.scope, { kind: "global", record: context.realm.globalEnvironment }, null, context, prototype.value);
@@ -1190,7 +1190,7 @@ type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string;
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number };
 type AsyncIteratorCloseFrame = { kind: "async-close"; frame: ScriptFrameSnapshot; loc: Location; depth: number; pending: GeneratorAbrupt; abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null };
 type GeneratorFrame = AsyncIteratorCloseFrame | GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
-type ExecutionContinuation = { sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
+type ExecutionContinuation = { asyncGenerator?: true; sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; loc: Location; depth: number } | null };
 type ContinuationResult = ValueCompletion | { type: "yield"; result: Value } | { type: "await"; value: Value; loc: Location; depth: number };
 type ExpressionContinuationResult = ContinuationResult | { type: "suspended-delegate" };
 class GuestGenerator extends GuestObject {
@@ -1272,6 +1272,55 @@ function asyncResumeHandler(activation: AsyncActivation, mode: "next" | "throw")
     object.bootstrapDefine("name", { value: { kind: "string", value: "" }, configurable: true });
     object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
     return { kind: "object", object };
+}
+
+type AsyncGeneratorWait = "await" | "yield" | "resume-return" | "completed-return";
+type AsyncGeneratorRequest = { mode: GeneratorResumeMode; value: Value; capability: PromiseCapability; loc: Location };
+type AsyncGeneratorData = { state: "suspended-start" | "suspended-yield" | "executing" | "completed";
+    waiting: AsyncGeneratorWait | null; immediateFailure: { value: Value; loc: Location } | null; head: number; continuation: ExecutionContinuation | null; queue: AsyncGeneratorRequest[] };
+function abortAsyncGenerator(data: AsyncGeneratorData): void {
+    data.state = "completed"; data.waiting = null; data.immediateFailure = null; data.continuation = null; data.queue.length = 0; data.head = 0;
+}
+class GuestAsyncGenerator extends GuestObject {
+    #data: AsyncGeneratorData;
+    constructor(key: ExecutionKey, prototype: GuestObject, activation: PreparedFunctionBody) {
+        super(prototype);
+        if (key !== executionKey) throw new Error("invalid async generator allocation");
+        this.#data = { state: "suspended-start", waiting: null, immediateFailure: null, head: 0, queue: [],
+            continuation: { asyncGenerator: true, expressionFrames: [], sequences: [{ kind: "sequence", frame: activation.frame, body: activation.body, nextStatement: 0, depth: 0 }], yieldLoc: null, receiver: null, delegate: null } };
+    }
+    static is(object: GuestObject): object is GuestAsyncGenerator {
+        if (!(object instanceof GuestAsyncGenerator)) return false;
+        const branded: GuestAsyncGenerator = object;
+        return #data in branded;
+    }
+    static data(object: GuestAsyncGenerator, key: ExecutionKey): AsyncGeneratorData {
+        if (key !== executionKey || !GuestAsyncGenerator.is(object)) throw new Error("invalid async generator access");
+        return object.#data;
+    }
+}
+export type { AsyncGeneratorCallable };
+class AsyncGeneratorCallable {
+    readonly kind = "async-generator";
+    #generator: GuestAsyncGenerator | null;
+    constructor(key: ExecutionKey, readonly realm: Realm, readonly mode: GeneratorResumeMode, generator: GuestAsyncGenerator | null) {
+        if (key !== executionKey) throw new Error("invalid async generator callable");
+        this.#generator = generator;
+    }
+    static generator(callable: AsyncGeneratorCallable, key: ExecutionKey): GuestAsyncGenerator | null {
+        if (key !== executionKey || !(callable instanceof AsyncGeneratorCallable) || !(#generator in callable)) throw new Error("invalid async generator callable access");
+        return callable.#generator;
+    }
+}
+function asyncGeneratorHandler(realm: Realm, mode: GeneratorResumeMode, generator: GuestAsyncGenerator | null): GuestObject {
+    const callable = new AsyncGeneratorCallable(executionKey, realm, mode, generator);
+    const object = new GuestObject(realm.functionPrototype, false, callable);
+    object.bootstrapDefine("name", { value: { kind: "string", value: generator === null ? mode : "" }, configurable: true });
+    object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
+    return object;
+}
+export function createAsyncGeneratorResumeIntrinsic(realm: Realm, mode: GeneratorResumeMode): GuestObject {
+    return asyncGeneratorHandler(realm, mode, null);
 }
 
 type PreparedFunctionBody = { frame: ScriptFrameSnapshot; body: Stmt[]; environment: ScriptFunctionEnvironment };
@@ -1871,7 +1920,7 @@ class ExecutionEngine {
         if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
         if (this.#script) return this.#callScript(callee, receiver, args, loc);
         if (this.context.realm.profile !== "legacy") throw new Error("Script execution unavailable");
-        if (fn.kind === "script-guest" || fn.kind === "bound" || fn.kind === "eval" || fn.kind === "generator-resume" || fn.kind === "async-resume") throw new Error("Script execution unavailable");
+        if (fn.kind === "script-guest" || fn.kind === "bound" || fn.kind === "eval" || fn.kind === "generator-resume" || fn.kind === "async-resume" || fn.kind === "async-generator") throw new Error("Script execution unavailable");
         if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
         const callerRealm = this.activeContext.realm;
         this.calls++;
@@ -2903,9 +2952,9 @@ class ExecutionEngine {
             const activation = prepared.activation;
             if (fn.isGenerator) {
                 if (constructorLoc === null) throw new Error("generator call location missing");
-                const prototype = getPrototypeFromConstructor(callee, "Generator", this.context, constructorLoc);
+                const prototype = getPrototypeFromConstructor(callee, fn.isAsync ? "AsyncGenerator" : "Generator", this.context, constructorLoc);
                 if (prototype.type === "throw") return prototype;
-                return normal({ kind: "object", object: new GuestGenerator(executionKey, prototype.value, activation) });
+                return normal({ kind: "object", object: fn.isAsync ? new GuestAsyncGenerator(executionKey, prototype.value, activation) : new GuestGenerator(executionKey, prototype.value, activation) });
             }
             this.#frame = activation.frame;
             this.activeContext.realm = activation.frame.realm;
@@ -2997,6 +3046,17 @@ class ExecutionEngine {
         this.activeContext.realm = fn.realm;
         this.#frame = { ...saved, realm: fn.realm };
         try {
+            if (fn.kind === "async-generator") {
+                const generator = AsyncGeneratorCallable.generator(fn, executionKey);
+                try {
+                    return generator === null ? this.#enqueueAsyncGenerator(receiver, fn.mode, args[0] ?? UNDEFINED, loc)
+                        : this.#reactAsyncGenerator(generator, fn.mode, args[0] ?? UNDEFINED, loc);
+                } catch (error) {
+                    const target = generator ?? (receiver.kind === "object" && GuestAsyncGenerator.is(receiver.object) ? receiver.object : null);
+                    if (target !== null) abortAsyncGenerator(GuestAsyncGenerator.data(target, executionKey));
+                    throw error;
+                }
+            }
             if (fn.kind === "async-resume") return this.#resumeAsync(AsyncResumeCallable.activation(fn, executionKey), fn.mode, args[0] ?? UNDEFINED, loc);
             if (fn.kind === "generator-resume") {
                 GeneratorResumeCallable.check(fn);
@@ -3030,7 +3090,7 @@ class ExecutionEngine {
                 ExecutableScript.validateClassConstructor(fn.record, fn, executionKey);
                 return languageFailure(fn.realm, "TypeError", "class constructor requires new", loc);
             }
-            if (fn.isAsync) return this.#executeAsyncFunction(callee.object, fn, receiver, args, loc);
+            if (fn.isAsync && !fn.isGenerator) return this.#executeAsyncFunction(callee.object, fn, receiver, args, loc);
             return this.#executeScriptFunction(callee.object, fn, receiver, args, UNDEFINED, loc);
         } finally {
             this.#frame = saved;
@@ -3039,6 +3099,138 @@ class ExecutionEngine {
         }
     }
 
+    #enqueueAsyncGenerator(receiver: Value, mode: GeneratorResumeMode, value: Value, loc: Location): ValueCompletion {
+        const capability = intrinsicPromiseCapability(this.context.realm);
+        if (receiver.kind !== "object" || !GuestAsyncGenerator.is(receiver.object)) {
+            const failure = languageFailure(this.context.realm, "TypeError", "incompatible async generator receiver", loc);
+            const rejected = this.context.call(capability.reject, UNDEFINED, [failure.value], loc);
+            return rejected.type === "throw" ? rejected : normal(capability.promise);
+        }
+        const generator = receiver.object, data = GuestAsyncGenerator.data(generator, executionKey);
+        data.queue.push({ mode, value, capability, loc });
+        const driven = this.#drainAsyncGenerator(generator);
+        if (driven.type === "throw" && fatalPromiseCompletion(driven)) abortAsyncGenerator(data);
+        return driven.type === "throw" ? driven : normal(capability.promise);
+    }
+    #completeAsyncGeneratorStep(generator: GuestAsyncGenerator, result: ValueCompletion, done: boolean, loc: Location): ValueCompletion {
+        const data = GuestAsyncGenerator.data(generator, executionKey), request = data.queue[data.head++];
+        if (data.head === data.queue.length) { data.head = 0; data.queue.length = 0; }
+        else if (data.head >= 1024 && data.head * 2 >= data.queue.length) { data.queue = data.queue.slice(data.head); data.head = 0; }
+        if (request === undefined) throw new Error("empty async generator queue");
+        if (result.type === "throw") return this.context.call(request.capability.reject, UNDEFINED, [result.value], loc);
+        const object = iteratorResult(result.value, done, this.context, loc);
+        return object.type === "throw" ? object : this.context.call(request.capability.resolve, UNDEFINED, [object.value], loc);
+    }
+    #drainAsyncGenerator(generator: GuestAsyncGenerator): ValueCompletion {
+        const data = GuestAsyncGenerator.data(generator, executionKey);
+        while (data.head < data.queue.length && (data.immediateFailure !== null || (data.waiting === null && data.state !== "executing"))) {
+            if (data.immediateFailure !== null) {
+                const failure = data.immediateFailure; data.immediateFailure = null;
+                const reacted = this.#reactAsyncGenerator(generator, "throw", failure.value, failure.loc, false);
+                if (reacted.type === "throw") return reacted;
+                continue;
+            }
+            const request = data.queue[data.head];
+            if (data.state === "suspended-start" && request.mode !== "next") { data.state = "completed"; data.continuation = null; }
+            if (data.state === "completed") {
+                if (request.mode === "return") {
+                    const awaited = this.#awaitAsyncGenerator(generator, request.value, "completed-return", request.loc, 0);
+                    if (awaited.type === "throw" || data.immediateFailure === null) return awaited;
+                    continue;
+                }
+                const result: ValueCompletion = request.mode === "throw" ? { type: "throw", origin: { kind: "guest" }, value: request.value,
+                    diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: request.loc } } : normal();
+                data.state = "executing";
+                const completed = this.#completeAsyncGeneratorStep(generator, result, true, request.loc);
+                data.state = "completed";
+                if (completed.type === "throw") return completed;
+                continue;
+            }
+            const first = data.state === "suspended-start";
+            data.state = "executing";
+            if (!first && request.mode === "return") {
+                const continuation = data.continuation;
+                if (continuation === null) throw new Error("missing return continuation");
+                const top = continuation.sequences[continuation.sequences.length - 1];
+                const awaited = this.#awaitAsyncGenerator(generator, request.value, "resume-return", continuation.yieldLoc ?? request.loc, top.depth);
+                if (awaited.type === "throw" || data.immediateFailure === null) return awaited;
+                continue;
+            }
+            const result = this.#runAsyncGenerator(generator, request.mode, first ? UNDEFINED : request.value, request.loc);
+            if (result.type === "throw") return result;
+        }
+        return normal();
+    }
+    #runAsyncGenerator(generator: GuestAsyncGenerator, mode: GeneratorResumeMode, value: Value, loc: Location): ValueCompletion {
+        const data = GuestAsyncGenerator.data(generator, executionKey), continuation = data.continuation;
+        if (continuation === null) throw new Error("missing async generator continuation");
+        data.state = "executing";
+        const result = this.#runContinuation(continuation, mode, value);
+        if (result.type === "await") return this.#awaitAsyncGenerator(generator, result.value, "await", result.loc, result.depth);
+        if (result.type === "yield") {
+            if (result.result.kind !== "object") throw new Error("invalid async yield result");
+            const yielded = result.result.object.getOwnProperty("value");
+            if (yielded === undefined || yielded.kind !== "data") throw new Error("invalid async yield value");
+            const top = continuation.sequences[continuation.sequences.length - 1];
+            return this.#awaitAsyncGenerator(generator, yielded.value, "yield", continuation.yieldLoc ?? loc, top.depth);
+        }
+        data.state = "completed";
+        data.continuation = null;
+        if (result.type === "throw" && fatalPromiseCompletion(result)) { data.queue.length = 0; data.head = 0; return result; }
+        data.state = "executing";
+        const completed = this.#completeAsyncGeneratorStep(generator, result, true, loc);
+        data.state = "completed";
+        return completed;
+    }
+    #reactAsyncGenerator(generator: GuestAsyncGenerator, mode: GeneratorResumeMode, value: Value, loc: Location, drain = true): ValueCompletion {
+        const data = GuestAsyncGenerator.data(generator, executionKey), waiting = data.waiting;
+        if (waiting === null) throw new Error("async generator reaction without await");
+        data.waiting = null;
+        let result: ValueCompletion;
+        if (waiting === "completed-return") {
+            const completion: ValueCompletion = mode === "throw" ? { type: "throw", origin: { kind: "guest" }, value,
+                diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc } } : normal(value);
+            data.state = "executing";
+            result = this.#completeAsyncGeneratorStep(generator, completion, true, loc);
+            data.state = "completed";
+        } else if (waiting === "yield" && mode === "next") {
+            data.state = "executing";
+            result = this.#completeAsyncGeneratorStep(generator, normal(value), false, loc);
+            data.state = "suspended-yield";
+        } else result = this.#runAsyncGenerator(generator, waiting === "resume-return" && mode === "next" ? "return" : mode, value, loc);
+        const completed = result.type === "throw" || !drain ? result : this.#drainAsyncGenerator(generator);
+        if (completed.type === "throw" && fatalPromiseCompletion(completed)) abortAsyncGenerator(data);
+        return completed;
+    }
+    #awaitAsyncGenerator(generator: GuestAsyncGenerator, value: Value, waiting: AsyncGeneratorWait, loc: Location, depth: number): ValueCompletion {
+        const data = GuestAsyncGenerator.data(generator, executionKey);
+        data.waiting = waiting;
+        const caller = this.#active(), callerRealm = this.activeContext.realm, callerDepth = this.depth, inspection = this.#inspectionSource;
+        const continuation = data.continuation;
+        if (waiting !== "completed-return") {
+            if (continuation === null) throw new Error("missing async generator await frame");
+            const frame = continuation.sequences[continuation.sequences.length - 1].frame;
+            this.#frame = frame; this.activeContext.realm = frame.realm; this.depth = callerDepth + depth; this.#inspectionSource = null;
+        }
+        try {
+            const realm = this.context.realm, constructor = realm.promiseConstructor;
+            if (constructor === null) throw new Error("missing Promise intrinsic");
+            const promise = promiseResolve({ kind: "object", object: constructor }, value, this.context, loc);
+            if (promise.type === "throw") {
+                if (fatalPromiseCompletion(promise)) { data.state = "completed"; data.waiting = null; data.continuation = null; data.queue.length = 0; return promise; }
+                data.immediateFailure = { value: promise.value, loc };
+                return normal();
+            }
+            if (promise.value.kind !== "object" || !(promise.value.object instanceof GuestPromise)) throw new Error("invalid async generator Promise");
+            return promise.value.object.then(null, { kind: "object", object: asyncGeneratorHandler(realm, "next", generator) },
+                { kind: "object", object: asyncGeneratorHandler(realm, "throw", generator) }, this.context, loc);
+        } finally { this.#frame = caller; this.activeContext.realm = callerRealm; this.depth = callerDepth; this.#inspectionSource = inspection; }
+    }
+    #awaitAsyncGeneratorReturn(continuation: ExecutionContinuation, value: Value, loc: Location, callerDepth: number): ContinuationResult {
+        continuation.receiver = { kind: "async-return" };
+        continuation.yieldLoc = loc;
+        return { type: "await", value, loc, depth: this.depth - callerDepth };
+    }
     #resumeGenerator(receiver: Value, mode: GeneratorResumeMode, value: Value, loc: Location): ValueCompletion {
         if (receiver.kind !== "object" || !GuestGenerator.is(receiver.object))
             return languageFailure(this.context.realm, "TypeError", "incompatible generator receiver", loc);
@@ -3234,7 +3426,10 @@ class ExecutionEngine {
             if (branch !== null) continuation.sequences.push({ kind: "sequence", frame: frame.frame, body: [branch], nextStatement: 0, depth: frame.depth + 1 });
             return null;
         }
-        if (receiver.kind === "return") return this.#unwindContinuation(continuation, { type: "return", value }, callerDepth);
+        if (receiver.kind === "async-return") return this.#unwindContinuation(continuation, { type: "return", value }, callerDepth);
+        if (receiver.kind === "return") return continuation.asyncGenerator
+            ? this.#awaitAsyncGeneratorReturn(continuation, value, continuation.yieldLoc!, callerDepth)
+            : this.#unwindContinuation(continuation, { type: "return", value }, callerDepth);
         if (receiver.kind === "throw") {
             const abrupt: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value,
                 diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: receiver.loc } };
@@ -3560,6 +3755,8 @@ class ExecutionEngine {
                     continue;
                 }
                 if (result.type === "return") {
+                    if (continuation.asyncGenerator && statement.kind === "return" && statement.value !== null)
+                        return this.#awaitAsyncGeneratorReturn(continuation, result.value, statement.loc, callerDepth);
                     const terminal = this.#unwindContinuation(continuation, result, callerDepth);
                     if (terminal !== null) return terminal;
                     continue;

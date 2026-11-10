@@ -66,7 +66,7 @@ for (let i=0;i<cases.length;i++) {
     const result = run(cases[i], realm);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "case " + i);
 }
-for (const source of ['function* f(a,a){}','var f=function* (a,a){};','async function* f(){}']) {
+for (const source of ['function* f(a,a){}','var f=function* (a,a){};']) {
     const realm = new Realm((_line: string): void => {}, "script");
     check(prepareBoundedScript({id:"unsupported",text:source},realm).kind === "blocked", "boundary " + source);
 }
@@ -104,4 +104,6 @@ const noCalls = run('next.call(unopened);', B, createScriptSession({maxSteps:100
 check(noCalls.type === "throw" && noCalls.origin.kind === "resource-limit", "entry call limit");
 const opened = run('typeof next.call(unopened).value==="function";', B);
 check(opened.type === "normal" && opened.value.kind === "boolean" && opened.value.value, "entry limit leaves suspended start");
+const asyncGenerator = run("async function* f(){}f().next() instanceof Promise;", new Realm((_line: string) => {}, "script"));
+check(asyncGenerator.type === "normal" && asyncGenerator.value.kind === "boolean" && asyncGenerator.value.value, "original async generator boundary executes");
 console.log("generator start passed");
