@@ -1,9 +1,10 @@
 import type { EvaluationReference } from "./evaluation-reference.js";
-import type { UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
+import type { SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
 import type { GuestObject, PropertyKey, Value } from "./runtime.js";
 
 export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "compound-value"; expression: CompoundExpr; reference: EvaluationReference; left: Value }
+    | { kind: "super-key"; expression: SuperMemberExpr; homeObject: GuestObject; receiver: Value }
     | { kind: "update-base"; expression: UpdateExpr }
     | { kind: "update-key"; expression: UpdateExpr; base: Value }
     | { kind: "assignment-base"; expression: AssignExpr | CompoundExpr }
@@ -29,5 +30,5 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "await-operand"; expression: AwaitExpr };
 export function isSuspendingGeneratorExpression(expression: Expr | null): boolean {
     return expression !== null && (expression.kind === "yield" || expression.kind === "await" ||
-        ((expression.kind === "array" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
+        ((expression.kind === "array" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
 }

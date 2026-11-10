@@ -4214,7 +4214,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-271 — Suspended super property reads
 
-Status: **in progress — isolated successor to TS-270**. Owner: Codex catch-up chat, 2026-11-10. Capture actual this before a super key suspends, obtain the home-object prototype after the key completes, then use the ordinary super reference read. Preserve deferred key conversion and dynamic prototypes. Own syntax/parser, expression frames, shared super-reference construction, tests/manifests and docs in build/generator-super-member-draft. Direct super call/assignment/update/delete targets remain separate. Require both-host/static, getter/Realm tests and pinned engine review.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Capture actual this before a super key suspends, obtain the home-object prototype after the key completes, then use the ordinary super reference read. Preserve deferred key conversion and dynamic prototypes. Own syntax/parser, expression frames, shared super-reference construction, tests/manifests and docs in build/generator-super-member-draft. Direct super call/assignment/update/delete targets remain separate. Require both-host/static, getter/Realm tests and pinned engine review.
 
 ## TS-272 — Suspended super method targets
 

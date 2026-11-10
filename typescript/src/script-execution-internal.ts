@@ -2107,6 +2107,12 @@ class ExecutionEngine {
         }
         return result;
     }
+    #superReference(homeObject: GuestObject, receiver: Value, key: Value, loc: Location): EvaluationReference {
+        const parent = homeObject.getPrototypeOf();
+        const base: Value = parent === null ? { kind: "null" } : { kind: "object", object: parent };
+        const reference: Reference = { kind: "property", base, key, loc };
+        return { kind: "script-super", reference, receiver, strict: this.#active().strict };
+    }
     #reference(expr: Expr, env: Environment | null, receiver: Value): EvaluationReferenceResult {
         if (env !== null) return this.reference(expr, env, receiver);
         if (expr.kind === "identifier") {
@@ -2121,10 +2127,7 @@ class ExecutionEngine {
             if (actualThis.type === "throw") return { type: "abrupt", completion: actualThis };
             const key = this.#eval(expr.key, null, receiver);
             if (key.type !== "normal") return { type: "abrupt", completion: key };
-            const parent = environment.callable.homeObject.getPrototypeOf();
-            const base: Value = parent === null ? { kind: "null" } : { kind: "object", object: parent };
-            const reference: Reference = { kind: "property", base, key: key.value, loc: expr.loc };
-            return { type: "reference", reference: { kind: "script-super", reference, receiver: actualThis.value, strict: this.#active().strict } };
+            return { type: "reference", reference: this.#superReference(environment.callable.homeObject, actualThis.value, key.value, expr.loc) };
         }
         if (expr.kind === "member") {
             const strict = this.#active().strict;
@@ -3334,7 +3337,7 @@ class ExecutionEngine {
                 return resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", loc);
             }
             if (expression !== null) {
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3342,6 +3345,15 @@ class ExecutionEngine {
                     if (expression.kind === "await") {
                         frames.push({ kind: "await-operand", expression });
                         expression = expression.value;
+                        continue;
+                    }
+                    if (expression.kind === "super-member") {
+                        const environment = this.#thisEnvironment(this.#active().lexical);
+                        if (!(environment instanceof FunctionActivation) || environment.callable.homeObject === null) throw new Error("invalid suspended super environment");
+                        const receiver = environment.getThisBinding(this.context.realm, expression.loc);
+                        if (receiver.type === "throw") return receiver;
+                        frames.push({ kind: "super-key", expression, homeObject: environment.callable.homeObject, receiver: receiver.value });
+                        expression = expression.key;
                         continue;
                     }
                     if (expression.kind === "update") {
@@ -3471,6 +3483,14 @@ class ExecutionEngine {
                 if (written.type === "throw") return written;
                 if (written.type !== "normal") throw new Error("invalid compound write completion");
                 value = written.value;
+                continue;
+            }
+            if (frame.kind === "super-key") {
+                const reference = this.#superReference(frame.homeObject, frame.receiver, value, frame.expression.loc);
+                const result = getReferenceValue(this.context, reference, frame.expression.loc);
+                if (result.type === "throw") return result;
+                if (result.type !== "normal") throw new Error("invalid super read completion");
+                value = result.value;
                 continue;
             }
             if (frame.kind === "update-base") {
