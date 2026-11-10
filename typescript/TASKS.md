@@ -4316,7 +4316,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-295 — Exact Temporal rounding and UTC formatting backend
 
-Status: **in progress — isolated successor to TS-294**. Owner: Codex catch-up chat, 2026-11-10. Add exact integer increment rounding for all nine Temporal modes, distinct Instant as-if-positive rounding, and UTC ISO formatting with auto/minute/fixed fractional precision and expanded years. Own new helpers/tests/manifests/docs in build/temporal-time-format-draft. Keep guest options/coercion/registration and named time zones separate. Require fixed positive/negative/tie vectors, exact large values, epoch bounds and both-host static/zero-dynamic plus full Node.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add exact integer increment rounding for all nine Temporal modes, distinct Instant as-if-positive rounding, and UTC ISO formatting with auto/minute/fixed fractional precision and expanded years. Own new helpers/tests/manifests/docs in build/temporal-time-format-draft. Keep guest options/coercion/registration and named time zones separate. Require fixed positive/negative/tie vectors, exact large values, epoch bounds and both-host static/zero-dynamic plus full Node.
 
 ## TS-296 — Temporal.Instant rounding and JSON serialization
 
