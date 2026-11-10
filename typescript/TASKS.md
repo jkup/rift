@@ -4812,7 +4812,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-415 — Shared Instant string timezone conversion
 
-Status: **in progress — isolated successor to TS-414**. Owner: Codex catch-up chat, 2026-11-10. Use shared Temporal timezone conversion for Instant formatting, including ISO timezone strings and ZonedDateTime slots. Preserve unit-validation precedence, default Z versus explicit UTC offsets, exact rounding and defining-Realm failures. Update the earlier unsupported-only baseline and validate both hosts. Own src/builtins/temporal-instant-string.ts, test/temporal-instant-string.ts and tests/manifests/docs in build/temporal-instant-time-zone-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Use shared Temporal timezone conversion for Instant formatting, including ISO timezone strings and ZonedDateTime slots. Preserve unit-validation precedence, default Z versus explicit UTC offsets, exact rounding and defining-Realm failures. Update the earlier unsupported-only baseline and validate both hosts. Own src/builtins/temporal-instant-string.ts, test/temporal-instant-string.ts and tests/manifests/docs in build/temporal-instant-time-zone-draft/.
 
 ## TS-416 — Zoned slots in plain Temporal conversions
 

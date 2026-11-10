@@ -3,8 +3,8 @@ import { temporalInstantValue } from "../temporal-instant-object.js";
 import { temporalFractionalDigits, temporalRoundingMode, temporalSmallestUnit, temporalStringPrecision, temporalPrecisionNanoseconds } from "../temporal-options.js";
 import { roundTemporalInstant } from "../temporal-rounding.js";
 import { formatUTCInstant, formatOffsetInstant } from "../temporal-time-format.js";
-import { parseUTCOffset } from "../utc-offset.js";
-import { GuestObject, languageFailure, normal, unsupportedFailure, UNDEFINED, type ValueCompletion } from "../runtime.js";
+import { toTemporalTimeZone } from "../temporal-time-zone.js";
+import { GuestObject, languageFailure, normal, UNDEFINED, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalInstantString(realm: Realm): void {
     realm.registerBuiltin(realm.temporalInstantPrototype, "toString", 0, (receiver, args, context, loc): ValueCompletion => {
@@ -27,14 +27,9 @@ export function registerTemporalInstantString(realm: Realm): void {
         if (precision === null) return languageFailure(context.realm, "RangeError", "Instant strings require minute or smaller units", loc);
         let offset: number | null = null;
         if (zone.value.kind !== "undefined") {
-            if (zone.value.kind !== "string") return languageFailure(context.realm, "TypeError", "timeZone must be a string", loc);
-            const text = zone.value.value;
-            if (text.length === 3 && text.toUpperCase() === "UTC") offset = 0;
-            else {
-                const parsed = parseUTCOffset(text, false);
-                if (parsed === null) return unsupportedFailure("runtime.temporal-time-zone", "TypeError", "time-zone identifier requires an unavailable backend or grammar", loc);
-                offset = Number(parsed / 60000000000n);
-            }
+            const parsed = toTemporalTimeZone(zone.value, context, loc);
+            if (parsed.type === "throw") return parsed;
+            offset = Number(parsed.value.offsetNanoseconds / 60000000000n);
         }
         const rounded = roundTemporalInstant(value.value, temporalPrecisionNanoseconds(precision), mode.value);
         const formatted = offset === null ? formatUTCInstant(rounded, precision) : formatOffsetInstant(rounded, offset, precision);

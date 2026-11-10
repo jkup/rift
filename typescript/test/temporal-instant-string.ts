@@ -57,9 +57,9 @@ for (const option of ['-0.1', '10', 'NaN', 'Infinity', '"0"', 'new Number(3)', '
     const result = run('var ok=false;try{new Temporal.Instant(0n).toString({fractionalSecondDigits:'+option+'})}catch(e){ok=e instanceof RangeError}ok');
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "digits " + option);
 }
-for (const zone of ['Europe/London', '1970-01-01T00:00Z', '+01:00:00', '+24:00', 'Z', '']) {
-    const result = run('new Temporal.Instant(0n).toString({timeZone:'+JSON.stringify(zone)+'})');
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.temporal-time-zone", "zone " + zone);
+for (const zone of ['Europe/London', '+01:00:00', '+24:00', 'Z', '']) {
+    const result = run('var ok=false;try{new Temporal.Instant(0n).toString({timeZone:'+JSON.stringify(zone)+'})}catch(e){ok=e instanceof RangeError}ok');
+    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "zone " + zone);
 }
 check(formatUTCInstant(8640000000000000000001n) === null, "UTC range unchanged");
 check(formatOffsetInstant(0n, 1440) === null && formatOffsetInstant(0n, 0.5) === null, "offset bounds");
