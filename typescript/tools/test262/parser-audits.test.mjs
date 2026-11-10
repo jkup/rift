@@ -142,6 +142,13 @@ for (const [driver, directory, count] of [
       diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate default parameter list', loc: {line: 1, column: 1}},
       rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
     });
+    const pattern = rows.find(row => row.id === 'E38');
+    assert.equal(pattern.text, 'function f({a},a){"use strict";}');
+    expected.set(pattern.id, {
+      kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'duplicate default parameter list', loc: {line: 1, column: 1}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.duplicate-parameter'},
+    });
     const arrow = rows.find(row => row.id === 'E39');
     assert.equal(arrow.text, 'let f=(a,a)=>a;');
     expected.set(arrow.id, {

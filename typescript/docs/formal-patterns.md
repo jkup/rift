@@ -26,3 +26,5 @@ and acceptance remain separately tracked in TASKS/COORDINATION.
 
 Design references: [ECMA-262 2025 FunctionDeclarationInstantiation](https://tc39.es/ecma262/2025/multipage/ordinary-and-exotic-objects-behaviours.html#sec-functiondeclarationinstantiation)
 and [engine262 FDI at 18cdeb03](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/runtime-semantics/FunctionDeclarationInstantiation.mts).
+
+The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound-name rejection after formal pattern parsing; the current audit expectation was migrated explicitly while its frozen input/output evidence remains unchanged. The focused parser audit rerun passes all five tests on both hosts.

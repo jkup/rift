@@ -5,10 +5,10 @@ Updated 2026-11-10. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted generator-control milestone passes 716/716 guests on each
-host, 293/293 tooling checks, and all 223 native static gates without retries.
-The unchanged 225-file C++ corpus has 184 completions: 115 reported successes and
-69 unchecked completions. Remaining outcomes are 7 parse errors, 33 runtime
+The accepted generator-receivers milestone passes 721/721 guests on each
+host, 293/293 tooling checks, and all 228 native static gates without retries.
+The unchanged 225-file C++ corpus has 185 completions: 115 reported successes and
+70 unchecked completions. Remaining outcomes are 6 parse errors, 33 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
 Test262 conformance score.
 
@@ -20,13 +20,12 @@ matchAll, computed object keys, shorthand, globalThis, named functions, separate
 function setup/body execution, prototype setters, object spread and replaceAll
 are accepted. Context and pending-operand probes protect the suspension boundary.
 Binary/reference helpers and generator execution now include yields, delegation,
-catch/finally, direct binding/return receivers, loops, labels, switch and methods.
-The unchanged original generator suite reports all 88 checks passing on both
-hosts. Isolated successors add suspended assignments, throws and destructuring,
-then formal and arrow binding patterns. Formal patterns pass the unchanged
-generator-destructuring fixture on both hosts; combined acceptance is still
-pending for these successors. General nested expression suspension and async
-remain subsequent work. Unicode regex modes, lookaround, backreferences
+catch/finally, bindings, assignments, throws, destructuring, loops, labels, switch
+and methods. Formal and arrow binding patterns are accepted. Both hosts complete
+the unchanged generator suite (88 reported checks) and generator-destructuring
+fixture. Isolated successors add binary, conditional, unary and nested-yield
+expression continuations plus suspended if conditions. Their combined validation
+is next; broader expressions and async remain subsequent work. Unicode regex modes, lookaround, backreferences
 and named groups remain unsupported.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as

@@ -2364,3 +2364,21 @@ Array fill/copyWithin, String.raw, padStart/padEnd and Realm-local Math.random a
 2026-11-10 TS-230 promoted after generator-control acceptance with 9 changed-file baselines verified. Isolated evidence passes 720 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/formal-pattern-draft/build and build/formal-pattern-* logs, retaining initial failures and exact historical-input migrations.
 
 2026-11-10 TS-231 promoted after generator-control acceptance with 6 changed-file baselines verified. Isolated evidence passes 721 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/arrow-pattern-draft/build and build/arrow-pattern-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-10: Generator-control acceptance pushed as 502e09cd. TS-227–231 integrated in five commits through db62a9b7; typechecking, runner32 and ten probes pass, full 228-entry native matrix and Node/corpus lanes are running. TS-232 claimed for binary expression continuation frames in an isolated successor.
+
+2026-11-10: TS-232 focused Node/native/static checks pass, including 4,000-operator and cross-resume depth guards; full isolated Node suite is running. TS-233 claimed to extend the same expression stack to conditionals. Canonical TS-227–231 remains frozen for native validation.
+
+2026-11-10: TS-233 focused native/static checks pass after the inherited precedence guard. TS-234 claimed for shared unary Value operations and operand continuations; reference-specific typeof/delete paths stay explicit. Canonical TS-227–231 validation is still frozen and running.
+
+2026-11-10: TS-234 focused native/static passes; ordinary unary regressions are running. TS-235 claimed for nested yield operands using the same expression frame stack. Canonical receiver milestone remains frozen during native validation.
+
+2026-11-10: TS-235 focused Node/native static checks pass, including consecutive delegate handoff. TS-236 claimed for suspended if conditions; full receiver validation remains frozen.
+
+2026-11-10: TS-236 focused native/static passes; full suites and migrated historical boundary checks are running. TS-237 claimed for while/do-while tests, reusing existing loop/unwind frames. Receiver milestone native build passed all 228 gates; guest/corpus/tooling checks remain active.
+
+The initial combined tooling run passed 292/293. E38 now reaches duplicate-bound-name rejection after formal pattern parsing; the current audit expectation was migrated explicitly while its frozen input/output evidence remains unchanged. The focused parser audit rerun passes all five tests on both hosts.
+
+2026-11-10: TS-237 passes 727 Node guests and focused/native loop, if, binary and nested-yield regressions. TS-238 claimed for real Promise-returning async functions without await. Reviewed engine262 18cdeb03: capability creation precedes parameter setup; guest setup errors reject it, and body starts synchronously. Existing explicit generator activation is the later await foundation.
+
+2026-11-10 Generator receivers accepted (TS-227–231): 721/721 guests on each host without skips; all 228 native static-only/zero-dynamic gates pass in 1964916ms without retries. Tooling passes 293/293 in 217423.3567ms; runner32/32 in 548.7446ms, ten probes and typechecking pass. Corpus node-cKsf7E/native-CvH38C matches all 225 normalized records and increases completions from 184 to 185 (115 reported successes, 70 unchecked), preserving every prior completion. The added completion is generator-destructuring-test.js. Remaining outcomes are 6 parse errors, 33 runtime errors and one reported failure. Evidence: build/generator-receivers-native-results.json, generator-receivers-corpus-comparison.json and generator-receivers-* logs. Isolated successors add binary, conditional, unary and nested-yield expressions plus if conditions; these require their own combined acceptance.
