@@ -24,6 +24,11 @@ function observation(action: "parse-only" | "execute", role: "test" | "harness",
         [{ id: "u0", role: "harness", text: "0;" }, { id: "u1", role: "harness", text: source }, { id: "u2", role: "test", text: "7;" }];
     return observeScripts({ nonce, requestSha256: sha, action, preflightId: role === "test" ? null : "preflight", steps: 10000, calls: 64, units });
 }
+function seedJSON(completion: ValueCompletion | null) {
+    if (completion === null) return null;
+    if (completion.type !== "throw" || completion.value.kind !== "number") throw new Error("numeric seed completion required");
+    return { type: "throw", origin: completion.origin, value: { kind: "number", value: completion.value.value }, diagnostic: completion.diagnostic };
+}
 function controls(): void {
     const sources = [readFileSync(process.argv[2], "utf8"), readFileSync(process.argv[5], "utf8"), "var touched=0; function touch(){touched+=1; print(9); return 1;} while(false) let x=touch();"];
     let checks = 0;
@@ -65,7 +70,7 @@ function controls(): void {
             unit.text = "throw 19;"; unit.id = "changed";
             check(rejected.unit.id === "same" && rejected.unit.text === source, "rejection copied unit");
             const after = session.inspect();
-            check(after.active === null && guestCalls === 0, "no active execution or guest call");
+            check(before.active === null && after.active === null && guestCalls === 0, "no active execution or guest call");
             if (seeded) {
                 const bindingAfter = realm.globalEnvironment.getBindingValue("sentinel", context, {line:1,column:1});
                 check(bindingBefore !== null && bindingBefore.type === "normal" && bindingAfter.type === "normal" && bindingBefore.value === bindingAfter.value && bindingAfter.value.kind === "number" && bindingAfter.value.value === 41, "lexical binding value identity");
@@ -76,8 +81,8 @@ function controls(): void {
             check(before !== after, "fresh inspection snapshots");
             if (before.lastAbrupt !== null && after.lastAbrupt !== null) check(before.lastAbrupt.loc !== after.lastAbrupt.loc, "copied history locations");
             histories.push(JSON.stringify({id: source === sources[0] ? "R0" : source === sources[1] ? "R1" : "effects", realmId: realmLabel, seeded, prefixCount: prefixLength,
-                before: {steps:before.steps,calls:before.calls,depth:before.depth,active:before.active,lastAbrupt:before.lastAbrupt===null?null:{recordIdentity:"seed.record",realmIdentity:realmLabel,unitId:before.lastAbrupt.unitId,loc:before.lastAbrupt.loc}},
-                after: {steps:after.steps,calls:after.calls,depth:after.depth,active:after.active,lastAbrupt:after.lastAbrupt===null?null:{recordIdentity:"seed.record",realmIdentity:realmLabel,unitId:after.lastAbrupt.unitId,loc:after.lastAbrupt.loc}},savedCompletion:seedCompletion}));
+                before: {steps:before.steps,calls:before.calls,depth:before.depth,active:null,lastAbrupt:before.lastAbrupt===null?null:{recordIdentity:"seed.record",realmIdentity:realmLabel,unitId:before.lastAbrupt.unitId,loc:before.lastAbrupt.loc}},
+                after: {steps:after.steps,calls:after.calls,depth:after.depth,active:null,lastAbrupt:after.lastAbrupt===null?null:{recordIdentity:"seed.record",realmIdentity:realmLabel,unitId:after.lastAbrupt.unitId,loc:after.lastAbrupt.loc}},savedCompletion:seedJSON(seedCompletion)}));
             check(before.steps === after.steps && before.calls === after.calls && before.depth === after.depth && before.active === after.active, "all budgets unchanged");
             if (before.lastAbrupt === null) check(after.lastAbrupt === null, "empty history");
             else {
