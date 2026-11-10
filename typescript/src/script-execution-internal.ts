@@ -2638,6 +2638,12 @@ class ExecutionEngine {
                 return { type: "normal", payload: { kind: "empty" } };
             }
             case "var": {
+                if (sequences !== null && stmt.declarations.length > 1 && stmt.declarations.some(declaration => isSuspendingGeneratorExpression(declaration.init))) {
+                    const body: Stmt[] = [];
+                    for (const declaration of stmt.declarations) body.push({ kind: "var", loc: stmt.loc, declarations: [declaration] });
+                    sequences.push({ kind: "sequence", frame: this.#active(), body, nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 for (const declaration of stmt.declarations) {
                     if (declaration.init === null) continue;
                     const ref = resolveScriptBinding(this.#active().lexical, declaration.name, stmt.loc, this.#active().strict);
@@ -2706,7 +2712,7 @@ class ExecutionEngine {
             }
             case "for": {
                 if (sequences !== null && stmt.initializer !== null && stmt.initializer.kind === "var" &&
-                    stmt.initializer.declarations.length === 1 && isSuspendingGeneratorExpression(stmt.initializer.declarations[0].init)) {
+                    stmt.initializer.declarations.some(declaration => isSuspendingGeneratorExpression(declaration.init))) {
                     const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
                     sequences.push({ kind: "for", frame, statement: stmt, outer: null, first: true, phase: "prepare", depth, labels });
                     sequences.push({ kind: "sequence", frame, body: [stmt.initializer], nextStatement: 0, depth });

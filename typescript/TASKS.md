@@ -4198,7 +4198,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-267 — Suspended var declaration lists
 
-Status: **in progress — isolated successor to TS-266**. Owner: Codex catch-up chat, 2026-11-10. Execute a suspended var declaration list as ordered single-declaration steps in the existing environment, including for-loop initializers. Preserve hoisting, reference resolution order, one-time effects and abrupt completion. Own parser, retained declaration sequencing, historical boundaries, tests/manifests and docs in build/generator-var-list-draft. Require both-host/static, ordering, closures and async tests.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Execute a suspended var declaration list as ordered single-declaration steps in the existing environment, including for-loop initializers. Preserve hoisting, reference resolution order, one-time effects and abrupt completion. Own parser, retained declaration sequencing, historical boundaries, tests/manifests and docs in build/generator-var-list-draft. Require both-host/static, ordering, closures and async tests.
 
 ## TS-268 — Suspended assignment targets
 

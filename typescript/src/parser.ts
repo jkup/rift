@@ -841,7 +841,9 @@ class Parser {
                     if (statement.alternate !== null) pending.push(statement.alternate);
                 } else if ((statement.kind === "return" || statement.kind === "throw") && statement.value !== null) this.admitGeneratorExpression(statement.value, supported);
                 else if ((statement.kind === "let" || statement.kind === "const" || statement.kind === "pattern-declaration") && statement.init !== null) this.admitGeneratorExpression(statement.init, supported);
-                else if (statement.kind === "var" && statement.declarations.length === 1 && statement.declarations[0].init !== null) this.admitGeneratorExpression(statement.declarations[0].init, supported);
+                else if (statement.kind === "var") {
+                    for (const declaration of statement.declarations) if (declaration.init !== null) this.admitGeneratorExpression(declaration.init, supported);
+                }
                 else if (statement.kind === "expression") {
                     const expression = statement.expression;
                     if (expression.kind === "assign" || expression.kind === "compound" || expression.kind === "destructure") this.admitGeneratorExpression(expression.value, supported);
