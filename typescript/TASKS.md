@@ -4850,7 +4850,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-424 — Replace ZonedDateTime fields
 
-Status: **in progress — isolated successor to TS-423**. Owner: Codex catch-up chat, 2026-11-10. Add with() through shared ordered zoned field resolution with partial-object rejection, local defaults and month/monthCode merging. Preserve prefer-offset defaults, explicit offset policies, option ordering, intrinsic allocation and endpoint prechecks. Own src/builtins/temporal-zoned-conversion.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-with-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Add with() through shared ordered zoned field resolution with partial-object rejection, local defaults and month/monthCode merging. Preserve prefer-offset defaults, explicit offset policies, option ordering, intrinsic allocation and endpoint prechecks. Own src/builtins/temporal-zoned-conversion.ts, src/builtins/temporal-zoned-date-time.ts and tests/manifests/docs in build/temporal-zoned-with-draft/.
 
 ## TS-425 — Project plain dates and date-times into timezones
 

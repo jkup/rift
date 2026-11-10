@@ -1,12 +1,12 @@
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
-import { GuestTemporalZonedDateTime, createTemporalZonedDateTime, temporalZonedDateTimeObject } from "../temporal-zoned-date-time-object.js";
+import { GuestTemporalZonedDateTime, createTemporalZonedDateTime, temporalZonedDateTimeObject, temporalZonedISODateTime } from "../temporal-zoned-date-time-object.js";
 import { parseTemporalZonedDateTime, type TemporalZonedRecord } from "../temporal-zoned-parse.js";
 import { interpretTemporalZonedDateTime, type TemporalOffsetOption } from "../temporal-zoned-interpret.js";
 import { toTemporalTimeZone } from "../temporal-time-zone.js";
 import type { TemporalTimeZone } from "../temporal-time-zone-parse.js";
 import { temporalCalendarWithISODefault } from "../temporal-calendar.js";
-import { readTemporalDateField, type TemporalDateFields } from "../temporal-date-fields.js";
+import { readTemporalDateField, mergeTemporalDateFields, type TemporalDateFields } from "../temporal-date-fields.js";
 import { resolveTemporalDateTimeFields } from "../temporal-date-time-fields.js";
 import { temporalInteger } from "../temporal-integer.js";
 import type { TimeFields } from "../temporal-time.js";
@@ -15,7 +15,7 @@ import { toPrimitive } from "../primitive-conversion.js";
 import { parseUTCOffset } from "../utc-offset.js";
 import { GuestObject, languageFailure, normal, UNDEFINED, type Value, type ValueCompletion, type OperationContext, type ThrowCompletion } from "../runtime.js";
 
-function conversionOptions(value: Value, context: OperationContext, loc: Location): { type: "normal"; offset: TemporalOffsetOption; reject: boolean } | ThrowCompletion {
+function conversionOptions(value: Value, context: OperationContext, loc: Location, fallback: TemporalOffsetOption): { type: "normal"; offset: TemporalOffsetOption; reject: boolean } | ThrowCompletion {
     let object: GuestObject;
     if (value.kind === "undefined") object = new GuestObject(null);
     else if (value.kind === "object") object = value.object;
@@ -32,7 +32,7 @@ function conversionOptions(value: Value, context: OperationContext, loc: Locatio
     }
     const offset = object.internalGet("offset", receiver, context, loc);
     if (offset.type === "throw") return offset;
-    let offsetOption: TemporalOffsetOption = "reject";
+    let offsetOption: TemporalOffsetOption = fallback;
     if (offset.value.kind !== "undefined") {
         const converted = temporalOptionString(offset.value, context, loc);
         if (converted.type === "throw") return converted;
@@ -45,14 +45,20 @@ function conversionOptions(value: Value, context: OperationContext, loc: Locatio
     return overflow.type === "throw" ? overflow : { type: "normal", offset: offsetOption, reject: overflow.value };
 }
 
-function fieldRecord(object: GuestObject, options: Value, context: OperationContext, loc: Location): { type: "normal"; record: TemporalZonedRecord; offset: TemporalOffsetOption } | ThrowCompletion {
-    const calendar = temporalCalendarWithISODefault(object, context, loc);
-    if (calendar.type === "throw") return calendar;
+export function resolveTemporalZonedFields(object: GuestObject, options: Value, context: OperationContext, loc: Location, base: GuestTemporalZonedDateTime | null = null): { type: "normal"; record: TemporalZonedRecord; offset: TemporalOffsetOption } | ThrowCompletion {
+    if (base === null) {
+        const calendar = temporalCalendarWithISODefault(object, context, loc);
+        if (calendar.type === "throw") return calendar;
+    }
+    const local = base === null ? null : temporalZonedISODateTime(base);
     const date: TemporalDateFields = { year: null, month: null, monthCode: null, day: null };
-    const time = { hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 };
-    let timeZone: TemporalTimeZone | null = null, offsetNanoseconds: bigint | null = null;
+    const time = { hour: local === null ? 0 : local.hour, minute: local === null ? 0 : local.minute, second: local === null ? 0 : local.second,
+        millisecond: local === null ? 0 : local.millisecond, microsecond: local === null ? 0 : local.microsecond, nanosecond: local === null ? 0 : local.nanosecond };
+    let timeZone: TemporalTimeZone | null = base === null ? null : base.timeZone, offsetNanoseconds: bigint | null = base === null ? null : base.timeZone.offsetNanoseconds;
+    let present = false;
     const names: (keyof TemporalDateFields | keyof TimeFields | "offset" | "timeZone")[] = ["day", "hour", "microsecond", "millisecond", "minute", "month", "monthCode", "nanosecond", "offset", "second", "timeZone", "year"];
     for (const name of names) {
+        if (base !== null && name === "timeZone") continue;
         if (name === "day" || name === "month" || name === "monthCode" || name === "year") {
             const read = readTemporalDateField(object, name, date, context, loc);
             if (read.type === "throw") return read;
@@ -65,6 +71,7 @@ function fieldRecord(object: GuestObject, options: Value, context: OperationCont
             if (zone.type === "throw") return zone;
             timeZone = zone.value;
         } else if (read.value.kind !== "undefined") {
+            present = true;
             if (name === "offset") {
                 const primitive = toPrimitive(read.value, "string", context, loc);
                 if (primitive.type === "throw") return primitive;
@@ -79,9 +86,11 @@ function fieldRecord(object: GuestObject, options: Value, context: OperationCont
         }
     }
     if (timeZone === null) throw new Error("required timezone invariant");
-    const settings = conversionOptions(options, context, loc);
+    present = present || date.year !== null || date.month !== null || date.monthCode !== null || date.day !== null;
+    if (base !== null && !present) return languageFailure(context.realm, "TypeError", "at least one zoned field is required", loc);
+    const settings = conversionOptions(options, context, loc, base === null ? "reject" : "prefer");
     if (settings.type === "throw") return settings;
-    const resolved = resolveTemporalDateTimeFields({ date, time }, settings.reject, context, loc);
+    const resolved = resolveTemporalDateTimeFields({ date: local === null ? date : mergeTemporalDateFields(local.date, date), time }, settings.reject, context, loc);
     if (resolved.type === "throw") return resolved;
     return { type: "normal", offset: settings.offset, record: { dateTime: resolved.value, timeZone, startOfDay: false, offsetBehaviour: offsetNanoseconds === null ? "wall" : "option", offsetNanoseconds: offsetNanoseconds ?? 0n } };
 }
@@ -90,10 +99,10 @@ export function toTemporalZonedFields(value: Value, options: Value, context: Ope
     let record: TemporalZonedRecord, offset: TemporalOffsetOption;
     if (value.kind === "object") {
         if (value.object instanceof GuestTemporalZonedDateTime) {
-            const settings = conversionOptions(options, context, loc);
+            const settings = conversionOptions(options, context, loc, "reject");
             return settings.type === "throw" ? settings : { type: "normal", epoch: value.object.epochNanoseconds, timeZone: value.object.timeZone };
         }
-        const fields = fieldRecord(value.object, options, context, loc);
+        const fields = resolveTemporalZonedFields(value.object, options, context, loc);
         if (fields.type === "throw") return fields;
         record = fields.record;
         offset = fields.offset;
@@ -105,7 +114,7 @@ export function toTemporalZonedFields(value: Value, options: Value, context: Ope
         }
         const parsed = parseTemporalZonedDateTime(value.value);
         if (parsed === null) return languageFailure(context.realm, "RangeError", "invalid ZonedDateTime string", loc);
-        const settings = conversionOptions(options, context, loc);
+        const settings = conversionOptions(options, context, loc, "reject");
         if (settings.type === "throw") return settings;
         record = parsed;
         offset = settings.offset;
