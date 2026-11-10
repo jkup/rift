@@ -4866,7 +4866,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-428 — Checked zoned calendar rounding windows
 
-Status: **in progress — isolated successor to TS-427**. Owner: Codex catch-up chat, 2026-11-10. Round zoned calendar difference records through exact checked year/month/week/day window endpoints. Preserve the consensus-correct retained larger-unit start, signed modes and Instant boundary failures before public difference integration. Own  and tests/manifests/docs in build/temporal-zoned-calendar-round-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Round zoned calendar difference records through exact checked year/month/week/day window endpoints. Preserve the consensus-correct retained larger-unit start, signed modes and Instant boundary failures before public difference integration. Own  and tests/manifests/docs in build/temporal-zoned-calendar-round-draft/.
 
 ## TS-429 — Checked zoned time rounding and day carry
 

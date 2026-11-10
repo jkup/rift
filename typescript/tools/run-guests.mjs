@@ -869,6 +869,7 @@ executeDriver("temporal-zoned-transition", { stdout: "temporal zoned transition 
 executeDriver("temporal-zoned-with", { stdout: "temporal zoned with passed\n" });
 executeDriver("temporal-plain-to-zoned", { stdout: "temporal plain to zoned passed\n" });
 executeDriver("temporal-zoned-difference-record", { stdout: "temporal zoned difference record passed\n" });
+executeDriver("temporal-zoned-calendar-round", { stdout: "temporal zoned calendar round passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
