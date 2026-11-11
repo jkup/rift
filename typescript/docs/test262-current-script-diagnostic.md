@@ -45,3 +45,18 @@ build/current-starter-script-diagnostic-corrected/ (corrected), and the producin
 build/diagnose-current-starter-script*.mjs and
 build/diagnose-starter-script-worker*.mjs helpers. Native reproduction and
 independent diagnostic controls remain pending before closing this review.
+
+Both-host follow-up: a typed diagnostic driver passes static-only compilation
+with 20,294 static statements and zero dynamic operations. Both hosts produce
+identical structured results for all 57 executable variants; all 60 variants
+remain represented. Sixteen diagnostic controls per host pass, including wrong
+error types, forged error names, missing throws, parse-negative distinctions,
+resource limits, harness failure and separate Script strictness.
+
+The initial control incorrectly expected Promise.reject() to throw a job failure.
+[HostPromiseRejectionTracker](https://tc39.es/ecma262/2026/multipage/control-abstraction-objects.html#sec-hostpromiserejectiontracker)
+is host-defined, and its default operation does not throw. The corrected control
+expects normal completion; a separate custom resolving-function throw verifies
+actual job-failure detection. Both initial reports are retained. Reviewed evidence:
+build/starter-script-diagnostic-reviewed.json and its hash-bound reports. This
+closes the bounded diagnostic review; conformance admission remains unchanged.
