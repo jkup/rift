@@ -4956,3 +4956,7 @@ Status: **in progress — isolated successor to TS-445**. Owner: Codex catch-up 
 2026-11-11 TS-443 isolated acceptance gates pass: 922/922 Node guests, focused native static-only/zero-dynamic execution, seven both-host regressions and tooling295/295 with all 15 native tooling drivers rebuilt. Preserved the initial native array-widening failure and the full Node 921/922 obsolete empty-block expectation; both are corrected and rerun. Canonical integration remains pending after the queued class/String milestone. TS-446 named captures are isolated and under validation.
 
 TS-446 also owns test/regexp-literals.ts; its historical named literal remains unchanged and now asserts execution. Initial native focused checks passed, but the first native regression caught an old named-group rejection in regexp-pattern. Preserve that report. Before continuing, corrected the legacy k/name-detection edge case and reran focused Node plus all eight RegExp regressions.
+
+## TS-447 — Unicode identifier data prerequisite review
+
+Status: **done — exhaustive both-host data review**. Owner: Codex catch-up chat, 2026-11-11. Review official Unicode 17 ID_Start/ID_Continue data and a compact generated interval representation for full RegExp capture-name validation. Keep guest classification independent of host RegExp and preserve the official data/version identity. Own docs/unicode-identifiers-review.md and ignored build/unicode-identifier-review evidence. No runtime or companion-proposal changes.
