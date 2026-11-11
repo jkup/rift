@@ -67,3 +67,14 @@ rule instants. Future candidates require actual before/after offset checks too:
 coincident rules or equal standard/daylight offsets need not cause a transition.
 Keep the original historical arrays and boundary evidence intact when choosing
 the search representation.
+
+The reduced adjacent-transition probe now passes 104,113 historical strict-boundary
+checks and 96 Node reference cases on both hosts, with 344 static statements and
+zero dynamic operations. Historical expectations derive from the independently
+classified C offsets; Node cases cover ordinary/future years and exact range
+endpoints in eight zones. The probe binary-searches historical entries, skips
+unchanged offsets and inspects six nearby recurrence candidates. When the query
+precedes the footer interval, recurrence search anchors at the table's last entry
+so a distant first recurring transition is not lost. Production should share its
+calendar calculations with the existing recurrence provider. Evidence:
+`build/iana-timezone-review/adjacent-transition-probe-results.json`.

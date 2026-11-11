@@ -5226,3 +5226,9 @@ Status: **in progress — policy review; implementation waits for TS-479 READY**
 ## TS-481 — Named-zone local-time resolution review
 
 Status: **in progress — algorithm/reference review**. Owner: Codex catch-up chat, 2026-11-11. Establish exact-nanosecond offset lookup, possible instants, gap/fold disambiguation, range boundaries and start-of-day behavior over the complete pinned timezone backend. Use bounded algorithms, independent reference cases and reduced static probes before implementation. Own review/probe artifacts only while TS-480 validates. No guest admission or constant-offset consumer migration in this review; preserve canonical frozen inputs.
+
+2026-11-11 TS-480 is isolated READY:944 Node guests, focused native and five regression groups, fifteen tooling builds,296 tooling tests, sixteen parent-envelope checks, generators and inherited-file checks all pass. TS-481's adjacent-transition prototype passes104113 historical strict-boundary checks and96 reference cases on both hosts (344 static statements, zero dynamic operations), preserving original transition data and skipping unchanged-offset entries.
+
+## TS-482 — Named-zone adjacent transitions
+
+Status: **in progress — isolated successor to TS-480**. Owner: Codex catch-up chat, 2026-11-11. Implement strict previous/next offset-change queries with exact nanosecond comparisons, historical binary search and bounded recurring candidates. Share recurrence calendar math, preserve all raw historical records, skip unchanged offsets, respect footer handoff and range bounds. Own src/time-zone-recurrence.ts, new src/time-zone-adjacent.ts and dedicated tests/fixtures/manifests/docs in an isolated successor. Revalidate the production recurrence corpus after sharing helpers. No guest named-zone admission or local-time resolution; canonical inputs remain frozen.

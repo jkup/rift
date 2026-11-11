@@ -54,4 +54,6 @@ checks on both hosts. Native coverage is 244 static statements with zero dynamic
 operations; all five regression groups pass. Ten generator controls reject
 corrupted metadata, data bindings and generated outputs while preserving draft
 files. The full Node suite passes 944/944 without skips; all fifteen tooling
-builds pass and the tooling suite is running. No guest API admission has changed.
+builds, 296 tooling tests and sixteen parent-envelope checks pass. Inherited-file,
+typecheck and both generators' deterministic checks establish isolated READY
+status. No guest API admission has changed.
