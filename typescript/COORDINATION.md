@@ -3071,3 +3071,6 @@ Prepared but not executed: build/promote-class-string.ps1, validate-class-string
 
 2026-11-11 TS-461 private class syntax is claimed in build/private-class-syntax-draft, based on the frozen, fully checked TS-459 successor. Implementation has started with complete-scope declaration/use validation; AST/parser integration and all acceptance tests remain pending. TS-459 readiness was committed as391ffd52. Canonical Unicode build remains active with75 checkpointed entries, and publication still waits for the full435-entry matrix and downstream native/corpus gates.
 
+
+2026-11-11 TS-461 shared-parser private syntax audit passes focused Node/native validation with19587/19587 static statements and121 independent Node --check reference sources. The AST distinguishes private names and brand checks; complete lexical scopes validate nested/forward uses and accessor pairs. This is non-executable structural evidence, not serialized early-error admission. Full931 Node guests, six both-host regressions and15 tooling-driver builds are active. Canonical Unicode inputs remain frozen; neither successor is integrated.
+
