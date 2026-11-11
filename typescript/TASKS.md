@@ -5284,3 +5284,9 @@ TS-487 progress: 949/949 Node guests, 1,170 public behavior controls on both hos
 TS-489: 17 supported class cases match Node exactly; the retained eighteenth input is blocked by the existing missing Proxy global. No runtime change was justified. See docs/class-initialization-semantic-review.md.
 
 2026-11-11 IANA foundation milestone accepted (TS-478,479,480,482,483):946/946 guests on both hosts without skips;453 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-03XBoo/native-975Xff matches all225 normalized records and preserves191 preceding completions. The pinned2026f data, primary identifiers, bounded historical/recurring offsets and strict adjacent transitions are accepted internally; local-time resolution and guest named-zone admission remain pending. Historical fixtures, initial failures and public range guards remain preserved. Evidence: build/iana-foundation-rollup-* and isolated feature reviews.
+
+## TS-490 — Pinned Test262 assertion behavior review
+
+**done — bounded assertion behavior verified**. Owner: coordinator. Verify the unchanged pinned assert.js/sta.js bytes against explicit passing and failing assertion controls, including SameValue, throws constructor identity, malformed calls and Test262Error. Run independent Node and both Rift hosts, retain all inputs and outcomes, and distinguish harness readiness from corpus conformance. Own docs/test262-assertion-readiness.md and ignored controls/reports. Do not change capabilities, corpus selection, production sources or historical fixtures during the active Temporal freeze.
+
+TS-490: all23 controls in strict and non-strict modes match explicit expected outcomes in Node and both Rift hosts. Native uses the hash-verified accepted foundation binary; current Temporal combined acceptance remains separate. No corpus admission or conformance claim. See docs/test262-assertion-readiness.md.

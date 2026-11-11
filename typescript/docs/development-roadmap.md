@@ -801,3 +801,8 @@ ordering, returned-object construction and private brands; this is bounded
 Node-hosted evidence, not native acceptance or full class conformance.
 
 2026-11-11 IANA foundation milestone accepted (TS-478,479,480,482,483):946/946 guests on both hosts without skips;453 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-03XBoo/native-975Xff matches all225 normalized records and preserves191 preceding completions. The pinned2026f data, primary identifiers, bounded historical/recurring offsets and strict adjacent transitions are accepted internally; local-time resolution and guest named-zone admission remain pending. Historical fixtures, initial failures and public range guards remain preserved. Evidence: build/iana-foundation-rollup-* and isolated feature reviews.
+
+[The assertion harness review](test262-assertion-readiness.md) verifies 23 passing
+and failing controls in strict/non-strict mode against explicit outcomes in Node
+and both Rift hosts. This advances harness readiness; corpus admission and a
+conformance baseline remain open.
