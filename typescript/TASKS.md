@@ -4962,3 +4962,9 @@ TS-446 also owns test/regexp-literals.ts; its historical named literal remains u
 Status: **done — exhaustive both-host data review**. Owner: Codex catch-up chat, 2026-11-11. Review official Unicode 17 ID_Start/ID_Continue data and a compact generated interval representation for full RegExp capture-name validation. Keep guest classification independent of host RegExp and preserve the official data/version identity. Own docs/unicode-identifiers-review.md and ignored build/unicode-identifier-review evidence. No runtime or companion-proposal changes.
 
 2026-11-11 TS-446 isolated gates pass: Node923/923, focused native static-only/zero-dynamic execution, all eight native/Node RegExp regressions, 15 rebuilt tooling drivers and tooling295/295. Six-draft ownership snapshots pass. Named captures remain queued behind canonical zoned and class/String acceptance. Retain initial regression failures and interrupted Node logs.
+
+## TS-448 — Native harness performance regression
+
+Status: **in progress — measured regression investigation**. Owner: Codex catch-up chat, 2026-11-11. The zoned milestone repeats harness-errors-b and harness-map-default timeouts with no competing jobs at the unchanged 10-second acceptance limit. Preserve both failed runs, measure isolated drivers and reduce the native cost before proposing an engine fix. Own ignored build/native-harness-performance evidence and docs/native-harness-performance.md. Canonical runtime edits require a concrete finding and completed active readers; no timeout or assertion relaxation.
+
+TS-448 diagnostic measurements preserve exact expected output: harness-errors-b native10831ms/Node3906ms and harness-map-default native10485ms/Node3021ms. Candidate ownership extends to src/runtime.ts in isolated build/descriptor-validation-draft/: replace temporary accessor-endpoint arrays with two calls to the same predicate, preserving validation order and errors. No canonical change or acceptance yet.
