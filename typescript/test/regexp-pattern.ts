@@ -29,7 +29,8 @@ for (const source of ["*", "+", "?", "a**", "a+*", "a???", "{1}", "[", "[a", "[z
     check(result.kind === "syntax-error", "proven invalid pattern: " + source);
 }
 for (const source of ["(?<=a)", "(?<name>a)", "(?i:a)", "\\k<x>", "\\07", "\\c_", "[\\d-a]", "[a-\\d]", "a{9007199254740992}"]) {
-    check(parse(source).kind === "unsupported", "unsupported pattern: " + source);
+    if (source === "(?<name>a)") check(ready(source).names[0].name === "name", "named capture metadata");
+    else check(parse(source).kind === "unsupported", "unsupported pattern: " + source);
 }
 for (const test of [
     { source: "\\n", code: 10 }, { source: "\\r", code: 13 }, { source: "\\t", code: 9 }, { source: "\\v", code: 11 },

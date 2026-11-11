@@ -40,17 +40,26 @@ export function regExpBuiltinExec(regexp: GuestRegExp, input: string, context: O
             }
         }
     }
+    const groups = regexp.program.names.length === 0 ? null : new GuestObject(null);
+    const indexGroups = groups !== null && hasIndices ? new GuestObject(null) : null;
+    for (const capture of regexp.program.names) {
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        if (groups === null) throw new Error("named capture groups invariant");
+        groups.bootstrapDefine(capture.name, { value: captures[capture.index], writable: true, enumerable: true, configurable: true });
+        if (indexGroups !== null) indexGroups.bootstrapDefine(capture.name, { value: indices[capture.index], writable: true, enumerable: true, configurable: true });
+    }
     const array = arrayFromList(captures, context, loc);
     if (array.type === "throw") return array;
     if (array.value.kind !== "object") throw new Error("match array invariant");
     array.value.object.bootstrapDefine("index", { value: { kind: "number", value: result.start }, writable: true, enumerable: true, configurable: true });
     array.value.object.bootstrapDefine("input", { value: { kind: "string", value: input }, writable: true, enumerable: true, configurable: true });
-    array.value.object.bootstrapDefine("groups", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+    array.value.object.bootstrapDefine("groups", { value: groups === null ? UNDEFINED : { kind: "object", object: groups }, writable: true, enumerable: true, configurable: true });
     if (hasIndices) {
         const list = arrayFromList(indices, context, loc);
         if (list.type === "throw") return list;
         if (list.value.kind !== "object") throw new Error("indices array invariant");
-        list.value.object.bootstrapDefine("groups", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+        list.value.object.bootstrapDefine("groups", { value: indexGroups === null ? UNDEFINED : { kind: "object", object: indexGroups }, writable: true, enumerable: true, configurable: true });
         array.value.object.bootstrapDefine("indices", { value: list.value, writable: true, enumerable: true, configurable: true });
     }
     return array;

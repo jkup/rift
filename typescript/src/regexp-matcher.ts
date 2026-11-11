@@ -12,7 +12,7 @@ type Instruction = { kind: "character"; value: number } | { kind: "dot" }
     | { kind: "split"; first: number; second: number } | { kind: "jump"; target: number }
     | { kind: "save"; slot: number } | { kind: "clear"; from: number; to: number }
     | { kind: "mark"; slot: number } | { kind: "progress"; slot: number } | { kind: "match" };
-export type RegExpProgram = { instructions: Instruction[]; captures: number; marks: number; flags: RegExpMatchFlags };
+export type RegExpProgram = { instructions: Instruction[]; captures: number; names: RegExpPattern["names"]; marks: number; flags: RegExpMatchFlags };
 export type RegExpCompileResult = { kind: "ready"; program: RegExpProgram } | { kind: "abrupt"; completion: ThrowCompletion };
 export type RegExpMatchResult = { kind: "match"; start: number; end: number; captures: number[] }
     | { kind: "no-match" } | { kind: "abrupt"; completion: ThrowCompletion };
@@ -27,14 +27,16 @@ function canonicalize(code: number): number {
 class PatternCompiler {
     private instructions: Instruction[] = [];
     private marks = 0;
+    private names: RegExpPattern["names"] = [];
     private failure: ThrowCompletion | null = null;
     constructor(private readonly flags: RegExpMatchFlags, private readonly context: OperationContext, private readonly loc: Location) {}
 
     compile(pattern: RegExpPattern): RegExpCompileResult {
+        this.names = pattern.names;
         this.disjunction(pattern.body);
         this.emit({ kind: "match" });
         return this.failure === null ? { kind: "ready", program: { instructions: this.instructions, captures: pattern.captures,
-            marks: this.marks, flags: this.flags } } : { kind: "abrupt", completion: this.failure };
+            names: this.names, marks: this.marks, flags: this.flags } } : { kind: "abrupt", completion: this.failure };
     }
     private tick(): boolean {
         if (this.failure !== null) return false;
@@ -98,6 +100,12 @@ class PatternCompiler {
             this.disjunction(atom.body);
             this.emit({ kind: "lookahead-end" });
             assertion.end = this.instructions.length;
+        } else if (atom.kind === "named-backreference") {
+            for (const capture of this.names) {
+                if (!this.tick()) return;
+                if (capture.name === atom.name) { this.emit({ kind: "backreference", index: capture.index }); return; }
+            }
+            throw new Error("unresolved RegExp capture name");
         } else if (atom.kind === "character") {
             this.emit({ kind: "character", value: this.flags.ignoreCase ? canonicalize(atom.value) : atom.value });
         } else if (atom.kind === "class") {

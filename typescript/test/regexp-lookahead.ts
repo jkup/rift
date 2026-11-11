@@ -51,7 +51,7 @@ for (const text of cases) {
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
 for (const source of ['(?<=a)', '(?<!a)', '(?<x>a)', '(?=a)?', '(?!a)*', '(?=a){1}'])
-    check(parseRegExpSyntax(source, () => true).kind === "unsupported", "unsupported " + source);
+    check(parseRegExpSyntax(source, () => true).kind === (source === "(?<x>a)" ? "ready" : "unsupported"), "retained input " + source);
 for (const source of ['(?=', '(?!a', '(?=a))', '(?=a{3,2})'])
     check(parseRegExpSyntax(source, () => true).kind === "syntax-error", "invalid " + source);
 let ticks = 0;

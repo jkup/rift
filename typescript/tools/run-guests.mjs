@@ -882,6 +882,7 @@ executeDriver("string-locale-case", { stdout: "string locale case passed\n" });
 executeDriver("string-normalize", { stdout: "string normalize passed\n" });
 executeDriver("string-locale-compare", { stdout: "string locale compare passed\n" });
 executeDriver("class-static-blocks", { stdout: "class static blocks passed\n" });
+executeDriver("regexp-named-captures", { stdout: "regexp named captures passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

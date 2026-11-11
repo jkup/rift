@@ -2,13 +2,15 @@ export type RegExpClassPart = { kind: "range"; from: number; to: number }
     | { kind: "builtin"; name: "digit" | "word" | "space"; inverted: boolean };
 export type RegExpAtom = { kind: "character"; value: number } | { kind: "dot" }
     | { kind: "backreference"; index: number }
+    | { kind: "named-backreference"; name: string }
     | { kind: "lookahead"; negative: boolean; body: RegExpDisjunction }
     | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean }
     | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
     | { kind: "group"; index: number; body: RegExpDisjunction };
 export type RegExpTerm = { atom: RegExpAtom; min: number; max: number | null; lazy: boolean; captureFrom: number; captureTo: number };
 export type RegExpDisjunction = { alternatives: RegExpTerm[][] };
-export type RegExpPattern = { source: string; body: RegExpDisjunction; captures: number };
+export type RegExpNamedCapture = { name: string; index: number };
+export type RegExpPattern = { source: string; body: RegExpDisjunction; captures: number; names: RegExpNamedCapture[] };
 export type RegExpSyntaxFailure = { kind: "syntax-error" | "unsupported"; message: string; offset: number }
     | { kind: "stopped" }
     | { kind: "depth-limit"; count: number; limit: number };
@@ -26,7 +28,10 @@ function hex(text: string): number {
 class PatternParser {
     private offset = 0;
     private captures = 0;
+    private names: RegExpNamedCapture[] = [];
+    private references: string[] = [];
     private totalCaptures: number | null = null;
+    private hasNamedCapture = false;
     private depth = 0;
     private failure: RegExpSyntaxFailure | null = null;
     constructor(private readonly source: string, private readonly tick: () => boolean) {}
@@ -35,7 +40,17 @@ class PatternParser {
         const body = this.disjunction();
         if (this.failure !== null) return this.failure;
         if (this.offset !== this.source.length) return { kind: "syntax-error", message: "unmatched closing parenthesis", offset: this.offset };
-        return { kind: "ready", pattern: { source: this.source, body, captures: this.captures } };
+        for (const name of this.references) {
+            let found = false;
+            for (const capture of this.names) {
+                if (!this.tick()) return { kind: "stopped" };
+                if (capture.name === name) found = true;
+            }
+            if (!found) return this.names.length === 0
+                ? { kind: "unsupported", message: "legacy k escapes are unsupported", offset: this.offset }
+                : { kind: "syntax-error", message: "unknown capture name", offset: this.offset };
+        }
+        return { kind: "ready", pattern: { source: this.source, body, captures: this.captures, names: this.names } };
     }
     private current(): string { return this.source.charAt(this.offset); }
     private take(): string {
@@ -57,10 +72,31 @@ class PatternParser {
             if (char === "\\") { escaped = true; continue; }
             if (inClass) { if (char === "]") inClass = false; continue; }
             if (char === "[") inClass = true;
-            else if (char === "(" && this.source.charAt(i + 1) !== "?") count++;
+            else if (char === "(") {
+                const named = this.source.charAt(i + 1) === "?" && this.source.charAt(i + 2) === "<" &&
+                    this.source.charAt(i + 3) !== "=" && this.source.charAt(i + 3) !== "!";
+                if (named) this.hasNamedCapture = true;
+                if (named || this.source.charAt(i + 1) !== "?") count++;
+            }
         }
         this.totalCaptures = count;
         return count;
+    }
+    private groupName(): string | null {
+        if (this.current() !== "<") return this.reject("syntax-error", "capture name requires <");
+        this.take();
+        let name = "";
+        while (this.failure === null && this.offset < this.source.length && this.current() !== ">") {
+            const char = this.take();
+            if (char === "\\" || char.charCodeAt(0) > 127) return this.reject("unsupported", "escaped and Unicode capture names are unsupported");
+            const letter = char >= "a" && char <= "z" || char >= "A" && char <= "Z" || char === "_" || char === "$";
+            if (!letter && !(name.length > 0 && digit(char))) return this.reject("syntax-error", "invalid capture name");
+            name += char;
+        }
+        if (this.failure !== null) return null;
+        if (this.current() !== ">" || name.length === 0) return this.reject("syntax-error", "invalid capture name");
+        this.take();
+        return name;
     }
     private disjunction(): RegExpDisjunction {
         const alternatives: RegExpTerm[][] = [];
@@ -106,9 +142,22 @@ class PatternParser {
             let lookahead = false, negative = false;
             if (this.current() === "?") {
                 this.take();
-                if (this.current() === "=" || this.current() === "!") { lookahead = true; negative = this.current() === "!"; }
-                else if (this.current() !== ":") return this.reject("unsupported", "lookbehind, named and modifier groups are unsupported");
-                this.take();
+                if (this.current() === "<") {
+                    if (this.source.charAt(this.offset + 1) === "=" || this.source.charAt(this.offset + 1) === "!")
+                        return this.reject("unsupported", "lookbehind is unsupported");
+                    const name = this.groupName();
+                    if (name === null) return null;
+                    for (const capture of this.names) {
+                        if (!this.tick()) { this.failure = { kind: "stopped" }; return null; }
+                        if (capture.name === name) return this.reject("unsupported", "duplicate capture names are unsupported");
+                    }
+                    index = ++this.captures;
+                    this.names.push({ name, index });
+                } else {
+                    if (this.current() === "=" || this.current() === "!") { lookahead = true; negative = this.current() === "!"; }
+                    else if (this.current() !== ":") return this.reject("unsupported", "modifier groups are unsupported");
+                    this.take();
+                }
             } else index = ++this.captures;
             const body = this.disjunction();
             this.depth--;
@@ -170,6 +219,16 @@ class PatternParser {
             if (this.failure !== null) return null;
             if (index <= count) return { kind: "backreference", index };
             return this.reject("unsupported", "legacy numeric escape is unsupported");
+        }
+        if (char === "k" && !inClass) {
+            this.captureCount();
+            if (this.failure !== null) return null;
+            if (!this.hasNamedCapture) return this.reject("unsupported", "legacy k escapes are unsupported");
+            if (this.current() !== "<") return this.reject("unsupported", "legacy k escapes are unsupported");
+            const name = this.groupName();
+            if (name === null) return null;
+            this.references.push(name);
+            return { kind: "named-backreference", name };
         }
         if (char >= "1" && char <= "9" || char === "0" && digit(this.current()) || char === "k")
             return this.reject("unsupported", "named backreferences and legacy numeric escapes are unsupported");
