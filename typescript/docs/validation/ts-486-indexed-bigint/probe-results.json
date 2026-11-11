@@ -1,0 +1,72 @@
+[
+  {
+    "name": "null-guard",
+    "coverage": {
+      "status": 0,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\build\\temporal-zone-operations-draft\\build\\nullable-bigint\\null-guard.ts\n\n  statements analyzed   6\n  compile statically    6  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "stdout": "1 null\n",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "array-null",
+    "coverage": {
+      "status": 0,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\build\\temporal-zone-operations-draft\\build\\nullable-bigint\\array-null.ts\n\n  statements analyzed   7\n  compile statically    6  (85%)\n\n  blockers:\n      ×1  SC1043  '-' operations on 'bigint' and 'bigint | null | undefined' values\n          at C:/Users/jonku/code/rift/typescript/build/temporal-zone-operations-draft/build/nullable-bigint/array-null.ts:2:116\n          hint: this construct is valid TypeScript outside the compiled subset — rewrite it with a supported equivalent (https://scriptc.dev/limitations)\n",
+      "stderr": ""
+    },
+    "native": null
+  },
+  {
+    "name": "array-typeof",
+    "coverage": {
+      "status": 0,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\build\\temporal-zone-operations-draft\\build\\nullable-bigint\\array-typeof.ts\n\n  statements analyzed   7\n  compile statically    6  (85%)\n\n  blockers:\n      ×1  SC1043  '-' operations on 'bigint' and 'bigint | null | undefined' values\n          at C:/Users/jonku/code/rift/typescript/build/temporal-zone-operations-draft/build/nullable-bigint/array-typeof.ts:2:127\n          hint: this construct is valid TypeScript outside the compiled subset — rewrite it with a supported equivalent (https://scriptc.dev/limitations)\n",
+      "stderr": ""
+    },
+    "native": null
+  },
+  {
+    "name": "array-cast",
+    "coverage": {
+      "status": 0,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\build\\temporal-zone-operations-draft\\build\\nullable-bigint\\array-cast.ts\n\n  statements analyzed   7\n  compile statically    7  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "stdout": "1 null\n",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "array-return-cast",
+    "coverage": {
+      "status": 0,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\build\\temporal-zone-operations-draft\\build\\nullable-bigint\\array-return-cast.ts\n\n  statements analyzed   7\n  compile statically    7  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "stdout": "1 null\n",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "array-boundary",
+    "coverage": {
+      "status": 0,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\build\\temporal-zone-operations-draft\\build\\nullable-bigint\\array-boundary.ts\n\n  statements analyzed   8\n  compile statically    8  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "stdout": "1 null\n",
+      "stderr": ""
+    }
+  }
+]

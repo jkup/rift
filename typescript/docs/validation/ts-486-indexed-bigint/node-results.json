@@ -1,0 +1,38 @@
+[
+  {
+    "name": "null-guard",
+    "status": 0,
+    "stdout": "1 null\n",
+    "stderr": ""
+  },
+  {
+    "name": "array-null",
+    "status": 0,
+    "stdout": "1 null\n",
+    "stderr": ""
+  },
+  {
+    "name": "array-typeof",
+    "status": 0,
+    "stdout": "1 null\n",
+    "stderr": ""
+  },
+  {
+    "name": "array-cast",
+    "status": 0,
+    "stdout": "1 null\n",
+    "stderr": ""
+  },
+  {
+    "name": "array-return-cast",
+    "status": 0,
+    "stdout": "1 null\n",
+    "stderr": ""
+  },
+  {
+    "name": "array-boundary",
+    "status": 0,
+    "stdout": "1 null\n",
+    "stderr": ""
+  }
+]

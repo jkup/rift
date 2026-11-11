@@ -1,0 +1,8 @@
+C:/Users/jonku/code/rift/typescript/build/temporal-zone-operations-draft/build/nullable-bigint/array-typeof.ts:2:127 - error SC1043: '-' operations on 'bigint' and 'bigint | null | undefined' values are not supported yet
+
+  1 | function value(flag: boolean): bigint | null { const values: bigint[] = [2n]; return flag ? values[0] : null; }
+  2 | function test(flag: boolean): bigint | null { const result = value(flag); if (typeof result !== "bigint") return null; return 3n - result; }
+    |                                                                                                                               ^~~~~~~~~~~
+  3 | console.log(String(test(true)), String(test(false)));
+
+1 error.

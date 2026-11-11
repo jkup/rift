@@ -78,3 +78,22 @@ every permanent-offset shortcut is gone or confined to the fixed-zone branch.
 Before admission, include negative calendar differences, both fold occurrences,
 rounding across transitions, subminute offset strings, aliases, endpoint failures
 and observable option/property ordering. Keep system timezones and Intl separate.
+
+## Consumer migration in progress (TS-486)
+
+The isolated migration now has 1,107 expected-result consumer checks, plus
+historical offset parsing and zone-identity controls, passing in both hosts.
+The native coverage gate passes with no dynamic statements. Full-suite and
+regression acceptance remain pending; named-zone guest parsing remains closed.
+
+Calendar rounding uses the original instant when the rounded calendar count
+is zero, as specified by
+[ComputeNudgeWindow](https://tc39.es/proposal-temporal/#sec-temporal-computenudgewindow).
+This also applies when larger date fields are nonzero. The initial mismatch
+and its source snapshot are preserved in the draft's
+`build/initial-calendar-consumer-node.json` and `initial-calendar-failed-source/`.
+The corrected 970-case calendar matrix agrees with the independent reference.
+
+The native compiler needed explicit return-type boundaries on the two
+local-time provider calls. Reduced successful and failing controls are in
+[the indexed BigInt report](validation/ts-486-indexed-bigint/README.md).
