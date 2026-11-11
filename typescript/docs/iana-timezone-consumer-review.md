@@ -108,3 +108,14 @@ in `consumer-calendar-reference.json`; the corrections and boundary evidence are
 in `consumer-calendar-consensus-corrections.json` under `build/iana-timezone-review/`.
 All 1,107 consumer checks now pass under Node without removing any rows.
 Full-suite and native reruns are pending.
+
+The corrected full Node suite passes 948/948 with no skips. The focused native
+consumer check passes with 20,281 static statements and zero dynamic statements.
+A broader direct-operation matrix passes 82,800 cases on both hosts (718 native
+static statements, zero dynamic): 82,675 match Node exactly and 125 have checked
+PR3319 corrections, with no unexplained differences. It covers UTC, New York,
+Lord Howe, Apia and Paris, signed differences, rounding modes/increments and
+Instant endpoints. This extends the focused checks without replacing them.
+Evidence is `consumer-difference-round-probe-results.json` and
+`consumer-difference-round-fixture-reference.json` in `build/iana-timezone-review/`.
+The final frozen-source regression run and tooling gates remain pending.
