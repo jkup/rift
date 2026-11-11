@@ -36,7 +36,7 @@ function defineProperties(target: GuestObject, properties: Value, context: Opera
     return normal({kind: "object", object: target});
 }
 
-function toDescriptor(input: Value, context: OperationContext, loc: Location): DescriptorCompletion {
+export function toDescriptor(input: Value, context: OperationContext, loc: Location): DescriptorCompletion {
     if (input.kind !== "object") return languageFailure(context.realm, "TypeError", "property descriptor must be an object", loc);
     const descriptor: PropertyDescriptorUpdate = {};
     for (const field of ["enumerable", "configurable", "value", "writable", "get", "set"]) {

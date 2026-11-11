@@ -2,12 +2,51 @@ import type { Realm } from "../realm.js";
 import { lengthOfArrayLike } from "../array-like.js";
 import { numberToString, toPropertyKey } from "../conversion.js";
 import { arrayFromList } from "../array-create.js";
-import { descriptorObject } from "./object-descriptors.js";
+import { descriptorObject, toDescriptor } from "./object-descriptors.js";
 import { languageFailure, normal, UNDEFINED, type Value, type ValueCompletion } from "../runtime.js";
 import { wellKnownToStringTag } from "../symbols.js";
 
 export function registerReflect(realm: Realm): void {
     const reflect = realm.createObject();
+    realm.registerBuiltin(reflect, "defineProperty", 3, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.defineProperty requires an object", loc);
+        const key = toPropertyKey(args.length < 2 ? UNDEFINED : args[1], context, loc);
+        if (key.type === "throw") return key;
+        const descriptor = toDescriptor(args.length < 3 ? UNDEFINED : args[2], context, loc);
+        if (descriptor.type === "throw") return descriptor;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const defined = target.object.defineOwnProperty(key.value, descriptor.value, context, loc);
+        return defined.type === "throw" ? defined : normal({ kind: "boolean", value: defined.value });
+    });
+    realm.registerBuiltin(reflect, "deleteProperty", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.deleteProperty requires an object", loc);
+        const key = toPropertyKey(args.length < 2 ? UNDEFINED : args[1], context, loc);
+        if (key.type === "throw") return key;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const deleted = target.object.internalDelete(key.value);
+        return deleted.type === "throw" ? deleted : normal({ kind: "boolean", value: deleted.value });
+    });
+    realm.registerBuiltin(reflect, "preventExtensions", 1, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.preventExtensions requires an object", loc);
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        return normal({ kind: "boolean", value: target.object.preventExtensions().value });
+    });
+    realm.registerBuiltin(reflect, "setPrototypeOf", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.setPrototypeOf requires an object", loc);
+        const prototype = args.length < 2 ? UNDEFINED : args[1];
+        if (prototype.kind !== "object" && prototype.kind !== "null") return languageFailure(context.realm, "TypeError", "prototype must be an object or null", loc);
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const changed = target.object.internalSetPrototypeOf(prototype.kind === "object" ? prototype.object : null, context, loc);
+        return changed.type === "throw" ? changed : normal({ kind: "boolean", value: changed.value });
+    });
     realm.registerBuiltin(reflect, "ownKeys", 1, (_receiver, args, context, loc): ValueCompletion => {
         const target = args.length === 0 ? UNDEFINED : args[0];
         if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.ownKeys requires an object", loc);
