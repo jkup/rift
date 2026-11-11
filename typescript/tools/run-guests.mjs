@@ -879,6 +879,7 @@ executeDriver("temporal-zoned-zero-round", { stdout: "temporal zoned zero round 
 executeDriver("temporal-zoned-relative-to", { stdout: "temporal zoned relative to passed\n" });
 executeDriver("class-field-initializers", { stdout: "class field initializers passed\n" });
 executeDriver("string-locale-case", { stdout: "string locale case passed\n" });
+executeDriver("string-normalize", { stdout: "string normalize passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

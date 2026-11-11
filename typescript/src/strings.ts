@@ -1,6 +1,8 @@
 // Host strings store UTF-16 code units, including lone surrogates. This boundary
 // can change representation without changing guest string operations.
 export type GuestString = string;
+export type NormalizationForm = "NFC" | "NFD" | "NFKC" | "NFKD";
+export function stringNormalize(value: GuestString, form: NormalizationForm): GuestString { return value.normalize(form); }
 export function stringStartsWith(value: GuestString, search: GuestString, start: number): boolean { return value.startsWith(search, start); }
 export function stringEndsWith(value: GuestString, search: GuestString, end: number): boolean { return value.endsWith(search, end); }
 export function stringLength(value: GuestString): number { return value.length; }

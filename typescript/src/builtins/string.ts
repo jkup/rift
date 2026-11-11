@@ -8,6 +8,7 @@ import { toPrimitive } from "../primitive-conversion.js";
 import { toString, toNumber, toIntegerOrInfinity, toLength, type NumberCompletion } from "../conversion.js";
 import { symbolDescriptiveString } from "../symbols.js";
 import { registerStringConstruction } from "./string-construction.js";
+import { stringNormalize, type NormalizationForm } from "../strings.js";
 import type { GuestObject, OperationContext, ValueCompletion } from "../runtime.js";
 
 function stringArgument(args: Value[], context: OperationContext, loc: Location): StringCompletion {
@@ -226,6 +227,22 @@ export function registerStringMethods(realm: Realm): void {
         for (const name of ["toUpperCase", "toLocaleUpperCase"]) realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);
             return text.type === "throw" ? text : normal({ kind: "string", value: stringUpperCase(text.value) });
+        });
+        realm.registerBuiltin(realm.stringPrototype, "normalize", 0, (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") return text;
+            let form: NormalizationForm = "NFC";
+            if (args.length !== 0 && args[0].kind !== "undefined") {
+                const primitive = toPrimitive(args[0], "string", context, loc);
+                if (primitive.type === "throw") return primitive;
+                const converted = toString(primitive.value, loc, context.realm);
+                if (converted.type === "throw") return converted;
+                const name = converted.value;
+                if (name !== "NFC" && name !== "NFD" && name !== "NFKC" && name !== "NFKD")
+                    return languageFailure(context.realm, "RangeError", "invalid normalization form", loc);
+                form = name;
+            }
+            return normal({ kind: "string", value: stringNormalize(text.value, form) });
         });
         realm.registerBuiltin(realm.stringPrototype, "concat", 1, (receiver, args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);

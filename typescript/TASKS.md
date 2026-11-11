@@ -4928,7 +4928,7 @@ Status: **done — isolated prerequisite review**. Owner: Codex catch-up chat, 2
 
 ## TS-441 — Generic String normalization
 
-Status: **in progress — isolated successor to TS-440**. Owner: Codex catch-up chat, 2026-11-10. Expose String.prototype.normalize through the Unicode 17-validated backend, with ordered generic receiver/form conversion, exact form validation, metadata and defining-Realm errors. Preserve both prototype inventories and arities. No Intl or locale comparison in this increment. Own src/strings.ts, src/builtins/string.ts, test/script-realm-bootstrap.ts, test/harness-formatting.ts, test/current-builtin-inventory.ts and tests/manifests/docs in build/string-normalize-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose String.prototype.normalize through the Unicode 17-validated backend, with ordered generic receiver/form conversion, exact form validation, metadata and defining-Realm errors. Preserve both prototype inventories and arities. No Intl or locale comparison in this increment. Own src/strings.ts, src/builtins/string.ts, test/script-realm-bootstrap.ts, test/harness-formatting.ts, test/current-builtin-inventory.ts and tests/manifests/docs in build/string-normalize-draft/.
 
 ## TS-442 — Canonical non-Intl String comparison
 
