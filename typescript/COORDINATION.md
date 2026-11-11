@@ -3030,3 +3030,5 @@ Prepared but not executed: build/promote-class-string.ps1, validate-class-string
 2026-11-11 TS-451 duplicate captures are READY in isolation, including the final instruction-construction fix, all925 Node guests, ten native/Node regressions, fifteen native tooling builds,295 tooling tests and ownership checks. TS-454 parser-only Unicode prerequisite is isolated under validation. No canonical runtime promotion while parity-rollup remains active.
 
 2026-11-11 TS-454 parser-only increment passes focused both-host static validation and480 independent Unicode syntax classifications. Unicode runtime admission is unchanged. Ownership and promotion preflight helpers are prepared but acceptance remains pending full Node/regression/tooling gates. Canonical430-entry parity-rollup build continues without reported failures.
+
+2026-11-11 TS-455 is isolated in build/regexp-unicode-matcher-draft and uses the unchanged TS-453 fold table apart from provenance comments. Focused checks and2992 Node reference comparisons pass; full Node927 is active and native acceptance is pending. TS-454 tooling295 follows its completed15 native builds. Canonical parity-rollup remains frozen.
