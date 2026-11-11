@@ -57,7 +57,7 @@ function inventory(a: Realm): void {
             "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownIterator],
         ["toString","valueOf","constructor"],
         ["toString","valueOf","toLocaleString","toFixed","toExponential","toPrecision","constructor"],
-        ["length","toString","valueOf","at","substring","substr","padStart","padEnd","repeat","codePointAt","trim","trimStart","trimEnd","trimLeft","trimRight","toLowerCase","toUpperCase",
+        ["length","toString","valueOf","at","substring","substr","padStart","padEnd","repeat","codePointAt","trim","trimStart","trimEnd","trimLeft","trimRight","toLowerCase","toLocaleLowerCase","toUpperCase","toLocaleUpperCase",
             "concat","lastIndexOf","indexOf","charAt","charCodeAt","slice","split","anchor","big","blink","bold","fixed","fontcolor","fontsize","italics","link","small","strike","sub","sup","isWellFormed","toWellFormed","match","search","replace","replaceAll","matchAll","constructor","includes","startsWith","endsWith",wellKnownIterator],
         ["toString","valueOf","constructor","description",wellKnownToPrimitive,wellKnownToStringTag],
     ];
@@ -232,4 +232,3 @@ function row(id: string,name: string,initial: number): void {
     check(output==="" && outputCalls===0,"no output"); console.log(id+" PASS");
 }
 for(const line of readFileSync(process.argv[2],"utf8").trim().split("\n")) { const fields=line.trim().split("|"); check(fields.length===3 && (fields[1]==="seed"||fields[1]==="other") && (fields[2]==="7"||fields[2]==="11"),"fixture"); row(fields[0],fields[1],Number(fields[2])); }
-

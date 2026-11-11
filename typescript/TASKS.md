@@ -4916,7 +4916,7 @@ Status: **done — read-only successor review**. Owner: Codex catch-up chat, 202
 
 ## TS-439 — Non-Intl String locale casing
 
-Status: **in progress — isolated successor to TS-438**. Owner: Codex catch-up chat, 2026-11-10. Expose generic locale lower/upper casing under a documented locale-neutral default, reusing the reviewed Unicode case backend and ignoring reserved ECMA-402 parameters. Preserve distinct builtin identity, metadata, coercion order, errors and Realm ownership. localeCompare and Intl remain unsupported. Own src/builtins/string.ts and tests/manifests/docs in build/string-locale-case-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Expose generic locale lower/upper casing under a documented locale-neutral default, reusing the reviewed Unicode case backend and ignoring reserved ECMA-402 parameters. Preserve distinct builtin identity, metadata, coercion order, errors and Realm ownership. localeCompare and Intl remain unsupported. Own src/builtins/string.ts and tests/manifests/docs in build/string-locale-case-draft/.
 
 TS-439 additionally owns the two exact String prototype inventories in test/script-realm-bootstrap.ts and test/harness-formatting.ts. Original expectations are retained in originals.json. Initial full Node run passed 915/919, with only the two old inventories failing in each of their two executions; add both new methods in installation order.
 

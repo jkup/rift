@@ -219,11 +219,11 @@ export function registerStringMethods(realm: Realm): void {
         const trimEnd = registerStringTrim(realm, "trimEnd", "end");
         realm.stringPrototype.bootstrapDefine("trimLeft", {value: trimStart, writable: true, configurable: true});
         realm.stringPrototype.bootstrapDefine("trimRight", {value: trimEnd, writable: true, configurable: true});
-        realm.registerBuiltin(realm.stringPrototype, "toLowerCase", 0, (receiver, _args, context, loc): ValueCompletion => {
+        for (const name of ["toLowerCase", "toLocaleLowerCase"]) realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);
             return text.type === "throw" ? text : normal({ kind: "string", value: stringLowerCase(text.value) });
         });
-        realm.registerBuiltin(realm.stringPrototype, "toUpperCase", 0, (receiver, _args, context, loc): ValueCompletion => {
+        for (const name of ["toUpperCase", "toLocaleUpperCase"]) realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);
             return text.type === "throw" ? text : normal({ kind: "string", value: stringUpperCase(text.value) });
         });
