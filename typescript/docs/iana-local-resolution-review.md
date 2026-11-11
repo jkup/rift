@@ -44,3 +44,26 @@ Then prove possible-instants and gap/start-of-day resolution, using the pinned
 upstream reference for historical boundaries and version-stable Node controls.
 Only after those layers pass should fixed-offset consumers migrate and guest
 named identifiers become available.
+
+## Complete historical transition evidence
+
+The pinned upstream C implementation independently supplies 52,896 before/at
+offsets for every stored transition. It identifies 26,131 offset changes and
+317 unchanged-offset entries. Changes range from -86,400 to +86,400 seconds;
+the minimum spacing between actual changes in one historical zone is 344,400
+seconds. These are measured properties of this release, not general timezone
+assumptions or a reason to omit future-rule checks.
+
+A reduced exact-nanosecond wrapper around the production offset provider passes
+79,344 checks on both hosts, at one nanosecond before, exactly at, and one
+nanosecond after every stored transition. It applies BigInt floor division before
+Number conversion and preserves public instant-range rejection. Static-only and
+zero-dynamic gates pass. Raw C output, change classification and native results
+are retained under `build/iana-timezone-review/transition-*`.
+
+Adjacent-transition lookup must skip unchanged offsets, compare instants strictly
+for previous/next queries, and combine historical candidates with nearby recurring
+rule instants. Future candidates require actual before/after offset checks too:
+coincident rules or equal standard/daylight offsets need not cause a transition.
+Keep the original historical arrays and boundary evidence intact when choosing
+the search representation.
