@@ -40,7 +40,7 @@ class PatternParser {
     private hasNamedCapture = false;
     private depth = 0;
     private failure: RegExpSyntaxFailure | null = null;
-    constructor(private readonly source: string, private readonly tick: () => boolean) {}
+    constructor(private readonly source: string, private readonly tick: () => boolean, private readonly unicode: boolean) {}
 
     parse(): RegExpSyntaxResult {
         const body = this.disjunction();
@@ -52,7 +52,7 @@ class PatternParser {
                 if (!this.tick()) return { kind: "stopped" };
                 if (capture.name === name) found = true;
             }
-            if (!found) return this.names.length === 0
+            if (!found) return this.names.length === 0 && !this.unicode
                 ? { kind: "unsupported", message: "legacy k escapes are unsupported", offset: this.offset }
                 : { kind: "syntax-error", message: "unknown capture name", offset: this.offset };
         }
@@ -93,11 +93,11 @@ class PatternParser {
         this.totalCaptures = count;
         return count;
     }
-    private nameHexUnit(): number | null {
+    private hexUnit(): number | null {
         let value = 0;
         for (let i = 0; i < 4; i++) {
             const part = hex(this.current());
-            if (part < 0) return this.reject("syntax-error", "invalid capture name escape");
+            if (part < 0) return this.reject("syntax-error", "invalid Unicode escape");
             this.take();
             value = value * 16 + part;
         }
@@ -106,48 +106,56 @@ class PatternParser {
     private nameCodePoint(): number | null {
         const char = this.take();
         if (this.failure !== null) return null;
-        let point = char.charCodeAt(0);
         if (char === "\\") {
             if (this.take() !== "u") return this.reject("syntax-error", "invalid capture name escape");
-            if (this.current() === "{") {
+            return this.unicodeEscape();
+        }
+        const point = this.rawCodePoint(char.charCodeAt(0));
+        return this.failure === null ? point : null;
+    }
+    private unicodeEscape(): number | null {
+        if (this.current() === "{") {
+            this.take();
+            let value = 0, digits = 0;
+            while (this.failure === null && this.current() !== "}") {
+                const part = hex(this.current());
+                if (part < 0) return this.reject("syntax-error", "invalid Unicode escape");
                 this.take();
-                let value = 0, digits = 0;
-                while (this.failure === null && this.current() !== "}") {
-                    const part = hex(this.current());
-                    if (part < 0) return this.reject("syntax-error", "invalid capture name escape");
-                    this.take();
-                    value = value * 16 + part;
-                    if (value > 0x10ffff) return this.reject("syntax-error", "capture name code point out of range");
-                    digits++;
-                }
-                if (this.failure !== null) return null;
-                if (digits === 0) return this.reject("syntax-error", "empty capture name escape");
-                this.take();
-                return this.failure === null ? value : null;
+                value = value * 16 + part;
+                if (value > 0x10ffff) return this.reject("syntax-error", "Unicode code point out of range");
+                digits++;
             }
-            const unit = this.nameHexUnit();
-            if (unit === null) return null;
-            point = unit;
-            if (point >= 0xd800 && point <= 0xdbff && this.source.slice(this.offset, this.offset + 2) === "\\u") {
-                let trail = 0;
-                for (let i = 2; i < 6; i++) {
-                    const part = hex(this.source.charAt(this.offset + i));
-                    if (part < 0) { trail = -1; break; }
-                    trail = trail * 16 + part;
-                }
-                if (trail >= 0xdc00 && trail <= 0xdfff) {
-                    for (let i = 0; i < 6; i++) this.take();
-                    point = 0x10000 + (point - 0xd800) * 1024 + trail - 0xdc00;
-                }
+            if (this.failure !== null) return null;
+            if (digits === 0) return this.reject("syntax-error", "empty Unicode escape");
+            this.take();
+            return this.failure === null ? value : null;
+        }
+        const unit = this.hexUnit();
+        if (unit === null) return null;
+        let point = unit;
+        if (point >= 0xd800 && point <= 0xdbff && this.source.slice(this.offset, this.offset + 2) === "\\u") {
+            let trail = 0;
+            for (let i = 2; i < 6; i++) {
+                const part = hex(this.source.charAt(this.offset + i));
+                if (part < 0) { trail = -1; break; }
+                trail = trail * 16 + part;
             }
-        } else if (point >= 0xd800 && point <= 0xdbff) {
+            if (trail >= 0xdc00 && trail <= 0xdfff) {
+                for (let i = 0; i < 6; i++) this.take();
+                point = 0x10000 + (point - 0xd800) * 1024 + trail - 0xdc00;
+            }
+        }
+        return this.failure === null ? point : null;
+    }
+    private rawCodePoint(point: number): number {
+        if (point >= 0xd800 && point <= 0xdbff) {
             const trail = this.current().charCodeAt(0);
             if (trail >= 0xdc00 && trail <= 0xdfff) {
                 this.take();
                 point = 0x10000 + (point - 0xd800) * 1024 + trail - 0xdc00;
             }
         }
-        return this.failure === null ? point : null;
+        return point;
     }
     private groupName(): string | null {
         if (this.current() !== "<") return this.reject("syntax-error", "capture name requires <");
@@ -186,7 +194,7 @@ class PatternParser {
                 this.reject("syntax-error", "assertion cannot be quantified"); break;
             }
             if (quantifier !== null && atom.kind === "lookahead") {
-                this.reject("unsupported", "quantified legacy lookahead is unsupported"); break;
+                this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "lookahead cannot be quantified" : "quantified legacy lookahead is unsupported"); break;
             }
             terms.push({ atom, min: quantifier === null ? 1 : quantifier.min, max: quantifier === null ? 1 : quantifier.max,
                 lazy: quantifier !== null && quantifier.lazy, captureFrom, captureTo: this.captures });
@@ -197,6 +205,7 @@ class PatternParser {
     }
     private atom(): RegExpAtom | null {
         const char = this.current();
+        if (this.unicode && (char === "}" || char === "]")) return this.reject("syntax-error", "unexpected pattern delimiter");
         if (char === "*" || char === "+" || char === "?") return this.reject("syntax-error", "nothing to repeat");
         if (char === "{") {
             const quantifier = this.quantifier();
@@ -254,7 +263,8 @@ class PatternParser {
             this.take();
             return lookahead ? { kind: "lookahead", negative, body } : { kind: "group", index, body };
         }
-        return { kind: "character", value: char.charCodeAt(0) };
+        const value = this.unicode ? this.rawCodePoint(char.charCodeAt(0)) : char.charCodeAt(0);
+        return this.failure === null ? { kind: "character", value } : null;
     }
     private decimal(): number {
         let value = 0;
@@ -274,13 +284,19 @@ class PatternParser {
         } else if (char === "{") {
             const start = this.offset;
             this.take();
-            if (!digit(this.current())) { this.offset = start; return null; }
+            if (!digit(this.current())) {
+                if (this.unicode) return this.reject("syntax-error", "invalid quantifier");
+                this.offset = start; return null;
+            }
             min = this.decimal();
             max = min;
             if (this.current() === ",") { this.take(); max = digit(this.current()) ? this.decimal() : null; }
             if (this.failure !== null) return null;
             // In non-Unicode patterns an incomplete brace expression is literal.
-            if (this.current() !== "}") { this.offset = start; return null; }
+            if (this.current() !== "}") {
+                if (this.unicode) return this.reject("syntax-error", "incomplete quantifier");
+                this.offset = start; return null;
+            }
             this.take();
             if (max !== null && min > max) return this.reject("syntax-error", "quantifier range is reversed");
         } else return null;
@@ -306,20 +322,20 @@ class PatternParser {
                 index = Math.min(count + 1, index * 10 + this.take().charCodeAt(0) - 48);
             if (this.failure !== null) return null;
             if (index <= count) return { kind: "backreference", index };
-            return this.reject("unsupported", "legacy numeric escape is unsupported");
+            return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid numeric escape" : "legacy numeric escape is unsupported");
         }
         if (char === "k" && !inClass) {
             this.captureCount();
             if (this.failure !== null) return null;
-            if (!this.hasNamedCapture) return this.reject("unsupported", "legacy k escapes are unsupported");
-            if (this.current() !== "<") return this.reject("unsupported", "legacy k escapes are unsupported");
+            if (!this.hasNamedCapture && !this.unicode) return this.reject("unsupported", "legacy k escapes are unsupported");
+            if (this.current() !== "<") return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid named reference" : "legacy k escapes are unsupported");
             const name = this.groupName();
             if (name === null) return null;
             this.references.push(name);
             return { kind: "named-backreference", name };
         }
         if (char >= "1" && char <= "9" || char === "0" && digit(this.current()) || char === "k")
-            return this.reject("unsupported", "named backreferences and legacy numeric escapes are unsupported");
+            return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid numeric or named escape" : "named backreferences and legacy numeric escapes are unsupported");
         const controls = "fnrtv";
         const controlIndex = controls.indexOf(char);
         if (controlIndex >= 0) return { kind: "character", value: [12, 10, 13, 9, 11][controlIndex] };
@@ -327,27 +343,35 @@ class PatternParser {
         if (char === "c") {
             const letter = this.current();
             if (!(letter >= "a" && letter <= "z" || letter >= "A" && letter <= "Z"))
-                return this.reject("unsupported", "legacy control escape is unsupported");
+                return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid control escape" : "legacy control escape is unsupported");
             this.take();
             return { kind: "character", value: letter.charCodeAt(0) % 32 };
+        }
+        if (char === "u" && this.unicode) {
+            const value = this.unicodeEscape();
+            return value === null ? null : { kind: "character", value };
         }
         if (char === "x" || char === "u") {
             const count = char === "x" ? 2 : 4;
             let value = 0;
             for (let i = 0; i < count; i++) {
                 const part = hex(this.source.charAt(this.offset + i));
-                if (part < 0) return { kind: "character", value: char.charCodeAt(0) };
+                if (part < 0) return this.unicode ? this.reject("syntax-error", "invalid hex escape") : { kind: "character", value: char.charCodeAt(0) };
                 value = value * 16 + part;
             }
             for (let i = 0; i < count; i++) this.take();
             return { kind: "character", value };
         }
+        if (this.unicode && (char === "p" || char === "P")) return this.reject("unsupported", "Unicode property escapes are unsupported");
+        if (this.unicode && !"^$\\.*+?()[]{}|/".includes(char) && !(inClass && char === "-"))
+            return this.reject("syntax-error", "invalid identity escape");
         return { kind: "character", value: char.charCodeAt(0) };
     }
     private classAtom(): RegExpAtom | null {
         if (this.current() === "\\") { this.take(); return this.escape(true); }
         const char = this.take();
-        return this.failure === null ? { kind: "character", value: char.charCodeAt(0) } : null;
+        const value = this.unicode ? this.rawCodePoint(char.charCodeAt(0)) : char.charCodeAt(0);
+        return this.failure === null ? { kind: "character", value } : null;
     }
     private characterClass(): RegExpAtom | null {
         const inverted = this.current() === "^";
@@ -361,7 +385,7 @@ class PatternParser {
                 const last = this.classAtom();
                 if (last === null) return null;
                 if (first.kind !== "character" || last.kind !== "character")
-                    return this.reject("unsupported", "legacy character-class ranges are unsupported");
+                    return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid character-class range" : "legacy character-class ranges are unsupported");
                 if (first.value > last.value) return this.reject("syntax-error", "character-class range is reversed");
                 parts.push({ kind: "range", from: first.value, to: last.value });
             } else if (first.kind === "character") parts.push({ kind: "range", from: first.value, to: first.value });
@@ -375,6 +399,6 @@ class PatternParser {
     }
 }
 
-export function parseRegExpSyntax(source: string, tick: () => boolean): RegExpSyntaxResult {
-    return new PatternParser(source, tick).parse();
+export function parseRegExpSyntax(source: string, tick: () => boolean, unicode = false): RegExpSyntaxResult {
+    return new PatternParser(source, tick, unicode).parse();
 }
