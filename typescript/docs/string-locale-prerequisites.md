@@ -32,3 +32,28 @@ a reviewed comparison backend is required before claiming locale support.
 Evidence: build/string-locale-review/{methods,casing,comparison,canonical}.ts,
 results.json, reduced-results.json, canonical-results.json and
 canonical-initial-results.json. Compiler versions and frozen corpus stay intact.
+
+## Normalization provider review (TS-440)
+
+On 2026-11-11, the pinned host String.normalize backend passed 12 targeted
+normalization checks on both hosts, with all 16 analyzed statements static.
+It then passed all 20,034 rows of Unicode 17's NormalizationTest, exercising
+all 20 prescribed relationships per row and the unchanged-code-point invariant
+for every code point absent from Part 1. Both hosts report 4,788,784 checks and
+zero failures. The additional code-point loop includes unassigned values and
+lone surrogates, beyond the file's assigned-code-point requirement.
+
+Input: https://www.unicode.org/Public/17.0.0/ucd/NormalizationTest.txt,
+SHA-256 5019ffd530751a741900c849c0e010332f142a3612234639bd200b82138a87db.
+Evidence: build/string-normalization-review/{normalization.ts,results.json,
+conformance.ts,conformance-results.json}. Both probes use static-only builds and
+the parsed zero-dynamic coverage gate; the full input stays in the ignored review
+directory with its copyright and license notice intact.
+
+This supports a separately validated String.normalize implementation. It also
+offers a route to a deterministic non-Intl comparator: normalize both strings
+to NFC, then use the engine's UTF-16 comparison. engine262 StringPrototype.mts
+at 18cdeb03c363eb31d775648a0d070bdc8a26ced1 uses this arrangement. This is a
+locale-neutral ordering policy, not language-specific collation. It avoids the
+known host localeCompare failures without weakening canonical equivalence.
+No guest method is enabled by this review.

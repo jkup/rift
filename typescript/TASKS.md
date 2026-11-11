@@ -4913,3 +4913,19 @@ TS-437 also owns the audit/setup helper types and historical base-class expectat
 ## TS-438 — Static block integration review
 
 Status: **done — read-only successor review**. Owner: Codex catch-up chat, 2026-11-11. Reviewed static block declaration boundaries, evaluation order and parser context against the specification and pinned engine262. Recorded the required independent variable scope and ordered static-element list in docs/class-static-blocks-review.md. Eight native reference programs pass; no runtime syntax enabled. Canonical runtime remains frozen during the zoned milestone validation.
+
+## TS-439 — Non-Intl String locale casing
+
+Status: **in progress — isolated successor to TS-438**. Owner: Codex catch-up chat, 2026-11-10. Expose generic locale lower/upper casing under a documented locale-neutral default, reusing the reviewed Unicode case backend and ignoring reserved ECMA-402 parameters. Preserve distinct builtin identity, metadata, coercion order, errors and Realm ownership. localeCompare and Intl remain unsupported. Own src/builtins/string.ts and tests/manifests/docs in build/string-locale-case-draft/.
+
+TS-439 additionally owns the two exact String prototype inventories in test/script-realm-bootstrap.ts and test/harness-formatting.ts. Original expectations are retained in originals.json. Initial full Node run passed 915/919, with only the two old inventories failing in each of their two executions; add both new methods in installation order.
+
+TS-439 also owns test/current-builtin-inventory.ts: the inventory checker requires explicit zero arities for both new methods. Focused inventory validation caught this missing expectation; interrupted the redundant full rerun before correcting it.
+
+## TS-440 — String normalization backend review
+
+Status: **done — isolated prerequisite review**. Owner: Codex catch-up chat, 2026-11-11. The pinned normalization backend passes 12 targeted checks and 4,788,784 checks from Unicode 17's 20,034 normalization rows plus unchanged code points, on both hosts with static-only/zero-dynamic gates. Evidence and the NFC-plus-UTF-16 comparison route are recorded in docs/string-locale-prerequisites.md. No guest methods enabled; TS-195 host-comparison failures remain preserved.
+
+## TS-441 — Generic String normalization
+
+Status: **in progress — isolated successor to TS-440**. Owner: Codex catch-up chat, 2026-11-10. Expose String.prototype.normalize through the Unicode 17-validated backend, with ordered generic receiver/form conversion, exact form validation, metadata and defining-Realm errors. Preserve both prototype inventories and arities. No Intl or locale comparison in this increment. Own src/strings.ts, src/builtins/string.ts, test/script-realm-bootstrap.ts, test/harness-formatting.ts, test/current-builtin-inventory.ts and tests/manifests/docs in build/string-normalize-draft/.
