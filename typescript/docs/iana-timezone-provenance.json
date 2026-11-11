@@ -1,0 +1,24 @@
+{
+  "release": "2026f",
+  "archives": [
+    {
+      "url": "https://data.iana.org/time-zones/releases/tzdata2026f.tar.gz",
+      "sha256": "01b4a91cec5167ed48c11e8ab78f2048cead78ce94b0cafcad0ae8c5a3044d3d"
+    },
+    {
+      "url": "https://data.iana.org/time-zones/releases/tzcode2026f.tar.gz",
+      "sha256": "5a18da01393679ef2559214dc687563f7f3d05691f6f58b7fbc0166f3e796cd6"
+    }
+  ],
+  "commands": [
+    "make -B zic tzdata.zi VERSION=2026f PACKRATDATA=backzone PACKRATLIST=zone.tab",
+    "./zic -b fat -d ../zoneinfo tzdata.zi"
+  ],
+  "sourceSha256": "b8e91f3bb6b0d2af2db2affb8669c07d2cd366c74cebcef0805d0a44ea414b0e",
+  "tablesSha256": "4075970d620e7c3ef231ffc581eddd2aa2d34bac1d305aa1d2dda02c15fe4dda",
+  "outputSha256": "81f21abbaa60439e141ba59b8f3e106b61edfe031529b192e683389fa7912df0",
+  "zones": 440,
+  "links": 158,
+  "transitions": 26448,
+  "scope": "Internal offset records and raw links; not a public identifier registry. Footer evaluation and primary-identifier policy are separate."
+}
