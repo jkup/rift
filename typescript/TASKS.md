@@ -5178,3 +5178,13 @@ Status: **in progress — isolated successor to TS-471**. Owner: Codex catch-up 
 
 2026-11-11 TS-471 is isolated READY after 940 Node guests, focused native, nine native regression groups, fifteen tooling builds, 296 tooling tests and sixteen parent-envelope checks. The canonical private-field build has completed all 441 static-only/zero-dynamic gates in 6,591,496 ms. Its final runtime/tooling run is queued behind the live TS-472 Node rerun to preserve execution timeout isolation.
 
+
+## TS-473 — Measured deadlines for heavy native harness drivers
+
+Status: **in progress — canonical runner adjustment; compiled inputs remain frozen**. Owner: Codex catch-up chat, 2026-11-11. The private-field runtime run passed 930/934, with four 10-second timeouts in harness-errors-b and harness-map-default. Isolated measurements produce exact transcripts in roughly 10.1–10.8 seconds; the exact hash-verified accepted Unicode baseline also exceeds 10 seconds in every case. Scope: give only those two drivers a 30-second deadline, preserve all other limits, test inputs, transcripts and timeout classifications. Retain original failures and all 441 compiled-input gates. Revalidate both complete guest suites and tooling before publication. Version the runner-only snapshot adjustment separately; reconcile successor runner baselines only after acceptance.
+
+
+## TS-474 — Build storage cleanup and bounded retention
+
+Status: **done — user-requested cleanup**. Owner: Codex catch-up chat, 2026-11-11. Stopped the active validation process tree, removed 115,101,204,203 bytes of SHA-256-identical validation copies from inactive drafts and 2,598,328,735 bytes of successful LLVM intermediates. No deletion errors; source, canonical validation, differing copies, executables and failure reports retained. Free space rose from about 3.7 GB to 121.6 GB. Active workflow helpers now prune successful LLVM and READY validation copies, and require 20 GiB headroom. Safety controls verify failed builds and outside paths are preserved. See docs/build-storage.md and build/storage-duplicate-cleanup/. Preserve the storage-interrupted native log before resuming TS-473 acceptance.
+
