@@ -78,3 +78,19 @@ precedes the footer interval, recurrence search anchors at the table's last entr
 so a distant first recurring transition is not lost. Production should share its
 calendar calculations with the existing recurrence provider. Evidence:
 `build/iana-timezone-review/adjacent-transition-probe-results.json`.
+
+## Local-time prototype
+
+The bounded candidate/resolution prototype passes all 63 independent controls
+on both hosts with 311 static statements and zero dynamic operations. It preserves
+subsecond precision, sorts candidates through descending unique offsets, treats
+an out-of-range matching candidate as a range failure, and locates a containing
+gap through adjacent transitions before applying disambiguation. Start of day
+returns the gap's transition instant rather than shifting an arbitrary time.
+
+The prototype has an explicit review-only offset bridge for candidates up to two
+days beyond the public instant range. Production must replace that duplication
+with a shared internal offset provider while preserving public range guards.
+This is bounded feasibility and representative semantic evidence, not a complete
+local-time conformance result. Broader historical gap/fold boundary tests remain
+required. Evidence: `build/iana-timezone-review/local-resolution-probe-results.json`.
