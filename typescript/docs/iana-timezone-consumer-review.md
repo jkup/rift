@@ -81,19 +81,30 @@ and observable option/property ordering. Keep system timezones and Intl separate
 
 ## Consumer migration in progress (TS-486)
 
-The isolated migration now has 1,107 expected-result consumer checks, plus
-historical offset parsing and zone-identity controls, passing in both hosts.
-The native coverage gate passes with no dynamic statements. Full-suite and
-regression acceptance remain pending; named-zone guest parsing remains closed.
+The isolated migration has 1,107 consumer checks plus historical offset parsing
+and identity controls. An initial both-host pass matched Node, but the full Node
+suite then reported 945/948: three existing calendar-rounding regressions caught
+an incorrect change to the lower window boundary. This version is not accepted.
 
-Calendar rounding uses the original instant when the rounded calendar count
-is zero, as specified by
-[ComputeNudgeWindow](https://tc39.es/proposal-temporal/#sec-temporal-computenudgewindow).
-This also applies when larger date fields are nonzero. The initial mismatch
-and its source snapshot are preserved in the draft's
-`build/initial-calendar-consumer-node.json` and `initial-calendar-failed-source/`.
-The corrected 970-case calendar matrix agrees with the independent reference.
+Preserve the full start-duration zero test from
+[TC39 PR3319](https://github.com/tc39/proposal-temporal/pull/3319), merged as
+7083e8c46165c37cb871a21d60ca19e219e77ede after consensus on 2026-05-19.
+The proposal page and Node retain the older smallest-unit-only condition.
+Named-zone reference differences must be explained using independently computed
+calendar boundaries, as in the existing fixed-offset review. Do not weaken the
+three existing tests to match the older oracle.
 
-The native compiler needed explicit return-type boundaries on the two
+The native compiler needs explicit return-type boundaries on the two
 local-time provider calls. Reduced successful and failing controls are in
 [the indexed BigInt report](validation/ts-486-indexed-bigint/README.md).
+Full migration acceptance and named-zone guest admission remain pending.
+
+The full-duration zero rule is restored in the isolated draft. All three
+original regression tests pass again under Node. Ten of the 970 new calendar
+rows have independently verified consensus corrections: native Temporal date
+addition computes each bounding instant, and exact BigInt distance/span
+comparison selects the expected endpoint. The original Node observations remain
+in `consumer-calendar-reference.json`; the corrections and boundary evidence are
+in `consumer-calendar-consensus-corrections.json` under `build/iana-timezone-review/`.
+All 1,107 consumer checks now pass under Node without removing any rows.
+Full-suite and native reruns are pending.

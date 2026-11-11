@@ -25,26 +25,30 @@
   },
   {
     "name": "null-build.log",
-    "sha256": "52a2eb4d1e9085bfb318cec8cab2edb03c72a7c088e3c23caa6e0da3675b3562"
+    "sha256": "e7e0565a243cac35ece27f64886326b0a8a9b9f105cef47a2708766f52a8a47b"
   },
   {
     "name": "array-null.log",
-    "sha256": "184245b9762f74a67d9f7736c8cb74f011584a0e93644662143022e2abf1a382"
+    "sha256": "f9fe02f5a6b2a8c7c9e5f6f4c24d143dcb9d104660d3ff64fa2ea2d195e35842"
   },
   {
     "name": "array-typeof.log",
-    "sha256": "efb2bcaf40fcbc051629c3185a59668beb3d2e1a151af1c667755d94c605b287"
+    "sha256": "6e859230dfdcb7982a44d31e8cd80fb9af863af18b251a4f8fafea6f5dd2e94c"
   },
   {
     "name": "array-cast.log",
-    "sha256": "439e9fc01e6cd9bf960f19f68c3bbe22ad641e306bc54238c45407e5e8d58554"
+    "sha256": "3f0f935ce0ec200cbdb2ce965120adb614da6e3d97f403074707758de1d6cfb0"
   },
   {
     "name": "array-return-cast.log",
-    "sha256": "64da56aa4bef4347bc9c16e68a7f1e24b7ec78822d656b76ee13851d91052fb6"
+    "sha256": "50408c79eca2acf9df717d7b7cc4513539f71c418dce6fa63fa99a93e3e9fc12"
   },
   {
     "name": "probe-results.json",
     "sha256": "87db829cf91f8c672f5beed809939880865d466576b15898d190cbab5057316e"
+  },
+  {
+    "name": "node-results.json",
+    "sha256": "7a166d76e1a6347f242faba8cd64a5d4a309df1ae80462f7a5c5c04a5cadb98a"
   }
 ]
