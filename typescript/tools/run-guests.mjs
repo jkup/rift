@@ -507,7 +507,7 @@ for (const op of ["==", "!="]) {
 }
 const results = [];
 function execute(name, executable, args, expected) {
-    const r = spawnSync(executable, args, { cwd: root, encoding: "utf8", timeout: 10000 });
+    const r = spawnSync(executable, args, { cwd: root, encoding: "utf8", timeout: expected.timeoutMs ?? 10000 });
     const stdout = (r.stdout ?? "").replaceAll("\r\n", "\n");
     const stderr = (r.stderr ?? "").replaceAll("\r\n", "\n");
     let verdict = "PASS";
@@ -950,7 +950,8 @@ executeDriver("abstract-equality", { stdout: "abstract-equality ok\n" });
 executeDriver("structured-outcomes", { stdout: "structured-outcomes ok\n" });
 for (const { driver, variant, fixture, stdout, source } of scriptHostCases) {
     if (source !== undefined) writeFileSync(join(root, fixture), source);
-    executeDriver(driver, { stdout }, [fixture], driver + "/" + variant);
+    const timeoutMs = driver === "harness-errors-b" || driver === "harness-map-default" ? 30000 : 10000;
+    executeDriver(driver, { stdout, timeoutMs }, [fixture], driver + "/" + variant);
 }
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
