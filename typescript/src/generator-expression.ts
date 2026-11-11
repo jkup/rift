@@ -1,7 +1,7 @@
 import type { ScriptFrameSnapshot } from "./script-execution-internal.js";
 import type { ScriptEnvironment, ScriptDeclarativeEnvironment } from "./script-environment.js";
 import type { EvaluationReference, ExpressionResult } from "./evaluation-reference.js";
-import type { ClassExpr, ChainExpr, ChainCallLink, DestructureExpr, SuperCallExpr, SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
+import type { PrivateInExpr, ClassExpr, ChainExpr, ChainCallLink, DestructureExpr, SuperCallExpr, SuperMemberExpr, UpdateExpr, CompoundExpr, AssignExpr, ObjectExpr, TemplateExpr, NewExpr, ArrayExpr, CallExpr, MemberExpr, BinaryExpr, ConditionalExpr, UnaryExpr, GeneratorYieldStmt, AwaitExpr, Expr } from "./syntax.js";
 import type { GuestObject, PropertyKey, Value } from "./runtime.js";
 
 export type ChainConsumer = { kind: "value" }
@@ -29,6 +29,7 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "destructure-value"; expression: DestructureExpr }
     | { kind: "compound-value"; expression: CompoundExpr; reference: EvaluationReference; left: Value }
     | { kind: "super-key"; expression: SuperMemberExpr; operation: SuperPropertyOperation; homeObject: GuestObject; receiver: Value }
+    | { kind: "private-in-value"; expression: PrivateInExpr }
     | { kind: "private-base"; expression: MemberExpr; operation: SuperPropertyOperation }
     | { kind: "update-base"; expression: UpdateExpr }
     | { kind: "update-key"; expression: UpdateExpr; base: Value }

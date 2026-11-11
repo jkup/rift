@@ -1,5 +1,5 @@
 import { PrivateEnvironment, PrivateName } from "./private-names.js";
-import { declarePrivateName, resolvePrivateName, privateFieldAdd, privateMethodOrAccessorAdd } from "./private-elements.js";
+import { declarePrivateName, resolvePrivateName, privateFieldAdd, privateMethodOrAccessorAdd, privateHas } from "./private-elements.js";
 import type { PrivateElement } from "./runtime.js";
 import { toNumeric } from "./numeric.js";
 import { bigintOperation } from "./bigint-arithmetic.js";
@@ -1817,7 +1817,11 @@ class ExecutionEngine {
     }
     #expression(expr: Expr, env: Environment | null, receiver: Value, name: string | null): Completion {
         switch (expr.kind) {
-            case "private-name": case "private-in": throw new Error("private syntax audit cannot execute");
+            case "private-name": throw new Error("private name cannot execute as a value");
+            case "private-in": {
+                const right = this.#eval(expr.right, env, receiver);
+                return right.type === "normal" ? this.#privateBrandCheck(right.value, expr.name.name, expr.loc) : right;
+            }
             case "await": case "yield": throw new Error("suspension expression requires a continuation");
             case "class": {
                 if (env !== null) throw new Error("class requires Script execution");
@@ -2255,6 +2259,13 @@ class ExecutionEngine {
         const base: Value = parent === null ? { kind: "null" } : { kind: "object", object: parent };
         const reference: Reference = { kind: "property", base, key, loc };
         return { kind: "script-super", reference, receiver, strict: this.#active().strict };
+    }
+    #privateBrandCheck(receiver: Value, description: string, loc: Location): ValueCompletion {
+        if (receiver.kind !== "object") return languageFailure(this.context.realm, "TypeError", "private in requires an object", loc);
+        const name = resolvePrivateName(this.#active().privateEnvironment, description, this.context, loc);
+        if (name.type === "throw") return name;
+        const result = privateHas(receiver, name.value, this.context, loc);
+        return result.type === "throw" ? result : normal({ kind: "boolean", value: result.value });
     }
     #privateReference(receiver: Value, description: string, loc: Location): EvaluationReferenceResult {
         const name = resolvePrivateName(this.#active().privateEnvironment, description, this.context, loc);
@@ -3624,7 +3635,7 @@ class ExecutionEngine {
             if (expression !== null) {
                 const name = inferredName;
                 inferredName = null;
-                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "class" || expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
+                if (expression.kind === "yield" || expression.kind === "await" || ((expression.kind === "private-in" || expression.kind === "class" || expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "array" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true)) {
                     const budget = this.tick(expression.loc);
                     if (budget.type === "throw") return budget;
                     if (++this.depth > 256)
@@ -3785,6 +3796,11 @@ class ExecutionEngine {
                             frames.push({ kind: "private-base", expression, operation: { kind: "read" } });
                         else frames.push({ kind: "member-base", expression });
                         expression = expression.base;
+                        continue;
+                    }
+                    if (expression.kind === "private-in") {
+                        frames.push({ kind: "private-in-value", expression });
+                        expression = expression.right;
                         continue;
                     }
                     if (expression.kind === "binary") {
@@ -4040,6 +4056,12 @@ class ExecutionEngine {
             if (frame.kind === "destructure-value") {
                 const assigned = this.#initializePattern(frame.expression.pattern, null, value, null, null);
                 if (assigned.type === "throw") return assigned;
+                continue;
+            }
+            if (frame.kind === "private-in-value") {
+                const result = this.#privateBrandCheck(value, frame.expression.name.name, frame.expression.loc);
+                if (result.type === "throw") return result;
+                value = result.value;
                 continue;
             }
             if (frame.kind === "super-key" || frame.kind === "private-base") {

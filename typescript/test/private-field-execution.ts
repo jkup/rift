@@ -51,8 +51,8 @@ for (const text of ['class C{#x;#x}', 'class C{#constructor}', 'class C{m(o){ret
 }
 for (const text of ['class C{#x(){}}', 'class C{get #x(){return 1}}', 'class C{#x;m(o){return #x in o}}', 'class C{#x;#x} @']) {
     const prepared = prepareBoundedScript({ id: "private-blocked", text }, new Realm((_line: string) => {}, "script"));
-    if (text === "class C{#x(){}}" || text === "class C{get #x(){return 1}}") {
-        if (prepared.kind !== "ready") throw new Error("original private method/accessor declaration: " + text);
+    if (text !== "class C{#x;#x} @") {
+        if (prepared.kind !== "ready") throw new Error("original private class declaration: " + text);
     } else if (prepared.kind !== "blocked" || prepared.rejection.kind !== "unsupported-syntax")
         throw new Error("private unsupported boundary: " + text);
 }

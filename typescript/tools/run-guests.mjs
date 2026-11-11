@@ -895,6 +895,7 @@ executeDriver("private-environment-capture", { stdout: "private environment capt
 executeDriver("certified-rule-producer", { stdout: "certified rule producer passed\n" });
 executeDriver("private-field-execution", { stdout: "private field execution passed\n" });
 executeDriver("private-methods-accessors", { stdout: "private methods accessors passed\n" });
+executeDriver("private-brand-check", { stdout: "private brand check passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

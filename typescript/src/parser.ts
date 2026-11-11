@@ -191,7 +191,6 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     const parser = new Parser(lexer.result().tokens, parserSource, separatorAudit ? "bounded-numeric-separator-audit" : lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan", newTargetAllowed, superContext, lexer);
     parser.allowOuterPrivateNames(privateNames);
     parser.privateSyntaxEnabled = bounded;
-    parser.privateExecution = bounded;
     const parsed = parser.program();
     // Public audits retain whole-source lexical failure precedence.
     while (lexer.next().kind !== "eof") {}
@@ -218,7 +217,6 @@ type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; computed?: true; v
 type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupported: { reason: Rejection; message: string; loc: Location } | null };
 class Parser {
     privateSyntaxEnabled = false;
-    privateExecution = false;
     private privateScope = new PrivateSyntaxScope(null);
     private readonly privateScopes: PrivateSyntaxScope[] = [this.privateScope];
     privateIssue: PrivateSyntaxIssue | null = null;
@@ -1084,8 +1082,6 @@ class Parser {
         }
         const singleArrow = this.structuralPlan() && min <= 1 && this.current().kind === "word" && this.token(this.index + 1)?.text === "=>";
         const privateIn = this.privateSyntaxEnabled && this.current().kind === "private-identifier" && allowIn && min <= 9;
-        if (privateIn && this.privateExecution)
-            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "private brand checks are not supported", this.current().loc);
         let left: Expr;
         if (privateIn) {
             const name = this.privateName(this.take(), true);
