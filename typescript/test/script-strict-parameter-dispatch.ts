@@ -1,7 +1,7 @@
-import type { ClassFieldInitializer } from "../src/syntax.js";
+import type { ClassInitializer } from "../src/syntax.js";
 import type { Expr, Stmt } from "../src/syntax.js";
 function snapshot(n: DeclarationNodes): string {
-    const scopes: { id: number; node: Stmt | Expr | ClassFieldInitializer | null; body: Stmt[] }[] = [];
+    const scopes: { id: number; node: Stmt | Expr | ClassInitializer | null; body: Stmt[] }[] = [];
     for (const [id, value] of n.scopes) scopes.push({ id, node: value.node, body: value.body });
     const declarations: { id: number; node: Stmt; initializer: Expr | null }[] = [];
     for (const [id, value] of n.declarations) declarations.push({ id, node: value.node, initializer: value.initializer });

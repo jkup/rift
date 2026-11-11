@@ -4,7 +4,7 @@ import { UNDEFINED, languageFailure, normal, type Value, type ValueCompletion,
 import type { Location } from "./syntax.js";
 import type { ScriptGuestCallable } from "./script-record.js";
 
-export type ScriptEnvironment = ScriptDeclarativeEnvironment | ScriptFunctionEnvironment | ScriptFieldEnvironment
+export type ScriptEnvironment = ScriptDeclarativeEnvironment | ScriptFunctionEnvironment | ScriptClassInitializationEnvironment
     | { readonly kind: "global"; readonly record: GlobalEnvironment };
 
 // Strict immutable bindings throw on all writes; named-function bindings only
@@ -77,8 +77,8 @@ export class ScriptFunctionEnvironment extends ScriptLocalBindings {
     // Host metadata only. This record neither creates nor invokes a callable.
     constructor(outer: ScriptEnvironment, readonly thisValue: Value, readonly callable: ScriptGuestCallable, readonly newTarget: Value = UNDEFINED) { super(outer); }
 }
-export class ScriptFieldEnvironment extends ScriptLocalBindings {
-    readonly kind = "field";
+export class ScriptClassInitializationEnvironment extends ScriptLocalBindings {
+    readonly kind = "class-initializer";
     readonly newTarget: Value = UNDEFINED;
     constructor(outer: ScriptEnvironment, readonly thisValue: Value, readonly homeObject: GuestObject) { super(outer); }
 }

@@ -49,7 +49,8 @@ for (const text of [
     'function* g(){class C{[yield "key"]=this;}return C;}var i=g();i.next();var C=i.next("x").value,c=new C();c.x===c',
 ]) passes(text);
 for (const text of ['class C{x=arguments}', 'class C{x=()=>arguments}', 'class C{x=({arguments})}', 'class C{x=super()}', 'class C{x=yield 1}', 'async function f(){class C{x=await 1}}', 'class C{#x=1}', 'class C{static{}}']) {
-    check(prepareBoundedScript({ id: "invalid-fields", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
+    if (text === 'class C{static{}}') check(run(text).type === "normal", "original static block executes");
+    else check(prepareBoundedScript({ id: "invalid-fields", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
 }
 const planned = parseBoundedScriptDeclarationPlan({ id: "field-scope-order", text: "class C{a=()=>1;b=()=>2;}" });
 check(planned.kind === "complete" && planned.scopes.map(scope => scope.kind).join(",") === "script,class,field-initializer,function,field-initializer,function", "initializer scopes follow syntax preorder");

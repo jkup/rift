@@ -1,5 +1,5 @@
 import { hasParameterExpressions } from "./formal-parameters.js";
-import type { DestructuringPattern, ClassFieldInitializer } from "./syntax.js";
+import type { DestructuringPattern, ClassInitializer } from "./syntax.js";
 import { parseDeclarationPlan } from "./parser.js";
 import { scriptPrologue } from "./script-prologue.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
@@ -18,7 +18,7 @@ export type Declaration = {
   readonly initializer: { readonly start: number; readonly end: number } | null;
 };
 export type DeclarationScope = {
-  readonly id: number; readonly kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class" | "field-initializer";
+  readonly id: number; readonly kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class" | "field-initializer" | "static-block";
   readonly catchParameter: DeclarationSite | null;
   readonly parent: number | null;
   readonly start: number; readonly end: number;
@@ -66,7 +66,7 @@ export type DeclarationNodes = {
     assignmentNameEligible: Map<Expr, boolean>;
     source: SourceText;
     body: Stmt[];
-    scopes: Map<number, { node: Stmt | Expr | ClassFieldInitializer | null; body: Stmt[] }>;
+    scopes: Map<number, { node: Stmt | Expr | ClassInitializer | null; body: Stmt[] }>;
     declarations: Map<number, { node: Stmt; initializer: Expr | null }>;
 };
 export type ParsedBinding = {
@@ -74,14 +74,14 @@ export type ParsedBinding = {
     initializer: { start: number; end: number } | null;
 };
 type MutableScope = {
-    id: number; kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class" | "field-initializer"; parent: number | null;
+    id: number; kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class" | "field-initializer" | "static-block"; parent: number | null;
     catchParameter: DeclarationSite | null;
     start: number; end: number; strict: boolean; formals: DeclarationSite[];
     lexicalDeclarations: number[]; varDeclarations: number[];
     lexicalNames: string[]; varNames: string[];
 };
 type Work =
-    | { kind: "field-initializer"; node: ClassFieldInitializer; scope: number }
+    | { kind: "class-initializer"; node: ClassInitializer; scope: number }
     | { kind: "switch"; node: SwitchStmt; scope: number; variableScope: number }
     | { kind: "catch"; node: TryCatchStmt; scope: number; variableScope: number }
     | { kind: "block-end"; scope: number }
@@ -295,7 +295,7 @@ class DeclarationCollector {
     readonly arrowScopes = new Set<number>();
     readonly nonLegacyFunctionScopes = new Set<number>();
     readonly restrictedAssignments: { name: string; scope: number; loc: Location }[] = [];
-    readonly fieldArguments: Location[] = [];
+    readonly initializerArguments: Location[] = [];
     readonly scopes: MutableScope[] = [];
     readonly declarations: Declaration[] = [];
     readonly functions: PlannedFunction[] = [];
@@ -558,11 +558,15 @@ class DeclarationCollector {
                 if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: [] });
                 for (let i = node.elements.length - 1; i >= 0; i--) {
                     const element = node.elements[i];
+                    if (element.kind === "static-block") {
+                        this.work.push({ kind: "class-initializer", node: element, scope: id });
+                        continue;
+                    }
                     if (element.kind !== "field") this.expression(element.value, id, variableScope);
                     else if (element.initializer !== null) {
-                        this.work.push({ kind: "field-initializer", node: element.initializer, scope: id });
+                        this.work.push({ kind: "class-initializer", node: element.initializer, scope: id });
                     }
-                    this.expression(node.elements[i].key, id, variableScope);
+                    this.expression(element.key, id, variableScope);
                 }
                 if (node.heritage !== null) this.expression(node.heritage, id, variableScope);
                 break;
@@ -618,8 +622,8 @@ class DeclarationCollector {
                         this.nodes?.argumentsScopes?.add(current);
                         break;
                     }
-                    if (parent.kind === "field-initializer") {
-                        if (node.name === "arguments") this.fieldArguments.push(node.loc);
+                    if (parent.kind === "field-initializer" || parent.kind === "static-block") {
+                        if (node.name === "arguments") this.initializerArguments.push(node.loc);
                         break;
                     }
                     current = parent.parent;
@@ -675,10 +679,11 @@ class DeclarationCollector {
                 if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: node.handler.body });
                 this.statement(node.handler, id, item.variableScope);
             }
-            else if (item.kind === "field-initializer") {
-                const node = item.node, id = this.scope("field-initializer", item.scope, node.start, node.end, true, []);
-                if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: [] });
-                this.expression(node.value, id, id);
+            else if (item.kind === "class-initializer") {
+                const node = item.node, id = this.scope(node.kind, item.scope, node.start, node.end, true, []);
+                if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: node.kind === "static-block" ? node.body : [] });
+                if (node.kind === "static-block") this.statements(node.body, id, id);
+                else this.expression(node.value, id, id);
             }
             else if (item.kind === "statement") this.visitStatement(item.node, item.scope, item.variableScope);
             else if (item.kind === "expression") this.visitExpression(item.node, item.scope, item.variableScope);
@@ -690,9 +695,9 @@ class DeclarationCollector {
         }
     }
     project(ignoreStrictParameters = false): DeclarationPlanResult {
-        if (this.fieldArguments.length !== 0) return { kind: "blocked", goal: "Script", unit: this.unit,
+        if (this.initializerArguments.length !== 0) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
-            diagnostic: { phase: "parse", name: "SyntaxError", message: "arguments is forbidden in a class field initializer", loc: this.fieldArguments[0] } };
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "arguments is forbidden in a class initializer", loc: this.initializerArguments[0] } };
         const restricted = this.restrictedBinding();
         if (restricted !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },

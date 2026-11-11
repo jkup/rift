@@ -3,7 +3,7 @@ import { isSuspendingGeneratorExpression } from "./generator-expression.js";
 import type { GeneratorYieldStmt, AwaitExpr } from "./syntax.js";
 import { validateRegExpLiteral } from "./regexp-literal-validation.js";
 import type { SuperContext } from "./syntax.js";
-import type { ClassExpr, ClassElement, ClassFieldInitializer } from "./syntax.js";
+import type { ClassExpr, ClassElement, ClassFieldInitializer, ClassStaticBlock } from "./syntax.js";
 import type { DestructuringPattern, ArrayPattern, ObjectPattern, PatternElement } from "./syntax.js";
 import { collectNumericSeparatorAudit, type NumericSeparatorAudit } from "./script-declarations.js";
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
@@ -471,6 +471,7 @@ class Parser {
         if (this.structuralPlan() && this.eat("for")) {
             const awaited = this.eat("await");
             if (awaited && !this.asyncContext) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "for-await requires an async body", loc);
+            if (awaited && this.functions === 0) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "for-await is forbidden in a static block", loc);
             this.expect("(");
             if ((this.at("let") || this.at("const") || this.at("var")) && (this.token(this.index + 1)?.text === "[" || this.token(this.index + 1)?.text === "{")) {
                 const declarationKind = this.take().text;
@@ -761,7 +762,7 @@ class Parser {
                 pending.push({ expression: node, visited: true });
                 if (node.kind === "class") {
                     if (node.heritage !== null) pending.push({ expression: node.heritage, visited: false });
-                    for (const element of node.elements) pending.push({ expression: element.key, visited: false });
+                    for (const element of node.elements) if (element.kind !== "static-block") pending.push({ expression: element.key, visited: false });
                 }
                 else if (node.kind === "chain") {
                     pending.push({ expression: node.base, visited: false });
@@ -803,7 +804,7 @@ class Parser {
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
             } else if (node.kind === "class") {
-                if (isSuspendingGeneratorExpression(node.heritage) || node.elements.some(element => isSuspendingGeneratorExpression(element.key))) node.suspends = true;
+                if (isSuspendingGeneratorExpression(node.heritage) || node.elements.some(element => element.kind !== "static-block" && isSuspendingGeneratorExpression(element.key))) node.suspends = true;
             } else if (node.kind === "chain") {
                 if (isSuspendingGeneratorExpression(node.base) || node.links.some(link => link.kind === "member"
                     ? isSuspendingGeneratorExpression(link.key)
@@ -1215,6 +1216,10 @@ class Parser {
         let constructorMethod: Extract<Expr, { kind: "function" }> | null = null;
         while (!this.at("}") && this.error === null) {
             if (this.eat(";")) continue;
+            if (this.at("static") && this.token(this.index + 1).text === "{") {
+                elements.push(this.classStaticBlock());
+                continue;
+            }
             let isStatic = false;
             if (this.at("static") && !["(", ";", "}", "="].includes(this.token(this.index + 1).text)) { this.take(); isStatic = true; }
             const first = this.current();
@@ -1268,6 +1273,36 @@ class Parser {
         }
         this.expect("}");
         return { kind: "class", loc, source: this.source, start, end: this.token(this.index - 1).end, name, heritage, constructorMethod, elements };
+    }
+    private classStaticBlock(): ClassStaticBlock {
+        const first = this.take();
+        this.expect("{");
+        const functions = this.functions, loops = this.loops, switches = this.switches, labels = this.labels;
+        const asynchronous = this.asyncContext, awaits = this.awaits, generator = this.generatorContext, yields = this.generatorYields;
+        const target = this.newTargetAllowed, superContext = this.superContext;
+        this.functions = 0;
+        this.loops = 0;
+        this.switches = 0;
+        this.labels = [];
+        this.asyncContext = true;
+        this.awaits = [];
+        this.generatorContext = false;
+        this.generatorYields = [];
+        this.newTargetAllowed = true;
+        this.superContext = "method";
+        const body = this.list(true, []);
+        if (this.awaits.length !== 0) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "await is forbidden in a static block", this.awaits[0].loc);
+        this.functions = functions;
+        this.loops = loops;
+        this.switches = switches;
+        this.labels = labels;
+        this.asyncContext = asynchronous;
+        this.awaits = awaits;
+        this.generatorContext = generator;
+        this.generatorYields = yields;
+        this.newTargetAllowed = target;
+        this.superContext = superContext;
+        return { kind: "static-block", isStatic: true, loc: first.loc, start: first.start, end: this.token(this.index - 1).end, body };
     }
     private classFieldInitializer(): ClassFieldInitializer {
         const first = this.current();

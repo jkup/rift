@@ -13,6 +13,9 @@ for(const source of ["class C{};let C;","class C{constructor(){} constructor(){}
     } else if (source === "class C{x=1}") {
         const initialized = parseBoundedScriptDeclarationPlan({id:"initialized-class",text:source});
         check(initialized.kind === "complete" && initialized.scopes.some(scope => scope.kind === "field-initializer" && scope.strict), "initializer scope retains original source");
+    } else if (source === "class C{static{}}") {
+        const block = parseBoundedScriptDeclarationPlan({id:"static-block",text:source});
+        check(block.kind === "complete" && block.scopes.some(scope => scope.kind === "static-block" && scope.strict), "static block retains original source");
     } else check(parseBoundedScriptDeclarationPlan({id:"invalid-class",text:source}).kind!=="complete","reject "+source);
 check(parse(text).error!==null,"legacy class boundary");
 console.log("Class planning passed");

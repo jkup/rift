@@ -1,4 +1,4 @@
-import type { ScriptFieldEnvironment } from "../src/script-environment.js";
+import type { ScriptClassInitializationEnvironment } from "../src/script-environment.js";
 import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
 import { prepareStrictScript, type ExecutableScript, type ScriptGuestCallable } from "../src/script-record.js";
@@ -59,10 +59,10 @@ function activation(r: ExecutableScript, c: ScriptGuestCallable, b: Budget, rece
 function block(r: ExecutableScript, scope: number, outer: ScriptEnvironment, b: Budget): ScriptDeclarativeEnvironment {
     const a = r.createBlockEnvironment(scope, outer, b.context); if (a.type !== "normal") throw new Error("block"); return a.environment;
 }
-function value(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | ScriptFieldEnvironment | GlobalEnvironment, name: string): Value {
+function value(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | ScriptClassInitializationEnvironment | GlobalEnvironment, name: string): Value {
     const result = e.getBindingValue(name, context, loc); if (result.type !== "normal") throw new Error("binding " + name); return result.value;
 }
-function state(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | ScriptFieldEnvironment | GlobalEnvironment, name: string, expected: string, identity: Value = UNDEFINED): void {
+function state(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | ScriptClassInitializationEnvironment | GlobalEnvironment, name: string, expected: string, identity: Value = UNDEFINED): void {
     const present = e.hasBinding(name, loc); check(present.type === "normal" && present.value === (expected !== "absent"), "presence " + name + " " + expected);
     if (expected === "absent") return;
     const result = e.getBindingValue(name, context, loc);
@@ -72,7 +72,7 @@ function state(context: OperationContext, e: ScriptFunctionEnvironment | ScriptD
     else if (expected === "undefined") check(result.value.kind === "undefined", "undefined " + name);
     else check(result.value.kind === "object" && result.value.object.callable?.kind === "script-guest", "real closure " + name);
 }
-function closure(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | ScriptFieldEnvironment | GlobalEnvironment, name: string, r: ExecutableScript, scope: number, outer: ScriptEnvironment): GuestObject {
+function closure(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | ScriptClassInitializationEnvironment | GlobalEnvironment, name: string, r: ExecutableScript, scope: number, outer: ScriptEnvironment): GuestObject {
     const v = value(context,e, name); if (v.kind !== "object") throw new Error("closure object");
     const c = callable(v.object);
     check(c.record === r && c.realm === rRealm && c.scopeId === scope && c.environment === outer && c.strict && c.thisMode === "strict", "closure capture " + name);
