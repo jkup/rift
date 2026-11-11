@@ -1,14 +1,14 @@
 # Development roadmap
 
-Updated 2026-11-10. The original catch-up review covered history through `ec63ebee` and
+Updated 2026-11-11. The original catch-up review covered history through `ec63ebee` and
 [Claude's review, PR #82](https://github.com/jkup/rift/pull/82).
 
 ## Current checkpoint
 
-The accepted temporal-duration-date milestone passes 891/891 guests on each
-host, 295/295 tooling checks, and all 398 native static gates.
-The unchanged 225-file C++ corpus has 190 completions: 116 reported successes and
-74 unchecked completions. Remaining outcomes are 2 parse errors, 32 runtime
+The accepted parity-rollup milestone passes 923/923 guests on each
+host, 295/295 tooling checks, and all 430 native static gates.
+The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
+74 unchecked completions. Remaining outcomes are 2 parse errors, 31 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
 Test262 conformance score.
 
@@ -33,12 +33,12 @@ Property updates, computed super reads/calls/writes/updates/deletion and async
 super constructor arguments are accepted. Nested destructuring values,
 nullish/logical operators, optional chains and class heritage/computed keys
 now preserve suspended evaluation contexts. Tagged templates preserve call references and cache frozen arrays per Realm/site.
-Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric backreferences and lookahead are accepted; Unicode regex modes, lookbehind and named groups remain unsupported.
+Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric backreferences, lookahead and unique ASCII named captures are accepted; Unicode regex modes and lookbehind remain unsupported. Unicode/escaped capture names and disjoint duplicate names remain follow-ups.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
 resuming from another session restores caller state and uses current budgets.
-Temporal, class fields and remaining destructuring contexts are separate gaps.
+Zoned Temporal, public field initializers and static blocks are accepted. Private fields, IANA/system timezones and Intl remain gaps.
 
 Temporal fixture audit (2026-11-10): eight of the nine original Temporal fixtures
 call constructors without new, including test-temporal-plain-date.js:28 and
@@ -764,3 +764,5 @@ The TS-442 isolated successor now passes 921/921 Node guests and its native gate
 2026-11-11 compiler inspection follow-up: [TS-444](validation/ts-444-array-widening/README.md) demonstrates native loss of array aliasing when mutable element types widen across a helper return. Uniform initializer storage fixes the isolated static-block path. Audit other shared mutable array conversions with reduced both-host probes; static coverage alone does not detect this failure. [TS-445](regexp-named-captures-review.md) defines the next named RegExp capture increments; unique ASCII names are in isolated validation, while Unicode names and disjoint duplicates remain separate work.
 
 Unicode RegExp follow-up: docs/regexp-unicode-mode-review.md records the strict parsing, code-point traversal and validated simple-case-fold prerequisites. Decide and document the inside-surrogate lastIndex behavior against open ECMA-262 issue128 before exposing that path. The TS-451 instruction-union compiler finding is reduced in docs/validation/ts-451-instruction-union; explicit instruction construction passes the native gate.
+
+2026-11-11 Zoned Temporal / classes / String / named captures milestone accepted: 923/923 guests on each host without skips, all 430 native static-only/zero-dynamic gates pass; the initial matrix took 5877524ms and two disk-space failures passed unchanged-source retries after removing regenerable LLVM intermediates (original failures retained in parity-rollup-native-before-disk-retry.json; retries in parity-rollup-native-disk-retries.json), tooling295/295, runner35/35, ten probes and typechecking pass. Corpus node-d5Z01A/native-7doHd7 matches all225 normalized records, preserves190 prior completions and reaches191 (117 reported successes,74 unchecked completions). The added original fixture is string_additional_methods.js with35 checks; all original bytes remain unchanged. UTC/fixed-offset ZonedDateTime and zoned relative Duration operations, public field initializers, static blocks, Unicode normalization, non-Intl locale casing/comparison and unique ASCII named RegExp captures are included. Descriptor validation avoids temporary arrays and unnecessary absent-accessor checks, restoring the existing native timeout gate without changing assertions. The failed initial zoned build, its successful Zig cache-open retry, both 913/917 timeout runs and diagnostic timing comparisons remain retained. This fresh full matrix supersedes their incomplete acceptance. IANA/system timezones, Intl, private fields, Unicode/escaped capture names and disjoint duplicate names remain follow-ups. Evidence: build/parity-rollup-*, docs/native-harness-performance.md and feature reviews.
