@@ -5,8 +5,8 @@ Updated 2026-11-11. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
-The accepted parity-rollup milestone passes 923/923 guests on each
-host, 295/295 tooling checks, and all 430 native static gates.
+The accepted Unicode RegExp milestone passes 928/928 guests on each
+host, 295/295 tooling checks, and all 435 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 31 runtime
 errors and one reported failure. These are diagnostic fixture results, not a
@@ -33,7 +33,7 @@ Property updates, computed super reads/calls/writes/updates/deletion and async
 super constructor arguments are accepted. Nested destructuring values,
 nullish/logical operators, optional chains and class heritage/computed keys
 now preserve suspended evaluation contexts. Tagged templates preserve call references and cache frozen arrays per Realm/site.
-Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric backreferences, lookahead and unique ASCII named captures are accepted; Unicode regex modes and lookbehind remain unsupported. Unicode/escaped capture names and disjoint duplicate names remain follow-ups.
+Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric/named backreferences, lookahead, Unicode/escaped capture names, disjoint duplicates and Unicode u-mode matching are accepted. Property escapes, v-mode and lookbehind remain unsupported.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
@@ -774,3 +774,4 @@ Private class follow-up: [the design review](class-private-elements-review.md) i
 
 2026-11-11 TS-462 bounded positive-fixture grammar review is complete:117 exact source literals across five class/object-method tests were independently syntax-checked with Node.115 pass; the only two contradictions are the already identified TS-461 accessor-newline expectations. No additional grammar finding in this sample. docs/class-fixture-grammar-review.md records extraction exclusions and distinguishes syntax review from semantic correctness. Canonical runtime and C++ fixtures are unchanged.
 
+2026-11-11 Unicode RegExp milestone accepted (TS-449,451,454–456):928/928 guests on both hosts without skips;435 native static-only/zero-dynamic build gates in 5831499ms;tooling295/295,runner35/35,ten probes and typechecking pass. Corpus node-ZxCBzX/native-dSLloe matches all225 normalized records and preserves all191 preceding completions; current completions=191. Unicode/escaped capture names, disjoint duplicate names, strict u-mode syntax, code-point matching and Unicode17 simple case folding are accepted. Captures and public indices remain UTF-16. Inside-pair lastIndex selects the containing character and reports its actual start, as documented against open ECMA-262 issue128. Property escapes, v-mode and lookbehind remain unsupported. The interrupted initial build log is retained; recovery reused only checkpointed PASS entries whose executable hashes matched the frozen source snapshot. Generated LLVM intermediates are removed only after successful build/coverage gates; executables and raw validation reports are retained. Evidence: build/regexp-unicode-rollup-* and the Unicode RegExp feature/review documents.
