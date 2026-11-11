@@ -26,3 +26,10 @@ A follow-up READY-draft cleanup removed another 2,023,526,912 bytes from
 13,070 hash-identical validation files, with no deletion failures. Available
 space was about 119.8 GB afterward. The manifest is
 `build/iana-timezone-adjacent-validation-copy-cleanup.json`.
+
+A second historical cleanup removed 8,698,694,971 bytes from 5,651
+hash-identical validation copies in six inactive implementation directories,
+with no deletion failures. Available space rose from about 111 GiB to 119 GiB.
+Source, executables, differing evidence, and active builds were retained.
+Per-directory compressed manifests and the canonical hash catalog are in
+`build/storage-historical-duplicate-cleanup/`.
