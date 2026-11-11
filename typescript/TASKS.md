@@ -4960,3 +4960,5 @@ TS-446 also owns test/regexp-literals.ts; its historical named literal remains u
 ## TS-447 — Unicode identifier data prerequisite review
 
 Status: **done — exhaustive both-host data review**. Owner: Codex catch-up chat, 2026-11-11. Review official Unicode 17 ID_Start/ID_Continue data and a compact generated interval representation for full RegExp capture-name validation. Keep guest classification independent of host RegExp and preserve the official data/version identity. Own docs/unicode-identifiers-review.md and ignored build/unicode-identifier-review evidence. No runtime or companion-proposal changes.
+
+2026-11-11 TS-446 isolated gates pass: Node923/923, focused native static-only/zero-dynamic execution, all eight native/Node RegExp regressions, 15 rebuilt tooling drivers and tooling295/295. Six-draft ownership snapshots pass. Named captures remain queued behind canonical zoned and class/String acceptance. Retain initial regression failures and interrupted Node logs.
