@@ -5193,3 +5193,7 @@ Status: **done — user-requested cleanup**. Owner: Codex catch-up chat, 2026-11
 ## TS-475 — C++ builtin surface gap audit
 
 Status: **done — registration differences classified**. Owner: Codex catch-up chat, 2026-11-11. Compare C++ builtin registrations with the integrated TypeScript runtime to identify concrete remaining API gaps after private/Reflect work. Check property presence, callable/getter shape and method arity without invoking arbitrary prototype getters. Distinguish API presence from semantics and compiler-blocked weak storage; preserve original fixtures. Own docs/cpp-builtin-surface-review.md and ignored audit helpers/reports. No runtime changes or conformance percentage claims.
+
+## TS-476 — Supported RegExp differential review
+
+Status: **done — bounded Node differential review**. Owner: Codex catch-up chat, 2026-11-11. Compare deterministic patterns within the implemented RegExp subset against an explicit Node reference subprocess, preserving every initial mismatch for reduction. Prioritize capture/backtracking/Unicode semantics beyond mere API presence. No lookbehind, property escapes or v-mode admission; no host execution in the guest engine. Own ignored review helpers/reports and docs/regexp-differential-review.md. Runtime fixes require a separately claimed, reduced task and both-host gates.
