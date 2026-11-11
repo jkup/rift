@@ -319,6 +319,7 @@ const entries = [
     ["test/reflect-apply.ts", "reflect-apply"],
     ["test/legacy-escape.ts", "legacy-escape"],
     ["test/iana-timezone-data.ts", "iana-timezone-data"],
+    ["test/iana-timezone-recurrence.ts", "iana-timezone-recurrence"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -3,6 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { parseTimeZoneFooter } from './parse-timezone-footer.mjs';
 
 const input = path.resolve(process.argv[2] ?? 'build/iana-timezone-review');
 const project = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -78,15 +79,24 @@ for (const [identifier, target] of links) {
 }
 assert.equal(zones.reduce((count, zone) => count + zone.transitions.length, 0), 26448);
 let generated = '// Generated from IANA 2026f; see docs/iana-timezone-provenance.json.\n';
-generated += 'export class IanaZoneData {\n    readonly identifier: string;\n    readonly initialOffset: number;\n    readonly transitions: number[];\n    readonly offsets: number[];\n    readonly footer: string;\n\n    constructor(identifier: string, initialOffset: number, transitions: number[], offsets: number[], footer: string) {\n        this.identifier = identifier; this.initialOffset = initialOffset;\n        this.transitions = transitions; this.offsets = offsets; this.footer = footer;\n    }\n}\n\nexport const ianaZones: IanaZoneData[] = [\n';
-for (const zone of zones) generated += '    new IanaZoneData(' + [JSON.stringify(zone.identifier), zone.initialOffset, JSON.stringify(zone.transitions), JSON.stringify(zone.offsets), JSON.stringify(zone.footer)].join(', ') + '),\n';
+generated += 'import { TimeZoneRule, TimeZoneRecurrence } from "./time-zone-recurrence.js";\n\n';
+const footers = [...new Set(zones.map(zone => zone.footer))];
+assert.equal(footers.length, 94);
+const ruleText = rule => rule === null ? 'null' : 'new TimeZoneRule(' + [rule.kind, rule.month, rule.week, rule.day, rule.seconds].join(', ') + ')';
+generated += 'export const ianaRecurrences: TimeZoneRecurrence[] = [\n';
+for (const footer of footers) {
+    const rule = parseTimeZoneFooter(footer);
+    generated += '    new TimeZoneRecurrence(' + [rule.standard, rule.daylight, ruleText(rule.start), ruleText(rule.end)].join(', ') + '),\n';
+}
+generated += '];\n\nexport class IanaZoneData {\n    readonly identifier: string;\n    readonly initialOffset: number;\n    readonly transitions: number[];\n    readonly offsets: number[];\n    readonly footer: string;\n    readonly recurrence: TimeZoneRecurrence;\n\n    constructor(identifier: string, initialOffset: number, transitions: number[], offsets: number[], footer: string, recurrence: TimeZoneRecurrence) {\n        this.identifier = identifier; this.initialOffset = initialOffset;\n        this.transitions = transitions; this.offsets = offsets; this.footer = footer;\n        this.recurrence = recurrence;\n    }\n}\n\nexport const ianaZones: IanaZoneData[] = [\n';
+for (const zone of zones) generated += '    new IanaZoneData(' + [JSON.stringify(zone.identifier), zone.initialOffset, JSON.stringify(zone.transitions), JSON.stringify(zone.offsets), JSON.stringify(zone.footer), 'ianaRecurrences[' + footers.indexOf(zone.footer) + ']'].join(', ') + '),\n';
 generated += '];\n\nexport const ianaLinks: string[][] = ' + JSON.stringify(links) + ';\n';
 const provenance = {
     release: '2026f', archives: archives.map(([name, sha256]) => ({ url: 'https://data.iana.org/time-zones/releases/' + name, sha256 })),
     commands: ['make -B zic tzdata.zi VERSION=2026f PACKRATDATA=backzone PACKRATLIST=zone.tab', './zic -b fat -d ../zoneinfo tzdata.zi'],
     sourceSha256: hash(source), tablesSha256: hash(JSON.stringify(zones.map(zone => [zone.identifier, zone.sha256]))),
-    outputSha256: hash(generated), zones: zones.length, links: links.length, transitions: 26448,
-    scope: 'Internal offset records and raw links; not a public identifier registry. Footer evaluation and primary-identifier policy are separate.'
+    outputSha256: hash(generated), zones: zones.length, links: links.length, transitions: 26448, recurrenceRules: footers.length,
+    scope: 'Internal offset records, recurrence rules and raw links; not a public identifier registry. Primary-identifier policy and local-time resolution are separate.'
 };
 for (const [name, bytes] of [['src/iana-timezone-data.ts', generated], ['docs/iana-timezone-license.txt', license], ['docs/iana-timezone-provenance.json', JSON.stringify(provenance, null, 2) + '\n']]) {
     const destination = path.join(project, name);
