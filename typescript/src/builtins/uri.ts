@@ -2,8 +2,10 @@ import type { Realm } from "../realm.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString } from "../conversion.js";
 import { languageFailure, normal, UNDEFINED, type ValueCompletion } from "../runtime.js";
+import { registerLegacyEscape } from "./legacy-escape.js";
 
 export function registerURI(realm: Realm): void {
+    registerLegacyEscape(realm);
     for (const name of ["encodeURI", "encodeURIComponent", "decodeURI", "decodeURIComponent"]) {
         realm.registerBuiltin(realm.globalObject, name, 1, (_receiver, args, context, loc): ValueCompletion => {
             const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);

@@ -900,6 +900,7 @@ executeDriver("reflect-introspection", { stdout: "reflect introspection passed\n
 executeDriver("reflect-mutation", { stdout: "reflect mutation passed\n" });
 executeDriver("reflect-access", { stdout: "reflect access passed\n" });
 executeDriver("reflect-apply", { stdout: "reflect apply passed\n" });
+executeDriver("legacy-escape", { stdout: "legacy escape passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

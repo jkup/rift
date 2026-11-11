@@ -2,7 +2,7 @@
 export const scriptGlobalKeys = [
     "undefined", "NaN", "Infinity", "console", "Function", "Reflect", "Promise", "RegExp", "globalThis", "eval", "Number", "parseInt", "parseFloat", "BigInt",
     "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "EvalError", "URIError", "AggregateError",
-    "String", "Boolean", "Object", "Array", "Math", "isNaN", "isFinite", "encodeURI", "encodeURIComponent", "decodeURI", "decodeURIComponent", "JSON", "Symbol", "Map", "Set", "Temporal", "Date",
+    "String", "Boolean", "Object", "Array", "Math", "isNaN", "isFinite", "escape", "unescape", "encodeURI", "encodeURIComponent", "decodeURI", "decodeURIComponent", "JSON", "Symbol", "Map", "Set", "Temporal", "Date",
 ];
 
 export const objectMethods = [

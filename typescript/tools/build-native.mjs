@@ -317,6 +317,7 @@ const entries = [
     ["test/reflect-mutation.ts", "reflect-mutation"],
     ["test/reflect-access.ts", "reflect-access"],
     ["test/reflect-apply.ts", "reflect-apply"],
+    ["test/legacy-escape.ts", "legacy-escape"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

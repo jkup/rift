@@ -3,7 +3,7 @@
 TS-124 adds encodeURI, encodeURIComponent, decodeURI and decodeURIComponent to
 Script realms. They have ordinary writable/configurable, non-enumerable global
 properties, length 1, and no construction capability. Legacy escape/unescape
-and URL parsing are separate work.
+are implemented separately in `legacy-escape.ts`; URL parsing remains separate work.
 
 The wrapper performs guest ToPrimitive with the string hint and ToString before
 entering a host codec. Guest hooks, symbols and abrupt completions retain the
