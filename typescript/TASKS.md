@@ -4978,3 +4978,7 @@ Status: **in progress — isolated successor to TS-448**. Owner: Codex catch-up 
 ## TS-450 — Duplicate named capture participation review
 
 Status: **done — participation review and 21 reference checks**. Owner: Codex catch-up chat, 2026-11-11. Review structural participation rules for duplicate named captures, reference selection and groups/indices publication against the current specification and pinned engine262. Own docs/regexp-duplicate-names-review.md and ignored reference evidence. No changes to either frozen runtime under validation.
+
+## TS-451 — Disjoint duplicate RegExp capture names
+
+Status: **in progress — isolated successor to TS-450**. Owner: Codex catch-up chat, 2026-11-10. Implement the TS-450 reviewed structural participation rule, budgeted named reference selection and participating groups/indices publication. Preserve numeric capture behavior and historical source inputs. Work in an isolated draft while canonical acceptance remains frozen. Own src/regexp-pattern-syntax.ts, src/regexp-matcher.ts, src/builtins/regexp-execution.ts, test/regexp-named-captures.ts, test/regexp-unicode-names.ts and tests/manifests/docs in build/regexp-duplicate-names-draft/.
