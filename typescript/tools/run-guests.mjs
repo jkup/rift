@@ -886,6 +886,7 @@ executeDriver("regexp-named-captures", { stdout: "regexp named captures passed\n
 executeDriver("regexp-unicode-names", { stdout: "regexp unicode names passed\n" });
 executeDriver("regexp-duplicate-names", { stdout: "regexp duplicate names passed\n" });
 executeDriver("regexp-unicode-syntax", { stdout: "regexp unicode syntax passed\n" });
+executeDriver("regexp-unicode-matcher", { stdout: "regexp unicode matcher passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

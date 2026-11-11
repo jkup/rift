@@ -5007,7 +5007,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-455 — Unicode RegExp matcher prerequisite
 
-Status: **in progress — isolated successor to TS-454**. Owner: Codex catch-up chat, 2026-11-10. Integrate the exhaustively reviewed Unicode17 simple-fold backend into an explicit internal Unicode matcher mode. Match code points while retaining UTF-16 captures, budget comparisons and preserve legacy matching. Public u/v admission remains disabled pending reviewed integration and index behavior. Own src/regexp-matcher.ts and tests/manifests/docs in build/regexp-unicode-matcher-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Integrate the exhaustively reviewed Unicode17 simple-fold backend into an explicit internal Unicode matcher mode. Match code points while retaining UTF-16 captures, budget comparisons and preserve legacy matching. Public u/v admission remains disabled pending reviewed integration and index behavior. Own src/regexp-matcher.ts and tests/manifests/docs in build/regexp-unicode-matcher-draft/.
 
 2026-11-11 TS-454 passes all926 Node guests, seven both-host RegExp regressions and15 native tooling builds; tooling295 is running. TS-455 internal Unicode matching passes focused Node/resource checks and2992 independent reference cases with exact UTF-16 capture spans. Its full Node927 run is active; native checks wait for the preceding tooling job. Public Unicode admission remains disabled in both drafts.
 
