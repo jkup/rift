@@ -156,3 +156,24 @@ Its identity comparisons are useful evidence, but it must not override the
 pinned release’s changed offsets. Raw process transcripts, generated cases, both
 native reports and artifact hashes are retained under the review directory.
 No canonical runtime files changed.
+
+## Reviewed implementation sequence
+
+The full400-year Gregorian cycle plus the earlier extreme-year controls now
+passes200490 upstream-reference offsets on both hosts,126/126 static statements.
+The initial standalone typecheck lacked explicit Node types for fs; its diagnostic
+and the follow-on missing-helper invocation are retained. Adding --types node
+fixed the harness setup; recurrence semantics and reference values did not change.
+
+The internal backend is ready for bounded implementation slices: first versioned
+typed data and transition lookup (TS-478), then recurrence, then identifier/local
+time resolution, then migration of every fixed-offset consumer. Keep guest names
+disabled until all required layers and combined native tests pass. The provider
+retains encoded historical offsets, including zero in records marked -00; it does
+not claim historical certainty or substitute a guessed offset.
+
+Factory remains an internal data/control record during these slices. Public
+admission policy must be decided explicitly in the identifier task, preserving
+its distinction from historical -00 records in real locations. This deferred
+policy does not block table/recurrence implementation, and must not disappear
+from the later guest-admission checklist.
