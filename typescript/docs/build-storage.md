@@ -33,3 +33,11 @@ with no deletion failures. Available space rose from about 111 GiB to 119 GiB.
 Source, executables, differing evidence, and active builds were retained.
 Per-directory compressed manifests and the canonical hash catalog are in
 `build/storage-historical-duplicate-cleanup/`.
+
+The two completed Temporal drafts subsequently released 4,047,057,322 bytes
+from 25,903 hash-identical validation copies. Their manifests are
+`build/temporal-zone-operations-validation-copy-cleanup.json` and
+`build/temporal-named-time-zones-validation-copy-cleanup.json`.
+Each draft retained 126 read-only files that could not be removed.
+A follow-up disk check showed 127.0 GB (118.3 GiB) available.
+
