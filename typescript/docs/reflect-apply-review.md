@@ -30,3 +30,6 @@ regressions during implementation. These references are not Rift acceptance.
 
 Implementation now shares budgeted array-like conversion across all three callers. Typechecking, twenty-five focused guest programs, async/Realm/budget tests, Function.apply and construct-target regressions, and eight producer-codec records pass under Node. Full 940-guest Node validation is running; native validation remains pending. The prerequisite Reflect access focus and all ten native regression runs passed before implementation began.
 
+
+Isolated validation is READY: 940/940 Node guests, focused native with 19,968 static statements, nine native regression groups, fifteen tooling builds, 296 tooling tests, eight codec records per host and sixteen parent-envelope checks pass. Canonical integration remains pending the frozen private-field rollup.
+

@@ -5152,7 +5152,7 @@ Status: **in progress — isolated READY; canonical rollup pending**. Owner: Cod
 
 ## TS-471 — Reflect.apply and shared argument lists
 
-Status: **in progress — reference review; implementation waits for TS-470 native regressions**. Owner: Codex catch-up chat, 2026-11-11. Complete the Reflect surface with apply. Validate callable targets before reading array-like arguments, reject non-object lists, preserve ordered reads and target invocation, bound work and retain Realm semantics. Review sharing the existing list conversion across Reflect.construct, Reflect.apply and Function.prototype.apply while preserving each caller's validation and nullish-list behavior. Planned ownership: src/array-like.ts, src/builtins/reflect.ts, src/builtins/function.ts and dedicated tests/manifests/docs in an isolated successor. Keep canonical inputs frozen.
+Status: **in progress — isolated READY; canonical rollup pending**. Owner: Codex catch-up chat, 2026-11-11. Complete the Reflect surface with apply. Validate callable targets before reading array-like arguments, reject non-object lists, preserve ordered reads and target invocation, bound work and retain Realm semantics. Review sharing the existing list conversion across Reflect.construct, Reflect.apply and Function.prototype.apply while preserving each caller's validation and nullish-list behavior. Planned ownership: src/array-like.ts, src/builtins/reflect.ts, src/builtins/function.ts and dedicated tests/manifests/docs in an isolated successor. Keep canonical inputs frozen.
 
 2026-11-11 TS-469 passes938 Node guests, focused native and all nine native regression groups; tooling-driver builds are running. TS-470 implements Reflect.get/set/has in its isolated successor. Focused Node, super/property-assignment regressions, receiver/Realm/budget checks and eight real codec records pass; full939 Node is running. Its native plan has nine groups and ten runs, explicitly preserving both property-accessor runtime inputs and expected transcripts. TS-471 reference review passes19 programs and confirms the C++ implementation also separates array-like argument conversion from call/construct.
 
@@ -5164,7 +5164,7 @@ Status: **in progress — reference review; implementation waits for TS-470 nati
 
 ## TS-472 — Legacy escape and unescape globals
 
-Status: **in progress — reference review; implementation waits for TS-471 native regressions**. Owner: Codex catch-up chat, 2026-11-11. Close the existing C++ global-function gap with Annex B escape/unescape, using guest string coercion and explicit UTF-16 code-unit processing. Preserve malformed escape text, lone surrogates, uppercase encoding, exact coercion errors, Realm ownership and bounded work. Planned ownership: src/builtins/uri.ts, new src/builtins/legacy-escape.ts, dedicated tests/manifests/docs in an isolated successor. Preserve existing URI behavior and original fixtures; canonical rollup inputs remain frozen.
+Status: **in progress — isolated successor to TS-471**. Owner: Codex catch-up chat, 2026-11-11. Close the existing C++ global-function gap with Annex B escape/unescape, using guest string coercion and explicit UTF-16 code-unit processing. Preserve malformed escape text, lone surrogates, uppercase encoding, exact coercion errors, Realm ownership and bounded work. Planned ownership: src/builtins/uri.ts, new src/builtins/legacy-escape.ts, dedicated tests/manifests/docs in an isolated successor. Preserve existing URI behavior and original fixtures; canonical rollup inputs remain frozen.
 
 
 2026-11-11 TS-470 is isolated READY after 939 Node guests, focused native, nine regression groups with ten runs, fifteen tooling builds, 296 tooling tests and sixteen parent-envelope checks. TS-471 passes all 940 Node guests and has entered native validation. The frozen private-field milestone's unchanged 225-file corpus agrees exactly across Node/native and preserves all 191 prior completions (native-X4jtE1, node-ehOwl3). The full 441-entry native build remains active.
@@ -5174,4 +5174,7 @@ Status: **in progress — reference review; implementation waits for TS-471 nati
 
 
 2026-11-11 TS-472's initial full Node result was 935/941: six exact-global assertions used a shared inventory missing the newly implemented escape/unescape globals. Added exactly the two names; all six original inputs pass focused Node reruns. Preserve the initial full log/ledger/inventory and all historical fixture bytes. Native coverage now includes all three affected drivers and both inputs each (eleven groups, fourteen runs); full Node is rerunning. Reclaimed 870,278,927 bytes of regenerable LLVM from the READY TS-470 draft after source-hash, passing-report and executable verification; retained executables and raw evidence.
+
+
+2026-11-11 TS-471 is isolated READY after 940 Node guests, focused native, nine native regression groups, fifteen tooling builds, 296 tooling tests and sixteen parent-envelope checks. The canonical private-field build has completed all 441 static-only/zero-dynamic gates in 6,591,496 ms. Its final runtime/tooling run is queued behind the live TS-472 Node rerun to preserve execution timeout isolation.
 
