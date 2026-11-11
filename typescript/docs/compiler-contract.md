@@ -264,3 +264,12 @@ An inferred zero-argument callback passed through a wider builtin signature crea
 
 The pinned compiler rejects a null-first guard on an optional class-or-null parameter with SC1090, even after assigning a local alias or moving that guard into a helper. Testing instanceof before the null comparison preserves the union and passes both-host execution with four static statements and zero dynamic statements. Keep this ordering where validating captured private environments; see [the reduced repro/control](validation/ts-463-nullable-instanceof/README.md). Full-engine acceptance remains separate.
 
+## Private field-key property narrowing (TS-465)
+
+The full private-field engine build reports SC2003 when passing a narrowed
+`field.key` union to `defineOwnProperty`. Capturing the key in a local before
+the initializer-name calculation passes the same focused both-host assertions
+and all 19,788 static statements. Smaller controls do not reproduce the failure;
+the full-engine trigger remains an open compiler investigation. See the
+[exact boundary and evidence limitations](validation/ts-465-private-key-union/README.md).
+

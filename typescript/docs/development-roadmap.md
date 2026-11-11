@@ -5,6 +5,11 @@ Updated 2026-11-11. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
+Compiler investigation: TS-465's full-engine private field-key narrowing fails
+with SC2003; a local key capture passes focused native validation. Smaller
+controls compile, so the trigger is not yet minimized. Preserve this distinction
+when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
+
 The accepted Unicode RegExp milestone passes 928/928 guests on each
 host, 295/295 tooling checks, and all 435 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
