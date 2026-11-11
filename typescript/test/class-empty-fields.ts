@@ -12,6 +12,10 @@ function run(text: string, realm = new Realm((_line: string) => {}, "script")): 
     check(session.inspect().active === null && session.inspect().calls === 0, "caller restored");
     return result;
 }
+function rejects(text: string): void {
+    const result = prepareBoundedScript({ id: "accessor-grammar", text }, new Realm((_line: string) => {}, "script"));
+    check(result.kind !== "ready", "invalid accessor grammar: " + text);
+}
 function passes(text: string): void {
     const result = run(text);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
@@ -37,10 +41,12 @@ passes("var ok=false;try{class C{static [\"prototype\"];}}catch(e){ok=e instance
 passes("class C{static name;static length;}C.name===undefined&&C.length===undefined&&Object.keys(C).join(\",\")===\"length,name\"");
 passes("class C{static;get;set;async;}Object.keys(new C()).join(\",\")===\"static,get,set,async\"");
 passes("class C{static\nx;}Object.hasOwn(C,\"x\")&&!Object.hasOwn(new C(),\"static\")");
-passes("class C{get\nx;set\ny;}Object.keys(new C()).join(\",\")===\"get,x,set,y\"");
-passes("class C{get\n[\"x\"];static get\n[\"y\"];}Object.keys(new C()).join(\",\")===\"get,x,y\"&&Object.hasOwn(C,\"get\")");
+rejects("class C{get\nx;set\ny;}Object.keys(new C()).join(\",\")===\"get,x,set,y\"");
+rejects("class C{get\n[\"x\"];static get\n[\"y\"];}Object.keys(new C()).join(\",\")===\"get,x,y\"&&Object.hasOwn(C,\"get\")");
 passes("class C{get\n[\"x\"](){return 7}static\nm(){return 8}}new C().x===7&&C.m()===8");
 passes("class C{async\nx;}Object.keys(new C()).join(\",\")===\"async,x\"");
+passes("class C{get\n}Object.hasOwn(new C(),\"get\")");
+passes("class C{get\n*x(){yield 1}}new C().x().next().value===1&&Object.hasOwn(new C(),\"get\")");
 passes("class C{x\ny}Object.keys(new C()).join(\",\")===\"x,y\"");
 passes("var ok=false;try{class C{[C];}}catch(e){ok=e instanceof ReferenceError}ok");
 passes("function* f(){return class{[yield \"a\"];static [yield \"b\"];}}var g=f();g.next().value===\"a\"&&g.next(\"x\").value===\"b\"&&((C)=>Object.hasOwn(new C(),\"x\")&&Object.hasOwn(C,\"y\"))(g.next(\"y\").value)");

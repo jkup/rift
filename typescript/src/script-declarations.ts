@@ -592,6 +592,7 @@ class DeclarationCollector {
             case "unary":
                 if (node.op === "delete" && node.operand.kind === "identifier") this.identifierDeletes.push({ scope, loc: node.loc });
                 this.expression(node.operand, scope, variableScope); break;
+            case "private-in": this.expression(node.right, scope, variableScope); break;
             case "binary": this.expression(node.right, scope, variableScope); this.expression(node.left, scope, variableScope); break;
             case "assign": case "compound": this.expression(node.value, scope, variableScope); this.expression(node.target, scope, variableScope); break;
             case "conditional": this.expression(node.alternate, scope, variableScope); this.expression(node.consequent, scope, variableScope); this.expression(node.test, scope, variableScope); break;

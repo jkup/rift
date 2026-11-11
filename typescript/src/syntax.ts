@@ -51,7 +51,11 @@ export type MemberExpr = { kind: "member"; loc: Location; base: Expr; key: Expr;
 export type UnaryExpr = { kind: "unary"; loc: Location; op: string; operand: Expr; suspends?: true };
 export type ConditionalExpr = { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr; suspends?: true };
 export type BinaryExpr = { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr; suspends?: true };
+export type PrivateNameSyntax = { kind: "private-name"; name: string; loc: Location; start: number; end: number };
+export type PrivateInExpr = { kind: "private-in"; loc: Location; name: PrivateNameSyntax; right: Expr; suspends?: true };
 export type Expr =
+    | PrivateNameSyntax
+    | PrivateInExpr
     | AwaitExpr
     | GeneratorYieldStmt
     | { kind: "regexp"; loc: Location; pattern: string; flags: string }

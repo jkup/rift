@@ -1,3 +1,5 @@
+import { PrivateSyntaxScope, type PrivateSyntaxIssue } from "./private-syntax.js";
+import type { PrivateNameSyntax } from "./syntax.js";
 import type { TemplateObjectExpr } from "./syntax.js";
 import { isSuspendingGeneratorExpression } from "./generator-expression.js";
 import type { GeneratorYieldStmt, AwaitExpr } from "./syntax.js";
@@ -209,6 +211,15 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
 type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; computed?: true; value: Expr } | { kind: "rest"; value: Expr };
 type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupported: { reason: Rejection; message: string; loc: Location } | null };
 class Parser {
+    privateSyntaxAudit = false;
+    private privateScope = new PrivateSyntaxScope(null);
+    private readonly privateScopes: PrivateSyntaxScope[] = [this.privateScope];
+    privateIssue: PrivateSyntaxIssue | null = null;
+    private privateName(token: Token, use: boolean): PrivateNameSyntax {
+        const site = { name: token.text, start: token.start, end: token.end, loc: token.loc };
+        if (use) this.privateScope.uses.push(site);
+        return { kind: "private-name", ...site };
+    }
     private generatorContext = false;
     private generatorYields: GeneratorYieldStmt[] = [];
     private asyncContext = false;
@@ -286,6 +297,12 @@ class Parser {
         const body = this.list(false, []);
         for (const cover of this.objectCovers.values()) {
             if (cover.unsupported !== null) this.fail(cover.unsupported.reason, cover.unsupported.message, cover.unsupported.loc);
+        }
+        if (this.privateSyntaxAudit && this.error === null) {
+            for (const scope of this.privateScopes) {
+                const issue = scope.validate();
+                if (issue !== null && (this.privateIssue === null || issue.site.start < this.privateIssue.site.start)) this.privateIssue = issue;
+            }
         }
         return { body, error: this.error, rejection: this.rejection };
     }
@@ -757,7 +774,7 @@ class Parser {
                 if (node.value !== null) pending.push({ expression: node.value, visited: false });
                 continue;
             }
-            if (node.kind !== "class" && node.kind !== "chain" && node.kind !== "destructure" && node.kind !== "super-call" && node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update" && node.kind !== "super-member") continue;
+            if (node.kind !== "private-in" && node.kind !== "class" && node.kind !== "chain" && node.kind !== "destructure" && node.kind !== "super-call" && node.kind !== "binary" && node.kind !== "conditional" && node.kind !== "unary" && node.kind !== "member" && node.kind !== "call" && node.kind !== "array" && node.kind !== "new" && node.kind !== "template" && node.kind !== "object" && node.kind !== "assign" && node.kind !== "compound" && node.kind !== "update" && node.kind !== "super-member") continue;
             if (!entry.visited) {
                 pending.push({ expression: node, visited: true });
                 if (node.kind === "class") {
@@ -801,8 +818,11 @@ class Parser {
                     for (let i = node.args.length - 1; i >= 0; i--) { const arg = node.args[i]; pending.push({ expression: arg.kind === "spread" ? arg.expression : arg, visited: false }); }
                 } else if (node.kind === "member") pending.push({ expression: node.key, visited: false }, { expression: node.base, visited: false });
                 else if (node.kind === "unary") pending.push({ expression: node.operand, visited: false });
+                else if (node.kind === "private-in") pending.push({ expression: node.right, visited: false });
                 else if (node.kind === "binary") pending.push({ expression: node.right, visited: false }, { expression: node.left, visited: false });
                 else pending.push({ expression: node.alternate, visited: false }, { expression: node.consequent, visited: false }, { expression: node.test, visited: false });
+            } else if (node.kind === "private-in") {
+                if (isSuspendingGeneratorExpression(node.right)) node.suspends = true;
             } else if (node.kind === "class") {
                 if (isSuspendingGeneratorExpression(node.heritage) || node.elements.some(element => element.kind !== "static-block" && isSuspendingGeneratorExpression(element.key))) node.suspends = true;
             } else if (node.kind === "chain") {
@@ -1053,12 +1073,18 @@ class Parser {
             return { kind: "literal", loc, value: null };
         }
         const singleArrow = this.structuralPlan() && min <= 1 && this.current().kind === "word" && this.token(this.index + 1)?.text === "=>";
-        let left = singleArrow ? this.arrow(allowIn) : this.primary(allowIn, min <= 1);
+        const privateIn = this.privateSyntaxAudit && this.current().kind === "private-identifier" && allowIn && min <= 9;
+        let left: Expr;
+        if (privateIn) {
+            const name = this.privateName(this.take(), true);
+            this.expect("in");
+            left = { kind: "private-in", loc, name, right: this.expression(10, allowIn) };
+        } else left = singleArrow ? this.arrow(allowIn) : this.primary(allowIn, min <= 1);
         const arrow = singleArrow || (left.kind === "function" && left.source?.arrow === true && !this.parenthesized.has(left));
         // A unary operand may already have consumed the postfix token. Its
         // enclosing expression must not reopen the member/call suffix chain.
         const lastPrimaryToken = this.token(this.index - 1);
-        let updated = lastPrimaryToken.kind === "punct" && (lastPrimaryToken.text === "++" || lastPrimaryToken.text === "--");
+        let updated = privateIn || (lastPrimaryToken.kind === "punct" && (lastPrimaryToken.text === "++" || lastPrimaryToken.text === "--"));
         while (this.error === null) {
             if (arrow && !(min === 0 && this.at(","))) break;
             if (this.current().kind === "template" || this.current().kind === "template-head") {
@@ -1081,8 +1107,11 @@ class Parser {
                     if (this.eat("[")) { key = this.expression(0); this.expect("]"); }
                     else {
                         const token = this.take();
-                        if (token.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected optional property name", token.loc);
-                        key = { kind: "literal", loc: token.loc, value: token.text };
+                        if (this.privateSyntaxAudit && token.kind === "private-identifier") key = this.privateName(token, true);
+                        else {
+                            if (token.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected optional property name", token.loc);
+                            key = { kind: "literal", loc: token.loc, value: token.text };
+                        }
                     }
                     left = this.chainLink(left, { kind: "member", loc: linkLoc, optional: true, key });
                 }
@@ -1090,8 +1119,8 @@ class Parser {
             }
             if (!updated && this.eat(".")) {
                 const key = this.take();
-                if (key.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
-                const property: Expr = { kind: "literal", loc: key.loc, value: key.text };
+                if (key.kind !== "word" && !(this.privateSyntaxAudit && key.kind === "private-identifier")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
+                const property: Expr = key.kind === "private-identifier" ? this.privateName(key, true) : { kind: "literal", loc: key.loc, value: key.text };
                 left = left.kind === "chain" && !this.parenthesized.has(left)
                     ? this.chainLink(left, { kind: "member", loc, optional: false, key: property })
                     : { kind: "member", loc, base: left, key: property };
@@ -1212,6 +1241,11 @@ class Parser {
         if (heritage !== null && !this.parenthesized.has(heritage) && (heritage.kind === "unary" || heritage.kind === "update"))
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class heritage requires a left-hand-side expression", heritage.loc);
         this.expect("{");
+        const outerPrivate = this.privateScope;
+        if (this.privateSyntaxAudit) {
+            this.privateScope = new PrivateSyntaxScope(outerPrivate);
+            this.privateScopes.push(this.privateScope);
+        }
         const elements: ClassElement[] = [];
         let constructorMethod: Extract<Expr, { kind: "function" }> | null = null;
         while (!this.at("}") && this.error === null) {
@@ -1228,11 +1262,15 @@ class Parser {
             const generator = this.eat("*");
 
             let kind: "method" | "get" | "set" = "method";
-            if (!generator && !asynchronous && (this.at("get") || this.at("set")) && (this.token(this.index + 1).text === "[" || this.token(this.index + 2).text === "(")) kind = this.take().text === "get" ? "get" : "set";
+            const nextKey = this.token(this.index + 1);
+            if (!generator && !asynchronous && (this.at("get") || this.at("set")) &&
+                (nextKey.text === "[" || nextKey.kind === "word" || nextKey.kind === "string" || nextKey.kind === "number" || nextKey.kind === "bigint" ||
+                    (this.privateSyntaxAudit && nextKey.kind === "private-identifier"))) kind = this.take().text === "get" ? "get" : "set";
             const token = this.current();
             let key: Expr;
             let literalName: string | null = null;
-            if (this.eat("[")) { key = this.expression(1); this.expect("]"); }
+            if (this.privateSyntaxAudit && token.kind === "private-identifier") { this.take(); key = this.privateName(token, false); }
+            else if (this.eat("[")) { key = this.expression(1); this.expect("]"); }
             else {
                 this.take();
                 if (token.kind !== "word" && token.kind !== "string" && token.kind !== "number" && token.kind !== "bigint")
@@ -1241,11 +1279,6 @@ class Parser {
                 key = { kind: "literal", loc: token.loc, value: literalName };
             }
             if (!this.at("(")) {
-                if (kind !== "method" && lineTerminatorBetween(this.source.text, first, token)) {
-                    elements.push({ kind: "field", isStatic, key: { kind: "literal", loc: first.loc, value: first.text }, initializer: null });
-                    isStatic = false;
-                    kind = "method";
-                }
                 if (generator || asynchronous || kind !== "method") {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid class field or unsupported static block", this.current().loc);
                     break;
@@ -1254,6 +1287,7 @@ class Parser {
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid class field name", token.loc);
                 const initializer = this.eat("=") ? this.classFieldInitializer() : null;
                 this.statementTerminator();
+                if (key.kind === "private-name") this.privateScope.declare(key, "field", isStatic);
                 elements.push({ kind: "field", isStatic, key, initializer });
                 continue;
             }
@@ -1269,9 +1303,11 @@ class Parser {
                 if (generator || asynchronous || kind !== "method" || constructorMethod !== null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid or duplicate constructor", first.loc);
                 constructorMethod = value;
             } else if (isStatic && literalName === "prototype") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "static prototype method is invalid", first.loc);
+            if (key.kind === "private-name") this.privateScope.declare(key, kind, isStatic);
             elements.push({ kind, isStatic, key, value });
         }
         this.expect("}");
+        this.privateScope = outerPrivate;
         return { kind: "class", loc, source: this.source, start, end: this.token(this.index - 1).end, name, heritage, constructorMethod, elements };
     }
     private classStaticBlock(): ClassStaticBlock {
@@ -1612,8 +1648,8 @@ class Parser {
             while (this.error === null) {
                 if (this.eat(".")) {
                     const key = this.take();
-                    if (key.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
-                    callee = { kind: "member", loc: first.loc, base: callee, key: { kind: "literal", loc: key.loc, value: key.text } };
+                    if (key.kind !== "word" && !(this.privateSyntaxAudit && key.kind === "private-identifier")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
+                    callee = { kind: "member", loc: first.loc, base: callee, key: key.kind === "private-identifier" ? this.privateName(key, true) : { kind: "literal", loc: key.loc, value: key.text } };
                 } else if (this.eat("[")) {
                     const key = this.expression(0);
                     this.expect("]");
@@ -1693,6 +1729,12 @@ class Parser {
             const operand = this.expression(14, allowIn);
             // Parentheses preserve identifiers. The bounded collector validates
             // their inherited mode after whole-source grammar coverage.
+            if (this.privateSyntaxAudit && t.text === "delete") {
+                const last = operand.kind === "chain" ? operand.links[operand.links.length - 1] : null;
+                const key = operand.kind === "member" ? operand.key : last?.kind === "member" ? last.key : null;
+                if (key?.kind === "private-name" && (this.privateIssue === null || key.start < this.privateIssue.site.start))
+                    this.privateIssue = { site: key, message: "private elements cannot be deleted" };
+            }
             if (t.text === "delete" && operand.kind === "identifier" && !this.boundedPlan()) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);
             return { kind: "unary", loc, op: t.text, operand };
         }
@@ -1758,4 +1800,27 @@ class Parser {
         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: " + t.text, loc);
         return { kind: "literal", loc, value: null };
     }
+}
+
+export type PrivateClassSyntaxResult = { readonly kind: "valid" }
+    | { readonly kind: "invalid"; readonly issue: PrivateSyntaxIssue }
+    | { readonly kind: "blocked"; readonly diagnostic: Diagnostic; readonly rejection: Rejection };
+
+// This structural audit does not retain executable nodes or admit private execution.
+export function auditPrivateClassSyntax(source: string): PrivateClassSyntaxResult {
+    const lexer = createLexer(source, true);
+    const parser = new Parser(lexer.result().tokens, { text: source }, "bounded-plan", false, "none", lexer);
+    parser.privateSyntaxAudit = true;
+    const parsed = parser.program();
+    while (lexer.next().kind !== "eof") {}
+    const lexical = lexer.result();
+    if (lexical.error !== null && lexical.rejection !== null)
+        return { kind: "blocked", diagnostic: lexical.error, rejection: lexical.rejection };
+    if (parsed.error !== null && parsed.rejection !== null)
+        return { kind: "blocked", diagnostic: parsed.error, rejection: parsed.rejection };
+    if (parser.regexpError !== null)
+        return { kind: "blocked", diagnostic: parser.regexpError, rejection: { kind: "syntax-error", ruleCode: "regexp-literal" } };
+    if (parser.current().kind !== "eof" || parser.current().end !== source.length) throw new Error("private syntax audit did not reach EOF");
+    if (parser.privateIssue !== null) return { kind: "invalid", issue: parser.privateIssue };
+    return { kind: "valid" };
 }

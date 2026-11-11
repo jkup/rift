@@ -1799,6 +1799,7 @@ class ExecutionEngine {
     }
     #expression(expr: Expr, env: Environment | null, receiver: Value, name: string | null): Completion {
         switch (expr.kind) {
+            case "private-name": case "private-in": throw new Error("private syntax audit cannot execute");
             case "await": case "yield": throw new Error("suspension expression requires a continuation");
             case "class": {
                 if (env !== null) throw new Error("class requires Script execution");

@@ -50,4 +50,3 @@ all initial results remain in `build/private-class-before-accessor-fix/`;
 `build/private-class-edge-reference.json` records the corrected 32-case review.
 The [ASI rule](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-rules-of-automatic-semicolon-insertion)
 and Node references support this correction. C++ fixtures are unchanged.
-
