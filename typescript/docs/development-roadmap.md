@@ -10,8 +10,8 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted Reflect/legacy milestone passes 941/941 guests on each
-host, 296/296 tooling checks, and all 448 native static gates.
+The accepted IANA foundation milestone passes 946/946 guests on each
+host, 296/296 tooling checks, and all 453 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
@@ -43,7 +43,7 @@ Exact BigInt values, arithmetic, literals, coercion and width conversion are acc
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
 resuming from another session restores caller state and uses current budgets.
-Zoned Temporal, public field initializers, static blocks, private fields/methods/accessors and private-in are accepted. Reflect methods and legacy escape/unescape are accepted. IANA/system timezones and Intl remain gaps.
+Zoned Temporal, public field initializers, static blocks, private fields/methods/accessors and private-in are accepted. Reflect methods and legacy escape/unescape are accepted. IANA data, identifier, offset and transition providers are accepted internally. Named-zone guest admission, system timezones and Intl remain gaps.
 
 Temporal fixture audit (2026-11-10): eight of the nine original Temporal fixtures
 call constructors without new, including test-temporal-plain-date.js:28 and
@@ -799,3 +799,5 @@ corpus completion. The 191/225 completion count is not semantic conformance.
 17 supported cases matching Node and one retained Proxy-dependent case. It covers
 ordering, returned-object construction and private brands; this is bounded
 Node-hosted evidence, not native acceptance or full class conformance.
+
+2026-11-11 IANA foundation milestone accepted (TS-478,479,480,482,483):946/946 guests on both hosts without skips;453 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-03XBoo/native-975Xff matches all225 normalized records and preserves191 preceding completions. The pinned2026f data, primary identifiers, bounded historical/recurring offsets and strict adjacent transitions are accepted internally; local-time resolution and guest named-zone admission remain pending. Historical fixtures, initial failures and public range guards remain preserved. Evidence: build/iana-foundation-rollup-* and isolated feature reviews.
