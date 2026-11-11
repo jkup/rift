@@ -39,23 +39,43 @@ function transitionDay(year: number, rule: TimeZoneRule): number {
     return first + day - 1;
 }
 
-export function recurrenceOffsetSeconds(recurrence: TimeZoneRecurrence, seconds: number): number | null {
-    if (!Number.isSafeInteger(seconds) || Math.abs(seconds) > 8640000000000) return null;
-    const start = recurrence.start, end = recurrence.end;
-    if (start === null || end === null) return recurrence.standard;
+function recurrenceCycle(seconds: number): { year: number; seconds: number; shift: number } {
     // Gregorian recurrence repeats every 400 years, including weekdays. Keep
     // neighboring-year calculations away from Temporal's calendar range guards.
     const day = Math.floor(seconds / 86400);
     const cycleDay = ((day - 10957) % 146097 + 146097) % 146097 + 10957;
-    seconds = cycleDay * 86400 + (seconds - day * 86400);
     const date = epochDayToISODate(cycleDay);
     if (date === null) throw new Error("recurrence cycle invariant");
+    return { year: date.year, seconds: cycleDay * 86400 + (seconds - day * 86400), shift: (day - cycleDay) * 86400 };
+}
+
+function transitionSeconds(year: number, rule: TimeZoneRule, offset: number): number {
+    return transitionDay(year, rule) * 86400 + rule.seconds - offset;
+}
+
+export function recurrenceOffsetSeconds(recurrence: TimeZoneRecurrence, seconds: number): number | null {
+    if (!Number.isSafeInteger(seconds) || Math.abs(seconds) > 8640000000000) return null;
+    const start = recurrence.start, end = recurrence.end;
+    if (start === null || end === null) return recurrence.standard;
+    const cycle = recurrenceCycle(seconds);
     let latest = -Infinity, offset = recurrence.standard;
-    for (let year = date.year - 1; year <= date.year + 1; year++) {
-        const begin = transitionDay(year, start) * 86400 + start.seconds - recurrence.standard;
-        const finish = transitionDay(year, end) * 86400 + end.seconds - recurrence.daylight;
-        if (begin <= seconds && begin >= latest) { latest = begin; offset = recurrence.daylight; }
-        if (finish <= seconds && finish >= latest) { latest = finish; offset = recurrence.standard; }
+    for (let year = cycle.year - 1; year <= cycle.year + 1; year++) {
+        const begin = transitionSeconds(year, start, recurrence.standard);
+        const finish = transitionSeconds(year, end, recurrence.daylight);
+        if (begin <= cycle.seconds && begin >= latest) { latest = begin; offset = recurrence.daylight; }
+        if (finish <= cycle.seconds && finish >= latest) { latest = finish; offset = recurrence.standard; }
     }
     return offset;
+}
+
+export function recurrenceTransitionCandidates(recurrence: TimeZoneRecurrence, seconds: number): number[] {
+    if (!Number.isSafeInteger(seconds) || Math.abs(seconds) > 8640000000000) return [];
+    const start = recurrence.start, end = recurrence.end;
+    if (start === null || end === null || recurrence.standard === recurrence.daylight) return [];
+    const cycle = recurrenceCycle(seconds), candidates: number[] = [];
+    for (let year = cycle.year - 1; year <= cycle.year + 1; year++) {
+        candidates.push(transitionSeconds(year, start, recurrence.standard) + cycle.shift);
+        candidates.push(transitionSeconds(year, end, recurrence.daylight) + cycle.shift);
+    }
+    return candidates;
 }
