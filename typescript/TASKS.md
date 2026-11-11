@@ -5149,3 +5149,7 @@ Status: **in progress — isolated successor to TS-468**. Owner: Codex catch-up 
 ## TS-470 — Reflect property access
 
 Status: **in progress — reference review; implementation waits for TS-469 native regressions**. Owner: Codex catch-up chat, 2026-11-11. Add Reflect.get, set and has using existing property operations. Preserve omitted versus explicit receivers, key conversion order, inherited descriptors, accessor receiver binding, boolean write failures and Realm restoration. Review reference cases while mutation validation runs. Planned ownership: src/builtins/reflect.ts and dedicated tests/manifests/docs in an isolated successor; keep apply separate and canonical inputs frozen.
+
+## TS-471 — Reflect.apply and shared argument lists
+
+Status: **in progress — reference review; implementation waits for TS-470 native regressions**. Owner: Codex catch-up chat, 2026-11-11. Complete the Reflect surface with apply. Validate callable targets before reading array-like arguments, reject non-object lists, preserve ordered reads and target invocation, bound work and retain Realm semantics. Review sharing the existing list conversion across Reflect.construct, Reflect.apply and Function.prototype.apply while preserving each caller's validation and nullish-list behavior. Planned ownership: src/array-like.ts, src/builtins/reflect.ts, src/builtins/function.ts and dedicated tests/manifests/docs in an isolated successor. Keep canonical inputs frozen.
