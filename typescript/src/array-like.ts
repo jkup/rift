@@ -1,7 +1,21 @@
-import type { GuestObject, OperationContext, Value } from "./runtime.js";
+import type { GuestObject, OperationContext, Value, ThrowCompletion } from "./runtime.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import type { Location } from "./syntax.js";
-import { toLength, toIntegerOrInfinity, type NumberCompletion } from "./conversion.js";
+import { toLength, toIntegerOrInfinity, numberToString, type NumberCompletion } from "./conversion.js";
+
+export function createListFromArrayLike(object: GuestObject, context: OperationContext, loc: Location): { type: "normal"; values: Value[] } | ThrowCompletion {
+    const length = lengthOfArrayLike(object, context, loc);
+    if (length.type === "throw") return length;
+    const values: Value[] = [];
+    for (let index = 0; index < length.value; index++) {
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const value = object.internalGet(numberToString(index), { kind: "object", object }, context, loc);
+        if (value.type === "throw") return value;
+        values.push(value.value);
+    }
+    return { type: "normal", values };
+}
 
 // The caller already has an object; ToObject/primitive boxing is not provided.
 export function lengthOfArrayLike(object: GuestObject, context: OperationContext, loc: Location): NumberCompletion {

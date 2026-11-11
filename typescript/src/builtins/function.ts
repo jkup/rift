@@ -3,8 +3,7 @@ import type { Location } from "../syntax.js";
 import type { Realm } from "../realm.js";
 import { UNDEFINED, languageFailure, normal, type Value, type Callable, type OperationContext, type ValueCompletion, truthy } from "../runtime.js";
 import { stringSlice, type GuestString } from "../strings.js";
-import {lengthOfArrayLike} from "../array-like.js";
-import {numberToString} from "../conversion.js";
+import { createListFromArrayLike } from "../array-like.js";
 import { registerFunctionBind } from "./function-bind.js";
 
 export function nativeFunctionString(initialName: string | null): GuestString {
@@ -103,20 +102,11 @@ export function registerFunction(realm: Realm): void {
         if (receiver.object.callable.realm.profile !== context.realm.profile) throw new Error("cross-profile callable invocation");
         const thisArg = args.length === 0 ? UNDEFINED : args[0];
         const array = args.length < 2 ? UNDEFINED : args[1];
-        const values: Value[] = [];
-        if (array.kind !== "undefined" && array.kind !== "null") {
-            if (array.kind !== "object") return languageFailure(context.realm, "TypeError", "apply argument list is not an object", loc);
-            const length = lengthOfArrayLike(array.object, context, loc);
-            if (length.type === "throw") return length;
-            for (let index = 0; index < length.value; index++) {
-                const tick = context.tick(loc);
-                if (tick.type === "throw") return tick;
-                const value = array.object.internalGet(numberToString(index), array, context, loc);
-                if (value.type === "throw") return value;
-                values.push(value.value);
-            }
-        }
-        return context.call(receiver, thisArg, values, loc);
+        if (array.kind === "undefined" || array.kind === "null") return context.call(receiver, thisArg, [], loc);
+        if (array.kind !== "object") return languageFailure(context.realm, "TypeError", "apply argument list is not an object", loc);
+        const values = createListFromArrayLike(array.object, context, loc);
+        if (values.type === "throw") return values;
+        return context.call(receiver, thisArg, values.values, loc);
     });
     realm.registerBuiltin(realm.functionPrototype, "toString", 0, (receiver, _args, context, loc) => {
         if (receiver.kind !== "object" || receiver.object.callable === null) {

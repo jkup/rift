@@ -1,6 +1,6 @@
 import type { Realm } from "../realm.js";
-import { lengthOfArrayLike } from "../array-like.js";
-import { numberToString, toPropertyKey } from "../conversion.js";
+import { createListFromArrayLike } from "../array-like.js";
+import { toPropertyKey } from "../conversion.js";
 import { arrayFromList } from "../array-create.js";
 import { descriptorObject, toDescriptor } from "./object-descriptors.js";
 import { languageFailure, normal, UNDEFINED, type Value, type ValueCompletion } from "../runtime.js";
@@ -8,6 +8,16 @@ import { wellKnownToStringTag } from "../symbols.js";
 
 export function registerReflect(realm: Realm): void {
     const reflect = realm.createObject();
+    realm.registerBuiltin(reflect, "apply", 3, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object" || target.object.callable === null)
+            return languageFailure(context.realm, "TypeError", "Reflect.apply target is not callable", loc);
+        const list = args.length < 3 ? UNDEFINED : args[2];
+        if (list.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.apply arguments are not an object", loc);
+        const values = createListFromArrayLike(list.object, context, loc);
+        if (values.type === "throw") return values;
+        return context.call(target, args.length < 2 ? UNDEFINED : args[1], values.values, loc);
+    });
     realm.registerBuiltin(reflect, "get", 2, (_receiver, args, context, loc): ValueCompletion => {
         const target = args.length === 0 ? UNDEFINED : args[0];
         if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.get requires an object", loc);
@@ -114,19 +124,11 @@ export function registerReflect(realm: Realm): void {
             return languageFailure(context.realm, "TypeError", "newTarget is not a constructor", loc);
         const list = args.length < 2 ? UNDEFINED : args[1];
         if (list.kind !== "object") return languageFailure(context.realm, "TypeError", "constructor arguments are not an object", loc);
-        const length = lengthOfArrayLike(list.object, context, loc);
-        if (length.type === "throw") return length;
-        const values: Value[] = [];
-        for (let i = 0; i < length.value; i++) {
-            const tick = context.tick(loc);
-            if (tick.type === "throw") return tick;
-            const value = list.object.internalGet(numberToString(i), list, context, loc);
-            if (value.type === "throw") return value;
-            values.push(value.value);
-        }
+        const values = createListFromArrayLike(list.object, context, loc);
+        if (values.type === "throw") return values;
         const construct = context.construct;
         if (construct === undefined) throw new Error("Script construction unavailable");
-        return construct(target, values, newTarget, loc);
+        return construct(target, values.values, newTarget, loc);
     });
     reflect.bootstrapDefine(wellKnownToStringTag, { value: { kind: "string", value: "Reflect" }, configurable: true });
     realm.defineScriptGlobal("Reflect", { value: { kind: "object", object: reflect }, writable: true, configurable: true });
