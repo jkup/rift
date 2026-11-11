@@ -5065,3 +5065,9 @@ Status: **in progress — isolated successor to TS-459; informed by TS-457**. Ow
 
 2026-11-11 TS-461 accessor repair is implemented in the isolated draft. Corrected focused Node tests,127 grammar references and32 edge references pass. Scope now includes test/class-empty-fields.ts: two exact historical inputs migrate from success to rejection, and legitimate ASI controls are added. Initial parser/test sources,931 Node results, focused native, six regressions and15 tooling builds are retained in build/private-class-before-accessor-fix/. Fresh931 Node guests, corrected focused native, seven regressions and15 tooling drivers are running; do not accept the earlier results for this changed source. Removed45 regenerable LLVM intermediates only from the completed TS-458/459 drafts after checking passing reports and retained executables, recovering1.32GB; paths and sizes are recorded in build/private-ready-llvm-cleanup.json.
 
+
+## TS-462 — Recent class fixture grammar review
+
+Status: **done — bounded read-only review**. Owner: Codex catch-up chat, 2026-11-11. Review positive source literals in recent public-field, static-block and related class fixtures against independent Node syntax checks after TS-461 exposed incorrect positive expectations. Retain exact inputs, report the extraction boundary and classify discrepancies before proposing changes. Own docs/class-fixture-grammar-review.md and ignored reference evidence; do not alter canonical runtime while Unicode validation is active.
+
+
