@@ -81,41 +81,38 @@ and observable option/property ordering. Keep system timezones and Intl separate
 
 ## Consumer migration in progress (TS-486)
 
-The isolated migration has 1,107 consumer checks plus historical offset parsing
-and identity controls. An initial both-host pass matched Node, but the full Node
-suite then reported 945/948: three existing calendar-rounding regressions caught
-an incorrect change to the lower window boundary. This version is not accepted.
+The isolated draft replaces permanent offsets with tagged fixed/named zone
+operations. Interpretation retains disambiguation and exact/minute offset
+matching; fields, formatting, calendar arithmetic and rounding query the zone
+at the relevant instant or local boundary. Named-zone guest parsing remains
+closed until migration acceptance.
 
-Preserve the full start-duration zero test from
+Calendar windows preserve the full start-duration zero test from
 [TC39 PR3319](https://github.com/tc39/proposal-temporal/pull/3319), merged as
 7083e8c46165c37cb871a21d60ca19e219e77ede after consensus on 2026-05-19.
 The proposal page and Node retain the older smallest-unit-only condition.
-Named-zone reference differences must be explained using independently computed
-calendar boundaries, as in the existing fixed-offset review. Do not weaken the
-three existing tests to match the older oracle.
+Reference differences are checked using independent date addition to compute
+both boundaries and exact BigInt distance/span comparisons. The three existing
+fixed-offset regression tests remain unchanged.
 
-The native compiler needs explicit return-type boundaries on the two
-local-time provider calls. Reduced successful and failing controls are in
-[the indexed BigInt report](validation/ts-486-indexed-bigint/README.md).
-Full migration acceptance and named-zone guest admission remain pending.
+The full Node suite passes 948/948 with no skips. All 1,107 focused consumer
+checks, plus historical offset and identity controls, pass both hosts; native
+coverage is 20,281 static statements and zero dynamic. Ten of the 970 calendar
+rows have verified PR3319 corrections, with the original Node results retained.
+A broader matrix passes 82,800 cases on both hosts (718 static statements, zero
+dynamic): 82,675 match Node exactly and 125 have independently checked PR3319
+corrections. It covers UTC, New York, Lord Howe, Apia and Paris, signed differences,
+rounding modes/increments and Instant endpoints. There are no unexplained
+reference differences.
 
-The full-duration zero rule is restored in the isolated draft. All three
-original regression tests pass again under Node. Ten of the 970 new calendar
-rows have independently verified consensus corrections: native Temporal date
-addition computes each bounding instant, and exact BigInt distance/span
-comparison selects the expected endpoint. The original Node observations remain
-in `consumer-calendar-reference.json`; the corrections and boundary evidence are
-in `consumer-calendar-consensus-corrections.json` under `build/iana-timezone-review/`.
-All 1,107 consumer checks now pass under Node without removing any rows.
-Full-suite and native reruns are pending.
+Evidence under `build/iana-timezone-review/` includes
+`consumer-calendar-reference.json`, `consumer-calendar-consensus-corrections.json`,
+`consumer-difference-round-probe-results.json` and
+`consumer-difference-round-fixture-reference.json`. Initial failures and the
+rejected smallest-unit-only implementation remain in the isolated draft's build
+directory. Final native regressions must match its frozen source hashes; tooling
+and combined integration acceptance remain pending.
 
-The corrected full Node suite passes 948/948 with no skips. The focused native
-consumer check passes with 20,281 static statements and zero dynamic statements.
-A broader direct-operation matrix passes 82,800 cases on both hosts (718 native
-static statements, zero dynamic): 82,675 match Node exactly and 125 have checked
-PR3319 corrections, with no unexplained differences. It covers UTC, New York,
-Lord Howe, Apia and Paris, signed differences, rounding modes/increments and
-Instant endpoints. This extends the focused checks without replacing them.
-Evidence is `consumer-difference-round-probe-results.json` and
-`consumer-difference-round-fixture-reference.json` in `build/iana-timezone-review/`.
-The final frozen-source regression run and tooling gates remain pending.
+Two provider return-type assertions isolate scriptc's indexed BigInt widening.
+The provider validates candidate bounds; the assertions do not coerce values.
+See [the reduced compiler controls](validation/ts-486-indexed-bigint/README.md).
