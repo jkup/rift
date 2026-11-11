@@ -5054,3 +5054,8 @@ Status: **done — bounded source review**. Owner: Codex catch-up chat, 2026-11-
 
 2026-11-11 TS-459 isolated readiness passes:930/930 Node guests, focused native with zero dynamic statements, seven both-host regression groups, all15 native tooling driver builds and tooling295/295. Ownership and baseline checks pass and record build/private-identifier-lexing-owned-snapshot.json. The interrupted partial Node run remains retained separately. Integration remains queued behind the frozen Unicode rollup; no private execution admission is claimed.
 
+
+## TS-461 — Private class syntax and lexical validation
+
+Status: **in progress — isolated successor to TS-459; informed by TS-457**. Owner: Codex catch-up chat, 2026-11-11. Extend the shared parser and AST with explicit private declarations, member references and brand checks. Validate complete class declarations, accessor pairing, nested shadowing and forward references; heritage uses the enclosing scope. Preserve whole-source rejection precedence and keep executable preparation unsupported until private environments are propagated. Validate structural observations, invalid delete/super access and resource limits on both hosts before integration. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-execution-internal.ts, src/evaluator.ts, src/generator-expression.ts and tests/manifests/docs in build/private-class-syntax-draft/.
+

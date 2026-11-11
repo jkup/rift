@@ -3068,3 +3068,6 @@ Prepared but not executed: build/promote-class-string.ps1, validate-class-string
 
 2026-11-11 TS-459 isolated readiness passes:930/930 Node guests, focused native with zero dynamic statements, seven both-host regression groups, all15 native tooling driver builds and tooling295/295. Ownership and baseline checks pass and record build/private-identifier-lexing-owned-snapshot.json. The interrupted partial Node run remains retained separately. Integration remains queued behind the frozen Unicode rollup; no private execution admission is claimed.
 
+
+2026-11-11 TS-461 private class syntax is claimed in build/private-class-syntax-draft, based on the frozen, fully checked TS-459 successor. Implementation has started with complete-scope declaration/use validation; AST/parser integration and all acceptance tests remain pending. TS-459 readiness was committed as391ffd52. Canonical Unicode build remains active with75 checkpointed entries, and publication still waits for the full435-entry matrix and downstream native/corpus gates.
+
