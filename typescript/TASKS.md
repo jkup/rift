@@ -5169,3 +5169,6 @@ Status: **in progress — reference review; implementation waits for TS-471 nati
 
 2026-11-11 TS-470 is isolated READY after 939 Node guests, focused native, nine regression groups with ten runs, fifteen tooling builds, 296 tooling tests and sixteen parent-envelope checks. TS-471 passes all 940 Node guests and has entered native validation. The frozen private-field milestone's unchanged 225-file corpus agrees exactly across Node/native and preserves all 191 prior completions (native-X4jtE1, node-ehOwl3). The full 441-entry native build remains active.
 
+
+2026-11-11 TS-471 passes focused native with 19,968/19,968 static statements and all nine native regression groups; fifteen tooling builds are running. TS-472 now implements bounded UTF-16 escape/unescape in its isolated successor, with joined output chunks and existing guest coercion. Typechecking, 25 guest cases, all 65,536 code-unit round trips, Realm/metadata/budget checks, URI/string regressions and eight producer records pass under Node. Full 941 Node is running. The starter rejected an incorrect regression filename before creating the draft; corrected to the existing string-methods test, retaining the initial plan.
+

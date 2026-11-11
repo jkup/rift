@@ -15,8 +15,9 @@ only; hexadecimal digits may use either case. Decoded percent text is not
 processed again. These operations do not perform UTF-8 URI conversion.
 
 Use the existing guest conversion path, explicit code-unit operations and a
-small hexadecimal decoder. Charge each scanned unit before appending output;
-encoding expands by at most six units per input unit. Preserve foreign-Realm
+small hexadecimal decoder. Charge bounded scanning steps before appending output;
+encoding expands by at most six units per input unit. Collect output chunks and
+join once, avoiding repeated copying of a growing string. Preserve foreign-Realm
 errors, exact abrupt values, metadata and non-constructibility. Keep the existing
 URI functions unchanged. No C++ source is copied.
 
@@ -25,4 +26,7 @@ Independent Node reference programs are retained in
 surrogate, malformed-input and budget tests before integration.
 
 All 25 independent Node reference cases pass, including malformed sequences and lone surrogates. The initial punctuation reference escaped a quote without including the intended backslash; that source is retained separately, and backslash encoding now has its own explicit code-unit case.
+
+
+The isolated implementation now passes typechecking, 25 reference-derived guest cases, all-code-unit round-trip coverage, foreign-Realm and budget tests, URI/string regressions and eight producer-codec records under Node. Full 941-guest Node validation is running; native acceptance remains pending. The prerequisite Reflect.apply focus and all nine native regression groups passed before implementation began.
 
