@@ -10,7 +10,9 @@ controls pass both hosts, including constructors/from, gap/fold options, plain
 date/time conversions, skipped dates, Instant formatting and Now factories.
 Native coverage is 20,252 static statements and zero dynamic statements.
 The 35 runner tests, ownership checks and Node observation codec also pass.
-Eight native regression groups and the tooling gates remain in progress.
+All eight native regression groups, 15 tooling builds, 296 tooling tests and
+both-host codecs/envelopes pass. The isolated owned snapshot is READY; combined
+integration remains pending the foundation freeze.
 
 A separate public-API matrix passes 1,794 checks on both hosts: all 598 identifiers
 in original, lower and upper case, their registered spelling, epoch-zero offsets
