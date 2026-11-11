@@ -313,6 +313,7 @@ const entries = [
     ["test/private-field-execution.ts", "private-field-execution"],
     ["test/private-methods-accessors.ts", "private-methods-accessors"],
     ["test/private-brand-check.ts", "private-brand-check"],
+    ["test/reflect-introspection.ts", "reflect-introspection"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

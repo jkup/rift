@@ -1,11 +1,42 @@
 import type { Realm } from "../realm.js";
 import { lengthOfArrayLike } from "../array-like.js";
-import { numberToString } from "../conversion.js";
-import { languageFailure, UNDEFINED, type Value, type ValueCompletion } from "../runtime.js";
+import { numberToString, toPropertyKey } from "../conversion.js";
+import { arrayFromList } from "../array-create.js";
+import { descriptorObject } from "./object-descriptors.js";
+import { languageFailure, normal, UNDEFINED, type Value, type ValueCompletion } from "../runtime.js";
 import { wellKnownToStringTag } from "../symbols.js";
 
 export function registerReflect(realm: Realm): void {
     const reflect = realm.createObject();
+    realm.registerBuiltin(reflect, "ownKeys", 1, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.ownKeys requires an object", loc);
+        const values: Value[] = [];
+        for (const key of target.object.ownPropertyKeys()) {
+            const tick = context.tick(loc);
+            if (tick.type === "throw") return tick;
+            values.push(typeof key === "string" ? { kind: "string", value: key } : { kind: "symbol", value: key });
+        }
+        return arrayFromList(values, context, loc);
+    });
+    realm.registerBuiltin(reflect, "getOwnPropertyDescriptor", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.getOwnPropertyDescriptor requires an object", loc);
+        const key = toPropertyKey(args.length < 2 ? UNDEFINED : args[1], context, loc);
+        if (key.type === "throw") return key;
+        return descriptorObject(target.object.getOwnProperty(key.value), context, loc);
+    });
+    realm.registerBuiltin(reflect, "getPrototypeOf", 1, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.getPrototypeOf requires an object", loc);
+        const prototype = target.object.getPrototypeOf();
+        return normal(prototype === null ? { kind: "null" } : { kind: "object", object: prototype });
+    });
+    realm.registerBuiltin(reflect, "isExtensible", 1, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.isExtensible requires an object", loc);
+        return normal({ kind: "boolean", value: target.object.isExtensible() });
+    });
     realm.registerBuiltin(reflect, "construct", 2, (_receiver, args, context, loc): ValueCompletion => {
         const target = args.length === 0 ? UNDEFINED : args[0];
         if (target.kind !== "object" || target.object.constructorSlot === null)

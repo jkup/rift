@@ -67,7 +67,7 @@ function toDescriptor(input: Value, context: OperationContext, loc: Location): D
     return {type: "normal", value: descriptor};
 }
 
-function descriptorObject(descriptor: PropertyDescriptor | undefined, context: OperationContext, loc: Location): ValueCompletion {
+export function descriptorObject(descriptor: PropertyDescriptor | undefined, context: OperationContext, loc: Location): ValueCompletion {
     if (descriptor === undefined) return normal();
     const allocation = context.tick(loc);
     if (allocation.type === "throw") return allocation;
