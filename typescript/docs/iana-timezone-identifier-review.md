@@ -44,3 +44,14 @@ The runtime registry still needs generation provenance and integrated validation
 Local-time resolution and migration
 of every constant-offset consumer remain separate admission gates. Earlier
 backend notes that deferred Factory are superseded by this explicit decision.
+
+## Isolated implementation evidence
+
+The TS-480 draft now generates the complete registry with pinned metadata hashes
+and an explicit dependency on the generated offset data's provenance. Its lookup
+passes all inventory, casing, shared-data, malformed/non-ASCII and Factory offset
+checks on both hosts. Native coverage is 244 static statements with zero dynamic
+operations; all five regression groups pass. Ten generator controls reject
+corrupted metadata, data bindings and generated outputs while preserving draft
+files. Full 944-case Node and tooling validation are pending; no guest API
+admission has changed.
