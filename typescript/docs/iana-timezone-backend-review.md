@@ -28,8 +28,9 @@ parser. A build-time TZif reader can produce compact typed records. Follow
 [RFC 9636](https://www.rfc-editor.org/rfc/rfc9636.html): validate counts, offsets,
 transition ordering and indices, preserve second-resolution historical offsets,
 and implement the footer recurrence instead of freezing the last table offset.
-Use the initial type before the first transition. Reject missing/unspecified data
-rather than silently inventing an offset. POSIX/Temporal time excludes leap seconds.
+Use the initial type before the first transition. Reject malformed or missing
+data. The treatment of historically unspecified local time needs a separate
+policy review (see findings below). POSIX/Temporal time excludes leap seconds.
 
 Identifier identity needs a separate review from shared transition data. Preserve
 case-normalized input identifiers and primary identifiers separately; apply the
@@ -82,3 +83,44 @@ Next evidence: obtain and inspect the pinned distribution; settle identifier and
 build policy; measure generated table size and compile a representative typed
 lookup/recurrence probe. This document does not yet establish native feasibility
 or authorize guest admission from a small representative-zone test.
+
+## Pinned data and first native evidence
+
+Downloaded the exact 2026f archives and built upstream zic in the existing Ubuntu
+WSL environment. Data SHA-256: `01b4a91cec5167ed48c11e8ab78f2048cead78ce94b0cafcad0ae8c5a3044d3d`;
+code SHA-256: `5a18da01393679ef2559214dc687563f7f3d05691f6f58b7fbc0166f3e796cd6`.
+Archive paths were checked before extraction; overlapping code/data files match.
+
+The measured build uses `VERSION=2026f`, `PACKRATDATA=backzone`,
+`PACKRATLIST=zone.tab`, POSIX time and `zic -b fat`, without range truncation.
+The initial default make produced a dirty version label after finding no release
+tag in the surrounding checkout; the explicit-version rebuild and original
+archives are retained. The ECMA-402 discussion explicitly permits these packrat
+settings with additional identifier post-processing.
+
+The output has440 Zone records and158 Links,26448 transitions and94 distinct
+nonempty footer rules. Zone files total463232 bytes; all use TZif version2 or3.
+The reader validates headers/counts, ordered transitions, type indices and bounded
+second offsets, and proves each Link file equals its target. Observed offsets
+range from -57368 to54822 seconds. This inventory includes Factory and is not yet
+a public identifier allowlist.
+
+A468651-byte typed-table prototype passes52896 before/at-transition checks on
+both Node and scriptc-native. Coverage reports26/26 static statements with no
+dynamic tier. The test exercises the complete table representation and binary
+search, but its expected boundaries derive from the same decoded TZif records;
+it is a compiler/representation check, not independent timezone conformance.
+It deliberately does not implement footer recurrence or guest admission.
+
+Nineteen zone records contain a historical `-00` designation, including Factory
+and inhabited/Antarctic zones. Rejecting every such record would be incorrect.
+An initial Node comparison rejects Factory but accepts historical Cambridge Bay
+and Casey with the encoded zero offset. Preserve this distinction and settle
+the standards/data policy before choosing admission rules; Node alone is not
+the authority for the complete identifier set.
+
+Evidence: build/iana-timezone-review/provenance.json, original archives, build
+logs, tzif-inventory.json and transition-probe-results.json. The next review
+steps are identifier post-processing, future-rule semantics and independent
+reference checks, followed by a reduced native recurrence probe. Canonical
+Reflect/legacy source hashes remain unchanged.
