@@ -3083,3 +3083,6 @@ Prepared but not executed: build/promote-class-string.ps1, validate-class-string
 
 2026-11-11 TS-462 bounded positive-fixture grammar review is complete:117 exact source literals across five class/object-method tests were independently syntax-checked with Node.115 pass; the only two contradictions are the already identified TS-461 accessor-newline expectations. No additional grammar finding in this sample. docs/class-fixture-grammar-review.md records extraction exclusions and distinguishes syntax review from semantic correctness. Canonical runtime and C++ fixtures are unchanged.
 
+
+2026-11-11 TS-461 corrected isolated readiness passes:931/931 Node guests, focused static native, seven both-host regressions, all15 native tooling builds and tooling295/295. Ownership,159 independent grammar references and exact migration of the two historical accessor inputs pass. Initial evidence remains archived. build/private-class-syntax-owned-snapshot.json records the reviewed source/docs. TS-463 private environment propagation is isolated with focused Node/typechecking passing; full932 Node and native/regression validation have started. Canonical Unicode publication remains gated on its running435-entry native matrix and final combined checks.
+

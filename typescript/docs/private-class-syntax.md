@@ -34,7 +34,20 @@ The design follows the reviewed engine262 separation in
 `class-private-elements-review.md` and the specification's
 [class early errors](https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html#sec-class-definitions-static-semantics-early-errors)
 and [relational grammar](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-relational-operators).
-The independent Node `--check` reference run covers 121 sources, including all
+The independent Node `--check` reference run covers 127 sources, including all
 pairs of seven declaration forms and relational precedence controls. Evidence:
-`build/private-class-reference.json`. Full Node/native/tooling acceptance remains
-pending.
+`build/private-class-reference.json`. Isolated validation passes 931 Node guests, seven both-host regression groups,
+15 native tooling builds and 295 tooling tests. Combined canonical acceptance remains pending.
+
+A separate 32-source edge review exposed an existing public class parser error:
+`get` or `set` followed by a newline and a property name was split into fields.
+The property name continues an accessor definition, so ASI cannot split the
+earlier prefix. The fix recognizes accessor keys before looking for `(` and
+removes the fallback. Two existing TypeScript test inputs now assert rejection
+with their exact source strings preserved. Controls retain legitimate field
+termination before `}` or a generator method. Original parser/test sources and
+all initial results remain in `build/private-class-before-accessor-fix/`;
+`build/private-class-edge-reference.json` records the corrected 32-case review.
+The [ASI rule](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-rules-of-automatic-semicolon-insertion)
+and Node references support this correction. C++ fixtures are unchanged.
+

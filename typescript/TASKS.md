@@ -5071,3 +5071,11 @@ Status: **in progress — isolated successor to TS-459; informed by TS-457**. Ow
 Status: **done — bounded read-only review**. Owner: Codex catch-up chat, 2026-11-11. Review positive source literals in recent public-field, static-block and related class fixtures against independent Node syntax checks after TS-461 exposed incorrect positive expectations. Retain exact inputs, report the extraction boundary and classify discrepancies before proposing changes. Own docs/class-fixture-grammar-review.md and ignored reference evidence; do not alter canonical runtime while Unicode validation is active.
 
 
+
+## TS-463 — Capture private environments through Script execution
+
+Status: **in progress — isolated successor to TS-461**. Owner: Codex catch-up chat, 2026-11-11. Replace null-only callable/frame private environments with captured identity. Create class private environments after heritage evaluation, preserve them through constructors, methods, public field initializers, static blocks, declarations, closures, suspensions and direct eval, and keep indirect eval and dynamic Function roots separate. Verify real Script closures and frame restoration on both hosts. Private syntax execution remains unsupported until element/reference integration. Base TS-461 has passed full Node and focused native/regression/source review; its tooling suite remains a separate acceptance gate. Own src/script-execution-internal.ts and tests/manifests/docs in build/private-environment-capture-draft/.
+
+
+2026-11-11 TS-461 corrected isolated readiness passes:931/931 Node guests, focused static native, seven both-host regressions, all15 native tooling builds and tooling295/295. Ownership,159 independent grammar references and exact migration of the two historical accessor inputs pass. Initial evidence remains archived. build/private-class-syntax-owned-snapshot.json records the reviewed source/docs. TS-463 private environment propagation is isolated with focused Node/typechecking passing; full932 Node and native/regression validation have started. Canonical Unicode publication remains gated on its running435-entry native matrix and final combined checks.
+
