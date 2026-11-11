@@ -4937,3 +4937,10 @@ Status: **in progress — isolated successor to TS-441**. Owner: Codex catch-up 
 ## TS-443 — Class static block execution
 
 Status: **in progress — isolated successor to TS-442**. Owner: Codex catch-up chat, 2026-11-10. Implement the TS-438 reviewed static block design: retained AST/planner scope, independent var and lexical declarations, strict receiver/home-object context, ordered interleaving with static fields, parser/eval restrictions, suspended outer keys, Realm/source ownership and current resource budgets. Preserve historical negative inputs as positive or explicit remaining-unsupported assertions. Private fields and decorators remain unsupported. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-environment.ts, src/script-execution-internal.ts, test/script-assignment-target-audit.ts, test/script-lexical-statement-audit.ts, test/script-strict-parameter-audit.ts, test/script-strict-parameter-dispatch.ts, test/script-function-setup.ts, test/class-planning.ts, test/class-field-initializers.ts, test/base-classes.ts and tests/manifests/docs in build/class-static-blocks-draft/.
+
+## TS-444 — Mutable array widening compiler finding
+
+Status: **done — reduced failure and passing control retained**. Owner: Codex catch-up chat, 2026-11-11. Preserve the reduced scriptc array-aliasing failure and its uniform-storage control from TS-443, record the tested constraint in docs/compiler-contract.md, and flag a targeted audit of mutable array widening. Own docs/validation/ts-444-array-widening/ and docs/compiler-contract.md. No canonical runtime changes while zoned validation is active.
+
+
+TS-443 also owns test/class-empty-fields.ts. The full Node run passed 921/922; its sole failure was the historical empty-static-block rejection. Preserve the exact source and assert normal execution, with focused both-host validation.

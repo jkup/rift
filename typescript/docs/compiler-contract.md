@@ -228,3 +228,19 @@ charges its length before constructing the exact numeric value. The committed
 bigint-literal-storage test checks native snapshots and resource behavior.
 The original failure and two-statement before/after reduction remain in
 build/bigint-literal-storage-draft/build. This does not change guest JSON semantics.
+
+## Mutable array widening can lose aliasing (2026-11-11)
+
+The pinned compiler loses a mutation when a helper returns `Field[]` as
+`(Field | Block)[]`: pushing through the returned reference leaves the original
+array empty natively, while Node observes the new element. Both the failing
+reproducer and a control compile entirely statically (7 statements each).
+Declaring the stored array with the same union element type as the helper's
+return type preserves aliasing in the control and the class static-block tests.
+Keep shared mutable initializer storage uniformly typed; narrow individual
+elements when consuming them. Static coverage alone cannot detect this bug.
+
+The exact programs, outputs and reproduction commands are retained in
+[TS-444 evidence](validation/ts-444-array-widening/README.md). Audit other mutable
+array widening paths when they share storage across helper boundaries; the
+finding does not imply that all union arrays are unsafe.
