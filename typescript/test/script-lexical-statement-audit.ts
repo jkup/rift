@@ -1,3 +1,4 @@
+import type { ClassFieldInitializer } from "../src/syntax.js";
 import { readFileSync } from "node:fs";
 import { auditBoundedScriptLexicalStatements, auditBoundedScriptNumericAssignments, auditBoundedScriptStrictParameters, auditBoundedScriptBlockFunctions, parse, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditScriptReturns } from "../src/parser.js";
 import type { DeclarationNodes, LexicalStatementCandidate } from "../src/script-declarations.js";
@@ -6,7 +7,7 @@ function newNodes(): DeclarationNodes {
     return { assignmentNameEligible: new Map(), source: { text: "" }, body: [], scopes: new Map(), declarations: new Map() };
 }
 function snapshot(n: DeclarationNodes): string {
-    const scopes: { id: number; node: Stmt | Expr | null; body: Stmt[] }[] = [];
+    const scopes: { id: number; node: Stmt | Expr | ClassFieldInitializer | null; body: Stmt[] }[] = [];
     for (const [id, value] of n.scopes) scopes.push({ id, node: value.node, body: value.body });
     const declarations: { id: number; node: Stmt; initializer: Expr | null }[] = [];
     for (const [id, value] of n.declarations) declarations.push({ id, node: value.node, initializer: value.initializer });

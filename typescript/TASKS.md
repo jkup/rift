@@ -4906,7 +4906,7 @@ Status: **done — read-only implementation review**. Owner: Codex catch-up chat
 
 ## TS-437 — Public class field initializer execution
 
-Status: **in progress — isolated successor to TS-436**. Owner: Codex catch-up chat, 2026-11-10. Implement strict field-initializer lexical environments, retained source/planner associations and public instance/static initializers with correct this/new.target/super, anonymous naming, constructor timing, direct-eval restrictions and suspension boundaries. Private fields, decorators and static blocks remain unsupported. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-environment.ts, src/script-execution-internal.ts, test/class-empty-fields.ts, test/class-planning.ts and tests/manifests/docs in build/class-field-initializers-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement strict field-initializer lexical environments, retained source/planner associations and public instance/static initializers with correct this/new.target/super, anonymous naming, constructor timing, direct-eval restrictions and suspension boundaries. Private fields, decorators and static blocks remain unsupported. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-environment.ts, src/script-execution-internal.ts, test/class-empty-fields.ts, test/class-planning.ts and tests/manifests/docs in build/class-field-initializers-draft/.
 
 TS-437 also owns the audit/setup helper types and historical base-class expectations listed in build/ts437.json. Original sources were captured before editing. Focused native and seven regression gates pass; full Node and tooling validation remain pending.
 

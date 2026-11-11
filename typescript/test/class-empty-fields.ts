@@ -48,7 +48,7 @@ passes("function* f(){return class extends (yield 1){x;static y;}}var g=f();g.ne
 passes("class C{x;}String(C)===\"class C{x;}\"");
 passes("class B{constructor(){return []}}class C extends B{x;}Array.isArray(new C())&&Object.hasOwn(new C(),\"x\")");
 passes("class B{constructor(){return []}}class C extends B{length;}var ok=false;try{new C()}catch(e){ok=e instanceof RangeError}ok");
-check(prepareBoundedScript({id:"rejected",text:"class C{x=1}"},new Realm((_line:string)=>{},"script")).kind!=="ready","class C{x=1}");
+passes("class C{x=1}new C().x===1");
 check(prepareBoundedScript({id:"rejected",text:"class C{#x;}"},new Realm((_line:string)=>{},"script")).kind!=="ready","class C{#x;}");
 check(prepareBoundedScript({id:"rejected",text:"class C{static {}}"},new Realm((_line:string)=>{},"script")).kind!=="ready","class C{static {}}");
 check(prepareBoundedScript({id:"rejected",text:"class C{constructor;}"},new Realm((_line:string)=>{},"script")).kind!=="ready","class C{constructor;}");

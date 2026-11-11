@@ -3,7 +3,7 @@ import { isSuspendingGeneratorExpression } from "./generator-expression.js";
 import type { GeneratorYieldStmt, AwaitExpr } from "./syntax.js";
 import { validateRegExpLiteral } from "./regexp-literal-validation.js";
 import type { SuperContext } from "./syntax.js";
-import type { ClassExpr, ClassElement } from "./syntax.js";
+import type { ClassExpr, ClassElement, ClassFieldInitializer } from "./syntax.js";
 import type { DestructuringPattern, ArrayPattern, ObjectPattern, PatternElement } from "./syntax.js";
 import { collectNumericSeparatorAudit, type NumericSeparatorAudit } from "./script-declarations.js";
 import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
@@ -1237,18 +1237,19 @@ class Parser {
             }
             if (!this.at("(")) {
                 if (kind !== "method" && lineTerminatorBetween(this.source.text, first, token)) {
-                    elements.push({ kind: "field", isStatic, key: { kind: "literal", loc: first.loc, value: first.text } });
+                    elements.push({ kind: "field", isStatic, key: { kind: "literal", loc: first.loc, value: first.text }, initializer: null });
                     isStatic = false;
                     kind = "method";
                 }
-                if (generator || asynchronous || kind !== "method" || this.at("=")) {
-                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class field initializers and static blocks are unsupported", this.current().loc);
+                if (generator || asynchronous || kind !== "method") {
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid class field or unsupported static block", this.current().loc);
                     break;
                 }
                 if (literalName === "constructor" || (isStatic && literalName === "prototype"))
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid class field name", token.loc);
+                const initializer = this.eat("=") ? this.classFieldInitializer() : null;
                 this.statementTerminator();
-                elements.push({ kind: "field", isStatic, key });
+                elements.push({ kind: "field", isStatic, key, initializer });
                 continue;
             }
             const fn = this.functionTail(first.loc, first.start, heritage !== null && !isStatic && literalName === "constructor" && kind === "method" ? "derived" : "method", generator, asynchronous);
@@ -1267,6 +1268,21 @@ class Parser {
         }
         this.expect("}");
         return { kind: "class", loc, source: this.source, start, end: this.token(this.index - 1).end, name, heritage, constructorMethod, elements };
+    }
+    private classFieldInitializer(): ClassFieldInitializer {
+        const first = this.current();
+        const savedAsync = this.asyncContext, savedGenerator = this.generatorContext;
+        const savedTarget = this.newTargetAllowed, savedSuper = this.superContext;
+        this.asyncContext = false;
+        this.generatorContext = false;
+        this.newTargetAllowed = true;
+        this.superContext = "method";
+        const value = this.expression(1);
+        this.asyncContext = savedAsync;
+        this.generatorContext = savedGenerator;
+        this.newTargetAllowed = savedTarget;
+        this.superContext = savedSuper;
+        return { kind: "field-initializer", loc: first.loc, start: first.start, end: this.token(this.index - 1).end, value };
     }
     private objectExpression(loc: Location): Expr {
         const properties: ObjectProperty[] = [];

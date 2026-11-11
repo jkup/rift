@@ -74,9 +74,13 @@ for (const text of ["class C extends B{}", "class C{field=1}", "class C{static{}
         check(prepared.kind === "ready", "generator class preparation is inert");
         const result = run(text + ";new C().m().next().done;");
         check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original generator class executes");
+    } else if (text === "class C{field=1}") {
+        check(prepared.kind === "ready", "field initializer preparation is inert");
+        expect(text + ";new C().field===1;");
     } else check(prepared.kind!=="ready","reject "+text);
 }
-check(auditBoundedScriptNumericAssignments("1=2;class C{field=1}").kind==="blocked","unsupported class element vetoes assignment certification");
+check(auditBoundedScriptNumericAssignments("1=2;class C{field=1}").kind==="eligible","field initializer permits assignment certification");
+check(auditBoundedScriptNumericAssignments("1=2;class C{static{}}").kind==="blocked","unsupported static block vetoes assignment certification");
 check(auditBoundedScriptNumericSeparators("1_;class C extends B{}").kind==="eligible","default inheritance permits numeric certification");
 const limitedRealm=new Realm((_line:string)=>{},"script");
 run("var caught=false;",100000,limitedRealm);

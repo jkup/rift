@@ -16,7 +16,7 @@ import { copyDataProperties } from "./copy-data-properties.js";
 import { regExpCreate } from "./builtins/regexp.js";
 import type { SuperContext } from "./syntax.js";
 import { getPrototypeFromConstructor } from "./constructor-prototype.js";
-import type { ClassExpr, ClassElement } from "./syntax.js";
+import type { ClassExpr, ClassElement, ClassFieldInitializer } from "./syntax.js";
 import type { ArrayPattern, ObjectPattern, DestructuringPattern } from "./syntax.js";
 import { instanceofOperator } from "./builtins/function.js";
 import { createArgumentsObject } from "./arguments-object.js";
@@ -29,7 +29,7 @@ import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclar
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
 import type { Expr, ChainExpr, Argument, ObjectProperty, Stmt, FunctionSource, Location, TryCatchStmt, ForEachStmt, ForStmt, ForLexicalStmt, SwitchStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type PropertyKey, type ValueCompletion, type ThrowCompletion, type OperationContext, type ScriptJob, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, unsupportedFailure, truthy } from "./runtime.js";
-import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, putScriptBinding } from "./script-environment.js";
+import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, ScriptFieldEnvironment, type ScriptEnvironment, resolveScriptBinding, putScriptBinding } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
 import type { ScriptBindingCell } from "./script-environment.js";
 import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
@@ -66,7 +66,7 @@ type FunctionExecution = {
     evaluate: (initializer: Expr, name: string | null) => ValueCompletion;
     initializePattern: (pattern: DestructuringPattern, value: Value, environment: ScriptEnvironment) => ValueCompletion;
 };
-type ClassFieldRecord = { key: PropertyKey; loc: Location };
+type ClassFieldRecord = { key: PropertyKey; loc: Location; initializer: ClassFieldInitializer | null; homeObject: GuestObject };
 type CallableState = { async: boolean; generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean; instanceFields: ClassFieldRecord[]; staticFields: ClassFieldRecord[] } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
@@ -208,7 +208,7 @@ export type ScriptNodeInspection = {
         parameters: string[]; start: number | null; end: number | null; text: string | null }[];
     declarations: { id: number; kind: string; loc: Location; initializerKind: string | null }[];
 };
-type ScriptState = { realm: Realm; plan: ScriptDeclarationPlan; nodes: DeclarationNodes; scopes: Map<Expr | Stmt, number> };
+type ScriptState = { realm: Realm; plan: ScriptDeclarationPlan; nodes: DeclarationNodes; scopes: Map<Expr | Stmt | ClassFieldInitializer, number> };
 
 // No exported path accepts an AST or plan. Even a JavaScript caller bypassing
 // TypeScript's private constructor can only create an unusable empty shell.
@@ -220,7 +220,7 @@ class ExecutableScript {
     private constructor() {}
     static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): ScriptPreparation {
         if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
-        const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map(), argumentsScopes: new Set() };
+        const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map(), argumentsScopes: new Set(), freeArguments: [] };
         const plan = bounded ? parseBoundedScriptPreparation(unit, nodes, inheritedStrict, newTargetAllowed, superContext) : parseDeclarationPlan(unit, nodes);
         if (plan.kind !== "complete") return plan;
         if (!bounded && !plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
@@ -245,7 +245,7 @@ class ExecutableScript {
             }
         }
         const record = new ExecutableScript();
-        const scopes = new Map<Expr | Stmt, number>();
+        const scopes = new Map<Expr | Stmt | ClassFieldInitializer, number>();
         for (const scope of plan.scopes) {
             const entry = nodes.scopes.get(scope.id);
             if (entry === undefined) throw new Error("missing Script scope association");
@@ -263,6 +263,17 @@ class ExecutableScript {
                     (node.name !== null && node.source.text.slice(node.name.start, node.name.end) !== node.name.name) ||
                     (node.constructorMethod !== null && node.elements.filter(element => element.kind === "method" && element.value === node.constructorMethod && !element.isStatic).length !== 1))
                     throw new Error("invalid class source range");
+                scopes.set(node, scope.id);
+            } else if (scope.kind === "field-initializer") {
+                const node = entry.node, parent = scope.parent === null ? undefined : nodes.scopes.get(scope.parent);
+                if (node === null || node.kind !== "field-initializer" || scopes.has(node) || !scope.strict ||
+                    scope.start !== node.start || scope.end !== node.end || node.end <= node.start || entry.body.length !== 0 ||
+                    scope.formals.length !== 0 || scope.lexicalNames.length !== 0 || scope.varNames.length !== 0 ||
+                    scope.lexicalDeclarations.length !== 0 || scope.varDeclarations.length !== 0 ||
+                    parent === undefined || parent.node === null || parent.node.kind !== "class" ||
+                    scope.parent === null || scope.parent >= scope.id || node.start < parent.node.start || node.end > parent.node.end ||
+                    !parent.node.elements.some(element => element.kind === "field" && element.initializer === node))
+                    throw new Error("invalid class field initializer association");
                 scopes.set(node, scope.id);
             } else if (scope.kind === "switch") {
                 if (entry.node === null || entry.node.kind !== "switch" || scopes.has(entry.node))
@@ -375,7 +386,7 @@ class ExecutableScript {
         ExecutableScript.state(record, key);
         return record.#instantiateFunction(environment, args, context, execution);
     }
-    static scopeOfNode(record: ExecutableScript, node: Expr | Stmt, key: ExecutionKey): number {
+    static scopeOfNode(record: ExecutableScript, node: Expr | Stmt | ClassFieldInitializer, key: ExecutionKey): number {
         const scope = ExecutableScript.state(record, key).scopes.get(node);
         if (scope === undefined) throw new Error("foreign Script node");
         return scope;
@@ -458,7 +469,8 @@ class ExecutableScript {
                 return;
             }
             if ((current.kind !== "declarative" || !(current instanceof ScriptDeclarativeEnvironment)) &&
-                (current.kind !== "function" || !(current instanceof ScriptFunctionEnvironment)))
+                (current.kind !== "function" || !(current instanceof ScriptFunctionEnvironment)) &&
+                (current.kind !== "field" || !(current instanceof ScriptFieldEnvironment)))
                 throw new Error("invalid Script environment tag");
             current = current.outer;
         }
@@ -517,12 +529,14 @@ class ExecutableScript {
         if (info === null) throw new Error("class field owner is not a class constructor");
         return isStatic ? info.staticFields : info.instanceFields;
     }
-    static classFieldFrame(constructor: GuestObject, receiver: GuestObject, key: ExecutionKey): ScriptFrameSnapshot {
+    static classFieldFrame(constructor: GuestObject, receiver: GuestObject, field: ClassFieldRecord, key: ExecutionKey): ScriptFrameSnapshot {
         if (key !== executionKey || constructor.callable?.kind !== "script-guest") throw new Error("invalid class field frame");
         const callable = constructor.callable, record = callable.record;
         const state = ScriptGuestCallable.check(callable, record.#activationKey, record);
         if (state.classConstructor === null) throw new Error("missing class field context");
-        return { realm: state.realm, record, scopeId: state.classConstructor.scope, lexical: state.environment, variable: state.environment,
+        const environment = field.initializer === null ? state.environment : new ScriptFieldEnvironment(state.environment, { kind: "object", object: receiver }, field.homeObject);
+        const scopeId = field.initializer === null ? state.classConstructor.scope : ExecutableScript.scopeOfNode(record, field.initializer, key);
+        return { realm: state.realm, record, scopeId, lexical: environment, variable: environment,
             strict: true, thisValue: { kind: "object", object: receiver }, function: null, privateEnvironment: null, phase: "body" };
     }
     static validateClassConstructor(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): void {
@@ -640,7 +654,7 @@ class ExecutableScript {
                 if (tick.type === "throw") return tick;
                 outer = outer.outer;
             }
-            boundThis = outer.kind === "function" ? outer.thisValue : state.realm.globalThisValue;
+            boundThis = outer.kind === "function" || outer.kind === "field" ? outer.thisValue : state.realm.globalThisValue;
         } else if (!metadata.strict) {
             if (receiver.kind === "null" || receiver.kind === "undefined") boundThis = state.realm.globalThisValue;
             else if (receiver.kind !== "object") {
@@ -2153,6 +2167,7 @@ class ExecutionEngine {
     }
     #superContext(loc: Location): { type: "normal"; homeObject: GuestObject; receiver: Value } | ThrowCompletion {
         const environment = this.#thisEnvironment(this.#active().lexical);
+        if (environment instanceof ScriptFieldEnvironment) return { type: "normal", homeObject: environment.homeObject, receiver: environment.thisValue };
         if (!(environment instanceof FunctionActivation) || environment.callable.homeObject === null) throw new Error("invalid super property environment");
         const receiver = environment.getThisBinding(this.context.realm, loc);
         if (receiver.type === "throw") return receiver;
@@ -2301,7 +2316,7 @@ class ExecutionEngine {
     }
     #defineClassElement(element: ClassElement, key: PropertyKey, constructor: GuestObject, prototype: GuestObject): ThrowCompletion | null {
         if (element.kind === "field") {
-            ExecutableScript.classFields(constructor, element.isStatic, executionKey).push({ key, loc: element.key.loc });
+            ExecutableScript.classFields(constructor, element.isStatic, executionKey).push({ key, loc: element.key.loc, initializer: element.initializer, homeObject: element.isStatic ? constructor : prototype });
             return null;
         }
         const propertyName = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
@@ -2321,14 +2336,17 @@ class ExecutionEngine {
         const fields = ExecutableScript.classFields(constructor, isStatic, executionKey);
         if (fields.length === 0) return null;
         const saved = this.#active(), realm = this.activeContext.realm, inspection = this.#inspectionSource;
-        this.#frame = ExecutableScript.classFieldFrame(constructor, receiver, executionKey);
-        this.activeContext.realm = this.#frame.realm;
         this.#inspectionSource = null;
         try {
             for (const field of fields) {
+                this.#frame = ExecutableScript.classFieldFrame(constructor, receiver, field, executionKey);
+                this.activeContext.realm = this.#frame.realm;
                 const budget = this.context.tick(field.loc);
                 if (budget.type === "throw") { this.#capture(budget); return budget; }
-                const defined = receiver.defineOwnProperty(field.key, { value: UNDEFINED, writable: true, enumerable: true, configurable: true }, this.context, field.loc);
+                const name = typeof field.key === "string" ? field.key : field.key.description === undefined ? "" : "[" + field.key.description + "]";
+                const value = field.initializer === null ? normal() : this.#value(field.initializer.value, name);
+                if (value.type === "throw") { this.#capture(value); return value; }
+                const defined = receiver.defineOwnProperty(field.key, { value: value.value, writable: true, enumerable: true, configurable: true }, this.context, field.loc);
                 if (defined.type === "throw") { this.#capture(defined); return defined; }
                 if (!defined.value) {
                     const error = languageFailure(this.context.realm, "TypeError", "cannot define class field", field.loc);
@@ -3136,10 +3154,10 @@ class ExecutionEngine {
             this.#inspectionSource = savedInspectionSource;
         }
     }
-    #thisEnvironment(environment: ScriptEnvironment): ScriptFunctionEnvironment | null {
+    #thisEnvironment(environment: ScriptEnvironment): ScriptFunctionEnvironment | ScriptFieldEnvironment | null {
         let current = environment;
         while (current.kind !== "global") {
-            if (current.kind === "function" && current.callable.thisMode !== "lexical") return current;
+            if (current.kind === "field" || (current.kind === "function" && current.callable.thisMode !== "lexical")) return current;
             current = current.outer;
         }
         return null;
@@ -3154,8 +3172,8 @@ class ExecutionEngine {
         const saved = this.#active(), realm = this.context.realm;
         const functionEnvironment = direct ? this.#thisEnvironment(saved.lexical) : null;
         const prepared = ExecutableScript.prepare({ id: "<eval>", text: input.value }, realm, true, direct && saved.strict,
-            functionEnvironment !== null, functionEnvironment?.callable.isDerivedClassConstructor === true ? "derived"
-                : functionEnvironment !== null && functionEnvironment.callable.homeObject !== null ? "method" : "none");
+            functionEnvironment !== null, functionEnvironment?.kind === "function" && functionEnvironment.callable.isDerivedClassConstructor ? "derived"
+                : functionEnvironment?.kind === "field" || (functionEnvironment !== null && functionEnvironment.callable.homeObject !== null) ? "method" : "none");
         if (prepared.kind === "profile-rejected") throw new Error("invalid eval Realm");
         if (prepared.kind === "conflict") return languageFailure(realm, "SyntaxError", prepared.diagnostic.message, loc);
         if (prepared.kind === "blocked") {
@@ -3165,6 +3183,8 @@ class ExecutionEngine {
             return unsupportedFailure("runtime.eval-source", "SyntaxError", prepared.diagnostic.message, loc);
         }
         const record = prepared.record, state = ExecutableScript.state(record, executionKey);
+        if (functionEnvironment?.kind === "field" && (state.nodes.freeArguments?.length ?? 0) !== 0)
+            return languageFailure(realm, "SyntaxError", "arguments is forbidden in a class field initializer", loc);
         const global: ScriptEnvironment = { kind: "global", record: realm.globalEnvironment };
         const lexical = new ScriptDeclarativeEnvironment(direct ? saved.lexical : global);
         const variable = state.plan.strictness.strict ? lexical : direct ? saved.variable : global;
