@@ -30,3 +30,6 @@ All 25 independent Node reference cases pass, including malformed sequences and 
 
 The isolated implementation now passes typechecking, 25 reference-derived guest cases, all-code-unit round-trip coverage, foreign-Realm and budget tests, URI/string regressions and eight producer-codec records under Node. Full 941-guest Node validation is running; native acceptance remains pending. The prerequisite Reflect.apply focus and all nine native regression groups passed before implementation began.
 
+
+The first full Node run found six stale exact-global assertions (935/941 passing). Updating only the shared current-builtin inventory with the two new names makes all six original inputs pass; runtime code is unchanged. Retained the initial log/ledger/inventory and expanded native regression coverage to eleven groups with fourteen runtime inputs. The complete Node suite is rerunning.
+

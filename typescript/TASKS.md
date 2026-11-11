@@ -5172,3 +5172,6 @@ Status: **in progress — reference review; implementation waits for TS-471 nati
 
 2026-11-11 TS-471 passes focused native with 19,968/19,968 static statements and all nine native regression groups; fifteen tooling builds are running. TS-472 now implements bounded UTF-16 escape/unescape in its isolated successor, with joined output chunks and existing guest coercion. Typechecking, 25 guest cases, all 65,536 code-unit round trips, Realm/metadata/budget checks, URI/string regressions and eight producer records pass under Node. Full 941 Node is running. The starter rejected an incorrect regression filename before creating the draft; corrected to the existing string-methods test, retaining the initial plan.
 
+
+2026-11-11 TS-472's initial full Node result was 935/941: six exact-global assertions used a shared inventory missing the newly implemented escape/unescape globals. Added exactly the two names; all six original inputs pass focused Node reruns. Preserve the initial full log/ledger/inventory and all historical fixture bytes. Native coverage now includes all three affected drivers and both inputs each (eleven groups, fourteen runs); full Node is rerunning. Reclaimed 870,278,927 bytes of regenerable LLVM from the READY TS-470 draft after source-hash, passing-report and executable verification; retained executables and raw evidence.
+
