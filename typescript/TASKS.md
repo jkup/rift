@@ -5161,3 +5161,8 @@ Status: **in progress — reference review; implementation waits for TS-470 nati
 
 2026-11-11 TS-470 passes focused native with 19,951/19,951 static statements and all nine regression groups (ten runtime inputs). Its fifteen tooling builds are running. TS-471 now implements Reflect.apply and shared argument-list conversion in its isolated successor; typechecking, focused Node, existing apply/construct regressions, async/Realm/budget checks and eight producer records pass. Full 940 Node is running. Canonical source hashes remain unchanged across all 939 frozen inputs.
 
+
+## TS-472 — Legacy escape and unescape globals
+
+Status: **in progress — reference review; implementation waits for TS-471 native regressions**. Owner: Codex catch-up chat, 2026-11-11. Close the existing C++ global-function gap with Annex B escape/unescape, using guest string coercion and explicit UTF-16 code-unit processing. Preserve malformed escape text, lone surrogates, uppercase encoding, exact coercion errors, Realm ownership and bounded work. Planned ownership: src/builtins/uri.ts, new src/builtins/legacy-escape.ts, dedicated tests/manifests/docs in an isolated successor. Preserve existing URI behavior and original fixtures; canonical rollup inputs remain frozen.
+
