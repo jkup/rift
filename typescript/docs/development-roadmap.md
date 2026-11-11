@@ -10,11 +10,11 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted Unicode RegExp milestone passes 928/928 guests on each
-host, 295/295 tooling checks, and all 435 native static gates.
+The accepted private-field milestone passes 934/934 guests on each
+host, 296/296 tooling checks, and all 441 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes are 2 parse errors, 31 runtime
-errors and one reported failure. These are diagnostic fixture results, not a
+errors and 1 reported failures. These are diagnostic fixture results, not a
 Test262 conformance score.
 
 Classes, Promise combinators/checkpoints and bounded RegExp protocols/literals
@@ -43,7 +43,7 @@ Exact BigInt values, arithmetic, literals, coercion and width conversion are acc
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
 resuming from another session restores caller state and uses current budgets.
-Zoned Temporal, public field initializers and static blocks are accepted. Private fields, IANA/system timezones and Intl remain gaps.
+Zoned Temporal, public field initializers, static blocks and private fields are accepted. Private methods/accessors, private-in, IANA/system timezones and Intl remain gaps.
 
 Temporal fixture audit (2026-11-10): eight of the nine original Temporal fixtures
 call constructors without new, including test-temporal-plain-date.js:28 and
@@ -780,3 +780,5 @@ Private class follow-up: [the design review](class-private-elements-review.md) i
 2026-11-11 TS-462 bounded positive-fixture grammar review is complete:117 exact source literals across five class/object-method tests were independently syntax-checked with Node.115 pass; the only two contradictions are the already identified TS-461 accessor-newline expectations. No additional grammar finding in this sample. docs/class-fixture-grammar-review.md records extraction exclusions and distinguishes syntax review from semantic correctness. Canonical runtime and C++ fixtures are unchanged.
 
 2026-11-11 Unicode RegExp milestone accepted (TS-449,451,454–456):928/928 guests on both hosts without skips;435 native static-only/zero-dynamic build gates in 5831499ms;tooling295/295,runner35/35,ten probes and typechecking pass. Corpus node-ZxCBzX/native-dSLloe matches all225 normalized records and preserves all191 preceding completions; current completions=191. Unicode/escaped capture names, disjoint duplicate names, strict u-mode syntax, code-point matching and Unicode17 simple case folding are accepted. Captures and public indices remain UTF-16. Inside-pair lastIndex selects the containing character and reports its actual start, as documented against open ECMA-262 issue128. Property escapes, v-mode and lookbehind remain unsupported. The interrupted initial build log is retained; recovery reused only checkpointed PASS entries whose executable hashes matched the frozen source snapshot. Generated LLVM intermediates are removed only after successful build/coverage gates; executables and raw validation reports are retained. Evidence: build/regexp-unicode-rollup-* and the Unicode RegExp feature/review documents.
+
+2026-11-11 Private-field milestone accepted (TS-458,459,461,463–465):934/934 guests on both hosts without skips;441 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-ehOwl3/native-X4jtE1 matches all225 normalized records and preserves191 preceding completions; current completions=191. Instance/static private fields, lexical private references, direct eval, assignments/calls and suspended expressions are accepted. Private methods/accessors and private-in remain unsupported. Historical fixture strings are preserved, including explicit TypeScript expectation migrations. The producer now reports existing RegExp/numeric syntax errors and certified private-name errors through closed rule provenance. Initial compiler failures and passing controls remain retained. TS-473 accepts 30-second deadlines only for the four errors-b/map-default runtime cases; the hash-verified preceding baseline also exceeded the old 10-second limit. Inputs, expected transcripts and timeout classifications are unchanged; see docs/native-guest-deadlines.md. Evidence: build/private-field-rollup-*, feature reviews and compiler-contract.md.

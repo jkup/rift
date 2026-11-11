@@ -26,5 +26,4 @@ Original failures remain in `build/private-field-rollup-initial-timeouts*`.
 Measurements are in `build/private-field-timeout-measurement.json` and
 `build/private-field-timeout-baseline-comparison.json`. The runner-only source
 adjustment is recorded separately from the unchanged compiled-input snapshot in
-`build/private-field-rollup-harness-adjustment.json`. Full guest and tooling
-acceptance is pending. The storage interruption has its own retained native log.
+`build/private-field-rollup-harness-adjustment.json`. Both complete guest suites and tooling pass with the reviewed driver deadlines. The storage interruption has its own retained native log.
