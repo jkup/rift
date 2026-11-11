@@ -13,7 +13,7 @@ existing Realm-aware conversion path; neither function is constructible.
 
 Typechecking, twenty-five reference-derived guest cases, the full UTF-16 round
 trip, foreign-Realm errors, metadata, budget sweeps and existing URI/string Node
-regressions pass. Full Node and native validation are pending. Historical
+regressions pass. Isolated validation passes all 941 Node guests, focused native, eleven regression groups with fourteen runtime inputs, fifteen tooling-driver build/coverage gates, 296 tooling tests and sixteen parent-envelope checks. Combined canonical acceptance is pending. Historical
 fixtures are unchanged. The reference review is in `legacy-escape-review.md`.
 
 The initial regression plan named a nonexistent string-constructor driver. The
