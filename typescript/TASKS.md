@@ -4996,3 +4996,9 @@ TS-451 compiler finding: preserve the initial SC2003 failure at the AST/instruct
 ## TS-453 — Unicode simple case-fold backend review
 
 Status: **done — exhaustive both-host backend review**. Owner: Codex catch-up chat, 2026-11-11. Generate a pinned Unicode17 common/simple case-fold table from official CaseFolding.txt and compare every Unicode code point against independently parsed source data on both hosts with static-only/zero-dynamic gates. Own docs/unicode-case-fold-review.md and ignored build/unicode-case-fold-review evidence. No runtime admission or canonical source edits.
+
+## TS-454 — Unicode RegExp syntax prerequisite
+
+Status: **in progress — isolated successor to TS-453**. Owner: Codex catch-up chat, 2026-11-10. Add an explicit internal Unicode parser mode with code-point atoms, Unicode escapes and strict rejection of legacy syntax. Preserve default legacy parsing and keep public u/v admission disabled until matcher and index semantics are integrated. Work only in the isolated successor while canonical validation remains frozen. Own src/regexp-pattern-syntax.ts and tests/manifests/docs in build/regexp-unicode-syntax-draft/.
+
+2026-11-11 TS-451 isolated readiness passes: Node925/925, focused native, ten both-host RegExp regressions, all15 tooling driver builds and tooling295/295. Ownership preflight compares the TS-449 baseline and records final owned hashes in build/regexp-duplicate-names-owned-snapshot.json. Keep the initial SC2003 failure and pre-correction Node run. Integration stays queued behind parity-rollup and TS-449. TS-454 internal Unicode syntax passes focused Node and typechecking; full Node and native checks are active with public Unicode admission unchanged.
