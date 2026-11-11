@@ -5158,3 +5158,6 @@ Status: **in progress — reference review; implementation waits for TS-470 nati
 
 2026-11-11 TS-469 is isolated READY: 938 Node guests, focused native, nine regression groups, fifteen tooling builds, 296 tooling tests and sixteen parent-envelope checks pass. TS-470 passes all 939 Node guests; native focus and regressions are running. Canonical inputs remain frozen while the private-field matrix progresses. Removed only 13,070 hash-identical validation copies from the verified READY mutation draft; canonical originals and raw evidence remain retained.
 
+
+2026-11-11 TS-470 passes focused native with 19,951/19,951 static statements and all nine regression groups (ten runtime inputs). Its fifteen tooling builds are running. TS-471 now implements Reflect.apply and shared argument-list conversion in its isolated successor; typechecking, focused Node, existing apply/construct regressions, async/Realm/budget checks and eight producer records pass. Full 940 Node is running. Canonical source hashes remain unchanged across all 939 frozen inputs.
+

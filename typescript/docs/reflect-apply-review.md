@@ -27,3 +27,6 @@ Nineteen independent Node reference checks pass in
 `build/reflect-apply-reference.json`. Receiver-sensitive functions declare strict
 mode explicitly. Add async, foreign-Realm, budget and existing apply/construct
 regressions during implementation. These references are not Rift acceptance.
+
+Implementation now shares budgeted array-like conversion across all three callers. Typechecking, twenty-five focused guest programs, async/Realm/budget tests, Function.apply and construct-target regressions, and eight producer-codec records pass under Node. Full 940-guest Node validation is running; native validation remains pending. The prerequisite Reflect access focus and all ten native regression runs passed before implementation began.
+
