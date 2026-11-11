@@ -308,6 +308,7 @@ const entries = [
     ["test/private-elements.ts", "private-elements"],
     ["test/private-identifier-lexing.ts", "private-identifier-lexing"],
     ["test/private-class-syntax.ts", "private-class-syntax"],
+    ["test/private-environment-capture.ts", "private-environment-capture"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

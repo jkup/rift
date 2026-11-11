@@ -1,3 +1,4 @@
+import { PrivateEnvironment } from "./private-names.js";
 import { toNumeric } from "./numeric.js";
 import { bigintOperation } from "./bigint-arithmetic.js";
 import { appendArrayElement, finishArrayLiteral } from "./array-literal.js";
@@ -70,7 +71,7 @@ type ClassFieldRecord = { kind: "field"; key: PropertyKey; loc: Location; initia
 type ClassInitializerRecord = ClassFieldRecord | { kind: "static-block"; loc: Location; initializer: ClassStaticBlock; homeObject: GuestObject };
 // Both initializer arrays use this union: scriptc copies arrays when widening their element type.
 type CallableState = { async: boolean; generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean; instanceFields: ClassInitializerRecord[]; staticElements: ClassInitializerRecord[] } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
-    environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
+    environment: ScriptEnvironment; privateEnvironment: PrivateEnvironment | null; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
 class ScriptGuestCallable {
     #state: CallableState;
@@ -94,7 +95,7 @@ class ScriptGuestCallable {
     get environment(): ScriptEnvironment { return this.#state.environment; }
     get strict(): boolean { return this.#state.strict; }
     get thisMode(): "lexical" | "strict" | "global" { return this.#state.lexicalThis ? "lexical" : this.#state.strict ? "strict" : "global"; }
-    get privateEnvironment(): null { return null; }
+    get privateEnvironment(): PrivateEnvironment | null { return this.#state.privateEnvironment; }
     sourceText(): string { return this.#state.text; }
     inspectFormals(): string[] { return this.#state.formals.slice(); }
 }
@@ -547,9 +548,9 @@ class ExecutableScript {
         const environment = field.initializer === null ? state.environment : new ScriptClassInitializationEnvironment(state.environment, { kind: "object", object: receiver }, field.homeObject);
         const scopeId = field.initializer === null ? state.classConstructor.scope : ExecutableScript.scopeOfNode(record, field.initializer, key);
         return { realm: state.realm, record, scopeId, lexical: environment, variable: environment,
-            strict: true, thisValue: { kind: "object", object: receiver }, function: null, privateEnvironment: null, phase: "body" };
+            strict: true, thisValue: { kind: "object", object: receiver }, function: null, privateEnvironment: state.privateEnvironment, phase: "body" };
     }
-    static instantiateStaticBlock(record: ExecutableScript, node: ClassStaticBlock, environment: ScriptClassInitializationEnvironment, context: OperationContext, key: ExecutionKey): ValueCompletion {
+    static instantiateStaticBlock(record: ExecutableScript, node: ClassStaticBlock, environment: ScriptClassInitializationEnvironment, privateEnvironment: PrivateEnvironment | null, context: OperationContext, key: ExecutionKey): ValueCompletion {
         if (key !== executionKey) throw new Error("invalid static block setup");
         record.#validateEnvironment(environment, context);
         const state = record.#readState(), scope = state.plan.scopes[ExecutableScript.scopeOfNode(record, node, key)];
@@ -585,7 +586,7 @@ class ExecutableScript {
         functions.reverse();
         for (const declaration of functions) {
             if (declaration.functionScope === null) throw new Error("missing static block function scope");
-            const value = record.materializeFunction(declaration.functionScope, environment, null, context);
+            const value = record.materializeFunction(declaration.functionScope, environment, null, context, privateEnvironment);
             if (value.type === "throw") return value;
             const initialized = environment.setMutableBinding(declaration.site.name, value.value, context, declaration.site.loc);
             if (initialized.type === "throw") return initialized;
@@ -600,10 +601,11 @@ class ExecutableScript {
         const node = record.#classDefinition(info.scope);
         const expectedBody = node.constructorMethod === null ? null : state.scopes.get(node.constructorMethod);
         if (expectedBody === undefined || info.derived !== (node.heritage !== null) || info.bodyScope !== expectedBody || metadata.scopeId !== (info.bodyScope ?? info.scope) ||
-            metadata.text !== node.source.text.slice(node.start, node.end) || !metadata.strict || metadata.lexicalThis)
+            metadata.text !== node.source.text.slice(node.start, node.end) || !metadata.strict || metadata.lexicalThis ||
+            callable.privateEnvironment !== metadata.privateEnvironment || !(metadata.privateEnvironment instanceof PrivateEnvironment))
             throw new Error("invalid class constructor provenance");
     }
-    static materializeClassConstructor(record: ExecutableScript, scopeId: number, environment: ScriptEnvironment, name: string,
+    static materializeClassConstructor(record: ExecutableScript, scopeId: number, environment: ScriptEnvironment, privateEnvironment: PrivateEnvironment, name: string,
         prototypeObject: GuestObject, constructorParent: GuestObject, context: OperationContext, key: ExecutionKey): ValueCompletion {
         const state = ExecutableScript.state(record, key);
         record.#validateEnvironment(environment, context);
@@ -614,7 +616,7 @@ class ExecutableScript {
         const budget = context.tick(node.loc);
         if (budget.type === "throw") return budget;
         const callable = ScriptGuestCallable.create({ homeObject: prototypeObject, async: false, generator: false, key: record.#activationKey, record, realm: state.realm,
-            scopeId: bodyScope ?? scopeId, environment, strict: true, lexicalThis: false,
+            scopeId: bodyScope ?? scopeId, environment, privateEnvironment, strict: true, lexicalThis: false,
             classConstructor: { scope: scopeId, bodyScope, derived: node.heritage !== null, instanceFields: [], staticElements: [] }, unit: state.plan.unit,
             start: entry === null ? node.start : entry.source.start, end: entry === null ? node.end : entry.source.end,
             text: node.source.text.slice(node.start, node.end), formals: entry === null ? [] : entry.node.params.slice() });
@@ -638,7 +640,9 @@ class ExecutableScript {
         if (metadata.homeObject !== null || record.#function(metadata.scopeId).source.method !== true) throw new Error("invalid method home object");
         metadata.homeObject = homeObject;
     }
-    materializeFunction(scopeId: number, environment: ScriptEnvironment, inferredName: string | null, context: OperationContext, prototype: GuestObject | null = null): ValueCompletion {
+    materializeFunction(scopeId: number, environment: ScriptEnvironment, inferredName: string | null, context: OperationContext, privateEnvironment: PrivateEnvironment | null = null, prototype: GuestObject | null = null): ValueCompletion {
+        // Narrowing null first triggers scriptc SC1090; see the TS-463 compiler probe.
+        if (!(privateEnvironment instanceof PrivateEnvironment) && privateEnvironment !== null) throw new Error("invalid private environment");
         this.#validateEnvironment(environment, context);
         const state = this.#readState();
         const entry = this.#function(scopeId);
@@ -657,7 +661,7 @@ class ExecutableScript {
             environment = namedEnvironment;
         }
         const callable = ScriptGuestCallable.create({ homeObject: null, async: entry.source.async === true, generator: entry.source.generator === true, classConstructor: null, key: this.#activationKey, record: this, realm: state.realm,
-            scopeId, environment, strict: entry.scope.strict, lexicalThis: entry.source.arrow === true,
+            scopeId, environment, privateEnvironment, strict: entry.scope.strict, lexicalThis: entry.source.arrow === true,
             unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
         const constructable = entry.source.method !== true && entry.source.arrow !== true && entry.source.generator !== true && entry.source.async !== true;
@@ -693,7 +697,7 @@ class ExecutableScript {
             callable.record !== this || callable.realm !== state.realm || callable.scopeId !== metadata.scopeId || callable.environment !== metadata.environment ||
             callable.kind !== "script-guest" || metadata.strict !== entry.scope.strict || callable.strict !== metadata.strict ||
             metadata.lexicalThis !== (entry.source.arrow === true) ||
-            callable.thisMode !== (metadata.lexicalThis ? "lexical" : metadata.strict ? "strict" : "global") || callable.privateEnvironment !== null)
+            callable.thisMode !== (metadata.lexicalThis ? "lexical" : metadata.strict ? "strict" : "global") || callable.privateEnvironment !== metadata.privateEnvironment)
             throw new Error("invalid Script callable metadata");
         const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
         if (budget.type === "throw") { const abrupt: ThrowCompletion = budget; return abrupt; }
@@ -898,7 +902,7 @@ class ExecutableScript {
         }
         for (const declaration of winners) {
             if (declaration.functionScope === null) throw new Error("missing Script function scope");
-            const value = this.materializeFunction(declaration.functionScope, lexicalEnvironment, null, context);
+            const value = this.materializeFunction(declaration.functionScope, lexicalEnvironment, null, context, metadata.privateEnvironment);
             if (value.type === "throw") return value;
             const tick = this.#setupTick(context, declaration.site.loc);
             if (tick.type === "throw") return tick;
@@ -942,7 +946,7 @@ class ExecutableScript {
         if (tick.type === "throw") { const abrupt: ThrowCompletion = tick; return abrupt; }
         return { type: "normal", environment: new BlockActivation(this.#activationKey, scopeId, outer) };
     }
-    instantiateBlock(scopeId: number, environment: ScriptDeclarativeEnvironment, context: OperationContext): ValueCompletion {
+    instantiateBlock(scopeId: number, environment: ScriptDeclarativeEnvironment, context: OperationContext, privateEnvironment: PrivateEnvironment | null = null): ValueCompletion {
         if (!(environment instanceof BlockActivation)) throw new Error("invalid Script block activation");
         this.#validateEnvironment(environment, context);
         const entry = this.#block(scopeId);
@@ -958,7 +962,7 @@ class ExecutableScript {
             if (created.type === "throw") return created;
             if (declaration.kind === "function") {
                 if (declaration.functionScope === null) throw new Error("missing Script block function scope");
-                const value = this.materializeFunction(declaration.functionScope, environment, null, context);
+                const value = this.materializeFunction(declaration.functionScope, environment, null, context, privateEnvironment);
                 if (value.type === "throw") return value;
                 const initializeTick = this.#setupTick(context, declaration.site.loc);
                 if (initializeTick.type === "throw") return initializeTick;
@@ -982,7 +986,7 @@ class ExecutableScript {
             return this.materializeFunction(fn.scope, { kind: "global", record: environment }, null, context);
         };
     }
-    static instantiateEval(record: ExecutableScript, lexical: ScriptDeclarativeEnvironment, variable: ScriptEnvironment,
+    static instantiateEval(record: ExecutableScript, lexical: ScriptDeclarativeEnvironment, variable: ScriptEnvironment, privateEnvironment: PrivateEnvironment | null,
         context: OperationContext, enabledLegacyFunctions: Set<number>, key: ExecutionKey): ValueCompletion {
         const state = ExecutableScript.state(record, key), plan = state.plan, root = plan.scopes[0];
         record.#validateEnvironment(lexical, context);
@@ -1050,7 +1054,7 @@ class ExecutableScript {
         for (const declaration of functions) {
             if (declaration.functionScope === null) throw new Error("eval function scope missing");
             const site = declaration.site;
-            const value = record.materializeFunction(declaration.functionScope, lexical, null, context);
+            const value = record.materializeFunction(declaration.functionScope, lexical, null, context, privateEnvironment);
             if (value.type === "throw") return value;
             if (variable.kind === "global") {
                 const created = variable.record.createGlobalFunctionBinding(site.name, value.value, context, site.loc, true);
@@ -1203,7 +1207,7 @@ export function createDynamicFunction(parameters: string[], body: string, contex
     const prototype = getPrototypeFromConstructor(newTarget, kind === "async-generator" ? "AsyncGeneratorFunction" : kind === "async" ? "AsyncFunction" : kind === "generator" ? "GeneratorFunction" : "Function", context, loc);
     if (prototype.type === "throw") return prototype;
     // Materialize the declaration without instantiating an anonymous global binding.
-    return complete.record.materializeFunction(complete.scope, { kind: "global", record: context.realm.globalEnvironment }, null, context, prototype.value);
+    return complete.record.materializeFunction(complete.scope, { kind: "global", record: context.realm.globalEnvironment }, null, context, null, prototype.value);
 }
 function copyStrictness(strictness: StrictnessMetadata): StrictnessMetadata {
     return { ownStrict: strictness.ownStrict, inheritedStrict: strictness.inheritedStrict, strict: strictness.strict,
@@ -1239,7 +1243,7 @@ export type ObservedScriptEvaluation = { readonly evaluation: ScriptEvaluation;
 export type ScriptFrameSnapshot = { readonly realm: Realm; readonly record: ExecutableScript;
     readonly scopeId: number; readonly lexical: ScriptEnvironment; readonly variable: ScriptEnvironment;
     readonly strict: boolean; readonly thisValue: Value; readonly function: ScriptGuestCallable | null;
-    readonly privateEnvironment: null; readonly phase: "instantiation" | "body" };
+    readonly privateEnvironment: PrivateEnvironment | null; readonly phase: "instantiation" | "body" };
 export type { GeneratorResumeCallable };
 class GeneratorResumeCallable {
     readonly kind = "generator-resume";
@@ -1896,7 +1900,7 @@ class ExecutionEngine {
             case "function": {
                 if (env !== null) return normal(this.closure(expr.params, expr.body, env, expr.source));
                 const frame = this.#active();
-                return frame.record.materializeFunction(ExecutableScript.scopeOfNode(frame.record, expr, executionKey), frame.lexical, name, this.context);
+                return frame.record.materializeFunction(ExecutableScript.scopeOfNode(frame.record, expr, executionKey), frame.lexical, name, this.context, frame.privateEnvironment);
             }
             case "array": {
                 const object = this.context.realm.createArray();
@@ -2072,7 +2076,7 @@ class ExecutionEngine {
         return { steps: this.steps, calls: this.calls, depth: this.depth,
             active: f === null ? null : { realm: f.realm, record: f.record, scopeId: f.scopeId,
                 lexical: f.lexical, variable: f.variable, strict: f.strict, thisValue,
-                function: f.function, privateEnvironment: null, phase: f.phase },
+                function: f.function, privateEnvironment: f.privateEnvironment, phase: f.phase },
             lastAbrupt: a === null ? null : { realm: a.realm, record: a.record, unitId: a.unitId,
                 loc: { line: a.loc.line, column: a.loc.column } } };
     }
@@ -2361,8 +2365,10 @@ class ExecutionEngine {
                 constructorParent = superclass.object;
             }
         }
+        const privateEnvironment = new PrivateEnvironment(active.privateEnvironment);
+        this.#frame = { ...active, privateEnvironment };
         const prototype = new GuestObject(prototypeParent);
-        const constructor = ExecutableScript.materializeClassConstructor(active.record, scopeId, environment,
+        const constructor = ExecutableScript.materializeClassConstructor(active.record, scopeId, environment, privateEnvironment,
             expr.name === null ? (inferredName ?? "") : expr.name.name, prototype, constructorParent, this.context, executionKey);
         if (constructor.type === "throw") return constructor;
         if (constructor.value.kind !== "object") throw new Error("class constructor result invariant");
@@ -2402,7 +2408,7 @@ class ExecutionEngine {
                     if (!isStatic || this.#frame.lexical.kind !== "class-initializer") throw new Error("invalid static block receiver");
                     const environment = this.#frame.lexical;
                     this.#frame = { ...this.#frame, phase: "instantiation" };
-                    const setup = ExecutableScript.instantiateStaticBlock(this.#frame.record, field.initializer, environment, this.context, executionKey);
+                    const setup = ExecutableScript.instantiateStaticBlock(this.#frame.record, field.initializer, environment, this.#frame.privateEnvironment, this.context, executionKey);
                     if (setup.type === "throw") { this.#capture(setup); return setup; }
                     this.#frame = { ...this.#frame, phase: "body" };
                     const result = this.#list(field.initializer.body);
@@ -2610,7 +2616,7 @@ class ExecutionEngine {
         if (created.type === "throw") return created;
         this.#frame = { ...saved, scopeId, lexical: created.environment };
         try {
-            const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
+            const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context, saved.privateEnvironment);
             if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
             if (sequences !== null) {
                 const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
@@ -2866,7 +2872,7 @@ class ExecutionEngine {
                 if (created.type === "throw") return created;
                 this.#frame = { ...saved, scopeId, lexical: created.environment };
                 try {
-                    const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
+                    const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context, saved.privateEnvironment);
                     if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
                     if (sequences !== null) {
                         sequences.push({ kind: "sequence", frame: this.#active(), body: stmt.body, nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
@@ -3104,7 +3110,7 @@ class ExecutionEngine {
             // Setup failures retain the callee's source and instantiation phase.
             this.#frame = { realm: fn.realm, record, scopeId: source.scopeId, lexical: fn.environment,
                 variable: fn.environment, strict: fn.strict, thisValue: receiver, function: fn,
-                privateEnvironment: null, phase: "instantiation" };
+                privateEnvironment: fn.privateEnvironment, phase: "instantiation" };
             const created = record.createFunctionEnvironment(fn, receiver, this.context, newTarget, callee);
             if (created.type === "throw") { this.#capture(created); return created; }
             this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
@@ -3263,9 +3269,9 @@ class ExecutionEngine {
         this.#legacyGlobalFunctions = new Set();
         this.#inspectionSource = null;
         this.#frame = { realm, record, scopeId: 0, lexical, variable, strict: state.plan.strictness.strict,
-            thisValue: direct ? saved.thisValue : realm.globalThisValue, function: null, privateEnvironment: null, phase: "instantiation" };
+            thisValue: direct ? saved.thisValue : realm.globalThisValue, function: null, privateEnvironment: direct ? saved.privateEnvironment : null, phase: "instantiation" };
         try {
-            const setup = ExecutableScript.instantiateEval(record, lexical, variable, this.context, this.#legacyGlobalFunctions, executionKey);
+            const setup = ExecutableScript.instantiateEval(record, lexical, variable, this.#frame.privateEnvironment, this.context, this.#legacyGlobalFunctions, executionKey);
             if (setup.type === "throw") { this.#capture(setup); return setup; }
             this.#frame = { ...this.#active(), phase: "body" };
             const result = this.#list(ExecutableScript.readRoot(record, executionKey));
@@ -3766,6 +3772,9 @@ class ExecutionEngine {
                 const created = this.#createClassConstructor(frame.expression, frame.scopeId, frame.environment, frame.name,
                     frame.expression.heritage === null ? null : value);
                 if (created.type === "throw") return created;
+                const scope = frames[frames.length - 1];
+                if (scope.kind !== "class-scope" || scope.expression !== frame.expression) throw new Error("missing class scope continuation");
+                scope.frame = this.#active();
                 frames.push({ kind: "class-element", expression: frame.expression, environment: frame.environment,
                     constructor: created.constructor, prototype: created.prototype, index: 0, stage: "next" });
                 continue;
