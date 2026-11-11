@@ -110,8 +110,9 @@ Evidence under `build/iana-timezone-review/` includes
 `consumer-difference-round-probe-results.json` and
 `consumer-difference-round-fixture-reference.json`. Initial failures and the
 rejected smallest-unit-only implementation remain in the isolated draft's build
-directory. Final native regressions must match its frozen source hashes; tooling
-and combined integration acceptance remain pending.
+directory. All ten native regression groups match the frozen source hashes. All 15 tooling
+builds, 296 tooling tests, 35 runner tests and codecs/envelopes pass. The isolated
+owned snapshot is READY; combined integration remains pending the foundation run.
 
 Two provider return-type assertions isolate scriptc's indexed BigInt widening.
 The provider validates candidate bounds; the assertions do not coerce values.
