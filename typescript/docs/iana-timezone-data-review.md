@@ -32,7 +32,8 @@ bytes, while separately corrupted data/code archives, source metadata, license,
 zone data and alias data are rejected. All controls leave generated outputs
 unchanged. Evidence is in `build/iana-data-generator-controls.json`.
 
-The corrected full Node suite passes 942/942 without skips; tooling validation
-is pending. This review is not
+The corrected full Node suite passes 942/942 without skips; all 15 tooling builds,
+296 tooling tests and 16 parent-envelope checks pass. Source-drift, typecheck and
+deterministic-generation checks establish isolated READY status. This is not
 integration acceptance. The combined Reflect/legacy milestone's 947 source inputs
 remain frozen; the provider is isolated in `build/iana-timezone-data-draft/`.
