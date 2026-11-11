@@ -23,3 +23,6 @@ Twenty-three independent Node reference programs pass in
 acceptance. Add direct budget-before-mutation and cross-Realm tests during
 implementation. Keep property access and `apply` separate, and preserve existing
 Object and Reflect behavior through both-host regression tests.
+
+Isolated validation is READY: 938/938 Node guests, focused native execution, nine native regression groups, fifteen tooling builds, 296 tooling tests, eight codec records per host and sixteen parent-envelope checks pass. Canonical integration remains pending the frozen private-field rollup.
+
