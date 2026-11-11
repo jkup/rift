@@ -1,9 +1,9 @@
+import { timeZoneLocalDateTime } from "../temporal-time-zone-operations.js";
 import type { Realm } from "../realm.js";
 import { currentDateMilliseconds } from "../date-clock.js";
 import { createTemporalInstant } from "../temporal-instant-object.js";
 import { createTemporalZonedDateTime } from "../temporal-zoned-date-time-object.js";
 import { toTemporalTimeZone } from "../temporal-time-zone.js";
-import { isoDateTimeFromEpochNanoseconds } from "../iso-calendar.js";
 import { createTemporalPlainDateTime } from "../temporal-plain-date-time-object.js";
 import { createTemporalPlainDate } from "../temporal-plain-date-object.js";
 import { createTemporalPlainTime } from "../temporal-plain-time-object.js";
@@ -24,7 +24,7 @@ export function registerTemporalNow(realm: Realm, namespace: GuestObject): void 
             const zone = toTemporalTimeZone(supplied.kind === "undefined" ? { kind: "string", value: "UTC" } : supplied, context, loc);
             if (zone.type === "throw") return zone;
             const epoch = BigInt(currentDateMilliseconds(context.realm)) * 1000000n;
-            const value = isoDateTimeFromEpochNanoseconds(epoch + zone.value.offsetNanoseconds);
+            const value = timeZoneLocalDateTime(zone.value, epoch);
             if (value === null) throw new Error("Now timezone projection invariant");
             if (name === "plainDateISO") return createTemporalPlainDate(value.date, context.realm.temporalPlainDatePrototype, context, loc);
             if (name === "plainTimeISO") return createTemporalPlainTime(value, context.realm.temporalPlainTimePrototype, context, loc);

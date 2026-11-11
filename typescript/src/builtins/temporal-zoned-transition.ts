@@ -1,5 +1,6 @@
+import { timeZoneTransition } from "../temporal-time-zone-operations.js";
 import type { Realm } from "../realm.js";
-import { temporalZonedDateTimeObject } from "../temporal-zoned-date-time-object.js";
+import { createTemporalZonedDateTime, temporalZonedDateTimeObject } from "../temporal-zoned-date-time-object.js";
 import { temporalOptionString } from "../temporal-options.js";
 import { languageFailure, normal, UNDEFINED, type ValueCompletion } from "../runtime.js";
 
@@ -19,6 +20,7 @@ export function registerTemporalZonedTransition(realm: Realm): void {
         const converted = temporalOptionString(direction, context, loc);
         if (converted.type === "throw") return converted;
         if (converted.value !== "next" && converted.value !== "previous") return languageFailure(context.realm, "RangeError", "invalid transition direction", loc);
-        return normal({ kind: "null" });
+        const epoch = timeZoneTransition(object.value.timeZone, object.value.epochNanoseconds, converted.value);
+        return epoch === null ? normal({ kind: "null" }) : createTemporalZonedDateTime(epoch, object.value.timeZone, context.realm.temporalZonedDateTimePrototype, context, loc);
     });
 }

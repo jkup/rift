@@ -1,3 +1,4 @@
+import { timeZoneEquals } from "../temporal-time-zone-operations.js";
 import type { Realm } from "../realm.js";
 import { temporalZonedDateTimeObject } from "../temporal-zoned-date-time-object.js";
 import { toTemporalZonedFields } from "./temporal-zoned-conversion.js";
@@ -20,7 +21,7 @@ export function registerTemporalZonedDifference(realm: Realm): void {
             if (settings.type === "throw") return settings;
             const options = settings.value, largest = options.largest;
             const calendarUnit = largest === "years" || largest === "months" || largest === "weeks" || largest === "days";
-            if (calendarUnit && left.value.timeZone.identifier !== right.timeZone.identifier)
+            if (calendarUnit && !timeZoneEquals(left.value.timeZone, right.timeZone))
                 return languageFailure(context.realm, "RangeError", "calendar differences require matching time zones", loc);
             if (calendarUnit && left.value.epochNanoseconds === right.epoch)
                 return createTemporalDuration(dateDuration(0, 0, 0), context.realm.temporalDurationPrototype, context, loc);

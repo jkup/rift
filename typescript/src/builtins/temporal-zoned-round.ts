@@ -1,8 +1,9 @@
+import { timeZoneOffsetNanoseconds, timeZoneStartOfDay } from "../temporal-time-zone-operations.js";
 import type { Realm } from "../realm.js";
 import { createTemporalZonedDateTime, temporalZonedDateTimeObject, temporalZonedISODateTime } from "../temporal-zoned-date-time-object.js";
 import { temporalTimeRoundSettings } from "../temporal-time-round-options.js";
 import { roundISODateTime } from "../iso-date-time.js";
-import { isoDateToEpochDay, isValidEpochNanoseconds } from "../iso-calendar.js";
+import { isoDateToEpochDay, epochDayToISODate } from "../iso-calendar.js";
 import { NANOSECONDS_PER_DAY } from "../temporal-time.js";
 import { roundTemporalInteger } from "../temporal-rounding.js";
 import { interpretTemporalZonedDateTime } from "../temporal-zoned-interpret.js";
@@ -21,14 +22,17 @@ export function registerTemporalZonedRound(realm: Realm): void {
             if (settings.quantum === NANOSECONDS_PER_DAY) {
                 const day = isoDateToEpochDay(local.date);
                 if (day === null) throw new Error("zoned rounding date invariant");
-                const start = BigInt(day) * NANOSECONDS_PER_DAY - value.timeZone.offsetNanoseconds;
-                const end = start + NANOSECONDS_PER_DAY;
-                if (!isValidEpochNanoseconds(start) || !isValidEpochNanoseconds(end)) epoch = null;
-                else epoch = start + roundTemporalInteger(value.epochNanoseconds - start, NANOSECONDS_PER_DAY, settings.mode);
+                const nextDate = epochDayToISODate(day + 1);
+                const start = timeZoneStartOfDay(value.timeZone, local.date);
+                const end = nextDate === null ? null : timeZoneStartOfDay(value.timeZone, nextDate);
+                if (start === null || end === null) epoch = null;
+                else epoch = start + roundTemporalInteger(value.epochNanoseconds - start, end - start, settings.mode);
             } else {
                 const rounded = roundISODateTime(local, settings.quantum, settings.mode);
+                const offset = timeZoneOffsetNanoseconds(value.timeZone, value.epochNanoseconds);
+                if (offset === null) throw new Error("zoned rounding offset invariant");
                 epoch = rounded === null ? null : interpretTemporalZonedDateTime({ dateTime: rounded, timeZone: value.timeZone,
-                    startOfDay: false, offsetBehaviour: "option", offsetNanoseconds: value.timeZone.offsetNanoseconds }, "prefer");
+                    startOfDay: false, offsetBehaviour: "option", offsetNanoseconds: offset, matchMinutes: false }, "prefer");
             }
         }
         return epoch === null ? languageFailure(context.realm, "RangeError", "rounded zoned time outside the supported range", loc) :

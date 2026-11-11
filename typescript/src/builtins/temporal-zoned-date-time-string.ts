@@ -1,3 +1,4 @@
+import { timeZoneLocalDateTime, timeZoneOffsetNanoseconds } from "../temporal-time-zone-operations.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
 import type { StringCompletion } from "../conversion.js";
@@ -5,8 +6,7 @@ import { temporalZonedDateTimeObject } from "../temporal-zoned-date-time-object.
 import { temporalCalendarName, temporalFractionalDigits, temporalOptionString, temporalRoundingMode, temporalSmallestUnit, temporalStringPrecision, temporalPrecisionNanoseconds } from "../temporal-options.js";
 import { formatISODateTime, formatISOCalendarAnnotation, type TemporalTimePrecision } from "../temporal-time-format.js";
 import { roundTemporalInstant } from "../temporal-rounding.js";
-import { isoDateTimeFromEpochNanoseconds } from "../iso-calendar.js";
-import { formatUTCOffsetMinutes } from "../utc-offset.js";
+import { formatUTCOffset } from "../utc-offset.js";
 import { GuestObject, languageFailure, normal, UNDEFINED, type OperationContext, type ValueCompletion } from "../runtime.js";
 
 function displayOption(options: GuestObject, key: string, context: OperationContext, loc: Location): StringCompletion {
@@ -50,9 +50,10 @@ export function registerTemporalZonedDateTimeString(realm: Realm): void {
                 precision = selected; calendarName = calendar.value; offsetName = offset.value; zoneName = zone.value;
                 epoch = roundTemporalInstant(epoch, temporalPrecisionNanoseconds(precision), mode.value);
             }
-            const local = isoDateTimeFromEpochNanoseconds(epoch + value.timeZone.offsetNanoseconds);
-            if (local === null) throw new Error("ZonedDateTime formatting range invariant");
-            const text = formatISODateTime(local, precision), offset = formatUTCOffsetMinutes(Number(value.timeZone.offsetNanoseconds / 60000000000n));
+            const local = timeZoneLocalDateTime(value.timeZone, epoch);
+            const offsetNanoseconds = timeZoneOffsetNanoseconds(value.timeZone, epoch);
+            if (local === null || offsetNanoseconds === null) throw new Error("ZonedDateTime formatting range invariant");
+            const text = formatISODateTime(local, precision), offset = formatUTCOffset(offsetNanoseconds, "minute");
             if (text === null || offset === null) throw new Error("ZonedDateTime formatting invariant");
             const zone = zoneName === "never" ? "" : "[" + (zoneName === "critical" ? "!" : "") + value.timeZone.identifier + "]";
             return normal({ kind: "string", value: text + (offsetName === "never" ? "" : offset) + zone + formatISOCalendarAnnotation(calendarName) });

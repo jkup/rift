@@ -44,3 +44,21 @@ export function formatUTCOffsetMinutes(minutes: number): string | null {
     const absolute = Math.abs(minutes);
     return (minutes < 0 ? "-" : "+") + String(Math.floor(absolute / 60)).padStart(2, "0") + ":" + String(absolute % 60).padStart(2, "0");
 }
+
+export function formatUTCOffset(nanoseconds: bigint, precision: "exact" | "minute" = "exact"): string | null {
+    let absolute = nanoseconds < 0n ? -nanoseconds : nanoseconds;
+    if (absolute >= 86400000000000n) return null;
+    if (precision === "minute") absolute = (absolute + 30000000000n) / 60000000000n * 60000000000n;
+    const hours = absolute / 3600000000000n, minutes = absolute / 60000000000n % 60n;
+    let text = (nanoseconds < 0n && absolute !== 0n ? "-" : "+") + String(hours).padStart(2, "0") + ":" + String(minutes).padStart(2, "0");
+    const remainder = absolute % 60000000000n;
+    if (remainder !== 0n) {
+        text += ":" + String(remainder / 1000000000n).padStart(2, "0");
+        if (remainder % 1000000000n !== 0n) {
+            let fraction = String(remainder % 1000000000n).padStart(9, "0");
+            while (fraction.endsWith("0")) fraction = fraction.slice(0, -1);
+            text += "." + fraction;
+        }
+    }
+    return text;
+}

@@ -22,7 +22,7 @@ export function registerTemporalPlainToZoned(realm: Realm): void {
         else return languageFailure(context.realm, "TypeError", "Temporal options must be an object", loc);
         const disambiguation = temporalDisambiguation(options, context, loc);
         if (disambiguation.type === "throw") return disambiguation;
-        const epoch = interpretTemporalZonedDateTime({ dateTime: value.value, timeZone: zone.value, startOfDay: false, offsetBehaviour: "wall", offsetNanoseconds: 0n }, "ignore");
+        const epoch = interpretTemporalZonedDateTime({ dateTime: value.value, timeZone: zone.value, startOfDay: false, offsetBehaviour: "wall", offsetNanoseconds: 0n, matchMinutes: false }, "ignore", disambiguation.value);
         return epoch === null ? languageFailure(context.realm, "RangeError", "date-time outside the Instant range", loc) :
             createTemporalZonedDateTime(epoch, zone.value, context.realm.temporalZonedDateTimePrototype, context, loc);
     });
@@ -48,7 +48,7 @@ export function registerTemporalPlainToZoned(realm: Realm): void {
         if (time.type === "throw") return time;
         const dateTime = combineISODateTime(value.value, time.value);
         if (timeLike.kind !== "undefined" && !isoDateTimeWithinLimits(dateTime)) return languageFailure(context.realm, "RangeError", "date-time outside the supported range", loc);
-        const epoch = interpretTemporalZonedDateTime({ dateTime, timeZone: zone.value, startOfDay: timeLike.kind === "undefined", offsetBehaviour: "wall", offsetNanoseconds: 0n }, "ignore");
+        const epoch = interpretTemporalZonedDateTime({ dateTime, timeZone: zone.value, startOfDay: timeLike.kind === "undefined", offsetBehaviour: "wall", offsetNanoseconds: 0n, matchMinutes: false }, "ignore");
         return epoch === null ? languageFailure(context.realm, "RangeError", "date outside the Instant range", loc) :
             createTemporalZonedDateTime(epoch, zone.value, context.realm.temporalZonedDateTimePrototype, context, loc);
     });

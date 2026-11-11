@@ -1,19 +1,17 @@
+import { namedTemporalTimeZone, type TemporalTimeZone } from "./temporal-time-zone-operations.js";
+export type { TemporalTimeZone } from "./temporal-time-zone-operations.js";
 import { TemporalISOScanner, temporalISODate, temporalISOTime, temporalISOYearMonth, temporalISOMonthDay, temporalISOAnnotations } from "./temporal-iso-parser.js";
 import { parseUTCOffset, formatUTCOffsetMinutes } from "./utc-offset.js";
 import { parseTemporalPlainTime } from "./temporal-plain-time-parse.js";
 
-export interface TemporalTimeZone {
-    readonly identifier: string;
-    readonly offsetNanoseconds: bigint;
-}
 
 export function parseTemporalTimeZoneIdentifier(text: string): TemporalTimeZone | null {
-    if (text.length === 3 && text.toLowerCase() === "utc") return { identifier: "UTC", offsetNanoseconds: 0n };
+    if (text.length === 3 && text.toLowerCase() === "utc") return namedTemporalTimeZone("UTC");
     const offset = parseUTCOffset(text, false);
     if (offset === null) return null;
     const formatted = formatUTCOffsetMinutes(Number(offset / 60000000000n));
     if (formatted === null) throw new Error("timezone offset invariant");
-    return { identifier: formatted, offsetNanoseconds: offset };
+    return { kind: "offset", identifier: formatted, offsetNanoseconds: offset };
 }
 
 function annotatedZone(scanner: TemporalISOScanner, hasTime: boolean, shortDate = false): TemporalTimeZone | null {

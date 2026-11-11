@@ -10,6 +10,7 @@ export interface TemporalZonedRecord {
     readonly startOfDay: boolean;
     readonly offsetBehaviour: "wall" | "exact" | "option";
     readonly offsetNanoseconds: bigint;
+    readonly matchMinutes: boolean;
 }
 
 export function parseTemporalZonedDateTime(text: string): TemporalZonedRecord | null {
@@ -17,6 +18,7 @@ export function parseTemporalZonedDateTime(text: string): TemporalZonedRecord | 
     if (date === null) return null;
     let time = { hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 };
     const hasTime = scanner.take("T") || scanner.take("t") || scanner.take(" ");
+    let matchMinutes = true;
     let offsetBehaviour: "wall" | "exact" | "option" = "wall", offsetNanoseconds = 0n;
     if (hasTime) {
         const parsedTime = temporalISOTime(scanner);
@@ -26,7 +28,9 @@ export function parseTemporalZonedDateTime(text: string): TemporalZonedRecord | 
         else if (scanner.peek() === "+" || scanner.peek() === "-") {
             const end = text.indexOf("[", scanner.index);
             if (end < 0) return null;
-            const offset = parseUTCOffset(text.slice(scanner.index, end));
+            const offsetText = text.slice(scanner.index, end);
+            const offset = parseUTCOffset(offsetText);
+            matchMinutes = offsetText.length <= (offsetText.charAt(3) === ":" ? 6 : 5);
             if (offset === null) return null;
             offsetBehaviour = "option";
             offsetNanoseconds = offset;
@@ -36,5 +40,5 @@ export function parseTemporalZonedDateTime(text: string): TemporalZonedRecord | 
     if (!temporalISOAnnotations(scanner) || scanner.timeZone === null) return null;
     if (scanner.calendar !== null && scanner.calendar.toLowerCase() !== "iso8601") return null;
     const timeZone = parseTemporalTimeZoneIdentifier(scanner.timeZone);
-    return timeZone === null ? null : { dateTime: combineISODateTime(date, time), timeZone, startOfDay: !hasTime, offsetBehaviour, offsetNanoseconds };
+    return timeZone === null ? null : { dateTime: combineISODateTime(date, time), timeZone, startOfDay: !hasTime, offsetBehaviour, offsetNanoseconds, matchMinutes };
 }

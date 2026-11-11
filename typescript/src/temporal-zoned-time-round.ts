@@ -1,4 +1,5 @@
-import { isoDateTimeFromEpochNanoseconds, isoDateToEpochDay, isValidEpochNanoseconds } from "./iso-calendar.js";
+import { timeZoneLocalDateTime, timeZoneEpochNanoseconds } from "./temporal-time-zone-operations.js";
+import { isoDateToEpochDay, isValidEpochNanoseconds } from "./iso-calendar.js";
 import { addTemporalDate } from "./temporal-date-arithmetic.js";
 import { dateDuration } from "./temporal-calendar-round.js";
 import { durationSign } from "./temporal-duration.js";
@@ -10,7 +11,7 @@ import type { ZonedDurationNudge } from "./temporal-zoned-calendar-round.js";
 
 export function roundZonedTimeDifference(first: bigint, zone: TemporalTimeZone, difference: ISODateTimeDifference, incrementNanoseconds: bigint, mode: TemporalRoundingMode): ZonedDurationNudge | null {
     if (!isValidEpochNanoseconds(first) || incrementNanoseconds <= 0n) return null;
-    const origin = isoDateTimeFromEpochNanoseconds(first + zone.offsetNanoseconds);
+    const origin = timeZoneLocalDateTime(zone, first);
     if (origin === null) return null;
     const dateSign = durationSign(difference.date), sign = dateSign === 0 ? (difference.time < 0n ? -1 : 1) : dateSign;
     const startDate = addTemporalDate(origin.date, difference.date, false, false);
@@ -18,9 +19,11 @@ export function roundZonedTimeDifference(first: bigint, zone: TemporalTimeZone, 
     if (startDate === null || time === null) return null;
     const startDay = isoDateToEpochDay(startDate);
     if (startDay === null) throw new Error("zoned time rounding date invariant");
-    const start = BigInt(startDay) * NANOSECONDS_PER_DAY + time - zone.offsetNanoseconds;
-    const daySpan = BigInt(sign) * NANOSECONDS_PER_DAY, end = start + daySpan;
-    if (!isValidEpochNanoseconds(start) || !isValidEpochNanoseconds(end)) return null;
+    const start = timeZoneEpochNanoseconds(zone, BigInt(startDay) * NANOSECONDS_PER_DAY + time);
+    const end = timeZoneEpochNanoseconds(zone, BigInt(startDay + sign) * NANOSECONDS_PER_DAY + time);
+    if (start === null || end === null) return null;
+    const daySpan = end - start;
+    if (BigInt(sign) * daySpan <= 0n) throw new Error("zoned rounding day span invariant");
     let rounded = roundTemporalInteger(difference.time, incrementNanoseconds, mode);
     const beyond = rounded - daySpan, expanded = BigInt(sign) * beyond >= 0n;
     if (expanded) rounded = roundTemporalInteger(beyond, incrementNanoseconds, mode);

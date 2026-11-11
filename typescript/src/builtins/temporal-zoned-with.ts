@@ -13,7 +13,7 @@ export function registerTemporalZonedWith(realm: Realm): void {
         if (partial.type === "throw") return partial;
         const fields = resolveTemporalZonedFields(partial.value, args.length < 2 ? UNDEFINED : args[1], context, loc, object.value);
         if (fields.type === "throw") return fields;
-        const epoch = interpretTemporalZonedDateTime(fields.record, fields.offset);
+        const epoch = interpretTemporalZonedDateTime(fields.record, fields.offset, fields.disambiguation);
         return epoch === null ? languageFailure(context.realm, "RangeError", "invalid zoned replacement offset or range", loc) :
             createTemporalZonedDateTime(epoch, object.value.timeZone, context.realm.temporalZonedDateTimePrototype, context, loc);
     });

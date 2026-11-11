@@ -1,3 +1,4 @@
+import { timeZoneEpochNanoseconds, timeZoneStartOfDay } from "../temporal-time-zone-operations.js";
 import type { Realm } from "../realm.js";
 import { createTemporalZonedDateTime, temporalZonedDateTimeObject, temporalZonedISODateTime } from "../temporal-zoned-date-time-object.js";
 import { createTemporalInstant } from "../temporal-instant-object.js";
@@ -8,7 +9,7 @@ import { toTemporalTimeZone } from "../temporal-time-zone.js";
 import { toTemporalCalendar } from "../temporal-calendar.js";
 import { toTimeFieldsOrMidnight } from "./temporal-plain-time-conversion.js";
 import { combineISODateTime } from "../iso-date-time.js";
-import { isoDateTimeToEpochNanoseconds, isValidEpochNanoseconds } from "../iso-calendar.js";
+import { isoDateTimeToEpochNanoseconds} from "../iso-calendar.js";
 import { languageFailure, UNDEFINED, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalZonedDateTimeParts(realm: Realm): void {
@@ -21,8 +22,9 @@ export function registerTemporalZonedDateTimeParts(realm: Realm): void {
             if (time.type === "throw") return time;
             const local = isoDateTimeToEpochNanoseconds(combineISODateTime(date, time.value));
             if (local === null) throw new Error("ZonedDateTime local time invariant");
-            const epoch = local - object.value.timeZone.offsetNanoseconds;
-            if (!isValidEpochNanoseconds(epoch)) return languageFailure(context.realm, "RangeError", "local time outside the Instant range", loc);
+            const useStart = name === "startOfDay" || args.length === 0 || args[0].kind === "undefined";
+            const epoch = useStart ? timeZoneStartOfDay(object.value.timeZone, date) : timeZoneEpochNanoseconds(object.value.timeZone, local);
+            if (epoch === null) return languageFailure(context.realm, "RangeError", "local time outside the Instant range", loc);
             return createTemporalZonedDateTime(epoch, object.value.timeZone, context.realm.temporalZonedDateTimePrototype, context, loc);
         });
     }

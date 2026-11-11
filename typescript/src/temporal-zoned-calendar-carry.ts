@@ -1,4 +1,5 @@
-import { isoDateTimeFromEpochNanoseconds, isoDateToEpochDay, isValidEpochNanoseconds } from "./iso-calendar.js";
+import { timeZoneLocalDateTime, timeZoneEpochNanoseconds } from "./temporal-time-zone-operations.js";
+import { isoDateToEpochDay, isValidEpochNanoseconds } from "./iso-calendar.js";
 import { addTemporalDate } from "./temporal-date-arithmetic.js";
 import { dateDuration } from "./temporal-calendar-round.js";
 import { NANOSECONDS_PER_DAY, timeToNanoseconds } from "./temporal-time.js";
@@ -8,7 +9,7 @@ import type { TemporalTimeZone } from "./temporal-time-zone-parse.js";
 
 export function carryZonedCalendarDifference(first: bigint, zone: TemporalTimeZone, difference: ISODateTimeDifference, nudged: bigint, largest: DurationUnit, startUnit: "month" | "day", sign: number): ISODateTimeDifference | null {
     if (!isValidEpochNanoseconds(first)) return null;
-    const origin = isoDateTimeFromEpochNanoseconds(first + zone.offsetNanoseconds);
+    const origin = timeZoneLocalDateTime(zone, first);
     if (origin === null) return null;
     const time = timeToNanoseconds(origin);
     if (time === null) return null;
@@ -28,8 +29,8 @@ export function carryZonedCalendarDifference(first: bigint, zone: TemporalTimeZo
         if (end === null) return null;
         const day = isoDateToEpochDay(end);
         if (day === null) throw new Error("zoned calendar carry date invariant");
-        const epoch = BigInt(day) * NANOSECONDS_PER_DAY + time - zone.offsetNanoseconds;
-        if (!isValidEpochNanoseconds(epoch)) return null;
+        const epoch = timeZoneEpochNanoseconds(zone, BigInt(day) * NANOSECONDS_PER_DAY + time);
+        if (epoch === null) return null;
         if (BigInt(sign) * (nudged - epoch) < 0n) return result;
         result = { date: candidate, time: 0n };
     }

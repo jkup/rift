@@ -1,7 +1,8 @@
+import { timeZoneOffsetNanoseconds } from "../src/temporal-time-zone-operations.js";
 import { parseTemporalTimeZone } from "../src/temporal-time-zone-parse.js";
 function check(text: string, identifier: string, minutes: number): void {
     const result = parseTemporalTimeZone(text);
-    if (result === null || result.identifier !== identifier || result.offsetNanoseconds !== BigInt(minutes) * 60000000000n) throw new Error(text);
+    if (result === null || result.identifier !== identifier || timeZoneOffsetNanoseconds(result, 0n) !== BigInt(minutes) * 60000000000n) throw new Error(text);
 }
 for (const text of ["UTC", "utc", "UtC", "2020-02-29T12:34Z", "20200229t1234z", "2020-02-29[UTC]", "2020-02[UTC]", "--02-29[UTC]", "0229[UTC]", "2020-02-29T12:34:60.123456789Z", "+999999-12-31T00Z"]) check(text, "UTC", 0);
 for (const text of ["+01", "+0100", "+01:00", "2020-01-01T00+01", "00:00+0100", "t00+01:00", "2020-01[+01]", "--01-01[+0100]"]) check(text, "+01:00", 60);

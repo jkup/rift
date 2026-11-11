@@ -1,9 +1,10 @@
+import { timeZoneOffsetNanoseconds, timeZoneStartOfDay } from "../temporal-time-zone-operations.js";
 import type { Realm } from "../realm.js";
 import type { TimeFields } from "../temporal-time.js";
 import { temporalZonedDateTimeObject, temporalZonedISODateTime } from "../temporal-zoned-date-time-object.js";
 import { temporalCalendarFields, temporalCalendarField } from "./temporal-calendar-fields.js";
-import { isoDateToEpochDay, isValidEpochNanoseconds, NANOSECONDS_PER_DAY } from "../iso-calendar.js";
-import { formatUTCOffsetMinutes } from "../utc-offset.js";
+import { isoDateToEpochDay, epochDayToISODate } from "../iso-calendar.js";
+import { formatUTCOffset } from "../utc-offset.js";
 import { languageFailure, normal, UNDEFINED, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalZonedDateTimeFields(realm: Realm): void {
@@ -28,19 +29,22 @@ export function registerTemporalZonedDateTimeFields(realm: Realm): void {
         const getter = realm.createBuiltin("get " + name, 0, (receiver, _args, context, loc): ValueCompletion => {
             const object = temporalZonedDateTimeObject(receiver, context, loc);
             if (object.type === "throw") return object;
-            const value = object.value, offset = value.timeZone.offsetNanoseconds;
+            const value = object.value, offset = timeZoneOffsetNanoseconds(value.timeZone, value.epochNanoseconds);
+            if (offset === null) throw new Error("ZonedDateTime offset range invariant");
             if (name === "offsetNanoseconds") return normal({ kind: "number", value: Number(offset) });
             if (name === "offset") {
-                const formatted = formatUTCOffsetMinutes(Number(offset / 60000000000n));
+                const formatted = formatUTCOffset(offset);
                 if (formatted === null) throw new Error("ZonedDateTime offset invariant");
                 return normal({ kind: "string", value: formatted });
             }
             const day = isoDateToEpochDay(temporalZonedISODateTime(value).date);
             if (day === null) throw new Error("ZonedDateTime day invariant");
-            const midnight = BigInt(day) * NANOSECONDS_PER_DAY - offset;
-            if (!isValidEpochNanoseconds(midnight) || !isValidEpochNanoseconds(midnight + NANOSECONDS_PER_DAY))
+            const nextDate = epochDayToISODate(day + 1);
+            const midnight = timeZoneStartOfDay(value.timeZone, temporalZonedISODateTime(value).date);
+            const next = nextDate === null ? null : timeZoneStartOfDay(value.timeZone, nextDate);
+            if (midnight === null || next === null)
                 return languageFailure(context.realm, "RangeError", "day boundary outside the Instant range", loc);
-            return normal({ kind: "number", value: 24 });
+            return normal({ kind: "number", value: Number(next - midnight) / 3600000000000 });
         });
         prototype.bootstrapDefine(name, { get: { kind: "object", object: getter }, set: UNDEFINED, enumerable: false, configurable: true });
     }

@@ -1,6 +1,7 @@
+import { timeZoneLocalDateTime } from "./temporal-time-zone-operations.js";
 import type { Location } from "./syntax.js";
 import type { TemporalTimeZone } from "./temporal-time-zone-parse.js";
-import { isoDateTimeFromEpochNanoseconds, type ISODateTime } from "./iso-calendar.js";
+import { type ISODateTime } from "./iso-calendar.js";
 import { GuestObject, languageFailure, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext } from "./runtime.js";
 
 export class GuestTemporalZonedDateTime extends GuestObject {
@@ -8,7 +9,7 @@ export class GuestTemporalZonedDateTime extends GuestObject {
 }
 
 export function temporalZonedISODateTime(value: GuestTemporalZonedDateTime): ISODateTime {
-    const result = isoDateTimeFromEpochNanoseconds(value.epochNanoseconds + value.timeZone.offsetNanoseconds);
+    const result = timeZoneLocalDateTime(value.timeZone, value.epochNanoseconds);
     if (result === null) throw new Error("ZonedDateTime local projection invariant");
     return result;
 }

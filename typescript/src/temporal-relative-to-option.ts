@@ -70,7 +70,7 @@ export function temporalRelativeToOption(options: Value, context: OperationConte
         const resolved = resolveTemporalDateTimeFields({ date: fields, time }, false, context, loc);
         if (resolved.type === "throw") return resolved;
         const epoch = interpretTemporalZonedDateTime({ dateTime: resolved.value, timeZone, startOfDay: false,
-            offsetBehaviour: offsetNanoseconds === null ? "wall" : "option", offsetNanoseconds: offsetNanoseconds ?? 0n }, "reject");
+            offsetBehaviour: offsetNanoseconds === null ? "wall" : "option", offsetNanoseconds: offsetNanoseconds ?? 0n, matchMinutes: false }, "reject");
         return epoch === null ? languageFailure(context.realm, "RangeError", "relativeTo offset or range is invalid", loc) :
             { type: "normal", value: { kind: "zoned", epoch, timeZone } };
     }

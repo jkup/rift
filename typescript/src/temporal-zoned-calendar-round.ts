@@ -1,4 +1,5 @@
-import { isoDateTimeFromEpochNanoseconds, isoDateToEpochDay, isValidEpochNanoseconds, type ISODateTime } from "./iso-calendar.js";
+import { timeZoneLocalDateTime, timeZoneEpochNanoseconds } from "./temporal-time-zone-operations.js";
+import { isoDateToEpochDay, isValidEpochNanoseconds, type ISODateTime } from "./iso-calendar.js";
 import { calendarWindow, dateDuration, roundCalendarWindow, type CalendarWindow } from "./temporal-calendar-round.js";
 import { addTemporalDate } from "./temporal-date-arithmetic.js";
 import { durationSign, type DurationFields } from "./temporal-duration.js";
@@ -15,7 +16,7 @@ export interface ZonedDurationNudge {
 
 export interface ZonedCalendarWindow { readonly calendar: CalendarWindow; readonly start: bigint; readonly end: bigint }
 
-export function zonedCalendarWindow(origin: ISODateTime, zone: TemporalTimeZone, duration: DurationFields, unit: "year" | "month" | "week" | "day", increment: number, sign: number, shifted: boolean): ZonedCalendarWindow | null {
+export function zonedCalendarWindow(first: bigint, origin: ISODateTime, zone: TemporalTimeZone, duration: DurationFields, unit: "year" | "month" | "week" | "day", increment: number, sign: number, shifted: boolean): ZonedCalendarWindow | null {
     let calendar: CalendarWindow | null;
     if (unit === "day") {
         const inner = Math.trunc(duration.days / increment) * increment, outer = inner + sign * increment;
@@ -28,21 +29,22 @@ export function zonedCalendarWindow(origin: ISODateTime, zone: TemporalTimeZone,
     } else calendar = calendarWindow(origin.date, duration, unit, increment, sign, shifted);
     const time = timeToNanoseconds(origin);
     if (calendar === null || time === null) return null;
-    const start = BigInt(calendar.startDay) * NANOSECONDS_PER_DAY + time - zone.offsetNanoseconds;
-    const end = BigInt(calendar.endDay) * NANOSECONDS_PER_DAY + time - zone.offsetNanoseconds;
-    return isValidEpochNanoseconds(start) && isValidEpochNanoseconds(end) ? { calendar, start, end } : null;
+    const unchanged = calendar.start.years === 0 && calendar.start.months === 0 && calendar.start.weeks === 0 && calendar.start.days === 0;
+    const start = unchanged ? first : timeZoneEpochNanoseconds(zone, BigInt(calendar.startDay) * NANOSECONDS_PER_DAY + time);
+    const end = timeZoneEpochNanoseconds(zone, BigInt(calendar.endDay) * NANOSECONDS_PER_DAY + time);
+    return start !== null && end !== null ? { calendar, start, end } : null;
 }
 
 export function roundZonedCalendarDifference(first: bigint, last: bigint, zone: TemporalTimeZone, difference: ISODateTimeDifference, unit: "year" | "month" | "week" | "day", increment: number, mode: TemporalRoundingMode): ZonedDurationNudge | null {
     if (!isValidEpochNanoseconds(first) || !isValidEpochNanoseconds(last) || !Number.isInteger(increment) || increment < 1 || increment > 1000000000) return null;
-    const origin = isoDateTimeFromEpochNanoseconds(first + zone.offsetNanoseconds);
+    const origin = timeZoneLocalDateTime(zone, first);
     if (origin === null) return null;
     const dateSign = durationSign(difference.date), sign = dateSign === 0 ? (difference.time < 0n ? -1 : 1) : dateSign;
-    let shifted = false, window = zonedCalendarWindow(origin, zone, difference.date, unit, increment, sign, false);
+    let shifted = false, window = zonedCalendarWindow(first, origin, zone, difference.date, unit, increment, sign, false);
     if (window === null) return null;
     if (BigInt(sign) * (last - window.start) < 0n || BigInt(sign) * (last - window.end) > 0n) {
         shifted = true;
-        window = zonedCalendarWindow(origin, zone, difference.date, unit, increment, sign, true);
+        window = zonedCalendarWindow(first, origin, zone, difference.date, unit, increment, sign, true);
         if (window === null) return null;
     }
     const distance = BigInt(sign) * (last - window.start), span = BigInt(sign) * (window.end - window.start);
