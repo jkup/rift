@@ -806,3 +806,9 @@ Node-hosted evidence, not native acceptance or full class conformance.
 and failing controls in strict/non-strict mode against explicit outcomes in Node
 and both Rift hosts. This advances harness readiness; corpus admission and a
 conformance baseline remain open.
+
+[The current Script diagnostic](test262-current-script-diagnostic.md) retains all
+33 starter files and 60 variants. Its Node run identifies five syntax-provenance
+follow-ups (top-level return, async declarations in statement position, and strict
+reserved bindings); do not convert those unsupported records into conformance
+passes without parser certification and both-host controls.
