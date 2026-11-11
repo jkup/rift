@@ -15,8 +15,13 @@ The focused production test passes on both hosts with 345 static statements
 and zero dynamic operations. It checks 63 independent semantic controls,
 precomputed offset completeness/order, nanosecond fold candidates, clock gaps
 and exact instant endpoints. Eight data-generator corruption controls and ten
-identifier binding controls pass with updated provenance. Broader production
-corpus proofs, regressions and full-suite validation are running.
+identifier binding controls pass with updated provenance. All seven native
+regression groups and 947 Node guests pass without skips. Production code passes
+182,917 historical candidate cases, 731,668 disambiguation checks, 81,201 day-start
+cases, 200,490 recurrence cycle cases and 582 recurrence endpoints on both hosts.
+All 15 native tooling builds, 296 tooling tests, eight codec checks per host
+and 16 parent-envelope checks pass. Generator and inherited-source checks
+also pass; the owned source snapshot is READY.
 
 Implementation is isolated in `build/iana-timezone-local-draft/`. Canonical
 foundation inputs remain frozen, and guest named-zone admission is unchanged.
