@@ -786,3 +786,11 @@ Private class follow-up: [the design review](class-private-elements-review.md) i
 [The C++ builtin surface review](cpp-builtin-surface-review.md) classifies all525 method/getter macro registrations after private/Reflect integration:501 shape/arity matches,14 standards-correct differences matching Node and10 known weak-storage blockers. This is a bounded Node-hosted API inventory, not semantic/native acceptance or a conformance percentage. Do not port obsolete Temporal methods or C++ descriptor deviations merely to match names.
 
 2026-11-11 Reflect/legacy milestone accepted (TS-466–472):941/941 guests on both hosts without skips;448 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-UaBiIk/native-kYH80d matches all225 normalized records and preserves191 preceding completions; current completions=191. Private methods/accessors and private-in, Reflect introspection/mutation/access/apply and bounded UTF-16 escape/unescape are accepted. Guest coercion/order, receiver/Realm behavior and budgets retain focused expected-result checks. Historical fixture bytes and initial failed runs remain preserved. The accepted TS-473 deadlines carry forward unchanged. Evidence: build/reflect-legacy-rollup-* and feature reviews.
+
+[The global/manual-registration review](cpp-global-surface-review.md) supplements
+TS-475 with 60 entries: 51 present with Node-matching metadata, six known weak-API
+gaps, two C++ host GC hooks and one internal this binding. It classifies all 34
+non-completing corpus records without changing fixtures. No new ordinary global
+or JSON method gap was found. Genuine weak storage and collector hooks remain
+prerequisites; do not add placeholders or compatibility exceptions to inflate
+corpus completion. The 191/225 completion count is not semantic conformance.
