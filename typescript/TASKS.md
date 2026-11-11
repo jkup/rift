@@ -5197,3 +5197,7 @@ Status: **done — registration differences classified**. Owner: Codex catch-up 
 ## TS-476 — Supported RegExp differential review
 
 Status: **done — bounded Node differential review**. Owner: Codex catch-up chat, 2026-11-11. Compare deterministic patterns within the implemented RegExp subset against an explicit Node reference subprocess, preserving every initial mismatch for reduction. Prioritize capture/backtracking/Unicode semantics beyond mere API presence. No lookbehind, property escapes or v-mode admission; no host execution in the guest engine. Own ignored review helpers/reports and docs/regexp-differential-review.md. Runtime fixes require a separately claimed, reduced task and both-host gates.
+
+## TS-477 — Named timezone backend review
+
+Status: **in progress — architecture and data review**. Owner: Codex catch-up chat, 2026-11-11. Review a genuine IANA timezone backend to close the C++ temporal_rs gap while canonical Reflect/legacy inputs remain frozen. Establish versioned data provenance/licensing, aliases, historical second offsets, transition lookup, gaps/folds and future recurrence across the supported Temporal range. Assess static-only feasibility and current fixed-offset call sites before selecting implementation slices. No handful-of-zones approximation, host Date local-time fallback, toolchain change or guest API admission. Own docs/iana-timezone-backend-review.md and ignored research/probe artifacts; runtime tasks follow the reviewed contract.
