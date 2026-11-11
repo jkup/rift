@@ -6,6 +6,7 @@ import type { Location } from "./syntax.js";
 export type RegExpMatchFlags = { ignoreCase: boolean; multiline: boolean; dotAll: boolean };
 type Instruction = { kind: "character"; value: number } | { kind: "dot" }
     | { kind: "backreference"; index: number }
+    | { kind: "named-backreference"; indices: number[] }
     | { kind: "lookahead"; negative: boolean; end: number } | { kind: "lookahead-end" }
     | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean; folded: Set<number> | null }
     | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
@@ -101,11 +102,13 @@ class PatternCompiler {
             this.emit({ kind: "lookahead-end" });
             assertion.end = this.instructions.length;
         } else if (atom.kind === "named-backreference") {
+            const indices: number[] = [];
             for (const capture of this.names) {
                 if (!this.tick()) return;
-                if (capture.name === atom.name) { this.emit({ kind: "backreference", index: capture.index }); return; }
+                if (capture.name === atom.name) indices.push(capture.index);
             }
-            throw new Error("unresolved RegExp capture name");
+            if (indices.length === 0) throw new Error("unresolved RegExp capture name");
+            this.emit({ kind: "named-backreference", indices });
         } else if (atom.kind === "character") {
             this.emit({ kind: "character", value: this.flags.ignoreCase ? canonicalize(atom.value) : atom.value });
         } else if (atom.kind === "class") {
@@ -118,7 +121,9 @@ class PatternCompiler {
                 }
             }
             this.emit({ kind: "class", parts: atom.parts, inverted: atom.inverted, folded });
-        } else this.emit(atom);
+        } else if (atom.kind === "dot") this.emit({ kind: "dot" });
+        else if (atom.kind === "backreference") this.emit({ kind: "backreference", index: atom.index });
+        else this.emit({ kind: "assertion", name: atom.name });
     }
 }
 
@@ -199,8 +204,15 @@ class PatternMatcher {
                     if (instruction.name === "start") accepted = state.position === 0 || this.program.flags.multiline && lineTerminator(before);
                     else if (instruction.name === "end") accepted = state.position === this.input.length || this.program.flags.multiline && lineTerminator(after);
                     else accepted = (word(before) !== word(after)) === (instruction.name === "word");
-                } else if (instruction.kind === "backreference") {
-                    const from = state.captures[instruction.index * 2], to = state.captures[instruction.index * 2 + 1];
+                } else if (instruction.kind === "backreference" || instruction.kind === "named-backreference") {
+                    let index = instruction.kind === "backreference" ? instruction.index : -1;
+                    if (instruction.kind === "named-backreference") for (const candidate of instruction.indices) {
+                        if (!this.tick()) { accepted = false; break; }
+                        if (state.captures[candidate * 2] < 0 || state.captures[candidate * 2 + 1] < 0) continue;
+                        if (index !== -1) throw new Error("multiple participating named captures");
+                        index = candidate;
+                    }
+                    const from = index === -1 ? -1 : state.captures[index * 2], to = index === -1 ? -1 : state.captures[index * 2 + 1];
                     if (from >= 0 && to >= 0) {
                         const length = to - from;
                         accepted = state.position + length <= this.input.length;

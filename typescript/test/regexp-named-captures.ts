@@ -31,7 +31,7 @@ for (const text of cases) {
  check(session.inspect().active===null&&session.inspect().calls===0,'caller restored');
 }
 for(const source of ['(?<π>a)','(?<\\u0078>a)','(?<x>a)|(?<x>b)','(?<x>a)(?<x>b)','(?<=a)','\\k<x>'])
- check(parseRegExpSyntax(source,()=>true).kind===(source==='(?<π>a)'||source===String.raw`(?<\u0078>a)`?'ready':'unsupported'),'retained boundary '+source);
+ check(parseRegExpSyntax(source,()=>true).kind===(source==='(?<x>a)(?<x>b)'?'syntax-error':source==='(?<=a)'||source==='\\k<x>'?'unsupported':'ready'),'retained boundary '+source);
 for(const source of ['(?<>a)','(?<1x>a)','(?<x-a>a)','(?<x>a)\\k<missing>'])
  check(parseRegExpSyntax(source,()=>true).kind==='syntax-error','invalid name '+source);
 for (const source of [String.raw`\k<>`,String.raw`\k<1>`,String.raw`\k<`,String.raw`\k`,String.raw`[\k<>]`])

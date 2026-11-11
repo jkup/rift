@@ -18,6 +18,8 @@ export type RegExpSyntaxFailure = { kind: "syntax-error" | "unsupported"; messag
     | { kind: "depth-limit"; count: number; limit: number };
 export type RegExpSyntaxResult = { kind: "ready"; pattern: RegExpPattern } | RegExpSyntaxFailure;
 type Quantifier = { min: number; max: number | null; lazy: boolean };
+type AlternativePath = { id: number; alternative: number };
+type ParsedCapture = { name: string; index: number; path: AlternativePath[] };
 
 function digit(text: string): boolean { return text !== "" && text >= "0" && text <= "9"; }
 function hex(text: string): number {
@@ -30,7 +32,9 @@ function hex(text: string): number {
 class PatternParser {
     private offset = 0;
     private captures = 0;
-    private names: RegExpNamedCapture[] = [];
+    private names: ParsedCapture[] = [];
+    private path: AlternativePath[] = [];
+    private nextDisjunction = 0;
     private references: string[] = [];
     private totalCaptures: number | null = null;
     private hasNamedCapture = false;
@@ -52,7 +56,12 @@ class PatternParser {
                 ? { kind: "unsupported", message: "legacy k escapes are unsupported", offset: this.offset }
                 : { kind: "syntax-error", message: "unknown capture name", offset: this.offset };
         }
-        return { kind: "ready", pattern: { source: this.source, body, captures: this.captures, names: this.names } };
+        const names: RegExpNamedCapture[] = [];
+        for (const capture of this.names) {
+            if (!this.tick()) return { kind: "stopped" };
+            names.push({ name: capture.name, index: capture.index });
+        }
+        return { kind: "ready", pattern: { source: this.source, body, captures: this.captures, names } };
     }
     private current(): string { return this.source.charAt(this.offset); }
     private take(): string {
@@ -163,10 +172,12 @@ class PatternParser {
         return name;
     }
     private disjunction(): RegExpDisjunction {
+        const frame = { id: this.nextDisjunction++, alternative: 0 };
+        this.path.push(frame);
         const alternatives: RegExpTerm[][] = [];
         let terms: RegExpTerm[] = [];
         while (this.failure === null && this.offset < this.source.length && this.current() !== ")") {
-            if (this.current() === "|") { this.take(); alternatives.push(terms); terms = []; continue; }
+            if (this.current() === "|") { this.take(); alternatives.push(terms); terms = []; frame.alternative++; continue; }
             const captureFrom = this.captures + 1;
             const atom = this.atom();
             if (atom === null) break;
@@ -181,6 +192,7 @@ class PatternParser {
                 lazy: quantifier !== null && quantifier.lazy, captureFrom, captureTo: this.captures });
         }
         alternatives.push(terms);
+        this.path.pop();
         return { alternatives };
     }
     private atom(): RegExpAtom | null {
@@ -213,10 +225,22 @@ class PatternParser {
                     if (name === null) return null;
                     for (const capture of this.names) {
                         if (!this.tick()) { this.failure = { kind: "stopped" }; return null; }
-                        if (capture.name === name) return this.reject("unsupported", "duplicate capture names are unsupported");
+                        if (capture.name !== name) continue;
+                        let disjoint = false;
+                        for (let i = 0; i < capture.path.length && i < this.path.length; i++) {
+                            if (!this.tick()) { this.failure = { kind: "stopped" }; return null; }
+                            if (capture.path[i].id !== this.path[i].id) break;
+                            if (capture.path[i].alternative !== this.path[i].alternative) { disjoint = true; break; }
+                        }
+                        if (!disjoint) return this.reject("syntax-error", "capture names may participate together");
                     }
                     index = ++this.captures;
-                    this.names.push({ name, index });
+                    const path: AlternativePath[] = [];
+                    for (const frame of this.path) {
+                        if (!this.tick()) { this.failure = { kind: "stopped" }; return null; }
+                        path.push({ id: frame.id, alternative: frame.alternative });
+                    }
+                    this.names.push({ name, index, path });
                 } else {
                     if (this.current() === "=" || this.current() === "!") { lookahead = true; negative = this.current() === "!"; }
                     else if (this.current() !== ":") return this.reject("unsupported", "modifier groups are unsupported");

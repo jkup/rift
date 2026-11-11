@@ -100,7 +100,7 @@ passes(String.raw`var m=/\k<π>(?<\u03c0>a)/.exec('a');m.groups['π']==='a'`);
 passes(String.raw`'aa'.replace(/(?<π>a)\k<π>/,'[$<π>]')==='[a]'`);
 passes(String.raw`var r=/(?<π>a)/g,m=[...'aa'.matchAll(r)];m.length===2&&m[1].groups['π']==='a'`);
 for(const pattern of [String.raw`(?<π>a)|(?<\u03c0>b)`,String.raw`(?<x>a)(?<\u0078>b)`])
- check(parseRegExpSyntax(pattern,()=>true).kind==='unsupported','decoded duplicate boundary');
+ check(parseRegExpSyntax(pattern,()=>true).kind===(pattern.includes('|')?'ready':'syntax-error'),'decoded duplicate boundary');
 let ticks=0;
 check(parseRegExpSyntax('(?<a'+String.raw`\u{000000000000000000000000000000000061}`.repeat(100)+'>x)',()=>++ticks<40).kind==='stopped','escape budget');
 console.log('regexp unicode names passed');

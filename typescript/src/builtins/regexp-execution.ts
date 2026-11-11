@@ -42,10 +42,17 @@ export function regExpBuiltinExec(regexp: GuestRegExp, input: string, context: O
     }
     const groups = regexp.program.names.length === 0 ? null : new GuestObject(null);
     const indexGroups = groups !== null && hasIndices ? new GuestObject(null) : null;
+    const matchedNames = groups === null ? null : new Set<string>();
     for (const capture of regexp.program.names) {
         const tick = context.tick(loc);
         if (tick.type === "throw") return tick;
-        if (groups === null) throw new Error("named capture groups invariant");
+        if (groups === null || matchedNames === null) throw new Error("named capture groups invariant");
+        const participating = captures[capture.index].kind !== "undefined";
+        if (matchedNames.has(capture.name)) {
+            if (participating) throw new Error("multiple participating named captures");
+            continue;
+        }
+        if (participating) matchedNames.add(capture.name);
         groups.bootstrapDefine(capture.name, { value: captures[capture.index], writable: true, enumerable: true, configurable: true });
         if (indexGroups !== null) indexGroups.bootstrapDefine(capture.name, { value: indices[capture.index], writable: true, enumerable: true, configurable: true });
     }
