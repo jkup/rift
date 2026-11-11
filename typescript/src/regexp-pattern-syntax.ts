@@ -1,3 +1,5 @@
+import { unicodeIdentifierStart, unicodeIdentifierContinue } from "./unicode-identifiers.js";
+
 export type RegExpClassPart = { kind: "range"; from: number; to: number }
     | { kind: "builtin"; name: "digit" | "word" | "space"; inverted: boolean };
 export type RegExpAtom = { kind: "character"; value: number } | { kind: "dot" }
@@ -82,16 +84,78 @@ class PatternParser {
         this.totalCaptures = count;
         return count;
     }
+    private nameHexUnit(): number | null {
+        let value = 0;
+        for (let i = 0; i < 4; i++) {
+            const part = hex(this.current());
+            if (part < 0) return this.reject("syntax-error", "invalid capture name escape");
+            this.take();
+            value = value * 16 + part;
+        }
+        return this.failure === null ? value : null;
+    }
+    private nameCodePoint(): number | null {
+        const char = this.take();
+        if (this.failure !== null) return null;
+        let point = char.charCodeAt(0);
+        if (char === "\\") {
+            if (this.take() !== "u") return this.reject("syntax-error", "invalid capture name escape");
+            if (this.current() === "{") {
+                this.take();
+                let value = 0, digits = 0;
+                while (this.failure === null && this.current() !== "}") {
+                    const part = hex(this.current());
+                    if (part < 0) return this.reject("syntax-error", "invalid capture name escape");
+                    this.take();
+                    value = value * 16 + part;
+                    if (value > 0x10ffff) return this.reject("syntax-error", "capture name code point out of range");
+                    digits++;
+                }
+                if (this.failure !== null) return null;
+                if (digits === 0) return this.reject("syntax-error", "empty capture name escape");
+                this.take();
+                return this.failure === null ? value : null;
+            }
+            const unit = this.nameHexUnit();
+            if (unit === null) return null;
+            point = unit;
+            if (point >= 0xd800 && point <= 0xdbff && this.source.slice(this.offset, this.offset + 2) === "\\u") {
+                let trail = 0;
+                for (let i = 2; i < 6; i++) {
+                    const part = hex(this.source.charAt(this.offset + i));
+                    if (part < 0) { trail = -1; break; }
+                    trail = trail * 16 + part;
+                }
+                if (trail >= 0xdc00 && trail <= 0xdfff) {
+                    for (let i = 0; i < 6; i++) this.take();
+                    point = 0x10000 + (point - 0xd800) * 1024 + trail - 0xdc00;
+                }
+            }
+        } else if (point >= 0xd800 && point <= 0xdbff) {
+            const trail = this.current().charCodeAt(0);
+            if (trail >= 0xdc00 && trail <= 0xdfff) {
+                this.take();
+                point = 0x10000 + (point - 0xd800) * 1024 + trail - 0xdc00;
+            }
+        }
+        return this.failure === null ? point : null;
+    }
     private groupName(): string | null {
         if (this.current() !== "<") return this.reject("syntax-error", "capture name requires <");
         this.take();
         let name = "";
         while (this.failure === null && this.offset < this.source.length && this.current() !== ">") {
-            const char = this.take();
-            if (char === "\\" || char.charCodeAt(0) > 127) return this.reject("unsupported", "escaped and Unicode capture names are unsupported");
-            const letter = char >= "a" && char <= "z" || char >= "A" && char <= "Z" || char === "_" || char === "$";
-            if (!letter && !(name.length > 0 && digit(char))) return this.reject("syntax-error", "invalid capture name");
-            name += char;
+            const point = this.nameCodePoint();
+            if (point === null) return null;
+            const identifier = point === 36 || point === 95 || (name.length === 0
+                ? unicodeIdentifierStart(point)
+                : point === 0x200c || point === 0x200d || unicodeIdentifierContinue(point));
+            if (!identifier) return this.reject("syntax-error", "invalid capture name");
+            if (point <= 0xffff) name += String.fromCharCode(point);
+            else {
+                const offset = point - 0x10000;
+                name += String.fromCharCode(0xd800 + Math.floor(offset / 1024), 0xdc00 + offset % 1024);
+            }
         }
         if (this.failure !== null) return null;
         if (this.current() !== ">" || name.length === 0) return this.reject("syntax-error", "invalid capture name");

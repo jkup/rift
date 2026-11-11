@@ -300,6 +300,7 @@ const entries = [
     ["test/string-locale-compare.ts", "string-locale-compare"],
     ["test/class-static-blocks.ts", "class-static-blocks"],
     ["test/regexp-named-captures.ts", "regexp-named-captures"],
+    ["test/regexp-unicode-names.ts", "regexp-unicode-names"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

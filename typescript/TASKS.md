@@ -4973,7 +4973,7 @@ TS-448 first candidate benchmark: all four harness outputs match, native10.7–1
 
 ## TS-449 — Unicode and escaped RegExp capture names
 
-Status: **in progress — isolated successor to TS-448**. Owner: Codex catch-up chat, 2026-11-10. Use the TS-447 validated Unicode 17 identifier properties for literal and escaped capture names, including astral pairs, braced escapes, identifier exceptions, decoded name equality, forward references and precise invalid-name rejection. Keep duplicate names, Unicode matching flags and lookbehind explicitly unsupported. Preserve the final descriptor-validation baseline and canonical validation freeze. Own src/regexp-pattern-syntax.ts, test/regexp-named-captures.ts and tests/manifests/docs in build/regexp-unicode-names-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Use the TS-447 validated Unicode 17 identifier properties for literal and escaped capture names, including astral pairs, braced escapes, identifier exceptions, decoded name equality, forward references and precise invalid-name rejection. Keep duplicate names, Unicode matching flags and lookbehind explicitly unsupported. Preserve the final descriptor-validation baseline and canonical validation freeze. Own src/regexp-pattern-syntax.ts, test/regexp-named-captures.ts and tests/manifests/docs in build/regexp-unicode-names-draft/.
 
 ## TS-450 — Duplicate named capture participation review
 
