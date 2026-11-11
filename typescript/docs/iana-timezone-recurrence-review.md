@@ -24,8 +24,10 @@ Current evidence:
 - Every generated zone's rule matches its parsed footer. Twelve malformed parser
   controls and eight generator corruption/determinism controls pass.
 
-The full Node suite passes 943/943 without skips; tooling validation is running.
-This is not integration
+The full Node suite passes 943/943 without skips. All 15 tooling builds, 296
+tooling tests and 16 parent-envelope checks pass. The READY snapshot also verifies
+every inherited source/fixture file, owned changes, typechecking and deterministic
+generation. This is isolated readiness, not integration
 acceptance. The canonical Reflect/legacy milestone remains frozen.
 
 Evidence: `build/iana-recurrence-production-results.json`,
