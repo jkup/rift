@@ -255,3 +255,7 @@ boundary clear. The reduced failing example reports six of seven statements
 static; the control builds entirely statically (eleven statements) and agrees
 on both hosts. Preserve the static coverage gate: coverage exits zero even for
 the failing example. See [TS-451 evidence](validation/ts-451-instruction-union/README.md).
+
+## Callback adaptation (TS-458, 2026-11-11)
+
+An inferred zero-argument callback passed through a wider builtin signature creates a dynamic adapter despite a successful static-only build. The four-statement [reduction and explicit-signature control](validation/ts-458-callback-adaptation/README.md) both produce matching Node/native output; only the control passes zero-dynamic coverage. State the full callback contract at this test boundary.
