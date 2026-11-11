@@ -67,9 +67,9 @@ export function auditScriptReturns(source: string): ReturnCoverage {
     return { kind: "complete", goal: "Script", sourceUnits: source.length,
         consumedUnits: end.end, candidates: parser.returnCandidates };
 }
-export function auditBoundedScriptNumericSeparators(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): NumericSeparatorAudit {
+export function auditBoundedScriptNumericSeparators(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): NumericSeparatorAudit {
     const unit = { id: "", text: source };
-    const parsed = parseStructuralSource(unit, null, true, "separator", newTargetAllowed, superContext);
+    const parsed = parseStructuralSource(unit, null, true, "separator", newTargetAllowed, superContext, privateNames);
     if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectNumericSeparatorAudit(unit, parsed.body, parsed.tokens, parsed.bindings, inheritedStrict);
@@ -84,11 +84,11 @@ export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes:
     return parseStructuralPlan(unit, nodes, true);
 }
 // Preparation alone may certify bounded rules after full-source parsing.
-export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): DeclarationPlanResult {
-    const original = prepareBeforeNumericSeparators(unit, nodes, inheritedStrict, newTargetAllowed, superContext);
+export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): DeclarationPlanResult {
+    const original = prepareBeforeNumericSeparators(unit, nodes, inheritedStrict, newTargetAllowed, superContext, privateNames);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         (original.rejection.capabilityCode !== "lex.numeric-literal" && original.rejection.capabilityCode !== "lex.leading-zero")) return original;
-    const audit = auditBoundedScriptNumericSeparators(original.unit.text, inheritedStrict, newTargetAllowed, superContext);
+    const audit = auditBoundedScriptNumericSeparators(original.unit.text, inheritedStrict, newTargetAllowed, superContext, privateNames);
     if (audit.kind !== "eligible") return original;
     const first = audit.candidates[0];
     if (first === undefined) throw new Error("eligible separator audit requires candidate");
@@ -97,11 +97,11 @@ export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: Dec
         diagnostic: { phase: "parse", name: "SyntaxError", message: "invalid numeric separator",
             loc: { line: first.loc.line, column: first.loc.column } } };
 }
-function prepareBeforeNumericSeparators(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext): DeclarationPlanResult {
-    const original = parseBoundedScriptPreparationBeforeLexicalAudit(unit, nodes, inheritedStrict, newTargetAllowed, superContext);
+function prepareBeforeNumericSeparators(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext, privateNames: readonly string[]): DeclarationPlanResult {
+    const original = parseBoundedScriptPreparationBeforeLexicalAudit(unit, nodes, inheritedStrict, newTargetAllowed, superContext, privateNames);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.declaration-statement") return original;
-    const audit = auditBoundedScriptLexicalStatements(original.unit.text, inheritedStrict, newTargetAllowed, superContext);
+    const audit = auditBoundedScriptLexicalStatements(original.unit.text, inheritedStrict, newTargetAllowed, superContext, privateNames);
     if (audit.kind !== "eligible") return original;
     const first = audit.candidates[0];
     if (first === undefined) throw new Error("eligible lexical audit requires candidate");
@@ -111,11 +111,11 @@ function prepareBeforeNumericSeparators(unit: ScriptSourceUnit, nodes: Declarati
             loc: { line: first.keyword.loc.line, column: first.keyword.loc.column } } };
 }
 // Preserve D6 dispatch, its original rejection and retained nodes before retry.
-function parseBoundedScriptPreparationBeforeLexicalAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext): DeclarationPlanResult {
-    const original = parseBoundedScriptPreparationBeforeNumericAudit(unit, nodes, inheritedStrict, newTargetAllowed, superContext);
+function parseBoundedScriptPreparationBeforeLexicalAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext, privateNames: readonly string[]): DeclarationPlanResult {
+    const original = parseBoundedScriptPreparationBeforeNumericAudit(unit, nodes, inheritedStrict, newTargetAllowed, superContext, privateNames);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.assignment-target") return original;
-    const audit = auditBoundedScriptNumericAssignments(original.unit.text, inheritedStrict, newTargetAllowed, superContext);
+    const audit = auditBoundedScriptNumericAssignments(original.unit.text, inheritedStrict, newTargetAllowed, superContext, privateNames);
     if (audit.kind !== "eligible") return original;
     const first = audit.candidates[0];
     if (first === undefined) throw new Error("eligible numeric audit requires candidate");
@@ -125,21 +125,21 @@ function parseBoundedScriptPreparationBeforeLexicalAudit(unit: ScriptSourceUnit,
             loc: { line: first.target.loc.line, column: first.target.loc.column } } };
 }
 // Preserve D4 dispatch, its original rejection and retained nodes before retry.
-function parseBoundedScriptPreparationBeforeNumericAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext): DeclarationPlanResult {
-    const original = parseStructuralPlan(unit, nodes, true, true, inheritedStrict, newTargetAllowed, superContext);
+function parseBoundedScriptPreparationBeforeNumericAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext, privateNames: readonly string[]): DeclarationPlanResult {
+    const original = parseStructuralPlan(unit, nodes, true, true, inheritedStrict, newTargetAllowed, superContext, privateNames);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.duplicate-parameter") return original;
     // A failed duplicate-formal parse only permits a fresh rejection-only audit.
     // Its retained nodes remain untouched; the continuation cannot produce a plan.
     const source = { id: unit.id, text: unit.text };
-    const parsed = parseStructuralSource(source, null, true, "parameter", newTargetAllowed, superContext);
+    const parsed = parseStructuralSource(source, null, true, "parameter", newTargetAllowed, superContext, privateNames);
     if (parsed.kind === "blocked") return original;
     const rejection = collectBoundedScriptParameterRejection(source, parsed.body, parsed.tokens, parsed.bindings, inheritedStrict);
     return rejection === null ? original : rejection;
 }
-function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, certifyBlockFunctions = false, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): DeclarationPlanResult {
+function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, certifyBlockFunctions = false, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): DeclarationPlanResult {
     const source = { id: unit.id, text: unit.text };
-    const parsed = parseStructuralSource(source, nodes, bounded, "none", newTargetAllowed, superContext);
+    const parsed = parseStructuralSource(source, nodes, bounded, "none", newTargetAllowed, superContext, privateNames);
     if (parsed.kind === "blocked") return parsed;
     if (certifyBlockFunctions) {
         if (nodes === null) throw new Error("preparation requires retained nodes");
@@ -161,17 +161,17 @@ export function auditBoundedScriptStrictParameters(source: string): StrictParame
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectStrictParameterAudit(unit, parsed.body, parsed.tokens, parsed.bindings);
 }
-export function auditBoundedScriptNumericAssignments(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): NumericAssignmentAudit {
+export function auditBoundedScriptNumericAssignments(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): NumericAssignmentAudit {
     const unit = { id: "", text: source };
-    const parsed = parseStructuralSource(unit, null, true, "numeric", newTargetAllowed, superContext);
+    const parsed = parseStructuralSource(unit, null, true, "numeric", newTargetAllowed, superContext, privateNames);
     if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectNumericAssignmentAudit(unit, parsed.body, parsed.tokens, parsed.bindings, parsed.numericCandidates, inheritedStrict);
 }
 
-export function auditBoundedScriptLexicalStatements(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): LexicalStatementAudit {
+export function auditBoundedScriptLexicalStatements(source: string, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): LexicalStatementAudit {
     const unit = { id: "", text: source };
-    const parsed = parseStructuralSource(unit, null, true, "lexical", newTargetAllowed, superContext);
+    const parsed = parseStructuralSource(unit, null, true, "lexical", newTargetAllowed, superContext, privateNames);
     if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectLexicalStatementAudit(unit, parsed.body, parsed.tokens, parsed.bindings, parsed.lexicalCandidates, inheritedStrict);
@@ -182,13 +182,16 @@ type StructuralSource =
     | { kind: "blocked"; goal: "Script"; unit: ScriptSourceUnit; rejection: Rejection; diagnostic: Diagnostic };
 // One lexical/parser path for both public plans and non-emitting audit evidence.
 function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean,
-    audit: "none" | "parameter" | "numeric" | "lexical" | "separator" = "none", newTargetAllowed = false, superContext: SuperContext = "none"): StructuralSource {
+    audit: "none" | "parameter" | "numeric" | "lexical" | "separator" = "none", newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): StructuralSource {
     if (audit !== "none" && (!bounded || nodes !== null)) throw new Error("invalid structural audit purpose");
     const parameterAudit = audit === "parameter", numericAudit = audit === "numeric";
     const lexicalAudit = audit === "lexical", separatorAudit = audit === "separator";
     const lexer = createLexer(source.text, true, separatorAudit);
     const parserSource: SourceText = { text: source.text };
     const parser = new Parser(lexer.result().tokens, parserSource, separatorAudit ? "bounded-numeric-separator-audit" : lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan", newTargetAllowed, superContext, lexer);
+    parser.allowOuterPrivateNames(privateNames);
+    parser.privateSyntaxAudit = bounded;
+    parser.privateFieldsOnly = bounded;
     const parsed = parser.program();
     // Public audits retain whole-source lexical failure precedence.
     while (lexer.next().kind !== "eof") {}
@@ -205,6 +208,9 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     if (parser.current().kind !== "eof" || parser.current().start !== source.text.length || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
     if (parser.regexpError !== null) return { kind: "blocked", goal: "Script", unit: source,
         rejection: { kind: "syntax-error", ruleCode: "regexp-literal" }, diagnostic: parser.regexpError };
+    if (parser.privateIssue !== null) return { kind: "blocked", goal: "Script", unit: source,
+        rejection: { kind: "syntax-error", ruleCode: "private-name" },
+        diagnostic: { phase: "parse", name: "SyntaxError", message: parser.privateIssue.message, loc: parser.privateIssue.site.loc } };
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
     return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates, lexicalCandidates: parser.lexicalCandidates };
 }
@@ -212,9 +218,13 @@ type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; computed?: true; v
 type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupported: { reason: Rejection; message: string; loc: Location } | null };
 class Parser {
     privateSyntaxAudit = false;
+    privateFieldsOnly = false;
     private privateScope = new PrivateSyntaxScope(null);
     private readonly privateScopes: PrivateSyntaxScope[] = [this.privateScope];
     privateIssue: PrivateSyntaxIssue | null = null;
+    allowOuterPrivateNames(names: readonly string[]): void {
+        for (const name of names) this.privateScope.allowOuterName(name);
+    }
     private privateName(token: Token, use: boolean): PrivateNameSyntax {
         const site = { name: token.text, start: token.start, end: token.end, loc: token.loc };
         if (use) this.privateScope.uses.push(site);
@@ -1074,6 +1084,8 @@ class Parser {
         }
         const singleArrow = this.structuralPlan() && min <= 1 && this.current().kind === "word" && this.token(this.index + 1)?.text === "=>";
         const privateIn = this.privateSyntaxAudit && this.current().kind === "private-identifier" && allowIn && min <= 9;
+        if (privateIn && this.privateFieldsOnly)
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "private brand checks are not supported", this.current().loc);
         let left: Expr;
         if (privateIn) {
             const name = this.privateName(this.take(), true);
@@ -1303,7 +1315,10 @@ class Parser {
                 if (generator || asynchronous || kind !== "method" || constructorMethod !== null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "invalid or duplicate constructor", first.loc);
                 constructorMethod = value;
             } else if (isStatic && literalName === "prototype") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "static prototype method is invalid", first.loc);
-            if (key.kind === "private-name") this.privateScope.declare(key, kind, isStatic);
+            if (key.kind === "private-name") {
+                this.privateScope.declare(key, kind, isStatic);
+                if (this.privateFieldsOnly) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "private methods and accessors are not supported", key.loc);
+            }
             elements.push({ kind, isStatic, key, value });
         }
         this.expect("}");

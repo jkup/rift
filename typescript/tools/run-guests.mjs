@@ -893,6 +893,7 @@ executeDriver("private-identifier-lexing", { stdout: "private identifier lexing 
 executeDriver("private-class-syntax", { stdout: "private class syntax passed\n" });
 executeDriver("private-environment-capture", { stdout: "private environment capture passed\n" });
 executeDriver("certified-rule-producer", { stdout: "certified rule producer passed\n" });
+executeDriver("private-field-execution", { stdout: "private field execution passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

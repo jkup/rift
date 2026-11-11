@@ -10,6 +10,9 @@ export class PrivateSyntaxScope {
     private issue: PrivateSyntaxIssue | null = null;
 
     constructor(readonly outer: PrivateSyntaxScope | null) {}
+    allowOuterName(name: string): void {
+        this.declarations.set(name, { kind: "field", isStatic: false, paired: false });
+    }
 
     declare(site: DeclarationSite, kind: PrivateDeclarationKind, isStatic: boolean): void {
         if (site.name === "#constructor") {

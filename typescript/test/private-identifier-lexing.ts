@@ -45,5 +45,5 @@ check(lex(raw + "a", true).rejection?.kind === "resource-limit", "source budget 
 const direct = scanPrivateIdentifier("a#𐐀!", 1);
 check(direct.kind === "ready" && direct.text === "#𐐀" && direct.end === 4, "standalone scanner offset");
 for (const text of ["class A { #x; }", "class A { read(o){return o.#x} }", "#x in {}"])
-    check(prepareBoundedScript({id:"private-lexing-boundary",text},new Realm((_line: string) => {},"script")).kind !== "ready", "private execution remains unsupported");
+    check((prepareBoundedScript({id:"private-lexing-boundary",text},new Realm((_line: string) => {},"script")).kind === "ready") === (text === "class A { #x; }"), "private declaration admitted; unresolved names and brand checks blocked");
 console.log("private identifier lexing passed");

@@ -55,7 +55,7 @@ passes("class C{x;}String(C)===\"class C{x;}\"");
 passes("class B{constructor(){return []}}class C extends B{x;}Array.isArray(new C())&&Object.hasOwn(new C(),\"x\")");
 passes("class B{constructor(){return []}}class C extends B{length;}var ok=false;try{new C()}catch(e){ok=e instanceof RangeError}ok");
 passes("class C{x=1}new C().x===1");
-check(prepareBoundedScript({id:"rejected",text:"class C{#x;}"},new Realm((_line:string)=>{},"script")).kind!=="ready","class C{#x;}");
+check(prepareBoundedScript({id:"rejected",text:"class C{#x;}"},new Realm((_line:string)=>{},"script")).kind==="ready","class C{#x;}");
 check(run("class C{static {}}").type === "normal", "empty static block executes");
 check(prepareBoundedScript({id:"rejected",text:"class C{constructor;}"},new Realm((_line:string)=>{},"script")).kind!=="ready","class C{constructor;}");
 check(prepareBoundedScript({id:"rejected",text:"class C{static constructor;}"},new Realm((_line:string)=>{},"script")).kind!=="ready","class C{static constructor;}");

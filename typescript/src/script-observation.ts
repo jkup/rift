@@ -112,7 +112,7 @@ class Attempt {
         if (prepared.kind === "conflict") return this.envelope(operation, site, { kind: "unsupported-syntax", capabilityCode: "script.uncertified-conflict" });
         const rejection = prepared.rejection;
         if (rejection.kind === "syntax-error") {
-            if (rejection.ruleCode !== "duplicate-block-lexical-function" && rejection.ruleCode !== "duplicate-strict-parameter" && rejection.ruleCode !== "assignment-target" && rejection.ruleCode !== "lexical-declaration-statement" && rejection.ruleCode !== "numeric-separator" && rejection.ruleCode !== "regexp-literal") throw new Error("unreviewed Script rule");
+            if (rejection.ruleCode !== "duplicate-block-lexical-function" && rejection.ruleCode !== "duplicate-strict-parameter" && rejection.ruleCode !== "assignment-target" && rejection.ruleCode !== "lexical-declaration-statement" && rejection.ruleCode !== "numeric-separator" && rejection.ruleCode !== "regexp-literal" && rejection.ruleCode !== "private-name") throw new Error("unreviewed Script rule");
             return this.envelope(operation, site,
                 { kind: "syntax-error", phase: "parse", constructorName: "SyntaxError", ruleCode: rejection.ruleCode });
         }

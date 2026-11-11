@@ -1,4 +1,5 @@
-import { PrivateEnvironment } from "./private-names.js";
+import { PrivateEnvironment, PrivateName } from "./private-names.js";
+import { declarePrivateName, resolvePrivateName, privateFieldAdd } from "./private-elements.js";
 import { toNumeric } from "./numeric.js";
 import { bigintOperation } from "./bigint-arithmetic.js";
 import { appendArrayElement, finishArrayLiteral } from "./array-literal.js";
@@ -67,7 +68,7 @@ type FunctionExecution = {
     evaluate: (initializer: Expr, name: string | null) => ValueCompletion;
     initializePattern: (pattern: DestructuringPattern, value: Value, environment: ScriptEnvironment) => ValueCompletion;
 };
-type ClassFieldRecord = { kind: "field"; key: PropertyKey; loc: Location; initializer: ClassFieldInitializer | null; homeObject: GuestObject };
+type ClassFieldRecord = { kind: "field"; key: PropertyKey | PrivateName; loc: Location; initializer: ClassFieldInitializer | null; homeObject: GuestObject };
 type ClassInitializerRecord = ClassFieldRecord | { kind: "static-block"; loc: Location; initializer: ClassStaticBlock; homeObject: GuestObject };
 // Both initializer arrays use this union: scriptc copies arrays when widening their element type.
 type CallableState = { async: boolean; generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean; instanceFields: ClassInitializerRecord[]; staticElements: ClassInitializerRecord[] } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
@@ -221,10 +222,10 @@ class ExecutableScript {
     #activationKey = new ActivationKey();
     #completedMaterializations = 0;
     private constructor() {}
-    static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none"): ScriptPreparation {
+    static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): ScriptPreparation {
         if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
         const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map(), argumentsScopes: new Set(), freeArguments: [] };
-        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes, inheritedStrict, newTargetAllowed, superContext) : parseDeclarationPlan(unit, nodes);
+        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes, inheritedStrict, newTargetAllowed, superContext, privateNames) : parseDeclarationPlan(unit, nodes);
         if (plan.kind !== "complete") return plan;
         if (!bounded && !plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
         // Associations were assigned in the collector's original iterative walk.
@@ -2191,6 +2192,11 @@ class ExecutionEngine {
             if (link.optional && (base.value.kind === "null" || base.value.kind === "undefined"))
                 return { type: "value", value: UNDEFINED };
             if (link.kind === "member") {
+                if (link.key.kind === "private-name") {
+                    result = this.#privateReference(base.value, link.key.name, link.key.loc);
+                    if (result.type === "abrupt") return result;
+                    continue;
+                }
                 const key = this.#eval(link.key, null, receiver);
                 if (key.type !== "normal") return { type: "abrupt", completion: key };
                 const reference: Reference = { kind: "property", base: base.value, key: key.value, loc: link.loc };
@@ -2237,6 +2243,11 @@ class ExecutionEngine {
         const reference: Reference = { kind: "property", base, key, loc };
         return { kind: "script-super", reference, receiver, strict: this.#active().strict };
     }
+    #privateReference(receiver: Value, description: string, loc: Location): EvaluationReferenceResult {
+        const name = resolvePrivateName(this.#active().privateEnvironment, description, this.context, loc);
+        return name.type === "throw" ? { type: "abrupt", completion: name }
+            : { type: "reference", reference: { kind: "script-private", receiver, name: name.value } };
+    }
     #reference(expr: Expr, env: Environment | null, receiver: Value): EvaluationReferenceResult {
         if (env !== null) return this.reference(expr, env, receiver);
         if (expr.kind === "identifier") {
@@ -2255,6 +2266,7 @@ class ExecutionEngine {
             const strict = this.#active().strict;
             const base = this.#eval(expr.base, null, receiver);
             if (base.type !== "normal") return { type: "abrupt", completion: base };
+            if (expr.key.kind === "private-name") return this.#privateReference(base.value, expr.key.name, expr.key.loc);
             const key = this.#eval(expr.key, null, receiver);
             if (key.type !== "normal") return { type: "abrupt", completion: key };
             const reference: Reference = { kind: "property", base: base.value, key: key.value, loc: expr.loc };
@@ -2366,6 +2378,12 @@ class ExecutionEngine {
             }
         }
         const privateEnvironment = new PrivateEnvironment(active.privateEnvironment);
+        for (const element of expr.elements) {
+            if (element.kind === "static-block" || element.key.kind !== "private-name") continue;
+            if (privateEnvironment.ownName(element.key.name) !== undefined) continue;
+            const declared = declarePrivateName(privateEnvironment, element.key.name, this.context, element.key.loc);
+            if (declared.type === "throw") return declared;
+        }
         this.#frame = { ...active, privateEnvironment };
         const prototype = new GuestObject(prototypeParent);
         const constructor = ExecutableScript.materializeClassConstructor(active.record, scopeId, environment, privateEnvironment,
@@ -2374,12 +2392,13 @@ class ExecutionEngine {
         if (constructor.value.kind !== "object") throw new Error("class constructor result invariant");
         return { type: "normal", constructor: constructor.value.object, prototype };
     }
-    #defineClassElement(element: ClassElement, key: PropertyKey, constructor: GuestObject, prototype: GuestObject): ThrowCompletion | null {
+    #defineClassElement(element: ClassElement, key: PropertyKey | PrivateName, constructor: GuestObject, prototype: GuestObject): ThrowCompletion | null {
         if (element.kind === "static-block") throw new Error("static block has no property key");
         if (element.kind === "field") {
             ExecutableScript.classInitializers(constructor, element.isStatic, executionKey).push({ kind: "field", key, loc: element.key.loc, initializer: element.initializer, homeObject: element.isStatic ? constructor : prototype });
             return null;
         }
+        if (key instanceof PrivateName) throw new Error("private method execution is not admitted");
         const propertyName = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
         const name = element.kind === "method" ? propertyName : element.kind + " " + propertyName;
         const method = this.#value(element.value, name);
@@ -2416,10 +2435,16 @@ class ExecutionEngine {
                     if (result.type !== "normal") throw new Error("invalid static block completion");
                     continue;
                 }
-                const name = typeof field.key === "string" ? field.key : field.key.description === undefined ? "" : "[" + field.key.description + "]";
+                const fieldKey = field.key;
+                const name = fieldKey instanceof PrivateName ? fieldKey.description : typeof fieldKey === "string" ? fieldKey : fieldKey.description === undefined ? "" : "[" + fieldKey.description + "]";
                 const value = field.initializer === null ? normal() : this.#value(field.initializer.value, name);
                 if (value.type === "throw") { this.#capture(value); return value; }
-                const defined = receiver.defineOwnProperty(field.key, { value: value.value, writable: true, enumerable: true, configurable: true }, this.context, field.loc);
+                if (fieldKey instanceof PrivateName) {
+                    const added = privateFieldAdd(receiver, fieldKey, value.value, this.context, field.loc);
+                    if (added.type === "throw") { this.#capture(added); return added; }
+                    continue;
+                }
+                const defined = receiver.defineOwnProperty(fieldKey, { value: value.value, writable: true, enumerable: true, configurable: true }, this.context, field.loc);
                 if (defined.type === "throw") { this.#capture(defined); return defined; }
                 if (!defined.value) {
                     const error = languageFailure(this.context.realm, "TypeError", "cannot define class field", field.loc);
@@ -2470,6 +2495,13 @@ class ExecutionEngine {
                     continue;
                 }
                 if (element.kind !== "field" && element.value === expr.constructorMethod) continue;
+                if (element.key.kind === "private-name") {
+                    const key = resolvePrivateName(this.#active().privateEnvironment, element.key.name, this.context, element.key.loc);
+                    if (key.type === "throw") return key;
+                    const defined = this.#defineClassElement(element, key.value, created.constructor, created.prototype);
+                    if (defined !== null) return defined;
+                    continue;
+                }
                 const keyValue = this.#value(element.key);
                 if (keyValue.type === "throw") return keyValue;
                 const key = toPropertyKey(keyValue.value, this.context, element.key.loc);
@@ -3248,9 +3280,17 @@ class ExecutionEngine {
         }
         const saved = this.#active(), realm = this.context.realm;
         const functionEnvironment = direct ? this.#thisEnvironment(saved.lexical) : null;
+        const privateNames: string[] = [];
+        for (let environment = direct ? saved.privateEnvironment : null; environment !== null; environment = environment.outer) {
+            for (const name of environment.ownNames()) {
+                const tick = this.tick(loc);
+                if (tick.type === "throw") return tick;
+                privateNames.push(name);
+            }
+        }
         const prepared = ExecutableScript.prepare({ id: "<eval>", text: input.value }, realm, true, direct && saved.strict,
             functionEnvironment !== null, functionEnvironment?.kind === "function" && functionEnvironment.callable.isDerivedClassConstructor ? "derived"
-                : functionEnvironment?.kind === "class-initializer" || (functionEnvironment !== null && functionEnvironment.callable.homeObject !== null) ? "method" : "none");
+                : functionEnvironment?.kind === "class-initializer" || (functionEnvironment !== null && functionEnvironment.callable.homeObject !== null) ? "method" : "none", privateNames);
         if (prepared.kind === "profile-rejected") throw new Error("invalid eval Realm");
         if (prepared.kind === "conflict") return languageFailure(realm, "SyntaxError", prepared.diagnostic.message, loc);
         if (prepared.kind === "blocked") {
@@ -3577,7 +3617,9 @@ class ExecutionEngine {
                             continue;
                         }
                         if (expression.target.kind !== "member") throw new Error("suspended update without member");
-                        frames.push({ kind: "update-base", expression });
+                        if (expression.target.key.kind === "private-name")
+                            frames.push({ kind: "private-base", expression: expression.target, operation: { kind: "update", expression } });
+                        else frames.push({ kind: "update-base", expression });
                         expression = expression.target.base;
                         continue;
                     }
@@ -3591,7 +3633,9 @@ class ExecutionEngine {
                             continue;
                         }
                         if (expression.target.kind === "member" && isSuspendingGeneratorExpression(expression.target)) {
-                            frames.push({ kind: "assignment-base", expression });
+                            if (expression.target.key.kind === "private-name")
+                                frames.push({ kind: "private-base", expression: expression.target, operation: expression.kind === "assign" ? { kind: "assignment", expression } : { kind: "compound", expression } });
+                            else frames.push({ kind: "assignment-base", expression });
                             expression = expression.target.base;
                             continue;
                         }
@@ -3643,7 +3687,9 @@ class ExecutionEngine {
                                 homeObject: superContext.homeObject, receiver: superContext.receiver });
                             expression = expression.callee.key;
                         } else if (expression.callee.kind === "member") {
-                            frames.push({ kind: "call-base", expression });
+                            if (expression.callee.key.kind === "private-name")
+                                frames.push({ kind: "private-base", expression: expression.callee, operation: { kind: "call", expression } });
+                            else frames.push({ kind: "call-base", expression });
                             expression = expression.callee.base;
                         } else {
                             frames.push({ kind: "call-target", expression, receiver: UNDEFINED });
@@ -3701,7 +3747,9 @@ class ExecutionEngine {
                         continue;
                     }
                     if (expression.kind === "member") {
-                        frames.push({ kind: "member-base", expression });
+                        if (expression.key.kind === "private-name")
+                            frames.push({ kind: "private-base", expression, operation: { kind: "read" } });
+                        else frames.push({ kind: "member-base", expression });
                         expression = expression.base;
                         continue;
                     }
@@ -3798,6 +3846,14 @@ class ExecutionEngine {
                         continue;
                     }
                     if (element.kind !== "field" && element.value === frame.expression.constructorMethod) { frame.index++; continue; }
+                    if (element.key.kind === "private-name") {
+                        const key = resolvePrivateName(this.#active().privateEnvironment, element.key.name, this.context, element.key.loc);
+                        if (key.type === "throw") return key;
+                        const defined = this.#defineClassElement(element, key.value, frame.constructor, frame.prototype);
+                        if (defined !== null) return defined;
+                        frame.index++;
+                        continue;
+                    }
                     if (isSuspendingGeneratorExpression(element.key)) {
                         frame.stage = "key";
                         frames.push(frame);
@@ -3825,7 +3881,9 @@ class ExecutionEngine {
                         frames.push({ kind: "chain-evaluate", expression: base,
                             consumer: { kind: "chain", expression: frame.expression, consumer: frame.consumer } });
                     } else if (base.kind === "member") {
-                        frames.push({ kind: "chain-reference-base", expression: frame.expression, consumer: frame.consumer });
+                        if (base.key.kind === "private-name")
+                            frames.push({ kind: "private-base", expression: base, operation: { kind: "chain", expression: frame.expression, consumer: frame.consumer } });
+                        else frames.push({ kind: "chain-reference-base", expression: frame.expression, consumer: frame.consumer });
                         expression = base.base;
                     } else if (base.kind === "super-member") {
                         const context = this.#superContext(base.loc);
@@ -3906,6 +3964,16 @@ class ExecutionEngine {
                     continue;
                 }
                 if (link.kind === "member") {
+                    if (link.key.kind === "private-name") {
+                        const result = this.#privateReference(base.value, link.key.name, link.key.loc);
+                        if (result.type === "abrupt") {
+                            if (result.completion.type === "throw") return result.completion;
+                            throw new Error("invalid private reference completion");
+                        }
+                        frames.push({ kind: "chain-step", expression: frame.expression, consumer: frame.consumer,
+                            index: frame.index + 1, result });
+                        continue;
+                    }
                     frames.push({ kind: "chain-key", expression: frame.expression, consumer: frame.consumer, index: frame.index + 1, base: base.value });
                     expression = link.key;
                     continue;
@@ -3940,8 +4008,17 @@ class ExecutionEngine {
                 if (assigned.type === "throw") return assigned;
                 continue;
             }
-            if (frame.kind === "super-key") {
-                const reference = this.#superReference(frame.homeObject, frame.receiver, value, frame.expression.loc);
+            if (frame.kind === "super-key" || frame.kind === "private-base") {
+                let reference: EvaluationReference;
+                if (frame.kind === "private-base") {
+                    if (frame.expression.key.kind !== "private-name") throw new Error("private continuation without private name");
+                    const resolved = this.#privateReference(value, frame.expression.key.name, frame.expression.key.loc);
+                    if (resolved.type === "abrupt") {
+                        if (resolved.completion.type === "throw") return resolved.completion;
+                        throw new Error("invalid private reference completion");
+                    }
+                    reference = resolved.reference;
+                } else reference = this.#superReference(frame.homeObject, frame.receiver, value, frame.expression.loc);
                 if (frame.operation.kind === "chain") {
                     frames.push({ kind: "chain-step", expression: frame.operation.expression, consumer: frame.operation.consumer,
                         index: 0, result: { type: "reference", reference } });
@@ -3976,7 +4053,8 @@ class ExecutionEngine {
                     expression = frame.operation.expression.value;
                     continue;
                 }
-                if (frame.operation.kind === "call") frames.push({ kind: "call-target", expression: frame.operation.expression, receiver: frame.receiver });
+                if (frame.operation.kind === "call") frames.push({ kind: "call-target", expression: frame.operation.expression,
+                    receiver: referenceCallReceiver({ type: "reference", reference }) });
                 value = result.value;
                 continue;
             }

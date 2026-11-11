@@ -42,7 +42,10 @@ for (const text of [
     'class C{static{await 1}}', 'class C{static{for await(var x of []){}}}',
     'class C{static{let x;var x}}', 'class C{static{let x;let x}}',
     'class C{static{delete x}}', 'class C{static{var eval}}', 'class C{#x}',
-]) check(prepareBoundedScript({ id: "invalid-static-block", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
+]) {
+    const prepared = prepareBoundedScript({ id: "invalid-static-block", text }, new Realm((_line: string) => {}, "script"));
+    check(text === "class C{#x}" ? prepared.kind === "ready" : prepared.kind !== "ready", text);
+}
 const plan = parseBoundedScriptDeclarationPlan({ id: "static-block-scopes", text: 'class C{static{var x;this.f=()=>x}static{var x;}}' });
 check(plan.kind === "complete" && plan.scopes.map(scope => scope.kind).join() === "script,class,static-block,function,static-block" && plan.scopes[0].varNames.length === 0 && plan.scopes[1].varNames.length === 0, "independent preorder scopes");
 const realm = new Realm((_line: string) => {}, "script"), session = createScriptSession();

@@ -49,7 +49,8 @@ for (const text of [
     'function* g(){class C{[yield "key"]=this;}return C;}var i=g();i.next();var C=i.next("x").value,c=new C();c.x===c',
 ]) passes(text);
 for (const text of ['class C{x=arguments}', 'class C{x=()=>arguments}', 'class C{x=({arguments})}', 'class C{x=super()}', 'class C{x=yield 1}', 'async function f(){class C{x=await 1}}', 'class C{#x=1}', 'class C{static{}}']) {
-    if (text === 'class C{static{}}') check(run(text).type === "normal", "original static block executes");
+    if (text === 'class C{#x=1}') check(run(text).type === "normal", "original private initializer declaration executes");
+    else if (text === 'class C{static{}}') check(run(text).type === "normal", "original static block executes");
     else check(prepareBoundedScript({ id: "invalid-fields", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
 }
 const planned = parseBoundedScriptDeclarationPlan({ id: "field-scope-order", text: "class C{a=()=>1;b=()=>2;}" });

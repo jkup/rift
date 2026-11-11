@@ -12,4 +12,5 @@ export class PrivateEnvironment {
         return name;
     }
     ownName(description: string): PrivateName | undefined { return this.names.get(description); }
+    ownNames(): string[] { return Array.from(this.names.keys()); }
 }

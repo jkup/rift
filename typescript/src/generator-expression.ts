@@ -29,6 +29,7 @@ export type GeneratorExpressionFrame = { kind: "left"; expression: BinaryExpr }
     | { kind: "destructure-value"; expression: DestructureExpr }
     | { kind: "compound-value"; expression: CompoundExpr; reference: EvaluationReference; left: Value }
     | { kind: "super-key"; expression: SuperMemberExpr; operation: SuperPropertyOperation; homeObject: GuestObject; receiver: Value }
+    | { kind: "private-base"; expression: MemberExpr; operation: SuperPropertyOperation }
     | { kind: "update-base"; expression: UpdateExpr }
     | { kind: "update-key"; expression: UpdateExpr; base: Value }
     | { kind: "assignment-base"; expression: AssignExpr | CompoundExpr }
