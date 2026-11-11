@@ -16,7 +16,9 @@ provider, the local-time prototype passes 63 semantic controls and 182,917
 historical cases on both hosts. Production recurrence passes 200,490 cycle
 cases and 582 endpoint cases on both hosts.
 
-The full Node suite passes 946/946 without skips. The implementation remains
-isolated while tooling validation finishes; guest named-zone admission remains disabled. Independent
+The full Node suite passes 946/946 without skips. All 15 tooling builds,
+296 tooling tests, eight codec checks per host and 16 envelope checks pass.
+The implementation is integrated; combined milestone acceptance remains pending.
+Guest named-zone admission remains disabled. Independent
 reference and focused reports live in `build/iana-timezone-review/` and
 `build/iana-timezone-candidate-offset-draft/build/`.

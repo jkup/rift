@@ -23,5 +23,6 @@ handoff, equal recurring offsets and invalid instants. Typechecking and focused
 Node execution pass. Focused native coverage is 283 static statements with zero
 dynamic operations; all six regression groups and 945 Node guests pass. The full
 production recurrence corpus still passes 200,490 cycle and 582 endpoint cases
-on both hosts after sharing calendar math. Tooling and integration acceptance
-remain pending.
+on both hosts after sharing calendar math. All 15 tooling builds, 296 tooling
+tests, codec and envelope checks pass. The implementation is integrated; combined
+milestone acceptance remains pending.
