@@ -4948,3 +4948,9 @@ TS-443 also owns test/class-empty-fields.ts. The full Node run passed 921/922; i
 ## TS-445 — Named RegExp capture integration review
 
 Status: **done — integration review and 13 reference cases**. Owner: Codex catch-up chat, 2026-11-11. Review named capture parsing, name resolution, exec/indices groups and replacement integration against the specification and existing numeric-capture machinery. Identify a bounded implementation sequence and semantic reference cases. Own docs/regexp-named-captures-review.md; no canonical runtime edits during active validation.
+
+## TS-446 — Unique named RegExp captures
+
+Status: **in progress — isolated successor to TS-445**. Owner: Codex catch-up chat, 2026-11-10. Implement the TS-445 first public increment: unique ASCII capture names, forward named backreferences, numeric capture compatibility, named exec/indices results and existing replacement integration. Preserve explicit unsupported classification for escaped/non-ASCII names and duplicate-name syntax pending dedicated validators. Keep lookbehind, Unicode matching and modifiers unsupported. Require metadata/property/Realm/resource tests and both-host validation. Own src/regexp-pattern-syntax.ts, src/regexp-matcher.ts, src/builtins/regexp-execution.ts, test/regexp-pattern.ts, test/regexp-backreference.ts, test/regexp-lookahead.ts and tests/manifests/docs in build/regexp-named-captures-draft/.
+
+2026-11-11 TS-443 isolated acceptance gates pass: 922/922 Node guests, focused native static-only/zero-dynamic execution, seven both-host regressions and tooling295/295 with all 15 native tooling drivers rebuilt. Preserved the initial native array-widening failure and the full Node 921/922 obsolete empty-block expectation; both are corrected and rerun. Canonical integration remains pending after the queued class/String milestone. TS-446 named captures are isolated and under validation.
