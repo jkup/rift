@@ -1,5 +1,6 @@
 import { PrivateEnvironment, PrivateName } from "./private-names.js";
-import { declarePrivateName, resolvePrivateName, privateFieldAdd } from "./private-elements.js";
+import { declarePrivateName, resolvePrivateName, privateFieldAdd, privateMethodOrAccessorAdd } from "./private-elements.js";
+import type { PrivateElement } from "./runtime.js";
 import { toNumeric } from "./numeric.js";
 import { bigintOperation } from "./bigint-arithmetic.js";
 import { appendArrayElement, finishArrayLiteral } from "./array-literal.js";
@@ -70,8 +71,9 @@ type FunctionExecution = {
 };
 type ClassFieldRecord = { kind: "field"; key: PropertyKey | PrivateName; loc: Location; initializer: ClassFieldInitializer | null; homeObject: GuestObject };
 type ClassInitializerRecord = ClassFieldRecord | { kind: "static-block"; loc: Location; initializer: ClassStaticBlock; homeObject: GuestObject };
+type PrivateMethodRecord = { element: PrivateElement; loc: Location };
 // Both initializer arrays use this union: scriptc copies arrays when widening their element type.
-type CallableState = { async: boolean; generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean; instanceFields: ClassInitializerRecord[]; staticElements: ClassInitializerRecord[] } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+type CallableState = { async: boolean; generator: boolean; homeObject: GuestObject | null; classConstructor: { scope: number; bodyScope: number | null; derived: boolean; instanceFields: ClassInitializerRecord[]; staticElements: ClassInitializerRecord[]; instanceMethods: Map<PrivateName, PrivateMethodRecord>; staticMethods: Map<PrivateName, PrivateMethodRecord> } | null; strict: boolean; lexicalThis: boolean; key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
     environment: ScriptEnvironment; privateEnvironment: PrivateEnvironment | null; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
 export type { ScriptGuestCallable };
 class ScriptGuestCallable {
@@ -541,15 +543,26 @@ class ExecutableScript {
         if (info === null) throw new Error("class field owner is not a class constructor");
         return isStatic ? info.staticElements : info.instanceFields;
     }
-    static classInitializerFrame(constructor: GuestObject, receiver: GuestObject, field: ClassInitializerRecord, key: ExecutionKey): ScriptFrameSnapshot {
+    static classPrivateMethods(constructor: GuestObject, isStatic: boolean, key: ExecutionKey): Map<PrivateName, PrivateMethodRecord> {
+        if (key !== executionKey || constructor.callable?.kind !== "script-guest") throw new Error("invalid private method owner");
+        const callable = constructor.callable, record = callable.record;
+        const info = ScriptGuestCallable.check(callable, record.#activationKey, record).classConstructor;
+        if (info === null) throw new Error("private method owner is not a class constructor");
+        return isStatic ? info.staticMethods : info.instanceMethods;
+    }
+    static classElementFrame(constructor: GuestObject, receiver: GuestObject, key: ExecutionKey): ScriptFrameSnapshot {
         if (key !== executionKey || constructor.callable?.kind !== "script-guest") throw new Error("invalid class field frame");
         const callable = constructor.callable, record = callable.record;
         const state = ScriptGuestCallable.check(callable, record.#activationKey, record);
         if (state.classConstructor === null) throw new Error("missing class field context");
-        const environment = field.initializer === null ? state.environment : new ScriptClassInitializationEnvironment(state.environment, { kind: "object", object: receiver }, field.homeObject);
-        const scopeId = field.initializer === null ? state.classConstructor.scope : ExecutableScript.scopeOfNode(record, field.initializer, key);
-        return { realm: state.realm, record, scopeId, lexical: environment, variable: environment,
+        return { realm: state.realm, record, scopeId: state.classConstructor.scope, lexical: state.environment, variable: state.environment,
             strict: true, thisValue: { kind: "object", object: receiver }, function: null, privateEnvironment: state.privateEnvironment, phase: "body" };
+    }
+    static classInitializerFrame(constructor: GuestObject, receiver: GuestObject, field: ClassInitializerRecord, key: ExecutionKey): ScriptFrameSnapshot {
+        const frame = ExecutableScript.classElementFrame(constructor, receiver, key);
+        if (field.initializer === null) return frame;
+        const environment = new ScriptClassInitializationEnvironment(frame.lexical, { kind: "object", object: receiver }, field.homeObject);
+        return { ...frame, scopeId: ExecutableScript.scopeOfNode(frame.record, field.initializer, key), lexical: environment, variable: environment };
     }
     static instantiateStaticBlock(record: ExecutableScript, node: ClassStaticBlock, environment: ScriptClassInitializationEnvironment, privateEnvironment: PrivateEnvironment | null, context: OperationContext, key: ExecutionKey): ValueCompletion {
         if (key !== executionKey) throw new Error("invalid static block setup");
@@ -618,7 +631,7 @@ class ExecutableScript {
         if (budget.type === "throw") return budget;
         const callable = ScriptGuestCallable.create({ homeObject: prototypeObject, async: false, generator: false, key: record.#activationKey, record, realm: state.realm,
             scopeId: bodyScope ?? scopeId, environment, privateEnvironment, strict: true, lexicalThis: false,
-            classConstructor: { scope: scopeId, bodyScope, derived: node.heritage !== null, instanceFields: [], staticElements: [] }, unit: state.plan.unit,
+            classConstructor: { scope: scopeId, bodyScope, derived: node.heritage !== null, instanceFields: [], staticElements: [], instanceMethods: new Map(), staticMethods: new Map() }, unit: state.plan.unit,
             start: entry === null ? node.start : entry.source.start, end: entry === null ? node.end : entry.source.end,
             text: node.source.text.slice(node.start, node.end), formals: entry === null ? [] : entry.node.params.slice() });
         const object = new GuestObject(constructorParent, false, callable, callable);
@@ -2398,13 +2411,26 @@ class ExecutionEngine {
             ExecutableScript.classInitializers(constructor, element.isStatic, executionKey).push({ kind: "field", key, loc: element.key.loc, initializer: element.initializer, homeObject: element.isStatic ? constructor : prototype });
             return null;
         }
-        if (key instanceof PrivateName) throw new Error("private method execution is not admitted");
-        const propertyName = typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
+        const propertyName = key instanceof PrivateName ? key.description : typeof key === "string" ? key : key.description === undefined ? "" : "[" + key.description + "]";
         const name = element.kind === "method" ? propertyName : element.kind + " " + propertyName;
         const method = this.#value(element.value, name);
         if (method.type === "throw") return method;
         const object = element.isStatic ? constructor : prototype;
         ExecutableScript.makeMethod(method.value, object, executionKey);
+        if (key instanceof PrivateName) {
+            const methods = ExecutableScript.classPrivateMethods(constructor, element.isStatic, executionKey);
+            const previous = methods.get(key);
+            if (previous !== undefined) {
+                if (previous.element.kind !== "accessor" || element.kind === "method") throw new Error("invalid private accessor pair");
+                if (element.kind === "get") previous.element.get = method.value;
+                else previous.element.set = method.value;
+            } else {
+                const entry: PrivateElement = element.kind === "method" ? { kind: "method", value: method.value }
+                    : { kind: "accessor", get: element.kind === "get" ? method.value : UNDEFINED, set: element.kind === "set" ? method.value : UNDEFINED };
+                methods.set(key, { element: entry, loc: element.key.loc });
+            }
+            return null;
+        }
         const descriptor = element.kind === "get" ? { get: method.value, enumerable: false, configurable: true }
             : element.kind === "set" ? { set: method.value, enumerable: false, configurable: true }
             : { value: method.value, writable: true, enumerable: false, configurable: true };
@@ -2414,10 +2440,17 @@ class ExecutionEngine {
     }
     #initializeClassElements(constructor: GuestObject, receiver: GuestObject, isStatic: boolean): ThrowCompletion | null {
         const fields = ExecutableScript.classInitializers(constructor, isStatic, executionKey);
-        if (fields.length === 0) return null;
+        const methods = ExecutableScript.classPrivateMethods(constructor, isStatic, executionKey);
+        if (fields.length === 0 && methods.size === 0) return null;
         const saved = this.#active(), realm = this.activeContext.realm, inspection = this.#inspectionSource;
         this.#inspectionSource = null;
         try {
+            this.#frame = ExecutableScript.classElementFrame(constructor, receiver, executionKey);
+            this.activeContext.realm = this.#frame.realm;
+            for (const [name, method] of methods) {
+                const added = privateMethodOrAccessorAdd(receiver, name, method.element, this.context, method.loc);
+                if (added.type === "throw") { this.#capture(added); return added; }
+            }
             for (const field of fields) {
                 this.#frame = ExecutableScript.classInitializerFrame(constructor, receiver, field, executionKey);
                 this.activeContext.realm = this.#frame.realm;
@@ -2469,6 +2502,7 @@ class ExecutionEngine {
         const initialized = this.#initializeClassElements(constructor, constructor, true);
         if (initialized !== null) return initialized;
         ExecutableScript.classInitializers(constructor, true, executionKey).length = 0;
+        ExecutableScript.classPrivateMethods(constructor, true, executionKey).clear();
         return normal(value);
     }
     #classExpression(expr: ClassExpr, inferredName: string | null): ValueCompletion {

@@ -311,6 +311,7 @@ const entries = [
     ["test/private-environment-capture.ts", "private-environment-capture"],
     ["test/certified-rule-producer.ts", "certified-rule-producer"],
     ["test/private-field-execution.ts", "private-field-execution"],
+    ["test/private-methods-accessors.ts", "private-methods-accessors"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

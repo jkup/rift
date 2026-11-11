@@ -34,11 +34,11 @@ const valid = [
     "class A { #if; #static; #constructorName; }",
     "class A { #x; } class B { #x; }",
 ];
-const laterPrivateFeatures = [valid[3], valid[4], valid[5], valid[12], valid[13], valid[14], valid[15], valid[16]];
+const laterPrivateFeatures = [valid[12], valid[13], valid[14], valid[15], valid[16]];
 for (const text of valid) {
     const result = auditPrivateClassSyntax(text);
     check(result.kind === "valid", "valid private syntax: " + text + " -> " + JSON.stringify(result));
-    check((prepareBoundedScript({ id: "private-syntax", text }, new Realm((_line: string) => {}, "script")).kind === "ready") === !laterPrivateFeatures.includes(text), "private fields admitted; methods/accessors/brand checks remain unsupported: " + text);
+    check((prepareBoundedScript({ id: "private-syntax", text }, new Realm((_line: string) => {}, "script")).kind === "ready") === !laterPrivateFeatures.includes(text), "private fields/methods/accessors admitted; brand checks remain unsupported: " + text);
 }
 const invalid = [
     "class A { #x; #x; }", "class A { #x; static #x; }",

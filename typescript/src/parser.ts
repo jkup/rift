@@ -190,8 +190,8 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     const parserSource: SourceText = { text: source.text };
     const parser = new Parser(lexer.result().tokens, parserSource, separatorAudit ? "bounded-numeric-separator-audit" : lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan", newTargetAllowed, superContext, lexer);
     parser.allowOuterPrivateNames(privateNames);
-    parser.privateSyntaxAudit = bounded;
-    parser.privateFieldsOnly = bounded;
+    parser.privateSyntaxEnabled = bounded;
+    parser.privateExecution = bounded;
     const parsed = parser.program();
     // Public audits retain whole-source lexical failure precedence.
     while (lexer.next().kind !== "eof") {}
@@ -217,8 +217,8 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
 type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; computed?: true; value: Expr } | { kind: "rest"; value: Expr };
 type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupported: { reason: Rejection; message: string; loc: Location } | null };
 class Parser {
-    privateSyntaxAudit = false;
-    privateFieldsOnly = false;
+    privateSyntaxEnabled = false;
+    privateExecution = false;
     private privateScope = new PrivateSyntaxScope(null);
     private readonly privateScopes: PrivateSyntaxScope[] = [this.privateScope];
     privateIssue: PrivateSyntaxIssue | null = null;
@@ -308,7 +308,7 @@ class Parser {
         for (const cover of this.objectCovers.values()) {
             if (cover.unsupported !== null) this.fail(cover.unsupported.reason, cover.unsupported.message, cover.unsupported.loc);
         }
-        if (this.privateSyntaxAudit && this.error === null) {
+        if (this.privateSyntaxEnabled && this.error === null) {
             for (const scope of this.privateScopes) {
                 const issue = scope.validate();
                 if (issue !== null && (this.privateIssue === null || issue.site.start < this.privateIssue.site.start)) this.privateIssue = issue;
@@ -1083,8 +1083,8 @@ class Parser {
             return { kind: "literal", loc, value: null };
         }
         const singleArrow = this.structuralPlan() && min <= 1 && this.current().kind === "word" && this.token(this.index + 1)?.text === "=>";
-        const privateIn = this.privateSyntaxAudit && this.current().kind === "private-identifier" && allowIn && min <= 9;
-        if (privateIn && this.privateFieldsOnly)
+        const privateIn = this.privateSyntaxEnabled && this.current().kind === "private-identifier" && allowIn && min <= 9;
+        if (privateIn && this.privateExecution)
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "private brand checks are not supported", this.current().loc);
         let left: Expr;
         if (privateIn) {
@@ -1119,7 +1119,7 @@ class Parser {
                     if (this.eat("[")) { key = this.expression(0); this.expect("]"); }
                     else {
                         const token = this.take();
-                        if (this.privateSyntaxAudit && token.kind === "private-identifier") key = this.privateName(token, true);
+                        if (this.privateSyntaxEnabled && token.kind === "private-identifier") key = this.privateName(token, true);
                         else {
                             if (token.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected optional property name", token.loc);
                             key = { kind: "literal", loc: token.loc, value: token.text };
@@ -1131,7 +1131,7 @@ class Parser {
             }
             if (!updated && this.eat(".")) {
                 const key = this.take();
-                if (key.kind !== "word" && !(this.privateSyntaxAudit && key.kind === "private-identifier")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
+                if (key.kind !== "word" && !(this.privateSyntaxEnabled && key.kind === "private-identifier")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
                 const property: Expr = key.kind === "private-identifier" ? this.privateName(key, true) : { kind: "literal", loc: key.loc, value: key.text };
                 left = left.kind === "chain" && !this.parenthesized.has(left)
                     ? this.chainLink(left, { kind: "member", loc, optional: false, key: property })
@@ -1254,7 +1254,7 @@ class Parser {
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "class heritage requires a left-hand-side expression", heritage.loc);
         this.expect("{");
         const outerPrivate = this.privateScope;
-        if (this.privateSyntaxAudit) {
+        if (this.privateSyntaxEnabled) {
             this.privateScope = new PrivateSyntaxScope(outerPrivate);
             this.privateScopes.push(this.privateScope);
         }
@@ -1277,11 +1277,11 @@ class Parser {
             const nextKey = this.token(this.index + 1);
             if (!generator && !asynchronous && (this.at("get") || this.at("set")) &&
                 (nextKey.text === "[" || nextKey.kind === "word" || nextKey.kind === "string" || nextKey.kind === "number" || nextKey.kind === "bigint" ||
-                    (this.privateSyntaxAudit && nextKey.kind === "private-identifier"))) kind = this.take().text === "get" ? "get" : "set";
+                    (this.privateSyntaxEnabled && nextKey.kind === "private-identifier"))) kind = this.take().text === "get" ? "get" : "set";
             const token = this.current();
             let key: Expr;
             let literalName: string | null = null;
-            if (this.privateSyntaxAudit && token.kind === "private-identifier") { this.take(); key = this.privateName(token, false); }
+            if (this.privateSyntaxEnabled && token.kind === "private-identifier") { this.take(); key = this.privateName(token, false); }
             else if (this.eat("[")) { key = this.expression(1); this.expect("]"); }
             else {
                 this.take();
@@ -1317,7 +1317,6 @@ class Parser {
             } else if (isStatic && literalName === "prototype") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "static prototype method is invalid", first.loc);
             if (key.kind === "private-name") {
                 this.privateScope.declare(key, kind, isStatic);
-                if (this.privateFieldsOnly) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "private methods and accessors are not supported", key.loc);
             }
             elements.push({ kind, isStatic, key, value });
         }
@@ -1663,7 +1662,7 @@ class Parser {
             while (this.error === null) {
                 if (this.eat(".")) {
                     const key = this.take();
-                    if (key.kind !== "word" && !(this.privateSyntaxAudit && key.kind === "private-identifier")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
+                    if (key.kind !== "word" && !(this.privateSyntaxEnabled && key.kind === "private-identifier")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
                     callee = { kind: "member", loc: first.loc, base: callee, key: key.kind === "private-identifier" ? this.privateName(key, true) : { kind: "literal", loc: key.loc, value: key.text } };
                 } else if (this.eat("[")) {
                     const key = this.expression(0);
@@ -1744,7 +1743,7 @@ class Parser {
             const operand = this.expression(14, allowIn);
             // Parentheses preserve identifiers. The bounded collector validates
             // their inherited mode after whole-source grammar coverage.
-            if (this.privateSyntaxAudit && t.text === "delete") {
+            if (this.privateSyntaxEnabled && t.text === "delete") {
                 const last = operand.kind === "chain" ? operand.links[operand.links.length - 1] : null;
                 const key = operand.kind === "member" ? operand.key : last?.kind === "member" ? last.key : null;
                 if (key?.kind === "private-name" && (this.privateIssue === null || key.start < this.privateIssue.site.start))
@@ -1825,7 +1824,7 @@ export type PrivateClassSyntaxResult = { readonly kind: "valid" }
 export function auditPrivateClassSyntax(source: string): PrivateClassSyntaxResult {
     const lexer = createLexer(source, true);
     const parser = new Parser(lexer.result().tokens, { text: source }, "bounded-plan", false, "none", lexer);
-    parser.privateSyntaxAudit = true;
+    parser.privateSyntaxEnabled = true;
     const parsed = parser.program();
     while (lexer.next().kind !== "eof") {}
     const lexical = lexer.result();
