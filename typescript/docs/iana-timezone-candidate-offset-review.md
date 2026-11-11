@@ -11,7 +11,12 @@ dynamic operations. All 6,160 endpoint cases across 440 zones match the pinned
 upstream IANA C implementation. Tests retain public guard checks, reject values
 outside the internal margin and compare historical boundaries through both APIs.
 
-The implementation remains isolated. Regression, recurrence and full-suite
-validation are pending; guest named-zone admission remains disabled. Independent
+All six native regression groups pass. Using the shared production offset
+provider, the local-time prototype passes 63 semantic controls and 182,917
+historical cases on both hosts. Production recurrence passes 200,490 cycle
+cases and 582 endpoint cases on both hosts.
+
+The full Node suite passes 946/946 without skips. The implementation remains
+isolated while tooling validation finishes; guest named-zone admission remains disabled. Independent
 reference and focused reports live in `build/iana-timezone-review/` and
 `build/iana-timezone-candidate-offset-draft/build/`.

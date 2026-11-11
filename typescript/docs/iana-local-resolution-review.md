@@ -92,8 +92,7 @@ The prototype has an explicit review-only offset bridge for candidates up to two
 days beyond the public instant range. Production must replace that duplication
 with a shared internal offset provider while preserving public range guards.
 This is bounded feasibility and representative semantic evidence, not a complete
-local-time conformance result. Broader historical gap/fold boundary tests remain
-required. Evidence: `build/iana-timezone-review/local-resolution-probe-results.json`.
+local-time conformance result. Broader historical checks are recorded below. Evidence: `build/iana-timezone-review/local-resolution-probe-results.json`.
 
 The broader historical candidate check now passes 182,917 cases on both hosts
 with 322 static statements and zero dynamic operations. Independent upstream
@@ -103,3 +102,21 @@ offset change, preserving nanosecond precision. This validates candidate
 enumeration; production range-provider integration remains required. Evidence:
 `build/iana-timezone-review/local-history-probe-results.json` and
 `local-history-reference-summary.json`.
+
+## Historical disambiguation and start of day
+
+Using the shared TS-483 offset provider, all four disambiguation modes pass
+731,668 checks across the 182,917 historical cases on both hosts (315 static
+statements, zero dynamic operations). Expectations use the independently queried
+IANA offsets and transition changes. The measured historical spacing exceeds
+the largest gap, supporting direct reference expectations for shifted local times.
+The implementation still locates actual adjacent changes.
+
+Start of day passes 81,201 dates surrounding every historical change, including
+2,751 midnight gaps and 477 midnight folds, on both hosts (304 static statements,
+zero dynamic operations). Expected first instants come from independent IANA C
+queries; missing midnights use the independently identified containing gap.
+Evidence: `build/iana-timezone-review/local-disambiguation-history-probe-results.json`
+and `local-start-day-history-probe-results.json`, alongside retained C inputs,
+outputs and reference summaries. These are prototype proofs; production local
+resolution and guest consumer migration remain pending.
