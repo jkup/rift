@@ -5276,3 +5276,9 @@ TS-487 progress: 949/949 Node guests, 1,170 public behavior controls on both hos
 ## TS-488 — C++ global and manual-registration review
 
 **done — bounded registration and corpus review**. Owner: coordinator. Extend TS-475 with the literal global registrations, Temporal namespace entries, and manual JSON/FinalizationRegistry methods excluded from its macro inventory. Compare presence and function metadata with Node-hosted Rift and an independent Node subprocess; distinguish host GC hooks, lexical this binding and compiler-blocked weak APIs. Review the 34 non-completing corpus records without changing original fixtures or classifying completion as conformance. Own docs/cpp-global-surface-review.md and ignored audit scripts/reports only. Flag concrete semantic follow-ups separately; no runtime changes or native acceptance claims.
+
+## TS-489 — Class initialization semantic review
+
+**done — 17 matching cases; one Proxy prerequisite**. Owner: coordinator. Compare supported class initialization, computed-key ordering, returned-object construction and private-brand behavior with an independent Node subprocess. Preserve each input and result, reduce mismatches before claiming implementation work, and keep canonical foundation inputs frozen. Own docs/class-initialization-semantic-review.md and ignored review artifacts only. This review is not a conformance percentage or native acceptance.
+
+TS-489: 17 supported class cases match Node exactly; the retained eighteenth input is blocked by the existing missing Proxy global. No runtime change was justified. See docs/class-initialization-semantic-review.md.

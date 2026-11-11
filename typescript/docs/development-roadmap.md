@@ -794,3 +794,8 @@ non-completing corpus records without changing fixtures. No new ordinary global
 or JSON method gap was found. Genuine weak storage and collector hooks remain
 prerequisites; do not add placeholders or compatibility exceptions to inflate
 corpus completion. The 191/225 completion count is not semantic conformance.
+
+[The class initialization review](class-initialization-semantic-review.md) finds
+17 supported cases matching Node and one retained Proxy-dependent case. It covers
+ordering, returned-object construction and private brands; this is bounded
+Node-hosted evidence, not native acceptance or full class conformance.
