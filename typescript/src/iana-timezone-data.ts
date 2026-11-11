@@ -103,6 +103,7 @@ export class IanaZoneData {
     readonly initialOffset: number;
     readonly transitions: number[];
     readonly offsets: number[];
+    readonly possibleOffsets: number[];
     readonly footer: string;
     readonly recurrence: TimeZoneRecurrence;
 
@@ -110,6 +111,10 @@ export class IanaZoneData {
         this.identifier = identifier; this.initialOffset = initialOffset;
         this.transitions = transitions; this.offsets = offsets; this.footer = footer;
         this.recurrence = recurrence;
+        this.possibleOffsets = [];
+        for (const offset of [initialOffset, ...offsets, recurrence.standard, recurrence.daylight])
+            if (!this.possibleOffsets.includes(offset)) this.possibleOffsets.push(offset);
+        this.possibleOffsets.sort((left, right) => right - left);
     }
 }
 
