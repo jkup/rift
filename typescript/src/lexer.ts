@@ -1,4 +1,5 @@
 import { scanRegExpLiteral } from "./regexp-literal.js";
+import { scanPrivateIdentifier } from "./private-identifier.js";
 import type { Rejection } from "./outcomes.js";
 import type { Diagnostic, Location } from "./syntax.js";
 export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly cooked?: string | null; readonly raw?: string; readonly regexp?: { pattern: string; flags: string } };
@@ -175,6 +176,15 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                 else {
                     advance();
                     advance();
+                }
+                continue;
+            }
+            if (script && c === "#") {
+                const scanned = scanPrivateIdentifier(source, start);
+                if (scanned.kind === "invalid") fail({ kind: "unsupported-syntax", capabilityCode: "lex.character" }, "invalid private identifier", loc);
+                else {
+                    while (i < scanned.end) advance();
+                    tokens.push({ kind: "private-identifier", text: scanned.text, loc, start, end: i });
                 }
                 continue;
             }

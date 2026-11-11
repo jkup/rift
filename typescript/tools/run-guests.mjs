@@ -889,6 +889,7 @@ executeDriver("regexp-unicode-syntax", { stdout: "regexp unicode syntax passed\n
 executeDriver("regexp-unicode-matcher", { stdout: "regexp unicode matcher passed\n" });
 executeDriver("regexp-unicode-mode", { stdout: "regexp unicode mode passed\n" });
 executeDriver("private-elements", { stdout: "private elements passed\n" });
+executeDriver("private-identifier-lexing", { stdout: "private identifier lexing passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
