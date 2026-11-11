@@ -124,3 +124,35 @@ logs, tzif-inventory.json and transition-probe-results.json. The next review
 steps are identifier post-processing, future-rule semantics and independent
 reference checks, followed by a reduced native recurrence probe. Canonical
 Reflect/legacy source hashes remain unchanged.
+
+## Recurrence and identifier evidence
+
+A test-only C wrapper links the pinned upstream localtime.c and reads explicit
+POSIX footer strings, without consulting the system timezone. It produces6846
+reference offsets across all94 released footer rules and three synthetic rules
+for Julian/day-of-year leap handling and continuous DST at a year boundary.
+Samples include transition seconds and adjacent seconds, northern/southern and
+negative-DST seasons, signed or extended rule times, years -271000 through275000,
+and leap/century boundaries. This is a sampled range, not every Gregorian year.
+
+The TypeScript recurrence prototype agrees with all6846 independent offsets on
+both hosts;120/120 statements compile statically. Twelve malformed footer
+controls are rejected by the build-time parser. Future-rule data can therefore
+be parsed at generation time into typed records; the runtime need only perform
+bounded calendar calculations. A complete400-year-cycle comparison remains a
+useful stronger gate before production acceptance.
+
+The candidate identity mapping covers598 identifiers and450 primary identities.
+It preserves zone.tab identities, applies backzone mappings and the specified
+Jan_Mayen country exception, and normalizes UTC primary identity separately from
+the retained input identifier. Node agrees with all597 identifiers it accepts;
+Factory remains a deliberate unresolved admission question. For example,
+Pacific/Truk equals Pacific/Chuuk but not Pacific/Port_Moresby, although the
+compiled raw Link points to Port_Moresby. Alias data must follow the chosen
+primary record so identity and offset behavior cannot diverge.
+
+The Node reference uses ICU78.3/tzdata2026e, while the candidate data is2026f.
+Its identity comparisons are useful evidence, but it must not override the
+pinned release’s changed offsets. Raw process transcripts, generated cases, both
+native reports and artifact hashes are retained under the review directory.
+No canonical runtime files changed.
