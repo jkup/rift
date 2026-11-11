@@ -55,6 +55,11 @@ function transitionSeconds(year: number, rule: TimeZoneRule, offset: number): nu
 
 export function recurrenceOffsetSeconds(recurrence: TimeZoneRecurrence, seconds: number): number | null {
     if (!Number.isSafeInteger(seconds) || Math.abs(seconds) > 8640000000000) return null;
+    return recurrenceOffsetSecondsForLocalTime(recurrence, seconds);
+}
+
+export function recurrenceOffsetSecondsForLocalTime(recurrence: TimeZoneRecurrence, seconds: number): number | null {
+    if (!Number.isSafeInteger(seconds) || Math.abs(seconds) > 8640000172800) return null;
     const start = recurrence.start, end = recurrence.end;
     if (start === null || end === null) return recurrence.standard;
     const cycle = recurrenceCycle(seconds);

@@ -17,6 +17,11 @@ export function findIanaZoneData(identifier: string): IanaZoneData | null {
 
 export function transitionTableOffset(zone: IanaZoneData, epochSeconds: number): TransitionTableResult | null {
     if (!Number.isSafeInteger(epochSeconds) || Math.abs(epochSeconds) > 8640000000000) return null;
+    return transitionTableOffsetForLocalTime(zone, epochSeconds);
+}
+
+export function transitionTableOffsetForLocalTime(zone: IanaZoneData, epochSeconds: number): TransitionTableResult | null {
+    if (!Number.isSafeInteger(epochSeconds) || Math.abs(epochSeconds) > 8640000172800) return null;
     const times = zone.transitions;
     // TZif delegates the last transition and all later instants to its footer.
     if (times.length === 0 || epochSeconds >= times[times.length - 1])

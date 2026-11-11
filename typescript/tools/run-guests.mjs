@@ -905,6 +905,7 @@ executeDriver("iana-timezone-data", { stdout: "iana timezone data passed\n" });
 executeDriver("iana-timezone-recurrence", { stdout: "iana timezone recurrence passed\n" });
 executeDriver("iana-timezone-identifiers", { stdout: "iana timezone identifiers passed\n" });
 executeDriver("iana-timezone-adjacent", { stdout: "iana timezone adjacent passed\n" });
+executeDriver("iana-timezone-candidate-offset", { stdout: "iana timezone candidate offset passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
