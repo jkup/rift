@@ -36,3 +36,5 @@ build/native-harness-performance/. Canonical runtime remains unchanged. Any
 accepted runtime fix requires fresh combined native/guest/tooling validation;
 the earlier build matrix cannot certify changed runtime code. Do not relax
 timeouts, remove assertions or reclassify timeouts as successes.
+
+The first candidate preserves exact harness output in all four variants and lowers native times from 10,739–11,004ms to 8,615–9,273ms (roughly16–20%). Descriptor and array-storage controls pass on both hosts. The property-accessor control was initially invoked without its required input fixture; retain that diagnostic failure and rerun with the manifest fixture. A second candidate also skips endpoint checks when neither accessor is present, after retaining the mixed-descriptor guard. Its fresh builds/comparison are pending. Evidence: initial-comparison.json, initial-builds.json and fast-path-builds.*.
