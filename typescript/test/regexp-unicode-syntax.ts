@@ -50,5 +50,5 @@ for (const source of ["😀[😀-🙏]", String.raw`\uD83D\uDE00`, String.raw`\u
         check(parseRegExpSyntax(source, () => remaining-- > 0, true).kind === "stopped", "Unicode budget " + budget);
     }
 }
-check(validateRegExpLiteral("a", "u").kind === "unsupported", "public Unicode admission remains disabled");
+check(validateRegExpLiteral("a", "u").kind === "ready", "retained Unicode literal admission");
 console.log("regexp unicode syntax passed");

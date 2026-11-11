@@ -59,7 +59,7 @@ for (const text of ["/a/gg; /(?=a)/", "/a/gg; async function f(){await 1;}", "/a
 }
 for (const text of ["/a/u;", "/a/v;", "/(?<x>a)/;"]) {
     const plan = parseBoundedScriptDeclarationPlan({ id: "literal-unsupported", text });
-    if (text === "/(?<x>a)/;") check(run(text).type === "normal", "named literal executes");
+    if (text !== "/a/v;") check(run(text).type === "normal", "retained literal executes");
     else check(plan.kind === "blocked" && plan.rejection.kind === "unsupported-syntax" && plan.rejection.capabilityCode === "parse.regexp-pattern", "unsupported pattern: " + text);
 }
 for (const text of ["/a", "/[a/", "/a\n/", "/a\\\n/", "/a/gé"]) {

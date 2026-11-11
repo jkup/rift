@@ -46,7 +46,8 @@ for (const source of ["RegExp('a','u')", "RegExp('a','v')"]) {
     const realm = fresh(), prepared = prepareBoundedScript({ id: "regexp-unsupported", text: "try{" + source + "}catch(e){'caught'}" }, realm);
     if (prepared.kind !== "ready") throw new Error("unsupported prepare");
     const result = evaluateScript(createScriptSession(), prepared.record).completion;
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.regexp-pattern", "unsupported remains explicit: " + source);
+    if (source === "RegExp('a','u')") check(result.type === "normal" && result.value.kind === "object", "retained Unicode constructor executes");
+    else check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.regexp-pattern", "unsupported remains explicit: " + source);
 }
 {
     const realm = fresh(), foreign = fresh(), constructor = foreign.globalObject.getOwnProperty("RegExp");

@@ -68,12 +68,13 @@ function initializeRegExp(prototype: GuestObject, source: Value, flags: Value, c
         seen += flag;
     }
     if (seen.includes("u") && seen.includes("v")) return languageFailure(context.realm, "SyntaxError", "RegExp u and v flags are mutually exclusive", loc);
-    if (seen.includes("u") || seen.includes("v")) return unsupportedFailure("runtime.regexp-pattern", "SyntaxError", "Unicode RegExp modes are unsupported", loc);
-    const parsed = parseRegExpPattern(text.value, context, loc);
+    if (seen.includes("v")) return unsupportedFailure("runtime.regexp-pattern", "SyntaxError", "Unicode sets mode is unsupported", loc);
+    const unicode = seen.includes("u");
+    const parsed = parseRegExpPattern(text.value, context, loc, unicode);
     if (parsed.kind === "abrupt") return parsed.completion;
     if (parsed.kind !== "ready") return parsed.kind === "syntax-error" ? languageFailure(context.realm, "SyntaxError", parsed.message, loc)
         : unsupportedFailure("runtime.regexp-pattern", "SyntaxError", parsed.message, loc);
-    const compiled = compileRegExpPattern(parsed.pattern, { ignoreCase: seen.includes("i"), multiline: seen.includes("m"), dotAll: seen.includes("s") }, context, loc);
+    const compiled = compileRegExpPattern(parsed.pattern, { ignoreCase: seen.includes("i"), multiline: seen.includes("m"), dotAll: seen.includes("s") }, context, loc, unicode);
     if (compiled.kind === "abrupt") return compiled.completion;
     return normal({ kind: "object", object: new GuestRegExp(prototype, text.value, options.value, compiled.program) });
 }

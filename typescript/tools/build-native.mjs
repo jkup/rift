@@ -304,6 +304,7 @@ const entries = [
     ["test/regexp-duplicate-names.ts", "regexp-duplicate-names"],
     ["test/regexp-unicode-syntax.ts", "regexp-unicode-syntax"],
     ["test/regexp-unicode-matcher.ts", "regexp-unicode-matcher"],
+    ["test/regexp-unicode-mode.ts", "regexp-unicode-mode"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

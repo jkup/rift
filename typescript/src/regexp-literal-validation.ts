@@ -13,9 +13,9 @@ export function validateRegExpLiteral(pattern: string, flags: string): RegExpLit
         seen += flag;
     }
     if (seen.includes("u") && seen.includes("v")) return { kind: "syntax-error", message: "RegExp u and v flags are mutually exclusive", offset: 0 };
-    if (seen.includes("u") || seen.includes("v")) return { kind: "unsupported", message: "Unicode RegExp modes are unsupported", offset: 0 };
+    if (seen.includes("v")) return { kind: "unsupported", message: "Unicode sets mode is unsupported", offset: 0 };
     let steps = 0;
-    const parsed = parseRegExpSyntax(pattern, () => ++steps <= 1000000);
+    const parsed = parseRegExpSyntax(pattern, () => ++steps <= 1000000, seen.includes("u"));
     if (parsed.kind === "stopped") return { kind: "resource-limit", origin: { kind: "resource-limit", guardCode: "steps", count: steps, limit: 1000000 }, message: "RegExp syntax validation budget exceeded" };
     if (parsed.kind === "depth-limit") return { kind: "resource-limit", origin: { kind: "resource-limit", guardCode: "parse-depth", count: parsed.count, limit: parsed.limit }, message: "RegExp nesting limit exceeded" };
     return parsed.kind === "ready" ? { kind: "ready" } : parsed;
