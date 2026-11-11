@@ -903,6 +903,7 @@ executeDriver("reflect-apply", { stdout: "reflect apply passed\n" });
 executeDriver("legacy-escape", { stdout: "legacy escape passed\n" });
 executeDriver("iana-timezone-data", { stdout: "iana timezone data passed\n" });
 executeDriver("iana-timezone-recurrence", { stdout: "iana timezone recurrence passed\n" });
+executeDriver("iana-timezone-identifiers", { stdout: "iana timezone identifiers passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });
