@@ -4932,7 +4932,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-442 — Canonical non-Intl String comparison
 
-Status: **in progress — isolated successor to TS-441**. Owner: Codex catch-up chat, 2026-11-10. Implement generic localeCompare with ordered string conversion, NFC normalization and deterministic UTF-16 comparison, using the Unicode 17-validated provider. Ignore reserved ECMA-402 arguments and preserve canonical equivalence, consistent ordering, metadata and defining-Realm errors. Do not use the known-broken host localeCompare backend. Own src/builtins/string.ts, test/script-realm-bootstrap.ts, test/harness-formatting.ts, test/current-builtin-inventory.ts and tests/manifests/docs in build/string-locale-compare-draft/.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-10. Implement generic localeCompare with ordered string conversion, NFC normalization and deterministic UTF-16 comparison, using the Unicode 17-validated provider. Ignore reserved ECMA-402 arguments and preserve canonical equivalence, consistent ordering, metadata and defining-Realm errors. Do not use the known-broken host localeCompare backend. Own src/builtins/string.ts, test/script-realm-bootstrap.ts, test/harness-formatting.ts, test/current-builtin-inventory.ts and tests/manifests/docs in build/string-locale-compare-draft/.
 
 ## TS-443 — Class static block execution
 

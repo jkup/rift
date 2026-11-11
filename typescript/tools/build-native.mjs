@@ -297,6 +297,7 @@ const entries = [
     ["test/class-field-initializers.ts", "class-field-initializers"],
     ["test/string-locale-case.ts", "string-locale-case"],
     ["test/string-normalize.ts", "string-normalize"],
+    ["test/string-locale-compare.ts", "string-locale-compare"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -8,7 +8,7 @@ import { toPrimitive } from "../primitive-conversion.js";
 import { toString, toNumber, toIntegerOrInfinity, toLength, type NumberCompletion } from "../conversion.js";
 import { symbolDescriptiveString } from "../symbols.js";
 import { registerStringConstruction } from "./string-construction.js";
-import { stringNormalize, type NormalizationForm } from "../strings.js";
+import { stringCompare, stringNormalize, type NormalizationForm } from "../strings.js";
 import type { GuestObject, OperationContext, ValueCompletion } from "../runtime.js";
 
 function stringArgument(args: Value[], context: OperationContext, loc: Location): StringCompletion {
@@ -243,6 +243,15 @@ export function registerStringMethods(realm: Realm): void {
                 form = name;
             }
             return normal({ kind: "string", value: stringNormalize(text.value, form) });
+        });
+        realm.registerBuiltin(realm.stringPrototype, "localeCompare", 1, (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") return text;
+            const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);
+            if (primitive.type === "throw") return primitive;
+            const other = toString(primitive.value, loc, context.realm);
+            if (other.type === "throw") return other;
+            return normal({ kind: "number", value: stringCompare(stringNormalize(text.value, "NFC"), stringNormalize(other.value, "NFC")) });
         });
         realm.registerBuiltin(realm.stringPrototype, "concat", 1, (receiver, args, context, loc): ValueCompletion => {
             const text = stringReceiver(receiver, context, loc);

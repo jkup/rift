@@ -42,7 +42,7 @@ export function prototypeMethodLength(name: string, numberPrototype: boolean): n
     if (["substring", "substr", "copyWithin", "replace", "replaceAll", "split", "toSpliced", "with", "slice", "apply", "splice"].includes(name)) return 2;
     if ([
         "padStart", "padEnd", "fill", "repeat", "toFixed", "toExponential", "toPrecision", "flatMap", "toSorted", "sort", "anchor", "fontcolor", "fontsize", "link",
-        "concat", "propertyIsEnumerable", "isPrototypeOf", "hasOwnProperty", "call", "bind",
+        "localeCompare", "concat", "propertyIsEnumerable", "isPrototypeOf", "hasOwnProperty", "call", "bind",
         "join", "push", "unshift", "at", "lastIndexOf", "indexOf", "includes", "match", "search", "matchAll",
         "filter", "map", "forEach", "reduce", "reduceRight", "find", "findIndex",
         "findLast", "findLastIndex", "every", "some", "charAt", "charCodeAt", "codePointAt", "startsWith", "endsWith",
