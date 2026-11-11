@@ -10,11 +10,11 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted private-field milestone passes 934/934 guests on each
-host, 296/296 tooling checks, and all 441 native static gates.
+The accepted Reflect/legacy milestone passes 941/941 guests on each
+host, 296/296 tooling checks, and all 448 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
-74 unchecked completions. Remaining outcomes are 2 parse errors, 31 runtime
-errors and 1 reported failures. These are diagnostic fixture results, not a
+74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
+errors and 1 reported failure(s). These are diagnostic fixture results, not a
 Test262 conformance score.
 
 Classes, Promise combinators/checkpoints and bounded RegExp protocols/literals
@@ -43,7 +43,7 @@ Exact BigInt values, arithmetic, literals, coercion and width conversion are acc
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
 resuming from another session restores caller state and uses current budgets.
-Zoned Temporal, public field initializers, static blocks and private fields are accepted. Private methods/accessors, private-in, IANA/system timezones and Intl remain gaps.
+Zoned Temporal, public field initializers, static blocks, private fields/methods/accessors and private-in are accepted. Reflect methods and legacy escape/unescape are accepted. IANA/system timezones and Intl remain gaps.
 
 Temporal fixture audit (2026-11-10): eight of the nine original Temporal fixtures
 call constructors without new, including test-temporal-plain-date.js:28 and
@@ -784,3 +784,5 @@ Private class follow-up: [the design review](class-private-elements-review.md) i
 2026-11-11 Private-field milestone accepted (TS-458,459,461,463–465):934/934 guests on both hosts without skips;441 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-ehOwl3/native-X4jtE1 matches all225 normalized records and preserves191 preceding completions; current completions=191. Instance/static private fields, lexical private references, direct eval, assignments/calls and suspended expressions are accepted. Private methods/accessors and private-in remain unsupported. Historical fixture strings are preserved, including explicit TypeScript expectation migrations. The producer now reports existing RegExp/numeric syntax errors and certified private-name errors through closed rule provenance. Initial compiler failures and passing controls remain retained. TS-473 accepts 30-second deadlines only for the four errors-b/map-default runtime cases; the hash-verified preceding baseline also exceeded the old 10-second limit. Inputs, expected transcripts and timeout classifications are unchanged; see docs/native-guest-deadlines.md. Evidence: build/private-field-rollup-*, feature reviews and compiler-contract.md.
 
 [The C++ builtin surface review](cpp-builtin-surface-review.md) classifies all525 method/getter macro registrations after private/Reflect integration:501 shape/arity matches,14 standards-correct differences matching Node and10 known weak-storage blockers. This is a bounded Node-hosted API inventory, not semantic/native acceptance or a conformance percentage. Do not port obsolete Temporal methods or C++ descriptor deviations merely to match names.
+
+2026-11-11 Reflect/legacy milestone accepted (TS-466–472):941/941 guests on both hosts without skips;448 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-UaBiIk/native-kYH80d matches all225 normalized records and preserves191 preceding completions; current completions=191. Private methods/accessors and private-in, Reflect introspection/mutation/access/apply and bounded UTF-16 escape/unescape are accepted. Guest coercion/order, receiver/Realm behavior and budgets retain focused expected-result checks. Historical fixture bytes and initial failed runs remain preserved. The accepted TS-473 deadlines carry forward unchanged. Evidence: build/reflect-legacy-rollup-* and feature reviews.
