@@ -16,6 +16,10 @@ diagnostics outside the helper. Function.prototype.apply still accepts nullish
 lists as empty; Reflect.apply and construct reject them. Preserve per-index
 budget checks and the same Value-array type.
 
+The [C++ Reflect implementation](../../src/builtins/reflect/reflect.cpp) also
+separates list conversion from call and construction. Reuse that separation,
+while retaining Rift TypeScript's incremental budgeted collection.
+
 This follows the specification's
 [Reflect.apply algorithm](https://tc39.es/ecma262/multipage/reflection.html#sec-reflect.apply).
 Nineteen independent Node reference checks pass in
