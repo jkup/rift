@@ -4965,7 +4965,7 @@ Status: **done — exhaustive both-host data review**. Owner: Codex catch-up cha
 
 ## TS-448 — Native harness performance regression
 
-Status: **in progress — measured regression investigation**. Owner: Codex catch-up chat, 2026-11-11. The zoned milestone repeats harness-errors-b and harness-map-default timeouts with no competing jobs at the unchanged 10-second acceptance limit. Preserve both failed runs, measure isolated drivers and reduce the native cost before proposing an engine fix. Own ignored build/native-harness-performance evidence and docs/native-harness-performance.md. Canonical runtime edits require a concrete finding and completed active readers; no timeout or assertion relaxation.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-11. The zoned milestone repeats harness-errors-b and harness-map-default timeouts with no competing jobs at the unchanged 10-second acceptance limit. Preserve both failed runs, measure isolated drivers and reduce the native cost before proposing an engine fix. Own ignored build/native-harness-performance evidence and docs/native-harness-performance.md. Canonical runtime edits require a concrete finding and completed active readers; no timeout or assertion relaxation.
 
 TS-448 diagnostic measurements preserve exact expected output: harness-errors-b native10831ms/Node3906ms and harness-map-default native10485ms/Node3021ms. Candidate ownership extends to src/runtime.ts in isolated build/descriptor-validation-draft/: replace temporary accessor-endpoint arrays with two calls to the same predicate, preserving validation order and errors. No canonical change or acceptance yet.
 

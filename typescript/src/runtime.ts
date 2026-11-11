@@ -35,11 +35,14 @@ export function validatePropertyDescriptorUpdate(desc: PropertyDescriptorUpdate)
     const data = desc.value !== undefined || desc.writable !== undefined;
     const accessor = desc.get !== undefined || desc.set !== undefined;
     if (data && accessor) throw new Error("mixed property descriptor");
-    for (const endpoint of [desc.get, desc.set]) {
-        if (endpoint !== undefined && endpoint.kind !== "undefined"
-            && (endpoint.kind !== "object" || endpoint.object.callable === null))
-            throw new Error("invalid accessor endpoint");
-    }
+    if (!accessor) return;
+    validateAccessorEndpoint(desc.get);
+    validateAccessorEndpoint(desc.set);
+}
+function validateAccessorEndpoint(endpoint: Value | undefined): void {
+    if (endpoint !== undefined && endpoint.kind !== "undefined"
+        && (endpoint.kind !== "object" || endpoint.object.callable === null))
+        throw new Error("invalid accessor endpoint");
 }
 function copyDescriptor(desc: PropertyDescriptor): PropertyDescriptor {
     if (desc.kind === "data") return { kind: "data", value: desc.value, writable: desc.writable, enumerable: desc.enumerable, configurable: desc.configurable };

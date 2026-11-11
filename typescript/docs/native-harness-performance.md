@@ -1,40 +1,42 @@
-# Native harness performance investigation
+# Native harness performance regression
 
-TS-448, 2026-11-11. Publication is held pending a fix and fresh acceptance.
+TS-448, 2026-11-11. The fix passes isolated validation; fresh combined acceptance
+is still required before publication.
 
-The zoned milestone's native suite completed 913/917 twice. Both input variants
-of harness-errors-b and harness-map-default exceeded the unchanged 10-second
-limit. The second run started after all competing builds/tooling terminated,
-so contention does not explain the recurring failure. Both reports and logs
-are retained as temporal-zoned-native-contended* and
- temporal-zoned-native-isolated-timeouts* under build/.
+The zoned native suite completed 913/917 twice. Both input variants of
+harness-errors-b and harness-map-default exceeded the existing 10-second limit,
+including a rerun with no competing builds or tooling. Reports remain under
+build/temporal-zoned-native-contended* and
+build/temporal-zoned-native-isolated-timeouts*.
 
-A separate diagnostic permits up to 120 seconds to measure completion; it does
-not count as an acceptance pass. With input-a, every expected output byte was
-preserved:
+Descriptor validation allocated a temporary two-element array solely to check
+getter/setter endpoints. The fix uses a shared predicate directly and returns
+after the mixed-descriptor guard when neither accessor is present. It changes
+no endpoint rules, error messages, Realm sharing or property storage policy.
 
-| Driver | Node | Native |
+Sequential native comparisons against the same feature baseline preserve every
+expected output byte:
+
+| Driver/input | Baseline | Final candidate |
 | --- | ---: | ---: |
-| harness-errors-b | 3,906 ms | 10,831 ms |
-| harness-map-default | 3,021 ms | 10,485 ms |
+| harness-errors-b/input-a | 10,912 ms | 8,927 ms |
+| harness-errors-b/input-b | 11,226 ms | 8,793 ms |
+| harness-map-default/input-a | 10,743 ms | 8,674 ms |
+| harness-map-default/input-b | 10,737 ms | 8,632 ms |
 
-Evidence: build/native-harness-performance/current.json, including output
-chunks and arrival times, and build/measure-native-harness.mjs. These are single
-measurements on this machine, not a general benchmark.
+These single-machine measurements show roughly 18–22% improvement. Diagnostic
+runs allow 120 seconds to measure the failing baseline; they do not replace the
+unchanged 10-second acceptance gate. The earlier array-removal-only candidate
+and its measurements are retained separately.
 
-Descriptor validation currently creates a temporary two-element array on each
-call solely to check getter/setter values. An isolated candidate replaces that
-loop with two calls to the same predicate. It preserves mixed-descriptor checks,
-accepted endpoint types and error messages, and changes no Realm sharing or
-property storage policy. Typechecking passes; native comparison and regressions
-are pending. Do not assume this allocation explains the full regression before
-measuring it.
+The final candidate passes typechecking, 923/923 Node guests, five static-only
+native builds with parsed zero-dynamic coverage, and descriptor/array/accessor
+regressions on both hosts. The accessor control initially lacked its required
+fixture argument; that invocation failure is retained and the corrected control
+passes. The first full Node launch also lacked copied historical fixture files;
+those were restored before the successful full run. No assertion was removed.
 
-Matched baseline and candidate harness builds plus descriptor/array/accessor
-regressions are being prepared under build/descriptor-validation-draft/ and
-build/native-harness-performance/. Canonical runtime remains unchanged. Any
-accepted runtime fix requires fresh combined native/guest/tooling validation;
-the earlier build matrix cannot certify changed runtime code. Do not relax
-timeouts, remove assertions or reclassify timeouts as successes.
-
-The first candidate preserves exact harness output in all four variants and lowers native times from 10,739–11,004ms to 8,615–9,273ms (roughly16–20%). Descriptor and array-storage controls pass on both hosts. The property-accessor control was initially invoked without its required input fixture; retain that diagnostic failure and rerun with the manifest fixture. A second candidate also skips endpoint checks when neither accessor is present, after retaining the mixed-descriptor guard. Its fresh builds/comparison are pending. Evidence: initial-comparison.json, initial-builds.json and fast-path-builds.*.
+Evidence: build/native-harness-performance/{comparison,fast-path-builds}.json,
+individual regression reports, build/descriptor-validation-node.log and the
+isolated build/descriptor-validation-draft/. Canonical runtime changes require
+fresh combined native/guest/tooling checks; earlier binaries cannot certify them.
