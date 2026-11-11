@@ -305,6 +305,7 @@ const entries = [
     ["test/regexp-unicode-syntax.ts", "regexp-unicode-syntax"],
     ["test/regexp-unicode-matcher.ts", "regexp-unicode-matcher"],
     ["test/regexp-unicode-mode.ts", "regexp-unicode-mode"],
+    ["test/private-elements.ts", "private-elements"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

@@ -8,6 +8,7 @@ import type { Realm } from "./realm.js";
 import type { ScriptGuestCallable } from "./script-record.js";
 import type { EvalCallable, GeneratorResumeCallable, AsyncResumeCallable, AsyncGeneratorCallable } from "./script-execution-internal.js";
 import { arrayIndex } from "./property-keys.js";
+import type { PrivateName } from "./private-names.js";
 
 export type Value =
     | { kind: "undefined" } | { kind: "null" }
@@ -17,6 +18,8 @@ export type Value =
     | { kind: "string"; value: GuestString } | { kind: "object"; object: GuestObject };
 export const UNDEFINED: Value = { kind: "undefined" };
 export type PropertyKey = GuestString | GuestSymbol;
+export type PrivateElement = { kind: "field"; value: Value } | { kind: "method"; value: Value }
+    | { kind: "accessor"; get: Value; set: Value };
 export type ErrorName = "Error" | "TypeError" | "ReferenceError" | "RangeError" | "SyntaxError" | "EvalError" | "URIError" | "AggregateError";
 // Host undefined means absent; guest undefined is the present Value UNDEFINED.
 export type DataDescriptorUpdate = { value?: Value; writable?: boolean; enumerable?: boolean; configurable?: boolean };
@@ -128,6 +131,7 @@ export type Callable =
     | { readonly kind: "builtin"; readonly realm: Realm; readonly invoke: Builtin; readonly initialName: string | null };
 export class GuestObject {
     private propertyStorage: Map<PropertyKey, PropertyDescriptor> = new Map();
+    private privateElements: Map<PrivateName, PrivateElement> | null = null;
     private extensible = true;
     private prototypeSlot: GuestObject | null;
     private readonly immutablePrototypeSlot: boolean;
@@ -146,6 +150,18 @@ export class GuestObject {
     getOwnProperty(key: PropertyKey): PropertyDescriptor | undefined {
         const d = this.propertyStorage.get(key);
         return d === undefined ? undefined : copyDescriptor(d);
+    }
+    findPrivateElement(name: PrivateName): PrivateElement | undefined {
+        return this.privateElements === null ? undefined : this.privateElements.get(name);
+    }
+    addPrivateElement(name: PrivateName, entry: PrivateElement): boolean {
+        if (this.privateElements === null) this.privateElements = new Map();
+        if (this.privateElements.has(name)) return false;
+        const stored: PrivateElement = entry.kind === "accessor"
+            ? { kind: "accessor", get: entry.get, set: entry.set }
+            : { kind: entry.kind, value: entry.value };
+        this.privateElements.set(name, stored);
+        return true;
     }
     internalDelete(key: PropertyKey): InternalBooleanCompletion {
         const current = this.propertyStorage.get(key);
