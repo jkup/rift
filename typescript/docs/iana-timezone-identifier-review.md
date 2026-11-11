@@ -34,7 +34,13 @@ and upper ASCII casing and primary-identity equality. The 1,794 observations
 retain all three Factory rejections rather than hiding them. This evidence does
 not use Node's older 2026e offset data as an oracle for pinned 2026f data.
 
-The runtime registry still needs generation provenance, malformed/non-ASCII
-lookup tests and native static validation. Local-time resolution and migration
+The lookup prototype passes all 598 names, 1,794 casing checks, 65,408 non-ASCII
+code-unit controls and explicit malformed-name/Factory checks on both hosts with
+zero dynamic operations. It bounds input length to the measured maximum of 32,
+checks ASCII before lowercasing and uses the existing string comparison helper
+for binary search. Evidence: `build/iana-timezone-review/identifier-probe-results.json`.
+
+The runtime registry still needs generation provenance and integrated validation.
+Local-time resolution and migration
 of every constant-offset consumer remain separate admission gates. Earlier
 backend notes that deferred Factory are superseded by this explicit decision.

@@ -24,7 +24,8 @@ Current evidence:
 - Every generated zone's rule matches its parsed footer. Twelve malformed parser
   controls and eight generator corruption/determinism controls pass.
 
-Full 943-case Node and tooling validation are running. This is not integration
+The full Node suite passes 943/943 without skips; tooling validation is running.
+This is not integration
 acceptance. The canonical Reflect/legacy milestone remains frozen.
 
 Evidence: `build/iana-recurrence-production-results.json`,
