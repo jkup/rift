@@ -259,3 +259,8 @@ the failing example. See [TS-451 evidence](validation/ts-451-instruction-union/R
 ## Callback adaptation (TS-458, 2026-11-11)
 
 An inferred zero-argument callback passed through a wider builtin signature creates a dynamic adapter despite a successful static-only build. The four-statement [reduction and explicit-signature control](validation/ts-458-callback-adaptation/README.md) both produce matching Node/native output; only the control passes zero-dynamic coverage. State the full callback contract at this test boundary.
+
+## Nullable instanceof guard after narrowing (TS-463)
+
+The pinned compiler rejects a null-first guard on an optional class-or-null parameter with SC1090, even after assigning a local alias or moving that guard into a helper. Testing instanceof before the null comparison preserves the union and passes both-host execution with four static statements and zero dynamic statements. Keep this ordering where validating captured private environments; see [the reduced repro/control](validation/ts-463-nullable-instanceof/README.md). Full-engine acceptance remains separate.
+
