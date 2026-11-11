@@ -23,3 +23,6 @@ strict mode explicitly, avoiding dependence on the reference runner's module
 mode. Results are retained in `build/reflect-access-reference.json`. Add Realm
 restoration, abrupt-value and budget tests in Rift before acceptance. Keep
 `apply` as a separate increment.
+
+Isolated validation is READY: 939/939 Node guests, focused native with 19,951 static statements, nine regression groups covering ten runtime inputs, fifteen tooling builds, 296 tooling tests, eight codec records per host and sixteen parent-envelope checks pass. Canonical integration remains pending the frozen private-field rollup.
+
