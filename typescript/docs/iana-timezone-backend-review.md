@@ -177,3 +177,25 @@ admission policy must be decided explicitly in the identifier task, preserving
 its distinction from historical -00 records in real locations. This deferred
 policy does not block table/recurrence implementation, and must not disappear
 from the later guest-admission checklist.
+
+## Exact endpoint correction before recurrence implementation
+
+TS-479 review found a limitation in the recurrence prototype: calculating the
+neighboring year's transition through `isoDateToEpochDay` throws at the exact
+Temporal range endpoints. The previous extreme-year samples did not reach those
+endpoints. The original failure is now reproduced and retained on both hosts.
+
+Recurrence repeats every 146,097 days: the Gregorian 400-year cycle preserves
+month/day rules, leap years and weekdays. A corrected probe maps the instant's
+day into the 2000–2399 cycle while preserving its second within the day, then
+calculates the adjacent years normally. This keeps calendar calculations away
+from range guards without relaxing the supported instant range. The mapping
+applies only to recurring rules, never to historical transition-table lookup.
+
+The corrected probe passes all 200,490 prior upstream-reference cases and 582
+new cases at and adjacent to both exact endpoints, covering all 94 released
+footers and three synthetic rules on both hosts with zero dynamic operations.
+The upstream C reference receives the original extreme seconds, not the mapped
+seconds. Evidence is retained in `build/iana-timezone-review/recurrence-*-endpoint-*`
+and `recurrence-bounded-cycle-probe-results.json`. Production recurrence must
+retain this endpoint coverage; the earlier prototype is not suitable unchanged.
