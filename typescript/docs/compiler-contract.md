@@ -244,3 +244,14 @@ The exact programs, outputs and reproduction commands are retained in
 [TS-444 evidence](validation/ts-444-array-widening/README.md). Audit other mutable
 array widening paths when they share storage across helper boundaries; the
 finding does not imply that all union arrays are unsafe.
+
+## Narrowed unions with incompatible instruction payloads (2026-11-11)
+
+scriptc 0.4.7 rejects an AST-to-instruction union conversion with SC2003 even
+after the incompatible named-reference arm has been handled by a discriminant
+check. Constructing the remaining dot, numeric-reference and assertion
+instructions explicitly avoids the conversion and keeps the representation
+boundary clear. The reduced failing example reports six of seven statements
+static; the control builds entirely statically (eleven statements) and agrees
+on both hosts. Preserve the static coverage gate: coverage exits zero even for
+the failing example. See [TS-451 evidence](validation/ts-451-instruction-union/README.md).
