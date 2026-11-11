@@ -4970,3 +4970,11 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 TS-448 diagnostic measurements preserve exact expected output: harness-errors-b native10831ms/Node3906ms and harness-map-default native10485ms/Node3021ms. Candidate ownership extends to src/runtime.ts in isolated build/descriptor-validation-draft/: replace temporary accessor-endpoint arrays with two calls to the same predicate, preserving validation order and errors. No canonical change or acceptance yet.
 
 TS-448 first candidate benchmark: all four harness outputs match, native10.7–11.0s becomes8.6–9.3s. Descriptor and array-storage controls pass; initial property-accessor control lacked its required fixture argument (retained). Second candidate adds the no-accessor fast path, with corrected control invocation and fresh native comparison underway. No canonical runtime edits yet.
+
+## TS-449 — Unicode and escaped RegExp capture names
+
+Status: **in progress — isolated successor to TS-448**. Owner: Codex catch-up chat, 2026-11-10. Use the TS-447 validated Unicode 17 identifier properties for literal and escaped capture names, including astral pairs, braced escapes, identifier exceptions, decoded name equality, forward references and precise invalid-name rejection. Keep duplicate names, Unicode matching flags and lookbehind explicitly unsupported. Preserve the final descriptor-validation baseline and canonical validation freeze. Own src/regexp-pattern-syntax.ts, test/regexp-named-captures.ts and tests/manifests/docs in build/regexp-unicode-names-draft/.
+
+## TS-450 — Duplicate named capture participation review
+
+Status: **done — participation review and 21 reference checks**. Owner: Codex catch-up chat, 2026-11-11. Review structural participation rules for duplicate named captures, reference selection and groups/indices publication against the current specification and pinned engine262. Own docs/regexp-duplicate-names-review.md and ignored reference evidence. No changes to either frozen runtime under validation.
