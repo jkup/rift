@@ -8,6 +8,35 @@ import { wellKnownToStringTag } from "../symbols.js";
 
 export function registerReflect(realm: Realm): void {
     const reflect = realm.createObject();
+    realm.registerBuiltin(reflect, "get", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.get requires an object", loc);
+        const key = toPropertyKey(args.length < 2 ? UNDEFINED : args[1], context, loc);
+        if (key.type === "throw") return key;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        return target.object.internalGet(key.value, args.length < 3 ? target : args[2], context, loc);
+    });
+    realm.registerBuiltin(reflect, "set", 3, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.set requires an object", loc);
+        const key = toPropertyKey(args.length < 2 ? UNDEFINED : args[1], context, loc);
+        if (key.type === "throw") return key;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const written = target.object.internalSet(key.value, args.length < 3 ? UNDEFINED : args[2], args.length < 4 ? target : args[3], context, loc);
+        return written.type === "throw" ? written : normal({ kind: "boolean", value: written.value });
+    });
+    realm.registerBuiltin(reflect, "has", 2, (_receiver, args, context, loc): ValueCompletion => {
+        const target = args.length === 0 ? UNDEFINED : args[0];
+        if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.has requires an object", loc);
+        const key = toPropertyKey(args.length < 2 ? UNDEFINED : args[1], context, loc);
+        if (key.type === "throw") return key;
+        const tick = context.tick(loc);
+        if (tick.type === "throw") return tick;
+        const present = target.object.internalHasProperty(key.value, loc);
+        return present.type === "throw" ? present : normal({ kind: "boolean", value: present.value });
+    });
     realm.registerBuiltin(reflect, "defineProperty", 3, (_receiver, args, context, loc): ValueCompletion => {
         const target = args.length === 0 ? UNDEFINED : args[0];
         if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "Reflect.defineProperty requires an object", loc);

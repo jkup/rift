@@ -5148,7 +5148,7 @@ Status: **in progress — integrated; combined validation pending**. Owner: Code
 
 ## TS-470 — Reflect property access
 
-Status: **in progress — isolated READY; canonical rollup pending**. Owner: Codex catch-up chat, 2026-11-11. Add Reflect.get, set and has using existing property operations. Preserve omitted versus explicit receivers, key conversion order, inherited descriptors, accessor receiver binding, boolean write failures and Realm restoration. Review reference cases while mutation validation runs. Planned ownership: src/builtins/reflect.ts and dedicated tests/manifests/docs in an isolated successor; keep apply separate and canonical inputs frozen.
+Status: **in progress — integrated; combined validation pending**. Owner: Codex catch-up chat, 2026-11-11. Add Reflect.get, set and has using existing property operations. Preserve omitted versus explicit receivers, key conversion order, inherited descriptors, accessor receiver binding, boolean write failures and Realm restoration. Review reference cases while mutation validation runs. Planned ownership: src/builtins/reflect.ts and dedicated tests/manifests/docs in an isolated successor; keep apply separate and canonical inputs frozen.
 
 ## TS-471 — Reflect.apply and shared argument lists
 

@@ -315,6 +315,7 @@ const entries = [
     ["test/private-brand-check.ts", "private-brand-check"],
     ["test/reflect-introspection.ts", "reflect-introspection"],
     ["test/reflect-mutation.ts", "reflect-mutation"],
+    ["test/reflect-access.ts", "reflect-access"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],
