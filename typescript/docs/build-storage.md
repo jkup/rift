@@ -21,3 +21,8 @@ from guest engine semantics.
 Before rerunning tooling in an old draft, restore its validation inputs through
 the corresponding preparation helper. Do not regenerate accepted evidence or
 delete distinct failure artifacts to recover space.
+
+A follow-up READY-draft cleanup removed another 2,023,526,912 bytes from
+13,070 hash-identical validation files, with no deletion failures. Available
+space was about 119.8 GB afterward. The manifest is
+`build/iana-timezone-adjacent-validation-copy-cleanup.json`.

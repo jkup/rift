@@ -94,3 +94,12 @@ with a shared internal offset provider while preserving public range guards.
 This is bounded feasibility and representative semantic evidence, not a complete
 local-time conformance result. Broader historical gap/fold boundary tests remain
 required. Evidence: `build/iana-timezone-review/local-resolution-probe-results.json`.
+
+The broader historical candidate check now passes 182,917 cases on both hosts
+with 322 static statements and zero dynamic operations. Independent upstream
+IANA C offset queries classify 52,704 gaps, 78,393 unique instants and 51,820
+folds. Cases cover both local boundaries and interiors of every historical
+offset change, preserving nanosecond precision. This validates candidate
+enumeration; production range-provider integration remains required. Evidence:
+`build/iana-timezone-review/local-history-probe-results.json` and
+`local-history-reference-summary.json`.

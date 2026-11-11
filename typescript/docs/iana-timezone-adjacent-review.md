@@ -17,5 +17,7 @@ After sharing calendar calculations, production recurrence still passes all
 `build/iana-adjacent-recurrence-results.json` and the focused/regression reports
 under `build/iana-timezone-adjacent-draft/build/`.
 
-Tooling validation is running. No named-zone guest admission or canonical runtime
+All 15 tooling builds, 296 tooling tests, eight codec checks per host and
+16 parent-envelope checks pass. Generator, inherited-source and type checks
+pass; the isolated source snapshot is READY. No named-zone guest admission or canonical runtime
 changes have occurred; combined acceptance remains pending.
