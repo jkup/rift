@@ -27,7 +27,7 @@ for (const text of cases) {
     const result = run(text);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
-for (const zone of ['Europe/London', '12:30Z', '2020-01-01', '+01:00:01', '2020-02-30T00:00Z', 'Z']) {
+for (const zone of ['Invalid/Zone', '12:30Z', '2020-01-01', '+01:00:01', '2020-02-30T00:00Z', 'Z']) {
     const result = run('var ok=false;try{new Temporal.Instant(0n).toString({timeZone:'+JSON.stringify(zone)+'})}catch(e){ok=e instanceof RangeError}ok');
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, zone);
 }

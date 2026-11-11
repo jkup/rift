@@ -20,7 +20,9 @@ for (const text of [
     "2023-02-29[UTC]", "2024-13-01[UTC]", "-000000-01-01[UTC]", "2024-02-29Z[UTC]", "2024-02-29+00[UTC]", "2024-02-29T[UTC]",
     "2024-02-29T24:00[UTC]", "2024-02-29T12:60[UTC]", "2024-02-29T12:30:61[UTC]", "2024-02-29T12:30.1[UTC]", "2024-02-29T12:30:00.1234567890[UTC]",
     "2024-02-29T12:30+24[UTC]", "2024-02-29T12:30+00:60[UTC]", "2024-02-29T12:30+00:00:60[UTC]", "2024-02-29T12:30Z[+00:00:00]",
-    "2024-02-29[Europe/London]", "2024-02-29[UTC][UTC]", "2024-02-29[u-ca=iso8601][UTC]", "2024-02-29[UTC][u-ca=gregory]", "2024-02-29[UTC][!x-foo=bar]",
+    "2024-02-29[Invalid/Zone]", "2024-02-29[UTC][UTC]", "2024-02-29[u-ca=iso8601][UTC]", "2024-02-29[UTC][u-ca=gregory]", "2024-02-29[UTC][!x-foo=bar]",
     "2024-02-29[UTC][u-ca=iso8601][!u-ca=iso8601]", "2024-02-29[UTC]junk", " 2024-02-29[UTC]", "2024-02-29[UTC] ",
 ]) check(parseTemporalZonedDateTime(text) === null, "invalid " + text);
+const named = parseTemporalZonedDateTime("2024-02-29[Europe/London]");
+check(named !== null && named.startOfDay && named.timeZone.identifier === "Europe/London", "named date-only start");
 console.log("temporal zoned parse passed");

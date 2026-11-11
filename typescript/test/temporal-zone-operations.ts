@@ -36,6 +36,6 @@ const utc = namedTemporalTimeZone("UTC"), utcAlias = namedTemporalTimeZone("Etc/
 if (utc === null || utcAlias === null || fixed === null || eastern === null || newYork === null) throw new Error("identity controls");
 if (!timeZoneEquals(utc, utcAlias) || timeZoneEquals(utc, fixed) || !timeZoneEquals(eastern, newYork)) throw new Error("zone identity");
 if (timeZoneOffsetNanoseconds(newYork, 1710053999999999999n) !== -18000000000000n || timeZoneOffsetNanoseconds(newYork, 1710054000000000000n) !== -14400000000000n) throw new Error("exact offset transition");
-if (parseTemporalTimeZoneIdentifier("America/New_York") !== null) throw new Error("guest admission changed");
+if (parseTemporalTimeZoneIdentifier("America/New_York") === null || parseTemporalTimeZoneIdentifier("Invalid/Zone") !== null) throw new Error("named-zone admission");
 if (formatUTCOffset(-1000000000n, "minute") !== "+00:00" || formatUTCOffset(-2670000000000n, "minute") !== "-00:45" || formatUTCOffset(1n) !== "+00:00:00.000000001") throw new Error("offset formatting");
 console.log("temporal zone operations passed");

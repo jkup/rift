@@ -12,7 +12,7 @@ function run(text: string, realm: Realm): Value {
 const realm=new Realm((_line:string)=>{},"script");let calls=0;realm.clockMilliseconds=()=>{calls++;return -1};
 function passes(text: string): void { const value=run(text,realm);if(value.kind!=="boolean"||!value.value)throw new Error(text); }
 for(const value of ['null','{}','new String("UTC")','{toString:function(){throw 7}}'])passes('var ok=false;try{Temporal.Now.zonedDateTimeISO('+value+')}catch(e){ok=e instanceof TypeError}ok');
-passes('var ok=false;try{Temporal.Now.zonedDateTimeISO("Europe/London")}catch(e){ok=e instanceof RangeError}ok');
+passes('var ok=false;try{Temporal.Now.zonedDateTimeISO("Invalid/Zone")}catch(e){ok=e instanceof RangeError}ok');
 if(calls!==0)throw new Error("zone validation before clock");
 for(const text of [
  'var z=Temporal.Now.zonedDateTimeISO();z instanceof Temporal.ZonedDateTime&&z.epochNanoseconds===-1000000n&&z.timeZoneId==="UTC"&&z.calendarId==="iso8601"',

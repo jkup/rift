@@ -8,7 +8,7 @@ import { parseTemporalPlainTime } from "./temporal-plain-time-parse.js";
 export function parseTemporalTimeZoneIdentifier(text: string): TemporalTimeZone | null {
     if (text.length === 3 && text.toLowerCase() === "utc") return namedTemporalTimeZone("UTC");
     const offset = parseUTCOffset(text, false);
-    if (offset === null) return null;
+    if (offset === null) return namedTemporalTimeZone(text);
     const formatted = formatUTCOffsetMinutes(Number(offset / 60000000000n));
     if (formatted === null) throw new Error("timezone offset invariant");
     return { kind: "offset", identifier: formatted, offsetNanoseconds: offset };

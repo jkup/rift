@@ -325,6 +325,7 @@ const entries = [
     ["test/iana-timezone-candidate-offset.ts", "iana-timezone-candidate-offset"],
     ["test/iana-timezone-local.ts", "iana-timezone-local"],
     ["test/temporal-zone-operations.ts", "temporal-zone-operations"],
+    ["test/temporal-named-time-zones.ts", "temporal-named-time-zones"],
     ["test/for-binding-patterns.ts", "for-binding-patterns"],
     ["test/for-assignment-patterns.ts", "for-assignment-patterns"],
     ["test/string-iterator.ts", "string-iterator"],

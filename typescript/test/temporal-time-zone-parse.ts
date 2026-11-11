@@ -17,7 +17,10 @@ check("1130+01:00", "+01:00", 60);
 check("202001+01:00", "+01:00", 60);
 check("12-0130", "-01:30", -90);
 check("2020-0130", "-01:30", -90);
-for (const text of ["", "Z", "12Z", "T12:34Z", "2020-01", "2020-01[UTC][u-ca=hebrew]", "--02-29[UTC][u-ca=unknown]", " UTC", "UTC ", "Etc/UTC", "Europe/London", "+24", "+01:60", "+01:00:00", "-00:00:00.0", "2020-01-01", "2020-01-01Z", "2020-02-30T00Z", "2021-02-29[UTC]", "2020-24[UTC]", "--02-30[UTC]", "24:00Z", "12:60Z", "12:34:61Z", "2020-01-01T00+01:00:00", "12:34[UTC][UTC]", "12:34[UTC][!x-test=value]", "12:34[UTC][!u-ca=iso8601][u-ca=iso8601]", "12:34[u-ca=iso8601][UTC]", "12:34[+01:00:00]", "12:34[UTC]x", "-000000-01-01T00Z", "12:34[Europe/London]"]) {
+for (const text of ["", "Z", "12Z", "T12:34Z", "2020-01", "2020-01[UTC][u-ca=hebrew]", "--02-29[UTC][u-ca=unknown]", " UTC", "UTC ", "Etc/Unknown", "Invalid/Zone", "+24", "+01:60", "+01:00:00", "-00:00:00.0", "2020-01-01", "2020-01-01Z", "2020-02-30T00Z", "2021-02-29[UTC]", "2020-24[UTC]", "--02-30[UTC]", "24:00Z", "12:60Z", "12:34:61Z", "2020-01-01T00+01:00:00", "12:34[UTC][UTC]", "12:34[UTC][!x-test=value]", "12:34[UTC][!u-ca=iso8601][u-ca=iso8601]", "12:34[u-ca=iso8601][UTC]", "12:34[+01:00:00]", "12:34[UTC]x", "-000000-01-01T00Z", "12:34[Invalid/Zone]"]) {
     if (parseTemporalTimeZone(text) !== null) throw new Error("accepted " + text);
 }
+check("eUrOpE/lOnDoN", "Europe/London", 60);
+check("Etc/UTC", "Etc/UTC", 0);
+check("12:34[Europe/London]", "Europe/London", 60);
 console.log("temporal time zone parse passed");

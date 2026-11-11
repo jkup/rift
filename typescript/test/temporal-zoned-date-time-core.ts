@@ -34,7 +34,7 @@ for(const text of [
  'var z=new Temporal.ZonedDateTime(0n,"UTC");Object.defineProperty(z,"calendar",{get:function(){throw 7}});var ok=false;try{new Temporal.PlainDate(2020,1,1).with(z)}catch(e){ok=e instanceof TypeError}ok',
 ])passes(text);
 for(const argumentsText of ['0,"UTC"','0n','0n,null','0n,new String("UTC")','0n,{toString:function(){throw 7}}','0n,"UTC",null','0n,"UTC",{}'])passes('var ok=false;try{new Temporal.ZonedDateTime('+argumentsText+')}catch(e){ok=e instanceof TypeError}ok');
-for(const zone of ['Z','Etc/UTC','Europe/London','+24','+01:00:00','2020-01-01T00Z','2020-01[UTC]'])passes('var ok=false;try{new Temporal.ZonedDateTime(0n,"'+zone+'",null)}catch(e){ok=e instanceof RangeError}ok');
+for(const zone of ['Z','Etc/Unknown','Invalid/Zone','+24','+01:00:00','2020-01-01T00Z','2020-01[UTC]'])passes('var ok=false;try{new Temporal.ZonedDateTime(0n,"'+zone+'",null)}catch(e){ok=e instanceof RangeError}ok');
 for(const calendar of ['hebrew','2020-01-01',''])passes('var ok=false;try{new Temporal.ZonedDateTime(0n,"UTC","'+calendar+'")}catch(e){ok=e instanceof RangeError}ok');
 for(const name of ['epochNanoseconds','epochMilliseconds','timeZoneId','calendarId']){
  passes('var d=Object.getOwnPropertyDescriptor(Temporal.ZonedDateTime.prototype,"'+name+'");d.get.name==="get '+name+'"&&d.get.length===0&&d.set===undefined&&!d.enumerable&&d.configurable');

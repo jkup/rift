@@ -57,7 +57,7 @@ for (const option of ['-0.1', '10', 'NaN', 'Infinity', '"0"', 'new Number(3)', '
     const result = run('var ok=false;try{new Temporal.Instant(0n).toString({fractionalSecondDigits:'+option+'})}catch(e){ok=e instanceof RangeError}ok');
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "digits " + option);
 }
-for (const zone of ['Europe/London', '+01:00:00', '+24:00', 'Z', '']) {
+for (const zone of ['Invalid/Zone', '+01:00:00', '+24:00', 'Z', '']) {
     const result = run('var ok=false;try{new Temporal.Instant(0n).toString({timeZone:'+JSON.stringify(zone)+'})}catch(e){ok=e instanceof RangeError}ok');
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "zone " + zone);
 }

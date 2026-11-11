@@ -15,7 +15,7 @@ function passes(text: string): void { const value = run(text,realm); if (value.k
 for(const name of ["plainDateTimeISO","plainDateISO","plainTimeISO"]){
  passes('Temporal.Now.'+name+'.length===0&&Temporal.Now.'+name+'.name==="'+name+'"');
  for(const value of ['null','0','1n','Symbol()','{}','new String("UTC")','{toString:function(){throw 7},valueOf:function(){throw 8}}'])passes('var ok=false;try{Temporal.Now.'+name+'('+value+')}catch(e){ok=e instanceof TypeError}ok');
- for(const value of ['Z','Europe/London','+24:00','+01:00:00','2020-01-01'])passes('var ok=false;try{Temporal.Now.'+name+'("'+value+'")}catch(e){ok=e instanceof RangeError}ok');
+ for(const value of ['Z','Invalid/Zone','+24:00','+01:00:00','2020-01-01'])passes('var ok=false;try{Temporal.Now.'+name+'("'+value+'")}catch(e){ok=e instanceof RangeError}ok');
 }
 if(calls!==0)throw new Error("timezone errors must precede clock");
 for(const text of [
