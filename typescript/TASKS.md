@@ -4944,3 +4944,7 @@ Status: **done — reduced failure and passing control retained**. Owner: Codex 
 
 
 TS-443 also owns test/class-empty-fields.ts. The full Node run passed 921/922; its sole failure was the historical empty-static-block rejection. Preserve the exact source and assert normal execution, with focused both-host validation.
+
+## TS-445 — Named RegExp capture integration review
+
+Status: **done — integration review and 13 reference cases**. Owner: Codex catch-up chat, 2026-11-11. Review named capture parsing, name resolution, exec/indices groups and replacement integration against the specification and existing numeric-capture machinery. Identify a bounded implementation sequence and semantic reference cases. Own docs/regexp-named-captures-review.md; no canonical runtime edits during active validation.
