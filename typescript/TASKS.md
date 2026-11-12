@@ -5542,3 +5542,18 @@ TS-502 full Node regression passes 954/954 without skips, and all 35 runner test
 pass. Its 1067 source/control inputs are frozen; predecessor readiness, baseline,
 unowned-file and exact manifest-addition checks pass. Focused native validation
 is running. Readiness and integration remain pending.
+
+## TS-503 — Contextual let grammar review
+
+**done — read-only review**. Owner: coordinator, 2026-11-12.
+Reduce the remaining contextual-identifier gap against the specification and
+Node: sloppy let identifiers, lexical declaration lookahead, newline/ASI and
+for/in/of heads. Own docs/let-identifier-context.md and ignored review evidence.
+Identify safe parser boundaries before proposing implementation; do not change
+canonical or frozen successor source, certify unsupported forms or alter fixtures.
+
+The 100-case review records 38 valid and 62 invalid sources; frozen TS-502 accepts
+ten valid cases, no invalid cases and produces no false syntax-error certificates.
+docs/let-identifier-context.md records declaration lookahead, newline and for-head
+distinctions. A successor must combine identifier admission with those grammar
+boundaries and lexical BoundNames checks; keyword admission alone is insufficient.
