@@ -325,9 +325,19 @@ class Parser {
     }
     name(): string {
         const t = this.take();
-        if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || this.awaitIdentifierAllowed(t.text) || this.yieldIdentifierAllowed(t.text) || (this.boundedPlan() && isStrictReservedIdentifier(t.text)))))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
+        if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || this.awaitIdentifierAllowed(t.text) || this.yieldIdentifierAllowed(t.text) || (this.boundedPlan() && (t.text === "let" || isStrictReservedIdentifier(t.text))))))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
         this.recordAwaitIdentifier(t.text, t.loc);
         return t.text;
+    }
+    private letDeclarationAhead(): boolean {
+        if (!this.at("let")) return false;
+        if (!this.boundedPlan()) return true;
+        const next = this.token(this.index + 1);
+        return next.text === "[" || next.text === "{" || this.labelIdentifier(next);
+    }
+    private checkLexicalName(site: DeclarationSite): void {
+        if (this.boundedPlan() && site.name === "let")
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "lexical declarations cannot bind let", site.loc);
     }
     private yieldIdentifierAllowed(name: string): boolean {
         return this.boundedPlan() && name === "yield" && !this.yieldIdentifierReserved;
@@ -393,9 +403,9 @@ class Parser {
     branch(context: LexicalStatementContext): Stmt {
         const keyword = this.current();
         const auditAsync = this.auditAsyncDeclarationStatement();
-        const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
+        const auditLet = this.purpose === "bounded-lexical-statement-audit" && this.letDeclarationAhead();
         if (this.at("const")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: const", keyword.loc);
-        if ((this.at("let") && !auditLet) || this.at("function") || (this.asyncFunctionAhead() && !auditAsync) || (this.structuralPlan() && this.at("class"))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
+        if ((this.letDeclarationAhead() && !auditLet) || this.at("function") || (this.asyncFunctionAhead() && !auditAsync) || (this.structuralPlan() && this.at("class"))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
         if (auditLet && (this.token(this.index + 1)?.text === "[" || this.token(this.index + 1)?.text === "{"))
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "pattern declarations require a block", keyword.loc);
         const result = this.statement();
@@ -421,7 +431,7 @@ class Parser {
             const iteration = token.kind === "word" && (token.text === "for" || token.text === "while" || token.text === "do");
             this.labels.push({ name, iteration });
             const auditAsync = this.auditAsyncDeclarationStatement();
-            if (this.at("let") || this.at("const") || this.at("function") || (this.asyncFunctionAhead() && !auditAsync) || this.at("class"))
+            if (this.letDeclarationAhead() || this.at("const") || this.at("function") || (this.asyncFunctionAhead() && !auditAsync) || this.at("class"))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "labelled declarations are unsupported", this.current().loc);
             const body = this.statement();
             this.labels.pop();
@@ -488,6 +498,7 @@ class Parser {
             if (declarationKind !== "let" && declarationKind !== "const" && declarationKind !== "var") throw new Error("invalid declaration kind");
             const bindings: ParsedBinding[] = [];
             const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
+            if (declarationKind !== "var") for (const binding of bindings) this.checkLexicalName(binding.site);
             this.expect("=");
             const initializerStart = this.current().start;
             const init = this.expression(1);
@@ -499,6 +510,7 @@ class Parser {
         }
         if (this.structuralPlan() && this.eat("const")) {
             const binding = this.binding(1);
+            this.checkLexicalName(binding.site);
             this.statementTerminator();
             if (binding.init === null) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", loc);
@@ -507,8 +519,10 @@ class Parser {
             this.bindings.set(start, [binding]);
             return { kind: "const", loc, name: binding.site.name, init: binding.init };
         }
-        if (this.eat("let")) {
+        if (this.letDeclarationAhead()) {
+            this.take();
             const binding = this.binding(1);
+            this.checkLexicalName(binding.site);
             this.statementTerminator();
             if (this.structuralPlan()) this.bindings.set(start, [binding]);
             return { kind: "let", loc, name: binding.site.name, init: binding.init };
@@ -547,31 +561,37 @@ class Parser {
                 if (declarationKind !== "let" && declarationKind !== "const" && declarationKind !== "var") throw new Error("invalid loop declaration kind");
                 const bindings: ParsedBinding[] = [];
                 const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
+                if (declarationKind !== "var") for (const binding of bindings) this.checkLexicalName(binding.site);
                 if (!this.at("of") && !this.at("in")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "pattern loop requires in or of", this.current().loc);
                 const kind = this.take().text === "in" ? "for-in" : "for-of";
                 return this.forEach(kind, loc, start, { kind: "pattern", declarationKind, pattern, sites: bindings.map(binding => binding.site) }, awaited);
             }
-            if ((this.at("let") || this.at("const")) && this.token(this.index + 2)?.kind === "word" && (this.token(this.index + 2)?.text === "of" || this.token(this.index + 2)?.text === "in")) {
+            if ((this.letDeclarationAhead() || this.at("const")) && this.token(this.index + 2)?.kind === "word" && (this.token(this.index + 2)?.text === "of" || this.token(this.index + 2)?.text === "in")) {
                 const declarationKind = this.take().text === "let" ? "let" : "const";
                 const token = this.current();
                 const name = this.name();
+                this.checkLexicalName({ name, start: token.start, end: token.end, loc: token.loc });
                 const kind = this.take().text === "of" ? "for-of" : "for-in";
                 return this.forEach(kind, loc, start, { kind: "lexical", declarationKind,
                     site: { name, start: token.start, end: token.end, loc: token.loc } }, awaited);
             }
             let lexical: { declarationKind: "let" | "const"; binding: ParsedBinding } | null = null;
-            if (this.at("let") || this.at("const")) {
+            if (this.letDeclarationAhead() || this.at("const")) {
                 const declarationKind = this.take().text === "let" ? "let" : "const";
                 const binding = this.binding(1, false);
+                this.checkLexicalName(binding.site);
                 if (declarationKind === "const" && binding.init === null)
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", loc);
                 lexical = { declarationKind, binding };
             }
+            const initializerFirst = this.current();
             let initializer: VarStmt | Expr | null = null;
             if (lexical === null && this.at("var")) initializer = this.varDeclaration(false);
             else if (lexical === null && !this.at(";")) initializer = this.expression(0, false);
             if (initializer !== null && (this.at("of") || this.at("in"))) {
                 const kind = this.take().text === "of" ? "for-of" : "for-in";
+                if (kind === "for-of" && initializerFirst.kind === "word" && initializerFirst.text === "let")
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "for-of assignment targets cannot start with let", initializerFirst.loc);
                 if (initializer.kind === "var") {
                     if (initializer.declarations.length !== 1 || initializer.declarations[0].init !== null)
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, kind + " requires one uninitialized binding", initializer.loc);
@@ -660,7 +680,7 @@ class Parser {
         return { kind: "expression", loc, expression };
     }
     private labelIdentifier(token: Token): boolean {
-        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval" || token.text === "async" || this.awaitIdentifierAllowed(token.text) || this.yieldIdentifierAllowed(token.text) || (this.boundedPlan() && isStrictReservedIdentifier(token.text)));
+        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval" || token.text === "async" || this.awaitIdentifierAllowed(token.text) || this.yieldIdentifierAllowed(token.text) || (this.boundedPlan() && (token.text === "let" || isStrictReservedIdentifier(token.text))));
     }
     private labelAhead(index: number): boolean {
         return this.labelIdentifier(this.token(index)) && this.token(index + 1)?.kind === "punct" && this.token(index + 1)?.text === ":";
@@ -1473,7 +1493,7 @@ class Parser {
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", token.loc);
                     name = this.literalPropertyName(token);
                     key = { kind: "literal", loc: token.loc, value: name };
-                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async" || this.awaitIdentifierAllowed(name) || this.yieldIdentifierAllowed(name) || (this.boundedPlan() && isStrictReservedIdentifier(name)));
+                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async" || this.awaitIdentifierAllowed(name) || this.yieldIdentifierAllowed(name) || (this.boundedPlan() && (name === "let" || isStrictReservedIdentifier(name))));
                 }
                 if (this.at("(")) {
                     const fn = this.functionTail(first.loc, first.start, "method", generator, asynchronous);
@@ -1900,7 +1920,7 @@ class Parser {
             this.expect("}");
             return { kind: "object", loc, properties };
         }
-        if (t.kind === "word" && (!RESERVED.includes(" " + t.text + " ") || (this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || this.awaitIdentifierAllowed(t.text) || this.yieldIdentifierAllowed(t.text) || (this.boundedPlan() && isStrictReservedIdentifier(t.text)))))) {
+        if (t.kind === "word" && (!RESERVED.includes(" " + t.text + " ") || (this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || this.awaitIdentifierAllowed(t.text) || this.yieldIdentifierAllowed(t.text) || (this.boundedPlan() && (t.text === "let" || isStrictReservedIdentifier(t.text))))))) {
             this.recordAwaitIdentifier(t.text, loc);
             return { kind: "identifier", loc, name: t.text };
         }

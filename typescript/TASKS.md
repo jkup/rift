@@ -5577,7 +5577,7 @@ boundaries and lexical BoundNames checks; keyword admission alone is insufficien
 
 ## TS-504 — Contextual let identifiers
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
 Implement the TS-503 reviewed sloppy identifier, declaration-lookahead and loop
 boundaries in an isolated successor to frozen TS-502. Own parser, declaration
 collector, focused tests, exact prior let expectation migration, manifests and

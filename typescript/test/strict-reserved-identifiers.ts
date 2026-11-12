@@ -77,7 +77,7 @@ for (const text of [
     '"use strict";var public=1;with({}){}',
     '"use strict";var public=1;var x=;',
     '"use strict";var public=1;' + '('.repeat(300) + '0' + ')'.repeat(300),
-    'var enum=1;', 'var let=1;',
+    'var enum=1;',
 ]) {
     const result = prepareBoundedScript({ id: "unsupported", text }, new Realm((_line: string) => {}, "script"));
     check(result.kind === "blocked" && result.rejection.kind !== "syntax-error", "unsupported or resource precedence: " + text);
@@ -91,3 +91,5 @@ check(executions === 126, "execution denominator");
 console.log("strict reserved identifiers passed");
 
 check(prepareBoundedScript({ id: "yield-admission", text: "var yield=1;" }, new Realm((_line: string) => {}, "script")).kind === "ready", "valid sloppy yield binding admitted");
+
+check(prepareBoundedScript({ id: "let-admission", text: "var let=1;" }, new Realm((_line: string) => {}, "script")).kind === "ready", "valid sloppy let binding admitted");

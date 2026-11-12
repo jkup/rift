@@ -338,6 +338,24 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    for (const [id, text, column] of [
+      ['excluded-let-expression', 'while(false) let=1;', 17],
+      ['excluded-let-call', 'if(false) let(1);', 14],
+      ['excluded-let-member', 'if(false) let.x=1;', 14],
+    ]) {
+      const row = rows.find(row => row.id === id);
+      assert.equal(row.text, text);
+      assert.deepEqual(row.expected, {kind: 'blocked', reason: 'grammar-or-resource',
+        diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'expected binding identifier', loc: {line: 1, column}},
+        rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.binding-identifier'}});
+      row.expected = {kind: 'none', sourceUnits: text.length, consumedUnits: text.length};
+    }
+    const reservedLet = rows.find(row => row.id === 'excluded-reserved');
+    assert.equal(reservedLet.text, 'while(false) let let;');
+    assert.deepEqual(reservedLet.expected, {kind: 'blocked', reason: 'grammar-or-resource',
+      diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'expected binding identifier', loc: {line: 1, column: 18}},
+      rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.binding-identifier'}});
+    reservedLet.expected = {...reservedLet.expected, diagnostic: {...reservedLet.expected.diagnostic, message: 'lexical declarations cannot bind let'}};
     for (const [id, text] of [
       ['mixed-parameter-true-false', '"use strict"; while(false) let x; function f(a,a){}'],
       ['mixed-parameter-true-true', '"use strict"; function f(a,a){} while(false) let x;'],
