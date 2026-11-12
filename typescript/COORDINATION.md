@@ -3174,3 +3174,13 @@ These are build/coverage results, not native semantic acceptance. Prepared
 build/check-parser-successors-cached.mjs to verify frozen inputs and executable
 hashes, then execute the saved binaries after the canonical matrix finishes.
 Neither isolated successor is READY and accepted main remains52019673.
+
+2026-11-12 TS-494/496 focused tests and144/280-case reviewed probes pass on both
+hosts, including original U02/U03 bytes. Verified source snapshots, build/coverage
+reports and executable hashes before execution. Active compiler command lines
+confirmed distinct output paths, so the earlier blanket wait was narrowed to
+preventing readers of binaries still being built. The sequential30-driver tooling
+batch continues (session65815); both successors still await full tooling and
+producer checks. An additional98 independent Node syntax comparisons cover
+strictness scope edges with no mismatch. Evidence: build/parser-successors-cached-execution.log,
+the two draft build directories and build/strict-identifier-scope-edge-review.json.

@@ -5439,3 +5439,12 @@ checkpoint notes only; preserve frozen source, compiler pins, every completed
 coverage/executable hash, and failed/aborted attempts. Do not overlap native guest
 readers with builds. A scheduler change must validate checkpoint integrity and
 stop only the identified validation process tree before resuming.
+
+TS-494 and TS-496 focused native execution now passes, including their reviewed
+144-case and280-case probes and unchanged U02/U03 inputs. Each executable was
+hash-verified against its build/zero-dynamic report and frozen source before and
+after execution. The remaining builders target distinct paths; completed focused
+binaries can be read safely while those builds continue. An additional98 Node
+scope-edge comparisons found no strict-identifier mismatch. All30 successor
+tooling builds are queued in one sequential slot; full tooling and producer
+controls still gate readiness. TS-492 combined validation remains pending.
