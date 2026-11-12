@@ -83,13 +83,13 @@ provides a fixed 225-file diagnostic selection in both hosts. Use its concrete
 failures alongside semantic tests to prioritize work; existing C++ runner counts
 are not an authoritative conformance score.
 
-The [contextual identifier review](contextual-identifier-review.md) identifies
-83 valid `let`, `yield` and `await` syntax controls still unsupported after the
-isolated strict-name change. Before admitting them, inspect parameter grammar
-context: the parser currently clears its suspension flags while reading formal
-parameters. Reusing those flags as identifier permissions would admit invalid
-async/generator parameters. Implement in an isolated draft; integration and
-publication remain behind current native acceptance.
+The reviewed contextual `let`, `yield` and `await` changes are integrated locally,
+alongside strict reserved-name checks and async Statement certification. Separate
+grammar context protects async/generator parameters; `let` declaration lookahead
+keeps expression admission distinct from lexical declarations. Each isolated
+change passed its required checks. Combined validation is now running on frozen
+inputs: 955 guest cases and 462 native builds. These changes remain unaccepted
+and unpublished until the complete both-host regression and compiler gates pass.
 
 ## Historical feature checkpoints
 
