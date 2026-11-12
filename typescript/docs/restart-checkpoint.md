@@ -79,3 +79,27 @@ the exact codec closure assertion, manifests and focused test/documentation.
 Cleanup removed 2,023,533,632 bytes of hash-identical validation copies from the
 return draft, retaining 126 protected files and all original evidence. About
 122 GB remains free. Last account usage check was 42% used for the weekly window.
+
+## 2026-11-12 identifier successor checkpoint
+
+TS-494 passes 951/951 Node guests, 35 runner checks, codec/envelope controls and
+its typed reference probe; 1063 inputs remain frozen. TS-496 follows its frozen
+source in build/strict-reserved-identifiers-draft and passes 952/952 Node guests,
+35 runner checks, 224 initial syntax references, 56 additional strict contexts,
+focused execution checks, eight Node codecs/eight envelopes and three codec
+closure checks. Its 1065 inputs are frozen after predecessor/ownership checks.
+Neither successor is READY; native gates are pending. Do not promote over the
+active canonical source freeze.
+
+The combined starter diagnostic now has 57 expected Node outcomes and three
+explicit module/async-harness profile limitations, preserving all33 files/60
+variants. Raw U03 certifies at17:5; original inputs and capability admission remain
+unchanged. Evidence is build/strict-reserved-starter-diagnostic/ and each draft's
+build directory. This is diagnostic evidence, not admitted conformance.
+
+Only execution session45713 remains active (canonical native matrix). Sessions
+65760,55309,75726 and18972 are terminal; do not restart them. The Node corpus
+finished with225 records and191 completions; its exit1 reflects retained diagnostic
+noncompletions, not a process failure. Native finish script is still prepared,
+not launched. Fetch confirmed origin/main and origin/codex/test262-classification
+at52019673 with ancestry intact. No unaccepted milestone has been pushed.

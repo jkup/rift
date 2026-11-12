@@ -5388,3 +5388,33 @@ and unchanged U02 controls also pass under Node, preserving locations 20:15 and
 1063 source/control inputs are frozen for native validation. No native build has
 started while TS-492's full matrix is active. TS-495's 224-case independent review
 is complete: 84 valid sloppy identifier cases remain explicitly unsupported.
+
+## TS-496 — Strict reserved identifiers and sloppy admission
+
+**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+Implement TS-495's seven non-contextual strict-only names across bounded bindings,
+references, patterns, function/class names and labels, with valid sloppy execution
+and complete-source strict certification. Preserve property names and existing
+legacy parsing. Own parser, declaration collector, a shared identifier predicate,
+outcomes/observation types and producer, both Script decoders, exact codec closure
+test, manifests and focused tests/docs. Base the isolated successor on TS-494's
+frozen 951-case Node source; promotion is blocked until predecessor native
+readiness and canonical milestone acceptance. Preserve every prior input and
+review exact expectation migrations. Contextual let/yield/await and escaped
+identifiers remain separate work.
+
+TS-496 isolated Node evidence passes typechecking, 224 reviewed syntax cases,
+56 independent class/function strictness cases, focused execution and strictness
+controls, eight real producer codecs, eight parent envelopes and three exact
+codec-closure tests. Unchanged raw U03 certifies at 17:5 without effects. The
+combined starter diagnostic retains all33 files/60 variants:57 expected outcomes,
+three explicit module/async-harness profiles, no other mismatch. This is Node-only
+diagnostic evidence, not native acceptance or conformance admission. Full952 Node
+regression is running; predecessor/native gates still block promotion.
+
+TS-496 full Node regression passes 952/952 without skips; all35 runner tests pass.
+The 280-case typed reference probe and original raw U03 also pass Node. Its1065
+source/control inputs are frozen after verifying every predecessor hash, owned
+baseline and unowned input. Native validation remains queued behind the active
+TS-492 matrix; neither successor is READY. Remote main/dev still point to52019673
+and are ancestors of the local work; no integration drift was found.
