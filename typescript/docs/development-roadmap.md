@@ -83,6 +83,13 @@ provides a fixed 225-file diagnostic selection in both hosts. Use its concrete
 failures alongside semantic tests to prioritize work; existing C++ runner counts
 are not an authoritative conformance score.
 
+The [contextual identifier review](contextual-identifier-review.md) identifies
+83 valid `let`, `yield` and `await` syntax controls still unsupported after the
+isolated strict-name change. Before admitting them, inspect parameter grammar
+context: the parser currently clears its suspension flags while reading formal
+parameters. Reusing those flags as identifier permissions would admit invalid
+async/generator parameters. Keep this follow-up behind current native acceptance.
+
 ## Historical feature checkpoints
 
 TS-066 baseline review: the 67 parse failures include nine first failures on
