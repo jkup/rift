@@ -5418,3 +5418,14 @@ source/control inputs are frozen after verifying every predecessor hash, owned
 baseline and unowned input. Native validation remains queued behind the active
 TS-492 matrix; neither successor is READY. Remote main/dev still point to52019673
 and are ancestors of the local work; no integration drift was found.
+
+## TS-497 — Upstream weak-storage capability review
+
+**done — released dynamic representation confirmed**. Owner: coordinator, 2026-11-12.
+Check current official scriptc releases/source/docs for changes relevant to the
+pinned weak-storage blockers before choosing further C++ fixture work. Own
+docs/weak-storage-upstream-review.md and ignored review evidence only. Preserve
+the installed 0.4.7 toolchain, package pins and all frozen compiler inputs. Do not
+install or compile another toolchain during the active native matrix; distinguish
+upstream claims from measured static/zero-dynamic support. Record concrete
+follow-up only if evidence justifies it.
