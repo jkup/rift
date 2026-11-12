@@ -91,6 +91,13 @@ change passed its required checks. Combined validation is now running on frozen
 inputs: 955 guest cases and 462 native builds. These changes remain unaccepted
 and unpublished until the complete both-host regression and compiler gates pass.
 
+The next confirmed syntax gap is ordinary identifier escapes. C++
+`src/frontend/lexer/lexer.cpp` implements fixed `\uHHHH` escapes; the TypeScript
+lexer currently rejects `var \u0061 = 1`. TS-508 will review decoded names versus
+raw keyword/contextual-keyword spelling and the existing Unicode identifier
+backend before implementation. Preserve explicit rejection of unsupported forms
+and do not inherit the C++ lexer's documented Unicode limitations.
+
 ## Historical feature checkpoints
 
 TS-066 baseline review: the 67 parse failures include nine first failures on

@@ -5669,3 +5669,15 @@ TS-507: all 3,822 retained cases agree on both current Rift hosts and fresh
 independent Node. All 160 batches per host complete normally, with no skipped or
 unsupported results. Original case and reference data remain unchanged;
 see docs/regexp-differential-review.md.
+
+## TS-508 — Ordinary identifier escape and Unicode grammar review
+
+**ready**. Review the confirmed ordinary-identifier gap before implementation.
+C++ read_identifier supports fixed Unicode escapes; current TypeScript rejects
+the valid var \u0061 = 1 input at lexing. Inspect decoded names versus raw keyword
+spelling, contextual async/await/yield/let/of names, escaped reserved words,
+property names, shorthand, labels, numeric adjacency and Unicode start/continue
+rules. Reuse the reviewed Unicode backend and private-name scanner evidence
+where valid, without copying C++ deviations. Own a bounded review document and
+ignored controls; implementation requires an explicit successor task and must
+not mutate frozen canonical inputs. Initial evidence: build/ordinary-identifier-gap.json.
