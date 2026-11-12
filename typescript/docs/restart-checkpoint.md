@@ -31,3 +31,10 @@ processes were stopped; no compilation should be restarted until the owner resum
   and untracked docs/validation/ts-035e3h-unicode-ready-p/. Stage owned TASKS changes
   only through node build/stage-owned-tasks.mjs.
 - Free disk space remains about127 GB. Successful LLVM is automatically pruned.
+
+Resumed 2026-11-12 at the owner's request. The frozen inputs and25 checkpoints
+were verified, and native validation/corpus watching restarted. TS-492 now has an
+isolated return-certification draft; focused42-control checks pass both hosts,
+with20,280 static/zero-dynamic coverage. Its full Node suite is running. This
+resume entry supersedes the pause instruction above; preserve the same integration
+freeze and publication gates.

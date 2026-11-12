@@ -5296,3 +5296,13 @@ TS-490: all23 controls in strict and non-strict modes match explicit expected ou
 **done — both-host diagnostic and controls verified**. Owner: coordinator. Diagnose all 33 pinned starter files and every metadata-required variant using the current Script runtime, after TS-490 assertion controls. Reuse exact-byte/metadata validation, execute harness units separately from test Script bodies, retain module/async cases as explicit profile limitations, and distinguish real syntax errors from unsupported syntax and runtime failures. Preserve denominators and initial failures. Own docs/test262-current-script-diagnostic.md and ignored drivers/reports only; do not change capability admission or frozen Temporal inputs. Native counterpart and any runtime fixes require separate evidence before broader acceptance.
 
 TS-491 Node diagnostic: all33 files/60 variants retained;52 expected outcomes,5 unsupported-syntax records and3 explicit module/async-harness profile limitations. Initial error-prototype inspection bug corrected with all first-run evidence preserved. Native reproduction and diagnostic controls remain pending; no conformance admission or parser mutation. See docs/test262-current-script-diagnostic.md.
+
+## TS-492 — Bounded Script return certification
+
+**in progress — isolated implementation**. Owner: coordinator, 2026-11-12. Follow TS-491's S20 reduction: certify return-outside-function only after a complete supported-grammar audit in bounded Script preparation. Preserve the original first diagnostic, retained nodes, legacy/public planner behavior, and unsupported/resource precedence. Cover modern syntax, ASI, nested functions/classes/static blocks, invalid tails, effect-free preparation and original S20 variants on both hosts. Own src/parser.ts, a focused test/fixture, manifests and feature notes in build/script-return-certification-draft; any exact historical expectation migration must be reviewed and recorded. Canonical Temporal inputs remain frozen. Strict-reserved bindings and async declarations in Statement position are separate follow-ups.
+
+TS-492 focused checks pass on both hosts:42 controls,20,280 native static statements,
+zero dynamic operations; original pinned S20 bytes certify in both Node Script
+modes. Full isolated950-case Node validation is running. Initial missing replay
+input was restored unchanged, retaining the first-run log. No canonical runtime
+input has changed; source remains in build/script-return-certification-draft.

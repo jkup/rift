@@ -3155,3 +3155,9 @@ Prepared but not executed: build/promote-class-string.ps1, validate-class-string
 2026-11-11 TS-486 promoted with 27 changed-file baselines verified. Isolated evidence passes 948 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/temporal-zone-operations-draft/build and build/temporal-zone-operations-* logs, retaining initial failures and exact historical-input migrations.
 
 2026-11-11 TS-487 promoted with 11 changed-file baselines verified. Isolated evidence passes 949 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/temporal-named-time-zones-draft/build and build/temporal-named-time-zones-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-12: owner resumed after restart. Verified the977 frozen Temporal inputs,
+25 saved native gates and125.6 GB free; restarted the resumable native matrix and
+corpus watcher. TS-492 is isolated and cannot change those canonical inputs.
+TS-491 is complete on both hosts with16 diagnostic controls each; retained prior
+pending notes describe the earlier Node-only stage.
