@@ -5672,7 +5672,7 @@ see docs/regexp-differential-review.md.
 
 ## TS-508 — Ordinary identifier escape and Unicode grammar review
 
-**ready**. Review the confirmed ordinary-identifier gap before implementation.
+**done — grammar and both-host baseline reviewed**. Owner: coordinator, 2026-11-12.. Review the confirmed ordinary-identifier gap before implementation.
 C++ read_identifier supports fixed Unicode escapes; current TypeScript rejects
 the valid var \u0061 = 1 input at lexing. Inspect decoded names versus raw keyword
 spelling, contextual async/await/yield/let/of names, escaped reserved words,
@@ -5681,3 +5681,24 @@ rules. Reuse the reviewed Unicode backend and private-name scanner evidence
 where valid, without copying C++ deviations. Own a bounded review document and
 ignored controls; implementation requires an explicit successor task and must
 not mutate frozen canonical inputs. Initial evidence: build/ordinary-identifier-gap.json.
+
+TS-508: 170 controls (76 valid, 94 invalid) match explicit independent Node
+syntax/execution expectations. Both current Rift hosts reject the selection
+with identical results and no false syntax-error certificates. Review identifies
+raw-versus-decoded keyword boundaries, shared Unicode prerequisites, source-span
+requirements and exact semantic-name exceptions. See docs/ordinary-identifiers-review.md.
+
+## TS-509 — Ordinary Unicode identifiers and escapes
+
+**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+Implement TS-508's full reviewed ordinary-name boundary from the frozen canonical
+contextual-identifier source in build/ordinary-identifiers-draft. Support raw
+Unicode ID_Start/ID_Continue and fixed/braced escapes, decoded binding/property
+names, raw keyword spelling, contextual names and exact UTF-16 source spans.
+Preserve legacy behavior, malformed/unsupported provenance and whole-source
+audits; no new syntax-error certification rule. Own lexer/parser/prologue code,
+a shared identifier scanner and compatible private-name delegation, focused
+tests, manifests and feature notes. Any existing expectation migration requires
+separate reviewed baseline evidence. Require all 170 reviewed controls, both-host
+semantic checks, full regression, tooling and static compiler gates. Promotion
+requires contextual-identifier milestone acceptance; canonical source stays frozen.
