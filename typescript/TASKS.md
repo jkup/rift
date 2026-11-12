@@ -5381,3 +5381,10 @@ neighbors and inherited strictness before changing parser admission. Own
 docs/strict-reserved-identifier-review.md and ignored evidence only. Preserve
 canonical TS-492 inputs and the isolated TS-494 implementation. Keep contextual
 let/yield/await grammar separate from the first bounded follow-up.
+
+TS-494 now passes all 951 Node guests without skips. The typed 144-case diagnostic
+and unchanged U02 controls also pass under Node, preserving locations 20:15 and
+21:15. Eight Node envelopes and three exact codec-closure tests pass. The draft's
+1063 source/control inputs are frozen for native validation. No native build has
+started while TS-492's full matrix is active. TS-495's 224-case independent review
+is complete: 84 valid sloppy identifier cases remain explicitly unsupported.

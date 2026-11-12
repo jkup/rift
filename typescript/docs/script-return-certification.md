@@ -34,8 +34,8 @@ The final Node suite passes 950/950 guests without skips after the observation
 repair. All 35 runner tests pass. Fifteen native tooling drivers pass: six were
 rebuilt for the observation change, and nine retain results only after checking
 their compiler-resolved source hashes. Eight codec controls per host and sixteen
-parent-envelope controls pass. All 296 tooling tests pass outside the sandbox; final ownership checks
-are pending; combined native milestone acceptance remains separate.
+parent-envelope controls pass. All 296 tooling tests and final source ownership
+checks pass. Combined native milestone acceptance remains pending.
 
 Initial failures are retained in the draft build directory: a missing unchanged
 historical replay input, the old eval expectation, and the observation producer's
