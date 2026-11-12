@@ -5690,7 +5690,7 @@ requirements and exact semantic-name exceptions. See docs/ordinary-identifiers-r
 
 ## TS-509 — Ordinary Unicode identifiers and escapes
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-12.
 Implement TS-508's full reviewed ordinary-name boundary from the frozen canonical
 contextual-identifier source in build/ordinary-identifiers-draft. Support raw
 Unicode ID_Start/ID_Continue and fixed/braced escapes, decoded binding/property
@@ -5734,7 +5734,7 @@ remain rejected; seven position checks pass. See docs/script-whitespace-review.m
 
 ## TS-511 — Complete Script whitespace scanning
 
-**ready — requires TS-509 READY**. Owner: coordinator, 2026-11-12.
+**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
 Implement TS-510's reviewed whitespace boundary in an isolated successor to the
 ordinary-identifier draft. Reuse isStringWhitespace for Script token separation;
 retain separate line-terminator handling, CRLF locations, literal contents and
@@ -5744,3 +5744,15 @@ explicit token spans for all 25 accepted separators, excluded-neighbor and
 legacy guards, full regression/tooling and native static-only/zero-dynamic gates.
 Do not change syntax-error certification or historical fixtures. Promotion
 requires acceptance of the contextual and ordinary-identifier predecessors.
+
+TS-509 READY: 956 Node guests, 170 controls on both hosts, focused native
+execution, 15 native tooling gates, 296 tooling tests, eight codec records per
+host and 16 envelopes pass. Source and ownership hashes verify. TS-511 starts
+from this frozen predecessor; canonical contextual validation remains running.
+
+TS-511: Script whitespace scanning and focused tests pass typechecking, all 146
+retained Node controls, 35 runner tests and eight producer-codec records. The
+1072 source/control inputs are frozen. Full Node regression runs in session34102;
+focused native compilation and both-host control replay run in session46618.
+Historical tooling input preparation runs in session74436. Integration remains
+blocked on the predecessor milestones, not on a user decision.
