@@ -3165,3 +3165,12 @@ pending notes describe the earlier Node-only stage.
 2026-11-12 zoned Temporal milestone accepted (TS-484,486,487):949/949 guests on both hosts without skips;456 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-lR4v4q/native-65hS99 matches all225 normalized records and preserves191 preceding completions. Named-zone local-time resolution, shared Temporal consumers and pinned2026f guest identifiers are accepted. Focused evidence includes 1170 public controls,1794 identifier controls and82800 rounding cases on both hosts; the documented PR3319 rounding and Factory admission differences retain independent justification. Original fixtures, failure evidence and range guards remain preserved. Evidence: build/iana-temporal-rollup-* and isolated feature reviews.
 
 2026-11-12 TS-492 promoted with 5 changed-file baselines verified. Isolated evidence passes 950 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/script-return-certification-draft/build and build/script-return-certification-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-12 owner resumed work. Existing four-worker TS-492 validation is still
+running; verified all1061 frozen inputs and93 saved native build records without
+restarting it. Disk has120.8 GB free. One isolated sequential compiler-only slot
+is also active: TS-494 focused and reviewed-probe builds pass; TS-496 is compiling.
+These are build/coverage results, not native semantic acceptance. Prepared
+build/check-parser-successors-cached.mjs to verify frozen inputs and executable
+hashes, then execute the saved binaries after the canonical matrix finishes.
+Neither isolated successor is READY and accepted main remains52019673.
