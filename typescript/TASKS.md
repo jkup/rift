@@ -5655,3 +5655,17 @@ TS-506: all 25 scenarios in both strictness modes match explicit expected event
 order in both Rift hosts and independent Node. Cleanup error precedence,
 stepping failures, nested close order and abrupt target evaluation require no
 runtime fix. See docs/iterator-cleanup-semantic-review.md.
+
+## TS-507 — Native RegExp differential follow-up
+
+**done — both-host differential review**. Owner: coordinator, 2026-11-12.
+Replay TS-476's unchanged 3,822 deterministic RegExp cases on both current Rift
+hosts, with a fresh independent Node reference. Verify native executable and
+source hashes, retain all cases and distinguish transport/resource/unsupported
+failures from result differences. Own an update to docs/regexp-differential-review.md
+and ignored follow-up evidence only; no engine edits during canonical validation.
+
+TS-507: all 3,822 retained cases agree on both current Rift hosts and fresh
+independent Node. All 160 batches per host complete normally, with no skipped or
+unsupported results. Original case and reference data remain unchanged;
+see docs/regexp-differential-review.md.
