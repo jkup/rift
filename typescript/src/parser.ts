@@ -85,6 +85,17 @@ export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes:
 }
 // Preparation alone may certify bounded rules after full-source parsing.
 export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict = false, newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): DeclarationPlanResult {
+    const original = prepareBeforeAsyncStatementAudit(unit, nodes, inheritedStrict, newTargetAllowed, superContext, privateNames);
+    if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
+        original.rejection.capabilityCode !== "parse.declaration-statement") return original;
+    const audit = parseStructuralSource(original.unit, null, true, "async-statement", newTargetAllowed, superContext, privateNames);
+    if (audit.kind === "blocked") return original;
+    const first = audit.asyncStatementCandidates[0];
+    if (first === undefined || first.line !== original.diagnostic.loc.line || first.column !== original.diagnostic.loc.column) return original;
+    return { kind: "blocked", goal: "Script", unit: original.unit,
+        rejection: { kind: "syntax-error", ruleCode: "async-function-statement" }, diagnostic: original.diagnostic };
+}
+function prepareBeforeAsyncStatementAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes, inheritedStrict: boolean, newTargetAllowed: boolean, superContext: SuperContext, privateNames: readonly string[]): DeclarationPlanResult {
     const original = prepareBeforeReturnAudit(unit, nodes, inheritedStrict, newTargetAllowed, superContext, privateNames);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.return-context") return original;
@@ -189,17 +200,17 @@ export function auditBoundedScriptLexicalStatements(source: string, inheritedStr
 }
 
 type StructuralSource =
-    | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]>; numericCandidates: readonly NumericAssignmentCandidate[]; lexicalCandidates: readonly LexicalStatementCandidate[]; returnCandidates: readonly ReturnCandidate[] }
+    | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]>; numericCandidates: readonly NumericAssignmentCandidate[]; lexicalCandidates: readonly LexicalStatementCandidate[]; returnCandidates: readonly ReturnCandidate[]; asyncStatementCandidates: readonly Location[] }
     | { kind: "blocked"; goal: "Script"; unit: ScriptSourceUnit; rejection: Rejection; diagnostic: Diagnostic };
 // One lexical/parser path for both public plans and non-emitting audit evidence.
 function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean,
-    audit: "none" | "parameter" | "numeric" | "lexical" | "separator" | "return" = "none", newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): StructuralSource {
+    audit: "none" | "parameter" | "numeric" | "lexical" | "separator" | "return" | "async-statement" = "none", newTargetAllowed = false, superContext: SuperContext = "none", privateNames: readonly string[] = []): StructuralSource {
     if (audit !== "none" && (!bounded || nodes !== null)) throw new Error("invalid structural audit purpose");
     const parameterAudit = audit === "parameter", numericAudit = audit === "numeric";
     const lexicalAudit = audit === "lexical", separatorAudit = audit === "separator";
     const lexer = createLexer(source.text, true, separatorAudit);
     const parserSource: SourceText = { text: source.text };
-    const parser = new Parser(lexer.result().tokens, parserSource, audit === "return" ? "bounded-return-audit" : separatorAudit ? "bounded-numeric-separator-audit" : lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan", newTargetAllowed, superContext, lexer);
+    const parser = new Parser(lexer.result().tokens, parserSource, audit === "async-statement" ? "bounded-async-statement-audit" : audit === "return" ? "bounded-return-audit" : separatorAudit ? "bounded-numeric-separator-audit" : lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan", newTargetAllowed, superContext, lexer);
     parser.allowOuterPrivateNames(privateNames);
     parser.privateSyntaxEnabled = bounded;
     const parsed = parser.program();
@@ -222,7 +233,7 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
         rejection: { kind: "syntax-error", ruleCode: "private-name" },
         diagnostic: { phase: "parse", name: "SyntaxError", message: parser.privateIssue.message, loc: parser.privateIssue.site.loc } };
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
-    return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates, lexicalCandidates: parser.lexicalCandidates, returnCandidates: parser.returnCandidates };
+    return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates, lexicalCandidates: parser.lexicalCandidates, returnCandidates: parser.returnCandidates, asyncStatementCandidates: parser.asyncStatementCandidates };
 }
 type ObjectCoverEntry = { kind: "data" | "method"; key: Expr; computed?: true; value: Expr } | { kind: "rest"; value: Expr };
 type ObjectCover = { entries: ObjectCoverEntry[]; trailingComma: boolean; unsupported: { reason: Rejection; message: string; loc: Location } | null };
@@ -260,15 +271,16 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
+    readonly asyncStatementCandidates: Location[] = [];
     regexpError: Diagnostic | null = null;
-    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" | "bounded-numeric-separator-audit" | "bounded-return-audit" = "legacy", private newTargetAllowed = false, private superContext: SuperContext = "none", private readonly lexer: Lexer | null = null) {}
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" | "bounded-numeric-separator-audit" | "bounded-return-audit" | "bounded-async-statement-audit" = "legacy", private newTargetAllowed = false, private superContext: SuperContext = "none", private readonly lexer: Lexer | null = null) {}
     private literalPropertyName(token: Token): string {
         if (token.kind === "number") return String(Number(token.text.replaceAll("_", "")));
         if (token.kind === "bigint") return String(BigInt(token.text.slice(0, -1).replaceAll("_", "")));
         return token.text;
     }
-    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit" || this.purpose === "bounded-return-audit"; }
-    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit" || this.purpose === "bounded-return-audit"; }
+    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit" || this.purpose === "bounded-return-audit" || this.purpose === "bounded-async-statement-audit"; }
+    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit" || this.purpose === "bounded-numeric-separator-audit" || this.purpose === "bounded-return-audit" || this.purpose === "bounded-async-statement-audit"; }
     private token(index: number): Token {
         while (index >= this.tokens.length && this.lexer !== null) {
             const last = this.tokens[this.tokens.length - 1];
@@ -359,11 +371,17 @@ class Parser {
         return this.at("async") && this.current().loc.line === next.loc.line
             && !["(", ":", "=", ",", "}", ";"].includes(next.text);
     }
+    private auditAsyncDeclarationStatement(): boolean {
+        if (this.purpose !== "bounded-async-statement-audit" || !this.asyncFunctionAhead() || this.token(this.index + 2).text === "*") return false;
+        this.asyncStatementCandidates.push(this.current().loc);
+        return true;
+    }
     branch(context: LexicalStatementContext): Stmt {
         const keyword = this.current();
+        const auditAsync = this.auditAsyncDeclarationStatement();
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
         if (this.at("const")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: const", keyword.loc);
-        if ((this.at("let") && !auditLet) || this.at("function") || this.asyncFunctionAhead() || (this.structuralPlan() && this.at("class"))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
+        if ((this.at("let") && !auditLet) || this.at("function") || (this.asyncFunctionAhead() && !auditAsync) || (this.structuralPlan() && this.at("class"))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
         if (auditLet && (this.token(this.index + 1)?.text === "[" || this.token(this.index + 1)?.text === "{"))
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "pattern declarations require a block", keyword.loc);
         const result = this.statement();
@@ -388,7 +406,8 @@ class Parser {
             const token = this.token(index);
             const iteration = token.kind === "word" && (token.text === "for" || token.text === "while" || token.text === "do");
             this.labels.push({ name, iteration });
-            if (this.at("let") || this.at("const") || this.at("function") || this.asyncFunctionAhead() || this.at("class"))
+            const auditAsync = this.auditAsyncDeclarationStatement();
+            if (this.at("let") || this.at("const") || this.at("function") || (this.asyncFunctionAhead() && !auditAsync) || this.at("class"))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "labelled declarations are unsupported", this.current().loc);
             const body = this.statement();
             this.labels.pop();

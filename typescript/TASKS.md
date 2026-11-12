@@ -5347,7 +5347,7 @@ passes all filesystem tests. Combined native milestone acceptance is still pendi
 
 ## TS-494 — Async function declaration Statement certification
 
-**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-12.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
 Implement TS-493's bounded async-function-statement rule for ordinary async
 function declarations in supported branch/label Statement positions. Require a
 complete non-emitting grammar audit and exact original first diagnostic; preserve
