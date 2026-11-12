@@ -1,3 +1,4 @@
+import { isStrictReservedIdentifier } from "./identifier-names.js";
 import { hasParameterExpressions } from "./formal-parameters.js";
 import type { DestructuringPattern, ClassInitializer } from "./syntax.js";
 import { parseDeclarationPlan } from "./parser.js";
@@ -99,7 +100,7 @@ export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tok
 export function collectBoundedScriptPreparation(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes, inheritedStrict = false): DeclarationPlanResult {
     const analysis = new DeclarationCollector(unit, tokens, bindings, nodes, true, inheritedStrict);
     analysis.collect(body);
-    const ordinary = analysis.project();
+    const ordinary = analysis.project(false, true);
     const audit = analysis.audit();
     if (audit.kind !== "eligible") return ordinary;
     if (audit.candidates.length === 0 || ordinary.kind !== "conflict" || audit.sourceUnits !== unit.text.length || audit.consumedUnits !== unit.text.length)
@@ -292,6 +293,19 @@ function copySite(site: DeclarationSite): DeclarationSite {
 }
 
 class DeclarationCollector {
+    readonly strictIdentifiers: { name: string; scope: number; loc: Location }[] = [];
+    private strictIdentifier(name: string, scope: number, loc: Location): void {
+        if (isStrictReservedIdentifier(name)) this.strictIdentifiers.push({ name, scope, loc });
+    }
+    private firstStrictIdentifier(): { name: string; loc: Location } | null {
+        let first: { name: string; loc: Location } | null = null;
+        for (const site of this.strictIdentifiers) {
+            if (!this.scopes[site.scope].strict) continue;
+            if (first === null || site.loc.line < first.loc.line ||
+                (site.loc.line === first.loc.line && site.loc.column < first.loc.column)) first = site;
+        }
+        return first;
+    }
     readonly arrowScopes = new Set<number>();
     readonly nonLegacyFunctionScopes = new Set<number>();
     readonly restrictedAssignments: { name: string; scope: number; loc: Location }[] = [];
@@ -348,6 +362,8 @@ class DeclarationCollector {
     declare(kind: "let" | "const" | "var" | "function" | "class", binding: ParsedBinding, scope: number, variableScope: number, functionScope: number | null): number {
         const id = this.declarations.length;
         const site = binding.site;
+        this.strictIdentifier(site.name, scope, site.loc);
+        if (functionScope !== null) this.strictIdentifier(site.name, functionScope, site.loc);
         this.declarations.push({ id, kind, site: { name: site.name, start: site.start, end: site.end,
             loc: { line: site.loc.line, column: site.loc.column } }, scope, variableScope, functionScope,
             initializer: binding.initializer === null ? null : { start: binding.initializer.start, end: binding.initializer.end } });
@@ -375,6 +391,8 @@ class DeclarationCollector {
             ? { ownStrict: false, inheritedStrict, strict: inheritedStrict, directives: [] }
             : scriptPrologue(this.unit.text, this.tokens, index + 1, inheritedStrict);
         const id = this.scope("function", scope, parameterExpressions ? source.start : this.tokens[index].start, source.end, strictness.strict, formals);
+        for (const formal of formals) this.strictIdentifier(formal.name, id, formal.loc);
+        if (source.name !== undefined) this.strictIdentifier(source.name.name, id, source.name.loc);
         if (source.name !== undefined && (source.name.name === "eval" || source.name.name === "arguments"))
             this.restrictedAssignments.push({ name: source.name.name, scope: id, loc: source.name.loc });
         if (source.arrow === true) this.arrowScopes.add(id);
@@ -514,8 +532,14 @@ class DeclarationCollector {
                 break;
             case "while": this.statement(node.body, scope, variableScope); this.expression(node.test, scope, variableScope); break;
             case "do-while": this.expression(node.test, scope, variableScope); this.statement(node.body, scope, variableScope); break;
-            case "labelled": this.statement(node.body, scope, variableScope); break;
-            case "empty": case "break": case "continue": break;
+            case "labelled":
+                this.strictIdentifier(node.name, scope, node.loc);
+                this.statement(node.body, scope, variableScope);
+                break;
+            case "break": case "continue":
+                if (node.target !== undefined) this.strictIdentifier(node.target, scope, this.tokens[this.tokenIndex(node.loc) + 1].loc);
+                break;
+            case "empty": break;
         }
     }
     pattern(pattern: DestructuringPattern, scope: number, variableScope: number): void {
@@ -553,6 +577,7 @@ class DeclarationCollector {
                 const id = this.scope("class", scope, node.start, node.end, true, []);
                 if (node.name !== null) {
                     this.scopes[id].lexicalNames.push(node.name.name);
+                    this.strictIdentifier(node.name.name, id, node.name.loc);
                     if (node.name.name === "eval" || node.name.name === "arguments") this.restrictedAssignments.push({ name: node.name.name, loc: node.name.loc, scope: id });
                 }
                 if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: [] });
@@ -615,6 +640,7 @@ class DeclarationCollector {
                 }
                 if (node.kind !== "super-call") this.expression(node.callee, scope, variableScope); break;
             case "identifier": {
+                this.strictIdentifier(node.name, scope, node.loc);
                 if (node.name !== "arguments" && node.name !== "eval") break;
                 let current: number | null = scope;
                 while (current !== null) {
@@ -676,6 +702,7 @@ class DeclarationCollector {
                 const node = item.node;
                 const id = this.scope("catch", item.scope, node.catchStart, node.catchEnd, this.scopes[item.scope].strict, []);
                 this.scopes[id].catchParameter = node.parameter;
+                this.strictIdentifier(node.parameter.name, id, node.parameter.loc);
                 this.scopes[id].lexicalNames.push(node.parameter.name);
                 if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: node.handler.body });
                 this.statement(node.handler, id, item.variableScope);
@@ -695,7 +722,7 @@ class DeclarationCollector {
             }
         }
     }
-    project(ignoreStrictParameters = false): DeclarationPlanResult {
+    project(ignoreStrictParameters = false, certifyStrictIdentifiers = false): DeclarationPlanResult {
         if (this.initializerArguments.length !== 0) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: "arguments is forbidden in a class initializer", loc: this.initializerArguments[0] } };
@@ -703,6 +730,12 @@ class DeclarationCollector {
         if (restricted !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: restricted.name + " binding or assignment in strict code", loc: restricted.loc } };
+        const identifier = this.firstStrictIdentifier();
+        if (identifier !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
+            rejection: certifyStrictIdentifiers
+                ? { kind: "syntax-error", ruleCode: "strict-reserved-identifier" }
+                : { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: identifier.name + " is reserved in strict code", loc: identifier.loc } };
         // Preserve the ordinary first-failure projection, including interleaved
         // catch/conflict checks. The audit below has a separate global veto.
         // No conflicts are reported until all grammar/resource checks and every

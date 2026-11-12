@@ -12,6 +12,7 @@ if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error("RIFT_NATIVE_JOBS m
 mkdirSync(join(root, "build/native"), { recursive: true });
 const run = args => runNativeCommand(scriptc, args, { cwd: root });
 const entries = [
+    ["test/strict-reserved-identifiers.ts", "strict-reserved-identifiers"],
     ["test/async-statement-certification.ts", "async-statement-certification"],
     ["test/script-return-certification.ts", "script-return-certification"],
     ["test/number-constructor.ts", "number-constructor"],

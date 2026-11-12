@@ -5396,7 +5396,7 @@ is complete: 84 valid sloppy identifier cases remain explicitly unsupported.
 
 ## TS-496 — Strict reserved identifiers and sloppy admission
 
-**READY — isolated; predecessor integration pending**. Owner: coordinator, 2026-11-12.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
 Implement TS-495's seven non-contextual strict-only names across bounded bindings,
 references, patterns, function/class names and labels, with valid sloppy execution
 and complete-source strict certification. Preserve property names and existing

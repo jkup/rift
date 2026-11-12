@@ -1,3 +1,4 @@
+import { isStrictReservedIdentifier } from "./identifier-names.js";
 import { PrivateSyntaxScope, type PrivateSyntaxIssue } from "./private-syntax.js";
 import type { PrivateNameSyntax } from "./syntax.js";
 import type { TemplateObjectExpr } from "./syntax.js";
@@ -321,7 +322,7 @@ class Parser {
     }
     name(): string {
         const t = this.take();
-        if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async")))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
+        if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || (this.boundedPlan() && isStrictReservedIdentifier(t.text)))))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
         return t.text;
     }
     program(): ParseResult {
@@ -646,7 +647,7 @@ class Parser {
         return { kind: "expression", loc, expression };
     }
     private labelIdentifier(token: Token): boolean {
-        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval" || token.text === "async");
+        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval" || token.text === "async" || (this.boundedPlan() && isStrictReservedIdentifier(token.text)));
     }
     private labelAhead(index: number): boolean {
         return this.labelIdentifier(this.token(index)) && this.token(index + 1)?.kind === "punct" && this.token(index + 1)?.text === ":";
@@ -1427,7 +1428,7 @@ class Parser {
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", token.loc);
                     name = this.literalPropertyName(token);
                     key = { kind: "literal", loc: token.loc, value: name };
-                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async");
+                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async" || (this.boundedPlan() && isStrictReservedIdentifier(name)));
                 }
                 if (this.at("(")) {
                     const fn = this.functionTail(first.loc, first.start, "method", generator, asynchronous);
@@ -1836,7 +1837,7 @@ class Parser {
             this.expect("}");
             return { kind: "object", loc, properties };
         }
-        if (t.kind === "word" && (!RESERVED.includes(" " + t.text + " ") || (this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async")))) return { kind: "identifier", loc, name: t.text };
+        if (t.kind === "word" && (!RESERVED.includes(" " + t.text + " ") || (this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || (this.boundedPlan() && isStrictReservedIdentifier(t.text)))))) return { kind: "identifier", loc, name: t.text };
         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: " + t.text, loc);
         return { kind: "literal", loc, value: null };
     }
