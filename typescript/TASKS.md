@@ -5702,3 +5702,12 @@ tests, manifests and feature notes. Any existing expectation migration requires
 separate reviewed baseline evidence. Require all 170 reviewed controls, both-host
 semantic checks, full regression, tooling and static compiler gates. Promotion
 requires contextual-identifier milestone acceptance; canonical source stays frozen.
+
+TS-509 isolated implementation passes typechecking, the focused test, existing
+private-identifier lexer test, all 170 reviewed Node grammar/execution controls
+and 35 runner tests. Shared scanning retains decoded names, escape provenance
+and UTF-16 spans; raw keyword checks preserve contextual grammar. The first full
+Node launch lacked eleven historical transcript inputs; hash-recorded exact
+copies restore them and the first setup failure remains retained. Full Node
+regression runs in session49478. All 1070 inputs are frozen; focused native builds
+and the native control replay run in session72061. READY/integration remain pending.
