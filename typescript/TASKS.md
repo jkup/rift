@@ -5731,3 +5731,16 @@ TS-510: all 146 controls match their independent reference expectations and both
 Rift hosts agree. Of 138 valid sources, 81 execute correctly and 57 expose 19
 missing whitespace characters in three contexts. Eight excluded characters
 remain rejected; seven position checks pass. See docs/script-whitespace-review.md.
+
+## TS-511 — Complete Script whitespace scanning
+
+**ready — requires TS-509 READY**. Owner: coordinator, 2026-11-12.
+Implement TS-510's reviewed whitespace boundary in an isolated successor to the
+ordinary-identifier draft. Reuse isStringWhitespace for Script token separation;
+retain separate line-terminator handling, CRLF locations, literal contents and
+legacy lexing. Own src/lexer.ts, test/script-whitespace.ts, the guest/native
+manifests and docs/script-whitespace.md. Require all 146 retained controls,
+explicit token spans for all 25 accepted separators, excluded-neighbor and
+legacy guards, full regression/tooling and native static-only/zero-dynamic gates.
+Do not change syntax-error certification or historical fixtures. Promotion
+requires acceptance of the contextual and ordinary-identifier predecessors.
