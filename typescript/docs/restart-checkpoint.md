@@ -38,3 +38,15 @@ isolated return-certification draft; focused42-control checks pass both hosts,
 with20,280 static/zero-dynamic coverage. Its full Node suite is running. This
 resume entry supersedes the pause instruction above; preserve the same integration
 freeze and publication gates.
+
+2026-11-12 publication: zoned Temporal is accepted and pushed to main at52019673.
+Both hosts949/949,456 native static/zero-dynamic gates,296 tooling,35 runner and
+10 probes pass; corpus node-lR4v4q/native-65hS99 preserves all225 normalized
+records and191 completions. The combined Temporal freeze is now accepted.
+
+TS-492 remains isolated. Initial full Node run was949/950: its old eval test
+expected top-level return to be unsupported. The original guest source is retained;
+one exact expectation migration now asserts a catchable SyntaxError, with direct,
+indirect, caller-function, foreign-Realm, no-effect and unsupported-tail controls.
+The expanded eval driver passes both hosts with20,313 static statements and zero
+dynamic operations. Full Node rerun and15 native tooling builds are active.
