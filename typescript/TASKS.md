@@ -5711,3 +5711,9 @@ Node launch lacked eleven historical transcript inputs; hash-recorded exact
 copies restore them and the first setup failure remains retained. Full Node
 regression runs in session49478. All 1070 inputs are frozen; focused native builds
 and the native control replay run in session72061. READY/integration remain pending.
+
+TS-509 full Node regression passes 956/956 without skips. Focused native
+execution and all 170 reviewed controls pass both hosts with static-only and
+zero-dynamic gates. Eight escaped-name producer records pass the closed Node
+codec. Historical tooling inputs are prepared; all 15 native tooling builds,
+full tooling and native protocol checks run in session29679. READY remains pending.
