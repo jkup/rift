@@ -5391,7 +5391,7 @@ is complete: 84 valid sloppy identifier cases remain explicitly unsupported.
 
 ## TS-496 — Strict reserved identifiers and sloppy admission
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+**READY — isolated; predecessor integration pending**. Owner: coordinator, 2026-11-12.
 Implement TS-495's seven non-contextual strict-only names across bounded bindings,
 references, patterns, function/class names and labels, with valid sloppy execution
 and complete-source strict certification. Preserve property names and existing
@@ -5474,3 +5474,11 @@ defaults, arrow heads, nested ordinary functions and class elements. Use Node
 syntax checks and inspect current parser context transitions before choosing an
 implementation. Own docs/await-identifier-context.md and ignored evidence only.
 Keep frozen source, test expectations and admission unchanged.
+
+TS-496 is isolated READY: 952 Node guests, 35 runner tests, 296 tooling tests,
+15 native tooling build/coverage gates, focused both-host execution, the 280-case
+reviewed probe and original U03 pass. Eight producer records per host and 16
+envelopes pass. Final typechecking, predecessor-owned baselines, unowned source,
+frozen inputs and executable hashes were verified. The READY snapshot is
+build/strict-reserved-identifiers-owned-snapshot.json. Promotion remains gated
+on TS-492 acceptance and TS-494 integration; no full 952-case native claim.

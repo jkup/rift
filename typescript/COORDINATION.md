@@ -3185,10 +3185,18 @@ producer checks. An additional98 independent Node syntax comparisons cover
 strictness scope edges with no mismatch. Evidence: build/parser-successors-cached-execution.log,
 the two draft build directories and build/strict-identifier-scope-edge-review.json.
 
-2026-11-12 TS-494 is isolated READY. The full tooling run passes296/296 without
-skips; all15 native tooling gates,951 Node guests,35 runner tests, focused
-both-host execution,144 reviewed controls, unchanged U02 variants, eight producer
-records per host and16 envelopes pass. Final typechecking and source ownership
+2026-11-12 TS-494 is isolated READY. The full tooling run passes 296/296 without
+skips; all 15 native tooling gates, 951 Node guests, 35 runner tests, focused
+both-host execution, 144 reviewed controls, unchanged U02 variants, eight producer
+records per host and 16 envelopes pass. Final typechecking and source ownership
 checks pass; build/async-statement-certification-owned-snapshot.json records the
 reviewed files. Canonical TS-492 remains frozen and must pass combined acceptance
 before promotion. TS-496 tooling builds continue in the isolated sequential slot.
+
+2026-11-12 TS-496 is isolated READY: 952 Node guests, 35 runner tests, 296 tooling
+tests, 15 native tooling gates, focused both-host tests, the 280-case probe and
+original U03 pass. Eight producer records per host and 16 envelopes pass. The
+ownership check verifies the READY async predecessor, exact manifest additions,
+unowned inputs, frozen source and executable hashes. Promotion still requires
+TS-492 combined acceptance and TS-494 integration. Async duplicate-fixture
+cleanup reclaimed 2,023,533,632 bytes; 126 protected files were retained.
