@@ -5372,6 +5372,11 @@ The full Node suite is running. Hash-verified duplicate validation cleanup remov
 2,023,533,632 bytes; 126 protected copies were retained. Accepted main remains
 52019673 until combined validation passes.
 
+TS-492 completes all 457 native static-only/zero-dynamic gates. The final verifier
+checks every executable hash against the frozen 1061-file source snapshot. Full
+950-case native execution, the original 225-record corpus comparison, tooling
+and ten compiler probes are now running; combined acceptance remains pending.
+
 ## TS-495 — Strict reserved identifier review
 
 **done — 224 syntax controls reviewed**. Owner: coordinator, 2026-11-12.

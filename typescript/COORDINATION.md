@@ -3268,3 +3268,13 @@ eight producer records per host and 16 envelopes passed. Final readiness verifie
 136-case controls, source/executable hashes and predecessor ownership. TS-504
 ownership-only validation now also passes against READY TS-502. Yield duplicate
 validation cleanup runs in session31561; let tooling remains in session41943.
+
+2026-11-12 canonical TS-492 finishes all 457 native builds successfully. The
+verifier checks each static-only/zero-dynamic verdict, executable hash and frozen
+source input. The build wrapper completed after 7,134,852 ms with four workers;
+its successful-build cleanup removed 20,580,719,704 bytes of regenerable LLVM
+output over the run. Combined native execution/corpus/tooling/probe validation is
+now active in session46476 via finish-script-return-rollup.ps1. Publication still
+requires the full acceptance verifier. TS-504's 15 tooling builds also passed;
+its full tooling/protocol run is active in session55108. TS-502 cleanup finished,
+removing 2,023,533,632 duplicate bytes and retaining 126 protected files.
