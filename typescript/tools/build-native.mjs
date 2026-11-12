@@ -13,6 +13,7 @@ mkdirSync(join(root, "build/native"), { recursive: true });
 const run = args => runNativeCommand(scriptc, args, { cwd: root });
 const entries = [
     ["test/await-identifiers.ts", "await-identifiers"],
+    ["test/yield-identifiers.ts", "yield-identifiers"],
     ["test/strict-reserved-identifiers.ts", "strict-reserved-identifiers"],
     ["test/async-statement-certification.ts", "async-statement-certification"],
     ["test/script-return-certification.ts", "script-return-certification"],

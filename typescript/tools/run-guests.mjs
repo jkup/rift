@@ -913,6 +913,7 @@ executeDriver("script-return-certification", { stdout: "script return certificat
 executeDriver("async-statement-certification", { stdout: "async statement certification passed\n" });
 executeDriver("strict-reserved-identifiers", { stdout: "strict reserved identifiers passed\n" });
 executeDriver("await-identifiers", { stdout: "await identifiers passed\n" });
+executeDriver("yield-identifiers", { stdout: "yield identifiers passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

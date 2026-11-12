@@ -5526,7 +5526,7 @@ Promotion remains gated on TS-492 acceptance and TS-496 integration.
 
 ## TS-502 — Contextual yield identifiers
 
-**READY — isolated; predecessor integration pending**. Owner: coordinator, 2026-11-12.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
 Extend the contextual-identifier work to valid sloppy Script yield bindings and
 references. Review generator declaration/expression names, parameters, nested
 ordinary functions/arrows and strict scopes before implementation. Preserve

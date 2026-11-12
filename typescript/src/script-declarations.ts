@@ -295,7 +295,7 @@ function copySite(site: DeclarationSite): DeclarationSite {
 class DeclarationCollector {
     readonly strictIdentifiers: { name: string; scope: number; loc: Location }[] = [];
     private strictIdentifier(name: string, scope: number, loc: Location): void {
-        if (isStrictReservedIdentifier(name)) this.strictIdentifiers.push({ name, scope, loc });
+        if (isStrictReservedIdentifier(name) || name === "yield") this.strictIdentifiers.push({ name, scope, loc });
     }
     private firstStrictIdentifier(): { name: string; loc: Location } | null {
         let first: { name: string; loc: Location } | null = null;
