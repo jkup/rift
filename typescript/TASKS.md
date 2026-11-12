@@ -5501,3 +5501,12 @@ TS-501 initial Node checks pass typechecking, 136 reviewed syntax controls,
 exact old `var await=1;` input remains in the strict-name driver with its reviewed
 ready expectation. Full 953-case Node regression is running. Native validation
 and ownership gates remain pending; neither readiness nor integration is claimed.
+
+TS-501 full Node regression passes 953/953 without skips. Focused execution,
+the exact historical expectation migration and all 136 reviewed controls pass
+on both hosts with static-only compilation and zero dynamic coverage. The 1066
+source/control inputs are frozen; 15 native tooling builds are running. An initial
+cleanup-wrapper failure after a passing native test is retained separately; its
+corrected resume verified the existing result/hash before continuing. Eight valid
+Node producer records pass the closed codec. Full tooling/native protocol and
+final ownership gates still block readiness.
