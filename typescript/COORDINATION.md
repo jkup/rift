@@ -3278,3 +3278,10 @@ now active in session46476 via finish-script-return-rollup.ps1. Publication stil
 requires the full acceptance verifier. TS-504's 15 tooling builds also passed;
 its full tooling/protocol run is active in session55108. TS-502 cleanup finished,
 removing 2,023,533,632 duplicate bytes and retaining 126 protected files.
+
+2026-11-12 TS-492 canonical native execution passes 950/950 without skips. The
+225-record comparison is PASS for node-QNhNHq/native-gwfRnh against node-lR4v4q:
+all 191 preceding completions are retained, with no changed or added outcomes.
+Session46476 has advanced to tooling, with compiler probes still to follow.
+The acceptance verifier and publication remain pending. Let tooling/protocol
+validation remains active in session55108.
