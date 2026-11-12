@@ -28,5 +28,7 @@ Initial candidate checks pass all 136 reviewed syntax controls (the original 56,
 these 72, and eight suspension controls), 36 execution cases, nine strict errors,
 eleven unsupported controls, the prior strict-name driver, and typechecking.
 The exact historical `var yield=1;` source is retained with an explicit ready
-expectation. Full Node and native validation remain pending. No conformance
+expectation. Full Node regression passes 954/954 without skips, and all 35 runner
+tests pass. The 1067 source/control inputs are frozen, and ownership checks pass
+against READY TS-501. Native validation remains pending. No conformance
 denominator or original C++ fixture is changed.

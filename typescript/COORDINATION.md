@@ -3220,3 +3220,12 @@ Node checks pass 136 syntax controls and 36 execution cases; full regression is
 running (session14873). Its initial runner attempt lacked historical transcript
 fixtures, preserved in full-node-missing-fixtures.log; the same original fixture
 bytes were supplied before rerunning. No source acceptance is claimed yet.
+
+2026-11-12 TS-501 is isolated READY after all 296 tooling tests, 15 native gates,
+eight producer records per host and 16 envelopes passed. Final ownership and hash
+checks passed; its READY snapshot records the owned files. Duplicate-file cleanup
+reclaimed 2,023,533,632 bytes, retaining 126 protected files. TS-502 passes 954 Node
+guests and 35 runner tests, with 1067 frozen source/control inputs and verified
+ownership against READY TS-501. Its three native checks are running sequentially
+(session12885). Canonical TS-492 remains live at 357/457 build checkpoints, with
+frozen inputs unchanged. No successor has been promoted or published.

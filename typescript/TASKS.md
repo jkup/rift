@@ -5485,7 +5485,7 @@ on TS-492 acceptance and TS-494 integration; no full 952-case native claim.
 
 ## TS-501 — Contextual await identifiers
 
-**in progress — isolated implementation**. Owner: coordinator, 2026-11-12.
+**READY — isolated; predecessor integration pending**. Owner: coordinator, 2026-11-12.
 Build on READY TS-496 to admit valid Script await identifiers using the reviewed
 grammar contexts. Preserve async parameters, arrow-cover disambiguation, named
 function distinctions, class fields/static blocks and nested-function resets.
@@ -5511,6 +5511,14 @@ corrected resume verified the existing result/hash before continuing. Eight vali
 Node producer records pass the closed codec. Full tooling/native protocol and
 final ownership gates still block readiness.
 
+TS-501 final readiness passes: 953 Node guests, 35 runner tests, 296 tooling
+tests, 15 native build/coverage gates, focused both-host execution, 136 reviewed
+controls, the exact historical expectation migration, eight producer records per
+host and 16 envelopes. Frozen-source, executable-hash and ownership checks pass;
+build/await-identifiers-owned-snapshot.json records READY. Duplicate validation
+copies were removed (2,023,533,632 bytes); 126 protected files were retained.
+Promotion remains gated on TS-492 acceptance and TS-496 integration.
+
 ## TS-502 — Contextual yield identifiers
 
 **in progress — isolated successor**. Owner: coordinator, 2026-11-12.
@@ -5529,3 +5537,8 @@ TS-502 reviewed 72 generator/strictness boundary cases against Node (19 valid,
 the exact prior yield-binding expectation migration. Typechecking passes. Full
 954-case Node regression is running; native and readiness gates remain pending.
 See docs/yield-identifier-context.md. Canonical and predecessor sources are frozen.
+
+TS-502 full Node regression passes 954/954 without skips, and all 35 runner tests
+pass. Its 1067 source/control inputs are frozen; predecessor readiness, baseline,
+unowned-file and exact manifest-addition checks pass. Focused native validation
+is running. Readiness and integration remain pending.
