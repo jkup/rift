@@ -5465,3 +5465,12 @@ and 16 envelopes pass. Final typechecking, owned baselines, unowned source,
 frozen inputs and executable hashes were verified. The READY snapshot is
 build/async-statement-certification-owned-snapshot.json. Promotion remains gated
 on TS-492 combined acceptance; this is not a 951-case native suite claim.
+
+## TS-500 — Await identifier grammar-context review
+
+**done — 72 grammar-context controls reviewed**. Owner: coordinator, 2026-11-12.
+Reduce the TS-499 parameter-context finding across async names, parameters,
+defaults, arrow heads, nested ordinary functions and class elements. Use Node
+syntax checks and inspect current parser context transitions before choosing an
+implementation. Own docs/await-identifier-context.md and ignored evidence only.
+Keep frozen source, test expectations and admission unchanged.
