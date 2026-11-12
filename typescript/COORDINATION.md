@@ -3286,4 +3286,16 @@ Session46476 has advanced to tooling, with compiler probes still to follow.
 The acceptance verifier and publication remain pending. Let tooling/protocol
 validation remains active in session55108.
 
+2026-11-12 Script-return acceptance passed and was published atomically to main
+and codex/test262-classification at 9bfad9dc7559cedb86a1fd5708656c0d82df58c6;
+local main was aligned. All successor source remains isolated. TS-504 tooling
+finished 295/296, exposing old lexical-audit expectations. The full 140-row delta
+review identifies three valid expressions and one diagnostic-only change, with
+all original bytes retained. All five parser-audit groups now pass both hosts.
+The amended snapshot changes only tools/test262/parser-audits.test.mjs; original
+reports, executables, snapshot and failed tooling log are archived under
+build/let-identifiers-draft/build/before-lexical-expectation-migration. Ownership
+and amendment checks pass. Session17518 runs fresh native checks, then 15 tooling
+builds, then full tooling/protocol validation with separate reviewed logs.
+
 2026-11-12 Script-return milestone accepted (TS-492): 950/950 guests on both hosts without skips; 457 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QNhNHq/native-gwfRnh matches all 225 normalized records and preserves 191 preceding completions. Bounded Script preparation certifies return outside functions only after a complete supported-grammar audit; original S20 bytes and the reviewed catchable eval SyntaxError migration are preserved. TS-494, TS-496, TS-501, TS-502 and TS-504 remain isolated and are not accepted by this milestone. Evidence: build/script-return-rollup-* and docs/script-return-certification.md.
