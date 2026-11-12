@@ -3161,3 +3161,5 @@ Prepared but not executed: build/promote-class-string.ps1, validate-class-string
 corpus watcher. TS-492 is isolated and cannot change those canonical inputs.
 TS-491 is complete on both hosts with16 diagnostic controls each; retained prior
 pending notes describe the earlier Node-only stage.
+
+2026-11-12 zoned Temporal milestone accepted (TS-484,486,487):949/949 guests on both hosts without skips;456 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-lR4v4q/native-65hS99 matches all225 normalized records and preserves191 preceding completions. Named-zone local-time resolution, shared Temporal consumers and pinned2026f guest identifiers are accepted. Focused evidence includes 1170 public controls,1794 identifier controls and82800 rounding cases on both hosts; the documented PR3319 rounding and Factory admission differences retain independent justification. Original fixtures, failure evidence and range guards remain preserved. Evidence: build/iana-temporal-rollup-* and isolated feature reviews.

@@ -10,8 +10,8 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted IANA foundation milestone passes 946/946 guests on each
-host, 296/296 tooling checks, and all 453 native static gates.
+The accepted zoned Temporal milestone passes 949/949 guests on each
+host, 296/296 tooling checks, and all 456 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
@@ -43,7 +43,7 @@ Exact BigInt values, arithmetic, literals, coercion and width conversion are acc
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
 resuming from another session restores caller state and uses current budgets.
-Zoned Temporal, public field initializers, static blocks, private fields/methods/accessors and private-in are accepted. Reflect methods and legacy escape/unescape are accepted. IANA data, identifier, offset and transition providers are accepted internally. Named-zone guest admission, system timezones and Intl remain gaps.
+Zoned Temporal, public field initializers, static blocks, private fields/methods/accessors and private-in are accepted. Reflect methods and legacy escape/unescape are accepted. Pinned IANA named timezones are accepted through Temporal APIs, including local-time disambiguation, transitions and calendar arithmetic. System timezone discovery, Intl and additional calendars remain gaps.
 
 Temporal fixture audit (2026-11-10): eight of the nine original Temporal fixtures
 call constructors without new, including test-temporal-plain-date.js:28 and
@@ -812,3 +812,5 @@ conformance baseline remain open.
 follow-ups (top-level return, async declarations in statement position, and strict
 reserved bindings); do not convert those unsupported records into conformance
 passes without parser certification and both-host controls.
+
+2026-11-12 zoned Temporal milestone accepted (TS-484,486,487):949/949 guests on both hosts without skips;456 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-lR4v4q/native-65hS99 matches all225 normalized records and preserves191 preceding completions. Named-zone local-time resolution, shared Temporal consumers and pinned2026f guest identifiers are accepted. Focused evidence includes 1170 public controls,1794 identifier controls and82800 rounding cases on both hosts; the documented PR3319 rounding and Factory admission differences retain independent justification. Original fixtures, failure evidence and range guards remain preserved. Evidence: build/iana-temporal-rollup-* and isolated feature reviews.
