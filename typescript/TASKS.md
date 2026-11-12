@@ -5623,3 +5623,20 @@ failed logs are archived. Fresh native gates and the full tooling suite are runn
 on the amended snapshot; READY remains pending.
 
 2026-11-12 Script-return milestone accepted (TS-492): 950/950 guests on both hosts without skips; 457 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QNhNHq/native-gwfRnh matches all 225 normalized records and preserves 191 preceding completions. Bounded Script preparation certifies return outside functions only after a complete supported-grammar audit; original S20 bytes and the reviewed catchable eval SyntaxError migration are preserved. TS-494, TS-496, TS-501, TS-502 and TS-504 remain isolated and are not accepted by this milestone. Evidence: build/script-return-rollup-* and docs/script-return-certification.md.
+
+## TS-505 — Async harness completion review
+
+**done — both-host diagnostic verified**. Owner: coordinator, 2026-11-12.
+Review the pinned U08 async starter variants and doneprintHandle.js against the
+current Script session and Promise job queue. Retain exact upstream bytes; use
+explicit completion/failure controls to distinguish missing, duplicate and failed
+$DONE calls from ordinary Script completion. Identify runtime versus adapter gaps
+without enabling a capability or changing canonical source during validation.
+Own docs/test262-async-harness-review.md and ignored review evidence only.
+
+TS-505: 44 controls per host match exact expected and both-host structured outcomes.
+The unchanged U08 variants complete with a separate diagnostic print adapter.
+Without print they finish without completion output, demonstrating why normal
+Script completion and an empty job queue are insufficient for async acceptance.
+Native compilation has 20,435 static statements and zero dynamic operations.
+No runtime fix or capability admission; see docs/test262-async-harness-review.md.
