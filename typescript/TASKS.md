@@ -5371,3 +5371,13 @@ native entries. Successful regenerable LLVM output is pruned as each gate passes
 The full Node suite is running. Hash-verified duplicate validation cleanup removed
 2,023,533,632 bytes; 126 protected copies were retained. Accepted main remains
 52019673 until combined validation passes.
+
+## TS-495 — Strict reserved identifier review
+
+**done — 224 syntax controls reviewed**. Owner: coordinator, 2026-11-12.
+Reduce TS-491 U03 against strict/sloppy grammar and independent Node syntax
+checks. Inventory strict-only reserved binding/reference names, property-name
+neighbors and inherited strictness before changing parser admission. Own
+docs/strict-reserved-identifier-review.md and ignored evidence only. Preserve
+canonical TS-492 inputs and the isolated TS-494 implementation. Keep contextual
+let/yield/await grammar separate from the first bounded follow-up.
