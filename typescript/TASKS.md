@@ -5299,7 +5299,7 @@ TS-491 Node diagnostic: all33 files/60 variants retained;52 expected outcomes,5 
 
 ## TS-492 — Bounded Script return certification
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12. Follow TS-491's S20 reduction: certify return-outside-function only after a complete supported-grammar audit in bounded Script preparation. Preserve the original first diagnostic, retained nodes, legacy/public planner behavior, and unsupported/resource precedence. Cover modern syntax, ASI, nested functions/classes/static blocks, invalid tails, effect-free preparation and original S20 variants on both hosts. Own src/parser.ts, a focused test/fixture, manifests and feature notes in build/script-return-certification-draft; any exact historical expectation migration must be reviewed and recorded. Canonical Temporal inputs remain frozen. Strict-reserved bindings and async declarations in Statement position are separate follow-ups.
+**done — accepted in Script-return milestone**. Owner: coordinator, 2026-11-12. Follow TS-491's S20 reduction: certify return-outside-function only after a complete supported-grammar audit in bounded Script preparation. Preserve the original first diagnostic, retained nodes, legacy/public planner behavior, and unsupported/resource precedence. Cover modern syntax, ASI, nested functions/classes/static blocks, invalid tails, effect-free preparation and original S20 variants on both hosts. Own src/parser.ts, a focused test/fixture, manifests and feature notes in build/script-return-certification-draft; any exact historical expectation migration must be reviewed and recorded. Canonical Temporal inputs remain frozen. Strict-reserved bindings and async declarations in Statement position are separate follow-ups.
 
 TS-492 focused checks pass on both hosts:42 controls,20,280 native static statements,
 zero dynamic operations; original pinned S20 bytes certify in both Node Script
@@ -5604,3 +5604,13 @@ TS-504 focused execution, the historical strict-name driver and all
 zero dynamic coverage. Tooling inputs are being prepared; all 15 tooling gates,
 the full tooling suite, native protocol and predecessor READY checks still block
 readiness. No source was promoted during the canonical freeze.
+
+TS-504 initial full tooling run finishes 295/296. Its only failure is the retained
+`excluded-let-expression` input `while(false) let=1;`, now valid sloppy syntax
+without a lexical declaration candidate. Independent Node syntax checking passes.
+Retain the original 140-row fixture and failed log; review an exact expectation
+migration in tools/test262/parser-audits.test.mjs before rerunning tooling. That
+test file is added to TS-504 ownership; no runtime source change is justified by
+this failure. Native protocol checks and READY remain pending.
+
+2026-11-12 Script-return milestone accepted (TS-492): 950/950 guests on both hosts without skips; 457 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QNhNHq/native-gwfRnh matches all 225 normalized records and preserves 191 preceding completions. Bounded Script preparation certifies return outside functions only after a complete supported-grammar audit; original S20 bytes and the reviewed catchable eval SyntaxError migration are preserved. TS-494, TS-496, TS-501, TS-502 and TS-504 remain isolated and are not accepted by this milestone. Evidence: build/script-return-rollup-* and docs/script-return-certification.md.
