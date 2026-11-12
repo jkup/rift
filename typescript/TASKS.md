@@ -5756,3 +5756,24 @@ retained Node controls, 35 runner tests and eight producer-codec records. The
 focused native compilation and both-host control replay run in session46618.
 Historical tooling input preparation runs in session74436. Integration remains
 blocked on the predecessor milestones, not on a user decision.
+
+## TS-512 — Native class initialization review follow-up
+
+**done — both-host replay reviewed**. Owner: coordinator, 2026-11-12.
+Replay TS-489's unchanged eighteen sources on the current frozen Node/native
+diagnostic hosts and fresh independent Node. Check explicit output expectations
+for the seventeen supported cases, preserve the Proxy-dependent gap and original
+input hashes, and distinguish transport failures from semantic differences.
+Own an update to docs/class-initialization-semantic-review.md and ignored review
+evidence only; canonical and successor source snapshots remain frozen.
+
+TS-512: seventeen supported cases match explicit outputs in independent Node
+and both Rift hosts. The eighteenth Proxy-dependent case retains its existing
+gap. All original source hashes and native executable provenance verify; no
+transport errors or runtime fix. See docs/class-initialization-semantic-review.md.
+
+TS-511 validation update: full Node regression passes 957/957 with no skips;
+all 146 controls pass both hosts. The initial native link failed because the
+sandbox could not locate Zig's installation directory; the identical frozen
+source passes with host access (20,436 focused and 20,452 probe statements,
+zero dynamic). Session71848 runs the 15 tooling builds and protocol suite.

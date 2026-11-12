@@ -21,3 +21,23 @@ through its own CLI. Inputs, hashes, statuses, signals, errors and full output a
 retained in build/class-initialization-semantic-review.json. The producer is
 build/review-class-initialization-semantics.mjs. Canonical foundation sources
 remain frozen and unchanged.
+
+## Native follow-up
+
+TS-512, 2026-11-12, replays all eighteen unchanged sources against fresh independent
+Node and both current Rift diagnostic hosts. Seventeen supported cases match
+explicit expected outputs and complete normally on both hosts. Source hashes
+match the original review. The Proxy case still stops with ReferenceError before
+producing output in Rift; it remains a missing prerequisite, not a passing class
+case. Independent Node still produces the original private-brand result.
+
+Both Rift hosts return identical structured results, with no process errors,
+signals or failed jobs in supported cases. The native diagnostic executable is
+bound to the reviewed static-only/zero-dynamic build by its hash; the canonical
+source snapshot verifies before and after replay. No runtime change is justified
+by this selection. This closes the native-evidence gap for these cases without
+claiming complete class conformance.
+
+Evidence: `build/class-initialization-native-review/` contains all sources,
+expected outputs, fresh reference results, both-host records and `reviewed.json`.
+The original review remains unchanged.
