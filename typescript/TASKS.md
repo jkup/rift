@@ -5347,7 +5347,7 @@ passes all filesystem tests. Combined native milestone acceptance is still pendi
 
 ## TS-494 — Async function declaration Statement certification
 
-**in progress — isolated implementation**. Owner: coordinator, 2026-11-12.
+**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-12.
 Implement TS-493's bounded async-function-statement rule for ordinary async
 function declarations in supported branch/label Statement positions. Require a
 complete non-emitting grammar audit and exact original first diagnostic; preserve
@@ -5457,3 +5457,11 @@ bounded preparation with independent Node syntax checks across strict/sloppy,
 function, generator, async, class and binding contexts. Identify a justified next
 slice without changing parser admission or any frozen compiler input. Own
 docs/contextual-identifier-review.md and ignored diagnostic evidence only.
+
+TS-494 is isolated READY: all 951 Node guests, 35 runner tests, 296 tooling tests,
+15 native tooling build/coverage gates, focused native execution, the 144-case
+both-host probe and original U02 variants pass. Eight producer records per host
+and 16 envelopes pass. Final typechecking, owned baselines, unowned source,
+frozen inputs and executable hashes were verified. The READY snapshot is
+build/async-statement-certification-owned-snapshot.json. Promotion remains gated
+on TS-492 combined acceptance; this is not a 951-case native suite claim.

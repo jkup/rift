@@ -3184,3 +3184,11 @@ batch continues (session65815); both successors still await full tooling and
 producer checks. An additional98 independent Node syntax comparisons cover
 strictness scope edges with no mismatch. Evidence: build/parser-successors-cached-execution.log,
 the two draft build directories and build/strict-identifier-scope-edge-review.json.
+
+2026-11-12 TS-494 is isolated READY. The full tooling run passes296/296 without
+skips; all15 native tooling gates,951 Node guests,35 runner tests, focused
+both-host execution,144 reviewed controls, unchanged U02 variants, eight producer
+records per host and16 envelopes pass. Final typechecking and source ownership
+checks pass; build/async-statement-certification-owned-snapshot.json records the
+reviewed files. Canonical TS-492 remains frozen and must pass combined acceptance
+before promotion. TS-496 tooling builds continue in the isolated sequential slot.
