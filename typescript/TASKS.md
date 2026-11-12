@@ -5331,7 +5331,7 @@ for final validation; no READY claim yet.
 
 ## TS-493 — Declaration-in-Statement certification review
 
-**in progress — bounded semantic review**. Owner: coordinator, 2026-11-12.
+**done — 144 syntax controls reviewed**. Owner: coordinator, 2026-11-12.
 Reduce TS-491 U02 against the specification and independent Node syntax checks.
 Inventory Statement positions, async/generator/class declarations, valid block
 neighbors and Annex B ordinary-function exceptions before choosing a new rule.
