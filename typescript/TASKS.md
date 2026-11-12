@@ -5521,7 +5521,7 @@ Promotion remains gated on TS-492 acceptance and TS-496 integration.
 
 ## TS-502 — Contextual yield identifiers
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+**READY — isolated; predecessor integration pending**. Owner: coordinator, 2026-11-12.
 Extend the contextual-identifier work to valid sloppy Script yield bindings and
 references. Review generator declaration/expression names, parameters, nested
 ordinary functions/arrows and strict scopes before implementation. Preserve
@@ -5547,6 +5547,13 @@ TS-502 focused execution, the historical strict-name driver and all 136 reviewed
 syntax controls pass on both hosts with static-only/zero-dynamic builds. The
 focused native driver analyzes 20,384 static statements. All 15 tooling builds
 are running sequentially; complete tooling/protocol checks still block READY.
+
+TS-502 final readiness passes: 954 Node guests, 35 runner tests, 296 tooling
+tests, 15 native build/coverage gates, focused both-host execution, all 136 syntax
+controls, eight producer records per host and 16 envelopes. Source/executable
+hashes, the exact historical expectation migration and ownership checks pass.
+build/yield-identifiers-owned-snapshot.json records READY. Promotion requires
+TS-501 integration and canonical TS-492 acceptance.
 
 ## TS-503 — Contextual let grammar review
 
@@ -5587,7 +5594,7 @@ source/control inputs are frozen after predecessor/baseline and unowned-file
 checks. Native validation is queued behind the remaining TS-502 tooling builds;
 readiness and integration are not claimed.
 
-TS-504 focused execution, the unchanged historical strict-name driver and all
+TS-504 focused execution, the historical strict-name driver and all
 156 reviewed syntax controls now pass both hosts, with static-only builds and
 zero dynamic coverage. Tooling inputs are being prepared; all 15 tooling gates,
 the full tooling suite, native protocol and predecessor READY checks still block

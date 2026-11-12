@@ -3253,3 +3253,18 @@ Its tooling fixture copy is active in session57693; the next isolated compiler
 job is build-parser-successor-tooling.mjs let-identifiers. Canonical TS-492 remains
 live at 411/457 checkpoints with unchanged frozen inputs. TS-505 is not claimed;
 finish current validation and acceptance before adding further implementation.
+
+2026-11-12 remote refresh: origin/main and the remote review branch remain at
+52019673f3dff108a1600e18072f9fef55b76315, an ancestor of HEAD. The remote dev branch
+has been removed; an initial fetch requesting it failed, then fetching main alone
+succeeded and ls-remote confirmed its absence. Do not recreate dev or rely on the
+stale origin/dev reference for publication. Re-fetch main before the accepted
+milestone push. Let tooling builds are active in session41943; yield tooling and
+protocol validation remain active in session49026.
+
+2026-11-12 TS-502 is isolated READY. Full tooling completed 296/296 with no skips;
+eight producer records per host and 16 envelopes passed. Final readiness verified
+954 Node guests, 35 runner tests, all 15 native tooling gates, focused native and
+136-case controls, source/executable hashes and predecessor ownership. TS-504
+ownership-only validation now also passes against READY TS-502. Yield duplicate
+validation cleanup runs in session31561; let tooling remains in session41943.

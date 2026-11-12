@@ -30,5 +30,9 @@ eleven unsupported controls, the prior strict-name driver, and typechecking.
 The exact historical `var yield=1;` source is retained with an explicit ready
 expectation. Full Node regression passes 954/954 without skips, and all 35 runner
 tests pass. The 1067 source/control inputs are frozen, and ownership checks pass
-against READY TS-501. Native validation remains pending. No conformance
-denominator or original C++ fixture is changed.
+against READY TS-501. Focused execution, the historical driver and all 136 syntax
+controls pass both hosts. All 15 native tooling build gates, 296 tooling tests,
+eight producer records per host and 16 envelopes pass. Final hash and ownership
+checks mark the isolated draft READY; predecessor integration and canonical
+acceptance still gate promotion. No conformance denominator or original C++
+fixture is changed.
