@@ -912,6 +912,7 @@ executeDriver("temporal-named-time-zones", { stdout: "temporal named time zones 
 executeDriver("script-return-certification", { stdout: "script return certification passed\n" });
 executeDriver("async-statement-certification", { stdout: "async statement certification passed\n" });
 executeDriver("strict-reserved-identifiers", { stdout: "strict reserved identifiers passed\n" });
+executeDriver("await-identifiers", { stdout: "await identifiers passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

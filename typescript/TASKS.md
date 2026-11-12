@@ -5490,7 +5490,7 @@ on TS-492 acceptance and TS-494 integration; no full 952-case native claim.
 
 ## TS-501 — Contextual await identifiers
 
-**READY — isolated; predecessor integration pending**. Owner: coordinator, 2026-11-12.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
 Build on READY TS-496 to admit valid Script await identifiers using the reviewed
 grammar contexts. Preserve async parameters, arrow-cover disambiguation, named
 function distinctions, class fields/static blocks and nested-function resets.

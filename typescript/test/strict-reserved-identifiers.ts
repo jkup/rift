@@ -77,12 +77,13 @@ for (const text of [
     '"use strict";var public=1;with({}){}',
     '"use strict";var public=1;var x=;',
     '"use strict";var public=1;' + '('.repeat(300) + '0' + ')'.repeat(300),
-    'var enum=1;', 'var let=1;', 'var yield=1;', 'var await=1;',
+    'var enum=1;', 'var let=1;', 'var yield=1;',
 ]) {
     const result = prepareBoundedScript({ id: "unsupported", text }, new Realm((_line: string) => {}, "script"));
     check(result.kind === "blocked" && result.rejection.kind !== "syntax-error", "unsupported or resource precedence: " + text);
 }
 expectTrue('var public=7;eval("public")===7');
+check(prepareBoundedScript({ id: "await-admission", text: "var await=1;" }, new Realm((_line: string) => {}, "script")).kind === "ready", "valid await binding admitted");
 expectTrue('var ok=false;try{eval("\\\"use strict\\\";var public=1;")}catch(e){ok=e instanceof SyntaxError}ok');
 expectTrue('function f(){"use strict";try{eval("var public=1")}catch(e){return e instanceof SyntaxError}}f()');
 expectTrue('"use strict";var o={public:7};o.public===7');

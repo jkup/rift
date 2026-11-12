@@ -255,6 +255,8 @@ class Parser {
     private generatorYields: GeneratorYieldStmt[] = [];
     private asyncContext = false;
     private awaits: AwaitExpr[] = [];
+    private awaitIdentifierReserved = false;
+    private awaitCoverIdentifiers: Location[] | null = null;
     private readonly objectCovers = new Map<Expr, ObjectCover>();
     private readonly arrayTrailingCommas = new Set<Expr>();
     readonly lexicalCandidates: LexicalStatementCandidate[] = [];
@@ -322,8 +324,15 @@ class Parser {
     }
     name(): string {
         const t = this.take();
-        if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || (this.boundedPlan() && isStrictReservedIdentifier(t.text)))))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
+        if (t.kind !== "word" || (RESERVED.includes(" " + t.text + " ") && !(this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || this.awaitIdentifierAllowed(t.text) || (this.boundedPlan() && isStrictReservedIdentifier(t.text)))))) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
+        this.recordAwaitIdentifier(t.text, t.loc);
         return t.text;
+    }
+    private awaitIdentifierAllowed(name: string): boolean {
+        return this.boundedPlan() && name === "await" && !this.awaitIdentifierReserved;
+    }
+    private recordAwaitIdentifier(name: string, loc: Location): void {
+        if (name === "await" && this.awaitCoverIdentifiers !== null) this.awaitCoverIdentifiers.push(loc);
     }
     program(): ParseResult {
         const body = this.list(false, []);
@@ -647,7 +656,7 @@ class Parser {
         return { kind: "expression", loc, expression };
     }
     private labelIdentifier(token: Token): boolean {
-        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval" || token.text === "async" || (this.boundedPlan() && isStrictReservedIdentifier(token.text)));
+        return token.kind === "word" && (!RESERVED.includes(" " + token.text + " ") || token.text === "arguments" || token.text === "eval" || token.text === "async" || this.awaitIdentifierAllowed(token.text) || (this.boundedPlan() && isStrictReservedIdentifier(token.text)));
     }
     private labelAhead(index: number): boolean {
         return this.labelIdentifier(this.token(index)) && this.token(index + 1)?.kind === "punct" && this.token(index + 1)?.text === ":";
@@ -959,6 +968,9 @@ class Parser {
         }
     }
     functionTail(loc: Location, start: number, superContext: SuperContext = "none", generator = false, asynchronous = false): { params: string[]; parameters: FormalParameter[]; body: Stmt[]; source: FunctionSource } {
+        const savedAwaitReserved = this.awaitIdentifierReserved, savedAwaitCover = this.awaitCoverIdentifiers;
+        this.awaitIdentifierReserved = asynchronous;
+        this.awaitCoverIdentifiers = null;
         const savedAsync = this.asyncContext, savedAwaits = this.awaits;
         this.asyncContext = false;
         this.awaits = [];
@@ -997,6 +1009,8 @@ class Parser {
         this.newTargetAllowed = savedNewTarget;
         this.superContext = savedSuperContext;
         this.checkParameterDirective(rest, parameters, bodyIndex, loc);
+        this.awaitIdentifierReserved = savedAwaitReserved;
+        this.awaitCoverIdentifiers = savedAwaitCover;
         return { params, parameters, body, source: { source: this.source, start, end: this.token(this.index - 1).end, rest, bodyLoc, ...(generator ? { generator: true } : {}) } };
     }
     arrow(allowIn: boolean): Expr {
@@ -1005,6 +1019,9 @@ class Parser {
         return this.arrowBody(first, [name], false, [{ kind: "identifier", site: { name, start: first.start, end: first.end, loc: first.loc }, initializer: null }], allowIn);
     }
     private arrowBody(first: Token, params: string[], rest: boolean, parameters: FormalParameter[], allowIn: boolean, asynchronous = false): Expr {
+        const savedAwaitReserved = this.awaitIdentifierReserved, savedAwaitCover = this.awaitCoverIdentifiers;
+        this.awaitIdentifierReserved = asynchronous;
+        this.awaitCoverIdentifiers = null;
         const savedAsync = this.asyncContext, savedAwaits = this.awaits;
         this.asyncContext = asynchronous;
         this.awaits = [];
@@ -1036,6 +1053,8 @@ class Parser {
         this.generatorYields = savedYields;
         this.asyncContext = savedAsync;
         if (!expressionBody) this.checkParameterDirective(rest, parameters, bodyIndex, first.loc);
+        this.awaitIdentifierReserved = savedAwaitReserved;
+        this.awaitCoverIdentifiers = savedAwaitCover;
         const source: FunctionSource = { source: this.source, start: first.start, end: this.token(this.index - 1).end, arrow: true, expressionBody, rest, bodyLoc, ...(asynchronous ? { async: true } : {}) };
         return { kind: "function", loc: first.loc, params, parameters, body, source };
     }
@@ -1352,6 +1371,9 @@ class Parser {
         return { kind: "class", loc, source: this.source, start, end: this.token(this.index - 1).end, name, heritage, constructorMethod, elements };
     }
     private classStaticBlock(): ClassStaticBlock {
+        const savedAwaitReserved = this.awaitIdentifierReserved, savedAwaitCover = this.awaitCoverIdentifiers;
+        this.awaitIdentifierReserved = true;
+        this.awaitCoverIdentifiers = null;
         const first = this.take();
         this.expect("{");
         const functions = this.functions, loops = this.loops, switches = this.switches, labels = this.labels;
@@ -1379,9 +1401,14 @@ class Parser {
         this.generatorYields = yields;
         this.newTargetAllowed = target;
         this.superContext = superContext;
+        this.awaitIdentifierReserved = savedAwaitReserved;
+        this.awaitCoverIdentifiers = savedAwaitCover;
         return { kind: "static-block", isStatic: true, loc: first.loc, start: first.start, end: this.token(this.index - 1).end, body };
     }
     private classFieldInitializer(): ClassFieldInitializer {
+        const savedAwaitReserved = this.awaitIdentifierReserved, savedAwaitCover = this.awaitCoverIdentifiers;
+        this.awaitIdentifierReserved = false;
+        this.awaitCoverIdentifiers = null;
         const first = this.current();
         const savedAsync = this.asyncContext, savedGenerator = this.generatorContext;
         const savedTarget = this.newTargetAllowed, savedSuper = this.superContext;
@@ -1394,6 +1421,8 @@ class Parser {
         this.generatorContext = savedGenerator;
         this.newTargetAllowed = savedTarget;
         this.superContext = savedSuper;
+        this.awaitIdentifierReserved = savedAwaitReserved;
+        this.awaitCoverIdentifiers = savedAwaitCover;
         return { kind: "field-initializer", loc: first.loc, start: first.start, end: this.token(this.index - 1).end, value };
     }
     private objectExpression(loc: Location): Expr {
@@ -1428,7 +1457,7 @@ class Parser {
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", token.loc);
                     name = this.literalPropertyName(token);
                     key = { kind: "literal", loc: token.loc, value: name };
-                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async" || (this.boundedPlan() && isStrictReservedIdentifier(name)));
+                    shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async" || this.awaitIdentifierAllowed(name) || (this.boundedPlan() && isStrictReservedIdentifier(name)));
                 }
                 if (this.at("(")) {
                     const fn = this.functionTail(first.loc, first.start, "method", generator, asynchronous);
@@ -1453,6 +1482,7 @@ class Parser {
                         }
                     } else {
                         if (!shorthand) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected property value", first.loc);
+                        this.recordAwaitIdentifier(name, first.loc);
                         value = { kind: "identifier", loc: first.loc, name };
                         if (this.at("=")) {
                         cover.unsupported ??= { reason: { kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, message: "expected ':', found '" + this.current().text + "'", loc: this.current().loc };
@@ -1556,6 +1586,9 @@ class Parser {
         throw new Error("unexpected binding in expression cover");
     }
     private parenthesizedExpression(first: Token, allowIn: boolean, allowArrow: boolean, asyncPrefix: Token | null = null): Expr {
+        const outerAwaitCover = this.awaitCoverIdentifiers;
+        const asyncAwaitCover: Location[] = [];
+        if (asyncPrefix !== null) this.awaitCoverIdentifiers = asyncAwaitCover;
         const values: { value: Expr; token: Token; spread: boolean }[] = [];
         let rest = false, trailingComma = false;
         while (this.error === null && !this.at(")")) {
@@ -1566,7 +1599,10 @@ class Parser {
             trailingComma = this.at(")");
         }
         this.expect(")");
+        this.awaitCoverIdentifiers = outerAwaitCover;
         if (allowArrow && this.at("=>")) {
+            if (asyncPrefix !== null && asyncAwaitCover.length !== 0)
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "await is reserved in async parameters", asyncAwaitCover[0]);
             const params: string[] = [], parameters: FormalParameter[] = [];
             for (let i = 0; i < values.length; i++) {
                 const { value, token, spread } = values[i];
@@ -1598,6 +1634,8 @@ class Parser {
             return this.arrowBody(asyncPrefix ?? first, params, rest, parameters, allowIn, asyncPrefix !== null);
         }
         if (asyncPrefix !== null) {
+            // A call retains the enclosing cover's grammar; an arrow starts its own body context.
+            if (outerAwaitCover !== null) for (const loc of asyncAwaitCover) outerAwaitCover.push(loc);
             const args: Argument[] = values.map(entry => entry.spread ? { kind: "spread", loc: entry.token.loc, expression: entry.value } : entry.value);
             return { kind: "call", loc: asyncPrefix.loc, callee: { kind: "identifier", loc: asyncPrefix.loc, name: "async" }, args };
         }
@@ -1636,6 +1674,7 @@ class Parser {
         if (this.structuralPlan() && allowArrow && t.text === "async" && t.loc.line === this.current().loc.line) {
             if (this.current().kind === "word" && this.token(this.index + 1).text === "=>") {
                 const parameter = this.current(), name = this.name();
+                if (name === "await") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "await is reserved in async parameters", parameter.loc);
                 return this.arrowBody(t, [name], false, [{ kind: "identifier", site: { name, start: parameter.start, end: parameter.end, loc: parameter.loc }, initializer: null }], allowIn, true);
             }
             if (this.at("(")) { const first = this.take(); return this.parenthesizedExpression(first, allowIn, true, t); }
@@ -1746,8 +1785,13 @@ class Parser {
             const generator = this.structuralPlan() && this.eat("*");
             let name: DeclarationSite | undefined;
             if (this.structuralPlan() && !this.at("(")) {
+                const savedAwaitReserved = this.awaitIdentifierReserved, savedAwaitCover = this.awaitCoverIdentifiers;
+                this.awaitIdentifierReserved = asynchronous;
+                this.awaitCoverIdentifiers = null;
                 const token = this.current();
                 name = { name: this.name(), start: token.start, end: token.end, loc: token.loc };
+                this.awaitIdentifierReserved = savedAwaitReserved;
+                this.awaitCoverIdentifiers = savedAwaitCover;
             }
             const fn = this.functionTail(loc, t.start, "none", generator, asynchronous);
             const source: FunctionSource = asynchronous ? { ...fn.source, async: true } : fn.source;
@@ -1837,7 +1881,10 @@ class Parser {
             this.expect("}");
             return { kind: "object", loc, properties };
         }
-        if (t.kind === "word" && (!RESERVED.includes(" " + t.text + " ") || (this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || (this.boundedPlan() && isStrictReservedIdentifier(t.text)))))) return { kind: "identifier", loc, name: t.text };
+        if (t.kind === "word" && (!RESERVED.includes(" " + t.text + " ") || (this.structuralPlan() && (t.text === "arguments" || t.text === "eval" || t.text === "async" || this.awaitIdentifierAllowed(t.text) || (this.boundedPlan() && isStrictReservedIdentifier(t.text)))))) {
+            this.recordAwaitIdentifier(t.text, loc);
+            return { kind: "identifier", loc, name: t.text };
+        }
         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: " + t.text, loc);
         return { kind: "literal", loc, value: null };
     }
