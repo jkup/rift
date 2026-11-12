@@ -5640,3 +5640,18 @@ Without print they finish without completion output, demonstrating why normal
 Script completion and an empty job queue are insufficient for async acceptance.
 Native compilation has 20,435 static statements and zero dynamic operations.
 No runtime fix or capability admission; see docs/test262-async-harness-review.md.
+
+## TS-506 — Iterator cleanup semantic review
+
+**done — both-host semantic review**. Owner: coordinator, 2026-11-12.
+Check destructuring and for-of cleanup order, throwing iterator methods/getters,
+abrupt target evaluation and nested iterators against explicit expected results,
+the specification and an independent Node subprocess. Reuse the hash-verified
+current-source diagnostic executable for both-host controls. Own
+docs/iterator-cleanup-semantic-review.md and ignored review inputs/reports only;
+leave canonical source and original fixtures unchanged during native validation.
+
+TS-506: all 25 scenarios in both strictness modes match explicit expected event
+order in both Rift hosts and independent Node. Cleanup error precedence,
+stepping failures, nested close order and abrupt target evaluation require no
+runtime fix. See docs/iterator-cleanup-semantic-review.md.
