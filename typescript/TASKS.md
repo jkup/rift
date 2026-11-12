@@ -5429,3 +5429,13 @@ the installed 0.4.7 toolchain, package pins and all frozen compiler inputs. Do n
 install or compile another toolchain during the active native matrix; distinguish
 upstream claims from measured static/zero-dynamic support. Record concrete
 follow-up only if evidence justifies it.
+
+## TS-498 — Native validation throughput review
+
+**done — four-worker checkpointed resume verified**. Owner: coordinator, 2026-11-12.
+Inspect host CPU/memory headroom and the checkpointed native runner before choosing
+whether to increase build concurrency. Own ignored scheduler helpers/evidence and
+checkpoint notes only; preserve frozen source, compiler pins, every completed
+coverage/executable hash, and failed/aborted attempts. Do not overlap native guest
+readers with builds. A scheduler change must validate checkpoint integrity and
+stop only the identified validation process tree before resuming.

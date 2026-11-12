@@ -103,3 +103,26 @@ finished with225 records and191 completions; its exit1 reflects retained diagnos
 noncompletions, not a process failure. Native finish script is still prepared,
 not launched. Fetch confirmed origin/main and origin/codex/test262-classification
 at52019673 with ancestry intact. No unaccepted milestone has been pushed.
+
+## 2026-11-12 native scheduler checkpoint
+
+TS-497 confirms released scriptc0.4.12 still maps WeakMap/WeakSet/FinalizationRegistry
+to DYN and documents WeakRef unsupported. No newer toolchain was installed or
+executed; 0.4.7 pins remain intact. See docs/weak-storage-upstream-review.md.
+
+TS-498 measured24 logical processors,16.38GB free memory and20% CPU load with two
+native workers. The identified validation process tree was stopped after saving
+65 completed gates and executable hashes. Original two-worker logs, checkpoint
+and helper sources are retained under build/native-scheduler-review/ and
+build/script-return-rollup-native-build-two-workers.log. No unfinished entry was
+accepted. Source inputs and every prior result/executable hash were verified.
+
+The same matrix resumed with four workers. At least four additional gates pass,
+all65 prior records are preserved exactly, and a follow-up sample showed18.49GB
+free memory and54% CPU load. This is a scheduler observation, not a performance
+benchmark or milestone acceptance. Successful LLVM pruning continues.
+
+Active native session is now63327. Old session45713 is terminal after the explicit
+checkpointed restart. Keep RIFT_NATIVE_JOBS=4 for this resumable helper (reviewed
+range1..4). Canonical inputs remain frozen; both successors still await native
+validation. The finish script remains prepared but unlaunched.
