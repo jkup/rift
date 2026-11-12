@@ -3210,3 +3210,13 @@ original await-binding input is retained with an explicit expectation migration.
 Native/ownership validation remains pending. TS-496 duplicate-fixture cleanup
 also reclaimed 2,023,533,632 bytes, retaining 126 protected files. Canonical source
 remains frozen for the TS-492 matrix.
+
+2026-11-12 resumed the development loop after the requested pause. Existing
+canonical and await tooling compiler processes were still live; no duplicate
+builds were started. Canonical inputs pass their frozen hash check. All 15 await
+tooling builds passed, and full tooling validation is running (session76105).
+TS-502 is isolated from frozen TS-501 in build/yield-identifiers-draft. Initial
+Node checks pass 136 syntax controls and 36 execution cases; full regression is
+running (session14873). Its initial runner attempt lacked historical transcript
+fixtures, preserved in full-node-missing-fixtures.log; the same original fixture
+bytes were supplied before rerunning. No source acceptance is claimed yet.

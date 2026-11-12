@@ -5510,3 +5510,22 @@ cleanup-wrapper failure after a passing native test is retained separately; its
 corrected resume verified the existing result/hash before continuing. Eight valid
 Node producer records pass the closed codec. Full tooling/native protocol and
 final ownership gates still block readiness.
+
+## TS-502 — Contextual yield identifiers
+
+**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+Extend the contextual-identifier work to valid sloppy Script yield bindings and
+references. Review generator declaration/expression names, parameters, nested
+ordinary functions/arrows and strict scopes before implementation. Preserve
+yield expressions and reject reserved generator contexts; certify strict-only
+identifier violations through the existing complete-source rule. Own parser,
+declaration collector, focused tests, the exact prior yield expectation migration,
+manifests and feature notes in an isolated successor to frozen TS-501. Promotion
+requires predecessor readiness/integration and canonical milestone acceptance.
+
+TS-502 reviewed 72 generator/strictness boundary cases against Node (19 valid,
+53 invalid). The isolated candidate passes the combined 136 syntax controls,
+36 execution cases, nine strict-error controls, eleven unsupported controls and
+the exact prior yield-binding expectation migration. Typechecking passes. Full
+954-case Node regression is running; native and readiness gates remain pending.
+See docs/yield-identifier-context.md. Canonical and predecessor sources are frozen.
