@@ -5448,3 +5448,12 @@ binaries can be read safely while those builds continue. An additional98 Node
 scope-edge comparisons found no strict-identifier mismatch. All30 successor
 tooling builds are queued in one sequential slot; full tooling and producer
 controls still gate readiness. TS-492 combined validation remains pending.
+
+## TS-499 — Contextual identifier boundary review
+
+**done — 168 syntax controls reviewed**. Owner: coordinator, 2026-11-12.
+Review let, yield and await separately from TS-496's strict-only names. Compare
+bounded preparation with independent Node syntax checks across strict/sloppy,
+function, generator, async, class and binding contexts. Identify a justified next
+slice without changing parser admission or any frozen compiler input. Own
+docs/contextual-identifier-review.md and ignored diagnostic evidence only.
