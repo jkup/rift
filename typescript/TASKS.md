@@ -5314,3 +5314,17 @@ expectation changes from unsupported-operation to catchable SyntaxError without
 changing its original guest source. Added direct/indirect/caller-function/foreign-
 Realm/no-effect/unsupported-tail checks pass Node and native (20,313 static,
 zero dynamic). Full Node rerun and15 tooling builds are running; no READY claim.
+
+TS-492 protocol review found a missing allowlist entry in src/script-observation.ts:
+newly certified bounded returns reach an unreviewed-rule guard. This file is now
+part of the isolated task ownership. The initial failing codec transcript is
+preserved in build/script-return-certification-draft/build/codec-initial.log.
+Do not mark READY until both-host producer and envelope controls pass after repair.
+
+TS-492: unchanged S20 bytes now pass both hosts in both modes (20,259 static/zero
+dynamic). The full950 Node suite passed after the exact eval expectation migration.
+Protocol review then found and repaired one missing observation-producer rule
+allowlist entry. Eight Node codec controls pass; six dependency-affected native
+tooling drivers and the final full Node suite are rebuilding/rerunning. Nine
+unaffected tooling results retain compiler-closure hash checks. Inputs are frozen
+for final validation; no READY claim yet.
