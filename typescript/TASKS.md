@@ -5717,3 +5717,17 @@ execution and all 170 reviewed controls pass both hosts with static-only and
 zero-dynamic gates. Eight escaped-name producer records pass the closed Node
 codec. Historical tooling inputs are prepared; all 15 native tooling builds,
 full tooling and native protocol checks run in session29679. READY remains pending.
+
+## TS-510 — Script whitespace boundary review
+
+**done — grammar and both-host baseline reviewed**. Owner: coordinator, 2026-11-12.
+Review the confirmed VT/FF lexer gap against C++ skip_whitespace, ECMAScript
+WhiteSpace/LineTerminator rules and Rift's existing isStringWhitespace helper.
+Check all accepted code points, excluded near-neighbors, token spans, ASI,
+comments, strings, templates and directives. Own docs/script-whitespace-review.md
+and ignored controls only; leave both frozen validation snapshots unchanged.
+
+TS-510: all 146 controls match their independent reference expectations and both
+Rift hosts agree. Of 138 valid sources, 81 execute correctly and 57 expose 19
+missing whitespace characters in three contexts. Eight excluded characters
+remain rejected; seven position checks pass. See docs/script-whitespace-review.md.
