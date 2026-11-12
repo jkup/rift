@@ -3245,3 +3245,11 @@ but wait for the isolated compiler slot: TS-502 has completed 13/15 tooling buil
 After those finish, run finish-parser-successor.mjs yield-identifiers and, on the
 separate paths, check-let-identifiers-native.mjs. Canonical TS-492 is at 395/457
 checkpoints with frozen inputs verified; successors remain unpromoted.
+
+2026-11-12 TS-502's 15 tooling builds finished successfully; its full tooling and
+protocol run is active in session49026. TS-504's three native checks all passed
+(session38863 completed): focused execution, historical driver and 156-case probe.
+Its tooling fixture copy is active in session57693; the next isolated compiler
+job is build-parser-successor-tooling.mjs let-identifiers. Canonical TS-492 remains
+live at 411/457 checkpoints with unchanged frozen inputs. TS-505 is not claimed;
+finish current validation and acceptance before adding further implementation.
