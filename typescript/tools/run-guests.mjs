@@ -909,6 +909,7 @@ executeDriver("iana-timezone-candidate-offset", { stdout: "iana timezone candida
 executeDriver("iana-timezone-local", { stdout: "iana timezone local passed\n" });
 executeDriver("temporal-zone-operations", { stdout: "temporal zone operations passed\n" });
 executeDriver("temporal-named-time-zones", { stdout: "temporal named time zones passed\n" });
+executeDriver("script-return-certification", { stdout: "script return certification passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });
 executeDriver("for-assignment-patterns", { stdout: "For assignment patterns passed\n" });

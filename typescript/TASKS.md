@@ -5299,7 +5299,7 @@ TS-491 Node diagnostic: all33 files/60 variants retained;52 expected outcomes,5 
 
 ## TS-492 — Bounded Script return certification
 
-**in progress — isolated implementation**. Owner: coordinator, 2026-11-12. Follow TS-491's S20 reduction: certify return-outside-function only after a complete supported-grammar audit in bounded Script preparation. Preserve the original first diagnostic, retained nodes, legacy/public planner behavior, and unsupported/resource precedence. Cover modern syntax, ASI, nested functions/classes/static blocks, invalid tails, effect-free preparation and original S20 variants on both hosts. Own src/parser.ts, a focused test/fixture, manifests and feature notes in build/script-return-certification-draft; any exact historical expectation migration must be reviewed and recorded. Canonical Temporal inputs remain frozen. Strict-reserved bindings and async declarations in Statement position are separate follow-ups.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12. Follow TS-491's S20 reduction: certify return-outside-function only after a complete supported-grammar audit in bounded Script preparation. Preserve the original first diagnostic, retained nodes, legacy/public planner behavior, and unsupported/resource precedence. Cover modern syntax, ASI, nested functions/classes/static blocks, invalid tails, effect-free preparation and original S20 variants on both hosts. Own src/parser.ts, a focused test/fixture, manifests and feature notes in build/script-return-certification-draft; any exact historical expectation migration must be reviewed and recorded. Canonical Temporal inputs remain frozen. Strict-reserved bindings and async declarations in Statement position are separate follow-ups.
 
 TS-492 focused checks pass on both hosts:42 controls,20,280 native static statements,
 zero dynamic operations; original pinned S20 bytes certify in both Node Script
@@ -5328,3 +5328,19 @@ allowlist entry. Eight Node codec controls pass; six dependency-affected native
 tooling drivers and the final full Node suite are rebuilding/rerunning. Nine
 unaffected tooling results retain compiler-closure hash checks. Inputs are frozen
 for final validation; no READY claim yet.
+
+## TS-493 — Declaration-in-Statement certification review
+
+**in progress — bounded semantic review**. Owner: coordinator, 2026-11-12.
+Reduce TS-491 U02 against the specification and independent Node syntax checks.
+Inventory Statement positions, async/generator/class declarations, valid block
+neighbors and Annex B ordinary-function exceptions before choosing a new rule.
+Own docs/declaration-statement-review.md and ignored diagnostic artifacts only.
+Preserve TS-492 frozen inputs, public planners, fixtures and capability admission.
+Implementation and both-host certification require a separate claimed task.
+
+TS-492 is isolated READY: final 950/950 Node guests, 296/296 tooling tests,
+35/35 runner tests, all 15 native tooling drivers, both-host codec/envelope
+controls, focused return/eval/pinned-byte controls and final source ownership
+checks pass. The sandbox attempt is retained separately; the authorized rerun
+passes all filesystem tests. Combined native milestone acceptance is still pending.

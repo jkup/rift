@@ -86,8 +86,18 @@ for (const text of ["try{eval('class C{}')}catch(e){true}", "try{eval('return 1'
         check(result.type === "normal" && result.value.kind === "object" && result.value.object.callable !== null, "named function eval executes");
         expect("eval('(function f(){return 7})')()===7");
     }
-    else check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.eval-source", "unsupported eval stays fatal");
+    else check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original return eval is catchable");
 }
+for (const text of [
+    "var caught=false;try{eval('return 1')}catch(e){caught=e instanceof SyntaxError}caught",
+    "var caught=false;try{(0,eval)('return 1')}catch(e){caught=e instanceof SyntaxError}caught",
+    "function f(){try{eval('return 1')}catch(e){return e instanceof SyntaxError}}f()",
+    "var marker=0;try{eval('marker=1;return;')}catch(e){}marker===0",
+]) expect(text);
+realm.defineScriptGlobal("ForeignSyntaxError", { value: { kind: "object", object: foreign.getErrorConstructor("SyntaxError") } });
+expect("var caught=false;try{foreignEval('return 1')}catch(e){caught=e instanceof ForeignSyntaxError&&!(e instanceof SyntaxError)}caught", undefined, realm);
+const unsupportedReturnTail = run("try{eval('return; import x from \"x\";')}catch(e){true}");
+check(unsupportedReturnTail.type === "throw" && unsupportedReturnTail.origin.kind === "unsupported-operation" && unsupportedReturnTail.origin.capabilityCode === "runtime.eval-source", "unsupported eval tail stays fatal");
 const limited = run("eval('while(true){}')", undefined, 100);
 check(limited.type === "throw" && limited.origin.kind === "resource-limit", "shared step limit");
 const recursion = run("function f(){return eval('f()')}f()", undefined, 100000, 8);
