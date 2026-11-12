@@ -5580,3 +5580,9 @@ unsupported controls. The original let-binding input remains with its reviewed
 ready expectation. Full 955-case Node regression is running. One new test used
 the forbidden let [ statement prefix and was corrected to a parenthesized target;
 the correction is recorded separately. No historical fixture was changed.
+
+TS-504 full Node regression passes 955/955 without skips and all 35 runner tests
+pass. Eight strict-error producer records pass the closed Node codec. Its 1068
+source/control inputs are frozen after predecessor/baseline and unowned-file
+checks. Native validation is queued behind the remaining TS-502 tooling builds;
+readiness and integration are not claimed.

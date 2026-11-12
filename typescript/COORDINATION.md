@@ -3237,3 +3237,11 @@ let grammar review without finding accepted invalid programs or false syntax
 certificates. TS-504 is isolated in build/let-identifiers-draft from frozen TS-502;
 initial typecheck, 156 syntax controls and focused execution pass. Full 955-case
 Node regression runs in session66057. Canonical TS-492 source remains unchanged.
+
+2026-11-12 TS-504 finishes 955/955 Node guests and 35/35 runner tests, plus eight
+closed-codec producer controls. Its 1068 source/control inputs are frozen in
+build/let-identifiers-draft/build/source-freeze.json. Native checks are prepared
+but wait for the isolated compiler slot: TS-502 has completed 13/15 tooling builds.
+After those finish, run finish-parser-successor.mjs yield-identifiers and, on the
+separate paths, check-let-identifiers-native.mjs. Canonical TS-492 is at 395/457
+checkpoints with frozen inputs verified; successors remain unpromoted.
