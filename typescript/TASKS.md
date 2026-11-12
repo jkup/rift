@@ -5482,3 +5482,22 @@ envelopes pass. Final typechecking, predecessor-owned baselines, unowned source,
 frozen inputs and executable hashes were verified. The READY snapshot is
 build/strict-reserved-identifiers-owned-snapshot.json. Promotion remains gated
 on TS-492 acceptance and TS-494 integration; no full 952-case native claim.
+
+## TS-501 — Contextual await identifiers
+
+**in progress — isolated implementation**. Owner: coordinator, 2026-11-12.
+Build on READY TS-496 to admit valid Script await identifiers using the reviewed
+grammar contexts. Preserve async parameters, arrow-cover disambiguation, named
+function distinctions, class fields/static blocks and nested-function resets.
+Keep invalid forms explicitly rejected without a new certification rule. Own
+src/parser.ts, focused tests, the exact prior await expectation migration,
+manifests and feature notes in an isolated draft. Require all reviewed sources,
+both-host execution, static-only/zero-dynamic builds and regression gates.
+Module goal, yield/let admission and escaped identifiers remain separate.
+Promotion waits for predecessor integration and current canonical acceptance.
+
+TS-501 initial Node checks pass typechecking, 136 reviewed syntax controls,
+72 execution cases, 17 effect-free invalid controls and 35 runner tests. The
+exact old `var await=1;` input remains in the strict-name driver with its reviewed
+ready expectation. Full 953-case Node regression is running. Native validation
+and ownership gates remain pending; neither readiness nor integration is claimed.

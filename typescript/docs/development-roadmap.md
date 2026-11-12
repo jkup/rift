@@ -88,7 +88,8 @@ The [contextual identifier review](contextual-identifier-review.md) identifies
 isolated strict-name change. Before admitting them, inspect parameter grammar
 context: the parser currently clears its suspension flags while reading formal
 parameters. Reusing those flags as identifier permissions would admit invalid
-async/generator parameters. Keep this follow-up behind current native acceptance.
+async/generator parameters. Implement in an isolated draft; integration and
+publication remain behind current native acceptance.
 
 ## Historical feature checkpoints
 

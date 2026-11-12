@@ -3200,3 +3200,13 @@ ownership check verifies the READY async predecessor, exact manifest additions,
 unowned inputs, frozen source and executable hashes. Promotion still requires
 TS-492 combined acceptance and TS-494 integration. Async duplicate-fixture
 cleanup reclaimed 2,023,533,632 bytes; 126 protected files were retained.
+
+2026-11-12 TS-501 is isolated in build/await-identifiers-draft from verified READY
+TS-496. Separate identifier reservation and deferred async-cover sites preserve
+function, parameter, arrow and class grammar boundaries. Initial Node checks
+pass 136 reviewed syntax cases, 72 execution cases, 17 invalid controls, typecheck
+and 35 runner tests; full 953-case regression is running (session40022). The
+original await-binding input is retained with an explicit expectation migration.
+Native/ownership validation remains pending. TS-496 duplicate-fixture cleanup
+also reclaimed 2,023,533,632 bytes, retaining 126 protected files. Canonical source
+remains frozen for the TS-492 matrix.
