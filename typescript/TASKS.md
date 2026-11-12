@@ -5344,3 +5344,30 @@ TS-492 is isolated READY: final 950/950 Node guests, 296/296 tooling tests,
 controls, focused return/eval/pinned-byte controls and final source ownership
 checks pass. The sandbox attempt is retained separately; the authorized rerun
 passes all filesystem tests. Combined native milestone acceptance is still pending.
+
+## TS-494 — Async function declaration Statement certification
+
+**in progress — isolated implementation**. Owner: coordinator, 2026-11-12.
+Implement TS-493's bounded async-function-statement rule for ordinary async
+function declarations in supported branch/label Statement positions. Require a
+complete non-emitting grammar audit and exact original first diagnostic; preserve
+unsupported/resource precedence, public planners and legacy parse behavior.
+Own src/parser.ts, src/outcomes.ts, src/script-observation.ts, both closed Script
+result decoders, focused tests, manifests and feature documentation in an isolated
+draft. Add producer/codec/envelope checks, preserve exact historical inputs and
+review any expectation migration. Exclude generator, class and ordinary-function
+certification, Annex B support and capability admission. Canonical TS-492 source
+inputs remain frozen until combined validation completes.
+
+TS-494 ownership also includes src/script-observation-types.ts and the exact
+codec-closure assertion in tools/test262/script-observe-codec.test.mjs. Isolated
+Node checks pass: 55 focused controls, 144 reviewed syntax inputs, both unchanged
+U02 variants and eight real producer/codec records. Typechecking passes after the
+new rule was added to the separate observation union. Native and full regression
+validation remain pending; no READY claim.
+
+TS-492 combined validation started from ab6e0525 with 1061 frozen inputs and 457
+native entries. Successful regenerable LLVM output is pruned as each gate passes.
+The full Node suite is running. Hash-verified duplicate validation cleanup removed
+2,023,533,632 bytes; 126 protected copies were retained. Accepted main remains
+52019673 until combined validation passes.

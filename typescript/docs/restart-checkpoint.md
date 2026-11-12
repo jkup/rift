@@ -50,3 +50,32 @@ one exact expectation migration now asserts a catchable SyntaxError, with direct
 indirect, caller-function, foreign-Realm, no-effect and unsupported-tail controls.
 The expanded eval driver passes both hosts with20,313 static statements and zero
 dynamic operations. Full Node rerun and15 native tooling builds are active.
+
+## 2026-11-12 resumed development checkpoint
+
+Accepted main remains 52019673 (949 guests per host, 456 native static gates).
+Local ab6e0525 integrates bounded return certification after isolated validation;
+5b404675 records the 144-case declaration grammar review. The integrated return
+fix passes 950/950 Node guests, typechecking and 35 runner tests. Its full native
+matrix runs from build/script-return-rollup-source-snapshot.json (1061 inputs,
+457 entries), with per-entry checkpoints and successful LLVM pruning. Do not
+publish this source before combined native guest/tooling/probe/corpus acceptance.
+
+Active execution sessions at this checkpoint: 45713 native build; 65760 Node
+corpus follow-up; 55309 isolated async-declaration Node suite. Verify their live
+state before launching replacements. Canonical source is frozen. Once the native
+matrix succeeds, build/finish-script-return-rollup.ps1 verifies all 457 executable
+hashes before native guests, corpus comparison, tooling and probes. That finish
+script is prepared but has not been launched.
+
+TS-494 is isolated at build/async-statement-certification-draft, not READY.
+Typechecking, 55 focused Node controls, 144 reviewed syntax controls, both pinned
+U02 variants, eight producer codecs, eight parent envelopes and the exact codec
+closure checks pass. Full Node regression is running. Native validation waits
+for the canonical matrix; do not start a competing compiler build. Ownership
+includes parser/outcomes/observation types and producer, both Script decoders,
+the exact codec closure assertion, manifests and focused test/documentation.
+
+Cleanup removed 2,023,533,632 bytes of hash-identical validation copies from the
+return draft, retaining 126 protected files and all original evidence. About
+122 GB remains free. Last account usage check was 42% used for the weekly window.
