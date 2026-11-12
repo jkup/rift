@@ -5543,6 +5543,11 @@ pass. Its 1067 source/control inputs are frozen; predecessor readiness, baseline
 unowned-file and exact manifest-addition checks pass. Focused native validation
 is running. Readiness and integration remain pending.
 
+TS-502 focused execution, the historical strict-name driver and all 136 reviewed
+syntax controls pass on both hosts with static-only/zero-dynamic builds. The
+focused native driver analyzes 20,384 static statements. All 15 tooling builds
+are running sequentially; complete tooling/protocol checks still block READY.
+
 ## TS-503 — Contextual let grammar review
 
 **done — read-only review**. Owner: coordinator, 2026-11-12.
@@ -5557,3 +5562,21 @@ ten valid cases, no invalid cases and produces no false syntax-error certificate
 docs/let-identifier-context.md records declaration lookahead, newline and for-head
 distinctions. A successor must combine identifier admission with those grammar
 boundaries and lexical BoundNames checks; keyword admission alone is insufficient.
+
+## TS-504 — Contextual let identifiers
+
+**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+Implement the TS-503 reviewed sloppy identifier, declaration-lookahead and loop
+boundaries in an isolated successor to frozen TS-502. Own parser, declaration
+collector, focused tests, exact prior let expectation migration, manifests and
+feature notes. Preserve lexical-statement certification and strict-name auditing;
+keep lexical bindings named let explicitly unsupported. Require reviewed controls,
+both-host semantic checks, full regression and compiler/ownership gates. Promotion
+requires TS-502 readiness/integration and canonical milestone acceptance.
+
+TS-504 initial Node checks pass typechecking, 156 reviewed syntax cases, 36
+execution cases plus three supplementary checks, seven strict errors and fourteen
+unsupported controls. The original let-binding input remains with its reviewed
+ready expectation. Full 955-case Node regression is running. One new test used
+the forbidden let [ statement prefix and was corrected to a parenthesized target;
+the correction is recorded separately. No historical fixture was changed.

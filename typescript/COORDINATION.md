@@ -3229,3 +3229,11 @@ guests and 35 runner tests, with 1067 frozen source/control inputs and verified
 ownership against READY TS-501. Its three native checks are running sequentially
 (session12885). Canonical TS-492 remains live at 357/457 build checkpoints, with
 frozen inputs unchanged. No successor has been promoted or published.
+
+2026-11-12 TS-502 passes all three focused native checks, including the complete
+136-case syntax probe and historical expectation migration. Its 15 tooling builds
+run in the sequential isolated slot (session38313). TS-503 completed the 100-case
+let grammar review without finding accepted invalid programs or false syntax
+certificates. TS-504 is isolated in build/let-identifiers-draft from frozen TS-502;
+initial typecheck, 156 syntax controls and focused execution pass. Full 955-case
+Node regression runs in session66057. Canonical TS-492 source remains unchanged.
