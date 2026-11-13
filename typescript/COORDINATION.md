@@ -3841,3 +3841,20 @@ Literal expected effects and budget/provenance records pass for all 48 Node
 observations. Evidence: build/array-species-reentry-review/reviewed.json and lane
 transcripts; helper build/review-species-map-reentry.mjs. No frozen input changed.
 Canonical checkpoint371/471 verifies. Free space90.11 GiB; weekly usage67% used.
+
+2026-11-13 TS-539: all 13 original failing variants now pass under Node with
+reviewed proposals outside the frozen draft. Map preserves all original sources
+and expands step prefixes308→324 and abrupt prefixes2340→2780 for construction;
+call controls224 and semantic selection108 remain. Inspection retains the
+Object-species result (boxed Number zero), checks non-callable/non-string-name
+inspection without losing the original throw history, and adds real unsupported
+RegExp controls. Fault controls10→12 and synthetic provenance56→64; original
+runtime inputs, source locations, reentry and owner-reuse checks remain.
+Typechecks pass. Exact 13 process/output/hash records are in
+build/array-species-proposed-tests-reviewed.json; the nine-case report is retained.
+build/array-species-test-migration/plan.json binds nine test proposals and the
+output-count manifest update. It is NODE_REVIEWED_NATIVE_PENDING, not accepted:
+install only after session88122's focused native/probe checks terminate cleanly,
+archive their frozen snapshot, then rerun full Node and amended native gates.
+Canonical checkpoint385/471 still matches its frozen inputs; session88122 owns
+the matrix, finalizer and focused species queue. No production source changed.
