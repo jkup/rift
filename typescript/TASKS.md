@@ -6041,23 +6041,33 @@ and unchanged production inputs. The original files, source snapshot and 958/961
 ledger are archived. Typechecking passes. Full Node reruns in session23425;
 native builds/execution of the amended entries run sequentially in session43595.
 
+TS-521 READY: both sessions completed successfully. Full Node passes 961/961
+without skips; all three amended tests pass native execution and static gates.
+The READY verifier confirms 122 controls on both hosts, 15 native tooling builds,
+296 tooling tests, 35 runner tests, protocol checks, exact test-only amendment,
+unchanged production hashes and predecessor ownership. All original evidence is
+retained. Include this verified successor in the lexical sequence below.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
-After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516 and
-TS-519 in that order as one bounded milestone. All four must have verified READY
+After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516,
+TS-519 and TS-521 in that order as one bounded milestone. All five must have verified READY
 snapshots before promotion starts. Verify each predecessor's canonical source
 against its READY snapshot before applying the next change, and retain each
 feature's baseline checks and separate implementation commit. Earlier per-feature
-promotion requirements for TS-514, TS-516 and TS-519 are superseded only for this
+promotion requirements for TS-514, TS-516, TS-519 and TS-521 are superseded only for this
 sequence; TS-509's acceptance gate and active frozen inputs remain unchanged.
 
-Do not publish or mark these four tasks accepted between promotions. Freeze the
+Do not publish or mark these five tasks accepted between promotions. Freeze the
 complete combined source, verify it against the final isolated successor, then
 run every Node/native guest, native static gate, tooling/runner check, compiler
 probe and the unchanged 225-file corpus. Preserve original fixtures and reviewed
-expectation migrations. Accept and publish the four tasks together only after
+expectation migrations. Accept and publish the five tasks together only after
 that full validation succeeds. This retains complete final-source coverage while
-avoiding four redundant intermediate native matrices. TS-521 is outside this
-milestone and remains isolated until its own acceptance sequence is assigned.
+avoiding redundant intermediate native matrices. TS-521 joined only after its
+complete isolated READY verification, before canonical promotion began. This
+explicitly supersedes its earlier exclusion from the four-feature sequence.
+The final combined source must cover 961 guests, 468 native entries, 296 tooling
+tests, 35 runner checks, ten compiler probes and all 225 unchanged corpus files.
 
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
