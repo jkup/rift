@@ -6284,7 +6284,7 @@ Evidence: docs/regexp-lookbehind-review.md and build/regexp-lookbehind-review/.
 
 ## TS-531 — RegExp lookbehind implementation
 
-**in progress — isolated successor of TS-529 READY**. Owner: coordinator, 2026-11-13.
+**READY — isolated validation complete; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
 Implement TS-530's reviewed backward matching for positive and negative
 lookbehind, including variable-length bodies, captures/references, nested
 assertion directions, Unicode cursor boundaries and scoped flags. Own the
@@ -6299,6 +6299,15 @@ the four-feature modifiers/Date milestone; canonical promotion waits for that
 milestone's complete acceptance.
 
 ## Next combined milestone: modifiers and local Date
+
+TS-531 READY verification passes: 990 Node guests, 94 controls on each host,
+296 tooling tests, 35 runner checks and 25 fresh native static/zero-dynamic
+gates. Eight historical tests retain their inputs with independently reviewed
+expectation updates; the original 982/990 run and pre-amendment snapshot are
+preserved. Production inputs did not change during that migration. Fourteen
+owned files and 1087 frozen inputs verify. Evidence:
+build/regexp-lookbehind-ready.log and the expectation-review archive.
+Lookbehind promotion still waits for modifiers/Date acceptance.
 
 After the lexical milestone is accepted and pushed, integrate TS-524, TS-527,
 TS-528 and TS-529 in that order, with a separate commit for each feature. All four

@@ -38,7 +38,7 @@ Property updates, computed super reads/calls/writes/updates/deletion and async
 super constructor arguments are accepted. Nested destructuring values,
 nullish/logical operators, optional chains and class heritage/computed keys
 now preserve suspended evaluation contexts. Tagged templates preserve call references and cache frozen arrays per Realm/site.
-Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric/named backreferences, lookahead, Unicode/escaped capture names, disjoint duplicates and Unicode u-mode matching are accepted. Property escapes, v-mode and lookbehind remain unsupported.
+Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric/named backreferences, lookahead, Unicode/escaped capture names, disjoint duplicates and Unicode u-mode matching are accepted. Unicode property escapes and legacy character escapes are accepted. Unicode sets mode remains unsupported; lookbehind has passed isolated validation and awaits integration.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
@@ -75,7 +75,7 @@ Unicode property escapes: the boundary review and complete Unicode 17 data
 preparation pass independently of engine integration. The 443 generated sets
 have both-host lookup/folding checks and zero dynamic operations. Retain the
 reviewed empty-Hrkt reference disagreement and the reduced string-ordering
-compiler evidence. TS-519's isolated parser/matcher integration is READY; see
+compiler evidence. TS-519's parser/matcher integration is accepted; see
 [data validation](regexp-property-data.md). Do not expand large properties into
 individual characters during pattern compilation.
 
@@ -117,48 +117,28 @@ corpus records agree across hosts and retain 191 prior completions, with one
 reviewed diagnostic-only change in an invalid fixture. Raw keyword spelling
 remains distinct from decoded names.
 
-Script whitespace, legacy numeric literals and legacy string escapes are READY
-in isolated successors, with 957, 958 and 959 Node guests respectively. Their
-retained controls pass both hosts, alongside native and tooling gates. The
-numeric audit correction and five string expectation changes retain their
-original evidence. These successors await predecessor acceptance and are not
-included in the accepted counts above. Unicode property escapes now pass focused
-native validation and 182 controls on both hosts in TS-519's READY successor.
-Full Node passes 960/960 after four reviewed expectations changed in two
-standalone tests. Both amended tests pass native execution; original evidence,
-unchanged production hashes and all 296 tooling checks are verified. RE2's
-naming differences remain distinct from ECMAScript semantics.
+Script whitespace, legacy numeric/string literals, Unicode property escapes and
+legacy RegExp character escapes are accepted and published to main at 11d79ce0.
+All 961 guests pass on both hosts, alongside 468 native static gates, 296 tooling
+tests, 35 runner tests and ten compiler probes. The unchanged 225-file corpus
+retains all 191 preceding completions. Original tests and reviewed expectation
+migrations remain preserved; see the [legacy escape review](regexp-legacy-escapes-review.md).
 
-Legacy RegExp character escapes are also READY: 961/961 Node guests, 122
-both-host controls, native static gates and 296 tooling checks pass. Fifteen
-historical expectations across three standalone tests were independently
-reviewed; their exact match/capture replacements pass native execution. The
-original tests, initial 958/961 result and production hashes are retained.
-See the [legacy escape review](regexp-legacy-escapes-review.md).
+[Scoped RegExp modifiers](regexp-modifiers-review.md), Date conversion helpers,
+Realm-local Date behavior and CLI timezone selection are integrated in four
+separate commits. Their combined 1084-input freeze matches the final READY
+successor. All 989 Node guests, runner checks, compiler probes and the unchanged
+corpus pass; the fresh 471-entry native matrix is running. Publication waits for
+complete both-host acceptance. The C++ binary's unscoped and duplicate-flag
+RegExp extensions remain outside ECMAScript admission.
 
-After the accepted ordinary identifier milestone is published, integrate the
-READY whitespace, numeric, string, property-escape and legacy RegExp successors in dependency
-order as one lexical milestone. Verify canonical source against each READY
-predecessor before the next promotion, then run the complete combined suite and
-native matrix before publishing. The final isolated successor already contains
-the preceding changes; this avoids redundant intermediate matrices without
-dropping final-source coverage. Legacy RegExp escapes joined only after full
-isolated verification and before canonical promotion began. Final acceptance
-requires 961 guests per host, 468 native gates, 296 tooling tests, 35 runner
-checks, ten probes and the unchanged 225-file corpus. Keep separate feature
-commits, but publish the combined milestone only after all acceptance checks pass.
-
-The five changes are now integrated in separate commits. The combined 1079-input
-snapshot matches the final READY successor; 961 Node guests, 35 runner tests,
-ten probes and the Node corpus run pass. The 468-entry native matrix is active.
-
-[Scoped RegExp modifiers](regexp-modifiers-review.md) are the next isolated
-successor. The C++ binary supports the reviewed scoped examples; its unscoped
-and duplicate-flag extensions remain outside ECMAScript admission. Rift's
-isolated implementation is READY: 962 Node guests, all 145 controls on both
-hosts, native static gates and 296 tooling tests pass. Its one historical
-expectation migration retains the original test and failure evidence. Canonical
-promotion waits for lexical acceptance.
+Lookbehind is READY as a separate successor: 990 Node guests, 94 controls per
+host, 25 native static/zero-dynamic gates and 296 tooling tests pass. Eight
+historical tests retain their original inputs with independently reviewed
+expectations; the original failing run and source snapshot are archived.
+Production inputs were unchanged during this migration. Integrate only after
+the modifiers/Date milestone is accepted. Then refresh the starter diagnostic's
+old unsupported-lookbehind control, retaining its original input and denominator.
 
 The [Date timezone review](date-named-zone-review.md) replaces the unsuitable
 host local-time boundary with the accepted IANA provider. Pure Date conversion

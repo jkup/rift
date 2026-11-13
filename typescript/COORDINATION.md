@@ -3558,3 +3558,14 @@ reruns all 990 Node guests; session59794 builds and executes the eight amended
 tests with fresh static/zero-dynamic gates. Full READY verification remains
 pending. Evidence: build/regexp-lookbehind-expectation-review/ and the isolated
 before-lookbehind-expectation-migration archive.
+
+2026-11-13 TS-531 is READY: 990/990 Node guests, 94 controls per host, 25 fresh
+native gates, 296 tooling checks and 35 runner checks pass. The eight amended
+historical tests pass fresh native execution; original inputs and pre-amendment
+evidence remain retained. Verification: build/check-regexp-lookbehind-ready.mjs.
+The modifiers/Date initial combined lane completed successfully; session42456
+runs the 471-entry native matrix with three workers. Its next step is
+build/finish-modifiers-date-rollup.ps1, followed by the prepared acceptance
+helper and publication. Duplicate validation copies removed from the READY CLI
+and lookbehind drafts reclaim 1,153,756,476 bytes; original archives and the
+13 protected files in each draft remain intact.
