@@ -6480,3 +6480,40 @@ one boxed-string expectation. The five shared uncaught cases are four missing
 createArray helpers and the intentional throw. Exact binary/source provenance
 limits, transcripts, fixture hashes and classifications are retained under
 build/cpp-artifact-corpus/reviewed.json. No engine or fixture changed.
+
+## TS-537 — Supported builtin symbol descriptor review
+
+**done — both-host descriptor differences classified**. Owner: coordinator,
+2026-11-13. Compare own well-known-symbol descriptors on supported builtin
+constructors, prototypes, namespaces and iterator prototypes against independent
+Node observations. Reuse the hash-verified canonical CLI on both hosts. Inspect
+C++ symbol registration sites for context without claiming exhaustive extraction.
+Own ignored review artifacts and task/coordination records only. Record method
+metadata and descriptor flags without invoking getters. Preserve source freezes;
+any discrepancy requires independent specification review and a separate fix task.
+
+TS-537 compares 53 targets: all 32 observed Rift symbol descriptors agree across
+Node/native and with corresponding Node reference descriptors. Four additional
+Node descriptors are absent: Array species, Array prototype unscopables, iterator
+dispose and iterator toStringTag. Array species/unscopables are documented deferred
+scope; iterator additions belong to unimplemented modern Iterator/resource APIs.
+The Array species getter cannot be installed alone: createDefaultSpeciesArray
+currently rejects every selected constructor, including intrinsic Array. Review
+that operation before exposing the getter. Sources: ECMAScript 2025 sections
+23.1.2.5, 23.1.3.41 and 27.1.4.14, existing Array feature notes and compiler-bound
+source comparisons. Evidence: build/builtin-symbol-review-final/report.json.
+Two harness setup failures are retained; neither executed a guest. The final
+native lane reuses the READY CLI only after every src file matches canonical
+source and its snapshot, build/coverage and executable hash verify.
+
+## TS-538 — Array species construction boundary review
+
+**ready — review only; implementation requires a separate bounded task**.
+Owner: coordinator. Inspect the existing default-species operation and all seven
+callers before enabling Array's species getter or custom construction. Specify
+ordinary-object results, constructor side effects, Realm rules, observable order,
+throws, property creation and each method's length behavior. Use independent Node
+controls and the specification; do not invoke constructors through a shortcut or
+replace explicit unsupported outcomes without a reviewed migration. Own ignored
+review artifacts and task/roadmap notes. Keep both live canonical and READY matcher
+sources unchanged. Prioritize accepted milestone publication before implementation.

@@ -3725,3 +3725,12 @@ Native matrix session98940 remains live. Finalizer session61495 waits on its
 exact wrapper PID18024, then verifies all 471 gates/hashes before running
 finish-modifiers-date-rollup.ps1. Do not start a second finalizer. Its start
 record is build/modifiers-date-finalizer-start.json.
+
+2026-11-13 TS-537 descriptor review completed: 53 targets, 32 Rift descriptors
+agreeing on both hosts and with Node, four absent reference descriptors classified.
+The verified CLI predecessor has identical canonical src files and passing native
+static coverage. The canonical matrix has not yet built its CLI entry, so the
+initial checkpoint lookup stopped before execution; a separate script variable
+shadowing failure also stopped before guest execution. Both logs are retained.
+TS-538 records the substantive Array species boundary review; no frozen source
+changed and no metadata-only fix was applied.

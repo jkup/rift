@@ -909,3 +909,12 @@ remain, and no cases have been admitted as conformance passes.
 2026-11-13 Ordinary identifiers milestone accepted (TS-509): 956/956 guests on both hosts without skips; 463 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-qYQwMg/native-PXLkDL matches all 225 normalized records and preserves all 191 preceding completions. Unicode identifiers and escaped names retain raw keyword provenance and UTF-16 spans. Original fixtures are unchanged. Evidence: build/ordinary-identifiers-rollup-*.
 
 2026-11-13 Lexical milestone accepted (TS-511, TS-514, TS-516, TS-519, TS-521): 961/961 guests on both hosts without skips; 468 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-vXT1TU/native-kupwDB matches all 225 normalized records and preserves all 191 preceding completions. Script whitespace, legacy numeric/string literals Unicode RegExp property escapes and legacy RegExp character escapes are integrated. Original fixtures and reviewed historical expectation migrations remain retained. Evidence: build/lexical-rollup-*.
+
+Symbol descriptor review (TS-537): 53 supported builtin/prototype targets expose
+32 matching symbol descriptors on both Rift hosts. Node additionally exposes
+Array species/unscopables and two modern iterator symbol properties. The first
+pair remains deferred Array scope; the latter belongs to absent modern Iterator
+and resource-management APIs. Inspect Array species construction (TS-538) before
+adding its getter: the current bounded operation would reject the resulting
+intrinsic constructor. A metadata-only addition would break ordinary Array
+methods. Preserve the current explicit unsupported behavior until reviewed.
