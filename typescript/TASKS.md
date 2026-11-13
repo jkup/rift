@@ -5734,7 +5734,7 @@ remain rejected; seven position checks pass. See docs/script-whitespace-review.m
 
 ## TS-511 — Complete Script whitespace scanning
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-12.
+**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-12.
 Implement TS-510's reviewed whitespace boundary in an isolated successor to the
 ordinary-identifier draft. Reuse isStringWhitespace for Script token separation;
 retain separate line-terminator handling, CRLF locations, literal contents and
@@ -5799,7 +5799,7 @@ docs/legacy-numeric-literals-review.md for implementation boundaries.
 
 ## TS-514 — Legacy numeric literals and strict-context rejection
 
-**ready — requires TS-511 READY**. Owner: coordinator, 2026-11-13.
+**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
 Implement TS-513's full reviewed legacy octal/non-octal decimal boundary in an
 isolated successor. Preserve source spans and token provenance, exact value
 conversion, integer/fraction/exponent separator rules and modern conversions.
@@ -5813,3 +5813,15 @@ notes. Require all 110 retained controls on both hosts, malformed/unsupported
 precedence tests, full regression/tooling and static-only/zero-dynamic gates.
 Review any historical expectation migration separately; preserve original
 fixtures. Promotion requires acceptance of all predecessor milestones.
+
+TS-511 READY: 957 Node guests, 146 controls on both hosts, focused native
+execution, 15 native tooling gates, 296 tooling tests, eight codec records per
+host and 16 parent envelopes pass. Source and ownership hashes verify. TS-514
+starts from this frozen predecessor; canonical source remains unchanged.
+
+TS-514 implementation passes typechecking, the focused test, all 110 reviewed
+Node controls, 35 runner tests and eight strict-legacy-number producer records.
+The initial control replay exposed lost numeric-key provenance; it is retained
+and the corrected replay passes. All 1073 source/control inputs are frozen.
+Full Node regression runs in session59415; focused native compilation and native
+controls run in session99388. No historical expectation has been changed.
