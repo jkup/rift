@@ -3429,3 +3429,14 @@ session89629 still runs independently with 363 verified checkpoints.
 2026-11-13 TS-519 promoted with 6 changed-file baselines verified. Isolated evidence passes 960 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/regexp-property-escapes-draft/build and build/regexp-property-escapes-* logs, retaining initial failures and exact historical-input migrations.
 
 2026-11-13 TS-521 promoted with 6 changed-file baselines verified. Isolated evidence passes 961 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/regexp-legacy-escapes-draft/build and build/regexp-legacy-escapes-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-13 TS-524 is READY in its isolated successor: 962 Node cases, 145 controls
+per host, 296 tooling checks, 35 runner checks and native static gates pass. The
+one historical parser expectation amendment retains original inputs and has a
+separate native PASS. Canonical promotion waits for the five-feature lexical
+milestone: session21360 remains live with 143/468 verified native checkpoints.
+TS-525's read-only diagnostic refresh closes the five prior syntax gaps on both
+hosts while retaining all 60 variants and three profile exclusions. TS-526 is a
+bounded Date named-zone design review with 14 passing provider controls; it owns
+only its review document and ignored artifacts. No new canonical engine inputs
+have changed during the active matrix.

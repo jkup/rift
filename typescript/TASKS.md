@@ -6096,7 +6096,7 @@ original source/process records in build/regexp-modifiers-review/.
 
 ## TS-524 — Scoped RegExp modifier implementation
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
+**READY — isolated successor; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
 Implement TS-523's reviewed scoped i/m/s grammar and matching in a successor of
 TS-521 READY. Own the pattern parser/types, matcher, focused tests/manifests and
 feature notes in an isolated draft. Compile effective flags per instruction;
@@ -6125,6 +6125,20 @@ native/full-Node verification helpers are prepared. Canonical session21360 is
 live with 87/468 verified checkpoints and unchanged frozen inputs. Main remains
 at the accepted TS-509 milestone until combined lexical acceptance completes.
 
+TS-524 READY: 962/962 Node cases without skips, 145 semantic controls per host,
+296 tooling tests, 35 runner checks, focused/probe native gates and all 15
+tooling native gates pass. Eight producer records per host and 16 envelope
+records pass. Only the independently reviewed standalone regexp-pattern
+expectation changed after tooling; its amended native test passes separately.
+Original inputs and the initial 961/962 run remain retained. The verifier checks
+seven owned files and 1082 frozen inputs. Evidence: build/regexp-modifiers-ready.log
+and build/regexp-modifiers-owned-snapshot.json. No canonical promotion yet.
+
+After all draft validation completed, duplicate validation archive copies were
+removed only when byte-identical to tracked originals: 2596 files / 576,878,238
+bytes. Thirteen protected tiny files remain. Canonical archives, source snapshots,
+executables and reports are retained; see the validation-copy-cleanup report.
+
 ## TS-525 — Starter Script diagnostic refresh
 
 **done — both-host diagnostic refresh**. Owner: coordinator, 2026-11-13.
@@ -6142,6 +6156,24 @@ the five prior syntax-certification gaps close with explicit rule provenance.
 All 17 controls per host pass, and all three profile exclusions remain. The
 original selection and fixture/harness bytes are unchanged. Evidence and scope:
 docs/test262-starter-refresh.md and build/starter-script-refresh-final-reviewed.json.
+
+## TS-526 — Date named-zone integration review
+
+**in progress — bounded design review**. Owner: coordinator, 2026-11-13.
+Assess the accepted IANA/Temporal backend as a shared provider for explicitly
+configured local Date operations. Preserve the engine's UTC default and separate
+system-timezone discovery. Review Date's local/UTC conversions, gap/fold policy,
+range edges, parsing/formatting and setter order against the specification and
+independent reference controls. Own docs/date-named-zone-review.md and ignored
+review artifacts only. No Date behavior, Realm configuration or CLI changes;
+implementation requires a separately bounded assignment after this review.
+
+TS-526 checkpoint: 14 explicit local-time/provider controls pass independent
+Node Date references and both Rift hosts, including both range boundaries and
+adjacent overflow. Source review identifies clipping, field-range, absent-offset
+parsing and local setter/formatting integration requirements. Historical offset
+formatting, setter ordering and Realm configuration remain under review. See
+docs/date-named-zone-review.md; no behavior change is implemented or accepted.
 
 ## Canonical lexical milestone sequence (2026-11-13)
 
