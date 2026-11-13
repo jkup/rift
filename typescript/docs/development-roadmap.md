@@ -155,11 +155,10 @@ tooling checks. Four initial sandbox link-permission failures remain preserved;
 the unchanged full rerun passed with host access. These successors are not yet
 included in the accepted canonical counts above.
 
-The [lookbehind review](regexp-lookbehind-review.md) records 19 explicit reference
-controls and the required backward matcher/capture changes. An isolated successor
-now passes focused Node/native execution and 94 Node diagnostic controls; full
-regression, native diagnostic controls and tooling remain pending. Canonical
-lookbehind admission is separate from the modifiers/Date milestone.
+The [lookbehind review](regexp-lookbehind-review.md) records the backward
+matcher/capture design and independent reference controls. The isolated successor
+has completed validation as described above; canonical lookbehind admission
+remains separate from the modifiers/Date milestone.
 
 ## Historical feature checkpoints
 
