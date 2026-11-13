@@ -3822,3 +3822,22 @@ The helpers write proposals only; frozen candidate sources remain untouched.
 The other six initial failures (fromEntries, groupBy, map and throw-inspection
 variants) still need explicit migrations. Focused native checks remain queued
 behind the canonical matrix/finalizer in live session88122 (363/471 checkpoint).
+
+2026-11-13 TS-539 iterator proposals now preserve the original successful species
+bodies: fromEntries cleanup leaves its original TypeError catchable; infinite
+fromEntries/groupBy iterators terminate at their existing resource budgets with
+no cleanup. Additional dynamic RegExp-v controls preserve actual unsupported
+fatal-stop coverage with runtime.regexp-pattern. No original guest source was
+removed. build/prepare-species-iterator-migrations.mjs writes outside the frozen
+draft; typecheck and both drivers pass. The proposal verifier now records nine
+original cases passing with exact expected output; its earlier seven-case report
+is preserved as build/array-species-proposed-tests-seven-reviewed.json.
+
+Map reentry review additionally preserves/extracts the original 48 controls on
+both predecessor and candidate. Construction adds one inner allocation tick,
+bypasses the test Realm.createArray observer, and retains independent session
+budgets, exact host exceptions, guest throws and outer-frame restoration.
+Literal expected effects and budget/provenance records pass for all 48 Node
+observations. Evidence: build/array-species-reentry-review/reviewed.json and lane
+transcripts; helper build/review-species-map-reentry.mjs. No frozen input changed.
+Canonical checkpoint371/471 verifies. Free space90.11 GiB; weekly usage67% used.
