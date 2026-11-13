@@ -1,6 +1,6 @@
 # Array unscopables
 
-TS-541 is an isolated candidate; native validation and canonical acceptance are pending.
+TS-541 is integrated and accepted after full canonical validation.
 
 Script Realms give `Array.prototype[Symbol.unscopables]` a fresh null-prototype
 object. The parent property is nonwritable, nonenumerable and configurable.

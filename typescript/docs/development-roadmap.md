@@ -10,8 +10,8 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted RegExp matcher and Array species milestone passes 992/992 guests on each
-host, 296/296 tooling checks, and all 474 native static gates.
+The accepted Array unscopables milestone passes 993/993 guests on each
+host, 296/296 tooling checks, and all 475 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
@@ -925,8 +925,10 @@ assume successful fresh-array writes; they must propagate guest TypeErrors on
 protected results. Slice and splice also need explicit result-length writes,
 with splice doing so before receiver mutation. Integrate the getter together
 with these changes under TASKS.md's guarded matcher/species cohort plan.
-TS-539 is now accepted after combined matcher/species validation. Array unscopables remains a separate successor.
+TS-539 is now accepted after combined matcher/species validation. TS-541 subsequently accepted the Realm-local Array unscopables data property; with statements remain unsupported.
 
 2026-11-13 Modifiers/Date milestone accepted (TS-524, TS-527, TS-528, TS-529): 989/989 guests on both hosts without skips; 471 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-JdGrQY/native-bs6USM matches all 225 normalized records and preserves 191 preceding completions. Scoped RegExp i/m/s modifiers, complete Realm-configured local Date behavior and CLI timezone selection are integrated. UTC remains the default. Original fixtures, modifier expectation migration, original CLI usage expectations and sandbox permission failures remain retained. Evidence: build/modifiers-date-rollup-*.
 
 2026-11-13 RegExp matcher and Array species milestone accepted (TS-531, TS-534, TS-539): 992/992 guests on both hosts without skips; 474 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-M6I0uq/native-GWhHUo matches all 225 normalized records and preserves 191 preceding completions. Backward lookbehind matching, bounded wide Unicode ignore-case range compilation and custom Array species construction are integrated. Small-range and legacy folding paths remain; the rejected performance candidate and all reviewed historical expectation changes are retained. Evidence: build/matcher-species-rollup-*.
+
+Array unscopables accepted: 993/993 guests on each host without skips; 475 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. The original 225-file corpus matches the preceding milestone with 191 completions. Realm-local descriptors and mutation are covered; with statements remain unsupported. Evidence: build/unscopables-rollup-*.

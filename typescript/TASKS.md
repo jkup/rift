@@ -6600,7 +6600,7 @@ No engine or historical fixture changed.
 
 ## TS-541 — Array unscopables data property
 
-**in progress — integrated; full canonical validation pending**.
+**done — accepted Array unscopables data property**.
 Owner: coordinator. Implement TS-540 in the Script Array bootstrap with a fresh
 null-prototype object per Realm, the exact16 specification keys and descriptor
 flags. Own src/builtins/array.ts, focused tests/manifests, relevant historical
@@ -6709,3 +6709,5 @@ both-host tests, reviewed expectation migrations and feature notes. Require
 explicit reference outputs and full canonical regression/static acceptance.
 Do not start alongside the active canonical matrix or before the predecessor
 has passed its required native/tooling validation.
+
+Array unscopables accepted: 993/993 guests on each host without skips; 475 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. The original 225-file corpus matches the preceding milestone with 191 completions. Realm-local descriptors and mutation are covered; with statements remain unsupported. Evidence: build/unscopables-rollup-*.
