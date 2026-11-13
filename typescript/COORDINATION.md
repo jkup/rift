@@ -3858,3 +3858,11 @@ install only after session88122's focused native/probe checks terminate cleanly,
 archive their frozen snapshot, then rerun full Node and amended native gates.
 Canonical checkpoint385/471 still matches its frozen inputs; session88122 owns
 the matrix, finalizer and focused species queue. No production source changed.
+
+TS-539 continuation helpers prepared (not applied):
+build/install-species-test-migrations.mjs verifies all frozen inputs/proposal
+hashes and both native proofs before archiving and installing the ten-file plan.
+Its read-only preflight passes with native proof pending. After session88122 is
+terminal0, run it with --apply, then build/check-species-amended-node.mjs for
+992 guests/35 runner/296 tooling checks. Both helpers pass syntax checks.
+Session88122 remains live; canonical checkpoint393/471 still verifies.
