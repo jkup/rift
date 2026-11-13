@@ -918,3 +918,10 @@ and resource-management APIs. Inspect Array species construction (TS-538) before
 adding its getter: the current bounded operation would reject the resulting
 intrinsic constructor. A metadata-only addition would break ordinary Array
 methods. Preserve the current explicit unsupported behavior until reviewed.
+
+Array species follow-up (TS-538/539): 21 independent controls establish custom
+object construction across seven Array methods. Existing default-only callers
+assume successful fresh-array writes; they must propagate guest TypeErrors on
+protected results. Slice and splice also need explicit result-length writes,
+with splice doing so before receiver mutation. Integrate the getter together
+with these changes, after matcher acceptance. No source change is accepted yet.

@@ -3734,3 +3734,11 @@ initial checkpoint lookup stopped before execution; a separate script variable
 shadowing failure also stopped before guest execution. Both logs are retained.
 TS-538 records the substantive Array species boundary review; no frozen source
 changed and no metadata-only fix was applied.
+
+2026-11-13 TS-538 reference review completed: 21 Node expected-result controls
+for seven Array methods, and matching explicit unsupported results on both Rift
+hosts. Verified existing construction boundaries in Array.of/from and RegExp;
+identified generic object results, throwing element creation, slice/splice length
+writes and Realm rules. TS-539 is the bounded implementation successor after
+matcher acceptance. No live or READY engine source changed. Reference session40730
+completed successfully; evidence is build/array-species-boundary-review/reviewed.json.

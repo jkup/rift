@@ -6508,7 +6508,7 @@ source and its snapshot, build/coverage and executable hash verify.
 
 ## TS-538 — Array species construction boundary review
 
-**ready — review only; implementation requires a separate bounded task**.
+**done — construction and caller obligations reviewed**.
 Owner: coordinator. Inspect the existing default-species operation and all seven
 callers before enabling Array's species getter or custom construction. Specify
 ordinary-object results, constructor side effects, Realm rules, observable order,
@@ -6517,3 +6517,39 @@ controls and the specification; do not invoke constructors through a shortcut or
 replace explicit unsupported outcomes without a reviewed migration. Own ignored
 review artifacts and task/roadmap notes. Keep both live canonical and READY matcher
 sources unchanged. Prioritize accepted milestone publication before implementation.
+
+TS-538: 21 independently specified Node controls cover all seven species callers
+with ordinary-object, accessor-length and nonextensible results. Both Rift hosts
+retain matching explicit unsupported behavior. Evidence is retained in
+build/array-species-boundary-review/reviewed.json. Review follows
+https://262.ecma-international.org/16.0/#sec-arrayspeciescreate and the seven
+Array method algorithms. Existing Array.of/from and RegExp species paths already
+supply the required context.construct boundary; no compiler or evaluator shortcut
+is justified. Return an ordinary GuestObject completion, retain the foreign
+intrinsic Array exception, and only apply array-length bounds on default creation.
+Map/filter/flat/flatMap do not write result length; slice/concat/splice do, with
+splice's deleted-result length preceding receiver mutation. Failed property
+creation must be guest TypeError rather than a fresh-array invariant fault.
+
+## TS-539 — Array species construction
+
+**ready — integration waits for accepted matcher milestone**. Owner: coordinator.
+Implement the reviewed ArraySpeciesCreate boundary for all seven callers and
+install the Array species getter atomically. Own src/array-species.ts,
+src/array-map.ts, src/builtins/array.ts, array-copy.ts, array-iteration.ts,
+array-flat.ts and array-mutation.ts, focused tests/manifests and feature notes.
+Use existing ObjectCompletion/context.construct; preserve constructor identity,
+new.target, Realm selection, budgets, holes, evaluation order and exact throws.
+Return arbitrary constructed objects. Apply throwing property creation and the
+reviewed method-specific length writes. Keep legacy profile rejection unchanged.
+
+Cover ordinary and array-subclass species, null/default/invalid selection,
+throwing constructor/species getters, non-array receivers ignoring constructor,
+foreign intrinsic Array, bound constructors, constructor side effects, protected
+result properties, length setters/failures and source/result aliasing. Run the
+21 reviewed controls with explicit expected results on both hosts, focused native
+static/zero-dynamic gates, full Node/native regression, tooling and corpus checks.
+Review original unsupported-expectation migrations individually; preserve original
+inputs, failures and legacy codec coverage. Array unscopables, Iterator helpers,
+resource-management syntax and unrelated species APIs are outside this task.
+Do not modify either live canonical inputs or READY matcher snapshots.
