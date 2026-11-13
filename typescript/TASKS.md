@@ -5900,6 +5900,15 @@ remains live. TS-516 focused native and all 141 controls now pass both hosts;
 native tooling/producer validation runs in session15869 while the full Node
 regression continues in session68239.
 
+TS-516 validation update: all 15 native tooling builds, 296 tooling tests and
+producer/envelope checks passed on the original frozen source. Full Node passed
+958/959 because the historical string-escapes test still rejected five newly
+supported literals. Exact old/new both-host and independent value/strictness
+review passes. Only that standalone test is amended; production source is
+unchanged and prior reports retain their original snapshot hashes. Full Node
+reruns in session78340; the amended test's native build/execution is session46657.
+The new READY verifier checks the amendment and both sets of evidence together.
+
 ## TS-517 — Unicode property escape boundary and data review
 
 **in progress — read-only review**. Owner: coordinator, 2026-11-13.
