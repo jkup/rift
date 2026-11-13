@@ -1,6 +1,9 @@
 # Classic-for declarations
 
-TS-545 is an isolated candidate. Native and full canonical acceptance remain pending.
+TS-545 passed full canonical acceptance: 995 guests on each host, 477 native
+static-only/zero-dynamic gates, 296 tooling checks, 35 runner checks, ten probes
+and typechecking. The original 225-file corpus retains 191 completions with no
+changed outcomes. Evidence: `build/classic-for-rollup-*`.
 
 Classic-for heads accept ordered identifier and binding-pattern declarations.
 Lexical heads create all names before initialization. Each initializer and pattern

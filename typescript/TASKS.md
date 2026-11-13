@@ -6697,7 +6697,7 @@ pattern paths; no binary provenance claim is made.
 
 ## TS-545 — Classic-for declaration lists and patterns
 
-**in progress — integrated; full canonical validation pending**.
+**done — full canonical acceptance passed**.
 Implement the TS-544 contract using the shared ordered declaration representation.
 Cover lexical lists and let/const/var pattern initializers, complete bound-name
 planning and source associations, TDZ and sequential initialization, all-name
@@ -6791,3 +6791,5 @@ TS-547 initial full Node session 67477 exited 1 with 994/996 passing and exactly
 **blocked — requires TS-547 READY review before implementation**. Use the separately reviewed TS-546 controls to admit ordinary labelled function declarations in permitted non-strict statement lists. Preserve nested labels, declaration ownership, source ranges and Annex B behavior at the enclosing scope. Strict code, labelled async/generator functions and labelled-function forms in conditional or iteration Statement slots must remain syntax errors. Add independent positive/negative reference controls, both-host execution, resource/session checks and full canonical regression/static acceptance. Keep this separate from synthetic conditional blocks; do not infer correctness from the C++ parser accepting a general statement. No implementation is assigned yet.
 
 TS-547 amended session 93459 completed successfully: 996/996 Node guests and 35 runner checks, no skips. Independent ledger comparison confirms all 996 expected results unchanged and the 994 unaffected process outputs identical. Evidence: build/conditional-function-draft/build/node-migration-reviewed.json. Native/tooling/READY remain pending predecessor acceptance and free compiler capacity; canonical TS-545 session 45170 is still active. The guarded promotion helper is prepared and syntax-checked but unrun.
+
+TS-545 canonical session 45170 completed with exit 0 and all five stages passing: 995/995 guests on each host without skips, 477 static-only/zero-dynamic native gates with executable hashes, 296 tooling tests, 35 runner checks, ten probes and typechecking. The original 225-record corpus retains 191 completions with no added or changed outcomes. Frozen input snapshot: 533d0a53631094dffb92e3269cc066bb3d3f5a444788f310b9909c34f9b27b87. Accepted for publication; TS-547 may begin its guarded 24-gate/31-case native validation after main advances.
