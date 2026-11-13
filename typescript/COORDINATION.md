@@ -3495,3 +3495,18 @@ and the minimal EPERM/host-success probes are retained. Session88802 reruns all
 296 unchanged tests with host filesystem access. The prepared promotion helper
 build/promote-modifiers-date.mjs is syntax-checked but unrun; it requires published
 lexical acceptance, all four READY snapshots and complete predecessor comparisons.
+
+2026-11-13 TS-529 full READY verification passes after the unchanged 296/296
+host-permission tooling rerun. TS-531 implements the reviewed backward matcher
+in a verified CLI READY successor: 1087 inputs are frozen, focused Node/native
+tests and 94 Node controls pass. Session73706 finishes its diagnostic native
+probe; session75617 runs the initial 990-case Node suite with historical
+unsupported expectations unchanged. The source review's original canonical and
+modifier files are archived before future promotion changes their paths.
+
+Canonical lexical session52275 terminated successfully: all 468 static gates
+and executable hashes pass. Final acceptance session90232 now runs 961 native
+guests, the unchanged corpus comparison and 296 tooling checks. Prior original
+and resumed build logs remain retained. Promotion and validation preparation for
+the four-feature modifiers/Date milestone is syntax-checked but unrun; it cannot
+change canonical inputs before lexical acceptance and publication.

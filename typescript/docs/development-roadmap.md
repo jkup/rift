@@ -168,14 +168,18 @@ controls on each host, 17 fresh native static gates and 296 tooling checks pass.
 Historical offset seconds, setter coercion order, range edges and defining-Realm
 behavior have explicit expectations. UTC remains the default. TS-529 now adds
 a leading `--time-zone <identifier>` CLI option in an isolated successor;
-25 Node controls pass, including invalid configuration before source I/O or
-execution and UTC defaults under a different host timezone. Fresh CLI native
-validation and full regression/tooling checks are active. Neither Date successor
-is included in the accepted canonical counts above.
+all 25 controls pass on both hosts, including invalid configuration before source
+I/O or execution and UTC defaults under a different host timezone. The CLI
+successor is READY with 989 Node cases, a fresh native static gate and all 296
+tooling checks. Four initial sandbox link-permission failures remain preserved;
+the unchanged full rerun passed with host access. These successors are not yet
+included in the accepted canonical counts above.
 
 The [lookbehind review](regexp-lookbehind-review.md) records 19 explicit reference
-controls and the required backward matcher/capture changes. Implementation is
-separate and follows the Date CLI task; no lookbehind syntax is admitted yet.
+controls and the required backward matcher/capture changes. An isolated successor
+now passes focused Node/native execution and 94 Node diagnostic controls; full
+regression, native diagnostic controls and tooling remain pending. Canonical
+lookbehind admission is separate from the modifiers/Date milestone.
 
 ## Historical feature checkpoints
 

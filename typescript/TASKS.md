@@ -6240,7 +6240,7 @@ build/date-named-zone-owned-snapshot.json. No historical test expectation change
 
 ## TS-529 — CLI Date timezone selection
 
-**in progress — isolated successor of TS-528 READY**. Owner: coordinator, 2026-11-13.
+**READY — isolated successor; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
 Add an optional leading `--time-zone <identifier>` to the existing file and
 `-e <source>` forms. Preserve UTC by default and the current file/source meaning
 after the optional prefix. Validate argument shape and the strict timezone
@@ -6254,6 +6254,15 @@ missing zone values, extra arguments, unchanged UTC defaults and existing error
 statuses on both hosts. Require a fresh CLI static/zero-dynamic gate and complete
 successor regression/tooling validation. No runtime semantics or general argument
 parser refactor. Canonical promotion still waits for preceding acceptance.
+
+TS-529 READY verification passes: 989 Node guests, 25 controls on both hosts,
+35 runner tests, a fresh static-only/zero-dynamic CLI gate and 296 tooling tests.
+The 15 inherited tooling binaries have unchanged source/driver and executable
+proofs. The initial 292/296 tooling run retained four sandbox link-permission
+failures; the complete host-permission rerun passed with unchanged source.
+Evidence: build/cli-time-zone-ready.log, build/cli-time-zone-owned-snapshot.json
+and the retained permission-rerun records. Three owned files and 1085 frozen
+inputs are verified; no guest runtime semantic change was required.
 
 ## TS-530 — RegExp lookbehind integration review
 
@@ -6272,6 +6281,22 @@ scoped flags, preserves assertion atomicity and uses backward Unicode cursor
 reads. Canonical and READY modifier source hashes are retained. Syntax-error,
 protocol, lastIndex, resource and both-host gates remain implementation work.
 Evidence: docs/regexp-lookbehind-review.md and build/regexp-lookbehind-review/.
+
+## TS-531 — RegExp lookbehind implementation
+
+**in progress — isolated successor of TS-529 READY**. Owner: coordinator, 2026-11-13.
+Implement TS-530's reviewed backward matching for positive and negative
+lookbehind, including variable-length bodies, captures/references, nested
+assertion directions, Unicode cursor boundaries and scoped flags. Own the
+pattern parser/types, matcher, focused tests/manifests and feature notes in an
+isolated successor. Keep direction immutable in compiled instructions, preserve
+the iterative assertion/backtracking stacks and resource accounting, and reject
+quantified lookbehind as syntax errors. Retain existing unsupported inputs and
+review exact expectation migrations separately. Require meaningful expected-result
+controls on both hosts, static-only/zero-dynamic gates and full regression/tooling.
+Exclude Unicode sets mode and unrelated Annex B grammar. This feature is outside
+the four-feature modifiers/Date milestone; canonical promotion waits for that
+milestone's complete acceptance.
 
 ## Next combined milestone: modifiers and local Date
 
