@@ -3916,6 +3916,30 @@ The earlier obsolete-session assertions are superseded by this correction.
 
 TS-532 refreshed the README, current feature overview and reading guide after modifiers/Date acceptance. Historical sections remain; local links, npm commands and four examples on both hosts pass. No runtime files changed. Evidence: build/current-docs-draft/reviewed.json.
 
+2026-11-13 publication: modifiers/Date acceptance48e3bff1 and documentation14e2e0eb
+are pushed to main/review with verified ancestry. TS-532 promotion first stopped
+on its default git output buffer, then on one extra README EOF blank line; neither
+changed runtime source. The helper buffer is bounded at16MiB; the original
+review/README are archived under current-docs-draft/before-eof-normalization.
+Exactly one final blank line was removed; reviewed examples/links are unchanged.
+Lookbehind62675b64 and Unicode-range76357370 are integrated in separate commits
+with canonical focused Node/typechecking passing; neither is accepted/pushed yet.
+
+TS-539 migrations are installed and their earlier native snapshot/proofs archived
+under build/array-species-draft/build/before-expectation-migration/. Session57718
+is terminal1: typecheck,992/992 Node guests and35 runner checks pass, but tooling
+ran before its15 native fixture drivers existed (248pass/28fail,276 discovered;
+expected complete suite remains296). Preserve amended-tooling.log/process.json;
+no denominator or expectations were relaxed. amended-node-base-reviewed.json
+verifies only the successful base checks. Session77361 now owns the sole native
+build job:36 fresh entries cover the owned guest drivers, CLI and15 tooling
+dependencies. Its generated runner syntax/preflight passes and its first focused
+entry passes. After terminal0, run build/check-species-tooling-after-native.mjs
+on the host; it requires all36 gates and retained initial failure, then demands
+296/296 tooling before producing amended-node-reviewed.json. Do not rerun the
+earlier all-in-one Node helper or start a concurrent full matcher matrix.
+The earlier21-entry native plan is superseded by this36-entry dependency closure.
+
 2026-11-13 TS-531 promoted after complete predecessor checks with 14 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
 
 2026-11-13 TS-534 promoted after complete predecessor checks with 9 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
