@@ -3988,3 +3988,21 @@ CLI and the15 tooling prerequisites, then verifies seven native semantic cases.
 Tooling296, full canonical acceptance and feature promotion remain pending.
 Canonical frozen inputs still verify; all unscopables runtime edits remain ignored
 and outside the current matcher/species cohort.
+
+2026-11-13 TS-535 was rechecked against the current Array species sources instead
+of reusing matcher-only evidence. The hash-verified species diagnostic probe uses
+an archived pre-test-amendment snapshot; all runtime sources match canonical,
+and the explicit amendment changes only ten test/tool inputs. Both-host runs
+pass the same57 executable variants, three profile exclusions and19 controls.
+Normalized structured results match the earlier matcher review exactly. Evidence:
+build/starter-species-final-reviewed.json. After the combined milestone is
+accepted/pushed, use build/publish-starter-species-review.mjs (not the older
+matcher-only publisher). It requires all three accepted task statuses and checks
+canonical source equality before publishing the diagnostic documentation.
+
+Session43140 is terminal0: amended unscopables993/993 Node guests and35 runner
+checks pass. Native prerequisites and tooling remain pending. The prepared
+build/check-unscopables-tooling.mjs requires18 fresh native gates before running
+296 tooling checks; it passes syntax checking but has not run. Session22201 is
+still live, with50 canonical native gates passing at this checkpoint and no
+failures. Continue to reserve all four compiler slots for that matrix.
