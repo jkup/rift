@@ -3710,3 +3710,18 @@ published matcher acceptance, verifies all retained diagnostic hashes and compar
 probe engine sources with canonical source before updating TS-535 documentation.
 It remains unapplied. Continue Date acceptance/publication, TS-532, matcher
 integration/acceptance/publication, then this diagnostic documentation update.
+
+2026-11-13 TS-536 directly executed the unchanged 225-file corpus against the
+existing C++ artifact through WSL. Its exit-zero exception behavior and silently
+accepted invalid-syntax control prevent an honest pass percentage. Reviewed
+markers: 132 reported successes, 88 unchecked outputs, five uncaught diagnostics.
+The additional 29 outputs versus TypeScript's 191 completions match the already
+classified weak APIs, collector hooks and specification/fixture differences.
+Exact artifact hashes and unverified build provenance remain explicit in
+build/cpp-artifact-corpus/reviewed.json. Reference session27006 completed; no
+fixtures, compiler, C++ source or frozen TypeScript source changed.
+
+Native matrix session98940 remains live. Finalizer session61495 waits on its
+exact wrapper PID18024, then verifies all 471 gates/hashes before running
+finish-modifiers-date-rollup.ps1. Do not start a second finalizer. Its start
+record is build/modifiers-date-finalizer-start.json.

@@ -6456,3 +6456,27 @@ match and unsupported Unicode sets. All 19 controls per host pass, with matching
 structured results and verified native static coverage/executable hashes.
 Original failed reports and independent Node reference checks are retained in
 build/starter-matcher-final-reviewed.json. Canonical publication remains pending.
+
+## TS-536 — Direct C++ artifact corpus comparison
+
+**done — exact C++ artifact reviewed; source-build provenance unverified**. Owner: coordinator, 2026-11-13.
+Inspect the existing C++ executable and execute the unchanged 225-file corpus
+without injected helpers if its environment is usable. Own ignored review
+artifacts and task/coordination records. Record exact binary and fixture hashes,
+process outcomes, unavailable inputs and provenance limits; an old executable is
+not proof of current-source C++ behavior. Preserve the TypeScript corpus and all
+original fixtures. Do not rebuild during the four-worker native matrix, change
+the pinned toolchain, inject simulated GC, or present this as conformance.
+
+TS-536 ran all 225 hash-verified original files through the existing Linux C++
+artifact in WSL without helpers. Marker review finds 132 reported successes,
+88 unchecked outputs and five uncaught diagnostics, although all exit zero.
+Five explicit controls confirm zero exits for throws and silent acceptance of
+invalid syntax (`var = ;`). Do not turn those counts into a parity percentage.
+All 191 TypeScript completions have no observed C++ failure. The other 29 C++
+outputs divide into seven weak-API gaps, eight collector hooks, nine legacy
+Temporal assumptions, two invalid-syntax cases, two required runtime errors and
+one boxed-string expectation. The five shared uncaught cases are four missing
+createArray helpers and the intentional throw. Exact binary/source provenance
+limits, transcripts, fixture hashes and classifications are retained under
+build/cpp-artifact-corpus/reviewed.json. No engine or fixture changed.
