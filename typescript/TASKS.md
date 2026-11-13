@@ -6660,3 +6660,17 @@ Amended full Node/runner session 88025 is live. Native/tooling validation has no
 started; canonical compiler capacity belongs to unscopables session 15121.
 Before READY, add/review focused duplicate-list and invalid-declarator controls,
 Realm/resource behavior, native coverage and semantics, and full tooling evidence.
+
+TS-543 edge review completed: nine independent Node syntax-error controls and
+focused defining-Realm, current-caller-budget and session-cleanup checks pass.
+The proposal was independently compiled/executed before a single test-file-only
+amendment; original snapshots and tests remain in before-edge-amendment.
+Session 88025 completed 994/994 Node and 35 runner checks before that amendment;
+session 85896 completed the final extended 994/994 and 35/35 with no skips.
+build/declaration-list-draft/build/node-migration-reviewed.json verifies all 994
+expectations and exact unchanged results for the 991 unaffected cases. Final
+source snapshot SHA256: 6b411e1997ad8a36a49332c3bf8081cd8f5fd175b7bd14bba27e4673dca19a04.
+The ownership-only READY preflight passes eleven owned paths and both explicit
+test-only amendments. Full READY has not run. Prepared helpers require 19 fresh
+native gates and 31 executions, then 296 tooling checks; no successor native job
+has started. Canonical integration remains gated on accepted unscopables.
