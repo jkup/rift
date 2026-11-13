@@ -5812,7 +5812,7 @@ types and guards, protocol codecs/tests, focused tests, manifests and feature
 notes. Require all 110 retained controls on both hosts, malformed/unsupported
 precedence tests, full regression/tooling and static-only/zero-dynamic gates.
 Review any historical expectation migration separately; preserve original
-fixtures. Promotion requires acceptance of all predecessor milestones.
+fixtures. Promotion follows the canonical lexical milestone sequence below.
 
 TS-511 READY: 957 Node guests, 146 controls on both hosts, focused native
 execution, 15 native tooling gates, 296 tooling tests, eight codec records per
@@ -5875,7 +5875,7 @@ Own lexer/parser provenance, declaration collection, outcomes/observation guards
 protocol codecs/tests, focused tests, manifests and feature notes. Require all
 141 retained controls on both hosts, full regression/tooling and native static
 gates. Review historical expectation migrations individually and retain fixtures.
-Promotion requires acceptance of all predecessor milestones.
+Promotion follows the canonical lexical milestone sequence below.
 
 TS-514 READY after correction: 958 Node guests, 110 reviewed controls and all
 102 original assignment-audit inputs on both hosts, 15 native tooling gates,
@@ -5958,7 +5958,7 @@ the initial dynamic string-ordering result and reduced controls are retained.
 
 ## TS-519 — Unicode property escape parser and matcher
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
+**READY — isolated; combined lexical milestone pending**. Owner: coordinator, 2026-11-13.
 Starting from verified TS-516 READY, integrate TS-518's complete Unicode tables
 into u-mode property escape parsing and matching. Own an isolated
 build/regexp-property-escapes-draft: generated property data and generator,
@@ -5969,7 +5969,7 @@ errors. Charge input work and keep property matching bounded without expanding
 large ranges. Preserve non-u behavior, v-mode/string-property exclusions and
 other unsupported grammar. Require retained semantic controls, both-host tests,
 full regression/tooling and static-only/zero-dynamic gates. Canonical promotion
-waits for TS-516 and all predecessors to be accepted; no canonical core edits.
+follows the lexical milestone sequence below; no core edits during frozen runs.
 
 TS-519 checkpoint: 1080 inputs frozen. Focused native execution, the probe and
 all 182 controls pass both hosts. Full Node is 958/960, with only the two reviewed
@@ -5983,6 +5983,12 @@ checks passing. Only regexp-unicode-syntax.ts and regexp-unicode-mode.ts now
 change their four reviewed expectations; the ownership verifier confirms all
 production inputs unchanged and retains the original snapshot/reports. Full Node
 reruns in session20240; the two amended native tests run in session12848.
+
+TS-519 READY: the full rerun passes 960/960 without skips; both amended tests
+pass native execution and static gates. The verifier confirms all 182 controls,
+15 native tooling builds, 296 tooling tests, 35 runner tests, protocol checks,
+generator reproducibility and the exact two-test amendment. All production
+inputs retain their original validated hashes. The owned snapshot is preserved.
 
 ## TS-520 — Legacy RegExp character escape review
 
@@ -6004,12 +6010,31 @@ three-digit octal support and six language differences. See the review document.
 
 ## TS-521 — Legacy RegExp character escape implementation
 
-**blocked — awaiting TS-519 READY**. Owner: coordinator.
+**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
 Implement TS-520's reviewed non-u numeric/octal, identity and control escapes in
 an isolated successor. Preserve whole-pattern capture/named-group detection,
 exact greedy consumption, class/quantifier semantics, u-mode errors and input
 budgets. Own pattern parser, focused tests/manifests and feature notes; no
 lookbehind, v-mode, legacy class-range or quantified-assertion expansion. Require
 all 122 controls on both hosts, native static gates and full regression/tooling.
+
+## Canonical lexical milestone sequence (2026-11-13)
+
+After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516 and
+TS-519 in that order as one bounded milestone. All four must have verified READY
+snapshots before promotion starts. Verify each predecessor's canonical source
+against its READY snapshot before applying the next change, and retain each
+feature's baseline checks and separate implementation commit. Earlier per-feature
+promotion requirements for TS-514, TS-516 and TS-519 are superseded only for this
+sequence; TS-509's acceptance gate and active frozen inputs remain unchanged.
+
+Do not publish or mark these four tasks accepted between promotions. Freeze the
+complete combined source, verify it against the final isolated successor, then
+run every Node/native guest, native static gate, tooling/runner check, compiler
+probe and the unchanged 225-file corpus. Preserve original fixtures and reviewed
+expectation migrations. Accept and publish the four tasks together only after
+that full validation succeeds. This retains complete final-source coverage while
+avoiding four redundant intermediate native matrices. TS-521 is outside this
+milestone and remains isolated until its own acceptance sequence is assigned.
 
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.

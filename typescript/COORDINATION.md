@@ -3391,7 +3391,17 @@ producer records and 16 envelopes pass. The guarded amendment changed only the
 two historical RegExp tests, preserving all production bytes and original native
 report hashes. Ownership verification and typechecking pass. Full Node rerun is
 session20240 (draft/build/guest-node-reviewed.log); amended native tests are
-session12848 (build/regexp-property-migration-native.log). Run the prepared READY
-verifier only after both finish successfully, then update the feature notes,
-reclaim hash-identical validation copies and consider TS-521. Canonical native
+session12848 (build/regexp-property-migration-native.log). After both finish
+successfully, update the feature notes before running the prepared READY verifier,
+then reclaim hash-identical validation copies and consider TS-521. Canonical native
 session89629 remains independent and frozen.
+
+2026-11-13 TS-519 is verified READY: 960/960 Node guests, 182 both-host controls,
+all focused/amended native gates, 15 native tooling entries, 296 tooling tests,
+35 runner tests and protocol checks pass. The complete 1080-input snapshot and
+exact two-test amendment verify. Cleanup reclaimed 2,023,533,632 bytes; 126
+read-only duplicate files totaling 3,222 bytes remain. TS-521 is now assigned an
+isolated successor from that READY source. The four-feature canonical lexical
+sequence is documented in TASKS.md; the promotion helper verifies all READY
+hashes and over 1000 canonical predecessor inputs before each step. Its active
+TS-509 rejection guard passes, so the current canonical matrix stays untouched.

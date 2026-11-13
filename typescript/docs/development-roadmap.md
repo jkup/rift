@@ -116,13 +116,21 @@ retained controls pass both hosts, alongside native and tooling gates. The
 numeric audit correction and five string expectation changes retain their
 original evidence. These successors await predecessor acceptance and are not
 included in the accepted counts above. Unicode property escapes now pass focused
-native validation and 182 controls on both hosts in TS-519's isolated successor.
-Full Node passes 958/960; two old tests still expect property escapes to be
-unsupported. Their four exact expectations have been reviewed on old/new hosts
-and the reference; amendment waits for the frozen tooling run. RE2's naming
-differences remain distinct from ECMAScript semantics. The next reviewed slice
-is [legacy RegExp character escapes](regexp-legacy-escapes-review.md), gated on
-TS-519 readiness.
+native validation and 182 controls on both hosts in TS-519's READY successor.
+Full Node passes 960/960 after four reviewed expectations changed in two
+standalone tests. Both amended tests pass native execution; original evidence,
+unchanged production hashes and all 296 tooling checks are verified. RE2's
+naming differences remain distinct from ECMAScript semantics. The next isolated
+slice is [legacy RegExp character escapes](regexp-legacy-escapes-review.md).
+
+After ordinary identifiers finish their current frozen validation, integrate the
+READY whitespace, numeric, string and property-escape successors in dependency
+order as one lexical milestone. Verify canonical source against each READY
+predecessor before the next promotion, then run the complete combined suite and
+native matrix before publishing. The final isolated successor already contains
+the preceding changes; this avoids repeating the same large matrix at four
+intermediate states without dropping final-source coverage. Legacy RegExp escape
+work stays outside this bounded milestone.
 
 ## Historical feature checkpoints
 
