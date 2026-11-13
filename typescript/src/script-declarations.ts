@@ -514,16 +514,12 @@ class DeclarationCollector {
             }
             case "for-lexical": {
                 const id = this.scope("for-lexical", scope, node.start, node.end, this.scopes[scope].strict, []);
-                const declaration = this.declare(node.declarationKind, node.binding, id, variableScope, null);
-                if (this.nodes !== null) {
-                    this.nodes.scopes.set(id, { node, body: [node.body] });
-                    this.nodes.declarations.set(declaration, { node, initializer: node.binding.init });
-                }
+                if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: [node.body] });
                 this.work.push({ kind: "block-end", scope: id });
                 this.statement(node.body, id, variableScope);
                 if (node.update !== null) this.expression(node.update, id, variableScope);
                 if (node.test !== null) this.expression(node.test, id, variableScope);
-                if (node.binding.init !== null) this.expression(node.binding.init, id, variableScope);
+                this.statement(node.initializer, id, variableScope);
                 break;
             }
             case "for":
@@ -531,7 +527,7 @@ class DeclarationCollector {
                 if (node.update !== null) this.expression(node.update, scope, variableScope);
                 if (node.test !== null) this.expression(node.test, scope, variableScope);
                 if (node.initializer !== null) {
-                    if (node.initializer.kind === "var") this.statement(node.initializer, scope, variableScope);
+                    if (node.initializer.kind === "var" || node.initializer.kind === "pattern-declaration" || node.initializer.kind === "declaration-list") this.statement(node.initializer, scope, variableScope);
                     else this.expression(node.initializer, scope, variableScope);
                 }
                 break;

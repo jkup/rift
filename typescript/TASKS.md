@@ -6697,7 +6697,7 @@ pattern paths; no binary provenance claim is made.
 
 ## TS-545 — Classic-for declaration lists and patterns
 
-**in progress — isolated implementation after TS-543 READY review**.
+**in progress — integrated; full canonical validation pending**.
 Implement the TS-544 contract using the shared ordered declaration representation.
 Cover lexical lists and let/const/var pattern initializers, complete bound-name
 planning and source associations, TDZ and sequential initialization, all-name

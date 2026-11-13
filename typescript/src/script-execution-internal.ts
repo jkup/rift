@@ -38,7 +38,7 @@ import type { ScriptBindingCell } from "./script-environment.js";
 import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
 
 function lexicalLoopBindings(node: ForEachStmt | ForLexicalStmt): { declarationKind: "let" | "const"; sites: readonly DeclarationSite[] } | null {
-    if (node.kind === "for-lexical") return { declarationKind: node.declarationKind, sites: [node.binding.site] };
+    if (node.kind === "for-lexical") return { declarationKind: node.declarationKind, sites: node.bindings.map(binding => binding.site) };
     if (node.head.kind === "lexical") return { declarationKind: node.head.declarationKind, sites: [node.head.site] };
     if (node.head.kind === "pattern" && node.head.declarationKind !== "var")
         return { declarationKind: node.head.declarationKind, sites: node.head.sites };
@@ -317,7 +317,6 @@ class ExecutableScript {
                 const node = entry.node;
                 const head = lexicalLoopBindings(node);
                 if (head === null || scope.kind !== node.kind) throw new Error("invalid lexical loop kind");
-                const initializer = node.kind === "for-lexical" ? node.binding.initializer : null;
                 if (entry.body.length !== 1 || entry.body[0] !== node.body || scope.start !== node.start || scope.end !== node.end ||
                     scope.parent === null || scope.parent >= scope.id || scope.strict !== plan.scopes[scope.parent].strict || scope.formals.length !== 0 ||
                     scope.start < plan.scopes[scope.parent].start || scope.end > plan.scopes[scope.parent].end ||
@@ -325,6 +324,7 @@ class ExecutableScript {
                     throw new Error("invalid lexical loop association");
                 for (let i = 0; i < head.sites.length; i++) {
                     const site = head.sites[i];
+                    const initializer = node.kind === "for-lexical" ? node.bindings[i].initializer : null;
                     const declaration = plan.declarations[scope.lexicalDeclarations[i]];
                     if (scope.lexicalNames[i] !== site.name || declaration === undefined || declaration.kind !== head.declarationKind ||
                         declaration.site.start !== site.start || declaration.site.end !== site.end || declaration.site.name !== site.name || declaration.scope !== scope.id ||
@@ -433,7 +433,7 @@ class ExecutableScript {
                 ? environment.createImmutableBinding(site.name, site.loc) : environment.createMutableBinding(site.name, site.loc);
             if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
         }
-        if (value !== null && (node.kind === "for-lexical" || node.head.kind !== "pattern")) {
+        if (value !== null && node.kind !== "for-lexical" && node.head.kind !== "pattern") {
             const site = head.sites[0];
             const initialization = context.tick(site.loc);
             if (initialization.type === "throw") { const abrupt: ThrowCompletion = initialization; return abrupt; }
@@ -2647,14 +2647,21 @@ class ExecutionEngine {
         return normal(assigned.value);
     }
     #prepareForIteration(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null): ValueCompletion {
-        if (stmt.kind === "for-lexical" && stmt.declarationKind === "let") {
+        if (stmt.kind === "for-lexical" && stmt.declarationKind === "let" && stmt.bindings.length !== 0) {
             const frame = this.#active();
             if (!(frame.lexical instanceof ScriptDeclarativeEnvironment) || outer === null)
                 throw new Error("invalid for iteration environment");
-            const previous = frame.lexical.getBindingValue(stmt.binding.site.name, this.context, stmt.loc);
-            if (previous.type === "throw") { const abrupt: ThrowCompletion = previous; return abrupt; }
-            const created = ExecutableScript.activateLoop(frame.record, stmt, outer, previous.value, this.context, executionKey);
+            const created = ExecutableScript.activateLoop(frame.record, stmt, outer, null, this.context, executionKey);
             if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
+            for (const binding of stmt.bindings) {
+                const site = binding.site;
+                const previous = frame.lexical.getBindingValue(site.name, this.context, site.loc);
+                if (previous.type === "throw") { const abrupt: ThrowCompletion = previous; return abrupt; }
+                const charged = this.context.tick(site.loc);
+                if (charged.type === "throw") { const abrupt: ThrowCompletion = charged; return abrupt; }
+                const initialized = created.environment.initializeBinding(site.name, previous.value, this.context, site.loc);
+                if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+            }
             this.#frame = { ...frame, lexical: created.environment };
         }
         return normal();
@@ -3002,21 +3009,21 @@ class ExecutionEngine {
                 return this.#forEachBody(stmt, iterable.value, saved, scopeId, lexical, labels, sequences);
             }
             case "for": {
-                if (sequences !== null && stmt.initializer !== null && stmt.initializer.kind === "var" &&
-                    stmt.initializer.declarations.some(declaration => isSuspendingGeneratorExpression(declaration.init))) {
-                    const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
-                    sequences.push({ kind: "for", frame, statement: stmt, outer: null, first: true, phase: "prepare", depth, labels });
-                    sequences.push({ kind: "sequence", frame, body: [stmt.initializer], nextStatement: 0, depth });
-                    return { type: "normal", payload: { kind: "empty" } };
-                }
-                if (sequences !== null && stmt.initializer !== null && stmt.initializer.kind !== "var" && isSuspendingGeneratorExpression(stmt.initializer))
-                    return this.#suspendingExpression(stmt.initializer, { kind: "for-initializer", statement: stmt, labels });
                 if (stmt.initializer !== null) {
-                    if (stmt.initializer.kind === "var") {
-                        const initialized = this.#statement(stmt.initializer);
+                    const initializer = stmt.initializer;
+                    if (initializer.kind === "var" || initializer.kind === "pattern-declaration" || initializer.kind === "declaration-list") {
+                        if (sequences !== null) {
+                            const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
+                            sequences.push({ kind: "for", frame, statement: stmt, outer: null, first: true, phase: "prepare", depth, labels });
+                            sequences.push({ kind: "sequence", frame, body: [initializer], nextStatement: 0, depth });
+                            return { type: "normal", payload: { kind: "empty" } };
+                        }
+                        const initialized = this.#statement(initializer);
                         if (initialized.type !== "normal") return initialized;
                     } else {
-                        const initialized = this.#value(stmt.initializer);
+                        if (sequences !== null && isSuspendingGeneratorExpression(initializer))
+                            return this.#suspendingExpression(initializer, { kind: "for-initializer", statement: stmt, labels });
+                        const initialized = this.#value(initializer);
                         if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
                     }
                 }
@@ -3032,22 +3039,14 @@ class ExecutionEngine {
                 if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
                 this.#frame = { ...saved, lexical: created.environment };
                 try {
-                    const binding = stmt.binding;
-                    if (sequences !== null && binding.init !== null && isSuspendingGeneratorExpression(binding.init)) {
-                        const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
-                        const initialization: Stmt = { kind: stmt.declarationKind, name: binding.site.name, init: binding.init, loc: binding.site.loc };
-                        sequences.push({ kind: "for", frame, statement: stmt, outer: saved.lexical, first: true, phase: "prepare", depth, labels });
-                        sequences.push({ kind: "sequence", frame, body: [initialization], nextStatement: 0, depth });
-                        return { type: "normal", payload: { kind: "empty" } };
-                    }
-                    const value = binding.init === null ? normal() : this.#value(binding.init, binding.site.name);
-                    if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
-                    const initialized = created.environment.initializeBinding(binding.site.name, value.value, this.context, binding.site.loc);
-                    if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
                     if (sequences !== null) {
-                        sequences.push({ kind: "for", frame: this.#active(), statement: stmt, outer: saved.lexical, first: true, phase: "prepare", depth: sequences[sequences.length - 1].depth + 1, labels });
+                        const frame = this.#active(), depth = sequences[sequences.length - 1].depth + 1;
+                        sequences.push({ kind: "for", frame, statement: stmt, outer: saved.lexical, first: true, phase: "prepare", depth, labels });
+                        sequences.push({ kind: "sequence", frame, body: [stmt.initializer], nextStatement: 0, depth });
                         return { type: "normal", payload: { kind: "empty" } };
                     }
+                    const initialized = this.#statement(stmt.initializer);
+                    if (initialized.type !== "normal") return initialized;
                     return this.#forBody(stmt, saved.lexical, labels);
                 } finally { this.#frame = saved; }
             }

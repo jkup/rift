@@ -1,3 +1,4 @@
+import type { DeclarationStmt, ForStmt } from "./syntax.js";
 import { isStrictReservedIdentifier } from "./identifier-names.js";
 import { PrivateSyntaxScope, type PrivateSyntaxIssue } from "./private-syntax.js";
 import type { PrivateNameSyntax } from "./syntax.js";
@@ -527,53 +528,38 @@ class Parser {
             if (awaited && !this.asyncContext) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "for-await requires an async body", loc);
             if (awaited && this.functions === 0) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "for-await is forbidden in a static block", loc);
             this.expect("(");
-            if ((this.at("let") || this.at("const") || this.at("var")) && (this.token(this.index + 1)?.text === "[" || this.token(this.index + 1)?.text === "{")) {
-                const declarationKind = this.take().text;
-                if (declarationKind !== "let" && declarationKind !== "const" && declarationKind !== "var") throw new Error("invalid loop declaration kind");
-                const bindings: ParsedBinding[] = [];
-                const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
-                if (declarationKind !== "var") for (const binding of bindings) this.checkLexicalName(binding.site);
-                if (!this.at("of") && !this.at("in")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "pattern loop requires in or of", this.current().loc);
-                const kind = this.take().text === "in" ? "for-in" : "for-of";
-                return this.forEach(kind, loc, start, { kind: "pattern", declarationKind, pattern, sites: bindings.map(binding => binding.site) }, awaited);
-            }
-            if ((this.letDeclarationAhead() || this.at("const")) && this.token(this.index + 2)?.kind === "word" && this.token(this.index + 2).escaped !== true && (this.token(this.index + 2)?.text === "of" || this.token(this.index + 2)?.text === "in")) {
-                const declarationKind = this.take().text === "let" ? "let" : "const";
-                const token = this.current();
-                const name = this.name();
-                this.checkLexicalName({ name, start: token.start, end: token.end, loc: token.loc });
-                const kind = this.take().text === "of" ? "for-of" : "for-in";
-                return this.forEach(kind, loc, start, { kind: "lexical", declarationKind,
-                    site: { name, start: token.start, end: token.end, loc: token.loc } }, awaited);
-            }
-            let lexical: { declarationKind: "let" | "const"; binding: ParsedBinding } | null = null;
-            if (this.letDeclarationAhead() || this.at("const")) {
-                const declarationKind = this.take().text === "let" ? "let" : "const";
-                const binding = this.binding(1, false);
-                this.checkLexicalName(binding.site);
-                if (declarationKind === "const" && binding.init === null)
-                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", loc);
-                lexical = { declarationKind, binding };
-            }
-            const initializerFirst = this.current();
-            let initializer: VarStmt | Expr | null = null;
-            if (lexical === null && this.at("var")) initializer = this.varDeclaration(false);
-            else if (lexical === null && !this.at(";")) initializer = this.expression(0, false);
-            if (initializer !== null && (this.at("of") || this.at("in"))) {
-                const kind = this.take().text === "of" ? "for-of" : "for-in";
-                if (kind === "for-of" && initializerFirst.kind === "word" && initializerFirst.escaped !== true && initializerFirst.text === "let")
-                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "for-of assignment targets cannot start with let", initializerFirst.loc);
-                if (initializer.kind === "var") {
-                    if (initializer.declarations.length !== 1 || initializer.declarations[0].init !== null)
-                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, kind + " requires one uninitialized binding", initializer.loc);
-                } else if ((initializer.kind === "array" || initializer.kind === "object") && !this.isParenthesized(initializer)) {
-                    const pattern = this.assignmentPattern(initializer);
-                    if (pattern.kind !== "array-pattern" && pattern.kind !== "object-pattern") throw new Error("loop pattern invariant");
-                    return this.forEach(kind, loc, start, { kind: "assignment-pattern", loc: initializer.loc, pattern }, awaited);
-                } else if (initializer.kind !== "identifier" && initializer.kind !== "member" && initializer.kind !== "super-member") {
-                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + kind + " assignment target", initializer.loc);
+            let lexical: { declarationKind: "let" | "const"; bindings: ParsedBinding[]; initializer: DeclarationStmt } | null = null;
+            let initializer: ForStmt["initializer"] = null;
+            if (this.letDeclarationAhead() || this.at("const") || this.at("var")) {
+                const declaration = this.declarationList(false, true);
+                if (declaration.head !== null) {
+                    const kind = this.take().text === "in" ? "for-in" : "for-of";
+                    return this.forEach(kind, loc, start, declaration.head, awaited);
                 }
-                return this.forEach(kind, loc, start, initializer, awaited);
+                if (declaration.statement === null) return { kind: "empty", loc };
+                if (declaration.declarationKind !== "var") lexical = {
+                    declarationKind: declaration.declarationKind, bindings: declaration.bindings, initializer: declaration.statement };
+                else {
+                    const node = declaration.statement;
+                    if (node.kind !== "var" && node.kind !== "pattern-declaration" && node.kind !== "declaration-list") throw new Error("invalid var initializer");
+                    initializer = node;
+                }
+            } else if (!this.at(";")) {
+                const first = this.current(), expression = this.expression(0, false);
+                if (this.at("of") || this.at("in")) {
+                    const kind = this.take().text === "of" ? "for-of" : "for-in";
+                    if (kind === "for-of" && first.kind === "word" && first.escaped !== true && first.text === "let")
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "for-of assignment targets cannot start with let", first.loc);
+                    if ((expression.kind === "array" || expression.kind === "object") && !this.isParenthesized(expression)) {
+                        const pattern = this.assignmentPattern(expression);
+                        if (pattern.kind !== "array-pattern" && pattern.kind !== "object-pattern") throw new Error("loop pattern invariant");
+                        return this.forEach(kind, loc, start, { kind: "assignment-pattern", loc: expression.loc, pattern }, awaited);
+                    }
+                    if (expression.kind !== "identifier" && expression.kind !== "member" && expression.kind !== "super-member")
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid " + kind + " assignment target", expression.loc);
+                    return this.forEach(kind, loc, start, expression, awaited);
+                }
+                initializer = expression;
             }
             if (awaited) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "for-await requires of", loc);
             this.expect(";");
@@ -585,7 +571,7 @@ class Parser {
             const body = this.branch("for-body");
             this.loops--;
             if (lexical !== null) return { kind: "for-lexical", loc, start, end: this.token(this.index - 1).end,
-                declarationKind: lexical.declarationKind, binding: lexical.binding, test, update, body };
+                declarationKind: lexical.declarationKind, bindings: lexical.bindings, initializer: lexical.initializer, test, update, body };
             return { kind: "for", loc, initializer, test, update, body };
         }
         if (this.structuralPlan() && this.eat("do")) {
@@ -677,11 +663,17 @@ class Parser {
         return statement;
     }
     standaloneDeclaration(): Stmt {
-        const keyword = this.take();
-        const kind = keyword.text;
+        const result = this.declarationList(true, false);
+        this.statementTerminator();
+        return result.statement ?? { kind: "empty", loc: this.current().loc };
+    }
+    declarationList(allowIn: boolean, loopHead: boolean): {
+        declarationKind: "let" | "const" | "var"; statement: DeclarationStmt | null;
+        bindings: ParsedBinding[]; head: ForEachStmt["head"] | null;
+    } {
+        const keyword = this.take(), kind = keyword.text;
         if (kind !== "let" && kind !== "const" && kind !== "var") throw new Error("invalid declaration kind");
-        const declarations: Stmt[] = [];
-        const allBindings: ParsedBinding[] = [];
+        const declarations: Stmt[] = [], allBindings: ParsedBinding[] = [];
         let hasPattern = false;
         do {
             const token = declarations.length === 0 ? keyword : this.current();
@@ -690,19 +682,32 @@ class Parser {
                 hasPattern = true;
                 const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
                 if (kind !== "var") for (const binding of bindings) this.checkLexicalName(binding.site);
+                if (loopHead && declarations.length === 0 && (this.at("in") || this.at("of")))
+                    return { declarationKind: kind, statement: null, bindings, head: {
+                        kind: "pattern", declarationKind: kind, pattern, sites: bindings.map(binding => binding.site) } };
                 this.expect("=");
                 const initializerStart = this.current().start;
-                const init = this.expression(1);
-                for (const binding of bindings) binding.initializer = { start: initializerStart, end: this.token(this.index - 1).end };
+                const init = this.expression(1, allowIn);
+                for (const binding of bindings) {
+                    binding.init = init;
+                    binding.initializer = { start: initializerStart, end: this.token(this.index - 1).end };
+                }
                 declarations.push({ kind: "pattern-declaration", loc: token.loc, declarationKind: kind, pattern, init });
             } else {
-                const binding = this.binding(1);
+                const binding = this.binding(1, allowIn);
                 bindings.push(binding);
                 if (kind !== "var") this.checkLexicalName(binding.site);
+                if (loopHead && declarations.length === 0 && binding.init === null && (this.at("in") || this.at("of"))) {
+                    const head: ForEachStmt["head"] = kind === "var"
+                        ? { kind: "var", loc: keyword.loc, declarations: [{ name: binding.site.name, init: null }] }
+                        : { kind: "lexical", declarationKind: kind, site: binding.site };
+                    this.bindings.set(keyword.start, bindings);
+                    return { declarationKind: kind, statement: null, bindings, head };
+                }
                 if (kind === "const") {
                     if (binding.init === null) {
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", token.loc);
-                        return { kind: "empty", loc: keyword.loc };
+                        return { declarationKind: kind, statement: null, bindings: allBindings, head: null };
                     }
                     declarations.push({ kind: "const", loc: token.loc, name: binding.site.name, init: binding.init });
                 } else if (kind === "let") declarations.push({ kind: "let", loc: token.loc, name: binding.site.name, init: binding.init });
@@ -711,12 +716,16 @@ class Parser {
             this.bindings.set(token.start, bindings);
             allBindings.push(...bindings);
         } while (this.error === null && this.eat(","));
-        this.statementTerminator();
+        let statement: DeclarationStmt;
         if (kind === "var" && !hasPattern) {
             this.bindings.set(keyword.start, allBindings);
-            return { kind: "var", loc: keyword.loc, declarations: allBindings.map(binding => ({ name: binding.site.name, init: binding.init })) };
+            statement = { kind: "var", loc: keyword.loc, declarations: allBindings.map(binding => ({ name: binding.site.name, init: binding.init })) };
+        } else {
+            const first = declarations[0];
+            if (first.kind !== "let" && first.kind !== "const" && first.kind !== "var" && first.kind !== "pattern-declaration") throw new Error("invalid declaration node");
+            statement = declarations.length === 1 ? first : { kind: "declaration-list", loc: keyword.loc, declarations };
         }
-        return declarations.length === 1 ? declarations[0] : { kind: "declaration-list", loc: keyword.loc, declarations };
+        return { declarationKind: kind, statement, bindings: allBindings, head: null };
     }
     varDeclaration(allowIn: boolean): VarStmt {
         const token = this.take();
@@ -971,9 +980,9 @@ class Parser {
                     this.admitGeneratorExpression(statement.test, supported);
                     pending.push(statement.body);
                 } else if (statement.kind === "for" || statement.kind === "for-lexical") {
-                    if (statement.kind === "for-lexical" && statement.binding.init !== null) this.admitGeneratorExpression(statement.binding.init, supported);
+                    if (statement.kind === "for-lexical") pending.push(statement.initializer);
                     if (statement.kind === "for" && statement.initializer !== null) {
-                        if (statement.initializer.kind === "var") pending.push(statement.initializer);
+                        if (statement.initializer.kind === "var" || statement.initializer.kind === "pattern-declaration" || statement.initializer.kind === "declaration-list") pending.push(statement.initializer);
                         else this.admitGeneratorExpression(statement.initializer, supported);
                     }
                     if (statement.test !== null) this.admitGeneratorExpression(statement.test, supported);

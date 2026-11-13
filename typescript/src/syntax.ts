@@ -84,9 +84,10 @@ export type Expr =
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null; readonly parameters?: readonly FormalParameter[] }
     | ObjectExpr;
 export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };
-export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Expr | null; test: Expr | null; update: Expr | null; body: Stmt };
+export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Extract<Stmt, { kind: "pattern-declaration" | "declaration-list" }> | Expr | null; test: Expr | null; update: Expr | null; body: Stmt };
 export type ForLexicalStmt = { kind: "for-lexical"; loc: Location; start: number; end: number; declarationKind: "let" | "const";
-    binding: { site: DeclarationSite; init: Expr | null; initializer: { start: number; end: number } | null };
+    bindings: { site: DeclarationSite; init: Expr | null; initializer: { start: number; end: number } | null }[];
+    initializer: DeclarationStmt;
     test: Expr | null; update: Expr | null; body: Stmt };
 export type ForLexicalBinding = { kind: "lexical"; declarationKind: "let" | "const"; site: DeclarationSite };
 export type ForPatternBinding = { kind: "pattern"; declarationKind: "let" | "const" | "var"; pattern: ArrayPattern | ObjectPattern; sites: DeclarationSite[] };
@@ -115,3 +116,5 @@ export type Stmt =
     | { kind: "while" | "do-while"; loc: Location; test: Expr; body: Stmt }
     | { kind: "return" | "throw"; loc: Location; value: Expr | null }
     | { kind: "break" | "continue"; loc: Location; readonly target?: string };
+
+export type DeclarationStmt = Extract<Stmt, { kind: "let" | "const" | "var" | "pattern-declaration" | "declaration-list" }>;

@@ -56,6 +56,7 @@ for (const prefix of ["", "'use strict';"]) {
 }
 for(const text of ["for(let i var j;;){}","for(const i;;){}","for(let i=0,j=1;false;){}","for(let [i]=[];false;){}","for(let i in {}){}","for(let i=0;;)let x=1;","for(let i=0;;)const x=1;"])
     if (text === "for(let i in {}){}") passes(text+"typeof i==='undefined';");
+    else if (text === "for(let i=0,j=1;false;){}" || text === "for(let [i]=[];false;){}") passes(text+"typeof i==='undefined'&&typeof j==='undefined';");
     else check(prepareBoundedScript({id:"unsupported",text},fresh()).kind !== "ready","reject "+text);
 const owner=fresh(),caller=fresh();
 const fn=run("var f;for(const i=0;;){f=function(){i=1;};break;}f;",owner);
