@@ -93,6 +93,7 @@ export type ForPatternBinding = { kind: "pattern"; declarationKind: "let" | "con
 export type ForAssignmentPattern = { kind: "assignment-pattern"; loc: Location; pattern: ArrayPattern | ObjectPattern };
 export type ForEachStmt = { awaited?: true; kind: "for-of" | "for-in"; loc: Location; start: number; end: number; head: VarStmt | Expr | ForLexicalBinding | ForPatternBinding | ForAssignmentPattern; iterable: Expr; body: Stmt };
 export type Stmt =
+    | { kind: "declaration-list"; loc: Location; declarations: Stmt[] }
     | GeneratorYieldStmt
     | { kind: "class-declaration"; loc: Location; value: ClassExpr }
     | VarStmt

@@ -26,6 +26,20 @@ test('Script metadata: 136 accepted snapshots and detached source invariants in 
   }
 });
 
+function declarationListPlanExpectation(record) {
+  const {unit} = record.plan;
+  if (unit.id !== 'G02-let-list') return record;
+  assert.equal(unit.text, '"use strict";let x,y;');
+  return {plan: {kind: 'complete', goal: 'Script', unit, consumedUnits: 21,
+    strictness: {ownStrict: true, inheritedStrict: false, strict: true,
+      directives: [{start: 0, end: 12, statementEnd: 13, loc: {line: 1, column: 1}, raw: '"use strict"', useStrict: true}]},
+    scopes: [{id: 0, kind: 'script', parent: null, start: 0, end: 21, strict: true,
+      formals: [], catchParameter: null, lexicalDeclarations: [0, 1], varDeclarations: [], lexicalNames: ['x', 'y'], varNames: []}],
+    declarations: [['x', 17], ['y', 19]].map(([name, start], id) => ({id, kind: 'let',
+      site: {name, start, end: start + 1, loc: {line: 1, column: start + 1}},
+      scope: 0, variableScope: 0, functionScope: null, initializer: null})), functions: []}, winners: [[]]};
+}
+
 function defaultPlanExpectation(record) {
   const {unit} = record.plan;
   if (unit.id !== 'L08-default') return record;
@@ -138,10 +152,11 @@ test('Script declarations: 135 plans and 71 historical literals with explicit fe
   assert.equal([...expected.values()].filter(record => argumentsPlanExpectation(record) !== record).length, 1);
   assert.equal([...expected.values()].filter(record => semicolonPlanExpectation(record) !== record).length, 1);
   assert.equal([...expected.values()].filter(record => blockFunctionPlanExpectation(record) !== record).length, 3);
+  assert.equal([...expected.values()].filter(record => declarationListPlanExpectation(record) !== record).length, 1);
   for (const lane of ['node', 'native']) for (const record of expected.values()) {
     run('script-declarations', lane, record.plan.unit, [], (stdout, label) => {
       const {plan, winners} = JSON.parse(stdout);
-      assert.deepEqual({plan, winners}, objectBindingPlanExpectation(semicolonPlanExpectation(blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record)))))), label);
+      assert.deepEqual({plan, winners}, declarationListPlanExpectation(objectBindingPlanExpectation(semicolonPlanExpectation(blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record))))))), label);
     });
   }
 });

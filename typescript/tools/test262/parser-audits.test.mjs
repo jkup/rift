@@ -338,6 +338,12 @@ for (const [driver, directory, count, variants] of [
     }]};
   }
   if (driver === 'script-lexical-statement-audit') {
+    const list = rows.find(row => row.id === 'excluded-multiple');
+    assert.equal(list.text, 'while(false) let x,y;');
+    list.expected = {kind: 'eligible', sourceUnits: 21, consumedUnits: 21, candidates: [{
+      ruleCode: 'lexical-declaration-statement', context: 'while-body',
+      keyword: {text: 'let', start: 13, end: 16, loc: {line: 1, column: 14}},
+    }]};
     for (const [id, text, column] of [
       ['excluded-let-expression', 'while(false) let=1;', 17],
       ['excluded-let-call', 'if(false) let(1);', 14],

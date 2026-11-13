@@ -4055,3 +4055,5 @@ canonical validation helpers are prepared but unrun; canonical source stays on
 the accepted unscopables implementation.
 
 TS-543 repaired Node validation completed: session 59704 passed 994/994 guests and 35 runner checks. The historical declaration-plan migration also passes the three inspection tests on both existing hosts; an independent Node syntax check rejects the exact invalid while-body list and the repaired Node audit returns its explicit candidate. Fresh native session 30833 is live (19 gates/31 cases, four workers); tooling and READY follow only after it exits successfully. Original native session 43006 and tooling session 81882 are terminal (0 and 1 respectively).
+
+TS-543 integrated after isolated validation: 994 Node guests, 35 runner checks, 296 tooling checks, 19 fresh native static/coverage gates and 31 native semantic cases. Two reviewed test-only amendments retain original inputs and failure evidence. Full canonical validation requires 994 guests per host and 476 native gates before acceptance.

@@ -6632,7 +6632,7 @@ remain unsupported there too. TS-230/231 already resolved formal patterns.
 
 ## TS-543 — Ordered standalone declaration lists
 
-**in progress — isolated implementation**. Owner: coordinator, 2026-11-13. Extend standalone let/const/var declarations to ordered identifier and
+**in progress — integrated; full canonical validation pending**. Owner: coordinator, 2026-11-13. Extend standalone let/const/var declarations to ordered identifier and
 binding-pattern declarators, using explicit syntax and existing initialization.
 Preserve declaration planning, duplicate/conflict errors, TDZ, initializer order,
 function-name inference, abrupt completion, iterator closing, suspension and source

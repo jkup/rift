@@ -431,6 +431,9 @@ class DeclarationCollector {
                 this.work.push({ kind: "catch", node, scope, variableScope });
                 this.statement(node.block, scope, variableScope);
                 break;
+            case "declaration-list":
+                this.statements(node.declarations, scope, variableScope);
+                break;
             case "pattern-declaration": {
                 const bindings = this.bindings.get(this.tokens[this.tokenIndex(node.loc)].start);
                 if (bindings === undefined) throw new Error("missing pattern binding spans");

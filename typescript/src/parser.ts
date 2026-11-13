@@ -410,7 +410,7 @@ class Parser {
             this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "pattern declarations require a block", keyword.loc);
         const result = this.statement();
         // Only a complete supported declaration in this exact Statement slot is evidence.
-        if (auditLet && this.error === null && result.kind === "let") {
+        if (auditLet && this.error === null && (result.kind === "let" || result.kind === "declaration-list")) {
             this.lexicalCandidates.push({ ruleCode: "lexical-declaration-statement", context,
                 keyword: { text: "let", start: keyword.start, end: keyword.end,
                     loc: { line: keyword.loc.line, column: keyword.loc.column } } });
@@ -493,32 +493,8 @@ class Parser {
                 parameter: { name, start: token.start, end: token.end, loc: token.loc },
                 catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.token(this.index - 1).end });
         }
-        if (this.structuralPlan() && (this.at("let") || this.at("const") || this.at("var")) && (this.token(this.index + 1)?.text === "[" || this.token(this.index + 1)?.text === "{")) {
-            const declarationKind = this.take().text;
-            if (declarationKind !== "let" && declarationKind !== "const" && declarationKind !== "var") throw new Error("invalid declaration kind");
-            const bindings: ParsedBinding[] = [];
-            const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
-            if (declarationKind !== "var") for (const binding of bindings) this.checkLexicalName(binding.site);
-            this.expect("=");
-            const initializerStart = this.current().start;
-            const init = this.expression(1);
-            const initializer = { start: initializerStart, end: this.token(this.index - 1).end };
-            for (const binding of bindings) binding.initializer = initializer;
-            this.bindings.set(start, bindings);
-            this.statementTerminator();
-            return { kind: "pattern-declaration", loc, declarationKind, pattern, init };
-        }
-        if (this.structuralPlan() && this.eat("const")) {
-            const binding = this.binding(1);
-            this.checkLexicalName(binding.site);
-            this.statementTerminator();
-            if (binding.init === null) {
-                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", loc);
-                return { kind: "empty", loc };
-            }
-            this.bindings.set(start, [binding]);
-            return { kind: "const", loc, name: binding.site.name, init: binding.init };
-        }
+        if (this.structuralPlan() && (this.letDeclarationAhead() || this.at("const") || this.at("var")))
+            return this.standaloneDeclaration();
         if (this.letDeclarationAhead()) {
             this.take();
             const binding = this.binding(1);
@@ -526,11 +502,6 @@ class Parser {
             this.statementTerminator();
             if (this.structuralPlan()) this.bindings.set(start, [binding]);
             return { kind: "let", loc, name: binding.site.name, init: binding.init };
-        }
-        if (this.structuralPlan() && this.at("var")) {
-            const declaration = this.varDeclaration(true);
-            this.statementTerminator();
-            return declaration;
         }
         const asynchronous = this.asyncFunctionAhead();
         if (asynchronous) this.take();
@@ -704,6 +675,48 @@ class Parser {
         const statement: ForEachStmt = { kind, loc, start, end: this.token(this.index - 1).end, head, iterable, body };
         if (awaited) statement.awaited = true;
         return statement;
+    }
+    standaloneDeclaration(): Stmt {
+        const keyword = this.take();
+        const kind = keyword.text;
+        if (kind !== "let" && kind !== "const" && kind !== "var") throw new Error("invalid declaration kind");
+        const declarations: Stmt[] = [];
+        const allBindings: ParsedBinding[] = [];
+        let hasPattern = false;
+        do {
+            const token = declarations.length === 0 ? keyword : this.current();
+            const bindings: ParsedBinding[] = [];
+            if (this.at("[") || this.at("{")) {
+                hasPattern = true;
+                const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
+                if (kind !== "var") for (const binding of bindings) this.checkLexicalName(binding.site);
+                this.expect("=");
+                const initializerStart = this.current().start;
+                const init = this.expression(1);
+                for (const binding of bindings) binding.initializer = { start: initializerStart, end: this.token(this.index - 1).end };
+                declarations.push({ kind: "pattern-declaration", loc: token.loc, declarationKind: kind, pattern, init });
+            } else {
+                const binding = this.binding(1);
+                bindings.push(binding);
+                if (kind !== "var") this.checkLexicalName(binding.site);
+                if (kind === "const") {
+                    if (binding.init === null) {
+                        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "const requires an initializer", token.loc);
+                        return { kind: "empty", loc: keyword.loc };
+                    }
+                    declarations.push({ kind: "const", loc: token.loc, name: binding.site.name, init: binding.init });
+                } else if (kind === "let") declarations.push({ kind: "let", loc: token.loc, name: binding.site.name, init: binding.init });
+                else declarations.push({ kind: "var", loc: token.loc, declarations: [{ name: binding.site.name, init: binding.init }] });
+            }
+            this.bindings.set(token.start, bindings);
+            allBindings.push(...bindings);
+        } while (this.error === null && this.eat(","));
+        this.statementTerminator();
+        if (kind === "var" && !hasPattern) {
+            this.bindings.set(keyword.start, allBindings);
+            return { kind: "var", loc: keyword.loc, declarations: allBindings.map(binding => ({ name: binding.site.name, init: binding.init })) };
+        }
+        return declarations.length === 1 ? declarations[0] : { kind: "declaration-list", loc: keyword.loc, declarations };
     }
     varDeclaration(allowIn: boolean): VarStmt {
         const token = this.take();
@@ -945,6 +958,7 @@ class Parser {
                 if (statement.kind === "class-declaration") this.admitGeneratorExpression(statement.value, supported);
                 else if (statement.kind === "yield") this.admitGeneratorExpression(statement, supported);
                 else if (statement.kind === "block") pending.push(...statement.body);
+                else if (statement.kind === "declaration-list") pending.push(...statement.declarations);
                 else if (statement.kind === "labelled") pending.push(statement.body);
                 else if (statement.kind === "switch") {
                     this.admitGeneratorExpression(statement.discriminant, supported);

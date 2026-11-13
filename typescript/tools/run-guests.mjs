@@ -925,6 +925,7 @@ executeDriver("regexp-lookbehind", { stdout: "regexp lookbehind passed\n" });
 executeDriver("regexp-range", { stdout: "regexp range passed\n" });
 executeDriver("array-species", { stdout: "array species passed\n" });
 executeDriver("array-unscopables", { stdout: "array unscopables passed\n" });
+executeDriver("declaration-list", { stdout: "declaration lists passed\n" });
 executeDriver("regexp-legacy-escapes", { stdout: "regexp legacy escapes passed\n" });
 executeDriver("private-elements", { stdout: "private elements passed\n" });
 executeDriver("private-identifier-lexing", { stdout: "private identifier lexing passed\n" });

@@ -323,6 +323,7 @@ const entries = [
     ["test/regexp-range.ts", "regexp-range"],
     ["test/array-species.ts", "array-species"],
     ["test/array-unscopables.ts", "array-unscopables"],
+    ["test/declaration-list.ts", "declaration-list"],
     ["test/regexp-legacy-escapes.ts", "regexp-legacy-escapes"],
     ["test/private-elements.ts", "private-elements"],
     ["test/private-identifier-lexing.ts", "private-identifier-lexing"],

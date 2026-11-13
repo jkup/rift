@@ -119,7 +119,13 @@ console.log("G01 PASS");
     const h = new Harness(); unused(h.run(plan("var x=1,y=x,z; var x;")));
     for (const n of ["x","y","z"]) desc(h.env.globalObject,n,UNDEFINED);
     check(h.env.trace.join("|") === "L:x|L:y|L:z|L:x|V?:x|V?:y|V?:z|V?:x|V+:x|V+:y|V+:z","G02 order");
-    for (const text of ["var x,;","let x,y;"]) check(planScriptDeclarations({id:"bad",text:'"use strict"; '+text}).kind === "blocked","G02 blocked neighbor");
+    for (const text of ["var x,;","let x,y;"]) {
+        if (text === "let x,y;") {
+            const lexical = new Harness(); unused(lexical.run(plan(text)));
+            tdz(lexical.env,"x",lexical.context); tdz(lexical.env,"y",lexical.context);
+            check(lexical.env.globalObject.getOwnProperty("x") === undefined && lexical.env.globalObject.getOwnProperty("y") === undefined,"G02 lexical names have no global properties");
+        } else check(planScriptDeclarations({id:"bad",text:'"use strict"; '+text}).kind === "blocked","G02 blocked neighbor");
+    }
 }
 console.log("G02 PASS");
 {

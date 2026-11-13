@@ -1645,6 +1645,7 @@ class ExecutionEngine {
             case "for": case "for-of": case "for-in": case "for-lexical": throw new Error("Script for AST requires Script execution");
             case "do-while": throw new Error("Script do-while AST requires Script execution");
             case "labelled": throw new Error("Script labelled AST requires Script execution");
+            case "declaration-list": throw new Error("Script declaration list requires Script execution");
             case "pattern-declaration": throw new Error("Script pattern AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "const": throw new Error("Script const AST requires Script execution");
@@ -2899,6 +2900,13 @@ class ExecutionEngine {
                     }
                 }
                 return scriptExpressionCompletion(this.#value(expression));
+            }
+            case "declaration-list": {
+                if (sequences !== null) {
+                    sequences.push({ kind: "sequence", frame: this.#active(), body: stmt.declarations, nextStatement: 0, depth: sequences[sequences.length - 1].depth + 1 });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
+                return this.#list(stmt.declarations);
             }
             case "pattern-declaration": {
                 if (isSuspendingGeneratorExpression(stmt.init) && sequences !== null)
