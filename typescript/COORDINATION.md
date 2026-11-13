@@ -4142,3 +4142,5 @@ TS-550 optional-catch test driver and manifests are prepared in the isolated dra
 TS-550 expectation proposals pass independently. Ownership expands to finally.ts and harness-catch.ts; original literal inputs and all remaining assertions are retained. Installer/amended Node helpers are prepared but unrun until initial session 30506 is terminal with the exact reviewed failure set. Canonical native session 79399 continues unchanged.
 
 TS-550 validation helpers now cover 31 static gates/39 semantic executions and final predecessor reconciliation. Syntax/preflight checks pass; native/tooling/READY execution remains pending. Full Node initial validation and TS-547 canonical native compilation continue without input mutation.
+
+TS-550 initial full Node results confirmed exactly the three reviewed historical failures. Two test-driver migrations installed with original inputs/evidence retained; amended full Node/runner session 23299 is now live. Production hashes remain unchanged. Canonical native session 79399 continues as the sole compiler owner.
