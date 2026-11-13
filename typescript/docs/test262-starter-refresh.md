@@ -1,5 +1,24 @@
 # Starter Script diagnostic refresh
 
+TS-535 reviewed the accepted matcher/species implementation using the same 33 pinned
+files and 60 variants. Both hosts produce expected outcomes for all 57 executable
+variants, with the same three module/async-profile exclusions. Structured results
+agree; no files were admitted as conformance passes.
+
+All 17 original diagnostic control sources remain intact. The lookbehind control
+still asks for a parse SyntaxError, but its valid source now correctly produces
+an unexpected-outcome diagnostic. Independent Node parsing confirms the source
+is valid. Two additional controls check a successful lookbehind match and the
+still-unsupported Unicode sets flag. All 19 controls pass on both hosts.
+
+The original failed reports, exact expectation migration, independent reference
+and static-only/zero-dynamic probe evidence are retained under
+`build/starter-species-final-reviewed.json`. The probe's engine sources match
+the accepted matcher/species implementation. These diagnostic outcomes do not establish
+a Test262 conformance score or expand async/module profile admission.
+
+## Earlier scoped-modifier diagnostic (TS-525)
+
 TS-525, 2026-11-13. The unchanged TS-491 selection still contains 33 pinned files
 and 60 variants. Replanning reproduces the original selection exactly, including
 metadata and harness hashes. The hash-verified scoped-modifier diagnostic probe

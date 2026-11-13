@@ -6455,7 +6455,7 @@ Evidence: build/regexp-range-ready.log and build/regexp-range-owned-snapshot.jso
 
 ## TS-535 — Starter diagnostic review after lookbehind
 
-**in progress — isolated diagnostic review; canonical publication waits for matcher acceptance**.
+**done — diagnostic review published after matcher/species acceptance**.
 Owner: coordinator, 2026-11-13. Reuse the verified READY matcher diagnostic probe
 on the unchanged 33-file/60-variant starter selection and all original controls.
 Retain any obsolete unsupported-lookbehind outcome before reviewing its exact
