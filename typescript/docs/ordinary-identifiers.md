@@ -25,8 +25,7 @@ All 1070 source/control inputs are frozen. Focused native execution and all 170
 reviewed controls pass on both hosts with static-only builds and zero dynamic
 coverage. All 15 native tooling build gates and 296 tooling tests pass. Eight
 escaped-name producer records per host pass the closed codec, and 16 records
-pass parent envelopes. The isolated change is ready for integration after the
-contextual-identifier milestone; combined acceptance and publication remain pending.
+pass parent envelopes. Integration and combined validation pass in the ordinary identifiers milestone.
 
 See `docs/ordinary-identifiers-review.md` for the grammar review and references.
 No new syntax-error certification rule or historical fixture change is included.

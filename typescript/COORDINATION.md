@@ -3417,3 +3417,5 @@ canonical helper prepare-lexical-rollup.mjs is prepared but unrun: it requires
 accepted TS-509 on main, all four integrated READY successors, and exact final
 source agreement before freezing 1078 inputs and 467 native entries. Canonical
 session89629 still runs independently with 363 verified checkpoints.
+
+2026-11-13 Ordinary identifiers milestone accepted (TS-509): 956/956 guests on both hosts without skips; 463 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-qYQwMg/native-PXLkDL matches all 225 normalized records and preserves all 191 preceding completions. Unicode identifiers and escaped names retain raw keyword provenance and UTF-16 spans. Original fixtures are unchanged. Evidence: build/ordinary-identifiers-rollup-*.

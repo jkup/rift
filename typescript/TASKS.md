@@ -5690,7 +5690,7 @@ requirements and exact semantic-name exceptions. See docs/ordinary-identifiers-r
 
 ## TS-509 — Ordinary Unicode identifiers and escapes
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
+**done — accepted in ordinary identifiers milestone**. Owner: coordinator, 2026-11-12.
 Implement TS-508's full reviewed ordinary-name boundary from the frozen canonical
 contextual-identifier source in build/ordinary-identifiers-draft. Support raw
 Unicode ID_Start/ID_Continue and fixed/braced escapes, decoded binding/property
@@ -6082,3 +6082,5 @@ The final combined source must cover 961 guests, 468 native entries, 296 tooling
 tests, 35 runner checks, ten compiler probes and all 225 unchanged corpus files.
 
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
+
+2026-11-13 Ordinary identifiers milestone accepted (TS-509): 956/956 guests on both hosts without skips; 463 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-qYQwMg/native-PXLkDL matches all 225 normalized records and preserves all 191 preceding completions. Unicode identifiers and escaped names retain raw keyword provenance and UTF-16 spans. Original fixtures are unchanged. Evidence: build/ordinary-identifiers-rollup-*.

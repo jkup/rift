@@ -10,8 +10,8 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted contextual identifiers milestone passes 955/955 guests on each
-host, 296/296 tooling checks, and all 462 native static gates.
+The accepted ordinary identifiers milestone passes 956/956 guests on each
+host, 296/296 tooling checks, and all 463 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
@@ -104,12 +104,11 @@ async/generator parameters; `let` declaration lookahead keeps expression admissi
 distinct from lexical declarations. Original fixtures and reviewed expectation
 migrations remain intact. The full combined validation passes on both hosts.
 
-Unicode identifiers and fixed/braced escapes are integrated for the next
-milestone. Combined Node regression passes 956/956; all 463 native build gates
-pass. Final native execution and corpus/tooling validation are running. Prior
-corpus completions remain intact in Node, with one reviewed
-diagnostic-only change in an invalid fixture. Raw keyword spelling remains
-distinct from decoded names.
+Unicode identifiers and fixed/braced escapes are accepted. Both hosts pass
+956/956 guests, all 463 native gates and the full tooling/probe checks. All 225
+corpus records agree across hosts and retain 191 prior completions, with one
+reviewed diagnostic-only change in an invalid fixture. Raw keyword spelling
+remains distinct from decoded names.
 
 Script whitespace, legacy numeric literals and legacy string escapes are READY
 in isolated successors, with 957, 958 and 959 Node guests respectively. Their
@@ -130,7 +129,7 @@ reviewed; their exact match/capture replacements pass native execution. The
 original tests, initial 958/961 result and production hashes are retained.
 See the [legacy escape review](regexp-legacy-escapes-review.md).
 
-After ordinary identifiers finish their current frozen validation, integrate the
+After the accepted ordinary identifier milestone is published, integrate the
 READY whitespace, numeric, string, property-escape and legacy RegExp successors in dependency
 order as one lexical milestone. Verify canonical source against each READY
 predecessor before the next promotion, then run the complete combined suite and
@@ -878,3 +877,5 @@ passes without parser certification and both-host controls.
 2026-11-12 Script-return milestone accepted (TS-492): 950/950 guests on both hosts without skips; 457 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QNhNHq/native-gwfRnh matches all 225 normalized records and preserves 191 preceding completions. Bounded Script preparation certifies return outside functions only after a complete supported-grammar audit; original S20 bytes and the reviewed catchable eval SyntaxError migration are preserved. TS-494, TS-496, TS-501, TS-502 and TS-504 remain isolated and are not accepted by this milestone. Evidence: build/script-return-rollup-* and docs/script-return-certification.md.
 
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
+
+2026-11-13 Ordinary identifiers milestone accepted (TS-509): 956/956 guests on both hosts without skips; 463 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-qYQwMg/native-PXLkDL matches all 225 normalized records and preserves all 191 preceding completions. Unicode identifiers and escaped names retain raw keyword provenance and UTF-16 spans. Original fixtures are unchanged. Evidence: build/ordinary-identifiers-rollup-*.
