@@ -3532,3 +3532,5 @@ Its 296-test tooling acceptance is still running.
 2026-11-13 Lexical milestone accepted (TS-511, TS-514, TS-516, TS-519, TS-521): 961/961 guests on both hosts without skips; 468 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-vXT1TU/native-kupwDB matches all 225 normalized records and preserves all 191 preceding completions. Script whitespace, legacy numeric/string literals Unicode RegExp property escapes and legacy RegExp character escapes are integrated. Original fixtures and reviewed historical expectation migrations remain retained. Evidence: build/lexical-rollup-*.
 
 2026-11-13 TS-524 promoted after complete predecessor checks with 7 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
+
+2026-11-13 TS-527 promoted after complete predecessor checks with 5 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.

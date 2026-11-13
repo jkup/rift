@@ -6184,7 +6184,7 @@ requirements. Final evidence: build/date-named-zone-review/final-reviewed.json.
 
 ## TS-527 — Date local conversion foundation
 
-**READY — isolated successor; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Implement pure Date local-field/offset and compatible local-to-instant helpers
 using the existing timezone provider. Own a new src/date-time-zone.ts, focused
 tests/manifests and feature notes in an isolated successor. Preserve existing UTC
