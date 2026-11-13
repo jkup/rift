@@ -3685,3 +3685,13 @@ hashes are unchanged. READY snapshot and Unicode reproduction are verified.
 Prepared combined matcher acceptance helper remains unapplied. Next: finish
 canonical modifiers/Date acceptance and publish, publish the verified reading
 guide, then integrate and validate the two READY matcher changes together.
+
+2026-11-13 TS-535 starter matcher review passes in isolation: 57/57 executable
+variants and 19 controls per host. All 60 variants, three profile exclusions,
+fixture/harness bytes and original 17 control sources are retained. The sole
+expectation migration recognizes valid lookbehind in a negative parse control;
+independent Node parsing/matching agrees. Two new controls preserve positive
+matching and unsupported-syntax coverage. Original failed reports and complete
+structured result/hash evidence remain in build/starter-matcher-*. No core or
+conformance-admission change. Publish diagnostic documentation only after the
+matcher milestone is accepted. Canonical modifiers/Date validation continues.

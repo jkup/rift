@@ -6437,3 +6437,22 @@ stop checks; production inputs remain unchanged after that migration. Nine
 owned files and 1088 frozen inputs verify. Original failures, the rejected
 interval-only candidate and alternating benchmark evidence are retained.
 Evidence: build/regexp-range-ready.log and build/regexp-range-owned-snapshot.json.
+
+## TS-535 — Starter diagnostic review after lookbehind
+
+**in progress — isolated diagnostic review; canonical publication waits for matcher acceptance**.
+Owner: coordinator, 2026-11-13. Reuse the verified READY matcher diagnostic probe
+on the unchanged 33-file/60-variant starter selection and all original controls.
+Retain any obsolete unsupported-lookbehind outcome before reviewing its exact
+expectation migration. Own ignored review artifacts and this task record only.
+Preserve fixture/harness hashes, three profile exclusions, structured both-host
+results and independent expected outcomes. No conformance admission or core edits.
+
+TS-535 isolated review passes on both hosts: the same 33 files/60 variants,
+57 executable expected outcomes and three unchanged profile exclusions. All 17
+original control inputs are preserved; only the now-valid lookbehind negative
+parse expectation changes. Two added controls check a successful lookbehind
+match and unsupported Unicode sets. All 19 controls per host pass, with matching
+structured results and verified native static coverage/executable hashes.
+Original failed reports and independent Node reference checks are retained in
+build/starter-matcher-final-reviewed.json. Canonical publication remains pending.
