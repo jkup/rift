@@ -64,6 +64,13 @@ disagreements below.
 
 ## Direction
 
+Documentation follow-up: README.md still describes early foundation limits,
+including unsupported generators, async syntax and tagged templates that are now
+implemented. Refresh that summary against the accepted feature inventory after
+the modifiers/Date milestone; preserve the active CLI README snapshot until its
+validation and promotion finish. This documentation gap does not block runtime
+validation and should not be mistaken for a current engine limitation.
+
 Unicode property escapes: the boundary review and complete Unicode 17 data
 preparation pass independently of engine integration. The 443 generated sets
 have both-host lookup/folding checks and zero dynamic operations. Retain the

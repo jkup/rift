@@ -3487,3 +3487,11 @@ After the first run terminates, retain its complete log and rerun the unchanged
 checkpoint expectations. Evidence: build/cli-validation-hardlink-{sandbox,host}/.
 Canonical session52275 has 398/468 verified checkpoints. TS-528 duplicate archive
 cleanup removed 576,878,238 bytes; 13 protected tiny files remain.
+
+The first CLI tooling run terminated at 292/296. All four failures concern
+sandbox-denied links: input symlink escape, execution-input hardlink aliases,
+checkpoint publication and planner closure aliases. Original logs, source hashes
+and the minimal EPERM/host-success probes are retained. Session88802 reruns all
+296 unchanged tests with host filesystem access. The prepared promotion helper
+build/promote-modifiers-date.mjs is syntax-checked but unrun; it requires published
+lexical acceptance, all four READY snapshots and complete predecessor comparisons.
