@@ -10,8 +10,8 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted lexical milestone passes 961/961 guests on each
-host, 296/296 tooling checks, and all 468 native static gates.
+The accepted modifiers/Date milestone passes 989/989 guests on each
+host, 296/296 tooling checks, and all 471 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
@@ -54,10 +54,12 @@ fixture pass would preserve incorrect constructor behavior. BigInt and reviewed
 calendar/time-zone support remain independent prerequisites for the relevant types.
 
 The [weak-storage probes](native-host-prerequisites.md) fail the static contract;
+[locale comparison](string-locale-prerequisites.md) violates canonical equivalence
+in the pinned native runtime. These remain backend gaps. The raw host
 [Date local-time probes](date-host-boundary.md) disagree across named zones on
-Windows; [locale comparison](string-locale-prerequisites.md) violates canonical
-equivalence in the pinned native runtime. These need reviewed backend work,
-not strong-map substitutes, fixed time-zone offsets or ASCII approximations.
+Windows; accepted Date operations now use the reviewed pinned-timezone backend.
+Preserve those host limitations rather than using strong-map substitutes,
+fixed time-zone offsets or ASCII approximations.
 The [JSON scanner measurement](json-scanner-measurement.md) did not justify a
 rewrite. Preserve malformed/nonstandard-helper fixtures and the classified
 disagreements below.
@@ -924,4 +926,7 @@ object construction across seven Array methods. Existing default-only callers
 assume successful fresh-array writes; they must propagate guest TypeErrors on
 protected results. Slice and splice also need explicit result-length writes,
 with splice doing so before receiver mutation. Integrate the getter together
-with these changes, after matcher acceptance. No source change is accepted yet.
+with these changes under TASKS.md's guarded matcher/species cohort plan.
+No species source change is accepted yet.
+
+2026-11-13 Modifiers/Date milestone accepted (TS-524, TS-527, TS-528, TS-529): 989/989 guests on both hosts without skips; 471 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-JdGrQY/native-bs6USM matches all 225 normalized records and preserves 191 preceding completions. Scoped RegExp i/m/s modifiers, complete Realm-configured local Date behavior and CLI timezone selection are integrated. UTC remains the default. Original fixtures, modifier expectation migration, original CLI usage expectations and sandbox permission failures remain retained. Evidence: build/modifiers-date-rollup-*.

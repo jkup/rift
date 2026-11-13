@@ -3897,3 +3897,19 @@ objects and length writes, and label original acceptance counts as historical.
 They remain unpublished drafts; review/install alongside the species feature and
 update the current inventory only after the preceding documentation refresh.
 Latest canonical checkpoint418/471 contains zero failed records; session88122 live.
+
+2026-11-13 recovery correction: the earlier statement that all jobs had stopped
+was based on an insufficient sandbox process check. Host process inspection and
+the original handles show that matrix98940 and species queue20960 survived; both
+are now terminal0. Finalizer61495 is terminal1: its existing-run guard prevented
+a duplicate runtime run. Session88122 owns the sole canonical runtime/corpus/
+tooling finalizer. Both matrix processes are finished, all471 final gates and
+executable hashes verify, and the canonical native runtime passes989/989 without
+skips. The initial species focused/probe checks also pass; their original log is
+preserved as build/array-species-first-native.log. Its checker now verifies
+complete existing reports, frozen hashes, static coverage and executable hashes
+instead of recompiling when the queued tail of88122 reaches it. Never infer host
+job termination from a sandbox-only process listing; poll known handles first.
+The earlier obsolete-session assertions are superseded by this correction.
+
+2026-11-13 Modifiers/Date milestone accepted (TS-524, TS-527, TS-528, TS-529): 989/989 guests on both hosts without skips; 471 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-JdGrQY/native-bs6USM matches all 225 normalized records and preserves 191 preceding completions. Scoped RegExp i/m/s modifiers, complete Realm-configured local Date behavior and CLI timezone selection are integrated. UTC remains the default. Original fixtures, modifier expectation migration, original CLI usage expectations and sandbox permission failures remain retained. Evidence: build/modifiers-date-rollup-*.

@@ -23,8 +23,7 @@ failed run remain retained. The first full guest launch stopped before tests
 because historical inputs were missing; its log is also retained. Successful
 runs use TS-522's validated input closure.
 
-This isolated successor is ready for integration after the preceding lexical
-milestone is accepted. It does not replace combined canonical validation.
+This feature passes combined canonical validation with Date timezone support.
 
 The review and C++ comparison are in docs/regexp-modifiers-review.md. Unscoped
 modifiers, lookbehind and Unicode sets mode remain outside this feature.

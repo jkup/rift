@@ -6096,7 +6096,7 @@ original source/process records in build/regexp-modifiers-review/.
 
 ## TS-524 — Scoped RegExp modifier implementation
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in modifiers/Date milestone**. Owner: coordinator, 2026-11-13.
 Implement TS-523's reviewed scoped i/m/s grammar and matching in a successor of
 TS-521 READY. Own the pattern parser/types, matcher, focused tests/manifests and
 feature notes in an isolated draft. Compile effective flags per instruction;
@@ -6184,7 +6184,7 @@ requirements. Final evidence: build/date-named-zone-review/final-reviewed.json.
 
 ## TS-527 — Date local conversion foundation
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in modifiers/Date milestone**. Owner: coordinator, 2026-11-13.
 Implement pure Date local-field/offset and compatible local-to-instant helpers
 using the existing timezone provider. Own a new src/date-time-zone.ts, focused
 tests/manifests and feature notes in an isolated successor. Preserve existing UTC
@@ -6216,7 +6216,7 @@ build/date-local-time-ready.log and build/date-local-time-owned-snapshot.json.
 
 ## TS-528 — Realm-configured local Date operations
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in modifiers/Date milestone**. Owner: coordinator, 2026-11-13.
 Implement an immutable, validated Realm timezone setting with UTC as the default.
 Route component construction, offset-free date-time parsing, local getters,
 setters and display/locale fallback formatting through the shared provider.
@@ -6240,7 +6240,7 @@ build/date-named-zone-owned-snapshot.json. No historical test expectation change
 
 ## TS-529 — CLI Date timezone selection
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in modifiers/Date milestone**. Owner: coordinator, 2026-11-13.
 Add an optional leading `--time-zone <identifier>` to the existing file and
 `-e <source>` forms. Preserve UTC by default and the current file/source meaning
 after the optional prefix. Validate argument shape and the strict timezone
@@ -6568,3 +6568,5 @@ Review original unsupported-expectation migrations individually; preserve origin
 inputs, failures and legacy codec coverage. Array unscopables, Iterator helpers,
 resource-management syntax and unrelated species APIs are outside this task.
 Do not modify either live canonical inputs or READY matcher snapshots.
+
+2026-11-13 Modifiers/Date milestone accepted (TS-524, TS-527, TS-528, TS-529): 989/989 guests on both hosts without skips; 471 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-JdGrQY/native-bs6USM matches all 225 normalized records and preserves 191 preceding completions. Scoped RegExp i/m/s modifiers, complete Realm-configured local Date behavior and CLI timezone selection are integrated. UTC remains the default. Original fixtures, modifier expectation migration, original CLI usage expectations and sandbox permission failures remain retained. Evidence: build/modifiers-date-rollup-*.

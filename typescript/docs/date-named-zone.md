@@ -27,7 +27,7 @@ explicit in the review; they are not used to weaken expected results.
 All 964 Node regression cases, 35 runner tests and 296 tooling checks pass with
 no skips. Focused native execution and all 58 controls per host pass. The focused
 driver, diagnostic probe and 15 tooling drivers have fresh static-only builds
-and parsed zero-dynamic coverage. Canonical acceptance remains a separate full
-integration gate. CLI configuration, system timezone discovery and Intl are
-outside this feature. See date-named-zone-review.md for the semantic review and
-references.
+and parsed zero-dynamic coverage. Canonical combined validation passes.
+CLI configuration is covered in [CLI timezone selection](cli-time-zone.md).
+System timezone discovery and Intl remain outside this feature. See
+date-named-zone-review.md for the semantic review and references.

@@ -20,6 +20,5 @@ skips. The tooling run uses 15 predecessor binaries after whole-existing-source,
 standalone-test amendment and executable-hash verification. The new standalone
 Date helper entry has its own fresh native build and coverage gate.
 
-The isolated foundation is ready for integration after preceding acceptance.
-Realm configuration, public Date routing, parsing, formatting and CLI support
-remain separate work under TS-526's review; public Date behavior remains UTC.
+The foundation is integrated and accepted alongside Realm-configured Date and
+CLI timezone selection. UTC remains the default.
