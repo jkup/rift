@@ -6,7 +6,7 @@ import { run } from "../src/interpreter.js";
 import { observe } from "../src/observation.js";
 import { resolveStrictGlobalBinding, getStrictGlobalBinding, putStrictGlobalBinding } from "../src/global-environment.js";
 import { Environment, GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type Completion, type ValueCompletion, type OperationContext, type PropertyKey } from "../src/runtime.js";
-import { wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasInstance, wellKnownIterator, wellKnownSpecies } from "../src/symbols.js";
+import { wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasInstance, wellKnownIterator, wellKnownUnscopables, wellKnownSpecies } from "../src/symbols.js";
 import { toPrimitive } from "../src/primitive-conversion.js";
 import { mapObject } from "../src/array-map.js";
 const loc = { line: 1, column: 1 };
@@ -54,7 +54,7 @@ function inventory(a: Realm): void {
         ["name","length","caller","arguments","bind","call","apply","toString","constructor",wellKnownHasInstance],
         ["length","join","toLocaleString","toString","push","pop","shift","unshift","reverse","splice","fill","copyWithin","slice","concat","sort","toReversed","toSorted","toSpliced","with",
             "flat","flatMap","at","indexOf","includes","lastIndexOf",
-            "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownIterator],
+            "every","some","find","findIndex","findLast","findLastIndex","reduce","reduceRight","constructor","map","forEach","filter","keys","values","entries",wellKnownUnscopables,wellKnownIterator],
         ["toString","valueOf","constructor"],
         ["toString","valueOf","toLocaleString","toFixed","toExponential","toPrecision","constructor"],
         ["length","toString","valueOf","at","substring","substr","padStart","padEnd","repeat","codePointAt","trim","trimStart","trimEnd","trimLeft","trimRight","toLowerCase","toLocaleLowerCase","toUpperCase","toLocaleUpperCase","normalize","localeCompare",
@@ -115,6 +115,7 @@ function inventory(a: Realm): void {
     desc(hasInstanceFunction,"name",{kind:"string",value:"[Symbol.hasInstance]"},false,false,true);
     desc(hasInstanceFunction,"length",n(1),false,false,true);
     desc(a.arrayPrototype,"length",n(0),true,false,false); desc(a.stringPrototype,"length",n(0),false,false,false);
+    desc(a.arrayPrototype, wellKnownUnscopables, own(a.arrayPrototype, wellKnownUnscopables), false, false, true);
     method(a, a.arrayPrototype, wellKnownIterator, "values", 0);
     check(sameValue(own(a.arrayPrototype, wellKnownIterator), own(a.arrayPrototype, "values")), "Array iterator alias");
     method(a, a.stringPrototype, wellKnownIterator, "[Symbol.iterator]", 0);

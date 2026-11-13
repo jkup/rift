@@ -9,8 +9,8 @@ import { stringConcat } from "../strings.js";
 import { GuestArray } from "../array-object.js";
 import { createArrayWithLength } from "../array-create.js";
 import { arrayFrom } from "../array-from.js";
-import { wellKnownSpecies } from "../symbols.js";
-import { languageFailure, normal, UNDEFINED, type GuestObject, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
+import { wellKnownSpecies, wellKnownUnscopables } from "../symbols.js";
+import { GuestObject, languageFailure, normal, UNDEFINED, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import type { Location } from "../syntax.js";
 
 function arrayArguments(callee: GuestObject, args: Value[], context: OperationContext, loc: Location): ValueCompletion {
@@ -68,6 +68,13 @@ function arrayOf(receiver: Value, args: Value[], context: OperationContext, loc:
 }
 
 export function registerArray(realm: Realm): GuestObject {
+    const unscopables = new GuestObject(null);
+    for (const key of [
+        "at", "copyWithin", "entries", "fill", "find", "findIndex", "findLast", "findLastIndex",
+        "flat", "flatMap", "includes", "keys", "toReversed", "toSorted", "toSpliced", "values",
+    ])
+        unscopables.bootstrapDefine(key, { value: { kind: "boolean", value: true }, writable: true, enumerable: true, configurable: true });
+    realm.arrayPrototype.bootstrapDefine(wellKnownUnscopables, { value: { kind: "object", object: unscopables }, writable: false, enumerable: false, configurable: true });
     const constructor: GuestObject = realm.createBuiltinConstructor("Array", 1,
         (_receiver, args, context, loc) => arrayArguments(constructor, args, context, loc),
         (_callee, newTarget, args, context, loc) => arrayArguments(newTarget, args, context, loc));

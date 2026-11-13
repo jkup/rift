@@ -4020,3 +4020,5 @@ full. Session22201 remains live with67 passing native gates and no failures.
 Acceptance runner note: the first acceptance-review invocation failed because its UTF-8-only reader could not decode PowerShell UTF-16 logs. The original helper is retained as build/accept-matcher-species-rollup.before-encoding-fix.mjs; BOM-aware decoding passed the same unchanged raw evidence. No tests or expectations were altered.
 
 TS-535 diagnostic review published after matcher/species acceptance: unchanged 33 files/60 variants, 57 executable expected outcomes, three exclusions and 19 passing controls per host. All original control sources and failure evidence remain retained; no conformance admission.
+
+TS-541 integrated after isolated validation: 993 Node guests, 35 runner checks, 296 tooling checks, 18 fresh native static/coverage gates and seven native semantic cases. The reviewed bootstrap metadata amendment preserves original failure evidence. Full canonical validation requires 993 guests per host and 475 native gates before acceptance.
