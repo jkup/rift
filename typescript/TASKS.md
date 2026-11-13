@@ -6184,7 +6184,7 @@ requirements. Final evidence: build/date-named-zone-review/final-reviewed.json.
 
 ## TS-527 — Date local conversion foundation
 
-**in progress — isolated successor of TS-524 READY**. Owner: coordinator, 2026-11-13.
+**READY — isolated successor; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
 Implement pure Date local-field/offset and compatible local-to-instant helpers
 using the existing timezone provider. Own a new src/date-time-zone.ts, focused
 tests/manifests and feature notes in an isolated successor. Preserve existing UTC
@@ -6205,6 +6205,31 @@ and all executable hashes. The new helper has a fresh native gate. This avoids
 rebuilding unchanged tooling; no inherited gate is claimed as a fresh build.
 Evidence: build/date-local-time-draft/build/inherited-tooling.json and native,
 runner, guest-node and tooling reports. READY verification is prepared but unrun.
+
+TS-527 READY: 963/963 Node cases, 35 runner tests and 296 tooling checks pass with
+no skips. Focused native execution passes with 736 static statements and zero
+dynamic operations. The verifier binds five owned files, all 1082 frozen inputs
+and the 15 unchanged tooling executables to their predecessor evidence. Duplicate
+archive cleanup recovered 576,878,238 bytes; 13 protected tiny files remain.
+Canonical source and public Date behavior are unchanged. Evidence:
+build/date-local-time-ready.log and build/date-local-time-owned-snapshot.json.
+
+## TS-528 — Realm-configured local Date operations
+
+**in progress — isolated successor of TS-527 READY**. Owner: coordinator, 2026-11-13.
+Implement an immutable, validated Realm timezone setting with UTC as the default.
+Route component construction, offset-free date-time parsing, local getters,
+setters and display/locale fallback formatting through the shared provider.
+Preserve date-only/explicit-offset parsing, UTC methods, numeric/Date cloning,
+coercion order, range clipping and defining-Realm behavior. Implement lossless
+historical display labels and their bounded parsing per TS-526. Own Realm,
+Date core/getters/setters/locale modules, Date ISO/display parsing and formatting,
+focused tests/manifests and notes in the isolated successor. Require the complete
+local Date path before exposing the constructor setting as ready; do not accept
+a configuration that affects only selected methods. Require both-host semantics,
+fresh native static gates and complete regression/tooling checks. Exclude system
+timezone discovery, Intl and CLI options; CLI configuration is a later bounded
+task after these semantics pass. Canonical promotion waits for prior acceptance.
 
 ## Canonical lexical milestone sequence (2026-11-13)
 

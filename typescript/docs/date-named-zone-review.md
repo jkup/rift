@@ -71,6 +71,10 @@ Integration decisions:
   UTC. No process-global mutable zone, environment-dependent native Date calls,
   system discovery, or guest-visible configuration property is needed. Test
   distinct Realm settings and borrowed methods in the later integration task.
+  Use `parseTemporalTimeZoneIdentifier`, which accepts named zones and fixed
+  minute offsets. Do not use the broader Temporal conversion parser, which also
+  accepts annotated date/time strings. Prefer an immutable constructor setting
+  and expose it only when every local Date path is integrated.
 - Preserve the original UTC display strings. Other whole-minute offsets can use
   the canonical zone identifier as their parenthesized display name. For
   historical sub-minute offsets, use a precise offset label such as

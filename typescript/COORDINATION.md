@@ -3449,3 +3449,10 @@ pass both hosts with 736/736 static statements. Its 1082 inputs are frozen for
 only with whole-existing-source and executable-hash proofs; the new standalone
 entry is freshly compiled. Public Date remains UTC. Canonical session21360 is
 live with 201/468 verified checkpoints; no canonical engine input has changed.
+
+2026-11-13 TS-527 READY verification passes: 963 Node cases, 35 runner tests,
+296 tooling checks and 736/736 static focused-native statements. Its inherited
+tooling binary proof is explicit; only unchanged inputs reuse prior builds.
+TS-528 claims complete Realm-configured local Date semantics in an isolated
+successor, retaining UTC as the default and deferring CLI configuration. Current
+canonical lexical validation remains untouched (231/468 native checkpoints).
