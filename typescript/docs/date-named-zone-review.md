@@ -1,6 +1,6 @@
 # Date named-zone integration review
 
-TS-526 is in progress. Date retains its explicit UTC default. This review assesses
+TS-526 is complete as a bounded design review. Date retains its explicit UTC default. This review assesses
 reuse of the accepted IANA provider; it changes no Date behavior, Realm setting
 or CLI option and does not add system-timezone discovery.
 
@@ -39,8 +39,53 @@ The source review identifies these integration requirements:
   value capture, argument coercion order, invalid-date behavior and slot writes.
   UTC methods, ISO output and instant conversion remain separate operations.
 
-Before closing this review, check historical sub-minute offsets and display
-round trips, setter mutation/order cases, invalid-date revival, and configuration
-validation/Realm isolation. Define bounded implementation assignments only after
-those decisions have explicit controls. Current UTC behavior and its original
-tests must remain the default throughout.
+Six additional offset controls agree with exact expected provider seconds on
+both Rift hosts. Independent Node Date preserves seconds in local clock fields
+but truncates getTimezoneOffset to minutes in the Paris, New York and Kathmandu
+historical cases. Its display strings omit offset seconds and parsing those
+strings changes the instant by +21, -2 and +16 seconds respectively. Retain
+these reference differences; do not round the provider's historical offsets.
+Future getTimezoneOffset must preserve the fractional minute result.
+
+Nine setter/parsing reference contracts cover mutation during coercion, invalid
+dates, overlap selection, UTC independence and absent-offset parsing. The first
+run retained three mismatches. One was a review expectation error: setYear(120)
+means year 120, since only 0–99 receive the 1900 adjustment. Two are Node
+setFullYear differences: argument coercion mutates the Date, and Node then uses
+that mutated value. The specification captures the original value first. Two
+reduced UTC controls confirm that both Rift hosts already preserve that ordering;
+keep the existing behavior during timezone integration. The initial failed
+report, corrected expectation and distinct reference outputs are retained.
+
+Sources: [setFullYear ordering](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-date.prototype.setfullyear),
+[offset calculation](https://tc39.es/ecma262/2025/multipage/numbers-and-dates.html#sec-date.prototype.gettimezoneoffset),
+and [display offset formatting](https://tc39.es/ecma262/2025/multipage/numbers-and-dates.html#sec-timezone-string).
+
+Integration decisions:
+
+- Add pure local-field and compatible local-to-instant helpers first. Keep the
+  existing UTC helpers and instant range guards intact. Check the local range
+  margin independently before converting Number values to bigint.
+- Configure a zone explicitly at the host/Realm boundary, validate it before
+  guest execution, and store the parsed provider record per Realm. Default to
+  UTC. No process-global mutable zone, environment-dependent native Date calls,
+  system discovery, or guest-visible configuration property is needed. Test
+  distinct Realm settings and borrowed methods in the later integration task.
+- Preserve the original UTC display strings. Other whole-minute offsets can use
+  the canonical zone identifier as their parenthesized display name. For
+  historical sub-minute offsets, use a precise offset label such as
+  `(UTC+00:09:21)` after the required `GMT+0009` part. The parser can recognize
+  that engine-produced label, validate its consistency with the minute part and
+  recover the exact instant. This avoids relying on ambiguous zone abbreviations
+  or changing the required numeric display prefix. Validate this grammar and
+  round trips in a separate formatting/parser assignment.
+- Add a CLI configuration option only after constructors, local parsing,
+  getters, setters and formatting all use the same Realm setting. Until then,
+  helpers remain internal and existing Date behavior remains UTC.
+
+The final evidence record is `build/date-named-zone-review/final-reviewed.json`:
+14 provider controls, six offset controls, two reduced setter controls on both
+hosts, and nine future integration reference contracts. It verifies the native
+probe's original source snapshot and the later standalone-test-only amendment.
+Configuration isolation and the proposed formatting grammar are implementation
+acceptance requirements, not features claimed by this review.

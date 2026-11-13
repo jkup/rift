@@ -3440,3 +3440,12 @@ hosts while retaining all 60 variants and three profile exclusions. TS-526 is a
 bounded Date named-zone design review with 14 passing provider controls; it owns
 only its review document and ignored artifacts. No new canonical engine inputs
 have changed during the active matrix.
+
+2026-11-13 TS-526 review is complete with exact provider/reference controls and
+retained historical offset and setter-order disagreements. TS-527 now implements
+only pure Date conversion helpers in a verified TS-524 successor. Focused tests
+pass both hosts with 736/736 static statements. Its 1082 inputs are frozen for
+963-case Node and 296-check tooling regression. Tooling binaries are inherited
+only with whole-existing-source and executable-hash proofs; the new standalone
+entry is freshly compiled. Public Date remains UTC. Canonical session21360 is
+live with 201/468 verified checkpoints; no canonical engine input has changed.

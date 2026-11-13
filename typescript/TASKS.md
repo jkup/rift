@@ -6159,7 +6159,7 @@ docs/test262-starter-refresh.md and build/starter-script-refresh-final-reviewed.
 
 ## TS-526 — Date named-zone integration review
 
-**in progress — bounded design review**. Owner: coordinator, 2026-11-13.
+**done — bounded design and reference differences reviewed**. Owner: coordinator, 2026-11-13.
 Assess the accepted IANA/Temporal backend as a shared provider for explicitly
 configured local Date operations. Preserve the engine's UTC default and separate
 system-timezone discovery. Review Date's local/UTC conversions, gap/fold policy,
@@ -6174,6 +6174,37 @@ adjacent overflow. Source review identifies clipping, field-range, absent-offset
 parsing and local setter/formatting integration requirements. Historical offset
 formatting, setter ordering and Realm configuration remain under review. See
 docs/date-named-zone-review.md; no behavior change is implemented or accepted.
+
+TS-526 final: 14 provider, six offset and two reduced setter controls pass on
+both Rift hosts. Nine future integration reference contracts retain two Node
+setFullYear ordering differences and one corrected review expectation. Historical
+offset truncation/display round-trip differences are explicit. Configuration,
+range margins and precise historical display labels have bounded implementation
+requirements. Final evidence: build/date-named-zone-review/final-reviewed.json.
+
+## TS-527 — Date local conversion foundation
+
+**in progress — isolated successor of TS-524 READY**. Owner: coordinator, 2026-11-13.
+Implement pure Date local-field/offset and compatible local-to-instant helpers
+using the existing timezone provider. Own a new src/date-time-zone.ts, focused
+tests/manifests and feature notes in an isolated successor. Preserve existing UTC
+helpers, TimeClip, Temporal guards and all public Date behavior. Cover range
+margins, invalid values, negative epochs, gaps/folds, skipped dates and historical
+second offsets using TS-526's explicit controls. Require both-host focused
+execution, static-only/zero-dynamic gates, typechecking and regression checks.
+Realm configuration, public Date routing, parsing/formatting and CLI admission
+remain separate assignments. Canonical promotion waits for preceding acceptance.
+
+TS-527 checkpoint: the four pure helpers pass focused Node/native tests and all
+736 native statements are static. Typechecking and 35 runner tests pass; 1082
+inputs are frozen. Full Node regression runs in session69093 and 296 tooling
+checks in session41901. The 15 tooling binaries are reused only after verifying
+every existing production module/driver is byte-identical, the new module is
+unreferenced by old entries, both standalone-test amendment/source bindings,
+and all executable hashes. The new helper has a fresh native gate. This avoids
+rebuilding unchanged tooling; no inherited gate is claimed as a fresh build.
+Evidence: build/date-local-time-draft/build/inherited-tooling.json and native,
+runner, guest-node and tooling reports. READY verification is prepared but unrun.
 
 ## Canonical lexical milestone sequence (2026-11-13)
 
