@@ -4144,3 +4144,5 @@ TS-550 expectation proposals pass independently. Ownership expands to finally.ts
 TS-550 validation helpers now cover 31 static gates/39 semantic executions and final predecessor reconciliation. Syntax/preflight checks pass; native/tooling/READY execution remains pending. Full Node initial validation and TS-547 canonical native compilation continue without input mutation.
 
 TS-550 initial full Node results confirmed exactly the three reviewed historical failures. Two test-driver migrations installed with original inputs/evidence retained; amended full Node/runner session 23299 is now live. Production hashes remain unchanged. Canonical native session 79399 continues as the sole compiler owner.
+
+TS-550 Node acceptance is terminal PASS: 998 guests/35 runner checks, unchanged expected outputs and all 995 unaffected raw results preserved. Current evidence is in build/optional-catch-draft/build/{amended-node-base-reviewed,node-migration-reviewed}.json. Native/tooling/final predecessor reconciliation remain required before integration. Session 79399 remains the sole live validation owner.
