@@ -296,7 +296,7 @@ class Parser {
     current(): Token { return this.token(this.index); }
     at(text: string): boolean {
         const t = this.current();
-        return t.kind !== "string" && t.kind !== "number" && t.kind !== "bigint" && t.text === text;
+        return t.escaped !== true && t.kind !== "string" && t.kind !== "number" && t.kind !== "bigint" && t.text === text;
     }
     take(): Token {
         const t = this.current();
@@ -387,7 +387,7 @@ class Parser {
         return result;
     }
     private asyncFunctionAhead(): boolean {
-        return this.structuralPlan() && this.at("async") && this.token(this.index + 1).text === "function"
+        return this.structuralPlan() && this.at("async") && this.token(this.index + 1).escaped !== true && this.token(this.index + 1).text === "function"
             && this.current().loc.line === this.token(this.index + 1).loc.line;
     }
     private asyncMethodAhead(): boolean {
@@ -428,7 +428,7 @@ class Parser {
             let index = this.index;
             while (this.labelAhead(index)) index += 2;
             const token = this.token(index);
-            const iteration = token.kind === "word" && (token.text === "for" || token.text === "while" || token.text === "do");
+            const iteration = token.kind === "word" && token.escaped !== true && (token.text === "for" || token.text === "while" || token.text === "do");
             this.labels.push({ name, iteration });
             const auditAsync = this.auditAsyncDeclarationStatement();
             if (this.letDeclarationAhead() || this.at("const") || this.at("function") || (this.asyncFunctionAhead() && !auditAsync) || this.at("class"))
@@ -566,7 +566,7 @@ class Parser {
                 const kind = this.take().text === "in" ? "for-in" : "for-of";
                 return this.forEach(kind, loc, start, { kind: "pattern", declarationKind, pattern, sites: bindings.map(binding => binding.site) }, awaited);
             }
-            if ((this.letDeclarationAhead() || this.at("const")) && this.token(this.index + 2)?.kind === "word" && (this.token(this.index + 2)?.text === "of" || this.token(this.index + 2)?.text === "in")) {
+            if ((this.letDeclarationAhead() || this.at("const")) && this.token(this.index + 2)?.kind === "word" && this.token(this.index + 2).escaped !== true && (this.token(this.index + 2)?.text === "of" || this.token(this.index + 2)?.text === "in")) {
                 const declarationKind = this.take().text === "let" ? "let" : "const";
                 const token = this.current();
                 const name = this.name();
@@ -590,7 +590,7 @@ class Parser {
             else if (lexical === null && !this.at(";")) initializer = this.expression(0, false);
             if (initializer !== null && (this.at("of") || this.at("in"))) {
                 const kind = this.take().text === "of" ? "for-of" : "for-in";
-                if (kind === "for-of" && initializerFirst.kind === "word" && initializerFirst.text === "let")
+                if (kind === "for-of" && initializerFirst.kind === "word" && initializerFirst.escaped !== true && initializerFirst.text === "let")
                     this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "for-of assignment targets cannot start with let", initializerFirst.loc);
                 if (initializer.kind === "var") {
                     if (initializer.declarations.length !== 1 || initializer.declarations[0].init !== null)
@@ -1245,7 +1245,7 @@ class Parser {
                 updated = true;
                 continue;
             }
-            const op = this.current().text;
+            const op = this.current().escaped === true ? "" : this.current().text;
             if (op === "," && this.current().kind === "punct" && this.structuralPlan() && min === 0) {
                 this.take();
                 left = { kind: "binary", loc, op, left, right: this.expression(1, allowIn) };
@@ -1707,7 +1707,11 @@ class Parser {
     primary(allowIn: boolean, allowArrow = false): Expr {
         const t = this.take();
         const loc = t.loc;
-        if (this.structuralPlan() && allowArrow && t.text === "async" && t.loc.line === this.current().loc.line) {
+        if (t.escaped === true && !this.labelIdentifier(t)) {
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "reserved identifier: " + t.text, loc);
+            return { kind: "literal", loc, value: null };
+        }
+        if (this.structuralPlan() && allowArrow && t.escaped !== true && t.text === "async" && t.loc.line === this.current().loc.line) {
             if (this.current().kind === "word" && this.token(this.index + 1).text === "=>") {
                 const parameter = this.current(), name = this.name();
                 if (name === "await") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "await is reserved in async parameters", parameter.loc);
@@ -1815,7 +1819,7 @@ class Parser {
         if (t.text === "true" || t.text === "false") return { kind: "literal", loc, value: t.text === "true" };
         if (t.text === "null") return { kind: "literal", loc, value: null };
         if (t.text === "this") return { kind: "this", loc };
-        const asynchronous = this.structuralPlan() && t.text === "async" && this.at("function") && t.loc.line === this.current().loc.line;
+        const asynchronous = this.structuralPlan() && t.escaped !== true && t.text === "async" && this.at("function") && t.loc.line === this.current().loc.line;
         if (asynchronous) this.take();
         if (t.text === "function" || asynchronous) {
             const generator = this.structuralPlan() && this.eat("*");
@@ -1895,7 +1899,7 @@ class Parser {
                     const first = this.take();
                     let key = first;
                     let kind: "data" | "get" | "set" = "data";
-                    if (this.structuralPlan() && first.kind === "word" && (first.text === "get" || first.text === "set") && !this.at(":") && !this.at("(")) {
+                    if (this.structuralPlan() && first.kind === "word" && first.escaped !== true && (first.text === "get" || first.text === "set") && !this.at(":") && !this.at("(")) {
                         kind = first.text;
                         key = this.take();
                     }

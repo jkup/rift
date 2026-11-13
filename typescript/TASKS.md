@@ -5690,7 +5690,7 @@ requirements and exact semantic-name exceptions. See docs/ordinary-identifiers-r
 
 ## TS-509 — Ordinary Unicode identifiers and escapes
 
-**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-12.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
 Implement TS-508's full reviewed ordinary-name boundary from the frozen canonical
 contextual-identifier source in build/ordinary-identifiers-draft. Support raw
 Unicode ID_Start/ID_Continue and fixed/braced escapes, decoded binding/property

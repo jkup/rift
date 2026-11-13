@@ -10,7 +10,7 @@ export function lineTerminatorBetween(text: string, previous: Token, next: Token
 }
 function continuesStringExpression(token: Token): boolean {
     if (token.kind === "template" || token.kind === "template-head") return true;
-    if (token.kind === "word") return token.text === "in" || token.text === "instanceof";
+    if (token.kind === "word") return token.escaped !== true && (token.text === "in" || token.text === "instanceof");
     return token.kind === "punct" && ["(", "[", ".", "?.", "?", ",", "+", "-", "*", "/", "%", "**", "<<", ">>", ">>>",
         "<", ">", "<=", ">=", "==", "!=", "===", "!==", "&", "|", "^", "&&", "||", "=", "+=", "-=", "*=", "/=", "%=", "**=", "&=", "|=", "^=", "<<=", ">>=", ">>>="].includes(token.text);
 }

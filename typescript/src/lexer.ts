@@ -1,8 +1,9 @@
 import { scanRegExpLiteral } from "./regexp-literal.js";
+import { identifierStart, scanIdentifier } from "./identifier-scan.js";
 import { scanPrivateIdentifier } from "./private-identifier.js";
 import type { Rejection } from "./outcomes.js";
 import type { Diagnostic, Location } from "./syntax.js";
-export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly cooked?: string | null; readonly raw?: string; readonly regexp?: { pattern: string; flags: string } };
+export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly escaped?: boolean; readonly cooked?: string | null; readonly raw?: string; readonly regexp?: { pattern: string; flags: string } };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function digitValue(c: string): number {
@@ -53,6 +54,9 @@ export function createLexer(source: string, script = false, separatorAudit = fal
     function fail(reason: Rejection, message: string, loc: Location): void {
         rejection = reason;
         error = { phase: "parse", name: "SyntaxError", message, loc };
+    }
+    function identifierFollows(): boolean {
+        return letter(source.charAt(i)) || (script && (source.charAt(i) === "\\" || identifierStart(source.codePointAt(i) ?? -1)));
     }
     function numericDigits(radix: number, hasDigit: boolean, separators: boolean): string {
         const start = i;
@@ -188,6 +192,15 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                 }
                 continue;
             }
+            if (script && (letter(c) || c === "\\" || identifierStart(source.codePointAt(i) ?? -1))) {
+                const scanned = scanIdentifier(source, start);
+                if (scanned.kind === "invalid") fail({ kind: "unsupported-syntax", capabilityCode: "lex.character" }, "invalid identifier", loc);
+                else {
+                    while (i < scanned.end) advance();
+                    tokens.push({ kind: "word", text: scanned.text, escaped: scanned.escaped, loc, start, end: i });
+                }
+                continue;
+            }
             if (letter(c)) {
                 let text = advance();
                 while (letter(source.charAt(i)) || digit(source.charAt(i))) text += advance();
@@ -210,7 +223,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                     text += numericDigits(radix, false, true);
                     const bigint = source.charAt(i) === "n";
                     if (bigint) text += advance();
-                    if (i === digitsStart || (bigint && i === digitsStart + 1) || digit(source.charAt(i)) || letter(source.charAt(i)))
+                    if (i === digitsStart || (bigint && i === digitsStart + 1) || digit(source.charAt(i)) || identifierFollows())
                         fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "invalid radix numeric literal", loc);
                     tokens.push({ kind: invalidSeparator || error !== null ? "invalid-number" : bigint ? "bigint" : "number", text, loc, start, end: i });
                     continue;
@@ -229,7 +242,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                 }
                 const bigint = script && source.charAt(i) === "n" && !text.includes(".") && !text.includes("e") && !text.includes("E");
                 if (bigint) text += advance();
-                if (letter(source.charAt(i)) || (bigint && digit(source.charAt(i)))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
+                if (identifierFollows() || (bigint && digit(source.charAt(i)))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
                 tokens.push({ kind: invalidSeparator || error !== null ? "invalid-number" : bigint ? "bigint" : "number", text, loc, start, end: i });
                 continue;
             }
