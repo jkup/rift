@@ -3642,3 +3642,18 @@ inputs remain frozen until terminal completion. Session60982 continues the
 full hybrid Node suite; preserve any historical budget failure for explicit
 review after tooling finishes. Canonical session42456 remains active at 81/471
 recorded native gates, zero failures at this checkpoint.
+
+2026-11-13 Hybrid range full Node completed at 990/991. Its only failure is the
+original wide-range compilation assertion with context(20). The independent
+review retains that exact pattern/limit: the baseline stops at 21 charged steps,
+the candidate compiles in four and matches the astral input within 20; Node's
+reference match agrees. Evidence: build/regexp-range-budget-review/reviewed.json.
+
+Prepared but did not apply build/apply-range-budget-migration.mjs. It requires
+complete frozen tooling success, retains the original test/ledger/snapshot,
+changes only that expectation, and adds all smaller compiler-budget cutoffs.
+Prepared fresh native validation and the nine-file READY verifier in
+build/check-range-amended-native.mjs and build/check-regexp-range-ready.mjs.
+Session69819 remains live in the 15-driver tooling build; no frozen source was
+changed. Canonical session42456 also remains live. After both gates complete,
+continue their recorded acceptance/publication sequences.
