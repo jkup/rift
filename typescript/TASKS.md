@@ -6612,3 +6612,35 @@ canonical regression before acceptance. No Iterator or with-statement execution
 work is included. Do not compete with the active four-worker native matrix.
 
 2026-11-13 RegExp matcher and Array species milestone accepted (TS-531, TS-534, TS-539): 992/992 guests on both hosts without skips; 474 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-M6I0uq/native-GWhHUo matches all 225 normalized records and preserves 191 preceding completions. Backward lookbehind matching, bounded wide Unicode ignore-case range compilation and custom Array species construction are integrated. Small-range and legacy folding paths remain; the rejected performance candidate and all reviewed historical expectation changes are retained. Evidence: build/matcher-species-rollup-*.
+
+## TS-542 — Remaining declaration syntax parity review
+
+**done — twelve explicit controls reviewed on both hosts**. Owner: coordinator, 2026-11-13.
+Review the still-open TS-152 declaration contexts against current parser paths,
+independent Node Script controls and both Rift hosts. Distinguish already accepted
+formal patterns from mixed lexical/pattern declaration lists, classic-for patterns
+and catch syntax. Inspect C++ source support without claiming binary provenance.
+Own ignored review artifacts and task/coordination notes only; preserve the active
+unscopables source freeze. Propose the next bounded implementation from concrete
+mismatches, with explicit expected outputs and parser/runtime boundaries.
+
+TS-542 evidence: build/declaration-context-review/reviewed.json and
+ docs/declaration-context-review.md. Both hosts match on twelve explicit controls;
+three accepted contexts and nine parse rejections are preserved. C++ source has
+identifier-first declaration-list support, but catch patterns/optional binding
+remain unsupported there too. TS-230/231 already resolved formal patterns.
+
+## TS-543 — Ordered standalone declaration lists
+
+**ready**. Extend standalone let/const/var declarations to ordered identifier and
+binding-pattern declarators, using explicit syntax and existing initialization.
+Preserve declaration planning, duplicate/conflict errors, TDZ, initializer order,
+function-name inference, abrupt completion, iterator closing, suspension and source
+spans. Cover pattern-first and later patterns, empty patterns, lexical default
+initialization, const requirements, mixed var declarations and both-host reference
+controls. Own isolated parser/syntax, declaration/traversal/execution changes,
+focused tests/manifests and feature notes. Classic-for list/pattern heads require
+an explicit follow-up; catch syntax is separate. Keep canonical unscopables inputs
+frozen and reserve native compiler capacity for the active matrix. Require full
+both-host/static regression before acceptance; preserve historical fixtures and
+review every changed rejection expectation.
