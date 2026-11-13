@@ -3786,3 +3786,23 @@ queue identity is build/array-species-native-queue.json. Do not edit the isolate
 draft while these native checks are pending/running. Preserve the original 13
 failures for explicit review after focused native validation. No canonical or
 READY matcher source changed; finalizer61495 remains queued independently.
+
+2026-11-13 restart recovery: no native processes survived the restart. Verified
+all frozen canonical inputs and 350 saved native checkpoint records before
+resuming. Session88122 now owns the four-worker matrix, followed sequentially
+by finish-modifiers-date-rollup.ps1 and check-array-species-native.mjs. The old
+PID18024 queues and sessions98940/61495/20960 are obsolete; do not duplicate them.
+The pre-resume log/checkpoint are archived in build/modifiers-date-before-restart-*.
+The resumed checkpoint reached 354/471 with source hashes still matching.
+Drive C had 90.71 GiB free; the existing 20 GiB build-headroom guard remains.
+
+TS-539 schedule review: build/check-species-map-schedules.mjs checks all 400
+baseline/candidate observations against literal construction/iteration schedules.
+312 observations cover T07/N01/N02 across step/call budgets, seeds and Realms;
+the other 88 are unchanged. Error species now constructs an Error and defines
+the mapped element without an array length. Nested intrinsic Array construction
+charges its allocation in the constructor Realm and bypasses the test-only
+Realm.createArray observer. The 312 expected records pass, including exact
+resource counts, provenance and effects. Evidence: build/array-species-schedule-review/
+schedule-reviewed.json. This is Node review only; original failures, frozen
+candidate tests and production sources remain unchanged pending native checks.
