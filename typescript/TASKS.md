@@ -6600,7 +6600,7 @@ No engine or historical fixture changed.
 
 ## TS-541 — Array unscopables data property
 
-**ready — isolated successor; canonical integration waits for matcher/species acceptance**.
+**in progress — isolated successor; canonical integration waits for matcher/species acceptance**.
 Owner: coordinator. Implement TS-540 in the Script Array bootstrap with a fresh
 null-prototype object per Realm, the exact16 specification keys and descriptor
 flags. Own src/builtins/array.ts, focused tests/manifests, relevant historical

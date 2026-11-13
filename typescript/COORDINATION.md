@@ -3958,3 +3958,33 @@ All earlier isolated sessions (77361,2644,2776) are terminal0. TS-540 is a
 read-only boundary review while canonical validation runs.
 
 TS-540 review complete: 16 exact Array unscopables keys and descriptors, four independent reference controls, matching missing-property observations on both Rift hosts, and the separate unsupported with-statement boundary. C++ Array installation is absent in source inspection. TS-541 is ready as an isolated successor, pending canonical matcher/species acceptance for integration. Reference-mode and parse-exit harness corrections are retained; no engine inputs changed.
+
+2026-11-13 validation checkpoint: session22201 passed canonical992/992 Node,
+35 runner checks, ten compiler probes and the225-file Node corpus
+(node-M6I0uq:117 reported successes,74 unchecked completions). Its474-entry
+native matrix is active with37 passing gates and no failures at this checkpoint.
+Keep it as the only native compiler job; final runtime/tooling/corpus verification
+and acceptance-review are already sequenced in run-matcher-species-rollup.mjs.
+Do not launch another matrix or publish before it finishes. On terminal0,
+review/apply build/accept-matcher-species-rollup.mjs, commit the acceptance docs,
+then publish with the existing ancestry checks and atomic main/review push.
+
+TS-541 candidate is isolated in build/array-unscopables-draft. The implementation
+adds a Realm-local null-prototype object and exact16 flags; focused Node controls
+pass. Initial full-Node setup stopped before any guest because archived runner
+inputs were absent. The verified input closure is now copied, with that failure
+retained. Session38516 is terminal1:991/993 original cases pass; only the two
+bootstrap inventories fail at the expected new symbol-key count. Both original
+failures and both18-row proposed variants are retained under
+build/array-unscopables-metadata-checked/reviewed.json. The first proposal compiler
+invocation's TS5112 failure is separately retained; its corrected invocation uses
+--ignoreConfig. One reviewed test-only metadata amendment is installed and its
+old snapshot archived. Session43140 now owns the amended993-case Node run and
+35 runner checks. No native successor build has started.
+Prepared build/check-unscopables-native.mjs passes syntax and18-entry preflight;
+run it only after main's validation releases the native compiler capacity and
+amended-node-base-reviewed.json verifies993/35. It builds owned semantic drivers,
+CLI and the15 tooling prerequisites, then verifies seven native semantic cases.
+Tooling296, full canonical acceptance and feature promotion remain pending.
+Canonical frozen inputs still verify; all unscopables runtime edits remain ignored
+and outside the current matcher/species cohort.
