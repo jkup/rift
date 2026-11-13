@@ -10,8 +10,9 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted Array unscopables milestone passes 993/993 guests on each
-host, 296/296 tooling checks, and all 475 native static gates.
+The accepted standalone declaration-list milestone passes 994/994 guests on each
+host, 296/296 tooling checks, and all 476 native static gates.
+Classic-for declaration lists and patterns are the next native validation candidate.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a

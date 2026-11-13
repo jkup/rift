@@ -1,6 +1,6 @@
 # Standalone declaration lists
 
-TS-543 is integrated. Full canonical validation and acceptance are pending.
+TS-543 is accepted after full canonical validation.
 
 Script `let`, `const`, and `var` declarations accept ordered lists of identifiers
 and array/object binding patterns. Patterns may occur first or later. Lexical
@@ -41,4 +41,7 @@ now records the same-parse keyword candidate for the list as well. Explicit
 current expectations preserve both original historical fixtures. The repaired
 draft passes 994/994 Node guests, 35 runner checks, 19 fresh native static-only
 and zero-dynamic gates, 31 native semantic cases and all 296 tooling tests.
-Canonical acceptance requires the complete regression matrix on integrated source.
+Canonical validation passed on integrated source: 994/994 guests per host,
+476 static-only/zero-dynamic native gates, 296 tooling checks, 35 runner checks,
+ten probes and typechecking. All 225 corpus records match the preceding accepted
+milestone, retaining 191 completions. Evidence: build/declaration-list-rollup-*.

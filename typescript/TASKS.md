@@ -6632,7 +6632,7 @@ remain unsupported there too. TS-230/231 already resolved formal patterns.
 
 ## TS-543 — Ordered standalone declaration lists
 
-**in progress — integrated; full canonical validation pending**. Owner: coordinator, 2026-11-13. Extend standalone let/const/var declarations to ordered identifier and
+**done — canonical validation accepted**. Owner: coordinator, 2026-11-13. Extend standalone let/const/var declarations to ordered identifier and
 binding-pattern declarators, using explicit syntax and existing initialization.
 Preserve declaration planning, duplicate/conflict errors, TDZ, initializer order,
 function-name inference, abrupt completion, iterator closing, suspension and source
@@ -6759,3 +6759,5 @@ TS-545 amended session 64558 completed: 995/995 Node guests and 35 runner checks
 ## TS-547 — Conditional ordinary function declarations
 
 **blocked — requires TS-545 READY review before implementation**. Implement the conditional subset reviewed in TS-546 using explicit synthetic-block scope associations, existing Annex B copy rules and original function source ranges. Cover both branches, false conditions, lexical/parameter vetoes, strict rejection, defining Realm, resources and suspension contexts. Keep labelled declarations separate. Require independent expected results, both-host static/semantic checks and full canonical regression.
+
+TS-543 canonical session 2495 exited successfully: 994/994 guests per host without skips, 476 static-only/zero-dynamic native gates and executable hashes, 296 tooling checks, 35 runner checks, ten probes and typechecking. All 225 corpus records match the preceding accepted milestone with 191 completions and no added/changed records. All five orchestration stages passed on frozen source 470dd32818d52320f27297506234e899723414bd095c5fe74ec018bd1ff0aeac. Acceptance review passed; publication to main is pending. TS-545 native validation follows publication.

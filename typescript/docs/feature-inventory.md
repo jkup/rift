@@ -1,13 +1,13 @@
 # Feature scope and history
 
-This overview describes accepted Script behavior through the Array unscopables
+This overview describes accepted Script behavior through the standalone declaration-list
 milestone. It groups implemented features; it does not claim complete ECMAScript
 conformance. The [roadmap](development-roadmap.md) records validation counts and
 pending successors. Historical milestone notes below retain their original scope.
 
 | Area | Implemented behavior and boundaries |
 | --- | --- |
-| Scripts | Strict/sloppy execution, var/let/const, lexical environments, loops, labels, exceptions, optional chaining and automatic semicolon insertion. Module loading is absent. |
+| Scripts | Strict/sloppy execution, ordered standalone var/let/const identifier and binding-pattern lists, lexical environments, loops, labels, exceptions, optional chaining and automatic semicolon insertion. Module loading is absent. |
 | Functions | Ordinary and arrow functions, parameter/binding patterns, rest/spread, closures, calls and construction, bounded direct/indirect eval and Function construction. |
 | Classes | Inheritance, super and new.target, public/private fields, methods and accessors, static blocks and private-in checks. |
 | Suspension | Generators, yield/delegation, async functions/arrows/methods, await, async generators and for-await-of. Promise jobs drain at explicit host checkpoints; there is no browser event loop or Node API layer. |
