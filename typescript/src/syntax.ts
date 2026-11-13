@@ -8,7 +8,7 @@ export type FormalParameter = { readonly kind: "identifier"; readonly site: Decl
     | { readonly kind: "pattern"; readonly pattern: ArrayPattern | ObjectPattern; readonly bindings: readonly DeclarationSite[]; readonly initializer: Expr | null };
 export type AwaitExpr = { kind: "await"; loc: Location; value: Expr };
 export type GeneratorYieldStmt = { kind: "yield"; loc: Location; value: Expr | null; delegate?: true };
-export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
+export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[]; synthetic?: "conditional-function" };
 export type SwitchClause = { loc: Location; start: number; end: number; test: Expr | null; body: Stmt[] };
 export type CaseBlock = { loc: Location; start: number; end: number; clauses: SwitchClause[]; body: Stmt[] };
 export type SwitchStmt = { kind: "switch"; loc: Location; discriminant: Expr; caseBlock: CaseBlock };

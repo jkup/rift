@@ -106,8 +106,14 @@ for (const text of ["{function f(){}function f(){}}", "switch(1){case 1:function
     other.defineScriptGlobal("outer", { value: result.value, writable: true, configurable: true });
     passes("var marker=3;var f=outer();f()===7&&Object.getPrototypeOf(f)===Object.getPrototypeOf(outer);", other);
 }
-for (const text of ["{let f;function f(){}}", "{var f;function f(){}}", "'use strict';{function f(){}function f(){}}", "if(true)function f(){}"])
+for (const text of ["{let f;function f(){}}", "{var f;function f(){}}", "'use strict';{function f(){}function f(){}}"])
     check(prepareBoundedScript({ id: "restricted-block", text }, fresh()).kind !== "ready", "restricted: " + text);
+{
+    const realm = fresh();
+    const result = run("if(true)function f(){}", realm);
+    check(result.type === "normal", "conditional declaration executes");
+    passes("typeof f==='function'", realm);
+}
 const bounded = run("while(true){function f(){return 7;}}", fresh(), 100);
 check(bounded.type === "throw" && bounded.origin.kind === "resource-limit", "bounded block allocation");
 console.log("Sloppy block functions passed");

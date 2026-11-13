@@ -457,6 +457,27 @@ for (const [driver, directory, count, variants] of [
       }]};
     }
   }
+  if (driver === 'script-lexical-statement-audit') {
+    const row = rows.find(row => row.id === 'excluded-function-if');
+    assert.equal(row.text, 'if(false) function f(){}');
+    row.expected = {kind: 'none', sourceUnits: 24, consumedUnits: 24};
+    for (const strict of [false, true]) for (const reversed of [false, true]) {
+      const id = 'mixed-late-branch-' + strict + '-' + reversed;
+      const body = reversed ? 'if(false) function f(){} while(false) let x;' : 'while(false) let x; if(false) function f(){}';
+      const text = (strict ? '"use strict"; ' : '') + body;
+      const mixed = rows.find(row => row.id === id), start = text.indexOf('let');
+      assert.equal(mixed.text, text);
+      mixed.expected = strict ? {kind: 'blocked', reason: 'scope-restriction',
+        diagnostic: {phase: 'parse', name: 'SyntaxError', message: 'conditional function declarations are forbidden in strict code',
+          loc: {line: 1, column: text.indexOf('function') + 1}},
+        rejection: {kind: 'unsupported-syntax', capabilityCode: 'parse.declaration-statement'}} :
+        {kind: 'eligible', sourceUnits: text.length, consumedUnits: text.length, candidates: [{
+          ruleCode: 'lexical-declaration-statement', context: 'while-body',
+          keyword: {text: 'let', start, end: start + 3, loc: {line: 1, column: start + 1}},
+        }]};
+    }
+
+  }
   for (const lane of ['node', 'native']) for (const order of [variants, variants.toReversed()]) for (const row of rows) {
     const extra = order.map(name => `test/fixtures/${driver}/${name}.js`);
     run(driver, lane, row, extra, (stdout, label) => assert.deepEqual(JSON.parse(stdout).audit, row.expected, label));

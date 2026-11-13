@@ -312,6 +312,7 @@ class DeclarationCollector {
     readonly nonLegacyFunctionScopes = new Set<number>();
     readonly restrictedAssignments: { name: string; scope: number; loc: Location }[] = [];
     readonly initializerArguments: Location[] = [];
+    readonly strictConditionalFunctions: Location[] = [];
     readonly scopes: MutableScope[] = [];
     readonly declarations: Declaration[] = [];
     readonly functions: PlannedFunction[] = [];
@@ -461,9 +462,18 @@ class DeclarationCollector {
             }
             case "block": {
                 const index = this.tokenIndex(node.loc);
-                const end = this.closingBraces.get(index);
+                let start = this.tokens[index].start, end = this.closingBraces.get(index);
+                if (node.synthetic === "conditional-function") {
+                    const declaration = node.body[0];
+                    if (node.body.length !== 1 || declaration.kind !== "function" || declaration.source === null ||
+                        declaration.source.generator === true || declaration.source.async === true)
+                        throw new Error("invalid conditional function block");
+                    start = declaration.source.start;
+                    end = declaration.source.end;
+                    if (this.scopes[scope].strict) this.strictConditionalFunctions.push(node.loc);
+                }
                 if (end === undefined) throw new Error("missing closing brace");
-                const id = this.scope("block", scope, this.tokens[index].start, end, this.scopes[scope].strict, []);
+                const id = this.scope("block", scope, start, end, this.scopes[scope].strict, []);
                 if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: node.body });
                 this.work.push({ kind: "block-end", scope: id });
                 this.statements(node.body, id, variableScope);
@@ -734,6 +744,9 @@ class DeclarationCollector {
         }
     }
     project(ignoreStrictParameters = false, certifyStrictSyntax = false): DeclarationPlanResult {
+        if (this.strictConditionalFunctions.length !== 0) return { kind: "blocked", goal: "Script", unit: this.unit,
+            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "conditional function declarations are forbidden in strict code", loc: this.strictConditionalFunctions[0] } };
         if (this.initializerArguments.length !== 0) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: "arguments is forbidden in a class initializer", loc: this.initializerArguments[0] } };

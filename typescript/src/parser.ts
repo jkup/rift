@@ -403,6 +403,12 @@ class Parser {
     }
     branch(context: LexicalStatementContext): Stmt {
         const keyword = this.current();
+        if ((context === "if-consequent" || context === "if-alternate") && this.structuralPlan() &&
+            this.at("function") && this.token(this.index + 1).text !== "*") {
+            const declaration = this.statement();
+            if (this.error !== null) return declaration;
+            return { kind: "block", loc: keyword.loc, body: [declaration], synthetic: "conditional-function" };
+        }
         const auditAsync = this.auditAsyncDeclarationStatement();
         const auditLet = this.purpose === "bounded-lexical-statement-audit" && this.letDeclarationAhead();
         if (this.at("const")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: const", keyword.loc);

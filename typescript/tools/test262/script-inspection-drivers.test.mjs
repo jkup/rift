@@ -26,6 +26,13 @@ test('Script metadata: 136 accepted snapshots and detached source invariants in 
   }
 });
 
+function conditionalFunctionPlanExpectation(record) {
+  if (record.plan.unit.id !== 'function-branch') return record;
+  assert.equal(record.plan.unit.text, '\"use strict\";if(true)function f(){}');
+  return {...record, plan: {...record.plan, diagnostic: {...record.plan.diagnostic,
+    message: 'conditional function declarations are forbidden in strict code'}}};
+}
+
 function declarationListPlanExpectation(record) {
   const {unit} = record.plan;
   if (unit.id !== 'G02-let-list') return record;
@@ -156,7 +163,7 @@ test('Script declarations: 135 plans and 71 historical literals with explicit fe
   for (const lane of ['node', 'native']) for (const record of expected.values()) {
     run('script-declarations', lane, record.plan.unit, [], (stdout, label) => {
       const {plan, winners} = JSON.parse(stdout);
-      assert.deepEqual({plan, winners}, declarationListPlanExpectation(objectBindingPlanExpectation(semicolonPlanExpectation(blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record))))))), label);
+      assert.deepEqual({plan, winners}, conditionalFunctionPlanExpectation(declarationListPlanExpectation(objectBindingPlanExpectation(semicolonPlanExpectation(blockFunctionPlanExpectation(argumentsPlanExpectation(defaultPlanExpectation(constPlanExpectation(record)))))))), label);
     });
   }
 });

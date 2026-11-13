@@ -349,6 +349,15 @@ class ExecutableScript {
             } else {
                 if (entry.node === null || (entry.node.kind !== "block" && entry.node.kind !== "function") || entry.node.kind !== scope.kind || entry.body !== entry.node.body || scopes.has(entry.node))
                     throw new Error("invalid Script scope identity");
+                if (entry.node.kind === "block" && entry.node.synthetic === "conditional-function") {
+                    const declaration = entry.node.body[0];
+                    if (scope.strict || entry.node.body.length !== 1 || declaration.kind !== "function" || declaration.source === null ||
+                        declaration.source.async === true || declaration.source.generator === true ||
+                        scope.start !== declaration.source.start || scope.end !== declaration.source.end ||
+                        scope.parent === null || scope.lexicalDeclarations.length !== 1 || scope.varDeclarations.length !== 0 ||
+                        declaration.loc.line !== entry.node.loc.line || declaration.loc.column !== entry.node.loc.column)
+                        throw new Error("invalid conditional function block association");
+                }
                 scopes.set(entry.node, scope.id);
             }
             if (scope.kind !== "catch" && scope.catchParameter !== null) throw new Error("foreign catch parameter");
