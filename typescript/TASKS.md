@@ -6048,6 +6048,17 @@ The READY verifier confirms 122 controls on both hosts, 15 native tooling builds
 unchanged production hashes and predecessor ownership. All original evidence is
 retained. Include this verified successor in the lexical sequence below.
 
+## TS-522 — Historical validation input footprint review
+
+**in progress — read-only inventory**. Owner: coordinator, 2026-11-13.
+Identify which archived validation inputs current tooling tests require before
+reducing the roughly 2 GiB copied into every isolated successor. Own a concise
+docs/validation-input-footprint.md review and ignored inventory/evidence scripts.
+Preserve all original reports, fixtures and active frozen inputs. Distinguish
+literal dependency evidence from dynamic paths and runtime-confirmed reads.
+Recommend an explicit reproducible copy set only after closure validation; do
+not change tooling, remove archives or weaken tests under this review task.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516,

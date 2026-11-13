@@ -68,7 +68,7 @@ Unicode property escapes: the boundary review and complete Unicode 17 data
 preparation pass independently of engine integration. The 443 generated sets
 have both-host lookup/folding checks and zero dynamic operations. Retain the
 reviewed empty-Hrkt reference disagreement and the reduced string-ordering
-compiler evidence. TS-519 now owns isolated parser/matcher integration; see
+compiler evidence. TS-519's isolated parser/matcher integration is READY; see
 [data validation](regexp-property-data.md). Do not expand large properties into
 individual characters during pattern compilation.
 
@@ -105,8 +105,9 @@ distinct from lexical declarations. Original fixtures and reviewed expectation
 migrations remain intact. The full combined validation passes on both hosts.
 
 Unicode identifiers and fixed/braced escapes are integrated for the next
-milestone. Combined Node regression passes 956/956; the 463-entry native matrix
-is running. All prior corpus completions remain intact, with one reviewed
+milestone. Combined Node regression passes 956/956; all 463 native build gates
+pass. Final native execution and corpus/tooling validation are running. Prior
+corpus completions remain intact in Node, with one reviewed
 diagnostic-only change in an invalid fixture. Raw keyword spelling remains
 distinct from decoded names.
 
@@ -120,17 +121,26 @@ native validation and 182 controls on both hosts in TS-519's READY successor.
 Full Node passes 960/960 after four reviewed expectations changed in two
 standalone tests. Both amended tests pass native execution; original evidence,
 unchanged production hashes and all 296 tooling checks are verified. RE2's
-naming differences remain distinct from ECMAScript semantics. The next isolated
-slice is [legacy RegExp character escapes](regexp-legacy-escapes-review.md).
+naming differences remain distinct from ECMAScript semantics.
+
+Legacy RegExp character escapes are also READY: 961/961 Node guests, 122
+both-host controls, native static gates and 296 tooling checks pass. Fifteen
+historical expectations across three standalone tests were independently
+reviewed; their exact match/capture replacements pass native execution. The
+original tests, initial 958/961 result and production hashes are retained.
+See the [legacy escape review](regexp-legacy-escapes-review.md).
 
 After ordinary identifiers finish their current frozen validation, integrate the
-READY whitespace, numeric, string and property-escape successors in dependency
+READY whitespace, numeric, string, property-escape and legacy RegExp successors in dependency
 order as one lexical milestone. Verify canonical source against each READY
 predecessor before the next promotion, then run the complete combined suite and
 native matrix before publishing. The final isolated successor already contains
-the preceding changes; this avoids repeating the same large matrix at four
-intermediate states without dropping final-source coverage. Legacy RegExp escape
-work stays outside this bounded milestone.
+the preceding changes; this avoids redundant intermediate matrices without
+dropping final-source coverage. Legacy RegExp escapes joined only after full
+isolated verification and before canonical promotion began. Final acceptance
+requires 961 guests per host, 468 native gates, 296 tooling tests, 35 runner
+checks, ten probes and the unchanged 225-file corpus. Keep separate feature
+commits, but publish the combined milestone only after all acceptance checks pass.
 
 ## Historical feature checkpoints
 
