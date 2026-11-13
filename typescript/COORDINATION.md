@@ -3769,3 +3769,20 @@ any copy or guest launch because broad git ls-files output exceeded its buffer;
 the rerun uses the previously validated exact 2878-file archive/YAML/corpus closure.
 Native candidate builds await available slots; canonical matrix98940 and queued
 finalizer61495 continue. No READY predecessor or canonical source was changed.
+
+2026-11-13 TS-539 original regression completed at 978/991 with no skips.
+Thirteen failures remain unamended: two bootstrap metadata variants; Array
+flat/copy/iteration host constructors that previously must not run; fromEntries
+and groupBy unsupported-species sentinels; two map-budget harness variants;
+two formatting and two throw-inspection variants. Preserved the full ledger,
+log, process record, initial snapshot and all owned source bytes under
+build/array-species-draft/build/before-species-focused/ before further edits.
+
+Installed 42 independently specified reference cases plus three Realm controls.
+Typechecking and focused Node execution pass. The 1089-input source-freeze.json
+now binds the focused native test and unchanged typed diagnostic probe. A queued
+one-worker native check waits for exact canonical wrapper PID18024 to exit;
+queue identity is build/array-species-native-queue.json. Do not edit the isolated
+draft while these native checks are pending/running. Preserve the original 13
+failures for explicit review after focused native validation. No canonical or
+READY matcher source changed; finalizer61495 remains queued independently.
