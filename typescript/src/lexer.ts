@@ -1,4 +1,5 @@
 import { scanRegExpLiteral } from "./regexp-literal.js";
+import { isStringWhitespace } from "./strings.js";
 import { identifierStart, scanIdentifier } from "./identifier-scan.js";
 import { scanPrivateIdentifier } from "./private-identifier.js";
 import type { Rejection } from "./outcomes.js";
@@ -164,7 +165,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                 templatePart(c === "`", start, loc);
                 continue;
             }
-            if (c === " " || c === "\t" || lineTerminator(c)) {
+            if (script ? isStringWhitespace(c.charCodeAt(0)) : c === " " || c === "\t" || lineTerminator(c)) {
                 advance();
                 continue;
             }

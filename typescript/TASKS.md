@@ -5734,7 +5734,7 @@ remain rejected; seven position checks pass. See docs/script-whitespace-review.m
 
 ## TS-511 — Complete Script whitespace scanning
 
-**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-12.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
 Implement TS-510's reviewed whitespace boundary in an isolated successor to the
 ordinary-identifier draft. Reuse isStringWhitespace for Script token separation;
 retain separate line-terminator handling, CRLF locations, literal contents and
