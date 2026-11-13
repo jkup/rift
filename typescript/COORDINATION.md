@@ -3476,3 +3476,14 @@ predecessor binaries. Only the unimported CLI entry differs among production
 modules; this inheritance does not replace the fresh CLI gate. TS-530's bounded
 lookbehind review is committed without implementation. Canonical session52275
 continues independently, with no canonical source changes.
+
+2026-11-13 CLI checkpoint: 989/989 Node guests and all 25 controls on both hosts
+pass. The fresh CLI build passes static-only/zero-dynamic gates; ownership-only
+READY verification passes. Session94203's tooling run has one observed checkpoint
+failure at hard-link publication and remains live. Minimal probes reproduce
+EPERM in the sandbox and successful byte-identical hard linking with host access.
+After the first run terminates, retain its complete log and rerun the unchanged
+296-test suite with host filesystem permissions. Do not alter source or weaken
+checkpoint expectations. Evidence: build/cli-validation-hardlink-{sandbox,host}/.
+Canonical session52275 has 398/468 verified checkpoints. TS-528 duplicate archive
+cleanup removed 576,878,238 bytes; 13 protected tiny files remain.

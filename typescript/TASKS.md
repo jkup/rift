@@ -6273,6 +6273,24 @@ reads. Canonical and READY modifier source hashes are retained. Syntax-error,
 protocol, lastIndex, resource and both-host gates remain implementation work.
 Evidence: docs/regexp-lookbehind-review.md and build/regexp-lookbehind-review/.
 
+## Next combined milestone: modifiers and local Date
+
+After the lexical milestone is accepted and pushed, integrate TS-524, TS-527,
+TS-528 and TS-529 in that order, with a separate commit for each feature. All four
+must have verified READY snapshots before promotion begins. Compare canonical
+source with each READY predecessor before applying the next change. This bounded
+sequence supersedes intermediate per-feature acceptance requirements only for
+these four tasks; it does not permit edits to the live lexical inputs or an early
+push. Lookbehind is excluded.
+
+Freeze the final combined source and run all 989 guests on both hosts, all 471
+native static-only/zero-dynamic gates, 296 tooling tests, 35 runner tests, ten
+compiler probes, typechecking and the unchanged 225-file corpus. Review any
+corpus differences explicitly. Publish the four-feature milestone only after
+complete combined acceptance, preserving the modifier expectation migration and
+the CLI's original usage expectations. Inherited isolated tooling evidence does
+not replace the complete final-source native matrix.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 Resume checkpoint: the restart preserved 299/468 native gate records and the
