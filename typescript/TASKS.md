@@ -6697,7 +6697,7 @@ pattern paths; no binary provenance claim is made.
 
 ## TS-545 — Classic-for declaration lists and patterns
 
-**blocked — requires TS-543 READY review before implementation**.
+**in progress — isolated implementation after TS-543 READY review**.
 Implement the TS-544 contract using the shared ordered declaration representation.
 Cover lexical lists and let/const/var pattern initializers, complete bound-name
 planning and source associations, TDZ and sequential initialization, all-name
@@ -6707,8 +6707,9 @@ for-in/of disambiguation, NoIn grammar, lexical conflicts and resource guards.
 Own isolated syntax/parser, declaration/activation/execution changes, focused
 both-host tests, reviewed expectation migrations and feature notes. Require
 explicit reference outputs and full canonical regression/static acceptance.
-Do not start alongside the active canonical matrix or before the predecessor
-has passed its required native/tooling validation.
+Implementation and Node checks may proceed in an isolated draft from the reviewed
+TS-543 inputs. Reserve native compiler capacity for the canonical matrix; no
+successor native build or integration until its predecessor is accepted.
 
 Array unscopables accepted: 993/993 guests on each host without skips; 475 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. The original 225-file corpus matches the preceding milestone with 191 completions. Realm-local descriptors and mutation are covered; with statements remain unsupported. Evidence: build/unscopables-rollup-*.
 
@@ -6732,3 +6733,7 @@ the accepted unscopables implementation.
 TS-543 repaired Node validation completed: session 59704 passed 994/994 guests and 35 runner checks. The historical declaration-plan migration also passes the three inspection tests on both existing hosts; an independent Node syntax check rejects the exact invalid while-body list and the repaired Node audit returns its explicit candidate. Fresh native session 30833 is live (19 gates/31 cases, four workers); tooling and READY follow only after it exits successfully. Original native session 43006 and tooling session 81882 are terminal (0 and 1 respectively).
 
 TS-543 isolated validation is complete: repaired native session 30833 passed all 19 gates/31 semantic cases; tooling session 61782 passed 296/296; full READY verified thirteen owned paths, both original test-only amendments and the parser/tooling repair. Integrated in e8ea864e. Canonical session 2495 is live on 1089 frozen inputs, targeting 994 guests per host and 476 native gates, plus runner/probes/tooling and the original corpus. Main remains dc721945 until full acceptance. TS-545 predecessor READY is satisfied; its existing restriction against starting alongside the canonical matrix still applies.
+
+TS-545 workflow update: TS-543 now passed the required fresh native/tooling and full READY review. The earlier blanket overlap restriction is narrowed to native compilation and integration: a separate draft with verified predecessor inputs cannot alter the active canonical freeze or executables. This allows implementation/Node progress under the standing development-loop authorization while session 2495 runs. Own src/syntax.ts, src/parser.ts, src/script-declarations.ts, src/script-execution-internal.ts, manifests, focused classic-for tests and feature notes in build/classic-for-draft only.
+
+TS-545 draft prepared at build/classic-for-draft from all 1089 hash-verified TS-543 READY inputs, with predecessor hashes retained. Fifteen independently specified Node reference controls pass and are embedded in test/classic-for-declarations.ts; the engine remains the predecessor baseline pending implementation. Review confirms activateLoop is shared with for-in/of and accepts one optional value, so all-name iteration copying must preserve the existing foreach binding path. Declaration association validation currently projects one initializer span across every lexical loop site; generalization must retain each declarator's own span, including pattern-bound names and empty patterns. No native successor build has started.
