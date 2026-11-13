@@ -2,8 +2,9 @@ import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
 import { GuestObject, UNDEFINED, normal, sameValue, resourceFailure, type Value, type ValueCompletion, type ThrowCompletion, type Builtin } from "../src/runtime.js";
 import { GuestSymbol, wellKnownSpecies } from "../src/symbols.js";
+import { GuestNumber } from "../src/primitive-objects.js";
 import { GuestArray } from "../src/array-object.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { prepareBoundedScript, type ExecutableScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript, type ScriptSession } from "../src/script-execution.js";
 import { evaluateScriptObserved, type ObservedScriptEvaluation } from "../src/script-throw-inspection.js";
@@ -178,7 +179,7 @@ for (const at of ["return", "constructor", "name"]) {
 
 // Host/secondary failures at each Get, and exact completion identity from a
 // host operation. No serialization or registry participates in these controls.
-for (const at of ["constructor", "name"]) for (const mode of ["throw", "resource", "unsupported", "host", "same"]) {
+for (const at of ["constructor", "name"]) for (const mode of ["throw", "resource", "species", "unsupported", "host", "same"]) {
     const realm = fresh(), other = fresh(), session = createScriptSession(), nested = createScriptSession();
     const target = new GuestObject(), sentinel = new GuestObject(), ctor = other.createBuiltin("ctor", 0, (_r, _a, _c, _l) => normal());
     const original: ThrowCompletion = { type: "throw", value: obj(target), origin: { kind: "guest" }, diagnostic: { phase: "runtime", name: "misleading", message: "original", loc: { line: 1, column: 1 } } };
@@ -191,7 +192,8 @@ for (const at of ["constructor", "name"]) for (const mode of ["throw", "resource
         check(c.realm === other, "foreign getter context");
         if (mode === "host") { evaluateScriptObserved(nested, nestedRecord); throw new Error("unreachable"); }
         if (mode === "resource") return resourceFailure("steps", 101, 100, "fault", l);
-        if (mode === "unsupported") return mapFailure(other, c, l);
+        if (mode === "species") return mapSpecies(other, c, l);
+        if (mode === "unsupported") return unsupportedRegExp(other, c, l);
         return mode === "same" ? original : secondary;
     };
     accessor(target, "constructor", other, (r, a, c, l) => { seen += "C"; return at === "constructor" ? fault(r, a, c, l) : normal(obj(ctor)); });
@@ -205,7 +207,8 @@ for (const at of ["constructor", "name"]) for (const mode of ["throw", "resource
         const result = observe(session, realm, "origin();", "original");
         check(result.evaluation.completion === original && abrupt(result).value === original.value, "exact original completion/value");
         const inspection = result.inspection;
-        check(inspection !== null && (inspection.kind === "abrupt" || inspection.kind === "resource-limit" || inspection.kind === "unsupported-operation"), "secondary outcome");
+        if (mode === "species") check(inspection?.kind === (at === "constructor" ? "non-callable" : "non-string-name") && (inspection.kind !== "non-string-name" || inspection.realm === other), "successful species inspection outcome");
+        else check(inspection !== null && (inspection.kind === "abrupt" || inspection.kind === "resource-limit" || inspection.kind === "unsupported-operation"), "secondary outcome");
         if (inspection !== null && (inspection.kind === "abrupt" || inspection.kind === "resource-limit" || inspection.kind === "unsupported-operation")) {
             check(inspection.kind === (mode === "resource" ? "resource-limit" : mode === "unsupported" ? "unsupported-operation" : "abrupt"), "exact secondary tag");
             if (mode === "same" || mode === "throw") check(inspection.completion === (mode === "same" ? original : secondary), "exact secondary completion");
@@ -217,19 +220,21 @@ for (const at of ["constructor", "name"]) for (const mode of ["throw", "resource
     check(run(session, realm, ";", "reuse-original").type === "normal" && run(nested, other, ";", "reuse-nested").type === "normal", "BOTH original sessions after exit");
 }
 
-function mapFailure(realm: Realm, context: Parameters<Builtin>[2], loc: Parameters<Builtin>[3]): ValueCompletion {
+function mapSpecies(realm: Realm, context: Parameters<Builtin>[2], loc: Parameters<Builtin>[3]): ValueCompletion {
     const array = new GuestArray(realm.arrayPrototype), ctor = new GuestObject();
     ctor.bootstrapDefine(wellKnownSpecies, { value: own(realm.globalObject, "Object") });
     data(array, "constructor", obj(ctor));
     const callback = realm.createBuiltin("callback", 3, (_r, _a, _c, _l) => normal());
-    return mapObjectDefaultArray(array, obj(callback), UNDEFINED, context, loc);
+    const result = mapObject(array, obj(callback), UNDEFINED, context, loc);
+    if (result.type === "normal") boxedZero(result, realm);
+    return result;
 }
-{
+for (const species of [true, false]) {
     const realm = fresh(), session = createScriptSession();
-    define(realm, "unsupported", obj(realm.createBuiltin("unsupported", 0, (_r, _a, c, l) => mapFailure(realm, c, l))));
+    define(realm, "unsupported", obj(realm.createBuiltin("unsupported", 0, (_r, _a, c, l) => species ? mapSpecies(realm, c, l) : unsupportedRegExp(realm, c, l))));
     const result = observe(session, realm, "unsupported();", "U01");
-    const completion = abrupt(result);
-    check(completion.origin.kind === "unsupported-operation" && completion.origin.capabilityCode === "runtime.map-species" && result.inspection === null, "direct actual unsupported bypass");
+    if (species) { boxedZero(result.evaluation.completion, realm); check(result.inspection === null, "successful species needs no throw inspection"); }
+    else { const completion = abrupt(result); check(completion.origin.kind === "unsupported-operation" && completion.origin.capabilityCode === "runtime.regexp-pattern" && result.inspection === null, "direct actual unsupported bypass"); }
 }
 // Ordinary entry never inspects; observed reentry is rejected by the same guard.
 {
@@ -270,23 +275,25 @@ function mapFailure(realm: Realm, context: Parameters<Builtin>[2], loc: Paramete
     check(result.evaluation.phase === "instantiation" && result.source?.unitId === "instantiation", "instantiation source");
     available(result, realm, "SyntaxError"); retained(session, result);
 }
-for (const resource of [false, true]) {
+for (const mode of ["species", "unsupported", "resource"]) {
     const realm = fresh(), session = createScriptSession(), target = new GuestObject(); let reads = 0;
     accessor(target, "constructor", realm, (_r, _a, _c, _l) => { reads++; return normal(); });
     define(realm, "fault", obj(realm.createBuiltin("fault", 0, (_r, _a, c, l): ValueCompletion => {
-        const result = resource ? resourceFailure("steps", 101, 100, "fault", l) : mapFailure(realm, c, l);
+        const result = mode === "resource" ? resourceFailure("steps", 101, 100, "fault", l) : mode === "species" ? mapSpecies(realm, c, l) : unsupportedRegExp(realm, c, l);
+        if (mode === "species") return result;
         if (result.type !== "throw") throw new Error("fault");
         return { type: "throw", value: obj(target), origin: result.origin, diagnostic: result.diagnostic };
     })));
     const result = observe(session, realm, "fault();", "origin-precedence");
-    check(result.inspection === null && reads === 0 && abrupt(result).origin.kind === (resource ? "resource-limit" : "unsupported-operation"), "object resource/unsupported bypass");
+    if (mode === "species") { boxedZero(result.evaluation.completion, realm); check(result.inspection === null && reads === 0, "successful species no inspection"); }
+    else check(result.inspection === null && reads === 0 && abrupt(result).origin.kind === (mode === "resource" ? "resource-limit" : "unsupported-operation"), "object resource/unsupported bypass");
 }
-console.log("PASS X01-X06 U01-U02 input=" + payload + " prefixes=10 calls=6 guest=3 faults=10");
+console.log("PASS X01-X06 U01-U02 input=" + payload + " prefixes=10 calls=6 guest=3 faults=12");
 
 // Approved P01/P02/P06/P07/P09: synthetic provenance and execution Realm
 // are independent, including nested builtin propagation and session reentry.
 for (const seed of [0, 7]) for (const position of ["constructor", "name"]) {
-    for (const mode of ["entry", "third", "resource", "unsupported", "same", "host", "reentry"]) {
+    for (const mode of ["entry", "third", "resource", "species", "unsupported", "same", "host", "reentry"]) {
         for (const wrapped of [false, true]) {
             const entry = fresh(), other = fresh(), third = fresh();
             const session = createScriptSession(), setup = createScriptSession();
@@ -324,8 +331,9 @@ for (const seed of [0, 7]) for (const position of ["constructor", "name"]) {
                 }
                 if (mode === "same") { secondary = original; return original; }
                 if (mode === "resource") { secondary = resourceFailure("steps", 101, 100, "P resource", loc); return secondary; }
+                if (mode === "species") return mapSpecies(getterRealm, context, loc);
                 if (mode === "unsupported") {
-                    const failure = mapFailure(getterRealm, context, loc);
+                    const failure = unsupportedRegExp(getterRealm, context, loc);
                     if (failure.type !== "throw") throw new Error("P unsupported");
                     secondary = failure; return failure;
                 }
@@ -349,7 +357,8 @@ for (const seed of [0, 7]) for (const position of ["constructor", "name"]) {
                 const result = evaluateScriptObserved(session, entryRecord), inspection = result.inspection;
                 check(sameValue(abrupt(result).value, obj(target)) && result.source?.record === originalRecord && result.source.realm === other && result.source.loc.column === 17, "P original identity");
                 if (mode === "same") check(result.evaluation.completion === original, "P06 original exact reused completion");
-                check(inspection !== null && (inspection.kind === "abrupt" || inspection.kind === "resource-limit" || inspection.kind === "unsupported-operation"), "P secondary arm");
+                if (mode === "species") check(inspection?.kind === (position === "constructor" ? "non-callable" : "non-string-name") && (inspection.kind !== "non-string-name" || inspection.realm === third), "P successful species inspection");
+                else check(inspection !== null && (inspection.kind === "abrupt" || inspection.kind === "resource-limit" || inspection.kind === "unsupported-operation"), "P secondary arm");
                 if (inspection !== null && (inspection.kind === "abrupt" || inspection.kind === "resource-limit" || inspection.kind === "unsupported-operation")) {
                     check(inspection.completion === secondary && inspection.source.record === originalRecord && inspection.source.unitId === "original" &&
                         inspection.source.loc.line === 1 && inspection.source.loc.column === 17 && inspection.source.realm === getterRealm, "P exact synthetic fallback identity");
@@ -441,4 +450,16 @@ for (const seed of [0, 7]) for (const position of ["constructor", "name"]) for (
     retained(session, result);
     check(run(session, entry, "", "exhausted-reuse").type === "normal" && run(setup, third, ";", "setup-reuse").type === "normal", "P08 BOTH immutable-limit sessions reuse");
 }
-console.log("PASS P01-P09 positions=2 seeds=2 synthetic=56 guest=16 call=4 prefixes=16 input=" + payload);
+console.log("PASS P01-P09 positions=2 seeds=2 synthetic=64 guest=16 call=4 prefixes=16 input=" + payload);
+
+function boxedZero(result:ValueCompletion, realm:Realm):void {
+    check(result.type==="normal"&&result.value.kind==="object","species normal object");
+    if(result.type!=="normal"||result.value.kind!=="object")throw new Error("species object");
+    const value=result.value.object;
+    check(value instanceof GuestNumber&&value.numberData===0&&value.getPrototypeOf()===realm.numberPrototype&&value.getOwnProperty("length")===undefined,"Object species boxes zero without length");
+}
+function unsupportedRegExp(realm:Realm, context:Parameters<Builtin>[2], loc:Parameters<Builtin>[3]):ValueCompletion {
+    if(context.construct===undefined)throw new Error("construction unavailable");
+    const constructor=own(realm.globalObject,"RegExp");
+    return context.construct(constructor,[str("a"),str("v")],constructor,loc);
+}

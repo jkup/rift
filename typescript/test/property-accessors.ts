@@ -1,5 +1,5 @@
 import { toPrimitive } from "../src/primitive-conversion.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { GlobalEnvironment, resolveStrictGlobalBinding, getStrictGlobalBinding, putStrictGlobalBinding } from "../src/global-environment.js";
 import { ScriptDeclarativeEnvironment, resolveScriptBinding, getScriptBinding, scriptIdentifierReceiver } from "../src/script-environment.js";
 import { prepareStrictScript } from "../src/script-record.js";
@@ -338,11 +338,11 @@ for (const key of keys) {
     target.bootstrapDefine("length", { get: o(realm.createBuiltin("lengthGetter", 0, (_r, _a, _c, _l) => { target.trace += "L,"; return normal(n(2)); })) });
     proto.bootstrapDefine("0", { get: o(realm.createBuiltin("elementGetter", 0, (receiver, _a, active, _l) => { check(receiver.kind === "object" && receiver.object === target && active === context, "R25 element receiver/context"); target.trace += "G0,"; return normal(seven); })) });
     const callback = o(realm.createBuiltin("callback", 3, (_r, args, active, _l) => { check(args[0] === seven && sameValue(args[1], n(0)) && args[2].kind === "object" && args[2].object === target && active === context, "R25 callback args/context"); target.trace += "C0,"; return normal(eleven); }));
-    const result = object(mapObjectDefaultArray(target, callback, UNDEFINED, context, loc));
+    const result = object(mapObject(target, callback, UNDEFINED, context, loc));
     check(target.trace === "L,H0,G0,C0,H1,", "R25 order"); data(result, "length", n(2), true, false, false); data(result, "0", eleven, true, true, true); check(result.getOwnProperty("1") === undefined, "R25 hole");
     const array = new GuestArray(); array.bootstrapDefine("length", { value: n(2) }); const X = failure("TypeError", "constructor sentinel", loc); target.trace = "";
     array.bootstrapDefine("constructor", { get: o(realm.createBuiltin("constructorGetter", 0, (_r, _a, _c, _l) => { target.trace += "constructor"; return X; })) });
-    check(mapObjectDefaultArray(array, callback, UNDEFINED, context, loc) === X && target.trace === "constructor", "R25 constructor before callback");
+    check(mapObject(array, callback, UNDEFINED, context, loc) === X && target.trace === "constructor", "R25 constructor before callback");
 }
 // R26: join and captured Object-toString fallback retain accessor ordering.
 {

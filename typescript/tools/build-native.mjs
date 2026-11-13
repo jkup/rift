@@ -321,6 +321,7 @@ const entries = [
     ["test/date-named-zone.ts", "date-named-zone"],
     ["test/regexp-lookbehind.ts", "regexp-lookbehind"],
     ["test/regexp-range.ts", "regexp-range"],
+    ["test/array-species.ts", "array-species"],
     ["test/regexp-legacy-escapes.ts", "regexp-legacy-escapes"],
     ["test/private-elements.ts", "private-elements"],
     ["test/private-identifier-lexing.ts", "private-identifier-lexing"],

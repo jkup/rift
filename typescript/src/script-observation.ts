@@ -6,7 +6,7 @@ import { parse } from "./parser.js";
 import { GuestObject, normal, sameValue, UNDEFINED, type Value, type ValueCompletion, type Builtin, type ThrowCompletion } from "./runtime.js";
 import { GuestArray } from "./array-object.js";
 import { wellKnownSpecies } from "./symbols.js";
-import { mapObjectDefaultArray } from "./array-map.js";
+import { mapObject } from "./array-map.js";
 import type { ChildV2, ScriptConstructor, ScriptOperation, ScriptOriginalThrow, ScriptResult, ScriptSite } from "./script-observation-types.js";
 
 export type ObservationUnit = { id: string; role: "harness" | "test"; text: string };
@@ -222,7 +222,7 @@ class Attempt {
         constructor.bootstrapDefine(wellKnownSpecies, { value: own(this.realm.globalObject, "Object") });
         array.bootstrapDefine("constructor", { value: obj(constructor) });
         const callback = this.realm.createBuiltin("callback", 3, (_r, _a, _c, _l) => normal());
-        return mapObjectDefaultArray(array, obj(callback), UNDEFINED, context, loc);
+        return mapObject(array, obj(callback), UNDEFINED, context, loc);
     }
     private fault(control: string, context: Parameters<Builtin>[2], loc: Parameters<Builtin>[3]): ValueCompletion {
         if (control.endsWith("-host")) throw new Error("registered host fault");

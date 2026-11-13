@@ -1,8 +1,8 @@
 import type {Realm} from "../realm.js";
 import {toObject} from "../object-conversion.js";
 import {lengthOfArrayLike} from "../array-like.js";
-import {createDefaultSpeciesArray} from "../array-species.js";
-import {mapObjectDefaultArray} from "../array-map.js";
+import {arraySpeciesCreate} from "../array-species.js";
+import {mapObject} from "../array-map.js";
 import {numberToString} from "../conversion.js";
 import {languageFailure, normal, truthy, UNDEFINED, type Value, type ValueCompletion} from "../runtime.js";
 
@@ -12,7 +12,7 @@ export function registerScriptArrayIteration(realm: Realm): void {
         if (object.type === "throw") return object;
         const tick = context.tick(loc);
         if (tick.type === "throw") return tick;
-        return mapObjectDefaultArray(object.value, args.length === 0 ? UNDEFINED : args[0],
+        return mapObject(object.value, args.length === 0 ? UNDEFINED : args[0],
             args.length < 2 ? UNDEFINED : args[1], context, loc);
     });
     realm.registerBuiltin(realm.arrayPrototype, "forEach", 1, (receiver, args, context, loc) => {
@@ -51,7 +51,7 @@ export function registerScriptArrayIteration(realm: Realm): void {
         const callback = args.length === 0 ? UNDEFINED : args[0];
         if (callback.kind !== "object" || callback.object.callable === null)
             return languageFailure(context.realm, "TypeError", "Array.prototype.filter callback is not callable", loc);
-        const created = createDefaultSpeciesArray(object.value, 0, "filter", context, loc);
+        const created = arraySpeciesCreate(object.value, 0, "filter", context, loc);
         if (created.type === "throw") return created;
         const result = created.value;
         const thisArg = args.length < 2 ? UNDEFINED : args[1];
@@ -73,7 +73,7 @@ export function registerScriptArrayIteration(realm: Realm): void {
                 value: element.value, writable: true, enumerable: true, configurable: true,
             }, context, loc);
             if (defined.type === "throw") return defined;
-            if (!defined.value) throw new Error("fresh filter array element invariant");
+            if (!defined.value) return languageFailure(context.realm, "TypeError", "filter cannot define result element", loc);
             nextIndex++;
         }
         return normal({kind: "object", object: result});

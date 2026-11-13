@@ -1,7 +1,7 @@
 # Array filter
 
 TS-086 adds Script Array.prototype.filter. Receiver boxing and length capture
-precede callback validation; default species creation precedes traversal. The
+precede callback validation; species construction precedes traversal. The
 operation skips absent indices, reads inherited properties, and observes changes
 to not-yet-visited entries while retaining the original length limit.
 
@@ -12,11 +12,12 @@ when the callback changes the source value. Result setters inherited from a
 prototype are bypassed. Throws propagate unchanged and each visited index consumes
 the active step budget, including holes.
 
-Results start empty in the builtin's Realm rather than reserving the source length.
-Huge sparse sources therefore reach resource guards instead of an irrelevant
-result-length error. Custom species remains explicit unsupported behavior
-(runtime.filter-species); invalid species produces a language TypeError.
-Legacy Realms retain their previous public surface.
+The [species constructor](array-species.md) receives zero rather than the source
+length. Default arrays start empty in the method's Realm; custom constructors may
+return arbitrary objects. Filter defines selected values without assigning result
+length. Huge sparse sources remain bounded by resource guards. Invalid species or
+rejected property creation throws TypeError. Legacy Realms retain their previous
+public surface.
 
 References: [Array.prototype.filter](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.filter)
 and src/builtins/array/array_iterators.cpp at base 98c9df33. The C++ implementation

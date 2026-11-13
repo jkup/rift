@@ -1,6 +1,6 @@
 import {Realm} from "../src/realm.js";
 import {GuestArray} from "../src/array-object.js";
-import {mapObjectDefaultArray} from "../src/array-map.js";
+import {mapObject} from "../src/array-map.js";
 import {prepareBoundedScript} from "../src/script-record.js";
 import {createScriptSession, evaluateScript} from "../src/script-execution.js";
 import {GuestObject, normal, sameValue, UNDEFINED, type Value, type ValueCompletion} from "../src/runtime.js";
@@ -87,7 +87,7 @@ for (const owner of [r, fresh()]) {
     const callback: Value = {kind: "object", object: r.createBuiltin("callback", 1,
         (_receiver, _args, _context, _loc): ValueCompletion => { throw new Error("empty map callback"); })};
     seed(r, "probe", {kind: "object", object: r.createBuiltin("probe", 0,
-        (_receiver, _args, context, loc): ValueCompletion => mapObjectDefaultArray(source, callback, UNDEFINED, context, loc))});
+        (_receiver, _args, context, loc): ValueCompletion => mapObject(source, callback, UNDEFINED, context, loc))});
     array(run(r, "probe();"), r, 0);
     check(gets === (owner === r ? 1 : 0), "foreign intrinsic skips species before lookup despite global rebinding");
 }

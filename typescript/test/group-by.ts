@@ -72,7 +72,11 @@ passes("let marker={};let key={toString:function(){throw marker;}};let closed=0;
     const realm = fresh();
     const source = "var closed=0;let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};Object.groupBy(a,function(){let x=[1];x.constructor={};x.constructor[Symbol.species]=function(){};x.map(function(v){return v;});});";
     const result = run(source, realm);
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation" && sameValue(own(realm.globalObject, "closed"), {kind: "number", value: 0}), "unsupported callback stops without cleanup");
+    check(result.type === "throw" && result.origin.kind === "resource-limit" && sameValue(own(realm.globalObject, "closed"), {kind: "number", value: 0}), "supported species leaves infinite iterator bounded without cleanup");
+    const unsupportedRealm = fresh();
+    const unsupportedSource = source.replace("let x=[1];x.constructor={};x.constructor[Symbol.species]=function(){};x.map(function(v){return v;});", "new RegExp(\"a\",\"v\");");
+    const stopped = run(unsupportedSource, unsupportedRealm);
+    check(stopped.type === "throw" && stopped.origin.kind === "unsupported-operation" && stopped.origin.capabilityCode === "runtime.regexp-pattern" && sameValue(own(unsupportedRealm.globalObject, "closed"), {kind:"number",value:0}), "unsupported callback stops without cleanup");
 }
 {
     const owner = fresh(), caller = fresh();

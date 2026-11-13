@@ -6548,7 +6548,7 @@ creation must be guest TypeError rather than a fresh-array invariant fault.
 
 ## TS-539 — Array species construction
 
-**in progress — isolated implementation; integration follows the guarded combined-milestone plan**. Owner: coordinator.
+**in progress — integrated; combined validation pending**. Owner: coordinator.
 Implement the reviewed ArraySpeciesCreate boundary for all seven callers and
 install the Array species getter atomically. Own src/array-species.ts,
 src/array-map.ts, src/builtins/array.ts, array-copy.ts, array-iteration.ts,

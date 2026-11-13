@@ -4,7 +4,7 @@ import { lengthOfArrayLike, toClampedIndex } from "../array-like.js";
 import { numberToString, toIntegerOrInfinity } from "../conversion.js";
 import { languageFailure, normal, UNDEFINED, type Value, type GuestObject, type OperationContext, type ValueCompletion } from "../runtime.js";
 import { toPrimitive } from "../primitive-conversion.js";
-import { createDefaultSpeciesArray } from "../array-species.js";
+import { arraySpeciesCreate } from "../array-species.js";
 import type { Location } from "../syntax.js";
 
 function deleteProperty(object: GuestObject, key: string, context: OperationContext, loc: Location): ValueCompletion {
@@ -250,7 +250,7 @@ export function registerArraySplice(realm: Realm): void {
         const itemCount = Math.max(args.length - 2, 0);
         const nextLength = length.value - deleteCount + itemCount;
         if (nextLength > 9007199254740991) return languageFailure(context.realm, "TypeError", "splice exceeds maximum array-like length", loc);
-        const created = createDefaultSpeciesArray(object, deleteCount, "splice", context, loc);
+        const created = arraySpeciesCreate(object, deleteCount, "splice", context, loc);
         if (created.type === "throw") return created;
         const deleted = created.value;
         for (let index = 0; index < deleteCount; index++) {
@@ -264,8 +264,10 @@ export function registerArraySplice(realm: Realm): void {
             if (value.type === "throw") return value;
             const defined = deleted.defineOwnProperty(numberToString(index), { value: value.value, writable: true, enumerable: true, configurable: true }, context, loc);
             if (defined.type === "throw") return defined;
-            if (!defined.value) throw new Error("fresh splice array element invariant");
+            if (!defined.value) return languageFailure(context.realm, "TypeError", "splice cannot define result element", loc);
         }
+        const resultLength = deleted.set("length", { kind: "number", value: deleteCount }, context, loc);
+        if (resultLength.type === "throw") return resultLength;
         if (itemCount < deleteCount) {
             for (let index = start; index < length.value - deleteCount; index++) {
                 const step = context.tick(loc);

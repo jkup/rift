@@ -6,9 +6,9 @@ import { run } from "../src/interpreter.js";
 import { observe } from "../src/observation.js";
 import { resolveStrictGlobalBinding, getStrictGlobalBinding, putStrictGlobalBinding } from "../src/global-environment.js";
 import { Environment, GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type Completion, type ValueCompletion, type OperationContext, type PropertyKey } from "../src/runtime.js";
-import { wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasInstance, wellKnownIterator } from "../src/symbols.js";
+import { wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasInstance, wellKnownIterator, wellKnownSpecies } from "../src/symbols.js";
 import { toPrimitive } from "../src/primitive-conversion.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 const loc = { line: 1, column: 1 };
 const legacyError = "legacy Realm required", crossError = "cross-profile callable invocation", unavailable = "Script execution unavailable";
 function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
@@ -91,7 +91,7 @@ function inventory(a: Realm): void {
                 const name=i===0?"Object":i===1?"Function":i===2?"Array":i===3?"Boolean":i===4?"Number":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
                 desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
                 if (name === "Number") keys(f, numberKeys);
-                else if (name === "Array") keys(f, ["name", "length", "prototype", "isArray", "of", "from"]);
+                else if (name === "Array") keys(f, ["name", "length", "prototype", "isArray", "of", "from", wellKnownSpecies]);
                 else if (name === "Object") keys(f, objectConstructorKeys());
                 else if (name === "String") keys(f, ["name", "length", "prototype", "fromCharCode", "fromCodePoint", "raw"]);
                 else keys(f, ["name", "length", "prototype"]);
@@ -190,7 +190,7 @@ function row(id: string,name: string,initial: number): void {
         let effects=0; const foreign=log(a); const nested=x.createObject(); define(nested,name,foreign);
         const outer=y.createBuiltin("outer",0,(_r,_a,c,l)=>{effects++; return c.call(own(nested,name),UNDEFINED,[],l);}); error(()=>{e.call(obj(outer),UNDEFINED,[],loc);},crossError); restored(e,x); check(effects===1,"outer effects retained");
         const hook=x.createObject(); define(hook,wellKnownToPrimitive,foreign); error(()=>{toPrimitive(obj(hook),"number",e.context,loc);},crossError); restored(e,x); check(e.steps===1,"coercion tick retained");
-        const array=x.createArray(); define(array,"0",first); error(()=>{mapObjectDefaultArray(array,foreign,UNDEFINED,e.context,loc);},crossError); restored(e,x);
+        const array=x.createArray(); define(array,"0",first); error(()=>{mapObject(array,foreign,UNDEFINED,e.context,loc);},crossError); restored(e,x);
         const returned=y.createBuiltin("returned",0,(_r,_a,_c,_l)=>normal(foreign)); const result=e.call(obj(returned),UNDEFINED,[],loc); if(result.type!=="normal") throw new Error("return callable"); error(()=>{e.call(result.value,UNDEFINED,[],loc);},crossError); restored(e,x); break;
     }
     case "B18": {

@@ -62,10 +62,11 @@ for (const method of ["map", "forEach", "filter"]) {
         (_callee, _newTarget, _args, _context, _loc): ValueCompletion => { constructed = true; return normal(obj(r.createObject())); });
     holder.bootstrapDefine(wellKnownSpecies, {value: obj(custom), writable: true});
     seed(r, "input", obj(input));
-    const unsupported = run(r, "input.map(function(){throw 'callback';});");
-    check(unsupported.type === "throw" && unsupported.origin.kind === "unsupported-operation" && !constructed, "custom map species remains explicit and uninvoked");
-    const unsupportedFilter = run(r,"input.filter(function(){throw 'callback';});");
-    check(unsupportedFilter.type === "throw" && unsupportedFilter.origin.kind === "unsupported-operation" && unsupportedFilter.origin.capabilityCode === "runtime.filter-species" && !constructed,"custom filter species uninvoked");
+    const mapped = run(r, "input.map(function(){throw 'callback';});");
+    check(mapped.type === "throw" && mapped.origin.kind === "guest" && sameValue(mapped.value,{kind:"string",value:"callback"}) && constructed, "map constructs species before callback");
+    constructed = false;
+    const filtered = run(r,"input.filter(function(){throw 'callback';});");
+    check(filtered.type === "throw" && filtered.origin.kind === "guest" && sameValue(filtered.value,{kind:"string",value:"callback"}) && constructed,"filter constructs species before callback");
     holder.bootstrapDefine(wellKnownSpecies, {value: num(7)});
     const invalid = run(r, "input.map(function(){throw 'callback';});");
     check(invalid.type === "throw" && invalid.origin.kind === "engine-diagnostic" && invalid.diagnostic.name === "TypeError", "nonconstructor species is language TypeError");
@@ -114,8 +115,7 @@ check(legacy.arrayPrototype.getOwnProperty("map") === undefined && legacy.arrayP
         trace += "species;"; return normal(obj(custom));
     })), configurable:true});
     seed(r,"input",obj(input));
-    const unsupported = run(r,"input.splice({valueOf:function(){return 0;}},1);");
-    check(unsupported.type === "throw" && unsupported.origin.kind === "unsupported-operation" && unsupported.origin.capabilityCode === "runtime.splice-species", "custom splice species explicit");
+    hostConstruction(() => run(r,"input.splice({valueOf:function(){return 0;}},1);"), "splice species constructed");
     check(trace === "species;" && sameValue(own(input,"0"),num(7)) && sameValue(own(input,"length"),num(1)), "species before receiver mutation");
     holder.bootstrapDefine(wellKnownSpecies,{value:num(7),configurable:true});
     const invalid = run(r,"input.splice(0,1);");
@@ -151,3 +151,13 @@ check(legacy.arrayPrototype.getOwnProperty("splice") === undefined, "splice is a
 }
 check(legacy.arrayPrototype.getOwnProperty("filter") === undefined,"filter Script only");
 console.log("Public array iteration passed");
+
+function hostConstruction(action: () => ValueCompletion, message: string): void {
+    let caught = false;
+    try { action(); } catch (error) {
+        if (!(error instanceof Error)) throw error;
+        check(error.message === message, "constructor host exception");
+        caught = true;
+    }
+    check(caught, "custom species constructor invoked");
+}

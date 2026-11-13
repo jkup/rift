@@ -10,7 +10,7 @@ import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
 import { parse } from "../src/parser.js";
 import { lengthOfArrayLike } from "../src/array-like.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { GuestArray } from "../src/array-object.js";
 import { toNumber, toString, toIntegerOrInfinity, toLength, type NumberCompletion } from "../src/conversion.js";
 import { GuestObject, UNDEFINED, normal, failure, sameValue, type Builtin, type Completion, type Value, type ValueCompletion, type OperationContext } from "../src/runtime.js";
@@ -70,7 +70,7 @@ function setup(): Evaluator {
         const result = lengthOfArrayLike(object(args[0]), context, at);
         return result.type === "throw" ? result : normal(num(result.value));
     });
-    active.context.realm.registerBuiltin(host, "map", 2, (_receiver, args, context, at) => mapObjectDefaultArray(object(args[0]), args[1], UNDEFINED, context, at));
+    active.context.realm.registerBuiltin(host, "map", 2, (_receiver, args, context, at) => mapObject(object(args[0]), args[1], UNDEFINED, context, at));
     active.context.realm.registerBuiltin(host, "remove", 2, (_receiver, args, _context, _at) => {
         check(args[1].kind === "string", "delete key");
         if (args[1].kind === "string") object(args[0]).internalDelete(args[1].value);
@@ -229,7 +229,7 @@ const parent = new GuestObject();
 put(parent, "2", num(20));
 source.setPrototypeOf(parent);
 seed(mutation, "input", obj(source));
-const changed = mapped(mapObjectDefaultArray(source, binding(mutation, "identity"), UNDEFINED, mutation.context, loc), 3, mutation.context);
+const changed = mapped(mapObject(source, binding(mutation, "identity"), UNDEFINED, mutation.context, loc), 3, mutation.context);
 check(sameValue(changed.get("0", mutation.context, loc), num(10)) && changed.getOwnProperty("1") === undefined && sameValue(changed.get("2", mutation.context, loc), num(20)) && changed.getOwnProperty("3") === undefined, "live elements/holes, saved bound");
 check(source.gets === 1 && source.constructorReads === 0 && sameValue(binding(mutation, "hits"), num(3)) && binding(mutation, "lengthValue") !== saved, "saved value, generic skips changed constructor");
 // F13 and allocation ordering: conversion errors precede invalid callbacks.
@@ -242,14 +242,14 @@ for (const succeeds of [false, true]) {
         return succeeds ? normal(num(Infinity)) : sentinel;
     }));
     put(source, "length", obj(hook));
-    const result = mapObjectDefaultArray(source, UNDEFINED, UNDEFINED, active.context, loc);
+    const result = mapObject(source, UNDEFINED, UNDEFINED, active.context, loc);
     if (succeeds) {
         check(result.type === "throw" && result.diagnostic.message === "map callback is not callable", "callback after conversion before allocation");
     } else {
         check(result === sentinel, "length throw beats callback");
     }
     check(source.gets === 1 && source.constructorReads === 0 && sameValue(source.get("effect", active.context, loc), num(1)), "failure retains mutation");
-    if (succeeds) error(mapObjectDefaultArray(source, binding(active, "identity"), UNDEFINED, active.context, loc), "RangeError");
+    if (succeeds) error(mapObject(source, binding(active, "identity"), UNDEFINED, active.context, loc), "RangeError");
 }
 // Actual array storage remains numeric; only this observer synthesizes object Get.
 class ArrayObserver extends GuestArray {
@@ -270,7 +270,7 @@ for (const invalidCallback of [false, true]) {
         put(array, "constructor", num(7));
         return normal(num(0));
     }));
-    const result = mapObjectDefaultArray(array, invalidCallback ? UNDEFINED : binding(active, "identity"), UNDEFINED, active.context, loc);
+    const result = mapObject(array, invalidCallback ? UNDEFINED : binding(active, "identity"), UNDEFINED, active.context, loc);
     check(result.type === "throw" && result.diagnostic.message === (invalidCallback ? "map callback is not callable" : "unsupported map constructor/species"), "array constructor after length/callback");
     check(array.trace.join(",") === (invalidCallback ? "length,hook" : "length,hook,constructor") && sameValue(dataDescriptor(array.getOwnProperty("length"))!.value, num(0)), "observer ordering; numeric storage");
 }
@@ -284,7 +284,7 @@ put(outerHook, "valueOf", binding(nested, "nestedLength"));
 number(lengthOfArrayLike(input(obj(outerHook)), nested.context, loc), 2);
 const outer = input(num(1));
 put(outer, "0", num(8));
-check(sameValue(mapped(mapObjectDefaultArray(outer, binding(nested, "nestedMap"), UNDEFINED, nested.context, loc), 1, nested.context).get("0", nested.context, loc), num(2)), "guest nested map");
+check(sameValue(mapped(mapObject(outer, binding(nested, "nestedMap"), UNDEFINED, nested.context, loc), 1, nested.context).get("0", nested.context, loc), num(2)), "guest nested map");
 check(nested.steps > 0 && nested.calls === 0, "shared nested ticks/unwind");
 for (const method of ["loop", "recursive"]) {
     const initial = setup();
@@ -306,7 +306,7 @@ const sparseActive = setup();
 const sparse = input(obj(new GuestObject()));
 put(object(sparse.get("length", nested.context, loc)), "valueOf", builtin(sparseActive.context.realm, (_receiver, _args, _context, _at) => normal(num(4294967295))));
 const budget = new Evaluator(sparseActive.context.realm, 3);
-error(mapObjectDefaultArray(sparse, binding(budget, "identity"), UNDEFINED, budget.context, loc), "RangeError");
+error(mapObject(sparse, binding(budget, "identity"), UNDEFINED, budget.context, loc), "RangeError");
 check(budget.steps === 4 && budget.calls === 0, "protocol and ordinary lookup ticks plus bounded sparse scan");
 // Direct converters remain zero-hook boundaries; semantic storage converts twice.
 const excluded = setup();
@@ -378,4 +378,3 @@ number(lengthOfArrayLike(input(binding(realmA, "lengthValue")), realmA.context, 
 number(lengthOfArrayLike(input(binding(realmB, "lengthValue")), realmB.context, loc), 2);
 check(sameValue(binding(realmA, "hits"), num(2)) && sameValue(binding(realmB, "hits"), num(1)) && realmA.context.realm !== realmB.context.realm, "independent realms/counters");
 console.log("length coercion passed");
-

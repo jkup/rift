@@ -74,8 +74,7 @@ class Observed extends GuestObject {
         (_callee,_newTarget,_args,_context,_loc): ValueCompletion => {throw new Error("species construct");});
     holder.bootstrapDefine(wellKnownSpecies,{value:obj(custom),configurable:true});
     realm.defineScriptGlobal("input",{value:obj(input)});
-    const result = run(realm,"input.slice(0,0);");
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.slice-species","custom species checked even for empty slice");
+    hostConstruction(() => run(realm,"input.slice(0,0);"), "species construct");
     holder.bootstrapDefine(wellKnownSpecies,{value:num(1),configurable:true});
     const invalid = run(realm,"input.slice();");
     check(invalid.type === "throw" && invalid.origin.kind === "engine-diagnostic" && invalid.diagnostic.name === "TypeError","invalid slice species TypeError");
@@ -165,8 +164,7 @@ check(legacy.arrayPrototype.getOwnProperty("slice") === undefined,"slice Script 
     input.bootstrapDefine("constructor",{value:obj(holder)});
     input.bootstrapDefine(wellKnownIsConcatSpreadable,{get:obj(realm.createBuiltin("spread",0,(_receiver,_args,_context,_loc): ValueCompletion => {throw new Error("spread before species");}))});
     realm.defineScriptGlobal("input",{value:obj(input)});
-    const result = run(realm,"input.concat();");
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.concat-species","concat species before spreadability");
+    hostConstruction(() => run(realm,"input.concat();"), "concat species construct");
 }
 {
     const realm = fresh(), target = realm.createObject(), marker = realm.createObject();
@@ -267,3 +265,13 @@ for (const source of [
     check(overflow.type === "throw" && overflow.diagnostic.name === "TypeError" && target.trace === "get:length;","safe length overflow before allocation or reads");
 }
 console.log("Array copy passed");
+
+function hostConstruction(action: () => ValueCompletion, message: string): void {
+    let caught = false;
+    try { action(); } catch (error) {
+        if (!(error instanceof Error)) throw error;
+        check(error.message === message, "constructor host exception");
+        caught = true;
+    }
+    check(caught, "custom species constructor invoked");
+}

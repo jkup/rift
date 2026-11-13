@@ -6,7 +6,7 @@ import type { Location } from "../syntax.js";
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
 import { lengthOfArrayLike, toClampedIndex } from "../array-like.js";
-import { createDefaultSpeciesArray } from "../array-species.js";
+import { arraySpeciesCreate } from "../array-species.js";
 import { numberToString, toIntegerOrInfinity } from "../conversion.js";
 import { languageFailure, normal, truthy, UNDEFINED, type Value, type GuestObject, type OperationContext, type ValueCompletion, type InternalBooleanCompletion } from "../runtime.js";
 
@@ -28,7 +28,7 @@ export function registerArraySlice(realm: Realm): void {
             end = converted.value;
         }
         const count = Math.max(end - start.value, 0);
-        const created = createDefaultSpeciesArray(object, count, "slice", context, loc);
+        const created = arraySpeciesCreate(object, count, "slice", context, loc);
         if (created.type === "throw") return created;
         const result = created.value;
         for (let index = 0; index < count; index++) {
@@ -42,9 +42,10 @@ export function registerArraySlice(realm: Realm): void {
             if (value.type === "throw") return value;
             const defined = result.defineOwnProperty(numberToString(index), { value: value.value, writable: true, enumerable: true, configurable: true }, context, loc);
             if (defined.type === "throw") return defined;
-            if (!defined.value) throw new Error("fresh slice array element invariant");
+            if (!defined.value) return languageFailure(context.realm, "TypeError", "slice cannot define result element", loc);
         }
-        return normal({ kind: "object", object: result });
+        const resized = result.set("length", { kind: "number", value: count }, context, loc);
+        return resized.type === "throw" ? resized : normal({ kind: "object", object: result });
     });
 }
 
@@ -58,7 +59,7 @@ function isConcatSpreadable(value: Value, context: OperationContext, loc: Locati
 function defineElement(object: GuestObject, index: number, value: Value, context: OperationContext, loc: Location): ValueCompletion {
     const defined = object.defineOwnProperty(numberToString(index), { value, writable: true, enumerable: true, configurable: true }, context, loc);
     if (defined.type === "throw") return defined;
-    if (!defined.value) throw new Error("fresh copy array element invariant");
+    if (!defined.value) return languageFailure(context.realm, "TypeError", "cannot define result element", loc);
     return normal();
 }
 
@@ -68,7 +69,7 @@ export function registerArrayConcat(realm: Realm): void {
         if (boxed.type === "throw") return boxed;
         const tick = context.tick(loc);
         if (tick.type === "throw") return tick;
-        const created = createDefaultSpeciesArray(boxed.value, 0, "concat", context, loc);
+        const created = arraySpeciesCreate(boxed.value, 0, "concat", context, loc);
         if (created.type === "throw") return created;
         const result = created.value;
         let nextIndex = 0;

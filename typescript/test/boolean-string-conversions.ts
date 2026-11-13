@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { thisBooleanValue } from "../src/builtins/boolean.js";
 import { thisStringValue } from "../src/builtins/string.js";
 import { lengthOfArrayLike } from "../src/array-like.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from "../src/conversion.js";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -331,7 +331,7 @@ function testGuestConsumers(): void {
     })));
     seed(realm, "map", obj(realm.createBuiltin("map", 2, (_r, args, context, at) => {
         if (args[0].kind !== "object") throw new Error("M map receiver");
-        return mapObjectDefaultArray(args[0].object, args[1], UNDEFINED, context, at);
+        return mapObject(args[0].object, args[1], UNDEFINED, context, at);
     })));
     const parsed = parse(readFileSync("test/fixtures/boolean-string-conversions.js", "utf8"));
     check(parsed.error === null, "M6 parse");

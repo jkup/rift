@@ -1,6 +1,6 @@
 import type { OperationContext } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { deleteReference } from "../src/delete-reference.js";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
@@ -1342,7 +1342,7 @@ for (const inherited of [false, true]) {
         }
         return normal(args[0]);
     });
-    const mapped = mapObjectDefaultArray(array, callback, U, e.context, loc);
+    const mapped = mapObject(array, callback, U, e.context, loc);
     check(
         mapped.type === "normal" &&
             mapped.value.kind === "object" &&

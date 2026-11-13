@@ -71,8 +71,7 @@ for(const method of ["flat","flatMap"]) {
     const realm=fresh(),source=realm.createArray(),holder=realm.createObject();
     const custom=realm.createBuiltinConstructor("custom",0,(_receiver,_args,_context,_loc): ValueCompletion=>{throw new Error("species called");},(_callee,_newTarget,_args,_context,_loc): ValueCompletion=>{throw new Error("species constructed");});
     holder.bootstrapDefine(wellKnownSpecies,{value:obj(custom)});source.bootstrapDefine("constructor",{value:obj(holder)});realm.defineScriptGlobal("input",{value:obj(source)});
-    const unsupported=run(realm,method==="flat"?"input.flat();":"input.flatMap(function(v){return v;});");
-    check(unsupported.type==="throw"&&unsupported.origin.kind==="unsupported-operation"&&unsupported.origin.capabilityCode===(method==="flat"?"runtime.flat-species":"runtime.flatmap-species"),"custom species explicit even for empty input");
+    hostConstruction(() => run(realm,method==="flat"?"input.flat();":"input.flatMap(function(v){return v;});"), "species constructed");
     if(method==="flatMap") {const invalid=run(realm,"input.flatMap(0);");check(invalid.type==="throw"&&invalid.origin.kind==="engine-diagnostic"&&invalid.diagnostic.name==="TypeError","callback validation before species");}
     const bounded=run(fresh(),method==="flat"?"[].flat.call({length:9007199254740991});":"[].flatMap.call({length:9007199254740991},function(v){return v;});",40);
     check(bounded.type==="throw"&&bounded.origin.kind==="resource-limit","huge sparse traversal bounded");
@@ -91,3 +90,13 @@ for(const method of ["flat","flatMap"]) {
     check(sameValue(own(array(run(realm,"[[7]].flat();")),"0"),num(7)),"flatten defines own data bypassing inherited setter");
 }
 console.log("Array flattening passed");
+
+function hostConstruction(action: () => ValueCompletion, message: string): void {
+    let caught = false;
+    try { action(); } catch (error) {
+        if (!(error instanceof Error)) throw error;
+        check(error.message === message, "constructor host exception");
+        caught = true;
+    }
+    check(caught, "custom species constructor invoked");
+}

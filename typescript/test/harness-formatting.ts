@@ -7,7 +7,7 @@ import { GuestSymbol, wellKnownToPrimitive, wellKnownSpecies, wellKnownIterator 
 import { prepareBoundedScript, type ExecutableScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript, type ScriptSession } from "../src/script-execution.js";
 import type { Location } from "../src/syntax.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 class Poison extends GuestObject{internalGet(_k:PropertyKey,_r:Value,_c:OperationContext,_l:Location):ValueCompletion{throw new Error("identity path Get");}}
 function check(ok:boolean,label:string):void {if(!ok)throw new Error(label);}
 function obj(object:GuestObject):Value{return {kind:"object",object};}
@@ -479,9 +479,9 @@ for(const where of ["own","function","object"])for(let mode=0;mode<5;mode++){
  const poison=r.createBuiltin("species",0,(receiver,_args,c,_l):ValueCompletion=>{getters++;check(sameValue(receiver,obj(ctor))&&c.realm===r,"actual species receiver");return {type:"throw",value:marker,diagnostic:{phase:"runtime",name:"Uncaught",message:"marker",loc},origin:{kind:"guest"}};});
  if(mode===4)target.bootstrapDefine(wellKnownSpecies,{get:obj(poison),configurable:true});else data(target,wellKnownSpecies,mode===0?UNDEFINED:mode===1?{kind:"null"}:mode===2?num(7):obj(r.getErrorConstructor("Error")));
  data(target,"Symbol.species",num(7));data(target,new GuestSymbol("Symbol.species"),num(7));
- const cb=r.createBuiltin("callback",3,(_r,_args,_c,_l)=>{callbacks++;return normal();});define(r,"probe",obj(r.createBuiltin("probe",0,(_r,_args,c,l)=>mapObjectDefaultArray(a,obj(cb),UNDEFINED,c,l))));
+ const cb=r.createBuiltin("callback",3,(_r,_args,_c,_l)=>{callbacks++;return normal();});define(r,"probe",obj(r.createBuiltin("probe",0,(_r,_args,c,l)=>mapObject(a,obj(cb),UNDEFINED,c,l))));
  const v=run("probe();",r);check(callbacks===0&&getters===(mode===4?1:0),"empty no callback exact getters");
- if(mode<2)check(object(value(v)).getPrototypeOf()===r.arrayPrototype,"actual default");else if(mode===2)error(v,r);else if(mode===3)check(v.type==="throw"&&v.origin.kind==="unsupported-operation"&&v.origin.capabilityCode==="runtime.map-species","actual custom unsupported");else check(v.type==="throw"&&sameValue(v.value,marker),"actual poison exact");
+ if(mode<2)check(object(value(v)).getPrototypeOf()===r.arrayPrototype,"actual default");else if(mode===2)error(v,r);else if(mode===3){const result=object(value(v));check(result instanceof GuestError&&result.getPrototypeOf()===r.getErrorPrototype("Error")&&sameValue(own(result,"message"),str("0"))&&result.getOwnProperty("length")===undefined,"actual Error species result");}else check(v.type==="throw"&&sameValue(v.value,marker),"actual poison exact");
 }
 console.log("PASS actual C Object-link species controls=15");
 // Reentrant construction retains the original owners and checks finally on host unwind.

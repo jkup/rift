@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { lengthOfArrayLike } from "../src/array-like.js";
 import { GuestArray } from "../src/array-object.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { toPropertyKey } from "../src/conversion.js";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -294,7 +294,7 @@ function testDefaultConsumers(): void {
     })));
     seed(realm, "map", obj(realm.createBuiltin("map", 2, (_receiver, args, context, at) => {
         if (args[0].kind !== "object") throw new Error("C fixture map receiver");
-        return mapObjectDefaultArray(args[0].object, args[1], UNDEFINED, context, at);
+        return mapObject(args[0].object, args[1], UNDEFINED, context, at);
     })));
     const parsed = parse(source);
     check(parsed.error === null, "fixture parse");

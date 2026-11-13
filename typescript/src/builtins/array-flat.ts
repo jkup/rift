@@ -2,7 +2,7 @@ import type { Realm } from "../realm.js";
 import { GuestArray } from "../array-object.js";
 import { toObject } from "../object-conversion.js";
 import { lengthOfArrayLike } from "../array-like.js";
-import { createDefaultSpeciesArray } from "../array-species.js";
+import { arraySpeciesCreate } from "../array-species.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { numberToString, toIntegerOrInfinity } from "../conversion.js";
 import type { Location } from "../syntax.js";
@@ -13,7 +13,7 @@ class FlattenFrame {
     constructor(readonly source: GuestObject, readonly length: number, readonly depth: number) {}
 }
 
-function flatten(target: GuestArray, source: GuestObject, length: number, depth: number, mapper: Value, thisArg: Value, context: OperationContext, loc: Location): ValueCompletion {
+function flatten(target: GuestObject, source: GuestObject, length: number, depth: number, mapper: Value, thisArg: Value, context: OperationContext, loc: Location): ValueCompletion {
     const frames: FlattenFrame[] = [new FlattenFrame(source, length, depth)];
     let nextIndex = 0;
     while (frames.length > 0) {
@@ -44,7 +44,7 @@ function flatten(target: GuestArray, source: GuestObject, length: number, depth:
                 return languageFailure(context.realm, "TypeError", "flattened array exceeds maximum index", loc);
             const defined = target.defineOwnProperty(numberToString(nextIndex++), { value: element, writable: true, enumerable: true, configurable: true }, context, loc);
             if (defined.type === "throw") return defined;
-            if (!defined.value) throw new Error("fresh flattened array element invariant");
+            if (!defined.value) return languageFailure(context.realm, "TypeError", "cannot define flattened result element", loc);
         }
     }
     return normal({ kind: "object", object: target });
@@ -66,7 +66,7 @@ export function registerArrayFlat(realm: Realm): void {
             if (integer.type === "throw") return integer;
             depth = Math.max(integer.value, 0);
         }
-        const created = createDefaultSpeciesArray(object.value, 0, "flat", context, loc);
+        const created = arraySpeciesCreate(object.value, 0, "flat", context, loc);
         if (created.type === "throw") return created;
         return flatten(created.value, object.value, length.value, depth, UNDEFINED, UNDEFINED, context, loc);
     });
@@ -80,7 +80,7 @@ export function registerArrayFlat(realm: Realm): void {
         const mapper = args.length === 0 ? UNDEFINED : args[0];
         if (mapper.kind !== "object" || mapper.object.callable === null)
             return languageFailure(context.realm, "TypeError", "flatMap callback is not callable", loc);
-        const created = createDefaultSpeciesArray(object.value, 0, "flatMap", context, loc);
+        const created = arraySpeciesCreate(object.value, 0, "flatMap", context, loc);
         if (created.type === "throw") return created;
         return flatten(created.value, object.value, length.value, 1, mapper, args.length < 2 ? UNDEFINED : args[1], context, loc);
     });

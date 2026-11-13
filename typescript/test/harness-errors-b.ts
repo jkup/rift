@@ -7,7 +7,7 @@ import { GuestSymbol, wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasIn
 import { GlobalEnvironment } from "../src/global-environment.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment } from "../src/script-environment.js";
 import { toNumber, toString, toPropertyKey } from "../src/conversion.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { projectThrow } from "../src/observation.js";
 import type { Location } from "../src/syntax.js";
 function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
@@ -104,7 +104,7 @@ console.log("PASS E20 E21");
 console.log("PASS E22");
 {
  const r=fresh(),c=context(r);const n=toNumber(symbol,loc,r),s=toString(symbol,loc,r);if(n.type!=="throw"||s.type!=="throw")throw new Error("conversion throws");error(n,r,"TypeError");error(s,r,"TypeError");const key=toPropertyKey(symbol,c,loc);check(key.type==="normal"&&key.value===symbol.value,"symbol key identity");for(const result of [toNumber(obj(r.createObject()),loc,r),toString(obj(r.createObject()),loc,r)])check(result.type==="throw"&&result.origin.kind==="unsupported-operation","unsupported primitive helper");
- let calls=0;const callback=r.createBuiltin("cb",0,(_r,_a,_c,_l)=>{calls++;return normal();});const o=r.createObject();data(o,"length",num(0));alias(r,"map",(_r,args,c,l)=>mapObjectDefaultArray(o,args[0],UNDEFINED,c,l));error(run("map(7);",r),r,"TypeError");data(o,"length",num(4294967296));define(r,"cb",obj(callback));error(run("map(cb);",r),r,"RangeError");check(calls===0,"no oversized callbacks");const a=r.createArray();data(a,"constructor",num(7));alias(r,"species",(_r,_a,c,l)=>mapObjectDefaultArray(a,obj(callback),UNDEFINED,c,l));const invalidSpecies=run("species();",r);error(invalidSpecies,r,"TypeError");check(thrown(invalidSpecies).diagnostic.message==="map species is not a constructor"&&calls===0,"invalid species language error before callbacks");
+ let calls=0;const callback=r.createBuiltin("cb",0,(_r,_a,_c,_l)=>{calls++;return normal();});const o=r.createObject();data(o,"length",num(0));alias(r,"map",(_r,args,c,l)=>mapObject(o,args[0],UNDEFINED,c,l));error(run("map(7);",r),r,"TypeError");data(o,"length",num(4294967296));define(r,"cb",obj(callback));error(run("map(cb);",r),r,"RangeError");check(calls===0,"no oversized callbacks");const a=r.createArray();data(a,"constructor",num(7));alias(r,"species",(_r,_a,c,l)=>mapObject(a,obj(callback),UNDEFINED,c,l));const invalidSpecies=run("species();",r);error(invalidSpecies,r,"TypeError");check(thrown(invalidSpecies).diagnostic.message==="map species is not a constructor"&&calls===0,"invalid species language error before callbacks");
 }
 console.log("PASS E24 E25");
 {

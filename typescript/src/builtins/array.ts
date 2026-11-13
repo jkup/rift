@@ -9,6 +9,7 @@ import { stringConcat } from "../strings.js";
 import { GuestArray } from "../array-object.js";
 import { createArrayWithLength } from "../array-create.js";
 import { arrayFrom } from "../array-from.js";
+import { wellKnownSpecies } from "../symbols.js";
 import { languageFailure, normal, UNDEFINED, type GuestObject, type Value, type ValueCompletion, type OperationContext } from "../runtime.js";
 import type { Location } from "../syntax.js";
 
@@ -71,6 +72,8 @@ export function registerArray(realm: Realm): GuestObject {
         (_receiver, args, context, loc) => arrayArguments(constructor, args, context, loc),
         (_callee, newTarget, args, context, loc) => arrayArguments(newTarget, args, context, loc));
     constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.arrayPrototype }, writable: false, enumerable: false, configurable: false });
+    const species = realm.createBuiltin("get [Symbol.species]", 0, (receiver, _args, _context, _loc) => normal(receiver));
+    constructor.bootstrapDefine(wellKnownSpecies, { get: { kind: "object", object: species }, set: UNDEFINED, enumerable: false, configurable: true });
     realm.registerBuiltin(constructor, "isArray", 1, (_receiver, args, _context, _loc) => {
         const value = args.length === 0 ? UNDEFINED : args[0];
         return normal({ kind: "boolean", value: value.kind === "object" && value.object instanceof GuestArray });

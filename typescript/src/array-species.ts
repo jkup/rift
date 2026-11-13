@@ -3,9 +3,10 @@ import { languageFailure, unsupportedFailure, type GuestObject, type OperationCo
 import type { Location } from "./syntax.js";
 import { wellKnownSpecies } from "./symbols.js";
 
-import { createArrayWithLength, type ArrayCompletion } from "./array-create.js";
+import { createArrayWithLength } from "./array-create.js";
+import type { ObjectCompletion } from "./object-conversion.js";
 
-export function createDefaultSpeciesArray(object: GuestObject, length: number, method: "map" | "splice" | "slice" | "concat" | "filter" | "flat" | "flatMap", context: OperationContext, loc: Location): ArrayCompletion {
+export function arraySpeciesCreate(object: GuestObject, length: number, method: "map" | "splice" | "slice" | "concat" | "filter" | "flat" | "flatMap", context: OperationContext, loc: Location): ObjectCompletion {
     const input: Value = { kind: "object", object };
     const capability = method === "flatMap" ? "runtime.flatmap-species" : `runtime.${method}-species` as const;
     if (object instanceof GuestArray) {
@@ -28,9 +29,11 @@ export function createDefaultSpeciesArray(object: GuestObject, length: number, m
             if (selected.kind !== "undefined") {
                 if (selected.kind !== "object" || selected.object.constructorSlot === null)
                     return languageFailure(context.realm, "TypeError", method + " species is not a constructor", loc);
-                // Recognize constructibility without invoking a constructor or
-                // acquiring construction authority for this bounded operation.
-                return unsupportedFailure(capability, "TypeError", "unsupported " + method + " constructor/species", loc);
+                if (context.construct === undefined) throw new Error("Array species construction unavailable");
+                const result = context.construct(selected, [{ kind: "number", value: length }], selected, loc);
+                if (result.type === "throw") return result;
+                if (result.value.kind !== "object") throw new Error("constructor result invariant");
+                return { type: "normal", value: result.value.object };
             }
         }
     }

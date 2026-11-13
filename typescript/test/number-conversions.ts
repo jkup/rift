@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { thisNumberValue } from "../src/builtins/number.js";
 import { lengthOfArrayLike } from "../src/array-like.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from "../src/conversion.js";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -353,7 +353,7 @@ function testGuestConsumers(): void {
     })));
     seed(realm, "map", obj(realm.createBuiltin("map", 2, (_r, args, context, at) => {
         if (args[0].kind !== "object") throw new Error("N map receiver");
-        return mapObjectDefaultArray(args[0].object, args[1], UNDEFINED, context, at);
+        return mapObject(args[0].object, args[1], UNDEFINED, context, at);
     })));
     const parsed = parse(readFileSync("test/fixtures/number-conversions.js", "utf8"));
     check(parsed.error === null, "fixture parse");
@@ -399,20 +399,20 @@ function testMapLimits(): void {
         return normal(num(args[0].value + 1));
     }));
     const evaluator = new Evaluator(realm);
-    const mapped = result(mapObjectDefaultArray(input, callback, UNDEFINED, evaluator.context, loc));
+    const mapped = result(mapObject(input, callback, UNDEFINED, evaluator.context, loc));
     check(mapped.kind === "object" && sameValue(mapped.object.get("0", evaluator.context, loc), num(11))
         && sameValue(mapped.object.get("1", evaluator.context, loc), num(21)) && sameValue(mapped.object.get("length", evaluator.context, loc), num(2))
         && order === "01" && evaluator.steps === 4, "map exact values/order/work");
     order = "";
     const tight = new Evaluator(realm, 2);
-    error(mapObjectDefaultArray(input, callback, UNDEFINED, tight.context, loc), "execution step limit exceeded", loc, "RangeError");
+    error(mapObject(input, callback, UNDEFINED, tight.context, loc), "execution step limit exceeded", loc, "RangeError");
     check(order === "" && tight.steps === 3 && tight.calls === 0, "map shared step limit");
     const noCalls = new Evaluator(realm, 20, 0);
-    error(mapObjectDefaultArray(input, callback, UNDEFINED, noCalls.context, loc), "call depth limit exceeded", loc, "RangeError");
+    error(mapObject(input, callback, UNDEFINED, noCalls.context, loc), "call depth limit exceeded", loc, "RangeError");
     check(order === "" && noCalls.steps === 2 && noCalls.calls === 0, "length method shares call limit");
     put(input, "length", obj(realm.createNumberObject(Infinity)));
     const oversized = new Evaluator(realm);
-    error(mapObjectDefaultArray(input, callback, UNDEFINED, oversized.context, loc), "map result length exceeds array limit", loc, "RangeError");
+    error(mapObject(input, callback, UNDEFINED, oversized.context, loc), "map result length exceeds array limit", loc, "RangeError");
     check(order === "" && oversized.steps === 2, "map checks converted length before callbacks");
 }
 

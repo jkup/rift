@@ -14,7 +14,7 @@ import { observe, projectThrow, type ObservationResult } from "../src/observatio
 import { GuestObject, UNDEFINED, normal, failure, resourceFailure, type Binding, type Builtin, type Completion, type ThrowCompletion, type Value, type ValueCompletion, type PropertyKey } from "../src/runtime.js";
 import { toNumber, toString } from "../src/conversion.js";
 import { toPrimitive } from "../src/primitive-conversion.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import type { Expr, Location } from "../src/syntax.js";
 import type { Guard } from "../src/outcomes.js";
 
@@ -241,15 +241,15 @@ class NoReadObject extends GuestObject {
     const realm = fresh(); const e = new Evaluator(realm); const array = new ObservedArray(realm.arrayPrototype); let callbacks = 0;
     const callback = builtin(realm, (_r, _a, _c, _l) => { callbacks++; return normal(); });
     array.bootstrapDefine("constructor", { value: { kind: "number", value: 1 }, configurable: true });
-    const r = thrown(mapObjectDefaultArray(array, callback, UNDEFINED, e.context, loc), "R31");
+    const r = thrown(mapObject(array, callback, UNDEFINED, e.context, loc), "R31");
     check(r.origin.kind === "unsupported-operation" && r.origin.capabilityCode === "runtime.map-species" && callbacks === 0 && e.steps === 0 && array.gets === "LC", "R31");
     const object = realm.createObject(); object.bootstrapDefine("length", { value: { kind: "number", value: 4294967296 } });
-    const bad = thrown(mapObjectDefaultArray(object, UNDEFINED, UNDEFINED, e.context, loc), "R32");
+    const bad = thrown(mapObject(object, UNDEFINED, UNDEFINED, e.context, loc), "R32");
     check(bad.origin.kind === "engine-diagnostic" && bad.diagnostic.name === "TypeError" && bad.diagnostic.message === "map callback is not callable", "R32 callback first");
-    const oversized = thrown(mapObjectDefaultArray(object, callback, UNDEFINED, e.context, loc), "R32 length");
+    const oversized = thrown(mapObject(object, callback, UNDEFINED, e.context, loc), "R32 length");
     check(oversized.origin.kind === "engine-diagnostic" && oversized.diagnostic.name === "RangeError" && callbacks === 0, "R32 length semantic");
     const sparse = realm.createArray(); sparse.bootstrapDefine("length", { value: { kind: "number", value: 3 } }); const zero = new Evaluator(realm, 0);
-    resource(mapObjectDefaultArray(sparse, callback, UNDEFINED, zero.context, loc), "steps", 1, 0, "R33");
+    resource(mapObject(sparse, callback, UNDEFINED, zero.context, loc), "steps", 1, 0, "R33");
     check(callbacks === 0 && sparse.ownPropertyKeys().length === 1 && dataDescriptor(sparse.getOwnProperty("length"))?.value.kind === "number", "R33 no mutation");
     const length = sparse.getOwnProperty("length"); check(length?.kind === "data" && length.value.kind === "number" && length.value.value === 3, "R33 length");
     const noReads = new NoReadObject(); const exhausted = new Evaluator(realm, 0);

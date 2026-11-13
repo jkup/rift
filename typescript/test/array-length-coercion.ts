@@ -8,7 +8,7 @@ import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
 import { parse } from "../src/parser.js";
 import { GuestArray } from "../src/array-object.js";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { GuestObject, UNDEFINED, normal, failure, sameValue, type Builtin, type Completion, type Value, type ValueCompletion, type InternalBooleanCompletion, type DataDescriptor, type DataDescriptorUpdate, type OperationContext } from "../src/runtime.js";
 import type { Location } from "../src/syntax.js";
 
@@ -435,7 +435,7 @@ for (const name of ["nested", "reentrant", "compound"]) {
         mapCalls++;
         const input = new GuestObject();
         put(input, "length", obj(inner));
-        return mapObjectDefaultArray(input, builtin(active.context.realm, (_this, _values, _ctx, _loc) => normal()), UNDEFINED, context, at);
+        return mapObject(input, builtin(active.context.realm, (_this, _values, _ctx, _loc) => normal()), UNDEFINED, context, at);
     }));
     const before = active.steps;
     bool(define(active, { value: binding(active, "rhs") }), true);

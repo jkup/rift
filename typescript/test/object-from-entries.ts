@@ -98,15 +98,17 @@ const prefix = "let i={next:function(){return {done:false,value:3};}};let a={};a
     const result = run(prefix + "i['return']=function(){while(true){}};try{Object.fromEntries(a);}catch(e){true;}", fresh(), 300);
     check(result.type === "throw" && result.origin.kind === "resource-limit", "cleanup resource limit remains fatal");
 }
-const unsupported = "let x=[1];x.constructor={};x.constructor[Symbol.species]=function(){};x.map(function(v){return v;});";
-{
-    const result = run(prefix + "i['return']=function(){" + unsupported + "};try{Object.fromEntries(a);}catch(e){true;}");
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation", "cleanup unsupported operation remains fatal");
+const species = "let x=[1];x.constructor={};x.constructor[Symbol.species]=function(){};x.map(function(v){return v;});";
+const unsupported = "new RegExp(\"a\",\"v\");";
+for (const body of [species, unsupported]) {
+    const result = run(prefix + "i['return']=function(){" + body + "};try{Object.fromEntries(a);}catch(e){true;}");
+    if (body === species) check(result.type === "normal" && sameValue(result.value, {kind:"boolean",value:true}), "successful cleanup preserves original entry TypeError");
+    else check(result.type === "throw" && result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.regexp-pattern", "cleanup unsupported operation remains fatal");
 }
-{
+for (const body of [species, unsupported]) {
     const realm = fresh();
-    const result = run("var closed=0;let key={toString:function(){" + unsupported + "}};let i={next:function(){return {done:false,value:[key,1]};}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};Object.fromEntries(a);", realm);
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation", "entry stop remains fatal");
+    const result = run("var closed=0;let key={toString:function(){" + body + "}};let i={next:function(){return {done:false,value:[key,1]};}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};Object.fromEntries(a);", realm);
+    check(result.type === "throw" && (body === species ? result.origin.kind === "resource-limit" : result.origin.kind === "unsupported-operation" && result.origin.capabilityCode === "runtime.regexp-pattern"), "infinite supported entries bounded; unsupported key conversion fatal");
     check(sameValue(own(realm.globalObject, "closed"), { kind: "number", value: 0 }), "no cleanup after engine stop");
 }
 {

@@ -2,7 +2,7 @@ import { GuestSymbol } from "../src/symbols.js";
 import { formatPropertyKey } from "../src/symbols.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { lengthOfArrayLike } from "../src/array-like.js";
 import { GuestStringObject } from "../src/primitive-objects.js";
 import { GuestArray } from "../src/array-object.js";
@@ -110,7 +110,7 @@ const contexts: OperationContext[] = [];
 const adapter = realm.registerBuiltin(host, "__testMapObjectDefaultArray", 3, (_receiver, args, context, at) => {
     const input = args[0] ?? UNDEFINED;
     if (input.kind !== "object") return failure("TypeError", "object-only test map entry", at);
-    return mapObjectDefaultArray(input.object, args[1] ?? UNDEFINED, args[2] ?? UNDEFINED, context, at);
+    return mapObject(input.object, args[1] ?? UNDEFINED, args[2] ?? UNDEFINED, context, at);
 });
 function program(source: string, evaluator: Evaluator): Completion {
     const parsed = parse(source);
@@ -535,7 +535,7 @@ put(sourceGeneric, "length", num(3));
 put(sourceGeneric, "0", savedElement);
 put(sourceGeneric, "2", num(12));
 for (const input of [sourceArray, sourceGeneric]) {
-    const mapped = result(mapObjectDefaultArray(input, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm);
+    const mapped = result(mapObject(input, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm);
     check(mapped.getPrototypeOf() === resultRealm.arrayPrototype, "G12 supplied context result prototype");
     check(mapped.get("0", resultActive.context, loc) === savedElement && mapped.get("2", resultActive.context, loc) === input.get("2", resultActive.context, loc), "G12 exact returned Values");
     hole(mapped, "1");
@@ -544,7 +544,7 @@ check(sourceArray.getPrototypeOf() === sourceRealm.arrayPrototype && sourceGener
 // G13 extends the existing traced ordering tests to inherited Realm roots.
 for (const constructorValue of [UNDEFINED, { kind: "null" } as const, num(7), obj(sourceRealm.createObject())]) {
     put(sourceRealm.arrayPrototype, "constructor", constructorValue);
-    const mapped = mapObjectDefaultArray(sourceArray, identity, UNDEFINED, resultActive.context, loc);
+    const mapped = mapObject(sourceArray, identity, UNDEFINED, resultActive.context, loc);
     if (constructorValue.kind === "undefined") {
         check(result(mapped, 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype, "G13 inherited undefined constructor");
     } else {
@@ -553,7 +553,7 @@ for (const constructorValue of [UNDEFINED, { kind: "null" } as const, num(7), ob
 }
 check(sourceRealm.arrayPrototype.internalDelete("constructor").type === "normal", "G13 cleanup");
 put(sourceGeneric, "constructor", num(7));
-check(result(mapObjectDefaultArray(sourceGeneric, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype, "G13 generic ignores constructor");
+check(result(mapObject(sourceGeneric, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype, "G13 generic ignores constructor");
 const holeProgram = parse("let inheritedHoles = [,,];");
 check(holeProgram.error === null, "G16 literal parse");
 const holeActive = new Evaluator(sourceRealm);
@@ -565,7 +565,7 @@ put(sourceRealm.arrayPrototype, "1", num(8));
 hole(inheritedHoles, "0");
 hole(inheritedHoles, "1");
 check(sameValue(inheritedHoles.get("1", holeActive.context, loc), num(8)), "G16 inherited index read");
-const inheritedResult = result(mapObjectDefaultArray(inheritedHoles, identity, UNDEFINED, resultActive.context, loc), 2, resultRealm);
+const inheritedResult = result(mapObject(inheritedHoles, identity, UNDEFINED, resultActive.context, loc), 2, resultRealm);
 check(inheritedResult.getPrototypeOf() === resultRealm.arrayPrototype, "G16 result Realm");
 element(inheritedResult, "1", num(8));
 hole(inheritedResult, "0");
@@ -597,7 +597,7 @@ const identityC = builtin(mapC, (receiver, args, context, at) => {
     callbackIndices.push(args[1].value);
     return normal(args[0]);
 });
-const directA = result(mapObjectDefaultArray(sparseB, identityC, callbackReceiver, mapEntry.context, loc), 3, mapA);
+const directA = result(mapObject(sparseB, identityC, callbackReceiver, mapEntry.context, loc), 3, mapA);
 check(directA.get("0", mapEntry.context, loc) === firstElement && directA.get("2", mapEntry.context, loc) === lastElement && callbackIndices.join(",") === "0,2", "R17 values and indices");
 hole(directA, "1");
 check(sparseB.getPrototypeOf() === mapB.arrayPrototype && mapEntry.context.realm === mapA && mapEntry.calls === 0, "R17 input and restoration");
@@ -629,7 +629,7 @@ const allocateC = builtin(mapC, (receiver, args, context, at) => {
 });
 const mapInB = builtin(mapB, (_receiver, _args, context, at) => {
     check(context.realm === mapB, "R18 B helper entry");
-    const mapped = mapObjectDefaultArray(genericA, allocateC, callbackReceiver, context, at);
+    const mapped = mapObject(genericA, allocateC, callbackReceiver, context, at);
     check(context.realm === mapB, "R18 B helper continuation");
     return mapped;
 });
@@ -662,7 +662,7 @@ const stringCallback = builtin(mapC, (receiver, args, context, at) => {
     stringVisits++;
     return normal(args[0]);
 });
-const stringMapped = result(mapObjectDefaultArray(stringInput, stringCallback, stringReceiver, mapEntry.context, loc), 2, mapA);
+const stringMapped = result(mapObject(stringInput, stringCallback, stringReceiver, mapEntry.context, loc), 2, mapA);
 element(stringMapped, "0", { kind: "string", value: "a" });
 element(stringMapped, "1", { kind: "string", value: "b" });
 check(stringVisits === 2 && stringInput.reads.join(",") === "length,0,1" && mapEntry.context.realm === mapA, "W16 visits/read order/restoration");
@@ -672,11 +672,11 @@ const symbolMapRealm = new Realm((_line) => {});
 const symbolMapEvaluator = new Evaluator(symbolMapRealm);
 const symbolInput = symbolMapRealm.createObject();
 put(symbolInput, "length", symbolElement);
-const symbolBadLength = mapObjectDefaultArray(symbolInput, symbolElement, UNDEFINED, symbolMapEvaluator.context, loc);
+const symbolBadLength = mapObject(symbolInput, symbolElement, UNDEFINED, symbolMapEvaluator.context, loc);
 check(symbolBadLength.type === "throw" && symbolBadLength.diagnostic.message === "cannot convert symbol to number" && symbolBadLength.diagnostic.loc === loc, "A23 length before callback validation");
 put(symbolInput, "length", num(1));
 put(symbolInput, "0", symbolElement);
-const symbolBadCallback = mapObjectDefaultArray(symbolInput, symbolElement, UNDEFINED, symbolMapEvaluator.context, loc);
+const symbolBadCallback = mapObject(symbolInput, symbolElement, UNDEFINED, symbolMapEvaluator.context, loc);
 check(symbolBadCallback.type === "throw" && symbolBadCallback.diagnostic.message === "map callback is not callable" && symbolBadCallback.diagnostic.loc === loc, "A23 symbol callback rejected after length");
 let symbolVisits = 0;
 const symbolCallback = builtin(symbolMapRealm, (_receiver, args, _context, _at) => {
@@ -684,7 +684,7 @@ const symbolCallback = builtin(symbolMapRealm, (_receiver, args, _context, _at) 
     check(args[0] === symbolElement, "A23 callback exact symbol carrier");
     return normal(args[0]);
 });
-const symbolMapped = mapObjectDefaultArray(symbolInput, symbolCallback, UNDEFINED, symbolMapEvaluator.context, loc);
+const symbolMapped = mapObject(symbolInput, symbolCallback, UNDEFINED, symbolMapEvaluator.context, loc);
 check(symbolMapped.type === "normal" && symbolMapped.value.kind === "object" && symbolMapped.value.object.get("0", symbolMapEvaluator.context, loc) === symbolElement && symbolVisits === 1, "A23 symbol element preserved");
 
 console.log("array map passed");

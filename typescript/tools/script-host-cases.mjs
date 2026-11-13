@@ -54,6 +54,7 @@ for (const [driver, report, inputs] of [
             const previous = "X06 unrepresentable";
             if (!stdout.includes(previous)) throw new Error("missing map inventory witness");
             stdout = stdout.replace(previous, "X06 intrinsic Array");
+            stdout = stdout.replace("prefixes=308 calls=224", "prefixes=324 calls=224").replace("all-trace abrupt prefixes=2340", "all-trace abrupt prefixes=2780");
         }
         scriptHostCases.push({driver, variant, fixture, stdout});
     }
@@ -74,8 +75,8 @@ for (const [variant, value] of [["seed", 7], ["other", 11]]) {
 for (const [variant, value] of [["alpha", 7], ["beta", 11]]) {
     scriptHostCases.push({driver: "script-throw-inspection", variant,
         fixture: `test/fixtures/script-throw-inspection/${variant}.js`,
-        stdout: `PASS X01-X06 U01-U02 input=${value} prefixes=10 calls=6 guest=3 faults=10\n` +
-            `PASS P01-P09 positions=2 seeds=2 synthetic=56 guest=16 call=4 prefixes=16 input=${value}\n`});
+        stdout: `PASS X01-X06 U01-U02 input=${value} prefixes=10 calls=6 guest=3 faults=12\n` +
+            `PASS P01-P09 positions=2 seeds=2 synthetic=64 guest=16 call=4 prefixes=16 input=${value}\n`});
 }
 const bundleRows = JSON.parse(readFileSync(new URL("../docs/validation/ts-034h7/frozen-rows.json", import.meta.url), "utf8"));
 if (bundleRows.length !== 18) throw new Error("harness bundle fixture count");

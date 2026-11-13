@@ -1,4 +1,4 @@
-import { mapObjectDefaultArray } from "../src/array-map.js";
+import { mapObject } from "../src/array-map.js";
 import { formatPropertyKey, GuestSymbol, wellKnownToPrimitive } from "../src/symbols.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { lengthOfArrayLike } from "../src/array-like.js";
@@ -623,7 +623,7 @@ seed(protocolRealm, "protocolKey", { kind: "symbol", value: wellKnownToPrimitive
 seed(protocolRealm, "resultSymbol", symbolResult);
 seed(protocolRealm, "protocolMap", builtin(protocolRealm, (_receiver, args, context, at) => {
     if (args[0].kind !== "object") throw new Error("map bridge object required");
-    return mapObjectDefaultArray(args[0].object, args[1], UNDEFINED, context, at);
+    return mapObject(args[0].object, args[1], UNDEFINED, context, at);
 }));
 check(program(readFileSync("test/fixtures/symbol-primitive-conversion.js", "utf8"), protocolEvaluator).type === "normal", "P1/P2 guest consumers");
 for (const row of [{ name: "protocolRead", value: 17 }, { name: "protocolSum", value: 5 },
