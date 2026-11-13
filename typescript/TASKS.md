@@ -5885,4 +5885,12 @@ retained. TS-516 is claimed from that verified snapshot. Canonical contextual
 identifiers pass 955 guests on both hosts, 462 native gates and all 225 corpus
 comparisons; final combined tooling remains live in session30359.
 
+TS-516 implementation: token escape provenance, greedy octal decoding, shared
+strict-literal checks, literal-key provenance and the closed strict-legacy-escape
+protocol are implemented in the isolated draft. Focused tests, 141 Node controls,
+35 runner tests and eight producer records pass. The 1074-input snapshot runs
+full Node regression in session68239 and native/control checks in session64668.
+No historical expectations changed. Contextual identifiers are now accepted
+and pushed; TS-509 combined validation runs on a separate frozen snapshot.
+
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.

@@ -3344,3 +3344,14 @@ TS-516 remains gated on TS-514 READY. No unaccepted milestone has been pushed.
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
 
 2026-11-13 TS-509 promoted with 6 changed-file baselines verified. Isolated evidence passes 956 Node guests and focused native static-only/zero-dynamic checks. Canonical typechecking/focused checks pass; full combined acceptance remains pending. Evidence: build/ordinary-identifiers-draft/build and build/ordinary-identifiers-* logs, retaining initial failures and exact historical-input migrations.
+
+2026-11-13 published contextual identifier acceptance e4d342db to main and the
+review branch. TS-509 integration 230fecf1 starts the next frozen milestone:
+1069 inputs, 463 native entries (session89629), Node regression and corpus
+(session82513). Typecheck, 35 runner tests and ten both-host probes pass.
+TS-514 is verified READY after the raw numeric-target correction; duplicate
+validation-copy cleanup reclaimed 2,023,533,632 bytes, retaining protected files.
+TS-516 implements the reviewed string escapes in an isolated successor. Its
+1074 inputs are frozen after 141 Node controls, focused tests, 35 runner tests
+and eight producer-codec records pass. Native/control session64668 and full Node
+session68239 are live. Historical tooling inputs were copied before regression.
