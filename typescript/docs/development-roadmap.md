@@ -91,12 +91,13 @@ change passed its required checks. Combined validation is now running on frozen
 inputs: 955 guest cases and 462 native builds. These changes remain unaccepted
 and unpublished until the complete both-host regression and compiler gates pass.
 
-The next confirmed syntax gap is ordinary identifier escapes. C++
-`src/frontend/lexer/lexer.cpp` implements fixed `\uHHHH` escapes; the TypeScript
-lexer currently rejects `var \u0061 = 1`. TS-508 will review decoded names versus
-raw keyword/contextual-keyword spelling and the existing Unicode identifier
-backend before implementation. Preserve explicit rejection of unsupported forms
-and do not inherit the C++ lexer's documented Unicode limitations.
+The ordinary-identifier successor is READY in isolation: Unicode names and
+fixed/braced escapes pass 956 Node guests, 170 grammar controls on both hosts and
+the tooling/static gates. It distinguishes raw keyword spelling from decoded
+names instead of inheriting the C++ lexer's Unicode limitations. Promotion waits
+for contextual-identifier acceptance. The following Script-whitespace change
+passes 957 Node guests and all 146 retained controls on both hosts; its tooling
+checks remain active. Neither successor is included in the accepted counts above.
 
 ## Historical feature checkpoints
 
@@ -811,9 +812,10 @@ prerequisites; do not add placeholders or compatibility exceptions to inflate
 corpus completion. The 191/225 completion count is not semantic conformance.
 
 [The class initialization review](class-initialization-semantic-review.md) finds
-17 supported cases matching Node and one retained Proxy-dependent case. It covers
-ordering, returned-object construction and private brands; this is bounded
-Node-hosted evidence, not native acceptance or full class conformance.
+17 supported cases matching explicit outputs and independent Node on both Rift
+hosts, with one retained Proxy-dependent case. It covers ordering, returned-object
+construction and private brands; this is bounded semantic evidence, not full
+class conformance.
 
 2026-11-11 IANA foundation milestone accepted (TS-478,479,480,482,483):946/946 guests on both hosts without skips;453 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-03XBoo/native-975Xff matches all225 normalized records and preserves191 preceding completions. The pinned2026f data, primary identifiers, bounded historical/recurring offsets and strict adjacent transitions are accepted internally; local-time resolution and guest named-zone admission remain pending. Historical fixtures, initial failures and public range guards remain preserved. Evidence: build/iana-foundation-rollup-* and isolated feature reviews.
 
