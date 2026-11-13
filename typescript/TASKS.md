@@ -6370,3 +6370,14 @@ These five commits remain unpublished until full combined acceptance passes.
 2026-11-13 Ordinary identifiers milestone accepted (TS-509): 956/956 guests on both hosts without skips; 463 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-qYQwMg/native-PXLkDL matches all 225 normalized records and preserves all 191 preceding completions. Unicode identifiers and escaped names retain raw keyword provenance and UTF-16 spans. Original fixtures are unchanged. Evidence: build/ordinary-identifiers-rollup-*.
 
 2026-11-13 Lexical milestone accepted (TS-511, TS-514, TS-516, TS-519, TS-521): 961/961 guests on both hosts without skips; 468 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-vXT1TU/native-kupwDB matches all 225 normalized records and preserves all 191 preceding completions. Script whitespace, legacy numeric/string literals Unicode RegExp property escapes and legacy RegExp character escapes are integrated. Original fixtures and reviewed historical expectation migrations remain retained. Evidence: build/lexical-rollup-*.
+
+## TS-532 — Current README and reading guide
+
+**in progress — documentation draft; publication waits for modifiers/Date acceptance**.
+Owner: coordinator, 2026-11-13. Replace the outdated foundation summary with a
+concise account of accepted CLI behavior, explicit gaps and a source reading path.
+Own README.md and the current sections of docs/architecture-decisions.md and
+docs/feature-inventory.md; retain historical sections. Prepare ignored drafts
+while README is frozen. Check commands, local links, example outputs and feature
+claims against accepted code/evidence. Keep isolated lookbehind distinct from
+accepted behavior. No runtime changes, conformance percentage or redundant tests.

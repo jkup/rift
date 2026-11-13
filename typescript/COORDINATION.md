@@ -3569,3 +3569,11 @@ build/finish-modifiers-date-rollup.ps1, followed by the prepared acceptance
 helper and publication. Duplicate validation copies removed from the READY CLI
 and lookbehind drafts reclaim 1,153,756,476 bytes; original archives and the
 13 protected files in each draft remain intact.
+
+2026-11-13 TS-532 documentation draft is complete in build/current-docs-draft/.
+It replaces stale current-feature claims while retaining historical sections;
+all local links and npm commands verify, and four README examples pass on both
+hosts using the verified CLI successor. Canonical README and architecture/feature
+files are unchanged. Promote with build/promote-current-docs.mjs only after the
+modifiers/Date milestone is accepted and published. Its native matrix remains
+live as session42456; no source changes were made during validation.
