@@ -85,12 +85,12 @@ Put generated reports in ignored `build/` directories. Do not copy the entire
 repository's hash inventory for each task. Preserve old evidence until an explicit
 archive migration can keep it retrievable; do not rewrite Git history.
 
-Validation footprint needs a bounded follow-up: each isolated successor currently
-copies about 2 GiB of historical validation inputs before the full tooling run.
-Hash-verified cleanup reclaims those duplicate copies after READY. Inspect which
-archival inputs the current tests actually require, so preparation can copy a
-smaller explicit set while retaining every test, fixture and original report.
-Keep this separate from active frozen engine validation.
+The [validation footprint review](validation-input-footprint.md) establishes a
+576.88 MB archive input set, down from 2.02 GB. All 296 unchanged tooling tests
+pass with the same native binaries and verified input hashes. Two earlier
+failures exposed setup omissions and manifest-driven dependencies; both remain
+retained. The scoped-modifier successor now uses this exact validated copy set.
+Review changed dependencies again, and preserve the original archives.
 
 The owner clarified the main loop: close the C++ feature/test gap through small,
 readable changes. [The C++ fixture baseline](legacy-fixture-baseline.md) now
@@ -140,6 +140,17 @@ isolated verification and before canonical promotion began. Final acceptance
 requires 961 guests per host, 468 native gates, 296 tooling tests, 35 runner
 checks, ten probes and the unchanged 225-file corpus. Keep separate feature
 commits, but publish the combined milestone only after all acceptance checks pass.
+
+The five changes are now integrated in separate commits. The combined 1079-input
+snapshot matches the final READY successor; 961 Node guests, 35 runner tests,
+ten probes and the Node corpus run pass. The 468-entry native matrix is active.
+
+[Scoped RegExp modifiers](regexp-modifiers-review.md) are the next isolated
+successor. The C++ binary supports the reviewed scoped examples; its unscoped
+and duplicate-flag extensions remain outside ECMAScript admission. Rift's
+isolated implementation passes all 145 controls on both hosts and focused native
+static gates. Full regression/tooling remains pending, and canonical promotion
+waits for lexical acceptance.
 
 ## Historical feature checkpoints
 

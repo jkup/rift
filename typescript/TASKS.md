@@ -6050,7 +6050,7 @@ retained. Include this verified successor in the lexical sequence below.
 
 ## TS-522 — Historical validation input footprint review
 
-**in progress — read-only inventory**. Owner: coordinator, 2026-11-13.
+**done — dependency closure validated**. Owner: coordinator, 2026-11-13.
 Identify which archived validation inputs current tooling tests require before
 reducing the roughly 2 GiB copied into every isolated successor. Own a concise
 docs/validation-input-footprint.md review and ignored inventory/evidence scripts.
@@ -6067,6 +6067,55 @@ and is retained separately. The 29-directory candidate is copied into an isolate
 experiment with the same TS-521 READY sources and 15 verified native binaries.
 All 296 unchanged tooling tests are running in session28273; no reduced copy set
 is accepted yet. Evidence: build/validation-footprint-experiment/.
+
+TS-522 acceptance: the first 269/296 run exposed missing YAML/corpus setup and
+host symlink permission; the corrected 295/296 run exposed two archive files
+listed by the migration JSON manifest. Adding those exact files yields 296/296,
+zero skips, with every input hash unchanged. The validated archive closure is
+2609 files / 576,878,359 bytes, saving 1,446,658,495 bytes per successor. All
+original failures remain. TS-524 now copies this verified set plus the same
+pinned YAML/corpus dependencies; original archives and canonical inputs remain
+untouched. See docs/validation-input-footprint.md.
+
+## TS-523 — Scoped RegExp modifier review
+
+**done — grammar and both-host boundary reviewed**. Owner: coordinator, 2026-11-13.
+Review scoped inline RegExp modifiers against ECMAScript and the existing C++
+engine. Establish valid/invalid flag sets, nesting and restoration, and effects
+on characters, classes, assertions, backreferences and lookarounds. Own
+docs/regexp-modifiers-review.md and ignored semantic/reference controls. Use the
+verified TS-521 probe for the current boundary and preserve original inputs.
+No canonical engine changes during the frozen lexical run; implementation needs
+a separately assigned successor after this review. Exclude unscoped modifiers,
+Unicode sets mode, lookbehind and unrelated pattern grammar.
+
+TS-523: all 145 controls match independent expectations and both-host boundary
+classification. Nine C++ controls confirm six scoped-feature examples and retain
+two explicit grammar differences. See docs/regexp-modifiers-review.md and the
+original source/process records in build/regexp-modifiers-review/.
+
+## TS-524 — Scoped RegExp modifier implementation
+
+**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
+Implement TS-523's reviewed scoped i/m/s grammar and matching in a successor of
+TS-521 READY. Own the pattern parser/types, matcher, focused tests/manifests and
+feature notes in an isolated draft. Compile effective flags per instruction;
+preserve Unicode mode, capture numbering/reset, lookahead and backtracking
+semantics, public flags and resource limits. Require all 145 reviewed controls
+on both hosts, native static-only/zero-dynamic gates and full regression/tooling.
+Review historical expectation changes explicitly. Exclude unscoped modifiers,
+lookbehind, Unicode sets mode and unrelated grammar. Canonical promotion waits
+for the active lexical milestone's complete acceptance.
+
+TS-524 checkpoint: scoped flags are compiled onto consuming/assertion instructions;
+typechecking, focused semantics/resource tests, 35 runner tests, eight Node
+producer-codec records and all 145 controls pass. Focused native execution and
+the native probe pass static gates; all 145 native controls pass. The 1082-input
+snapshot is frozen. Session56342 builds 15 tooling drivers and then runs all 296
+tooling tests and protocol checks. Full 962-case Node regression runs in
+session91491 with the validated reduced input closure; its first missing-input
+launch is retained. One old regexp-pattern expectation has an independent
+old/new both-host review; it remains unchanged until frozen tooling finishes.
 
 ## Canonical lexical milestone sequence (2026-11-13)
 
