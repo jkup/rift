@@ -16,6 +16,6 @@ the unchanged source passed with host linker access. That failure is retained.
 Full Node regression passes 957/957 without skips; all 146 controls pass both
 hosts. All 15 native tooling builds and 296 tooling tests pass, along with eight
 producer-codec records per host and 16 parent envelopes. The isolated change is
-ready for integration after its predecessors; combined acceptance remains pending.
+accepted after integration and combined lexical validation.
 
 See docs/script-whitespace-review.md for the grammar review and specification.

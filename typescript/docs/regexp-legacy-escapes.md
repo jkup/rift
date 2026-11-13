@@ -25,7 +25,7 @@ old/new Rift hosts and against an independent reference. Only those three tests
 were amended after tooling passed; production code and original reports retain
 their hashes. Full Node regression passes 961/961 without skips, and all three
 amended tests pass native execution and static coverage. The isolated feature
-is READY; canonical combined acceptance remains pending.
+passes canonical combined lexical acceptance.
 Unicode sets mode, lookbehind, legacy class-range extensions and quantified
 assertions remain outside this feature.
 

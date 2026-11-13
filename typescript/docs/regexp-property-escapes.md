@@ -32,4 +32,4 @@ were reviewed against old/new Rift and the reference. Only two standalone tests
 changed; both amended tests pass native execution and static coverage. Original
 sources, the initial 958/960 run and original native snapshot/report hashes remain
 retained. The full Node rerun passes 960/960 with no skips. The isolated feature
-is READY; canonical combined acceptance remains pending.
+passes canonical combined lexical acceptance.

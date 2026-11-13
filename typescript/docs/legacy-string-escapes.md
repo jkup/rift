@@ -28,4 +28,4 @@ expectation update was applied after all 296 tooling tests passed. Only the
 standalone historical test changes; production code is unchanged. Original
 snapshots and reports retain their identity. Full Node regression and the
 separate native compilation/execution of the amended test pass. The source is
-READY for promotion after predecessor acceptance.
+accepted after integration and combined lexical validation.

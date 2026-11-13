@@ -5734,7 +5734,7 @@ remain rejected; seven position checks pass. See docs/script-whitespace-review.m
 
 ## TS-511 — Complete Script whitespace scanning
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
+**done — accepted in lexical milestone**. Owner: coordinator, 2026-11-12.
 Implement TS-510's reviewed whitespace boundary in an isolated successor to the
 ordinary-identifier draft. Reuse isStringWhitespace for Script token separation;
 retain separate line-terminator handling, CRLF locations, literal contents and
@@ -5799,7 +5799,7 @@ docs/legacy-numeric-literals-review.md for implementation boundaries.
 
 ## TS-514 — Legacy numeric literals and strict-context rejection
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in lexical milestone**. Owner: coordinator, 2026-11-13.
 Implement TS-513's full reviewed legacy octal/non-octal decimal boundary in an
 isolated successor. Preserve source spans and token provenance, exact value
 conversion, integer/fraction/exponent separator rules and modern conversions.
@@ -5864,7 +5864,7 @@ Source hashes and native provenance verify. See docs/legacy-string-escapes-revie
 
 ## TS-516 — Legacy string escapes and strict-context rejection
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in lexical milestone**. Owner: coordinator, 2026-11-13.
 Implement TS-515's reviewed octal and non-octal decimal string escapes in an
 isolated successor. Preserve exact greedy decoding/code units, raw spans,
 directive recognition, numeric/string property provenance and legacy lexing.
@@ -5958,7 +5958,7 @@ the initial dynamic string-ordering result and reduced controls are retained.
 
 ## TS-519 — Unicode property escape parser and matcher
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in lexical milestone**. Owner: coordinator, 2026-11-13.
 Starting from verified TS-516 READY, integrate TS-518's complete Unicode tables
 into u-mode property escape parsing and matching. Own an isolated
 build/regexp-property-escapes-draft: generated property data and generator,
@@ -6010,7 +6010,7 @@ three-digit octal support and six language differences. See the review document.
 
 ## TS-521 — Legacy RegExp character escape implementation
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in lexical milestone**. Owner: coordinator, 2026-11-13.
 Implement TS-520's reviewed non-u numeric/octal, identity and control escapes in
 an isolated successor. Preserve whole-pattern capture/named-group detection,
 exact greedy consumption, class/quantifier semantics, u-mode errors and input
@@ -6359,3 +6359,5 @@ These five commits remain unpublished until full combined acceptance passes.
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
 
 2026-11-13 Ordinary identifiers milestone accepted (TS-509): 956/956 guests on both hosts without skips; 463 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-qYQwMg/native-PXLkDL matches all 225 normalized records and preserves all 191 preceding completions. Unicode identifiers and escaped names retain raw keyword provenance and UTF-16 spans. Original fixtures are unchanged. Evidence: build/ordinary-identifiers-rollup-*.
+
+2026-11-13 Lexical milestone accepted (TS-511, TS-514, TS-516, TS-519, TS-521): 961/961 guests on both hosts without skips; 468 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-vXT1TU/native-kupwDB matches all 225 normalized records and preserves all 191 preceding completions. Script whitespace, legacy numeric/string literals Unicode RegExp property escapes and legacy RegExp character escapes are integrated. Original fixtures and reviewed historical expectation migrations remain retained. Evidence: build/lexical-rollup-*.

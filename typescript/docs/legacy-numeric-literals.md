@@ -36,7 +36,7 @@ The 102 historical assignment inputs retain their original bytes; only G2
 The original failure, source snapshot and native executables are retained in
 `build/before-assignment-token-fix/`. Corrected full validation passes, including
 all 102 retained assignment inputs on both hosts with exactly the reviewed G2
-change. The isolated source is READY; promotion requires predecessor acceptance.
+change. The integrated change passes combined lexical validation.
 
 Six additional property-name/source controls pass both Rift hosts. Two preserve
 explicit differences from Node 26.13.0: Node infers the name `08` instead of `8`

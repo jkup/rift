@@ -3528,3 +3528,5 @@ entry. Fifteen complete gates and the full tooling/producer suite remain require
 Canonical session90232 has passed all 961 native guests and the 225-record corpus
 comparison (node-vXT1TU/native-kupwDB), preserving 191 completions with no deltas.
 Its 296-test tooling acceptance is still running.
+
+2026-11-13 Lexical milestone accepted (TS-511, TS-514, TS-516, TS-519, TS-521): 961/961 guests on both hosts without skips; 468 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-vXT1TU/native-kupwDB matches all 225 normalized records and preserves all 191 preceding completions. Script whitespace, legacy numeric/string literals Unicode RegExp property escapes and legacy RegExp character escapes are integrated. Original fixtures and reviewed historical expectation migrations remain retained. Evidence: build/lexical-rollup-*.
