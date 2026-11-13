@@ -5799,7 +5799,7 @@ docs/legacy-numeric-literals-review.md for implementation boundaries.
 
 ## TS-514 — Legacy numeric literals and strict-context rejection
 
-**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Implement TS-513's full reviewed legacy octal/non-octal decimal boundary in an
 isolated successor. Preserve source spans and token provenance, exact value
 conversion, integer/fraction/exponent separator rules and modern conversions.

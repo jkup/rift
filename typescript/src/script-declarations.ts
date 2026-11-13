@@ -241,7 +241,8 @@ export function collectNumericAssignmentAudit(unit: ScriptSourceUnit, body: Stmt
         const target = candidate.target, operator = candidate.operator;
         const targetToken = byStart.get(target.start), operatorToken = byStart.get(operator.start);
         if (targetToken === undefined || (targetToken.kind !== "number" && targetToken.kind !== "bigint") || operatorToken === undefined || operatorToken.kind !== "punct" ||
-            targetToken.text !== target.text || targetToken.end !== target.end || operatorToken.text !== operator.text || operatorToken.end !== operator.end ||
+            (targetToken.text !== target.text && !(targetToken.legacyNumeric === true && targetToken.text === "0o" + target.text)) ||
+            targetToken.end !== target.end || operatorToken.text !== operator.text || operatorToken.end !== operator.end ||
             targetToken.loc.line !== target.loc.line || targetToken.loc.column !== target.loc.column ||
             operatorToken.loc.line !== operator.loc.line || operatorToken.loc.column !== operator.loc.column ||
             unit.text.slice(target.start, target.end) !== target.text || unit.text.slice(operator.start, operator.end) !== operator.text)
@@ -293,6 +294,7 @@ function copySite(site: DeclarationSite): DeclarationSite {
 }
 
 class DeclarationCollector {
+    private strictLegacyNumber: Location | null = null;
     readonly strictIdentifiers: { name: string; scope: number; loc: Location }[] = [];
     private strictIdentifier(name: string, scope: number, loc: Location): void {
         if (isStrictReservedIdentifier(name) || name === "yield" || name === "let") this.strictIdentifiers.push({ name, scope, loc });
@@ -658,7 +660,15 @@ class DeclarationCollector {
                 if (current === null && node.name === "arguments") this.nodes?.freeArguments?.push(node.loc);
                 break;
             }
-            case "template-object": case "regexp": case "bigint": case "literal": case "this": case "new-target": break;
+            case "literal": {
+                const token = this.tokens[this.tokenIndex(node.loc)];
+                const first = this.strictLegacyNumber;
+                if (token.kind === "number" && token.legacyNumeric === true && this.scopes[scope].strict &&
+                    (first === null || token.loc.line < first.line || (token.loc.line === first.line && token.loc.column < first.column)))
+                    this.strictLegacyNumber = token.loc;
+                break;
+            }
+            case "template-object": case "regexp": case "bigint": case "this": case "new-target": break;
         }
     }
     collect(body: Stmt[]): void {
@@ -722,7 +732,7 @@ class DeclarationCollector {
             }
         }
     }
-    project(ignoreStrictParameters = false, certifyStrictIdentifiers = false): DeclarationPlanResult {
+    project(ignoreStrictParameters = false, certifyStrictSyntax = false): DeclarationPlanResult {
         if (this.initializerArguments.length !== 0) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: "arguments is forbidden in a class initializer", loc: this.initializerArguments[0] } };
@@ -732,10 +742,15 @@ class DeclarationCollector {
             diagnostic: { phase: "parse", name: "SyntaxError", message: restricted.name + " binding or assignment in strict code", loc: restricted.loc } };
         const identifier = this.firstStrictIdentifier();
         if (identifier !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
-            rejection: certifyStrictIdentifiers
+            rejection: certifyStrictSyntax
                 ? { kind: "syntax-error", ruleCode: "strict-reserved-identifier" }
                 : { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: identifier.name + " is reserved in strict code", loc: identifier.loc } };
+        if (this.strictLegacyNumber !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
+            rejection: certifyStrictSyntax
+                ? { kind: "syntax-error", ruleCode: "strict-legacy-number" }
+                : { kind: "unsupported-syntax", capabilityCode: "parse.strict-legacy-number" },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "legacy numeric literal in strict code", loc: this.strictLegacyNumber } };
         // Preserve the ordinary first-failure projection, including interleaved
         // catch/conflict checks. The audit below has a separate global veto.
         // No conflicts are reported until all grammar/resource checks and every

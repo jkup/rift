@@ -3,6 +3,7 @@ export type Guard = "source-units" | "parse-depth" | "steps" | "calls" | "evalua
 export type SyntaxCapability =
     | "lex.indeterminate-comment"
     | "lex.leading-zero"
+    | "parse.strict-legacy-number"
     | "lex.numeric-literal"
     | "lex.indeterminate-string-newline"
     | "lex.string-escape"
@@ -28,7 +29,7 @@ export type SyntaxCapability =
     | "parse.prototype-literal"
     | "parse.unexpected";
 export type RuntimeCapability = "runtime.temporal-time-zone" | "runtime.regexp-pattern" | "runtime.object-to-number" | "runtime.object-to-string" | "runtime.map-species" | "runtime.splice-species" | "runtime.json-reviver" | "runtime.slice-species" | "runtime.concat-species" | "runtime.filter-species" | "runtime.flat-species" | "runtime.flatmap-species" | "runtime.dynamic-function-source" | "runtime.eval-source";
-export type SyntaxRule = "strict-reserved-identifier" | "async-function-statement" | "private-name" | "regexp-literal" | "numeric-separator" | "assignment-target" | "lexical-declaration-statement" | "return-outside-function" | "duplicate-strict-parameter" | "duplicate-block-lexical-function";
+export type SyntaxRule = "strict-legacy-number" | "strict-reserved-identifier" | "async-function-statement" | "private-name" | "regexp-literal" | "numeric-separator" | "assignment-target" | "lexical-declaration-statement" | "return-outside-function" | "duplicate-strict-parameter" | "duplicate-block-lexical-function";
 export type ResourceOrigin = { readonly kind: "resource-limit"; readonly guardCode: Guard; readonly count: number; readonly limit: number };
 export type Rejection =
     | { readonly kind: "unsupported-syntax"; readonly capabilityCode: SyntaxCapability }

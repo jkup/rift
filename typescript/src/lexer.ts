@@ -4,7 +4,7 @@ import { identifierStart, scanIdentifier } from "./identifier-scan.js";
 import { scanPrivateIdentifier } from "./private-identifier.js";
 import type { Rejection } from "./outcomes.js";
 import type { Diagnostic, Location } from "./syntax.js";
-export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly escaped?: boolean; readonly cooked?: string | null; readonly raw?: string; readonly regexp?: { pattern: string; flags: string } };
+export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly escaped?: boolean; readonly legacyNumeric?: boolean; readonly cooked?: string | null; readonly raw?: string; readonly regexp?: { pattern: string; flags: string } };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function digitValue(c: string): number {
@@ -230,7 +230,13 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                     continue;
                 }
                 text += numericDigits(10, c !== ".", c !== "0");
-                if (text.length > 1 && text.charAt(0) === "0" && !invalidSeparator) fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
+                const legacyNumeric = text.length > 1 && c === "0";
+                if (legacyNumeric && !script && !invalidSeparator) fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
+                if (script && legacyNumeric && !invalidSeparator && !text.includes("8") && !text.includes("9")) {
+                    if (identifierFollows()) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "invalid legacy octal literal", loc);
+                    tokens.push({ kind: error === null ? "number" : "invalid-number", text: "0o" + text, legacyNumeric: true, loc, start, end: i });
+                    continue;
+                }
                 if (c !== "." && source.charAt(i) === ".") {
                     text += advance();
                     text += numericDigits(10, false, true);
@@ -243,8 +249,9 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                 }
                 const bigint = script && source.charAt(i) === "n" && !text.includes(".") && !text.includes("e") && !text.includes("E");
                 if (bigint) text += advance();
+                if (bigint && legacyNumeric) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "BigInt cannot have a leading zero", loc);
                 if (identifierFollows() || (bigint && digit(source.charAt(i)))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
-                tokens.push({ kind: invalidSeparator || error !== null ? "invalid-number" : bigint ? "bigint" : "number", text, loc, start, end: i });
+                tokens.push({ kind: invalidSeparator || error !== null ? "invalid-number" : bigint ? "bigint" : "number", text, legacyNumeric, loc, start, end: i });
                 continue;
             }
             if (c === "'" || c === '"') {

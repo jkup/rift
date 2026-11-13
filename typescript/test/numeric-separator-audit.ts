@@ -37,9 +37,10 @@ for (const text of ["1_0n;", "0xA_Bn;", "/1_/;", "var r=/10__0/;", "1_; class C{
         check(auditBoundedScriptNumericSeparators(text).kind === "none", "original BigInt is now a valid numeric token");
     } else if (text === "/1_/;" || text === "var r=/10__0/;") {
         check(auditBoundedScriptNumericSeparators(text).kind === "none", "admitted regex body is not a numeric token");
-    } else if (text === "1_; class C{}" || text === "class C{};1_;" || text === "1_;var r=/a/;") {
+    } else if (text === "1_; class C{}" || text === "class C{};1_;" || text === "1_;var r=/a/;" || text === "1_; 01;") {
         const audit = auditBoundedScriptNumericSeparators(text);
         check(audit.kind === "eligible" && audit.candidates.length === 1, "admitted syntax preserves numeric candidate");
+        if (text === "1_; 01;") check(auditBoundedScriptNumericSeparators(text, true).kind === "blocked", "strict legacy number retains veto");
     } else check(auditBoundedScriptNumericSeparators(text).kind === "blocked", "veto: " + text);
 }
 for (const text of ["1_;var arguments;", "1_;delete x;", "1_;var eval;"]) {

@@ -312,7 +312,7 @@ const generated = [
     ["newline-throw", "throw\n1;", 2, "parse SyntaxError: newline after return/throw is unsupported"],
     ["string", "'unterminated", 2, "parse SyntaxError: unterminated string"],
     ["comment", "/* unterminated", 2, "parse SyntaxError: unterminated comment"],
-    ["number", "console.log(01);", 2, "parse SyntaxError: leading-zero numbers are unsupported"],
+    ["number", "console.log(01);", 0, "", "1\n"],
     ["exponent", "console.log(1e2);", 0, "", "100\n"],
     ["proto", "let o={__proto__: null};", 0, "", ""],
     ["coercion", "console.log(1 + '2');", 0, "", "12\n"],
@@ -916,6 +916,7 @@ executeDriver("await-identifiers", { stdout: "await identifiers passed\n" });
 executeDriver("yield-identifiers", { stdout: "yield identifiers passed\n" });
 executeDriver("ordinary-identifiers", { stdout: "ordinary identifiers passed\n" });
 executeDriver("script-whitespace", { stdout: "script whitespace passed\n" });
+executeDriver("legacy-numeric-literals", { stdout: "legacy numeric literals passed\n" });
 executeDriver("let-identifiers", { stdout: "let identifiers passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });

@@ -294,7 +294,7 @@ for (const [driver, directory, count, variants] of [
       target: {text: '42', start: 0, end: 2, loc: {line: 1, column: 1}},
       operator: {text: '=', start: 2, end: 3, loc: {line: 1, column: 3}},
     }]};
-    for (const literal of ['1e2', '.5', '0x2']) {
+    for (const literal of ['1e2', '.5', '0x2', '01']) {
       const row = rows.find(row => row.text === literal + '=7;');
       assert.ok(row);
       const end = literal.length;

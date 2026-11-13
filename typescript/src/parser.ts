@@ -1147,7 +1147,7 @@ class Parser {
             op !== ">>>=" && op !== "&&=" && op !== "||=" && op !== "??=" && op !== "++" && op !== "--") return false;
         // Continued audit trees have no retained or executable authority.
         this.numericCandidates.push({ ruleCode: "assignment-target",
-            target: { text: numeric.text, start: numeric.start, end: numeric.end,
+            target: { text: this.source.text.slice(numeric.start, numeric.end), start: numeric.start, end: numeric.end,
                 loc: { line: numeric.loc.line, column: numeric.loc.column } },
             operator: { text: op, start: operator.start, end: operator.end,
                 loc: { line: operator.loc.line, column: operator.loc.column } } });
@@ -1481,6 +1481,7 @@ class Parser {
                 let key: Expr;
                 let name = "";
                 let shorthand = false;
+                let legacyNumeric = false;
                 if (!generator && !asynchronous && (this.at("get") || this.at("set")) && ![":", "(", "=", ",", "}"].includes(this.token(this.index + 1).text))
                     kind = this.take().text === "get" ? "get" : "set";
                 const computed = this.at("[");
@@ -1493,6 +1494,7 @@ class Parser {
                         this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected literal property name", token.loc);
                     name = this.literalPropertyName(token);
                     key = { kind: "literal", loc: token.loc, value: name };
+                    legacyNumeric = token.legacyNumeric === true;
                     shorthand = token.kind === "word" && (!RESERVED.includes(" " + name + " ") || name === "arguments" || name === "eval" || name === "async" || this.awaitIdentifierAllowed(name) || this.yieldIdentifierAllowed(name) || (this.boundedPlan() && (name === "let" || isStrictReservedIdentifier(name))));
                 }
                 if (this.at("(")) {
@@ -1504,7 +1506,7 @@ class Parser {
                     const methodSource: FunctionSource = asynchronous ? { ...fn.source, async: true } : fn.source;
                     const value: Expr = { kind: "function", loc: first.loc, params: fn.params, parameters: fn.parameters, body: fn.body,
                         source: { ...methodSource, method: true } };
-                    properties.push({ kind, key: computed ? key : name, value });
+                    properties.push({ kind, key: computed || legacyNumeric ? key : name, value });
                     cover.entries.push({ kind: "method", key, value });
                 } else {
                     if (generator || asynchronous || kind !== "data") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected accessor parameter list", first.loc);
@@ -1526,7 +1528,7 @@ class Parser {
                             value = { kind: "assign", loc: first.loc, target: value, value: this.expression(1) };
                         }
                     }
-                    properties.push({ kind, key: computed ? key : name, value });
+                    properties.push({ kind, key: computed || legacyNumeric ? key : name, value });
                     cover.entries.push({ kind: "data", key, ...(computed ? { computed: true as const } : {}), value });
                 }
             }
