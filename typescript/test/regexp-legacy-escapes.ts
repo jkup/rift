@@ -42,5 +42,5 @@ for (const source of [String.raw`\123`, String.raw`(a)\18`, String.raw`\99999999
 for (const source of [String.raw`\01`, String.raw`\8`, String.raw`[\1]`, String.raw`\c1`, String.raw`[\c_]`, String.raw`\k`])
     check(parseRegExpSyntax(source, () => true, true).kind === "syntax-error", "Unicode rejection " + source);
 for (const source of ["(?<=a)", String.raw`[\d-a]`, String.raw`[a-\d]`])
-    check(parseRegExpSyntax(source, () => true).kind === "unsupported", "retained boundary " + source);
+    check(parseRegExpSyntax(source, () => true).kind === (source === "(?<=a)" ? "ready" : "unsupported"), "retained boundary " + source);
 console.log("regexp legacy escapes passed");

@@ -219,6 +219,6 @@ for (const pattern of ["(?<=a)"]) {
     const prepared=prepareBoundedScript({id:"unicode-unsupported",text},new Realm((_line:string)=>{},"script"));
     if(prepared.kind!=="ready")throw new Error("unsupported prepare");
     const result=evaluateScript(createScriptSession(),prepared.record).completion;
-    check(result.type==="throw"&&result.origin.kind==="unsupported-operation","remaining Unicode boundary");
+    check(result.type==="normal"&&result.value.kind==="object","Unicode lookbehind constructor");
 }
 console.log("regexp unicode mode passed");

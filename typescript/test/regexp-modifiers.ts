@@ -57,5 +57,5 @@ for (limit = 0; limit < compilationSteps; limit++) {
 limit = 3; steps = 0;
 const stopped = matchRegExp(compiled.program, "aAb", 0, true, context, loc);
 check(stopped.kind === "abrupt" && stopped.completion.origin.kind === "resource-limit", "modifier matching budget");
-check(parseRegExpSyntax("(?i:(?<=a))", () => true).kind === "unsupported", "lookbehind remains unsupported");
+check(parseRegExpSyntax("(?i:(?<=a))", () => true).kind === "ready", "lookbehind inside modifiers");
 console.log("regexp modifiers passed");

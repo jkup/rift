@@ -6284,7 +6284,7 @@ Evidence: docs/regexp-lookbehind-review.md and build/regexp-lookbehind-review/.
 
 ## TS-531 — RegExp lookbehind implementation
 
-**READY — isolated validation complete; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Implement TS-530's reviewed backward matching for positive and negative
 lookbehind, including variable-length bodies, captures/references, nested
 assertion directions, Unicode cursor boundaries and scoped flags. Own the

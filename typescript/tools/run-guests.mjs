@@ -921,6 +921,7 @@ executeDriver("regexp-property-escapes", { stdout: "regexp property escapes pass
 executeDriver("regexp-modifiers", { stdout: "regexp modifiers passed\n" });
 executeDriver("date-local-time", { stdout: "date local time passed\n" });
 executeDriver("date-named-zone", { stdout: "date named zone passed\n" });
+executeDriver("regexp-lookbehind", { stdout: "regexp lookbehind passed\n" });
 executeDriver("regexp-legacy-escapes", { stdout: "regexp legacy escapes passed\n" });
 executeDriver("private-elements", { stdout: "private elements passed\n" });
 executeDriver("private-identifier-lexing", { stdout: "private identifier lexing passed\n" });

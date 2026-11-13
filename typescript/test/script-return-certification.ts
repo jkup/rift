@@ -5,6 +5,7 @@ import {Realm} from '../src/realm.js';
 function nodes():DeclarationNodes{return {assignmentNameEligible:new Map(),source:{text:''},body:[],scopes:new Map(),declarations:new Map()};}
 function check(ok:boolean,message:string):void{if(!ok)throw new Error(message);}
 const certified=[
+ 'return; /(?<=x)/;',
  'return;', 'return', 'return\n1;', '{return 1;}', 'if(true)return 1;',
  'while(false){return;}', 'for(;;){return;}', 'label:{return;}',
  'switch(1){case 1:return;}', 'try{throw 1}catch(e){return;}',
@@ -41,7 +42,7 @@ for(const text of valid)check(prepareBoundedScript({id:'valid-return',text},new 
 const blocked=[
  'return; import x from "x";', 'return; with({}){}',
  'return; var x=;', 'return; class C{#x;#x;}',
- 'return; /(?<=x)/;', 'return; @', 'return;'+ '('.repeat(300)+'0'+')'.repeat(300)+';'
+ 'return; @', 'return;'+ '('.repeat(300)+'0'+')'.repeat(300)+';'
 ];
 for(const text of blocked){
  const unit={id:'blocked-return',text};

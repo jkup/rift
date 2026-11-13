@@ -29,7 +29,7 @@ for (const source of ["*", "+", "?", "a**", "a+*", "a???", "{1}", "[", "[a", "[z
     check(result.kind === "syntax-error", "proven invalid pattern: " + source);
 }
 for (const source of ["(?<=a)", "(?<name>a)", "(?i:a)", "[\\d-a]", "[a-\\d]", "a{9007199254740992}"]) {
-    if (source === "(?i:a)") check(ready(source).captures === 0, "modifiers do not capture");
+    if (source === "(?i:a)" || source === "(?<=a)") check(ready(source).captures === 0, "assertions and modifiers do not capture");
     else if (source === "(?<name>a)") check(ready(source).names[0].name === "name", "named capture metadata");
     else check(parse(source).kind === "unsupported", "unsupported pattern: " + source);
 }

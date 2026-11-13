@@ -7,7 +7,7 @@ export type RegExpClassPart = { kind: "range"; from: number; to: number }
 export type RegExpAtom = { kind: "character"; value: number } | { kind: "dot" }
     | { kind: "backreference"; index: number }
     | { kind: "named-backreference"; name: string }
-    | { kind: "lookahead"; negative: boolean; body: RegExpDisjunction }
+    | { kind: "lookaround"; negative: boolean; backward: boolean; body: RegExpDisjunction }
     | { kind: "modifiers"; add: string; remove: string; body: RegExpDisjunction }
     | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean }
     | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
@@ -196,7 +196,10 @@ class PatternParser {
             if (quantifier !== null && atom.kind === "assertion") {
                 this.reject("syntax-error", "assertion cannot be quantified"); break;
             }
-            if (quantifier !== null && atom.kind === "lookahead") {
+            if (quantifier !== null && atom.kind === "lookaround" && atom.backward) {
+                this.reject("syntax-error", "lookbehind cannot be quantified"); break;
+            }
+            if (quantifier !== null && atom.kind === "lookaround") {
                 this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "lookahead cannot be quantified" : "quantified legacy lookahead is unsupported"); break;
             }
             terms.push({ atom, min: quantifier === null ? 1 : quantifier.min, max: quantifier === null ? 1 : quantifier.max,
@@ -227,13 +230,15 @@ class PatternParser {
                 return null;
             }
             let index = 0;
-            let lookahead = false, negative = false;
+            let lookaround = false, negative = false, backward = false;
             let modifiers: { add: string; remove: string } | null = null;
             if (this.current() === "?") {
                 this.take();
-                if (this.current() === "<") {
-                    if (this.source.charAt(this.offset + 1) === "=" || this.source.charAt(this.offset + 1) === "!")
-                        return this.reject("unsupported", "lookbehind is unsupported");
+                if (this.current() === "<" && (this.source.charAt(this.offset + 1) === "=" || this.source.charAt(this.offset + 1) === "!")) {
+                    this.take();
+                    lookaround = true; backward = true; negative = this.current() === "!";
+                    this.take();
+                } else if (this.current() === "<") {
                     const name = this.groupName();
                     if (name === null) return null;
                     for (const capture of this.names) {
@@ -255,7 +260,7 @@ class PatternParser {
                     }
                     this.names.push({ name, index, path });
                 } else if (this.current() === "=" || this.current() === "!") {
-                    lookahead = true; negative = this.current() === "!";
+                    lookaround = true; negative = this.current() === "!";
                     this.take();
                 } else if (this.current() === ":") this.take();
                 else {
@@ -268,7 +273,7 @@ class PatternParser {
             if (this.failure !== null) return null;
             if (this.current() !== ")") return this.reject("syntax-error", "unterminated group");
             this.take();
-            return lookahead ? { kind: "lookahead", negative, body }
+            return lookaround ? { kind: "lookaround", negative, backward, body }
                 : modifiers !== null ? { kind: "modifiers", add: modifiers.add, remove: modifiers.remove, body }
                 : { kind: "group", index, body };
         }
