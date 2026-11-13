@@ -5971,4 +5971,32 @@ other unsupported grammar. Require retained semantic controls, both-host tests,
 full regression/tooling and static-only/zero-dynamic gates. Canonical promotion
 waits for TS-516 and all predecessors to be accepted; no canonical core edits.
 
+## TS-520 — Legacy RegExp character escape review
+
+**done — grammar and both-host boundary reviewed**. Owner: coordinator, 2026-11-13.
+Review non-u RegExp numeric/octal, identity and control escapes against the
+current explicit unsupported boundaries and C++ RE2 behavior. Distinguish
+capture-count-dependent decimal backreferences, greedy octal consumption, class
+context, invalid control escapes and named-reference detection. Establish exact
+expected matches and strict u-mode rejection with an independent reference and
+both Rift hosts. Own docs/regexp-legacy-escapes-review.md and ignored controls;
+preserve original sources and frozen validation. Implementation needs a separate
+successor after TS-519 readiness. Exclude v-mode, lookbehind and unrelated Annex B
+class-range or quantified-assertion admission.
+
+TS-520: 122 explicit controls pass independent expectations and both-host
+classification; 41 complete and 78 valid sources remain unsupported. No valid
+source receives a syntax certificate. Eight C++ controls retain the observed
+three-digit octal support and six language differences. See the review document.
+
+## TS-521 — Legacy RegExp character escape implementation
+
+**blocked — awaiting TS-519 READY**. Owner: coordinator.
+Implement TS-520's reviewed non-u numeric/octal, identity and control escapes in
+an isolated successor. Preserve whole-pattern capture/named-group detection,
+exact greedy consumption, class/quantifier semantics, u-mode errors and input
+budgets. Own pattern parser, focused tests/manifests and feature notes; no
+lookbehind, v-mode, legacy class-range or quantified-assertion expansion. Require
+all 122 controls on both hosts, native static gates and full regression/tooling.
+
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
