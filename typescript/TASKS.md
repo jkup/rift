@@ -5777,3 +5777,22 @@ all 146 controls pass both hosts. The initial native link failed because the
 sandbox could not locate Zig's installation directory; the identical frozen
 source passes with host access (20,436 focused and 20,452 probe statements,
 zero dynamic). Session71848 runs the 15 tooling builds and protocol suite.
+
+## TS-513 — Legacy numeric literal boundary review
+
+**done — grammar and both-host baseline reviewed**. Owner: coordinator, 2026-11-13.
+Review the confirmed C++ parity gap for legacy octal and leading-zero decimal
+literals. C++ read_number handles these forms; TypeScript rejects them with
+lex.leading-zero. Establish explicit values and strict-context restrictions,
+fraction/exponent and separator boundaries, property names and dynamic source
+behavior using retained independent Node and both-host controls. Preserve
+existing numeric-separator certification and original fixtures. Own
+docs/legacy-numeric-literals-review.md and ignored review evidence only; no
+engine edits before an implementation successor is claimed.
+
+TS-513: 110 controls match explicit independent expectations (58 valid, 52
+invalid), with identical both-host results and no false syntax certificates.
+Three baseline controls execute and 55 valid sources remain unsupported. Four
+invalid separator controls retain existing certification. The corrected review
+preserves the initial malformed-quoting control and transcripts. See
+docs/legacy-numeric-literals-review.md for implementation boundaries.
