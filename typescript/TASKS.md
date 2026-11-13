@@ -6025,6 +6025,15 @@ pass; 1081 inputs are frozen. Focused native execution passes. Native probe,
 controls and tooling continue in session59417; full 961-case Node regression
 runs in session75871. Original historical expectations are still unchanged.
 
+TS-521 resumed checkpoint: full Node completed at 958/961; the only failures are
+regexp-pattern, regexp-backreference and regexp-named-captures. The independent
+migration review verifies all 15 historical expectations (12 distinct patterns)
+against exact full matches in both old/new hosts. All 122 controls and all 15
+native tooling builds pass. Session59417 is running the 296 tooling tests and
+protocol checks; do not amend frozen inputs until it exits successfully.
+The guarded three-test amendment and its native/READY verifiers are prepared.
+Original tests, full Node results and snapshot remain unchanged and retained.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516 and
