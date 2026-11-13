@@ -4152,3 +4152,5 @@ TS-553 groups TS-548/550 for publication after separate isolated READY checks an
 Cohort-specific helpers are prepared for TS-548/550 without weakening isolated or full combined acceptance. Use check-optional-catch-cohort-native.mjs and promote-optional-catch-cohort.mjs under TS-553; do not run the superseded individual-main prerequisite path. Combined canonical target remains 998/480 with all existing acceptance gates. No runtime source edits were made.
 
 TS-552 follow-up confirms the existing binding-suspension boundary is explicit on both hosts (six controls), rather than a hidden runtime failure. This refines TS-551 planning without changing the current publication cohort or active canonical inputs.
+
+TS-551 isolated preparation/reference work is active outside TS-553. Twenty-one positive/eight negative independent controls pass; source review adds pattern-specific eval/Annex B conflict requirements. No catch-pattern runtime changes or compiler workers have started. TS-547 canonical session 79399 remains live.
