@@ -3465,3 +3465,14 @@ session11481 with its interrupted log preserved; fresh tooling validation runs
 in session22560. The prepared READY verifier checks ownership, predecessor,
 source and executable hashes, both-host controls and complete required reports.
 Its ownership-only check passes; full READY acceptance is still pending.
+
+2026-11-13 TS-528 is READY: 964 Node guests, 58 controls per host, 35 runner
+checks, 17 fresh static native builds and 296 tooling tests pass. Its verifier
+binds 13 owned files and 1085 frozen inputs. TS-529's isolated CLI successor
+passes typechecking, 25 Node CLI controls and 35 runner tests; 1085 inputs are
+frozen. Session48508 builds and exercises its CLI, session98164 runs the full
+989-case Node suite, and session94203 runs tooling with 15 verified unchanged
+predecessor binaries. Only the unimported CLI entry differs among production
+modules; this inheritance does not replace the fresh CLI gate. TS-530's bounded
+lookbehind review is committed without implementation. Canonical session52275
+continues independently, with no canonical source changes.

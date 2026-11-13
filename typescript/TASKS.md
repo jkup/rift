@@ -6216,7 +6216,7 @@ build/date-local-time-ready.log and build/date-local-time-owned-snapshot.json.
 
 ## TS-528 — Realm-configured local Date operations
 
-**in progress — isolated successor of TS-527 READY**. Owner: coordinator, 2026-11-13.
+**READY — isolated successor; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
 Implement an immutable, validated Realm timezone setting with UTC as the default.
 Route component construction, offset-free date-time parsing, local getters,
 setters and display/locale fallback formatting through the shared provider.
@@ -6231,9 +6231,16 @@ fresh native static gates and complete regression/tooling checks. Exclude system
 timezone discovery, Intl and CLI options; CLI configuration is a later bounded
 task after these semantics pass. Canonical promotion waits for prior acceptance.
 
+TS-528 READY verification passes: 964/964 Node cases, 58 controls per host,
+35 runner tests and 296 tooling checks without skips. All 17 fresh focused,
+diagnostic and tooling builds pass static-only and parsed zero-dynamic gates.
+The verifier binds 13 owned files and 1085 frozen inputs to the predecessor and
+retained semantic review. Evidence: build/date-named-zone-ready.log and
+build/date-named-zone-owned-snapshot.json. No historical test expectation changed.
+
 ## TS-529 — CLI Date timezone selection
 
-**blocked on TS-528 READY; scope reviewed**. Owner: coordinator, 2026-11-13.
+**in progress — isolated successor of TS-528 READY**. Owner: coordinator, 2026-11-13.
 Add an optional leading `--time-zone <identifier>` to the existing file and
 `-e <source>` forms. Preserve UTC by default and the current file/source meaning
 after the optional prefix. Validate argument shape and the strict timezone

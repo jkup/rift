@@ -156,13 +156,19 @@ promotion waits for lexical acceptance.
 The [Date timezone review](date-named-zone-review.md) replaces the unsuitable
 host local-time boundary with the accepted IANA provider. Pure Date conversion
 helpers are READY with 963 Node guests and the required native/tooling checks.
-The complete Realm-configured Date successor passes focused native tests and
-58 controls on each host; its 964-case Node and fresh tooling checks are active.
+The complete Realm-configured Date successor is READY: 964 Node cases, 58
+controls on each host, 17 fresh native static gates and 296 tooling checks pass.
 Historical offset seconds, setter coercion order, range edges and defining-Realm
-behavior have explicit expectations. UTC remains the default. TS-529 will expose
-a leading `--time-zone <identifier>` CLI option after the Realm feature is READY;
-invalid configuration must fail before source I/O or execution. Neither Date
-successor is included in the accepted canonical counts above.
+behavior have explicit expectations. UTC remains the default. TS-529 now adds
+a leading `--time-zone <identifier>` CLI option in an isolated successor;
+25 Node controls pass, including invalid configuration before source I/O or
+execution and UTC defaults under a different host timezone. Fresh CLI native
+validation and full regression/tooling checks are active. Neither Date successor
+is included in the accepted canonical counts above.
+
+The [lookbehind review](regexp-lookbehind-review.md) records 19 explicit reference
+controls and the required backward matcher/capture changes. Implementation is
+separate and follows the Date CLI task; no lookbehind syntax is admitted yet.
 
 ## Historical feature checkpoints
 
