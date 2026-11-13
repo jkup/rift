@@ -3752,3 +3752,20 @@ remain the publication priority. The internal map helper has numerous host-test
 callers: review their construction contexts when broadening species, preserving
 original unsupported tests for explicit expectation migration rather than adding
 an intrinsic-constructor shortcut. See build/prepare-array-species.mjs.
+
+2026-11-13 TS-539 initial isolated implementation typechecks and passes all 21
+reviewed ordinary-object/length-setter/nonextensible controls in Node-hosted Rift.
+The shared operation now constructs through context.construct and returns an
+ObjectCompletion. All seven callers handle protected result properties as guest
+TypeErrors; slice/splice have the required length writes. Array species metadata
+is installed atomically. Helpers renamed to arraySpeciesCreate/mapObject in 23
+source/test files; originals.json retains every renamed test before edits, with
+all existing assertions unchanged. No intrinsic-constructor shortcut was added.
+
+Session56640 runs the original 991-case Node suite on the frozen isolated source;
+do not edit that draft until terminal. Its initial-source-snapshot.json and
+initial-node-process.json bind the run. An earlier setup attempt stopped before
+any copy or guest launch because broad git ls-files output exceeded its buffer;
+the rerun uses the previously validated exact 2878-file archive/YAML/corpus closure.
+Native candidate builds await available slots; canonical matrix98940 and queued
+finalizer61495 continue. No READY predecessor or canonical source was changed.
