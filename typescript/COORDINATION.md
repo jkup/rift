@@ -3876,3 +3876,16 @@ Existing matcher-only preparation/acceptance helpers remain unchanged and must
 not be used for the extended cohort. Array species behavior documentation is
 drafted at build/array-species-docs-draft/array-species.md with acceptance pending.
 Session88122 checkpoint403/471 verifies and the process remains live.
+
+TS-539 owned native helper is prepared: build/check-species-owned-native.mjs.
+Run after test installation and the amended Node/tooling checks pass, with no
+other native builds active (maximum four workers total). Its preflight resolves
+21 entries covering every changed test module plus CLI; the three conversion
+helper modules execute through verified imports/calls in object-valueof.ts.
+The initial preflight incorrectly assumed all modules were standalone drivers;
+it failed before compilation and the entry mapping is now explicit. It builds
+fresh static-only/zero-dynamic executables, then uses the existing guest verifier
+for all CLI cases and owned driver variants, comparing each with the full Node
+ledger. This subset is explicitly not full-native acceptance. Preflight evidence:
+build/array-species-owned-native-preflight.json. Canonical checkpoint413/471;
+session88122 still live, source hashes unchanged.
