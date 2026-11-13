@@ -3587,3 +3587,11 @@ reviewed README change. Final lookbehind validation will freeze 1085 inputs and
 require 990 guests per host, 472 native gates, 296 tooling checks, 35 runner
 checks, ten probes and the unchanged 225-file corpus. No active validation input
 was changed while preparing these helpers.
+
+2026-11-13 TS-533 found and reproduced wide Unicode ignore-case range expansion
+exhausting the step budget on both hosts. Six explicit controls per host and an
+independent reference distinguish this cost from case-sensitive/property paths.
+The existing Unicode equivalence data has 1482 groups, 2994 members and at most
+four members per group. A bounded interval-membership optimization is recorded
+in docs/regexp-range-compilation-review.md; TS-534 claims isolated implementation
+without changing either canonical inputs or READY lookbehind source.

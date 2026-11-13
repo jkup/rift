@@ -6381,3 +6381,30 @@ docs/feature-inventory.md; retain historical sections. Prepare ignored drafts
 while README is frozen. Check commands, local links, example outputs and feature
 claims against accepted code/evidence. Keep isolated lookbehind distinct from
 accepted behavior. No runtime changes, conformance percentage or redundant tests.
+
+## TS-533 — RegExp wide-range compilation review
+
+**done — both-host cost reproduced; bounded optimization reviewed**. Owner: coordinator,
+2026-11-13. The matcher compiler currently enumerates every character in an
+ignore-case range to build a folded Set. Measure representative wide Unicode
+ranges against explicit expected matches and the unchanged execution budget on
+both hosts. Determine whether a range-based representation can preserve Unicode
+and legacy folding semantics with bounded work. Own ignored review artifacts
+and docs/regexp-range-compilation-review.md only. Do not modify either frozen
+engine or READY snapshots, raise budgets, or claim a speedup without measurements.
+Any implementation requires a separate bounded successor task and both-host gates.
+
+
+## TS-534 — Unicode ignore-case range matching
+
+**in progress — isolated successor of TS-531 READY**. Owner: coordinator,
+2026-11-13. Implement TS-533's interval membership through existing Unicode
+case-fold equivalence groups. Own src/regexp-matcher.ts, the generated Unicode
+property helper and generator/provenance, focused tests/manifests and feature
+notes in an isolated successor. Preserve non-Unicode folding, negation, scoped
+flags, lookbehind and per-operation budget checks. Require deterministic
+compile-work measurements, equivalence/boundary controls, ordinary-pattern
+regression measurements, full both-host regression and native static gates.
+Retain original failures and review any changed budget expectations explicitly.
+No larger execution budget, Unicode sets mode or unrelated parser admission.
+Canonical promotion waits for complete lookbehind acceptance.
