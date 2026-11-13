@@ -3577,3 +3577,13 @@ hosts using the verified CLI successor. Canonical README and architecture/featur
 files are unchanged. Promote with build/promote-current-docs.mjs only after the
 modifiers/Date milestone is accepted and published. Its native matrix remains
 live as session42456; no source changes were made during validation.
+
+2026-11-13 Prepared, syntax-checked but did not execute the next integration
+helpers: build/promote-lookbehind.mjs, build/prepare-lookbehind-rollup.mjs and
+build/accept-lookbehind-rollup.mjs. Promotion requires published modifiers/Date
+acceptance and the verified TS-532 documentation commit. It checks all fourteen
+owned baselines and the whole READY predecessor, explicitly allowing only the
+reviewed README change. Final lookbehind validation will freeze 1085 inputs and
+require 990 guests per host, 472 native gates, 296 tooling checks, 35 runner
+checks, ten probes and the unchanged 225-file corpus. No active validation input
+was changed while preparing these helpers.
