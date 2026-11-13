@@ -3917,3 +3917,5 @@ The earlier obsolete-session assertions are superseded by this correction.
 TS-532 refreshed the README, current feature overview and reading guide after modifiers/Date acceptance. Historical sections remain; local links, npm commands and four examples on both hosts pass. No runtime files changed. Evidence: build/current-docs-draft/reviewed.json.
 
 2026-11-13 TS-531 promoted after complete predecessor checks with 14 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
+
+2026-11-13 TS-534 promoted after complete predecessor checks with 9 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.

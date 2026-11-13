@@ -189,6 +189,13 @@ for (let budget = 0; budget < matchWork; budget++) {
 }
 const largeRange = parseRegExpSyntax(String.raw`[\u{0}-\u{10ffff}]`, () => true, true);
 if (largeRange.kind !== "ready") throw new Error("large range parse");
-const stopped = compileRegExpPattern(largeRange.pattern, {ignoreCase: true, multiline: false, dotAll: false}, context(20), loc, true);
-check(stopped.kind === "abrupt" && stopped.completion.origin.kind === "resource-limit", "range folding budget");
+const compiledRange = compileRegExpPattern(largeRange.pattern, {ignoreCase: true, multiline: false, dotAll: false}, context(20), loc, true);
+const rangeWork = work;
+check(compiledRange.kind === "ready", "wide range fits original budget");
+if (compiledRange.kind === "ready")
+    check(matchRegExp(compiledRange.program, "😀", 0, true, context(20), loc).kind === "match", "wide range matching");
+for (let budget = 0; budget < rangeWork; budget++) {
+    const stopped = compileRegExpPattern(largeRange.pattern, {ignoreCase: true, multiline: false, dotAll: false}, context(budget), loc, true);
+    check(stopped.kind === "abrupt" && stopped.completion.origin.kind === "resource-limit", "range compilation budget cutoff");
+}
 console.log("regexp unicode matcher passed");

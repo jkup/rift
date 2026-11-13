@@ -3,7 +3,9 @@ import { type OperationContext, type ThrowCompletion } from "./runtime.js";
 import { isStringWhitespace, stringUpperCase } from "./strings.js";
 import type { Location } from "./syntax.js";
 import { simpleCaseFold } from "./unicode-case-fold.js";
-import { propertyContains, foldedPropertyContains } from "./unicode-properties.js";
+import { propertyContains, foldedPropertyContains, foldedRangeContains } from "./unicode-properties.js";
+
+const MAX_FOLDED_RANGE_SIZE = 256;
 
 export type RegExpMatchFlags = { ignoreCase: boolean; multiline: boolean; dotAll: boolean };
 type Instruction = { kind: "character"; value: number; ignoreCase: boolean; backward: boolean } | { kind: "dot"; dotAll: boolean; backward: boolean }
@@ -126,7 +128,7 @@ class PatternCompiler {
             const folded = flags.ignoreCase ? new Set<number>() : null;
             if (folded !== null) for (const part of atom.parts) {
                 if (!this.tick()) return;
-                if (part.kind === "range") for (let code = part.from; code <= part.to; code++) {
+                if (part.kind === "range" && (!this.unicode || part.to - part.from < MAX_FOLDED_RANGE_SIZE)) for (let code = part.from; code <= part.to; code++) {
                     if (!this.tick()) return;
                     folded.add(canonicalize(code, this.unicode));
                 }
@@ -190,7 +192,9 @@ class PatternMatcher {
         for (const part of instruction.parts) {
             if (found || !this.tick()) break;
             if (part.kind === "range") {
-                if (instruction.folded === null) found = code >= part.from && code <= part.to;
+                if (this.program.unicode && instruction.ignoreCase && part.to - part.from >= MAX_FOLDED_RANGE_SIZE)
+                    found = foldedRangeContains(part.from, part.to, code);
+                else if (instruction.folded === null) found = code >= part.from && code <= part.to;
             } else if (part.kind === "property") {
                 found = instruction.ignoreCase ? foldedPropertyContains(part.index, code, part.inverted)
                     : propertyContains(part.index, code) !== part.inverted;

@@ -111,6 +111,22 @@ export function propertyContains(index: number, code: number): boolean {
     return false;
 }
 
+export function foldedRangeContains(from: number, to: number, canonical: number): boolean {
+    let low = 0, high = foldKeys.length - 1;
+    while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        if (canonical < foldKeys[mid]) high = mid - 1;
+        else if (canonical > foldKeys[mid]) low = mid + 1;
+        else {
+            for (let i = foldOffsets[mid]; i < foldOffsets[mid + 1]; i++) {
+                if (foldValues[i] >= from && foldValues[i] <= to) return true;
+            }
+            return false;
+        }
+    }
+    return canonical >= from && canonical <= to;
+}
+
 export function foldedPropertyContains(index: number, canonical: number, negative: boolean): boolean {
     let low = 0, high = foldKeys.length - 1;
     while (low <= high) {

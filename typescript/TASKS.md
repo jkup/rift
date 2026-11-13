@@ -6397,7 +6397,7 @@ Any implementation requires a separate bounded successor task and both-host gate
 
 ## TS-534 — Unicode ignore-case range matching
 
-**READY — isolated validation complete; canonical acceptance pending**. Owner: coordinator,
+**in progress — integrated; combined validation pending**. Owner: coordinator,
 2026-11-13. Implement TS-533's interval membership through existing Unicode
 case-fold equivalence groups. Own src/regexp-matcher.ts, the generated Unicode
 property helper and generator/provenance, focused tests/manifests and feature
