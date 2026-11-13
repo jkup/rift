@@ -38,3 +38,18 @@ escapes in the existing parser, with explicit greedy-consumption, capture-count,
 class, quantifier and resource-budget tests. Preserve unsupported lookbehind,
 Unicode sets mode, legacy class-range extensions and quantified assertions.
 No engine change is authorized by this completed review alone.
+
+The separately assigned TS-521 implementation exposes fifteen historical
+unsupported expectations in three tests, covering twelve distinct patterns.
+The retained migration review checks each original pattern against its exact
+full match under an independent reference and the old/new Rift probes on both
+hosts. Every old probe reports unsupported; every successor probe returns the
+expected match. Evidence: `build/regexp-legacy-expectation-migration/reviewed.json`.
+
+The three affected files are `regexp-pattern.ts`, `regexp-backreference.ts` and
+`regexp-named-captures.ts`. Replace their reviewed rejection assertions with
+decoded-character, full-match and capture assertions, preserving pattern bytes,
+original files and the initial 958/961 regression result. Keep actual invalid
+named references and the unrelated unsupported grammar unchanged. The amendment
+must wait for the frozen tooling run, then receive fresh Node regression and
+native validation of all three changed test entries.
