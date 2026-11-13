@@ -64,6 +64,14 @@ disagreements below.
 
 ## Direction
 
+Unicode property escapes: the boundary review and complete Unicode 17 data
+preparation pass independently of engine integration. The 443 generated sets
+have both-host lookup/folding checks and zero dynamic operations. Retain the
+reviewed empty-Hrkt reference disagreement and the reduced string-ordering
+compiler evidence. TS-519 now owns isolated parser/matcher integration; see
+[data validation](regexp-property-data.md). Do not expand large properties into
+individual characters during pattern compilation.
+
 Keep the readable TypeScript interpreter, explicit completions, Realm isolation,
 expected-result tests and native static-coverage gate. Prioritize features a person
 can run from the CLI. The recent Windows provenance investigation is deferred:

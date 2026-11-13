@@ -3364,3 +3364,13 @@ The original snapshot and reports remain bound to unchanged production inputs;
 the READY verifier checks both snapshots and the exact amendment. Duplicate
 validation-copy cleanup reclaimed 2,023,533,632 bytes. TS-509's combined native
 matrix continues in session89629; its Node lane and corpus review are complete.
+
+2026-11-13 resumed from the saved checkpoint. TS-517's 182 grammar controls,
+complete pinned input inventory and native representation probe are reviewed.
+TS-518 generated 443 property sets and 1,722 aliases reproducibly; both hosts
+pass the complete data tests with 83 static statements and no dynamic work.
+Two empty Hrkt sets differ from Node syntax acceptance and retain an explicit
+specification review. The first alias search used dynamic string comparisons;
+original evidence and reduced native controls remain preserved. TS-519 claims
+isolated parser/matcher integration from TS-516 READY. Canonical TS-509's frozen
+native matrix remains live; no unaccepted milestone has been published.

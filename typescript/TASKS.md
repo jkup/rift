@@ -5938,7 +5938,7 @@ generation and matcher integration remain separate; see the review document.
 
 ## TS-518 — Complete Unicode property data generation
 
-**in progress — isolated data preparation**. Owner: coordinator, 2026-11-13.
+**done — complete isolated data verified**. Owner: coordinator, 2026-11-13.
 Use TS-517's pinned, hashed Unicode 17 inputs to generate complete u-mode
 binary/category/Script/Script_Extensions ranges and exact aliases. Own ignored
 build/regexp-property-data-draft and docs/regexp-property-data.md only. Preserve
@@ -5948,5 +5948,27 @@ reference membership, and verify the generated lookup representation on both
 hosts with static-only/zero-dynamic gates. Do not change canonical engine source,
 admit parser syntax, add v-mode string properties or publish partial tables.
 Integration requires a separately reviewed successor and predecessor acceptance.
+
+TS-518: all 443 sets and 1,722 aliases are generated reproducibly. Independent
+full-domain membership agrees for 441 sets; two specification-defined empty Hrkt
+sets and eight reference-rejected aliases have an exact discrepancy review.
+Both hosts pass 92,167 boundaries, full-domain counts/sums and 1,487 folding
+samples per property. Corrected coverage is 83 static statements, zero dynamic;
+the initial dynamic string-ordering result and reduced controls are retained.
+
+## TS-519 — Unicode property escape parser and matcher
+
+**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
+Starting from verified TS-516 READY, integrate TS-518's complete Unicode tables
+into u-mode property escape parsing and matching. Own an isolated
+build/regexp-property-escapes-draft: generated property data and generator,
+pattern types/parser, matcher, meaningful tests/manifests and feature notes.
+Retain exact alias validation, Script_Extensions defaults, property complement
+before folding, class inversion after matching, and explicit range-endpoint
+errors. Charge input work and keep property matching bounded without expanding
+large ranges. Preserve non-u behavior, v-mode/string-property exclusions and
+other unsupported grammar. Require retained semantic controls, both-host tests,
+full regression/tooling and static-only/zero-dynamic gates. Canonical promotion
+waits for TS-516 and all predecessors to be accepted; no canonical core edits.
 
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
