@@ -3538,3 +3538,23 @@ Its 296-test tooling acceptance is still running.
 2026-11-13 TS-528 promoted after complete predecessor checks with 13 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
 
 2026-11-13 TS-529 promoted after complete predecessor checks with 3 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
+
+2026-11-13 Resume checkpoint: lexical acceptance is published to main and the
+review branch at 11d79ce0. Scoped RegExp modifiers, Date conversion helpers,
+Realm-local Date behavior and CLI timezone selection are integrated separately
+at db2da0cc, 2b34ef1e, b739d464 and 5ce739f0. Their 1084-input combined freeze
+matches the final READY successor; 989/989 Node guests pass without skips.
+Session46664 finishes runner/probe/corpus checks before the fresh 471-gate native
+matrix. These four implementation commits remain unpublished pending complete
+combined acceptance.
+
+Isolated TS-531 tooling completed: 296 tests plus native producer and envelope
+checks pass. Independent Script references and 24 retained both-host baseline/
+successor observations justify eight historical test-only expectation changes.
+Original files, the 982/990 ledger and the pre-amendment freeze are archived;
+production source is unchanged. The original return-plus-lookbehind input now
+certifies return-outside-function instead of remaining unsupported. Session68325
+reruns all 990 Node guests; session59794 builds and executes the eight amended
+tests with fresh static/zero-dynamic gates. Full READY verification remains
+pending. Evidence: build/regexp-lookbehind-expectation-review/ and the isolated
+before-lookbehind-expectation-migration archive.
