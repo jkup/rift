@@ -3945,3 +3945,16 @@ The earlier21-entry native plan is superseded by this36-entry dependency closure
 2026-11-13 TS-534 promoted after complete predecessor checks with 9 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
 
 2026-11-13 TS-539 integrated after isolated READY validation: 992 Node guests, 36 native gates and their selected runtime cases, 21 explicit controls per host, 296 tooling and 35 runner checks. Original expectation migrations and first tooling prerequisite failure remain retained. The final cohort now requires 992 guests per host and 474 native gates; canonical acceptance and publication are pending.
+
+2026-11-13 TS-539 isolated validation completed: 992 Node guests, 541 selected
+native cases, 36 static-only/zero-dynamic gates, 21 independent controls per
+host, 296 tooling, 35 runner and diagnostic codecs pass. Integrated as 2a81b92f.
+Session22201 now owns the full matcher/species run on 1087 frozen inputs:
+992 guests per host, 474 native entries, runner/probes/tooling and unchanged
+225-file corpus. It runs the Node/probe stage before the native matrix and
+runtime finalizer, with four maximum compiler workers and a 20 GiB headroom
+check before each build. Main remains14e2e0eb until complete acceptance.
+All earlier isolated sessions (77361,2644,2776) are terminal0. TS-540 is a
+read-only boundary review while canonical validation runs.
+
+TS-540 review complete: 16 exact Array unscopables keys and descriptors, four independent reference controls, matching missing-property observations on both Rift hosts, and the separate unsupported with-statement boundary. C++ Array installation is absent in source inspection. TS-541 is ready as an isolated successor, pending canonical matcher/species acceptance for integration. Reference-mode and parse-exit harness corrections are retained; no engine inputs changed.

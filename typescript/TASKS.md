@@ -6570,3 +6570,43 @@ resource-management syntax and unrelated species APIs are outside this task.
 Do not modify either live canonical inputs or READY matcher snapshots.
 
 2026-11-13 Modifiers/Date milestone accepted (TS-524, TS-527, TS-528, TS-529): 989/989 guests on both hosts without skips; 471 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-JdGrQY/native-bs6USM matches all 225 normalized records and preserves 191 preceding completions. Scoped RegExp i/m/s modifiers, complete Realm-configured local Date behavior and CLI timezone selection are integrated. UTC remains the default. Original fixtures, modifier expectation migration, original CLI usage expectations and sandbox permission failures remain retained. Evidence: build/modifiers-date-rollup-*.
+
+## TS-540 — Array unscopables boundary review
+
+**done — descriptor and parser boundary reviewed**. Owner: coordinator, 2026-11-13.
+Review the missing Array.prototype[Symbol.unscopables] descriptor from TS-537
+against the specification and independent Node observations. Specify the exact
+keys, descriptors, null prototype, mutability and Realm isolation before any
+implementation. Inspect existing parser boundaries and C++ behavior; do not
+claim with-statement execution from installing a data property. Own ignored
+review artifacts and task/coordination notes only. Keep the matcher/species
+milestone's frozen sources unchanged. Any implementation requires a separate
+claimed task after this review.
+
+TS-540: four independently specified reference controls cover all 16 keys,
+property flags, null prototype, inheritance, inner-object mutability and parent
+replacement/deletion. Both frozen Rift hosts lack the descriptor. A separate
+with-statement control confirms the existing parse rejection (exit2) on both
+hosts. ECMAScript2025 section23.1.3.41 specifies a nonwritable, nonenumerable,
+configurable property containing a fresh null-prototype object; its true-valued
+entries are writable/enumerable/configurable. Keep the object Realm-local.
+C++ source search finds the Symbol identity registration but no Array property
+installation; this is source inspection, not a binary parity claim.
+Evidence: build/array-unscopables-script-review/{reviewed,with-boundary}.json.
+The first reference mistakenly inherited package ESM strictness; its failure is
+retained separately. The corrected .cjs controls explicitly exercise Scripts.
+The review also corrected its parse-exit assertion from1 to the documented2.
+No engine or historical fixture changed.
+
+## TS-541 — Array unscopables data property
+
+**ready — isolated successor; canonical integration waits for matcher/species acceptance**.
+Owner: coordinator. Implement TS-540 in the Script Array bootstrap with a fresh
+null-prototype object per Realm, the exact16 specification keys and descriptor
+flags. Own src/builtins/array.ts, focused tests/manifests, relevant historical
+metadata expectations and feature notes in an isolated draft. Preserve legacy
+Realms and the existing unsupported with-statement boundary. Require explicit
+reference controls, Realm isolation, mutation/deletion checks, original-input
+expectation review, both-host semantic/static coverage, tooling and full
+canonical regression before acceptance. No Iterator or with-statement execution
+work is included. Do not compete with the active four-worker native matrix.
