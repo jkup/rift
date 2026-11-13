@@ -3329,3 +3329,14 @@ builds, then full tooling/protocol validation with separate reviewed logs.
 2026-11-12 TS-509 full Node session49478 completed 956/956 without skips; native session72061 completed focused execution and all 170 controls successfully with verified static-only/zero-dynamic reports. Eight escaped-name Node producer records pass. Tooling fixture copy completed (13,074 files, 2,023,501,838 bytes); cleanup remains gated on READY. Session29679 runs the 15 tooling builds and then full 296-test/protocol validation. Canonical session19193 remains live with 123 passing checkpoints.
 
 2026-11-12 TS-509 verified READY after 956 Node guests, 170 controls on both hosts, 15 native tooling gates, 296 tooling tests and producer/envelope checks. Duplicate fixture cleanup reclaimed 2,023,533,632 bytes. TS-510 reviewed all 146 whitespace controls; TS-511 now owns the isolated whitespace successor. Its focused Node test, 146 controls, 35 runner tests and eight codec records pass; 1072 inputs are frozen. Full Node session34102, native/control session46618 and fixture-copy session74436 remain active. Canonical native session19193 continues; no milestone is published before combined acceptance.
+
+2026-11-13 resumed validation: TS-511 is READY. TS-514 passed 958 Node guests
+and 15 native tooling gates, but full tooling finished 295/296. Retained G2
+(`01=7;`) crashes both hosts because the assignment audit compares normalized
+octal token text with raw source. The isolated correction preserves raw audit
+evidence and verifies normalization; focused tests and all 102 historical
+assignment inputs pass under Node with only G2's reviewed certificate change.
+Original failures and binaries are archived under the draft's
+build/before-assignment-token-fix. Corrected full Node session1200 and native
+session15429 are live; canonical native session19193 continues on frozen source.
+TS-516 remains gated on TS-514 READY. No unaccepted milestone has been pushed.

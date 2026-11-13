@@ -5836,6 +5836,16 @@ strict rejection and all initial evidence. Full Node rerun is session44651;
 native revalidation, 15 tooling builds and full tooling/protocol checks run in
 session80466. Production source remains unchanged across the migration.
 
+TS-514 correction: the first tooling run passed 295/296 and exposed a real
+numeric-assignment audit invariant failure on retained G2 (`01=7;`). Both hosts
+reproduce the crash; original sources, snapshot, reports and binaries are
+archived. The correction keeps raw target spelling and checks the same token's
+octal normalization. Focused tests pass; all 102 original assignment inputs
+reviewed under Node change only G2, now an assignment-target certificate.
+The new 1073-input snapshot runs full Node regression in session1200 and fresh
+native/control/tooling validation in session15429. TS-516 remains unstarted
+pending TS-514 READY. Canonical session19193 is unaffected.
+
 ## TS-515 — Legacy string escape boundary review
 
 **done — grammar and both-host baseline reviewed**. Owner: coordinator, 2026-11-13.
