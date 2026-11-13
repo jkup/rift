@@ -5825,3 +5825,13 @@ The initial control replay exposed lost numeric-key provenance; it is retained
 and the corrected replay passes. All 1073 source/control inputs are frozen.
 Full Node regression runs in session59415; focused native compilation and native
 controls run in session99388. No historical expectation has been changed.
+
+TS-514: focused native execution and all 110 controls pass both hosts. Six
+additional numeric-key/name/source controls pass both Rift hosts, retaining two
+documented Node 26.13.0 differences against specification-derived expectations.
+Initial full Node regression passed 956/958; both failures were separately
+reviewed expectation migrations for unchanged console.log(01) and 1_; 01;
+sources. The updated snapshot changes only those two tests, preserving inherited
+strict rejection and all initial evidence. Full Node rerun is session44651;
+native revalidation, 15 tooling builds and full tooling/protocol checks run in
+session80466. Production source remains unchanged across the migration.
