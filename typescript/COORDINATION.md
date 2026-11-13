@@ -3672,3 +3672,16 @@ and the verified README refresh remain prerequisites. Prepared and syntax-
 checked build/promote-matchers.mjs and build/prepare-matcher-rollup.mjs; neither
 has run. This supersedes only the redundant intermediate lookbehind matrix,
 not any final-source acceptance check or the active canonical freeze.
+
+2026-11-13 Resumed at the owner's request. The modifiers/Date native scheduler
+is still running with three workers; retained it rather than interrupting useful
+builds. Its 1084 frozen inputs verify and 152/471 checkpoint records are present.
+About 93 GiB remains free; the build wrapper retains its 20 GiB headroom guard.
+
+TS-534 final isolated validation passed: 991 Node guests, 34 controls per host,
+296 tooling tests, 35 runner checks and 19 fresh static/zero-dynamic gates.
+The one-test budget amendment retains original inputs and limits; production
+hashes are unchanged. READY snapshot and Unicode reproduction are verified.
+Prepared combined matcher acceptance helper remains unapplied. Next: finish
+canonical modifiers/Date acceptance and publish, publish the verified reading
+guide, then integrate and validate the two READY matcher changes together.

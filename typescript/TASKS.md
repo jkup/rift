@@ -6397,7 +6397,7 @@ Any implementation requires a separate bounded successor task and both-host gate
 
 ## TS-534 — Unicode ignore-case range matching
 
-**in progress — isolated successor of TS-531 READY**. Owner: coordinator,
+**READY — isolated validation complete; canonical acceptance pending**. Owner: coordinator,
 2026-11-13. Implement TS-533's interval membership through existing Unicode
 case-fold equivalence groups. Own src/regexp-matcher.ts, the generated Unicode
 property helper and generator/provenance, focused tests/manifests and feature
@@ -6427,3 +6427,13 @@ wide-range budget migration. Publish only after complete combined acceptance.
 This avoids a redundant intermediate native matrix while retaining final-source
 coverage of both changes. The earlier single-lookbehind helpers remain retained;
 use the combined matcher helpers for this sequence.
+
+
+TS-534 READY verification passes: 991 Node guests, 34 controls per host,
+296 tooling tests, 35 runner checks and 19 fresh native static/zero-dynamic
+gates. The Unicode generator reproduces exactly. One historical budget test
+retains its pattern and 20-step limit with reviewed success and smaller-budget
+stop checks; production inputs remain unchanged after that migration. Nine
+owned files and 1088 frozen inputs verify. Original failures, the rejected
+interval-only candidate and alternating benchmark evidence are retained.
+Evidence: build/regexp-range-ready.log and build/regexp-range-owned-snapshot.json.
