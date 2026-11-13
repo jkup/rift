@@ -30,3 +30,12 @@ contextual-identifier milestone; combined acceptance and publication remain pend
 
 See `docs/ordinary-identifiers-review.md` for the grammar review and references.
 No new syntax-error certification rule or historical fixture change is included.
+
+Combined Node regression passes 956/956. All 191 preceding corpus completions
+are unchanged. One existing parse-error fixture, string-escape-sequences-test.js,
+changes only its diagnostic: malformed quote escaping on line 14 ends a string
+before an invalid identifier escape. The scanner now reports that identifier's
+start (column 41) instead of the later backslash (column 46). Independent Node
+also rejects the unchanged source. The exact before/after records and source hash
+are retained in build/ordinary-identifiers-corpus-delta-reviewed.json; combined
+native comparison remains required.
