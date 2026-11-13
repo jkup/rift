@@ -6018,6 +6018,13 @@ budgets. Own pattern parser, focused tests/manifests and feature notes; no
 lookbehind, v-mode, legacy class-range or quantified-assertion expansion. Require
 all 122 controls on both hosts, native static gates and full regression/tooling.
 
+TS-521 implementation checkpoint: the isolated parser adds octal/identity
+fallback, class controls, literal malformed-control handling and named-capture
+dependent k escapes. Focused semantic/budget tests and all 122 Node controls
+pass; 1081 inputs are frozen. Focused native execution passes. Native probe,
+controls and tooling continue in session59417; full 961-case Node regression
+runs in session75871. Original historical expectations are still unchanged.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516 and

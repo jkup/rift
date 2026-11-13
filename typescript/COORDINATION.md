@@ -3405,3 +3405,15 @@ isolated successor from that READY source. The four-feature canonical lexical
 sequence is documented in TASKS.md; the promotion helper verifies all READY
 hashes and over 1000 canonical predecessor inputs before each step. Its active
 TS-509 rejection guard passes, so the current canonical matrix stays untouched.
+
+2026-11-13 TS-521 implements the reviewed legacy RegExp character escapes in an
+isolated successor. Focused Node tests cover greedy decoding, capture-count
+fallback, class controls, named-reference context and all smaller parse budgets;
+all 122 retained Node controls pass. Its 1081 inputs are frozen. Session59417
+runs focused native/probe, native controls and complete tooling in order; focused
+native already passes. Session75871 runs the 961-case Node suite. Historical
+expectations remain unchanged until separately reviewed. The future combined
+canonical helper prepare-lexical-rollup.mjs is prepared but unrun: it requires
+accepted TS-509 on main, all four integrated READY successors, and exact final
+source agreement before freezing 1078 inputs and 467 native entries. Canonical
+session89629 still runs independently with 363 verified checkpoints.
