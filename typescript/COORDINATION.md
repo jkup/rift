@@ -3510,3 +3510,21 @@ guests, the unchanged corpus comparison and 296 tooling checks. Prior original
 and resumed build logs remain retained. Promotion and validation preparation for
 the four-feature modifiers/Date milestone is syntax-checked but unrun; it cannot
 change canonical inputs before lexical acceptance and publication.
+
+TS-531 checkpoint: both focused/probe native builds and all 94 controls per
+host pass. Eight Node producer/codec controls pass; native producer/envelope
+checks follow fresh tooling builds. Initial full Node is 982/990: regexp-pattern,
+regexp-lookahead, regexp-named-captures, regexp-unicode-syntax, regexp-unicode-mode,
+regexp-modifiers, regexp-legacy-escapes and script-return-certification still
+assert the historical unsupported lookbehind boundary. Preserve these files and
+the failed ledger until exact old/new semantics are independently reviewed and
+all frozen tooling jobs terminate. No expectation migration has been applied.
+
+The first four-worker tooling helper exited on its cleanup cwd assertion after
+number-radix passed. Its helper/log are retained; a host process inventory found
+no surviving compiler children. The corrected session43613 enters the draft cwd,
+verifies and reuses only the recorded passing gate, and retains one result per
+entry. Fifteen complete gates and the full tooling/producer suite remain required.
+Canonical session90232 has passed all 961 native guests and the 225-record corpus
+comparison (node-vXT1TU/native-kupwDB), preserving 191 completions with no deltas.
+Its 296-test tooling acceptance is still running.
