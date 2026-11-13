@@ -160,6 +160,14 @@ matcher/capture design and independent reference controls. The isolated successo
 has completed validation as described above; canonical lookbehind admission
 remains separate from the modifiers/Date milestone.
 
+The [range compilation review](regexp-range-compilation-review.md) found that a
+wide Unicode ignore-case range exhausts the step budget while expanding its
+members. TS-534's isolated candidate uses fold-group interval lookup for wide
+ranges and retains the existing small-range path. Focused both-host checks and
+the revised native performance comparison pass. Full tooling validation and the
+reviewed historical budget assertion update remain pending; the optimization
+is not included in accepted counts.
+
 ## Historical feature checkpoints
 
 TS-066 baseline review: the 67 parse failures include nine first failures on

@@ -6408,3 +6408,22 @@ regression measurements, full both-host regression and native static gates.
 Retain original failures and review any changed budget expectations explicitly.
 No larger execution budget, Unicode sets mode or unrelated parser admission.
 Canonical promotion waits for complete lookbehind acceptance.
+
+## Next combined milestone: lookbehind and Unicode ranges
+
+After modifiers/Date acceptance and the TS-532 documentation refresh are
+published, integrate TS-531 then TS-534, each in its own commit. Both successors
+must have fully verified READY snapshots before either promotion begins. Compare
+the whole canonical predecessor at each step, allowing only the separately
+verified README refresh. This bounded sequence supersedes TS-534's intermediate
+lookbehind-acceptance prerequisite only when both READY gates hold; it does not
+allow either feature into the active modifiers/Date freeze or an early push.
+
+Freeze the final source and require all 991 guests on both hosts, 473 fresh
+native static-only/zero-dynamic gates, 296 tooling tests, 35 runner checks,
+ten compiler probes, typechecking and the unchanged 225-file corpus. Preserve
+the lookbehind expectation migrations, rejected range candidate and exact
+wide-range budget migration. Publish only after complete combined acceptance.
+This avoids a redundant intermediate native matrix while retaining final-source
+coverage of both changes. The earlier single-lookbehind helpers remain retained;
+use the combined matcher helpers for this sequence.

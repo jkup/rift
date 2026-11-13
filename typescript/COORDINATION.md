@@ -3657,3 +3657,18 @@ build/check-range-amended-native.mjs and build/check-regexp-range-ready.mjs.
 Session69819 remains live in the 15-driver tooling build; no frozen source was
 changed. Canonical session42456 also remains live. After both gates complete,
 continue their recorded acceptance/publication sequences.
+
+2026-11-13 Range tooling completed successfully: all 15 fresh driver gates,
+296 tests, eight native producer records and sixteen envelopes pass. Applied
+the reviewed one-test budget amendment after terminal completion, preserving
+its original input, limit, ledger and snapshot. Ownership verification passes.
+The amended test now passes both hosts with a fresh static/zero-dynamic gate;
+session63614 is the final full 991-case Node rerun.
+
+Planned the next bounded matcher cohort in TASKS: TS-531 and TS-534 retain
+separate commits but share one complete 991-guest/473-gate final validation.
+Both must be READY before either promotion. Published modifiers/Date acceptance
+and the verified README refresh remain prerequisites. Prepared and syntax-
+checked build/promote-matchers.mjs and build/prepare-matcher-rollup.mjs; neither
+has run. This supersedes only the redundant intermediate lookbehind matrix,
+not any final-source acceptance check or the active canonical freeze.
