@@ -6248,6 +6248,24 @@ statuses on both hosts. Require a fresh CLI static/zero-dynamic gate and complet
 successor regression/tooling validation. No runtime semantics or general argument
 parser refactor. Canonical promotion still waits for preceding acceptance.
 
+## TS-530 — RegExp lookbehind integration review
+
+**done — bounded design and reference review**. Owner: coordinator, 2026-11-13.
+Review backward matching, capture order, backreferences, nested assertions and
+Unicode cursor boundaries against the specification and an independent engine.
+Map the required changes onto the existing matcher and retain explicit expected
+reference controls. Own docs/regexp-lookbehind-review.md and ignored review
+artifacts only. No parser admission, matcher implementation, frozen input changes
+or native compiler jobs. A later implementation needs a separately bounded task
+and both-host/static validation; the Date CLI task keeps implementation priority.
+
+TS-530 result: 19 explicit match/capture/index controls agree with an independent
+Node subprocess. The reviewed design adds immutable instruction direction beside
+scoped flags, preserves assertion atomicity and uses backward Unicode cursor
+reads. Canonical and READY modifier source hashes are retained. Syntax-error,
+protocol, lastIndex, resource and both-host gates remain implementation work.
+Evidence: docs/regexp-lookbehind-review.md and build/regexp-lookbehind-review/.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 Resume checkpoint: the restart preserved 299/468 native gate records and the
