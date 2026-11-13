@@ -6728,3 +6728,5 @@ Use check-declaration-list-repaired-{node,native,tooling,ready}.mjs; the earlier
 READY helper intentionally cannot accept this amended snapshot. Promotion and
 canonical validation helpers are prepared but unrun; canonical source stays on
 the accepted unscopables implementation.
+
+TS-543 repaired Node validation completed: session 59704 passed 994/994 guests and 35 runner checks. The historical declaration-plan migration also passes the three inspection tests on both existing hosts; an independent Node syntax check rejects the exact invalid while-body list and the repaired Node audit returns its explicit candidate. Fresh native session 30833 is live (19 gates/31 cases, four workers); tooling and READY follow only after it exits successfully. Original native session 43006 and tooling session 81882 are terminal (0 and 1 respectively).
