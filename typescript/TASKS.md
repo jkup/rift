@@ -6533,7 +6533,7 @@ creation must be guest TypeError rather than a fresh-array invariant fault.
 
 ## TS-539 — Array species construction
 
-**ready — integration waits for accepted matcher milestone**. Owner: coordinator.
+**in progress — isolated implementation; integration waits for accepted matcher milestone**. Owner: coordinator.
 Implement the reviewed ArraySpeciesCreate boundary for all seven callers and
 install the Array species getter atomically. Own src/array-species.ts,
 src/array-map.ts, src/builtins/array.ts, array-copy.ts, array-iteration.ts,

@@ -3742,3 +3742,13 @@ identified generic object results, throwing element creation, slice/splice lengt
 writes and Realm rules. TS-539 is the bounded implementation successor after
 matcher acceptance. No live or READY engine source changed. Reference session40730
 completed successfully; evidence is build/array-species-boundary-review/reviewed.json.
+
+2026-11-13 TS-539 isolated Array species draft prepared from hash-verified
+regexp-range READY source. build/array-species-draft contains the copied source,
+originals.json for nine initially owned paths, and predecessor/review hashes.
+No implementation changes or native jobs started yet. Integration still waits
+for matcher acceptance; canonical four-worker session98940 and finalizer61495
+remain the publication priority. The internal map helper has numerous host-test
+callers: review their construction contexts when broadening species, preserving
+original unsupported tests for explicit expectation migration rather than adding
+an intrinsic-constructor shortcut. See build/prepare-array-species.mjs.
