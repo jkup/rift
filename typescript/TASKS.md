@@ -5900,4 +5900,18 @@ remains live. TS-516 focused native and all 141 controls now pass both hosts;
 native tooling/producer validation runs in session15869 while the full Node
 regression continues in session68239.
 
+## TS-517 — Unicode property escape boundary and data review
+
+**in progress — read-only review**. Owner: coordinator, 2026-11-13.
+Review the Unicode property escape gap before proposing implementation. C++
+passes patterns to RE2, while the TypeScript Unicode parser explicitly rejects
+property escapes. Compare their actual grammar with ECMAScript u-mode property
+names, exact aliases, binary/general-category/script/script-extension semantics,
+negation and ignore-case behavior. Establish explicit positive and negative
+controls on both Rift hosts and an independent reference; distinguish C++/RE2
+behavior from specification requirements. Identify complete pinned Unicode data,
+license/provenance and static-compiler feasibility requirements. Own only
+docs/regexp-property-escapes-review.md and ignored review evidence. Do not admit
+partial tables, v-mode string properties or engine changes in this review.
+
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
