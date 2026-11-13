@@ -1,7 +1,6 @@
 # Array species construction
 
-TS-539 implements Array species construction in the isolated candidate. Full
-native validation and canonical acceptance are pending.
+Integrated and accepted after complete combined matcher/species validation.
 
 `Array[Symbol.species]` is a configurable, nonenumerable getter that returns its
 receiver. Array subclasses inherit it. The shared `ArraySpeciesCreate` operation

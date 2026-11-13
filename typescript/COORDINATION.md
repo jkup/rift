@@ -4006,3 +4006,15 @@ build/check-unscopables-tooling.mjs requires18 fresh native gates before running
 296 tooling checks; it passes syntax checking but has not run. Session22201 is
 still live, with50 canonical native gates passing at this checkpoint and no
 failures. Continue to reserve all four compiler slots for that matrix.
+
+TS-541 acceptance review preparation: build/check-array-unscopables-ready.mjs
+passes its ownership-only audit. It verifies six owned paths, the single
+metadata-only amendment, all993 unchanged expected-result records and exact
+unchanged output/status evidence outside the two reviewed bootstrap variants.
+Its full path additionally requires18 fresh native gates, seven semantic native
+executions and296 tooling checks before writing READY; it has not been run in
+full. Session22201 remains live with67 passing native gates and no failures.
+
+2026-11-13 RegExp matcher and Array species milestone accepted (TS-531, TS-534, TS-539): 992/992 guests on both hosts without skips; 474 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-M6I0uq/native-GWhHUo matches all 225 normalized records and preserves 191 preceding completions. Backward lookbehind matching, bounded wide Unicode ignore-case range compilation and custom Array species construction are integrated. Small-range and legacy folding paths remain; the rejected performance candidate and all reviewed historical expectation changes are retained. Evidence: build/matcher-species-rollup-*.
+
+Acceptance runner note: the first acceptance-review invocation failed because its UTF-8-only reader could not decode PowerShell UTF-16 logs. The original helper is retained as build/accept-matcher-species-rollup.before-encoding-fix.mjs; BOM-aware decoding passed the same unchanged raw evidence. No tests or expectations were altered.

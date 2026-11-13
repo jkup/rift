@@ -10,8 +10,8 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted modifiers/Date milestone passes 989/989 guests on each
-host, 296/296 tooling checks, and all 471 native static gates.
+The accepted RegExp matcher and Array species milestone passes 992/992 guests on each
+host, 296/296 tooling checks, and all 474 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
@@ -38,7 +38,7 @@ Property updates, computed super reads/calls/writes/updates/deletion and async
 super constructor arguments are accepted. Nested destructuring values,
 nullish/logical operators, optional chains and class heritage/computed keys
 now preserve suspended evaluation contexts. Tagged templates preserve call references and cache frozen arrays per Realm/site.
-Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric/named backreferences, lookahead, Unicode/escaped capture names, disjoint duplicates and Unicode u-mode matching are accepted. Unicode property escapes and legacy character escapes are accepted. Unicode sets mode remains unsupported; lookbehind has passed isolated validation and awaits integration.
+Exact BigInt values, arithmetic, literals, coercion and width conversion are accepted. The ISO calendar/UTC nanosecond backend passes; Temporal Instant and PlainTime core/serialization are accepted. Numeric/named backreferences, lookahead, Unicode/escaped capture names, disjoint duplicates and Unicode u-mode matching are accepted. Unicode property escapes and legacy character escapes are accepted. Unicode sets mode remains unsupported; lookbehind and bounded wide Unicode ranges are accepted.
 
 Keep the [generator activation boundary](generator-boundary.md) intact as
 nested expression/async support expands. Retain explicit completions and prove that
@@ -910,12 +910,12 @@ remain, and no cases have been admitted as conformance passes.
 
 2026-11-13 Lexical milestone accepted (TS-511, TS-514, TS-516, TS-519, TS-521): 961/961 guests on both hosts without skips; 468 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-vXT1TU/native-kupwDB matches all 225 normalized records and preserves all 191 preceding completions. Script whitespace, legacy numeric/string literals Unicode RegExp property escapes and legacy RegExp character escapes are integrated. Original fixtures and reviewed historical expectation migrations remain retained. Evidence: build/lexical-rollup-*.
 
-Symbol descriptor review (TS-537): 53 supported builtin/prototype targets expose
+Earlier symbol descriptor review (TS-537): 53 supported builtin/prototype targets expose
 32 matching symbol descriptors on both Rift hosts. Node additionally exposes
 Array species/unscopables and two modern iterator symbol properties. The first
-pair remains deferred Array scope; the latter belongs to absent modern Iterator
+pair was deferred Array scope at that review; the latter belongs to absent modern Iterator
 and resource-management APIs. Inspect Array species construction (TS-538) before
-adding its getter: the current bounded operation would reject the resulting
+adding its getter: the then-current bounded operation would reject the resulting
 intrinsic constructor. A metadata-only addition would break ordinary Array
 methods. Preserve the current explicit unsupported behavior until reviewed.
 
@@ -925,6 +925,8 @@ assume successful fresh-array writes; they must propagate guest TypeErrors on
 protected results. Slice and splice also need explicit result-length writes,
 with splice doing so before receiver mutation. Integrate the getter together
 with these changes under TASKS.md's guarded matcher/species cohort plan.
-No species source change is accepted yet.
+TS-539 is now accepted after combined matcher/species validation. Array unscopables remains a separate successor.
 
 2026-11-13 Modifiers/Date milestone accepted (TS-524, TS-527, TS-528, TS-529): 989/989 guests on both hosts without skips; 471 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-JdGrQY/native-bs6USM matches all 225 normalized records and preserves 191 preceding completions. Scoped RegExp i/m/s modifiers, complete Realm-configured local Date behavior and CLI timezone selection are integrated. UTC remains the default. Original fixtures, modifier expectation migration, original CLI usage expectations and sandbox permission failures remain retained. Evidence: build/modifiers-date-rollup-*.
+
+2026-11-13 RegExp matcher and Array species milestone accepted (TS-531, TS-534, TS-539): 992/992 guests on both hosts without skips; 474 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-M6I0uq/native-GWhHUo matches all 225 normalized records and preserves 191 preceding completions. Backward lookbehind matching, bounded wide Unicode ignore-case range compilation and custom Array species construction are integrated. Small-range and legacy folding paths remain; the rejected performance candidate and all reviewed historical expectation changes are retained. Evidence: build/matcher-species-rollup-*.

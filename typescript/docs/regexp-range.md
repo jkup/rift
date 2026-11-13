@@ -35,5 +35,4 @@ expecting successful compilation and matching. Every smaller compiler-budget
 cutoff is checked. Its original failure, test and source snapshot are archived;
 production inputs did not change during that expectation migration.
 
-READY for integration in the combined matcher milestone. Canonical acceptance
-remains pending.
+Integrated and accepted after complete combined matcher/species validation.

@@ -6284,7 +6284,7 @@ Evidence: docs/regexp-lookbehind-review.md and build/regexp-lookbehind-review/.
 
 ## TS-531 — RegExp lookbehind implementation
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
+**done — accepted in matcher/species milestone**. Owner: coordinator, 2026-11-13.
 Implement TS-530's reviewed backward matching for positive and negative
 lookbehind, including variable-length bodies, captures/references, nested
 assertion directions, Unicode cursor boundaries and scoped flags. Own the
@@ -6397,7 +6397,7 @@ Any implementation requires a separate bounded successor task and both-host gate
 
 ## TS-534 — Unicode ignore-case range matching
 
-**in progress — integrated; combined validation pending**. Owner: coordinator,
+**done — accepted in matcher/species milestone**. Owner: coordinator,
 2026-11-13. Implement TS-533's interval membership through existing Unicode
 case-fold equivalence groups. Own src/regexp-matcher.ts, the generated Unicode
 property helper and generator/provenance, focused tests/manifests and feature
@@ -6548,7 +6548,7 @@ creation must be guest TypeError rather than a fresh-array invariant fault.
 
 ## TS-539 — Array species construction
 
-**in progress — integrated; combined validation pending**. Owner: coordinator.
+**done — accepted in matcher/species milestone**. Owner: coordinator.
 Implement the reviewed ArraySpeciesCreate boundary for all seven callers and
 install the Array species getter atomically. Own src/array-species.ts,
 src/array-map.ts, src/builtins/array.ts, array-copy.ts, array-iteration.ts,
@@ -6610,3 +6610,5 @@ reference controls, Realm isolation, mutation/deletion checks, original-input
 expectation review, both-host semantic/static coverage, tooling and full
 canonical regression before acceptance. No Iterator or with-statement execution
 work is included. Do not compete with the active four-worker native matrix.
+
+2026-11-13 RegExp matcher and Array species milestone accepted (TS-531, TS-534, TS-539): 992/992 guests on both hosts without skips; 474 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-M6I0uq/native-GWhHUo matches all 225 normalized records and preserves 191 preceding completions. Backward lookbehind matching, bounded wide Unicode ignore-case range compilation and custom Array species construction are integrated. Small-range and legacy folding paths remain; the rejected performance candidate and all reviewed historical expectation changes are retained. Evidence: build/matcher-species-rollup-*.

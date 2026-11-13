@@ -27,8 +27,7 @@ supported lookbehind literal certifies the return syntax error. The original
 tests changed after the native/tooling freeze; production inputs are unchanged.
 The complete Node rerun and fresh native checks cover the amended tests.
 
-READY for integration after the modifiers/Date milestone is accepted. Canonical
-combined validation remains pending.
+Integrated and accepted after complete combined matcher/species validation.
 
 See regexp-lookbehind-review.md for the semantic design and references. Unicode
 sets mode and legacy quantified-lookahead expansion remain separate work.
