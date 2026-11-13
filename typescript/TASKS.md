@@ -6674,3 +6674,38 @@ The ownership-only READY preflight passes eleven owned paths and both explicit
 test-only amendments. Full READY has not run. Prepared helpers require 19 fresh
 native gates and 31 executions, then 296 tooling checks; no successor native job
 has started. Canonical integration remains gated on accepted unscopables.
+
+## TS-544 — Classic-for declaration boundary review
+
+**done — fifteen explicit loop controls and activation boundaries reviewed**. Owner: coordinator, 2026-11-13.
+Review classic-for lexical lists and pattern initializers after TS-543's shared
+standalone representation. Establish independently specified controls for all
+bound names, TDZ, initializer order, per-iteration closures, continue/update,
+const behavior, empty patterns, suspension and abrupt completion. Inspect the
+current single-binding activation/association guards and C++ source paths.
+Own ignored review artifacts and task/roadmap notes only. Keep both the canonical
+unscopables matrix and the declaration-list draft frozen. Do not start a new
+implementation or competing native build as part of this review.
+
+TS-544 evidence: build/classic-for-context-review/reviewed.json and
+ docs/classic-for-declaration-review.md. Fifteen explicit Node reference outputs
+pass; both Rift hosts match on three supported controls and twelve rejected
+classic-for list/pattern cases. The parser, declaration association guards,
+initializer execution and per-iteration copy all retain single-name assumptions.
+No production source changed. C++ source has classic-for declaration-list and
+pattern paths; no binary provenance claim is made.
+
+## TS-545 — Classic-for declaration lists and patterns
+
+**blocked — requires TS-543 READY review before implementation**.
+Implement the TS-544 contract using the shared ordered declaration representation.
+Cover lexical lists and let/const/var pattern initializers, complete bound-name
+planning and source associations, TDZ and sequential initialization, all-name
+per-iteration copying, initializer closures, const/empty-pattern behavior,
+continue/update, abrupt restoration and suspended initialization. Preserve
+for-in/of disambiguation, NoIn grammar, lexical conflicts and resource guards.
+Own isolated syntax/parser, declaration/activation/execution changes, focused
+both-host tests, reviewed expectation migrations and feature notes. Require
+explicit reference outputs and full canonical regression/static acceptance.
+Do not start alongside the active canonical matrix or before the predecessor
+has passed its required native/tooling validation.
