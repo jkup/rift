@@ -66,12 +66,10 @@ disagreements below.
 
 ## Direction
 
-Documentation follow-up: README.md still describes early foundation limits,
-including unsupported generators, async syntax and tagged templates that are now
-implemented. Refresh that summary against the accepted feature inventory after
-the modifiers/Date milestone; preserve the active CLI README snapshot until its
-validation and promotion finish. This documentation gap does not block runtime
-validation and should not be mistaken for a current engine limitation.
+The README, current feature overview and source reading guide now reflect the
+accepted modifiers/Date milestone. Historical feature notes retain their original
+scope and acceptance counts. Update the current overview when each successor is
+accepted; isolated READY work remains separate from published runtime support.
 
 Unicode property escapes: the boundary review and complete Unicode 17 data
 preparation pass independently of engine integration. The 443 generated sets

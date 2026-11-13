@@ -6373,7 +6373,7 @@ These five commits remain unpublished until full combined acceptance passes.
 
 ## TS-532 — Current README and reading guide
 
-**in progress — documentation draft; publication waits for modifiers/Date acceptance**.
+**done — current documentation and examples verified**.
 Owner: coordinator, 2026-11-13. Replace the outdated foundation summary with a
 concise account of accepted CLI behavior, explicit gaps and a source reading path.
 Own README.md and the current sections of docs/architecture-decisions.md and

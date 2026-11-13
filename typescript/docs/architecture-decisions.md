@@ -2,7 +2,7 @@
 
 ## Current reading guide
 
-Updated after TS-039 (2026-11-08). Rift interprets guest source at runtime. The
+Updated for the modifiers/Date milestone. Rift interprets guest source at runtime. The
 same TypeScript implementation runs under Node and compiles to native code with
 scriptc; neither route delegates guest execution to the host JavaScript engine.
 
@@ -19,7 +19,7 @@ Follow a CLI program through these modules:
 | `src/realm.ts`, `src/builtins/` | Allocate each Realm's intrinsics and implement guest builtins through shared object operations and explicit completions. |
 
 `runtime.ts` defines tagged values and ordinary guest objects. Values include
-symbols; property keys are strings or symbols. Objects support prototype lookup,
+exact BigInt and symbols; property keys are strings or symbols. Objects support prototype lookup,
 data and accessor descriptors, extensibility and deletion. Callable objects keep
 ordinary object identity. `array-object.ts` specializes property definition for
 array indices and length; sparse elements remain properties rather than a dense
@@ -30,6 +30,14 @@ access and primitive conversion may call getters, setters or conversion methods,
 so evaluation order matters even inside a builtin. Explicit completion records
 carry guest control flow and errors; host exceptions indicate implementation or
 host-adapter faults. Builtin loops must charge the shared execution budget.
+
+Generators and async execution preserve explicit suspended evaluation state in
+the Script evaluator and the generator/async helper modules. Resume paths restore
+the defining Realm and use the active session's budgets. Read
+[the suspension boundary](generator-boundary.md) before extending these paths.
+Promise reactions enqueue jobs with a defining Realm in the session queue;
+the CLI calls drainScriptJobs after
+evaluation rather than delegating scheduling to host promises.
 
 The CLI follows Script directives for strict/sloppy behavior. This is still a
 bounded language implementation: see the [feature inventory](feature-inventory.md)

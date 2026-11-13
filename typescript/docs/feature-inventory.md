@@ -1,6 +1,34 @@
-# Feature history and early profiles
+# Feature scope and history
 
-For current accepted behavior and validation, see the [development roadmap](development-roadmap.md). The sections below retain their historical milestone scope; their pending statuses and exclusions are not a current feature list.
+This overview describes accepted Script behavior through the modifiers/Date
+milestone. It groups implemented features; it does not claim complete ECMAScript
+conformance. The [roadmap](development-roadmap.md) records validation counts and
+pending successors. Historical milestone notes below retain their original scope.
+
+| Area | Implemented behavior and boundaries |
+| --- | --- |
+| Scripts | Strict/sloppy execution, var/let/const, lexical environments, loops, labels, exceptions, optional chaining and automatic semicolon insertion. Module loading is absent. |
+| Functions | Ordinary and arrow functions, parameter/binding patterns, rest/spread, closures, calls and construction, bounded direct/indirect eval and Function construction. |
+| Classes | Inheritance, super and new.target, public/private fields, methods and accessors, static blocks and private-in checks. |
+| Suspension | Generators, yield/delegation, async functions/arrows/methods, await, async generators and for-await-of. Promise jobs drain at explicit host checkpoints; there is no browser event loop or Node API layer. |
+| Values and collections | Number, exact BigInt, strings and symbols; ordinary objects, sparse arrays, Map/Set, iterators, descriptors, JSON and Reflect operations. |
+| Text and patterns | UTF-16 string operations, ordinary/tagged templates, Unicode identifiers and RegExp Unicode mode, property escapes, backreferences, lookahead and scoped modifiers. Lookbehind is an isolated READY successor, not part of this accepted milestone; Unicode sets mode remains unsupported. |
+| Date and Temporal | UTC-default Date with explicit Realm/CLI timezone selection, pinned IANA zones, local gap/fold resolution, and Temporal ISO-calendar operations. System timezone discovery, Intl and other calendars are absent. |
+| Weak storage | WeakMap, WeakSet, WeakRef and FinalizationRegistry remain blocked by the pinned native compiler/runtime contract. Strong maps are not substitutes. |
+
+Source, parser, execution-step, call-depth and operation-specific bounds remain enforced.
+Unsupported syntax or operations and engine resource stops are distinguished from
+guest-thrown errors. Passing an unsupported-input test means its rejection was
+correct; it does not mean the feature is implemented.
+
+The interpreter exposes no filesystem, network, DOM or Node globals to guests.
+The CLI owns file input and console output. Native validation requires both
+static-only compilation and a parsed zero-dynamic coverage report. See the
+[compiler contract](compiler-contract.md), [eval design](eval-design.md),
+[generator boundary](generator-boundary.md), [Date review](date-named-zone-review.md)
+and [weak-storage evidence](native-host-prerequisites.md) for important limits.
+
+## Historical milestones
 
 ## Early CLI profile
 

@@ -1,65 +1,24 @@
-# Rift TypeScript foundation
+# Rift in TypeScript
 
-A tree-walking interpreter for a deliberately bounded JavaScript subset. Guest
-source is read **at runtime** by Rift; scriptc compiles the interpreter, never the
-guest programs. No host eval, Function, vm, or dynamic compiler fallback is used.
-The original C++ engine remains intact.
+A JavaScript interpreter written for people who want to understand how an engine
+works. The same TypeScript runs under Node and compiles to a native executable
+with scriptc. Rift reads and evaluates guest programs at runtime using its own
+parser, values, objects and execution machinery. Guest eval and Function
+construction also use Rift; no host eval, vm or dynamic compiler fallback runs
+guest code. The original C++ implementation remains intact.
 
-The CLI uses the Script evaluator with a bounded subset including let/const/var,
-functions and arrows, loops and labels, try/catch/finally, ordinary construction,
-optional chaining and automatic semicolon insertion. Scripts are non-strict
-unless they contain a "use strict" directive. Bounded eval and Function construction
-use Rift's own parser and execution machinery; see [eval](docs/eval-design.md).
-Array and object assignments, including for-in/of heads, and standalone or
-for-in/of bindings support nesting, defaults and rest; arrays also support
-elisions. Mixed declaration lists, classic-for, parameter and catch patterns
-remain in progress. See [destructuring](docs/destructuring-design.md).
-Bounded classes support inheritance, explicit derived constructors, new.target
-and super properties. Promise construction, reactions, finally, capability helpers
-and aggregation run with explicit CLI job checkpoints. Generators and async syntax
-remain unsupported.
-Object literals accept identifier, string and numeric property names.
-Script numbers include decimal exponents and leading-dot fractions; see [decimal literals](docs/decimal-literals.md).
-Binary, octal and hexadecimal prefixes are supported; see [radix literals](docs/radix-literals.md).
-Global isNaN/isFinite coerce their inputs; the Number predicates do not. See [numeric predicates](docs/global-numeric-predicates.md).
-Ordinary template literals support nested interpolation and cooked text; see
-[template behavior](docs/template-literals.md). Tagged templates remain unsupported.
-See the [current development roadmap](docs/development-roadmap.md).
+The CLI executes Scripts with strict/sloppy semantics, lexical bindings,
+destructuring, classes, generators, async functions and Promise job checkpoints.
+Builtins include arrays, strings, Map/Set, JSON, BigInt, RegExp, Date, Reflect and
+Temporal. Support is bounded by explicit resource limits and remaining grammar
+and API gaps. Modules, Intl and weak-storage APIs are not available.
 
-Array methods include `join`, `toString`, `push`, `pop`, `shift`, `unshift`, `reverse`, `at`, `indexOf`,
-`lastIndexOf`, `includes`, `every`, `some`, `reduce` and `reduceRight`; see [mutation behavior](docs/array-mutation.md),
-[search behavior](docs/array-search.md) and [predicate iteration](docs/array-predicate.md)
-for scope and validation.
-See [relative indexing](docs/array-at.md) for `at`.
-See [reduction behavior](docs/array-reduction.md) for `reduce` and `reduceRight`.
-Predicate searches include `find`, `findIndex`, `findLast` and `findLastIndex`;
-see [search traversal](docs/array-find.md).
-Script Realms also expose `map` and `forEach`; see [array iteration](docs/array-iteration.md)
-for the supported default-array behavior and custom species boundary.
-
-`Array` supports calls, construction and `Array.isArray`; see
-[Array construction](docs/array-constructor.md) for sparse lengths and brand checks.
-
-Own-property checks support `Object.hasOwn` and `Object.prototype.hasOwnProperty`;
-see [property predicates](docs/own-property-predicates.md).
-
-`Object.keys`, `Object.values` and `Object.entries` enumerate own enumerable
-string properties; see [enumeration behavior](docs/object-enumeration.md).
-
-`Object.defineProperty` and `Object.getOwnPropertyDescriptor` expose data and
-accessor attributes; see [descriptor reflection](docs/property-descriptor-reflection.md).
-
-Strings support `indexOf`, `charAt`, `charCodeAt` and `slice` with UTF-16 indexing; see
-[string methods](docs/string-methods.md).
-
-Math exposes its standard constants and `abs`, `ceil`, `floor`, `round`, `sign`
-and `trunc`; see [Math behavior](docs/math-unary.md).
-
-Functions support `call` and `apply`; see [argument-list calls](docs/function-apply.md).
-
-Boolean calls and construction preserve primitive versus boxed values; see
-[Boolean behavior](docs/boolean-constructor.md). The
-[C++ fixture baseline](docs/legacy-fixture-baseline.md) tracks concrete coverage gaps.
+See the [current feature inventory](docs/feature-inventory.md) for scope, the
+[reading guide](docs/architecture-decisions.md) for the execution path, and the
+[roadmap](docs/development-roadmap.md) for accepted milestones and pending work.
+The [C++ fixture baseline](docs/legacy-fixture-baseline.md) keeps original tests
+and distinguishes incompatibilities from engine gaps; it is not a conformance
+percentage.
 
 ## Build and run
 
@@ -116,7 +75,7 @@ Only Windows x64 has been validated.
 
 ## Validation
 
-Prepare the pinned 36-file test262 selection before running tooling tests:
+Prepare the pinned test262 selection before running tooling tests:
 
 ```sh
 node tools/test262/prepare-corpus.mjs
@@ -164,27 +123,3 @@ CLI exit statuses: **0** success, **1** guest runtime failure/uncaught throw,
 **66** unreadable source file, **70** unexpected host/internal fault. Diagnostics
 include filename and one-based line/UTF-16 column. The CLI's console adapter emits
 one line per `console.log` call; the semantic core has no filesystem/process I/O.
-
-Start reading at [architecture decisions](docs/architecture-decisions.md), then
-follow `src/cli.ts` into Script preparation and execution. See the
-[feature inventory](docs/feature-inventory.md) before writing guest programs.
-
-## Historical milestones
-
-The notes below describe earlier scopes. Use the current reading guide and
-feature inventory above for today's CLI behavior.
-
-TS-016A supplies per-Realm Object, Function and Array prototype roots and explicit
-allocation factories. Builtin name/length metadata is centralized. These are
-partial roots: no constructor globals/back-links are installed. TS-016B adds only
-Function.prototype.call (name call, length 1), preserving strict receivers and
-shared budgets without proper tail calls. TS-017A enters each function's immutable
-defining Realm through one stable evaluator context and restores the caller in
-finally, including host faults. Lexical environments and transferred Values retain
-identity. Host low-level objects still default to null prototypes; callable host
-fixtures require an explicit owner. See the
-[Realm entry contract](docs/function-realm-entry.md),
-[Realm entry validation](docs/validation/ts-017a/README.md), the
-[graph contract](docs/realm-intrinsic-prototypes.md) and
-[graph validation](docs/validation/ts-016a/README.md) and
-[call validation](docs/validation/ts-016b/README.md).
