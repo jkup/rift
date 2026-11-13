@@ -5978,6 +5978,12 @@ historical property-rejection tests failing. All 15 native tooling builds pass;
 two-test amendment is prepared but must wait for that session to finish. Original
 sources, reports and the four-input old/new migration review remain retained.
 
+TS-519 amendment: session91434 completed with all 296 tooling tests and protocol
+checks passing. Only regexp-unicode-syntax.ts and regexp-unicode-mode.ts now
+change their four reviewed expectations; the ownership verifier confirms all
+production inputs unchanged and retains the original snapshot/reports. Full Node
+reruns in session20240; the two amended native tests run in session12848.
+
 ## TS-520 — Legacy RegExp character escape review
 
 **done — grammar and both-host boundary reviewed**. Owner: coordinator, 2026-11-13.

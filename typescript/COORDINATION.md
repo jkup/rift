@@ -3385,3 +3385,13 @@ Prepared follow-ups are check-property-expectation-migration-native.mjs and
 check-regexp-property-escapes-ready.mjs. TS-520's 122-control legacy escape review
 is complete; TS-521 waits for TS-519 READY. Canonical session89629 remains live
 with 297 verified checkpoints. Disk has 102.6 GiB free; weekly usage is 56% used.
+
+2026-11-13 TS-519 tooling session91434 exited zero: 296 tests, eight native
+producer records and 16 envelopes pass. The guarded amendment changed only the
+two historical RegExp tests, preserving all production bytes and original native
+report hashes. Ownership verification and typechecking pass. Full Node rerun is
+session20240 (draft/build/guest-node-reviewed.log); amended native tests are
+session12848 (build/regexp-property-migration-native.log). Run the prepared READY
+verifier only after both finish successfully, then update the feature notes,
+reclaim hash-identical validation copies and consider TS-521. Canonical native
+session89629 remains independent and frozen.

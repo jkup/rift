@@ -85,6 +85,13 @@ Put generated reports in ignored `build/` directories. Do not copy the entire
 repository's hash inventory for each task. Preserve old evidence until an explicit
 archive migration can keep it retrievable; do not rewrite Git history.
 
+Validation footprint needs a bounded follow-up: each isolated successor currently
+copies about 2 GiB of historical validation inputs before the full tooling run.
+Hash-verified cleanup reclaims those duplicate copies after READY. Inspect which
+archival inputs the current tests actually require, so preparation can copy a
+smaller explicit set while retaining every test, fixture and original report.
+Keep this separate from active frozen engine validation.
+
 The owner clarified the main loop: close the C++ feature/test gap through small,
 readable changes. [The C++ fixture baseline](legacy-fixture-baseline.md) now
 provides a fixed 225-file diagnostic selection in both hosts. Use its concrete
