@@ -3614,3 +3614,19 @@ diagnostic controls. Small-pattern matching performance remains under review;
 do not accept the candidate from compile-step savings alone. Session42456 still
 runs the separate canonical modifiers/Date matrix (60/471 recorded, zero failures
 at this checkpoint). All canonical and READY predecessor inputs remain unchanged.
+
+2026-11-13 TS-534 interval-only candidate completed at 989/991 Node guests; the
+two failures are historical small-budget assertions for range compilation.
+Alternating native measurements confirmed a small-range regression (7 ms
+baseline versus 8–8.5 ms candidate medians), so that candidate was not accepted.
+Its exact sources, snapshots, results and executables are archived under
+build/regexp-range-draft/build/before-range-hybrid/.
+
+The revised frozen candidate retains Set folding for ranges up to 256 code
+points and uses interval lookup for wider Unicode ranges. Wide compilation now
+takes four charged operations; ASCII and legacy counts remain unchanged.
+Focused tests, fresh native test/probe gates and 34 controls per host pass.
+Session60982 reruns all 991 Node cases with original historical tests unchanged;
+session44993 builds/runs the revised native benchmark. Any expectation migration
+waits for those results. Canonical session42456 remains live, with 75/471 gates
+recorded and no failures at this checkpoint. Weekly usage is 64% used.

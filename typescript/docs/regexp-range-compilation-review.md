@@ -22,7 +22,7 @@ throughput benchmark or a claimed speedup.
 
 ## Proposed bounded change
 
-Keep Unicode ranges as intervals. The existing generated property backend
+Keep wide Unicode ranges as intervals. The existing generated property backend
 already stores complete equivalence groups for simple/common case folding.
 Given a canonical input character, check whether any member of its group lies
 inside the interval; if no group exists, test the character itself. This avoids
@@ -45,6 +45,17 @@ exercise mixed classes, negation, scoped flags, lookbehind and tight budgets.
 Measure compile work before/after and check ordinary small-pattern matching for
 regressions on both hosts. Full regression and static/zero-dynamic gates remain
 required; no budget increase or source admission change is proposed.
+
+The first interval-only candidate increased ordinary-pattern matching cost in
+three alternating native comparisons: baseline medians were 7 ms per sample,
+versus 8–8.5 ms for the candidate. Initial non-alternating runs had larger timing
+variation and are retained. The revised design therefore keeps the existing Set
+path for ranges of at most 256 code points and uses interval lookup above that
+bound in Unicode mode. This caps per-range expansion while retaining the measured
+small-range path; 256 is a conservative bound, not a claimed optimal threshold.
+The full Unicode range then compiles in four charged steps, while ASCII and
+non-Unicode counts remain unchanged. Revised native performance and full
+regression acceptance are still pending.
 
 Evidence: `build/regexp-range-cost-review/observations.json` retains all twelve
 Rift observations, source hashes, expected outputs and the native executable
