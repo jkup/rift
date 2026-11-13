@@ -5971,6 +5971,13 @@ other unsupported grammar. Require retained semantic controls, both-host tests,
 full regression/tooling and static-only/zero-dynamic gates. Canonical promotion
 waits for TS-516 and all predecessors to be accepted; no canonical core edits.
 
+TS-519 checkpoint: 1080 inputs frozen. Focused native execution, the probe and
+all 182 controls pass both hosts. Full Node is 958/960, with only the two reviewed
+historical property-rejection tests failing. All 15 native tooling builds pass;
+296 tooling tests and protocol controls remain live in session91434. The exact
+two-test amendment is prepared but must wait for that session to finish. Original
+sources, reports and the four-input old/new migration review remain retained.
+
 ## TS-520 — Legacy RegExp character escape review
 
 **done — grammar and both-host boundary reviewed**. Owner: coordinator, 2026-11-13.

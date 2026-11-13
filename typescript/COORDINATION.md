@@ -3374,3 +3374,14 @@ specification review. The first alias search used dynamic string comparisons;
 original evidence and reduced native controls remain preserved. TS-519 claims
 isolated parser/matcher integration from TS-516 READY. Canonical TS-509's frozen
 native matrix remains live; no unaccepted milestone has been published.
+
+2026-11-13 TS-519 freezes 1080 inputs in the property escape successor. Focused
+native gates and all 182 controls pass both hosts. Initial full Node is 958/960;
+the only failures are old regexp-unicode-syntax/mode property-rejection checks.
+Four exact expectations pass old/new both-host review and the reference. All 15
+native tooling entries pass; session91434 is completing the 296-test suite and
+protocol checks. Do not run amend-property-expectations.mjs until it exits zero.
+Prepared follow-ups are check-property-expectation-migration-native.mjs and
+check-regexp-property-escapes-ready.mjs. TS-520's 122-control legacy escape review
+is complete; TS-521 waits for TS-519 READY. Canonical session89629 remains live
+with 297 verified checkpoints. Disk has 102.6 GiB free; weekly usage is 56% used.
