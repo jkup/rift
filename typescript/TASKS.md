@@ -6059,6 +6059,15 @@ literal dependency evidence from dynamic paths and runtime-confirmed reads.
 Recommend an explicit reproducible copy set only after closure validation; do
 not change tooling, remove archives or weaken tests under this review task.
 
+TS-522 checkpoint: 13,085 tracked archive files total 2,023,536,854 bytes.
+Literal tooling references cover 29 directories and 576,860,426 bytes. Following
+the six directly referenced archived scripts finds no extra literal directory
+dependencies; a deliberately broader all-script scan expands to 80 directories
+and is retained separately. The 29-directory candidate is copied into an isolated
+experiment with the same TS-521 READY sources and 15 verified native binaries.
+All 296 unchanged tooling tests are running in session28273; no reduced copy set
+is accepted yet. Evidence: build/validation-footprint-experiment/.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516,
@@ -6080,6 +6089,14 @@ complete isolated READY verification, before canonical promotion began. This
 explicitly supersedes its earlier exclusion from the four-feature sequence.
 The final combined source must cover 961 guests, 468 native entries, 296 tooling
 tests, 35 runner checks, ten compiler probes and all 225 unchanged corpus files.
+
+Lexical integration checkpoint: TS-509 is accepted and pushed to main at
+bf8c45c1. The five successors are integrated in separate commits fadbb555,
+721982cf, f71a44d4, eb6d6678 and 214e70ee. Whole-predecessor checks pass at each
+promotion. The final 1079-input snapshot matches the verified TS-521 successor,
+including reproducible Unicode property data. Session28716 runs the initial
+combined Node/runner/probe/corpus checks; the 468-entry native matrix follows.
+These five commits remain unpublished until full combined acceptance passes.
 
 2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
 
