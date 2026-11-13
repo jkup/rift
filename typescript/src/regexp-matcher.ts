@@ -6,12 +6,12 @@ import { simpleCaseFold } from "./unicode-case-fold.js";
 import { propertyContains, foldedPropertyContains } from "./unicode-properties.js";
 
 export type RegExpMatchFlags = { ignoreCase: boolean; multiline: boolean; dotAll: boolean };
-type Instruction = { kind: "character"; value: number } | { kind: "dot" }
-    | { kind: "backreference"; index: number }
-    | { kind: "named-backreference"; indices: number[] }
+type Instruction = { kind: "character"; value: number; ignoreCase: boolean } | { kind: "dot"; dotAll: boolean }
+    | { kind: "backreference"; index: number; ignoreCase: boolean }
+    | { kind: "named-backreference"; indices: number[]; ignoreCase: boolean }
     | { kind: "lookahead"; negative: boolean; end: number } | { kind: "lookahead-end" }
-    | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean; folded: Set<number> | null }
-    | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
+    | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean; folded: Set<number> | null; ignoreCase: boolean }
+    | { kind: "assertion"; name: "start" | "end" | "word" | "notWord"; ignoreCase: boolean; multiline: boolean }
     | { kind: "split"; first: number; second: number } | { kind: "jump"; target: number }
     | { kind: "save"; slot: number } | { kind: "clear"; from: number; to: number }
     | { kind: "mark"; slot: number } | { kind: "progress"; slot: number } | { kind: "match" };
@@ -37,7 +37,7 @@ class PatternCompiler {
 
     compile(pattern: RegExpPattern): RegExpCompileResult {
         this.names = pattern.names;
-        this.disjunction(pattern.body);
+        this.disjunction(pattern.body, this.flags);
         this.emit({ kind: "match" });
         return this.failure === null ? { kind: "ready", program: { instructions: this.instructions, captures: pattern.captures,
             names: this.names, marks: this.marks, flags: this.flags, unicode: this.unicode } } : { kind: "abrupt", completion: this.failure };
@@ -53,12 +53,12 @@ class PatternCompiler {
         if (this.tick()) this.instructions.push(instruction);
         return index;
     }
-    private disjunction(body: RegExpDisjunction): void {
+    private disjunction(body: RegExpDisjunction, flags: RegExpMatchFlags): void {
         const exits: { kind: "jump"; target: number }[] = [];
         for (let i = 0; i < body.alternatives.length && this.failure === null; i++) {
             const split = { kind: "split" as const, first: this.instructions.length + 1, second: 0 };
             if (i + 1 < body.alternatives.length) this.emit(split);
-            for (const term of body.alternatives[i]) { if (this.failure !== null) break; this.term(term); }
+            for (const term of body.alternatives[i]) { if (this.failure !== null) break; this.term(term, flags); }
             if (i + 1 < body.alternatives.length) {
                 const exit = { kind: "jump" as const, target: 0 };
                 this.emit(exit); exits.push(exit); split.second = this.instructions.length;
@@ -66,13 +66,13 @@ class PatternCompiler {
         }
         for (const exit of exits) exit.target = this.instructions.length;
     }
-    private iteration(term: RegExpTerm): void {
+    private iteration(term: RegExpTerm, flags: RegExpMatchFlags): void {
         if (!this.tick()) return;
         if (term.captureFrom <= term.captureTo) this.emit({ kind: "clear", from: term.captureFrom * 2, to: term.captureTo * 2 + 1 });
-        this.atom(term.atom);
+        this.atom(term.atom, flags);
     }
-    private term(term: RegExpTerm): void {
-        for (let i = 0; i < term.min && this.failure === null; i++) this.iteration(term);
+    private term(term: RegExpTerm, flags: RegExpMatchFlags): void {
+        for (let i = 0; i < term.min && this.failure === null; i++) this.iteration(term, flags);
         if (this.failure !== null || term.max === term.min) return;
         const slot = this.marks++;
         const exits: { kind: "split"; first: number; second: number }[] = [];
@@ -82,7 +82,7 @@ class PatternCompiler {
             const split = { kind: "split" as const, first: start + 1, second: 0 };
             this.emit(split); exits.push(split);
             this.emit({ kind: "mark", slot });
-            this.iteration(term);
+            this.iteration(term, flags);
             // Optional empty iterations fail, including their capture changes (RepeatMatcher).
             this.emit({ kind: "progress", slot });
             if (term.max === null) this.emit({ kind: "jump", target: start });
@@ -92,16 +92,23 @@ class PatternCompiler {
             if (term.lazy) { const body = split.first; split.first = split.second; split.second = body; }
         }
     }
-    private atom(atom: RegExpAtom): void {
+    private atom(atom: RegExpAtom, flags: RegExpMatchFlags): void {
         if (this.failure !== null) return;
         if (atom.kind === "group") {
             if (atom.index !== 0) this.emit({ kind: "save", slot: atom.index * 2 });
-            this.disjunction(atom.body);
+            this.disjunction(atom.body, flags);
             if (atom.index !== 0) this.emit({ kind: "save", slot: atom.index * 2 + 1 });
+        } else if (atom.kind === "modifiers") {
+            const scoped = {
+                ignoreCase: atom.add.includes("i") || flags.ignoreCase && !atom.remove.includes("i"),
+                multiline: atom.add.includes("m") || flags.multiline && !atom.remove.includes("m"),
+                dotAll: atom.add.includes("s") || flags.dotAll && !atom.remove.includes("s"),
+            };
+            this.disjunction(atom.body, scoped);
         } else if (atom.kind === "lookahead") {
             const assertion = { kind: "lookahead" as const, negative: atom.negative, end: 0 };
             this.emit(assertion);
-            this.disjunction(atom.body);
+            this.disjunction(atom.body, flags);
             this.emit({ kind: "lookahead-end" });
             assertion.end = this.instructions.length;
         } else if (atom.kind === "named-backreference") {
@@ -111,11 +118,11 @@ class PatternCompiler {
                 if (capture.name === atom.name) indices.push(capture.index);
             }
             if (indices.length === 0) throw new Error("unresolved RegExp capture name");
-            this.emit({ kind: "named-backreference", indices });
+            this.emit({ kind: "named-backreference", indices, ignoreCase: flags.ignoreCase });
         } else if (atom.kind === "character") {
-            this.emit({ kind: "character", value: this.flags.ignoreCase ? canonicalize(atom.value, this.unicode) : atom.value });
+            this.emit({ kind: "character", value: flags.ignoreCase ? canonicalize(atom.value, this.unicode) : atom.value, ignoreCase: flags.ignoreCase });
         } else if (atom.kind === "class") {
-            const folded = this.flags.ignoreCase ? new Set<number>() : null;
+            const folded = flags.ignoreCase ? new Set<number>() : null;
             if (folded !== null) for (const part of atom.parts) {
                 if (!this.tick()) return;
                 if (part.kind === "range") for (let code = part.from; code <= part.to; code++) {
@@ -123,10 +130,10 @@ class PatternCompiler {
                     folded.add(canonicalize(code, this.unicode));
                 }
             }
-            this.emit({ kind: "class", parts: atom.parts, inverted: atom.inverted, folded });
-        } else if (atom.kind === "dot") this.emit({ kind: "dot" });
-        else if (atom.kind === "backreference") this.emit({ kind: "backreference", index: atom.index });
-        else this.emit({ kind: "assertion", name: atom.name });
+            this.emit({ kind: "class", parts: atom.parts, inverted: atom.inverted, folded, ignoreCase: flags.ignoreCase });
+        } else if (atom.kind === "dot") this.emit({ kind: "dot", dotAll: flags.dotAll });
+        else if (atom.kind === "backreference") this.emit({ kind: "backreference", index: atom.index, ignoreCase: flags.ignoreCase });
+        else this.emit({ kind: "assertion", name: atom.name, ignoreCase: flags.ignoreCase, multiline: flags.multiline });
     }
 }
 
@@ -162,12 +169,12 @@ class PatternMatcher {
         const trail = this.input.charCodeAt(index), lead = this.input.charCodeAt(index - 1);
         return trail >= 0xdc00 && trail <= 0xdfff && lead >= 0xd800 && lead <= 0xdbff ? index - 1 : index;
     }
-    private unicodeBackreference(state: MatchState, from: number, to: number): boolean {
+    private unicodeBackreference(state: MatchState, from: number, to: number, ignoreCase: boolean): boolean {
         let position = state.position;
         for (let capturedPosition = from; capturedPosition < to;) {
             if (!this.tick() || position >= this.input.length) return false;
             const captured = this.codePoint(capturedPosition), current = this.codePoint(position);
-            const equal = this.program.flags.ignoreCase ? simpleCaseFold(captured) === simpleCaseFold(current) : captured === current;
+            const equal = ignoreCase ? simpleCaseFold(captured) === simpleCaseFold(current) : captured === current;
             if (!equal) return false;
             capturedPosition += captured > 0xffff ? 2 : 1;
             position += current > 0xffff ? 2 : 1;
@@ -182,7 +189,7 @@ class PatternMatcher {
             if (part.kind === "range") {
                 if (instruction.folded === null) found = code >= part.from && code <= part.to;
             } else if (part.kind === "property") {
-                found = this.program.flags.ignoreCase ? foldedPropertyContains(part.index, code, part.inverted)
+                found = instruction.ignoreCase ? foldedPropertyContains(part.index, code, part.inverted)
                     : propertyContains(part.index, code) !== part.inverted;
             } else {
                 const member = part.name === "digit" ? code >= 48 && code <= 57 : part.name === "word" ? word(code) : isStringWhitespace(code);
@@ -231,9 +238,9 @@ class PatternMatcher {
                 else if (instruction.kind === "assertion") {
                     let before = this.program.unicode ? this.codePoint(this.containingStart(state.position - 1)) : this.input.charCodeAt(state.position - 1);
                     let after = this.program.unicode ? this.codePoint(state.position) : this.input.charCodeAt(state.position);
-                    if (this.program.unicode && this.program.flags.ignoreCase) { before = simpleCaseFold(before); after = simpleCaseFold(after); }
-                    if (instruction.name === "start") accepted = state.position === 0 || this.program.flags.multiline && lineTerminator(before);
-                    else if (instruction.name === "end") accepted = state.position === this.input.length || this.program.flags.multiline && lineTerminator(after);
+                    if (this.program.unicode && instruction.ignoreCase) { before = simpleCaseFold(before); after = simpleCaseFold(after); }
+                    if (instruction.name === "start") accepted = state.position === 0 || instruction.multiline && lineTerminator(before);
+                    else if (instruction.name === "end") accepted = state.position === this.input.length || instruction.multiline && lineTerminator(after);
                     else accepted = (word(before) !== word(after)) === (instruction.name === "word");
                 } else if (instruction.kind === "backreference" || instruction.kind === "named-backreference") {
                     let index = instruction.kind === "backreference" ? instruction.index : -1;
@@ -245,14 +252,14 @@ class PatternMatcher {
                     }
                     const from = index === -1 ? -1 : state.captures[index * 2], to = index === -1 ? -1 : state.captures[index * 2 + 1];
                     if (from >= 0 && to >= 0) {
-                        if (this.program.unicode) accepted = this.unicodeBackreference(state, from, to);
+                        if (this.program.unicode) accepted = this.unicodeBackreference(state, from, to, instruction.ignoreCase);
                         else {
                             const length = to - from;
                             accepted = state.position + length <= this.input.length;
                             for (let i = 0; accepted && i < length; i++) {
                                 if (!this.tick()) { accepted = false; break; }
                                 const captured = this.input.charCodeAt(from + i), current = this.input.charCodeAt(state.position + i);
-                                accepted = this.program.flags.ignoreCase ? canonicalize(captured, false) === canonicalize(current, false) : captured === current;
+                                accepted = instruction.ignoreCase ? canonicalize(captured, false) === canonicalize(current, false) : captured === current;
                             }
                             if (accepted) state.position += length;
                         }
@@ -260,9 +267,11 @@ class PatternMatcher {
                 } else if (state.position >= this.input.length) accepted = false;
                 else {
                     const code = this.program.unicode ? this.codePoint(state.position) : this.input.charCodeAt(state.position);
-                    const canonical = this.program.flags.ignoreCase ? canonicalize(code, this.program.unicode) : code;
-                    accepted = instruction.kind === "character" ? canonical === instruction.value
-                        : instruction.kind === "dot" ? this.program.flags.dotAll || !lineTerminator(code) : this.inClass(instruction, canonical);
+                    if (instruction.kind === "dot") accepted = instruction.dotAll || !lineTerminator(code);
+                    else {
+                        const canonical = instruction.ignoreCase ? canonicalize(code, this.program.unicode) : code;
+                        accepted = instruction.kind === "character" ? canonical === instruction.value : this.inClass(instruction, canonical);
+                    }
                     if (accepted) state.position += this.program.unicode && code > 0xffff ? 2 : 1;
                 }
                 while (!accepted && this.tick()) {

@@ -6096,7 +6096,7 @@ original source/process records in build/regexp-modifiers-review/.
 
 ## TS-524 — Scoped RegExp modifier implementation
 
-**READY — isolated successor; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Implement TS-523's reviewed scoped i/m/s grammar and matching in a successor of
 TS-521 READY. Own the pattern parser/types, matcher, focused tests/manifests and
 feature notes in an isolated draft. Compile effective flags per instruction;

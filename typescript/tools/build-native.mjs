@@ -316,6 +316,7 @@ const entries = [
     ["test/regexp-unicode-matcher.ts", "regexp-unicode-matcher"],
     ["test/regexp-unicode-mode.ts", "regexp-unicode-mode"],
     ["test/regexp-property-escapes.ts", "regexp-property-escapes"],
+    ["test/regexp-modifiers.ts", "regexp-modifiers"],
     ["test/regexp-legacy-escapes.ts", "regexp-legacy-escapes"],
     ["test/private-elements.ts", "private-elements"],
     ["test/private-identifier-lexing.ts", "private-identifier-lexing"],

@@ -8,6 +8,7 @@ export type RegExpAtom = { kind: "character"; value: number } | { kind: "dot" }
     | { kind: "backreference"; index: number }
     | { kind: "named-backreference"; name: string }
     | { kind: "lookahead"; negative: boolean; body: RegExpDisjunction }
+    | { kind: "modifiers"; add: string; remove: string; body: RegExpDisjunction }
     | { kind: "class"; parts: RegExpClassPart[]; inverted: boolean }
     | { kind: "assertion"; name: "start" | "end" | "word" | "notWord" }
     | { kind: "group"; index: number; body: RegExpDisjunction };
@@ -227,6 +228,7 @@ class PatternParser {
             }
             let index = 0;
             let lookahead = false, negative = false;
+            let modifiers: { add: string; remove: string } | null = null;
             if (this.current() === "?") {
                 this.take();
                 if (this.current() === "<") {
@@ -252,10 +254,13 @@ class PatternParser {
                         path.push({ id: frame.id, alternative: frame.alternative });
                     }
                     this.names.push({ name, index, path });
-                } else {
-                    if (this.current() === "=" || this.current() === "!") { lookahead = true; negative = this.current() === "!"; }
-                    else if (this.current() !== ":") return this.reject("unsupported", "modifier groups are unsupported");
+                } else if (this.current() === "=" || this.current() === "!") {
+                    lookahead = true; negative = this.current() === "!";
                     this.take();
+                } else if (this.current() === ":") this.take();
+                else {
+                    modifiers = this.modifiers();
+                    if (modifiers === null) return null;
                 }
             } else index = ++this.captures;
             const body = this.disjunction();
@@ -263,10 +268,35 @@ class PatternParser {
             if (this.failure !== null) return null;
             if (this.current() !== ")") return this.reject("syntax-error", "unterminated group");
             this.take();
-            return lookahead ? { kind: "lookahead", negative, body } : { kind: "group", index, body };
+            return lookahead ? { kind: "lookahead", negative, body }
+                : modifiers !== null ? { kind: "modifiers", add: modifiers.add, remove: modifiers.remove, body }
+                : { kind: "group", index, body };
         }
         const value = this.unicode ? this.rawCodePoint(char.charCodeAt(0)) : char.charCodeAt(0);
         return this.failure === null ? { kind: "character", value } : null;
+    }
+    private modifiers(): { add: string; remove: string } | null {
+        let add = "", remove = "";
+        while (this.current() !== "" && "ims".includes(this.current())) {
+            const flag = this.take();
+            if (this.failure !== null) return null;
+            if (add.includes(flag)) return this.reject("syntax-error", "duplicate RegExp modifier");
+            add += flag;
+        }
+        if (this.current() === "-") {
+            this.take();
+            if (this.failure !== null) return null;
+            while (this.current() !== "" && "ims".includes(this.current())) {
+                const flag = this.take();
+                if (this.failure !== null) return null;
+                if (remove.includes(flag) || add.includes(flag)) return this.reject("syntax-error", "duplicate RegExp modifier");
+                remove += flag;
+            }
+        }
+        if (add === "" && remove === "" || this.current() !== ":")
+            return this.reject("syntax-error", "invalid RegExp modifiers");
+        this.take();
+        return this.failure === null ? { add, remove } : null;
     }
     private decimal(): number {
         let value = 0;
