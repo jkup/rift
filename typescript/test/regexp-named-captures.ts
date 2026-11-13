@@ -4,6 +4,8 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import { parseRegExpSyntax } from "../src/regexp-pattern-syntax.js";
 function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
 const cases = [
+ String.raw`/\k<x>/.exec('k<x>')[0]==='k<x>'&&/\k<>/.exec('k<>')[0]==='k<>'&&/\k<1>/.exec('k<1>')[0]==='k<1>'&&/\k</.exec('k<')[0]==='k<'&&/\k/.exec('k')[0]==='k'&&/[\k<>]/.exec('k')[0]==='k'`,
+
  String.raw`var m=/(?<x>a)(b)/d.exec('ab');m[1]==='a'&&m[2]==='b'&&m.groups.x==='a'&&m.indices.groups.x===m.indices[1]`,
  String.raw`var m=/(?<x>a)?b/d.exec('b');Object.hasOwn(m.groups,'x')&&m.groups.x===undefined&&Object.hasOwn(m.indices.groups,'x')&&m.indices.groups.x===undefined`,
  String.raw`var m=/(?<x>a)/d.exec('a');Object.getPrototypeOf(m.groups)===null&&Object.getPrototypeOf(m.indices.groups)===null`,
@@ -31,11 +33,11 @@ for (const text of cases) {
  check(session.inspect().active===null&&session.inspect().calls===0,'caller restored');
 }
 for(const source of ['(?<π>a)','(?<\\u0078>a)','(?<x>a)|(?<x>b)','(?<x>a)(?<x>b)','(?<=a)','\\k<x>'])
- check(parseRegExpSyntax(source,()=>true).kind===(source==='(?<x>a)(?<x>b)'?'syntax-error':source==='(?<=a)'||source==='\\k<x>'?'unsupported':'ready'),'retained boundary '+source);
+ check(parseRegExpSyntax(source,()=>true).kind===(source==='(?<x>a)(?<x>b)'?'syntax-error':source==='(?<=a)'?'unsupported':'ready'),'retained boundary '+source);
 for(const source of ['(?<>a)','(?<1x>a)','(?<x-a>a)','(?<x>a)\\k<missing>'])
  check(parseRegExpSyntax(source,()=>true).kind==='syntax-error','invalid name '+source);
 for (const source of [String.raw`\k<>`,String.raw`\k<1>`,String.raw`\k<`,String.raw`\k`,String.raw`[\k<>]`])
- check(parseRegExpSyntax(source,()=>true).kind==='unsupported','legacy k remains unsupported '+source);
+ check(parseRegExpSyntax(source,()=>true).kind==='ready','legacy k identity '+source);
 const numbered=parseRegExpSyntax('(?<x>a)(b)\\2',()=>true);
 check(numbered.kind==='ready'&&numbered.pattern.captures===2&&numbered.pattern.names[0].index===1,'capture numbering');
 let ticks=0;

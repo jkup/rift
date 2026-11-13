@@ -6010,7 +6010,7 @@ three-digit octal support and six language differences. See the review document.
 
 ## TS-521 — Legacy RegExp character escape implementation
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Implement TS-520's reviewed non-u numeric/octal, identity and control escapes in
 an isolated successor. Preserve whole-pattern capture/named-group detection,
 exact greedy consumption, class/quantifier semantics, u-mode errors and input

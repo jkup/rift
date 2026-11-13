@@ -51,10 +51,13 @@ expect("\\(a\\)(b)\\1", "(a)bb", ["(a)bb", "b"]);
 expect("[(](b)\\1", "(bb", ["(bb", "b"]);
 expect("(?:a)(b)\\1", "abb", ["abb", "b"]);
 expect("(?=a)(a)\\1", "aa", ["aa", "a"]);
-for (const source of ["\\1", "(a)\\2", "(a)\\11", "[\\1](a)", "\\07", "\\k<x>", "(?<x>a)\\1"]) {
-    if (source === "(?<x>a)\\1") expect(source, "aa", ["aa", "a"]);
-    else check(parseRegExpPattern(source, context(), loc).kind === "unsupported", "retained boundary: " + source);
-}
+expect("\\1", "\u0001", ["\u0001"]);
+expect("(a)\\2", "a\u0002", ["a\u0002", "a"]);
+expect("(a)\\11", "a\t", ["a\t", "a"]);
+expect("[\\1](a)", "\u0001a", ["\u0001a", "a"]);
+expect("\\07", "\u0007", ["\u0007"]);
+expect("\\k<x>", "k<x>", ["k<x>"]);
+expect("(?<x>a)\\1", "aa", ["aa", "a"]);
 const stopped = parseRegExpPattern("(a)\\1" + "x".repeat(1000), context(30), loc);
 check(stopped.kind === "abrupt" && stopped.completion.origin.kind === "resource-limit", "capture scan budget");
 const match = matchRegExp(program("(a{100})\\1"), "a".repeat(200), 0, true, context(150), loc);

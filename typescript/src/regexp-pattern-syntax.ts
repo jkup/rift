@@ -319,33 +319,42 @@ class PatternParser {
         }
         if (char >= "1" && char <= "9" && !inClass) {
             const count = this.captureCount();
+            const afterFirstDigit = this.offset;
             let index = char.charCodeAt(0) - 48;
             while (this.failure === null && digit(this.current()))
                 index = Math.min(count + 1, index * 10 + this.take().charCodeAt(0) - 48);
             if (this.failure !== null) return null;
             if (index <= count) return { kind: "backreference", index };
-            return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid numeric escape" : "legacy numeric escape is unsupported");
+            if (this.unicode) return this.reject("syntax-error", "invalid numeric escape");
+            // An unavailable decimal reference falls back from its first digit.
+            this.offset = afterFirstDigit;
         }
-        if (char === "k" && !inClass) {
+        if (char === "k") {
             this.captureCount();
             if (this.failure !== null) return null;
-            if (!this.hasNamedCapture && !this.unicode) return this.reject("unsupported", "legacy k escapes are unsupported");
-            if (this.current() !== "<") return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid named reference" : "legacy k escapes are unsupported");
+            if (!this.hasNamedCapture && !this.unicode) return { kind: "character", value: 107 };
+            if (inClass || this.current() !== "<") return this.reject("syntax-error", "invalid named reference");
             const name = this.groupName();
             if (name === null) return null;
             this.references.push(name);
             return { kind: "named-backreference", name };
         }
-        if (char >= "1" && char <= "9" || char === "0" && digit(this.current()) || char === "k")
-            return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid numeric or named escape" : "named backreferences and legacy numeric escapes are unsupported");
+        if (digit(char)) {
+            if (this.unicode) return char === "0" && !digit(this.current()) ? { kind: "character", value: 0 }
+                : this.reject("syntax-error", "invalid numeric escape");
+            return this.legacyNumericEscape(char);
+        }
         const controls = "fnrtv";
         const controlIndex = controls.indexOf(char);
         if (controlIndex >= 0) return { kind: "character", value: [12, 10, 13, 9, 11][controlIndex] };
-        if (char === "0") return { kind: "character", value: 0 };
         if (char === "c") {
             const letter = this.current();
-            if (!(letter >= "a" && letter <= "z" || letter >= "A" && letter <= "Z"))
-                return this.reject(this.unicode ? "syntax-error" : "unsupported", this.unicode ? "invalid control escape" : "legacy control escape is unsupported");
+            const asciiLetter = letter >= "a" && letter <= "z" || letter >= "A" && letter <= "Z";
+            if (!asciiLetter && !(!this.unicode && inClass && (digit(letter) || letter === "_"))) {
+                if (this.unicode) return this.reject("syntax-error", "invalid control escape");
+                this.offset--; // Keep c as the next atom, including its own quantifier.
+                return { kind: "character", value: 92 };
+            }
             this.take();
             return { kind: "character", value: letter.charCodeAt(0) % 32 };
         }
@@ -368,6 +377,16 @@ class PatternParser {
         if (this.unicode && !"^$\\.*+?()[]{}|/".includes(char) && !(inClass && char === "-"))
             return this.reject("syntax-error", "invalid identity escape");
         return { kind: "character", value: char.charCodeAt(0) };
+    }
+    private legacyNumericEscape(first: string): RegExpAtom | null {
+        if (first === "8" || first === "9") return { kind: "character", value: first.charCodeAt(0) };
+        let value = first.charCodeAt(0) - 48;
+        const limit = value <= 3 ? 3 : 2;
+        for (let digits = 1; digits < limit && this.current() >= "0" && this.current() <= "7"; digits++) {
+            value = value * 8 + this.take().charCodeAt(0) - 48;
+            if (this.failure !== null) return null;
+        }
+        return { kind: "character", value };
     }
     private propertyEscape(inverted: boolean): RegExpAtom | null {
         if (this.current() !== "{") return this.reject("syntax-error", "invalid Unicode property escape");

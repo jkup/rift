@@ -28,9 +28,17 @@ for (const source of ["*", "+", "?", "a**", "a+*", "a???", "{1}", "[", "[a", "[z
     const result = parse(source);
     check(result.kind === "syntax-error", "proven invalid pattern: " + source);
 }
-for (const source of ["(?<=a)", "(?<name>a)", "(?i:a)", "\\k<x>", "\\07", "\\c_", "[\\d-a]", "[a-\\d]", "a{9007199254740992}"]) {
+for (const source of ["(?<=a)", "(?<name>a)", "(?i:a)", "[\\d-a]", "[a-\\d]", "a{9007199254740992}"]) {
     if (source === "(?<name>a)") check(ready(source).names[0].name === "name", "named capture metadata");
     else check(parse(source).kind === "unsupported", "unsupported pattern: " + source);
+}
+for (const test of [{source: "\\k<x>", values: [107,60,120,62]}, {source: "\\07", values: [7]}, {source: "\\c_", values: [92,99,95]}]) {
+    const terms = ready(test.source).body.alternatives[0];
+    check(terms.length === test.values.length, "legacy escape term count: " + test.source);
+    for (let i = 0; i < terms.length; i++) {
+        const atom = terms[i].atom;
+        check(atom.kind === "character" && atom.value === test.values[i], "legacy escape value: " + test.source);
+    }
 }
 for (const test of [
     { source: "\\n", code: 10 }, { source: "\\r", code: 13 }, { source: "\\t", code: 9 }, { source: "\\v", code: 11 },
