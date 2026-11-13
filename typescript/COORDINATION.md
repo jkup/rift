@@ -3355,3 +3355,12 @@ TS-516 implements the reviewed string escapes in an isolated successor. Its
 1074 inputs are frozen after 141 Node controls, focused tests, 35 runner tests
 and eight producer-codec records pass. Native/control session64668 and full Node
 session68239 are live. Historical tooling inputs were copied before regression.
+
+2026-11-13 TS-516 verified READY: 959 Node guests, 141 controls on both hosts,
+15 native tooling gates, 296 tooling tests, 35 runner tests and producer/envelope
+checks pass. The five reviewed historical string expectations change only
+test/string-escapes.ts; native execution of that amended test passes separately.
+The original snapshot and reports remain bound to unchanged production inputs;
+the READY verifier checks both snapshots and the exact amendment. Duplicate
+validation-copy cleanup reclaimed 2,023,533,632 bytes. TS-509's combined native
+matrix continues in session89629; its Node lane and corpus review are complete.

@@ -1,6 +1,6 @@
 # Development roadmap
 
-Updated 2026-11-11. The original catch-up review covered history through `ec63ebee` and
+Updated 2026-11-13. The original catch-up review covered history through `ec63ebee` and
 [Claude's review, PR #82](https://github.com/jkup/rift/pull/82).
 
 ## Current checkpoint
@@ -89,13 +89,20 @@ async/generator parameters; `let` declaration lookahead keeps expression admissi
 distinct from lexical declarations. Original fixtures and reviewed expectation
 migrations remain intact. The full combined validation passes on both hosts.
 
-The ordinary-identifier successor is READY in isolation: Unicode names and
-fixed/braced escapes pass 956 Node guests, 170 grammar controls on both hosts and
-the tooling/static gates. It distinguishes raw keyword spelling from decoded
-names instead of inheriting the C++ lexer's Unicode limitations. Promotion waits
-for contextual-identifier acceptance. The following Script-whitespace change
-passes 957 Node guests and all 146 retained controls on both hosts; its tooling
-checks remain active. Neither successor is included in the accepted counts above.
+Unicode identifiers and fixed/braced escapes are integrated for the next
+milestone. Combined Node regression passes 956/956; the 463-entry native matrix
+is running. All prior corpus completions remain intact, with one reviewed
+diagnostic-only change in an invalid fixture. Raw keyword spelling remains
+distinct from decoded names.
+
+Script whitespace, legacy numeric literals and legacy string escapes are READY
+in isolated successors, with 957, 958 and 959 Node guests respectively. Their
+retained controls pass both hosts, alongside native and tooling gates. The
+numeric audit correction and five string expectation changes retain their
+original evidence. These successors await predecessor acceptance and are not
+included in the accepted counts above. The next bounded review examines Unicode
+property escapes and complete pinned data; RE2's naming differences are not a
+model for ECMAScript semantics.
 
 ## Historical feature checkpoints
 

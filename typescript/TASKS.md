@@ -5864,7 +5864,7 @@ Source hashes and native provenance verify. See docs/legacy-string-escapes-revie
 
 ## TS-516 — Legacy string escapes and strict-context rejection
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
+**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-13.
 Implement TS-515's reviewed octal and non-octal decimal string escapes in an
 isolated successor. Preserve exact greedy decoding/code units, raw spans,
 directive recognition, numeric/string property provenance and legacy lexing.
@@ -5908,6 +5908,13 @@ review passes. Only that standalone test is amended; production source is
 unchanged and prior reports retain their original snapshot hashes. Full Node
 reruns in session78340; the amended test's native build/execution is session46657.
 The new READY verifier checks the amendment and both sets of evidence together.
+
+TS-516 READY: 959/959 Node guests and the amended historical test pass; the latter
+also passes native execution and static coverage. All 141 controls agree on both
+hosts; 15 native tooling gates, 296 tooling tests, 35 runner tests and protocol
+checks pass. The verifier confirms the single test-only amendment, untouched
+production source and retained original reports. Integration awaits predecessor
+acceptance. TS-517 remains a bounded review with no engine admission authority.
 
 ## TS-517 — Unicode property escape boundary and data review
 
