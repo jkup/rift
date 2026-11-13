@@ -877,11 +877,11 @@ and failing controls in strict/non-strict mode against explicit outcomes in Node
 and both Rift hosts. This advances harness readiness; corpus admission and a
 conformance baseline remain open.
 
-[The current Script diagnostic](test262-current-script-diagnostic.md) retains all
-33 starter files and 60 variants. Its Node run identifies five syntax-provenance
-follow-ups (top-level return, async declarations in statement position, and strict
-reserved bindings); do not convert those unsupported records into conformance
-passes without parser certification and both-host controls.
+The [Script diagnostic refresh](test262-starter-refresh.md) retains all 33 starter
+files and 60 variants. Both hosts now produce expected outcomes for all 57
+executable variants, closing the five earlier parser-certification gaps. All 17
+diagnostic controls per host pass. The three module/async-profile exclusions
+remain, and no cases have been admitted as conformance passes.
 
 2026-11-12 zoned Temporal milestone accepted (TS-484,486,487):949/949 guests on both hosts without skips;456 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-lR4v4q/native-65hS99 matches all225 normalized records and preserves191 preceding completions. Named-zone local-time resolution, shared Temporal consumers and pinned2026f guest identifiers are accepted. Focused evidence includes 1170 public controls,1794 identifier controls and82800 rounding cases on both hosts; the documented PR3319 rounding and Factory admission differences retain independent justification. Original fixtures, failure evidence and range guards remain preserved. Evidence: build/iana-temporal-rollup-* and isolated feature reviews.
 

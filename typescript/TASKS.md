@@ -6125,6 +6125,24 @@ native/full-Node verification helpers are prepared. Canonical session21360 is
 live with 87/468 verified checkpoints and unchanged frozen inputs. Main remains
 at the accepted TS-509 milestone until combined lexical acceptance completes.
 
+## TS-525 — Starter Script diagnostic refresh
+
+**done — both-host diagnostic refresh**. Owner: coordinator, 2026-11-13.
+Re-run TS-491's unchanged 33-file/60-variant selection using the hash-verified
+scoped-modifier probe on both hosts. Check whether the five parser-certification
+gaps have closed, retain all three profile exclusions, and repeat independent
+diagnostic controls with explicit reviewed expectations. Own a short diagnostic
+follow-up document and ignored reports/helpers only. Preserve the original
+selection, fixture/harness bytes, earlier results and live canonical inputs.
+No conformance admission or capability changes; isolated evidence does not
+replace the pending combined milestone validation.
+
+TS-525: all 57 executable variants now produce expected outcomes on both hosts;
+the five prior syntax-certification gaps close with explicit rule provenance.
+All 17 controls per host pass, and all three profile exclusions remain. The
+original selection and fixture/harness bytes are unchanged. Evidence and scope:
+docs/test262-starter-refresh.md and build/starter-script-refresh-final-reviewed.json.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516,
