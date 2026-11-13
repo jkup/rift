@@ -3889,3 +3889,11 @@ for all CLI cases and owned driver variants, comparing each with the full Node
 ledger. This subset is explicitly not full-native acceptance. Preflight evidence:
 build/array-species-owned-native-preflight.json. Canonical checkpoint413/471;
 session88122 still live, source hashes unchanged.
+
+TS-539 documentation proposals are prepared in build/array-species-docs-draft/:
+seven existing Array notes plus the new species contract, bound by plan.json.
+They remove obsolete custom-species rejection claims, describe arbitrary result
+objects and length writes, and label original acceptance counts as historical.
+They remain unpublished drafts; review/install alongside the species feature and
+update the current inventory only after the preceding documentation refresh.
+Latest canonical checkpoint418/471 contains zero failed records; session88122 live.
