@@ -3695,3 +3695,18 @@ matching and unsupported-syntax coverage. Original failed reports and complete
 structured result/hash evidence remain in build/starter-matcher-*. No core or
 conformance-admission change. Publish diagnostic documentation only after the
 matcher milestone is accepted. Canonical modifiers/Date validation continues.
+
+2026-11-13 Canonical modifiers/Date matrix moved from three to four reviewed
+workers after isolated jobs finished. Stopped only the CIM-verified owned
+scheduler tree, observed session42456 terminal, and verified descendants gone.
+Preserved its log/checkpoint under build/modifiers-date-rollup-workers3-* and
+process identities under build/modifiers-date-workers3-processes.json. Session98940
+resumes all 471 entries from 173 recorded gates, reusing only matching executable
+hashes; frozen inputs still verify. This was a deliberate concurrency change,
+not a timeout recovery. Keep the new session live until terminal completion.
+
+Prepared and syntax-checked build/publish-starter-matcher-review.mjs. It requires
+published matcher acceptance, verifies all retained diagnostic hashes and compares
+probe engine sources with canonical source before updating TS-535 documentation.
+It remains unapplied. Continue Date acceptance/publication, TS-532, matcher
+integration/acceptance/publication, then this diagnostic documentation update.
