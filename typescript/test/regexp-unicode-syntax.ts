@@ -40,7 +40,8 @@ const invalid = [
 ];
 for (const source of invalid) check(parseRegExpSyntax(source, () => true, true).kind === "syntax-error", "Unicode rejection " + source);
 for (const source of [String.raw`\a`, String.raw`\_`, String.raw`\-`, String.raw`\xZ0`, String.raw`\uZZZZ`, "{", "}", "]", "a{"]) pattern(source, false);
-for (const source of [String.raw`\p{ASCII}`, String.raw`\P{Letter}`, String.raw`[\p{L}]`, "(?<=a)"])
+for (const source of [String.raw`\p{ASCII}`, String.raw`\P{Letter}`, String.raw`[\p{L}]`]) pattern(source);
+for (const source of ["(?<=a)"])
     check(parseRegExpSyntax(source, () => true, true).kind === "unsupported", "remaining boundary " + source);
 for (const source of ["😀[😀-🙏]", String.raw`\uD83D\uDE00`, String.raw`\u{0000001f600}`, String.raw`\k<π>(?<π>a)|(?<π>b)`]) {
     let steps = 0;

@@ -213,7 +213,8 @@ for (const text of ["/[a-z]/ui", "/(?:(😀)+)+b/u.test('😀😀😀😀😀�
     const result=evaluateScript(createScriptSession({maxSteps:25,maxCalls:32}),prepared.record).completion;
     check(result.type==="throw"&&result.origin.kind==="resource-limit","Unicode operation budget");
 }
-for (const pattern of [String.fromCharCode(92)+"p{ASCII}","(?<=a)"]) {
+passes("var r=new RegExp(String.fromCharCode(92)+'p{ASCII}','u');r.test('A')&&!r.test('α')");
+for (const pattern of ["(?<=a)"]) {
     const text="try{new RegExp("+JSON.stringify(pattern)+",'u')}catch(e){'caught'}";
     const prepared=prepareBoundedScript({id:"unicode-unsupported",text},new Realm((_line:string)=>{},"script"));
     if(prepared.kind!=="ready")throw new Error("unsupported prepare");

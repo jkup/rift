@@ -1,6 +1,8 @@
 import { unicodeIdentifierStart, unicodeIdentifierContinue } from "./unicode-identifiers.js";
+import { propertyIndex } from "./unicode-properties.js";
 
 export type RegExpClassPart = { kind: "range"; from: number; to: number }
+    | { kind: "property"; index: number; inverted: boolean }
     | { kind: "builtin"; name: "digit" | "word" | "space"; inverted: boolean };
 export type RegExpAtom = { kind: "character"; value: number } | { kind: "dot" }
     | { kind: "backreference"; index: number }
@@ -362,10 +364,24 @@ class PatternParser {
             for (let i = 0; i < count; i++) this.take();
             return { kind: "character", value };
         }
-        if (this.unicode && (char === "p" || char === "P")) return this.reject("unsupported", "Unicode property escapes are unsupported");
+        if (this.unicode && (char === "p" || char === "P")) return this.propertyEscape(char === "P");
         if (this.unicode && !"^$\\.*+?()[]{}|/".includes(char) && !(inClass && char === "-"))
             return this.reject("syntax-error", "invalid identity escape");
         return { kind: "character", value: char.charCodeAt(0) };
+    }
+    private propertyEscape(inverted: boolean): RegExpAtom | null {
+        if (this.current() !== "{") return this.reject("syntax-error", "invalid Unicode property escape");
+        this.take();
+        const start = this.offset;
+        while (this.failure === null && this.offset < this.source.length && this.current() !== "}") this.take();
+        if (this.failure !== null) return null;
+        if (this.current() !== "}") return this.reject("syntax-error", "unterminated Unicode property escape");
+        const name = this.source.slice(start, this.offset);
+        this.take();
+        if (this.failure !== null) return null;
+        const index = propertyIndex(name);
+        if (index < 0) return this.reject("syntax-error", "invalid Unicode property name or value");
+        return { kind: "class", inverted: false, parts: [{ kind: "property", index, inverted }] };
     }
     private classAtom(): RegExpAtom | null {
         if (this.current() === "\\") { this.take(); return this.escape(true); }

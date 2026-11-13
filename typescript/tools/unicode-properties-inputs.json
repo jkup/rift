@@ -1,0 +1,2642 @@
+{
+  "manifest": {
+    "version": "17.0.0",
+    "files": [
+      {
+        "path": "UnicodeData.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt",
+        "bytes": 2198209,
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
+        "retrievedAt": "2026-11-13T02:01:30.490Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "PropertyAliases.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/PropertyAliases.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/PropertyAliases.txt",
+        "bytes": 9619,
+        "sha256": "4441f573caf952ffece1d7c892e7715bd7136dfc26f96eb6f268bf1e474715fb",
+        "retrievedAt": "2026-11-13T02:01:30.712Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "PropertyValueAliases.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/PropertyValueAliases.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/PropertyValueAliases.txt",
+        "bytes": 81858,
+        "sha256": "64e9a5f76f7a1e8b5a47d6a1f9a26522a251208f5276bdfa1559dac7cf2e827a",
+        "retrievedAt": "2026-11-13T02:01:30.945Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "PropList.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/PropList.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/PropList.txt",
+        "bytes": 145465,
+        "sha256": "130dcddcaadaf071008bdfce1e7743e04fdfbc910886f017d9f9ac931d8c64dd",
+        "retrievedAt": "2026-11-13T02:01:31.274Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "DerivedCoreProperties.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt",
+        "bytes": 1134783,
+        "sha256": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08",
+        "retrievedAt": "2026-11-13T02:01:31.822Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "DerivedNormalizationProps.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedNormalizationProps.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/DerivedNormalizationProps.txt",
+        "bytes": 1377582,
+        "sha256": "71fd6a206a2c0cdd41feb6b7f656aa31091db45e9cedc926985d718397f9e488",
+        "retrievedAt": "2026-11-13T02:01:32.367Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "Scripts.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt",
+        "bytes": 192460,
+        "sha256": "9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf",
+        "retrievedAt": "2026-11-13T02:01:32.801Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "ScriptExtensions.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/ScriptExtensions.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/ScriptExtensions.txt",
+        "bytes": 20707,
+        "sha256": "ec2107e58825a1586acee8e0911ce18260394ac8b87e535ca325f1ccbeb06bc6",
+        "retrievedAt": "2026-11-13T02:01:33.019Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "emoji-emoji-data.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/emoji/emoji-data.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/emoji/emoji-data.txt",
+        "bytes": 107324,
+        "sha256": "2cb2bb9455cda83e8481541ecf5b6dfda66a3bb89efa3fa7c5297eccf607b72b",
+        "retrievedAt": "2026-11-13T02:01:33.347Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "CaseFolding.txt",
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/CaseFolding.txt",
+        "finalUrl": "https://www.unicode.org/Public/17.0.0/ucd/CaseFolding.txt",
+        "bytes": 87539,
+        "sha256": "ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183",
+        "retrievedAt": "2026-11-13T02:01:33.688Z",
+        "lastModified": "Sat, 16 Aug 2025 00:45:11 GMT"
+      },
+      {
+        "path": "license.txt",
+        "url": "https://www.unicode.org/license.txt",
+        "finalUrl": "https://www.unicode.org/license.txt",
+        "bytes": 1995,
+        "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+        "retrievedAt": "2026-11-13T02:01:33.922Z",
+        "lastModified": "Mon, 05 Jan 2026 15:17:23 GMT"
+      },
+      {
+        "path": "ecma-text-processing.html",
+        "url": "https://tc39.es/ecma262/multipage/text-processing.html",
+        "finalUrl": "https://tc39.es/ecma262/multipage/text-processing.html",
+        "bytes": 1232264,
+        "sha256": "e94e9cdb7814cff3428072eea9924c4e6774c70da6641917caf779d972b741f1",
+        "retrievedAt": "2026-11-13T02:01:34.122Z",
+        "lastModified": "Thu, 12 Nov 2026 23:49:53 GMT"
+      },
+      {
+        "path": "tr44-36.html",
+        "url": "https://www.unicode.org/reports/tr44/tr44-36.html",
+        "finalUrl": "https://www.unicode.org/reports/tr44/tr44-36.html",
+        "bytes": 313639,
+        "sha256": "a97ed3f9dbee8e9a917106a3dc49a0fdeead42e2be06ea6f5cc31117eda3da33",
+        "retrievedAt": "2026-11-13T02:01:34.577Z",
+        "lastModified": "Wed, 27 Aug 2025 13:30:55 GMT"
+      }
+    ]
+  },
+  "inventory": {
+    "status": "PASS",
+    "unicodeVersion": "17.0.0",
+    "manifestHash": "8e3e2077a736dc707aff8073b2e22d32603677c43cf9731e09374aea61aef199",
+    "binaryProperties": 53,
+    "binaryAliases": [
+      {
+        "alias": "ASCII",
+        "canonical": "ASCII"
+      },
+      {
+        "alias": "ASCII_Hex_Digit",
+        "canonical": "ASCII_Hex_Digit"
+      },
+      {
+        "alias": "AHex",
+        "canonical": "ASCII_Hex_Digit"
+      },
+      {
+        "alias": "Alphabetic",
+        "canonical": "Alphabetic"
+      },
+      {
+        "alias": "Alpha",
+        "canonical": "Alphabetic"
+      },
+      {
+        "alias": "Any",
+        "canonical": "Any"
+      },
+      {
+        "alias": "Assigned",
+        "canonical": "Assigned"
+      },
+      {
+        "alias": "Bidi_Control",
+        "canonical": "Bidi_Control"
+      },
+      {
+        "alias": "Bidi_C",
+        "canonical": "Bidi_Control"
+      },
+      {
+        "alias": "Bidi_Mirrored",
+        "canonical": "Bidi_Mirrored"
+      },
+      {
+        "alias": "Bidi_M",
+        "canonical": "Bidi_Mirrored"
+      },
+      {
+        "alias": "Case_Ignorable",
+        "canonical": "Case_Ignorable"
+      },
+      {
+        "alias": "CI",
+        "canonical": "Case_Ignorable"
+      },
+      {
+        "alias": "Cased",
+        "canonical": "Cased"
+      },
+      {
+        "alias": "Changes_When_Casefolded",
+        "canonical": "Changes_When_Casefolded"
+      },
+      {
+        "alias": "CWCF",
+        "canonical": "Changes_When_Casefolded"
+      },
+      {
+        "alias": "Changes_When_Casemapped",
+        "canonical": "Changes_When_Casemapped"
+      },
+      {
+        "alias": "CWCM",
+        "canonical": "Changes_When_Casemapped"
+      },
+      {
+        "alias": "Changes_When_Lowercased",
+        "canonical": "Changes_When_Lowercased"
+      },
+      {
+        "alias": "CWL",
+        "canonical": "Changes_When_Lowercased"
+      },
+      {
+        "alias": "Changes_When_NFKC_Casefolded",
+        "canonical": "Changes_When_NFKC_Casefolded"
+      },
+      {
+        "alias": "CWKCF",
+        "canonical": "Changes_When_NFKC_Casefolded"
+      },
+      {
+        "alias": "Changes_When_Titlecased",
+        "canonical": "Changes_When_Titlecased"
+      },
+      {
+        "alias": "CWT",
+        "canonical": "Changes_When_Titlecased"
+      },
+      {
+        "alias": "Changes_When_Uppercased",
+        "canonical": "Changes_When_Uppercased"
+      },
+      {
+        "alias": "CWU",
+        "canonical": "Changes_When_Uppercased"
+      },
+      {
+        "alias": "Dash",
+        "canonical": "Dash"
+      },
+      {
+        "alias": "Default_Ignorable_Code_Point",
+        "canonical": "Default_Ignorable_Code_Point"
+      },
+      {
+        "alias": "DI",
+        "canonical": "Default_Ignorable_Code_Point"
+      },
+      {
+        "alias": "Deprecated",
+        "canonical": "Deprecated"
+      },
+      {
+        "alias": "Dep",
+        "canonical": "Deprecated"
+      },
+      {
+        "alias": "Diacritic",
+        "canonical": "Diacritic"
+      },
+      {
+        "alias": "Dia",
+        "canonical": "Diacritic"
+      },
+      {
+        "alias": "Emoji",
+        "canonical": "Emoji"
+      },
+      {
+        "alias": "Emoji_Component",
+        "canonical": "Emoji_Component"
+      },
+      {
+        "alias": "EComp",
+        "canonical": "Emoji_Component"
+      },
+      {
+        "alias": "Emoji_Modifier",
+        "canonical": "Emoji_Modifier"
+      },
+      {
+        "alias": "EMod",
+        "canonical": "Emoji_Modifier"
+      },
+      {
+        "alias": "Emoji_Modifier_Base",
+        "canonical": "Emoji_Modifier_Base"
+      },
+      {
+        "alias": "EBase",
+        "canonical": "Emoji_Modifier_Base"
+      },
+      {
+        "alias": "Emoji_Presentation",
+        "canonical": "Emoji_Presentation"
+      },
+      {
+        "alias": "EPres",
+        "canonical": "Emoji_Presentation"
+      },
+      {
+        "alias": "Extended_Pictographic",
+        "canonical": "Extended_Pictographic"
+      },
+      {
+        "alias": "ExtPict",
+        "canonical": "Extended_Pictographic"
+      },
+      {
+        "alias": "Extender",
+        "canonical": "Extender"
+      },
+      {
+        "alias": "Ext",
+        "canonical": "Extender"
+      },
+      {
+        "alias": "Grapheme_Base",
+        "canonical": "Grapheme_Base"
+      },
+      {
+        "alias": "Gr_Base",
+        "canonical": "Grapheme_Base"
+      },
+      {
+        "alias": "Grapheme_Extend",
+        "canonical": "Grapheme_Extend"
+      },
+      {
+        "alias": "Gr_Ext",
+        "canonical": "Grapheme_Extend"
+      },
+      {
+        "alias": "Hex_Digit",
+        "canonical": "Hex_Digit"
+      },
+      {
+        "alias": "Hex",
+        "canonical": "Hex_Digit"
+      },
+      {
+        "alias": "IDS_Binary_Operator",
+        "canonical": "IDS_Binary_Operator"
+      },
+      {
+        "alias": "IDSB",
+        "canonical": "IDS_Binary_Operator"
+      },
+      {
+        "alias": "IDS_Trinary_Operator",
+        "canonical": "IDS_Trinary_Operator"
+      },
+      {
+        "alias": "IDST",
+        "canonical": "IDS_Trinary_Operator"
+      },
+      {
+        "alias": "ID_Continue",
+        "canonical": "ID_Continue"
+      },
+      {
+        "alias": "IDC",
+        "canonical": "ID_Continue"
+      },
+      {
+        "alias": "ID_Start",
+        "canonical": "ID_Start"
+      },
+      {
+        "alias": "IDS",
+        "canonical": "ID_Start"
+      },
+      {
+        "alias": "Ideographic",
+        "canonical": "Ideographic"
+      },
+      {
+        "alias": "Ideo",
+        "canonical": "Ideographic"
+      },
+      {
+        "alias": "Join_Control",
+        "canonical": "Join_Control"
+      },
+      {
+        "alias": "Join_C",
+        "canonical": "Join_Control"
+      },
+      {
+        "alias": "Logical_Order_Exception",
+        "canonical": "Logical_Order_Exception"
+      },
+      {
+        "alias": "LOE",
+        "canonical": "Logical_Order_Exception"
+      },
+      {
+        "alias": "Lowercase",
+        "canonical": "Lowercase"
+      },
+      {
+        "alias": "Lower",
+        "canonical": "Lowercase"
+      },
+      {
+        "alias": "Math",
+        "canonical": "Math"
+      },
+      {
+        "alias": "Noncharacter_Code_Point",
+        "canonical": "Noncharacter_Code_Point"
+      },
+      {
+        "alias": "NChar",
+        "canonical": "Noncharacter_Code_Point"
+      },
+      {
+        "alias": "Pattern_Syntax",
+        "canonical": "Pattern_Syntax"
+      },
+      {
+        "alias": "Pat_Syn",
+        "canonical": "Pattern_Syntax"
+      },
+      {
+        "alias": "Pattern_White_Space",
+        "canonical": "Pattern_White_Space"
+      },
+      {
+        "alias": "Pat_WS",
+        "canonical": "Pattern_White_Space"
+      },
+      {
+        "alias": "Quotation_Mark",
+        "canonical": "Quotation_Mark"
+      },
+      {
+        "alias": "QMark",
+        "canonical": "Quotation_Mark"
+      },
+      {
+        "alias": "Radical",
+        "canonical": "Radical"
+      },
+      {
+        "alias": "Regional_Indicator",
+        "canonical": "Regional_Indicator"
+      },
+      {
+        "alias": "RI",
+        "canonical": "Regional_Indicator"
+      },
+      {
+        "alias": "Sentence_Terminal",
+        "canonical": "Sentence_Terminal"
+      },
+      {
+        "alias": "STerm",
+        "canonical": "Sentence_Terminal"
+      },
+      {
+        "alias": "Soft_Dotted",
+        "canonical": "Soft_Dotted"
+      },
+      {
+        "alias": "SD",
+        "canonical": "Soft_Dotted"
+      },
+      {
+        "alias": "Terminal_Punctuation",
+        "canonical": "Terminal_Punctuation"
+      },
+      {
+        "alias": "Term",
+        "canonical": "Terminal_Punctuation"
+      },
+      {
+        "alias": "Unified_Ideograph",
+        "canonical": "Unified_Ideograph"
+      },
+      {
+        "alias": "UIdeo",
+        "canonical": "Unified_Ideograph"
+      },
+      {
+        "alias": "Uppercase",
+        "canonical": "Uppercase"
+      },
+      {
+        "alias": "Upper",
+        "canonical": "Uppercase"
+      },
+      {
+        "alias": "Variation_Selector",
+        "canonical": "Variation_Selector"
+      },
+      {
+        "alias": "VS",
+        "canonical": "Variation_Selector"
+      },
+      {
+        "alias": "White_Space",
+        "canonical": "White_Space"
+      },
+      {
+        "alias": "space",
+        "canonical": "White_Space"
+      },
+      {
+        "alias": "XID_Continue",
+        "canonical": "XID_Continue"
+      },
+      {
+        "alias": "XIDC",
+        "canonical": "XID_Continue"
+      },
+      {
+        "alias": "XID_Start",
+        "canonical": "XID_Start"
+      },
+      {
+        "alias": "XIDS",
+        "canonical": "XID_Start"
+      }
+    ],
+    "namedAliases": [
+      {
+        "alias": "General_Category",
+        "canonical": "General_Category"
+      },
+      {
+        "alias": "gc",
+        "canonical": "General_Category"
+      },
+      {
+        "alias": "Script",
+        "canonical": "Script"
+      },
+      {
+        "alias": "sc",
+        "canonical": "Script"
+      },
+      {
+        "alias": "Script_Extensions",
+        "canonical": "Script_Extensions"
+      },
+      {
+        "alias": "scx",
+        "canonical": "Script_Extensions"
+      }
+    ],
+    "binarySources": [
+      {
+        "name": "ASCII",
+        "sources": [],
+        "derived": "U+0000..U+007F"
+      },
+      {
+        "name": "ASCII_Hex_Digit",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Alphabetic",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Any",
+        "sources": [],
+        "derived": "U+0000..U+10FFFF"
+      },
+      {
+        "name": "Assigned",
+        "sources": [],
+        "derived": "General_Category != Cn"
+      },
+      {
+        "name": "Bidi_Control",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Bidi_Mirrored",
+        "sources": [],
+        "derived": "UnicodeData.txt column 9 == Y"
+      },
+      {
+        "name": "Case_Ignorable",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Cased",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Changes_When_Casefolded",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Changes_When_Casemapped",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Changes_When_Lowercased",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Changes_When_NFKC_Casefolded",
+        "sources": [
+          "DerivedNormalizationProps.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Changes_When_Titlecased",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Changes_When_Uppercased",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Dash",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Default_Ignorable_Code_Point",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Deprecated",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Diacritic",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Emoji",
+        "sources": [
+          "emoji-emoji-data.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Emoji_Component",
+        "sources": [
+          "emoji-emoji-data.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Emoji_Modifier",
+        "sources": [
+          "emoji-emoji-data.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Emoji_Modifier_Base",
+        "sources": [
+          "emoji-emoji-data.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Emoji_Presentation",
+        "sources": [
+          "emoji-emoji-data.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Extended_Pictographic",
+        "sources": [
+          "emoji-emoji-data.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Extender",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Grapheme_Base",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Grapheme_Extend",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Hex_Digit",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "IDS_Binary_Operator",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "IDS_Trinary_Operator",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "ID_Continue",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "ID_Start",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Ideographic",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Join_Control",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Logical_Order_Exception",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Lowercase",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Math",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Noncharacter_Code_Point",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Pattern_Syntax",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Pattern_White_Space",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Quotation_Mark",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Radical",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Regional_Indicator",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Sentence_Terminal",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Soft_Dotted",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Terminal_Punctuation",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Unified_Ideograph",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Uppercase",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "Variation_Selector",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "White_Space",
+        "sources": [
+          "PropList.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "XID_Continue",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      },
+      {
+        "name": "XID_Start",
+        "sources": [
+          "DerivedCoreProperties.txt"
+        ],
+        "derived": null
+      }
+    ],
+    "categories": [
+      {
+        "short": "C",
+        "long": "Other",
+        "aliases": [
+          "C",
+          "Other"
+        ]
+      },
+      {
+        "short": "Cc",
+        "long": "Control",
+        "aliases": [
+          "Cc",
+          "Control",
+          "cntrl"
+        ]
+      },
+      {
+        "short": "Cf",
+        "long": "Format",
+        "aliases": [
+          "Cf",
+          "Format"
+        ]
+      },
+      {
+        "short": "Cn",
+        "long": "Unassigned",
+        "aliases": [
+          "Cn",
+          "Unassigned"
+        ]
+      },
+      {
+        "short": "Co",
+        "long": "Private_Use",
+        "aliases": [
+          "Co",
+          "Private_Use"
+        ]
+      },
+      {
+        "short": "Cs",
+        "long": "Surrogate",
+        "aliases": [
+          "Cs",
+          "Surrogate"
+        ]
+      },
+      {
+        "short": "L",
+        "long": "Letter",
+        "aliases": [
+          "L",
+          "Letter"
+        ]
+      },
+      {
+        "short": "LC",
+        "long": "Cased_Letter",
+        "aliases": [
+          "LC",
+          "Cased_Letter"
+        ]
+      },
+      {
+        "short": "Ll",
+        "long": "Lowercase_Letter",
+        "aliases": [
+          "Ll",
+          "Lowercase_Letter"
+        ]
+      },
+      {
+        "short": "Lm",
+        "long": "Modifier_Letter",
+        "aliases": [
+          "Lm",
+          "Modifier_Letter"
+        ]
+      },
+      {
+        "short": "Lo",
+        "long": "Other_Letter",
+        "aliases": [
+          "Lo",
+          "Other_Letter"
+        ]
+      },
+      {
+        "short": "Lt",
+        "long": "Titlecase_Letter",
+        "aliases": [
+          "Lt",
+          "Titlecase_Letter"
+        ]
+      },
+      {
+        "short": "Lu",
+        "long": "Uppercase_Letter",
+        "aliases": [
+          "Lu",
+          "Uppercase_Letter"
+        ]
+      },
+      {
+        "short": "M",
+        "long": "Mark",
+        "aliases": [
+          "M",
+          "Mark",
+          "Combining_Mark"
+        ]
+      },
+      {
+        "short": "Mc",
+        "long": "Spacing_Mark",
+        "aliases": [
+          "Mc",
+          "Spacing_Mark"
+        ]
+      },
+      {
+        "short": "Me",
+        "long": "Enclosing_Mark",
+        "aliases": [
+          "Me",
+          "Enclosing_Mark"
+        ]
+      },
+      {
+        "short": "Mn",
+        "long": "Nonspacing_Mark",
+        "aliases": [
+          "Mn",
+          "Nonspacing_Mark"
+        ]
+      },
+      {
+        "short": "N",
+        "long": "Number",
+        "aliases": [
+          "N",
+          "Number"
+        ]
+      },
+      {
+        "short": "Nd",
+        "long": "Decimal_Number",
+        "aliases": [
+          "Nd",
+          "Decimal_Number",
+          "digit"
+        ]
+      },
+      {
+        "short": "Nl",
+        "long": "Letter_Number",
+        "aliases": [
+          "Nl",
+          "Letter_Number"
+        ]
+      },
+      {
+        "short": "No",
+        "long": "Other_Number",
+        "aliases": [
+          "No",
+          "Other_Number"
+        ]
+      },
+      {
+        "short": "P",
+        "long": "Punctuation",
+        "aliases": [
+          "P",
+          "Punctuation",
+          "punct"
+        ]
+      },
+      {
+        "short": "Pc",
+        "long": "Connector_Punctuation",
+        "aliases": [
+          "Pc",
+          "Connector_Punctuation"
+        ]
+      },
+      {
+        "short": "Pd",
+        "long": "Dash_Punctuation",
+        "aliases": [
+          "Pd",
+          "Dash_Punctuation"
+        ]
+      },
+      {
+        "short": "Pe",
+        "long": "Close_Punctuation",
+        "aliases": [
+          "Pe",
+          "Close_Punctuation"
+        ]
+      },
+      {
+        "short": "Pf",
+        "long": "Final_Punctuation",
+        "aliases": [
+          "Pf",
+          "Final_Punctuation"
+        ]
+      },
+      {
+        "short": "Pi",
+        "long": "Initial_Punctuation",
+        "aliases": [
+          "Pi",
+          "Initial_Punctuation"
+        ]
+      },
+      {
+        "short": "Po",
+        "long": "Other_Punctuation",
+        "aliases": [
+          "Po",
+          "Other_Punctuation"
+        ]
+      },
+      {
+        "short": "Ps",
+        "long": "Open_Punctuation",
+        "aliases": [
+          "Ps",
+          "Open_Punctuation"
+        ]
+      },
+      {
+        "short": "S",
+        "long": "Symbol",
+        "aliases": [
+          "S",
+          "Symbol"
+        ]
+      },
+      {
+        "short": "Sc",
+        "long": "Currency_Symbol",
+        "aliases": [
+          "Sc",
+          "Currency_Symbol"
+        ]
+      },
+      {
+        "short": "Sk",
+        "long": "Modifier_Symbol",
+        "aliases": [
+          "Sk",
+          "Modifier_Symbol"
+        ]
+      },
+      {
+        "short": "Sm",
+        "long": "Math_Symbol",
+        "aliases": [
+          "Sm",
+          "Math_Symbol"
+        ]
+      },
+      {
+        "short": "So",
+        "long": "Other_Symbol",
+        "aliases": [
+          "So",
+          "Other_Symbol"
+        ]
+      },
+      {
+        "short": "Z",
+        "long": "Separator",
+        "aliases": [
+          "Z",
+          "Separator"
+        ]
+      },
+      {
+        "short": "Zl",
+        "long": "Line_Separator",
+        "aliases": [
+          "Zl",
+          "Line_Separator"
+        ]
+      },
+      {
+        "short": "Zp",
+        "long": "Paragraph_Separator",
+        "aliases": [
+          "Zp",
+          "Paragraph_Separator"
+        ]
+      },
+      {
+        "short": "Zs",
+        "long": "Space_Separator",
+        "aliases": [
+          "Zs",
+          "Space_Separator"
+        ]
+      }
+    ],
+    "scripts": [
+      {
+        "short": "Adlm",
+        "long": "Adlam",
+        "aliases": [
+          "Adlm",
+          "Adlam"
+        ]
+      },
+      {
+        "short": "Aghb",
+        "long": "Caucasian_Albanian",
+        "aliases": [
+          "Aghb",
+          "Caucasian_Albanian"
+        ]
+      },
+      {
+        "short": "Ahom",
+        "long": "Ahom",
+        "aliases": [
+          "Ahom",
+          "Ahom"
+        ]
+      },
+      {
+        "short": "Arab",
+        "long": "Arabic",
+        "aliases": [
+          "Arab",
+          "Arabic"
+        ]
+      },
+      {
+        "short": "Armi",
+        "long": "Imperial_Aramaic",
+        "aliases": [
+          "Armi",
+          "Imperial_Aramaic"
+        ]
+      },
+      {
+        "short": "Armn",
+        "long": "Armenian",
+        "aliases": [
+          "Armn",
+          "Armenian"
+        ]
+      },
+      {
+        "short": "Avst",
+        "long": "Avestan",
+        "aliases": [
+          "Avst",
+          "Avestan"
+        ]
+      },
+      {
+        "short": "Bali",
+        "long": "Balinese",
+        "aliases": [
+          "Bali",
+          "Balinese"
+        ]
+      },
+      {
+        "short": "Bamu",
+        "long": "Bamum",
+        "aliases": [
+          "Bamu",
+          "Bamum"
+        ]
+      },
+      {
+        "short": "Bass",
+        "long": "Bassa_Vah",
+        "aliases": [
+          "Bass",
+          "Bassa_Vah"
+        ]
+      },
+      {
+        "short": "Batk",
+        "long": "Batak",
+        "aliases": [
+          "Batk",
+          "Batak"
+        ]
+      },
+      {
+        "short": "Beng",
+        "long": "Bengali",
+        "aliases": [
+          "Beng",
+          "Bengali"
+        ]
+      },
+      {
+        "short": "Berf",
+        "long": "Beria_Erfe",
+        "aliases": [
+          "Berf",
+          "Beria_Erfe"
+        ]
+      },
+      {
+        "short": "Bhks",
+        "long": "Bhaiksuki",
+        "aliases": [
+          "Bhks",
+          "Bhaiksuki"
+        ]
+      },
+      {
+        "short": "Bopo",
+        "long": "Bopomofo",
+        "aliases": [
+          "Bopo",
+          "Bopomofo"
+        ]
+      },
+      {
+        "short": "Brah",
+        "long": "Brahmi",
+        "aliases": [
+          "Brah",
+          "Brahmi"
+        ]
+      },
+      {
+        "short": "Brai",
+        "long": "Braille",
+        "aliases": [
+          "Brai",
+          "Braille"
+        ]
+      },
+      {
+        "short": "Bugi",
+        "long": "Buginese",
+        "aliases": [
+          "Bugi",
+          "Buginese"
+        ]
+      },
+      {
+        "short": "Buhd",
+        "long": "Buhid",
+        "aliases": [
+          "Buhd",
+          "Buhid"
+        ]
+      },
+      {
+        "short": "Cakm",
+        "long": "Chakma",
+        "aliases": [
+          "Cakm",
+          "Chakma"
+        ]
+      },
+      {
+        "short": "Cans",
+        "long": "Canadian_Aboriginal",
+        "aliases": [
+          "Cans",
+          "Canadian_Aboriginal"
+        ]
+      },
+      {
+        "short": "Cari",
+        "long": "Carian",
+        "aliases": [
+          "Cari",
+          "Carian"
+        ]
+      },
+      {
+        "short": "Cham",
+        "long": "Cham",
+        "aliases": [
+          "Cham",
+          "Cham"
+        ]
+      },
+      {
+        "short": "Cher",
+        "long": "Cherokee",
+        "aliases": [
+          "Cher",
+          "Cherokee"
+        ]
+      },
+      {
+        "short": "Chrs",
+        "long": "Chorasmian",
+        "aliases": [
+          "Chrs",
+          "Chorasmian"
+        ]
+      },
+      {
+        "short": "Copt",
+        "long": "Coptic",
+        "aliases": [
+          "Copt",
+          "Coptic",
+          "Qaac"
+        ]
+      },
+      {
+        "short": "Cpmn",
+        "long": "Cypro_Minoan",
+        "aliases": [
+          "Cpmn",
+          "Cypro_Minoan"
+        ]
+      },
+      {
+        "short": "Cprt",
+        "long": "Cypriot",
+        "aliases": [
+          "Cprt",
+          "Cypriot"
+        ]
+      },
+      {
+        "short": "Cyrl",
+        "long": "Cyrillic",
+        "aliases": [
+          "Cyrl",
+          "Cyrillic"
+        ]
+      },
+      {
+        "short": "Deva",
+        "long": "Devanagari",
+        "aliases": [
+          "Deva",
+          "Devanagari"
+        ]
+      },
+      {
+        "short": "Diak",
+        "long": "Dives_Akuru",
+        "aliases": [
+          "Diak",
+          "Dives_Akuru"
+        ]
+      },
+      {
+        "short": "Dogr",
+        "long": "Dogra",
+        "aliases": [
+          "Dogr",
+          "Dogra"
+        ]
+      },
+      {
+        "short": "Dsrt",
+        "long": "Deseret",
+        "aliases": [
+          "Dsrt",
+          "Deseret"
+        ]
+      },
+      {
+        "short": "Dupl",
+        "long": "Duployan",
+        "aliases": [
+          "Dupl",
+          "Duployan"
+        ]
+      },
+      {
+        "short": "Egyp",
+        "long": "Egyptian_Hieroglyphs",
+        "aliases": [
+          "Egyp",
+          "Egyptian_Hieroglyphs"
+        ]
+      },
+      {
+        "short": "Elba",
+        "long": "Elbasan",
+        "aliases": [
+          "Elba",
+          "Elbasan"
+        ]
+      },
+      {
+        "short": "Elym",
+        "long": "Elymaic",
+        "aliases": [
+          "Elym",
+          "Elymaic"
+        ]
+      },
+      {
+        "short": "Ethi",
+        "long": "Ethiopic",
+        "aliases": [
+          "Ethi",
+          "Ethiopic"
+        ]
+      },
+      {
+        "short": "Gara",
+        "long": "Garay",
+        "aliases": [
+          "Gara",
+          "Garay"
+        ]
+      },
+      {
+        "short": "Geor",
+        "long": "Georgian",
+        "aliases": [
+          "Geor",
+          "Georgian"
+        ]
+      },
+      {
+        "short": "Glag",
+        "long": "Glagolitic",
+        "aliases": [
+          "Glag",
+          "Glagolitic"
+        ]
+      },
+      {
+        "short": "Gong",
+        "long": "Gunjala_Gondi",
+        "aliases": [
+          "Gong",
+          "Gunjala_Gondi"
+        ]
+      },
+      {
+        "short": "Gonm",
+        "long": "Masaram_Gondi",
+        "aliases": [
+          "Gonm",
+          "Masaram_Gondi"
+        ]
+      },
+      {
+        "short": "Goth",
+        "long": "Gothic",
+        "aliases": [
+          "Goth",
+          "Gothic"
+        ]
+      },
+      {
+        "short": "Gran",
+        "long": "Grantha",
+        "aliases": [
+          "Gran",
+          "Grantha"
+        ]
+      },
+      {
+        "short": "Grek",
+        "long": "Greek",
+        "aliases": [
+          "Grek",
+          "Greek"
+        ]
+      },
+      {
+        "short": "Gujr",
+        "long": "Gujarati",
+        "aliases": [
+          "Gujr",
+          "Gujarati"
+        ]
+      },
+      {
+        "short": "Gukh",
+        "long": "Gurung_Khema",
+        "aliases": [
+          "Gukh",
+          "Gurung_Khema"
+        ]
+      },
+      {
+        "short": "Guru",
+        "long": "Gurmukhi",
+        "aliases": [
+          "Guru",
+          "Gurmukhi"
+        ]
+      },
+      {
+        "short": "Hang",
+        "long": "Hangul",
+        "aliases": [
+          "Hang",
+          "Hangul"
+        ]
+      },
+      {
+        "short": "Hani",
+        "long": "Han",
+        "aliases": [
+          "Hani",
+          "Han"
+        ]
+      },
+      {
+        "short": "Hano",
+        "long": "Hanunoo",
+        "aliases": [
+          "Hano",
+          "Hanunoo"
+        ]
+      },
+      {
+        "short": "Hatr",
+        "long": "Hatran",
+        "aliases": [
+          "Hatr",
+          "Hatran"
+        ]
+      },
+      {
+        "short": "Hebr",
+        "long": "Hebrew",
+        "aliases": [
+          "Hebr",
+          "Hebrew"
+        ]
+      },
+      {
+        "short": "Hira",
+        "long": "Hiragana",
+        "aliases": [
+          "Hira",
+          "Hiragana"
+        ]
+      },
+      {
+        "short": "Hluw",
+        "long": "Anatolian_Hieroglyphs",
+        "aliases": [
+          "Hluw",
+          "Anatolian_Hieroglyphs"
+        ]
+      },
+      {
+        "short": "Hmng",
+        "long": "Pahawh_Hmong",
+        "aliases": [
+          "Hmng",
+          "Pahawh_Hmong"
+        ]
+      },
+      {
+        "short": "Hmnp",
+        "long": "Nyiakeng_Puachue_Hmong",
+        "aliases": [
+          "Hmnp",
+          "Nyiakeng_Puachue_Hmong"
+        ]
+      },
+      {
+        "short": "Hrkt",
+        "long": "Katakana_Or_Hiragana",
+        "aliases": [
+          "Hrkt",
+          "Katakana_Or_Hiragana"
+        ]
+      },
+      {
+        "short": "Hung",
+        "long": "Old_Hungarian",
+        "aliases": [
+          "Hung",
+          "Old_Hungarian"
+        ]
+      },
+      {
+        "short": "Ital",
+        "long": "Old_Italic",
+        "aliases": [
+          "Ital",
+          "Old_Italic"
+        ]
+      },
+      {
+        "short": "Java",
+        "long": "Javanese",
+        "aliases": [
+          "Java",
+          "Javanese"
+        ]
+      },
+      {
+        "short": "Kali",
+        "long": "Kayah_Li",
+        "aliases": [
+          "Kali",
+          "Kayah_Li"
+        ]
+      },
+      {
+        "short": "Kana",
+        "long": "Katakana",
+        "aliases": [
+          "Kana",
+          "Katakana"
+        ]
+      },
+      {
+        "short": "Kawi",
+        "long": "Kawi",
+        "aliases": [
+          "Kawi",
+          "Kawi"
+        ]
+      },
+      {
+        "short": "Khar",
+        "long": "Kharoshthi",
+        "aliases": [
+          "Khar",
+          "Kharoshthi"
+        ]
+      },
+      {
+        "short": "Khmr",
+        "long": "Khmer",
+        "aliases": [
+          "Khmr",
+          "Khmer"
+        ]
+      },
+      {
+        "short": "Khoj",
+        "long": "Khojki",
+        "aliases": [
+          "Khoj",
+          "Khojki"
+        ]
+      },
+      {
+        "short": "Kits",
+        "long": "Khitan_Small_Script",
+        "aliases": [
+          "Kits",
+          "Khitan_Small_Script"
+        ]
+      },
+      {
+        "short": "Knda",
+        "long": "Kannada",
+        "aliases": [
+          "Knda",
+          "Kannada"
+        ]
+      },
+      {
+        "short": "Krai",
+        "long": "Kirat_Rai",
+        "aliases": [
+          "Krai",
+          "Kirat_Rai"
+        ]
+      },
+      {
+        "short": "Kthi",
+        "long": "Kaithi",
+        "aliases": [
+          "Kthi",
+          "Kaithi"
+        ]
+      },
+      {
+        "short": "Lana",
+        "long": "Tai_Tham",
+        "aliases": [
+          "Lana",
+          "Tai_Tham"
+        ]
+      },
+      {
+        "short": "Laoo",
+        "long": "Lao",
+        "aliases": [
+          "Laoo",
+          "Lao"
+        ]
+      },
+      {
+        "short": "Latn",
+        "long": "Latin",
+        "aliases": [
+          "Latn",
+          "Latin"
+        ]
+      },
+      {
+        "short": "Lepc",
+        "long": "Lepcha",
+        "aliases": [
+          "Lepc",
+          "Lepcha"
+        ]
+      },
+      {
+        "short": "Limb",
+        "long": "Limbu",
+        "aliases": [
+          "Limb",
+          "Limbu"
+        ]
+      },
+      {
+        "short": "Lina",
+        "long": "Linear_A",
+        "aliases": [
+          "Lina",
+          "Linear_A"
+        ]
+      },
+      {
+        "short": "Linb",
+        "long": "Linear_B",
+        "aliases": [
+          "Linb",
+          "Linear_B"
+        ]
+      },
+      {
+        "short": "Lisu",
+        "long": "Lisu",
+        "aliases": [
+          "Lisu",
+          "Lisu"
+        ]
+      },
+      {
+        "short": "Lyci",
+        "long": "Lycian",
+        "aliases": [
+          "Lyci",
+          "Lycian"
+        ]
+      },
+      {
+        "short": "Lydi",
+        "long": "Lydian",
+        "aliases": [
+          "Lydi",
+          "Lydian"
+        ]
+      },
+      {
+        "short": "Mahj",
+        "long": "Mahajani",
+        "aliases": [
+          "Mahj",
+          "Mahajani"
+        ]
+      },
+      {
+        "short": "Maka",
+        "long": "Makasar",
+        "aliases": [
+          "Maka",
+          "Makasar"
+        ]
+      },
+      {
+        "short": "Mand",
+        "long": "Mandaic",
+        "aliases": [
+          "Mand",
+          "Mandaic"
+        ]
+      },
+      {
+        "short": "Mani",
+        "long": "Manichaean",
+        "aliases": [
+          "Mani",
+          "Manichaean"
+        ]
+      },
+      {
+        "short": "Marc",
+        "long": "Marchen",
+        "aliases": [
+          "Marc",
+          "Marchen"
+        ]
+      },
+      {
+        "short": "Medf",
+        "long": "Medefaidrin",
+        "aliases": [
+          "Medf",
+          "Medefaidrin"
+        ]
+      },
+      {
+        "short": "Mend",
+        "long": "Mende_Kikakui",
+        "aliases": [
+          "Mend",
+          "Mende_Kikakui"
+        ]
+      },
+      {
+        "short": "Merc",
+        "long": "Meroitic_Cursive",
+        "aliases": [
+          "Merc",
+          "Meroitic_Cursive"
+        ]
+      },
+      {
+        "short": "Mero",
+        "long": "Meroitic_Hieroglyphs",
+        "aliases": [
+          "Mero",
+          "Meroitic_Hieroglyphs"
+        ]
+      },
+      {
+        "short": "Mlym",
+        "long": "Malayalam",
+        "aliases": [
+          "Mlym",
+          "Malayalam"
+        ]
+      },
+      {
+        "short": "Modi",
+        "long": "Modi",
+        "aliases": [
+          "Modi",
+          "Modi"
+        ]
+      },
+      {
+        "short": "Mong",
+        "long": "Mongolian",
+        "aliases": [
+          "Mong",
+          "Mongolian"
+        ]
+      },
+      {
+        "short": "Mroo",
+        "long": "Mro",
+        "aliases": [
+          "Mroo",
+          "Mro"
+        ]
+      },
+      {
+        "short": "Mtei",
+        "long": "Meetei_Mayek",
+        "aliases": [
+          "Mtei",
+          "Meetei_Mayek"
+        ]
+      },
+      {
+        "short": "Mult",
+        "long": "Multani",
+        "aliases": [
+          "Mult",
+          "Multani"
+        ]
+      },
+      {
+        "short": "Mymr",
+        "long": "Myanmar",
+        "aliases": [
+          "Mymr",
+          "Myanmar"
+        ]
+      },
+      {
+        "short": "Nagm",
+        "long": "Nag_Mundari",
+        "aliases": [
+          "Nagm",
+          "Nag_Mundari"
+        ]
+      },
+      {
+        "short": "Nand",
+        "long": "Nandinagari",
+        "aliases": [
+          "Nand",
+          "Nandinagari"
+        ]
+      },
+      {
+        "short": "Narb",
+        "long": "Old_North_Arabian",
+        "aliases": [
+          "Narb",
+          "Old_North_Arabian"
+        ]
+      },
+      {
+        "short": "Nbat",
+        "long": "Nabataean",
+        "aliases": [
+          "Nbat",
+          "Nabataean"
+        ]
+      },
+      {
+        "short": "Newa",
+        "long": "Newa",
+        "aliases": [
+          "Newa",
+          "Newa"
+        ]
+      },
+      {
+        "short": "Nkoo",
+        "long": "Nko",
+        "aliases": [
+          "Nkoo",
+          "Nko"
+        ]
+      },
+      {
+        "short": "Nshu",
+        "long": "Nushu",
+        "aliases": [
+          "Nshu",
+          "Nushu"
+        ]
+      },
+      {
+        "short": "Ogam",
+        "long": "Ogham",
+        "aliases": [
+          "Ogam",
+          "Ogham"
+        ]
+      },
+      {
+        "short": "Olck",
+        "long": "Ol_Chiki",
+        "aliases": [
+          "Olck",
+          "Ol_Chiki"
+        ]
+      },
+      {
+        "short": "Onao",
+        "long": "Ol_Onal",
+        "aliases": [
+          "Onao",
+          "Ol_Onal"
+        ]
+      },
+      {
+        "short": "Orkh",
+        "long": "Old_Turkic",
+        "aliases": [
+          "Orkh",
+          "Old_Turkic"
+        ]
+      },
+      {
+        "short": "Orya",
+        "long": "Oriya",
+        "aliases": [
+          "Orya",
+          "Oriya"
+        ]
+      },
+      {
+        "short": "Osge",
+        "long": "Osage",
+        "aliases": [
+          "Osge",
+          "Osage"
+        ]
+      },
+      {
+        "short": "Osma",
+        "long": "Osmanya",
+        "aliases": [
+          "Osma",
+          "Osmanya"
+        ]
+      },
+      {
+        "short": "Ougr",
+        "long": "Old_Uyghur",
+        "aliases": [
+          "Ougr",
+          "Old_Uyghur"
+        ]
+      },
+      {
+        "short": "Palm",
+        "long": "Palmyrene",
+        "aliases": [
+          "Palm",
+          "Palmyrene"
+        ]
+      },
+      {
+        "short": "Pauc",
+        "long": "Pau_Cin_Hau",
+        "aliases": [
+          "Pauc",
+          "Pau_Cin_Hau"
+        ]
+      },
+      {
+        "short": "Perm",
+        "long": "Old_Permic",
+        "aliases": [
+          "Perm",
+          "Old_Permic"
+        ]
+      },
+      {
+        "short": "Phag",
+        "long": "Phags_Pa",
+        "aliases": [
+          "Phag",
+          "Phags_Pa"
+        ]
+      },
+      {
+        "short": "Phli",
+        "long": "Inscriptional_Pahlavi",
+        "aliases": [
+          "Phli",
+          "Inscriptional_Pahlavi"
+        ]
+      },
+      {
+        "short": "Phlp",
+        "long": "Psalter_Pahlavi",
+        "aliases": [
+          "Phlp",
+          "Psalter_Pahlavi"
+        ]
+      },
+      {
+        "short": "Phnx",
+        "long": "Phoenician",
+        "aliases": [
+          "Phnx",
+          "Phoenician"
+        ]
+      },
+      {
+        "short": "Plrd",
+        "long": "Miao",
+        "aliases": [
+          "Plrd",
+          "Miao"
+        ]
+      },
+      {
+        "short": "Prti",
+        "long": "Inscriptional_Parthian",
+        "aliases": [
+          "Prti",
+          "Inscriptional_Parthian"
+        ]
+      },
+      {
+        "short": "Rjng",
+        "long": "Rejang",
+        "aliases": [
+          "Rjng",
+          "Rejang"
+        ]
+      },
+      {
+        "short": "Rohg",
+        "long": "Hanifi_Rohingya",
+        "aliases": [
+          "Rohg",
+          "Hanifi_Rohingya"
+        ]
+      },
+      {
+        "short": "Runr",
+        "long": "Runic",
+        "aliases": [
+          "Runr",
+          "Runic"
+        ]
+      },
+      {
+        "short": "Samr",
+        "long": "Samaritan",
+        "aliases": [
+          "Samr",
+          "Samaritan"
+        ]
+      },
+      {
+        "short": "Sarb",
+        "long": "Old_South_Arabian",
+        "aliases": [
+          "Sarb",
+          "Old_South_Arabian"
+        ]
+      },
+      {
+        "short": "Saur",
+        "long": "Saurashtra",
+        "aliases": [
+          "Saur",
+          "Saurashtra"
+        ]
+      },
+      {
+        "short": "Sgnw",
+        "long": "SignWriting",
+        "aliases": [
+          "Sgnw",
+          "SignWriting"
+        ]
+      },
+      {
+        "short": "Shaw",
+        "long": "Shavian",
+        "aliases": [
+          "Shaw",
+          "Shavian"
+        ]
+      },
+      {
+        "short": "Shrd",
+        "long": "Sharada",
+        "aliases": [
+          "Shrd",
+          "Sharada"
+        ]
+      },
+      {
+        "short": "Sidd",
+        "long": "Siddham",
+        "aliases": [
+          "Sidd",
+          "Siddham"
+        ]
+      },
+      {
+        "short": "Sidt",
+        "long": "Sidetic",
+        "aliases": [
+          "Sidt",
+          "Sidetic"
+        ]
+      },
+      {
+        "short": "Sind",
+        "long": "Khudawadi",
+        "aliases": [
+          "Sind",
+          "Khudawadi"
+        ]
+      },
+      {
+        "short": "Sinh",
+        "long": "Sinhala",
+        "aliases": [
+          "Sinh",
+          "Sinhala"
+        ]
+      },
+      {
+        "short": "Sogd",
+        "long": "Sogdian",
+        "aliases": [
+          "Sogd",
+          "Sogdian"
+        ]
+      },
+      {
+        "short": "Sogo",
+        "long": "Old_Sogdian",
+        "aliases": [
+          "Sogo",
+          "Old_Sogdian"
+        ]
+      },
+      {
+        "short": "Sora",
+        "long": "Sora_Sompeng",
+        "aliases": [
+          "Sora",
+          "Sora_Sompeng"
+        ]
+      },
+      {
+        "short": "Soyo",
+        "long": "Soyombo",
+        "aliases": [
+          "Soyo",
+          "Soyombo"
+        ]
+      },
+      {
+        "short": "Sund",
+        "long": "Sundanese",
+        "aliases": [
+          "Sund",
+          "Sundanese"
+        ]
+      },
+      {
+        "short": "Sunu",
+        "long": "Sunuwar",
+        "aliases": [
+          "Sunu",
+          "Sunuwar"
+        ]
+      },
+      {
+        "short": "Sylo",
+        "long": "Syloti_Nagri",
+        "aliases": [
+          "Sylo",
+          "Syloti_Nagri"
+        ]
+      },
+      {
+        "short": "Syrc",
+        "long": "Syriac",
+        "aliases": [
+          "Syrc",
+          "Syriac"
+        ]
+      },
+      {
+        "short": "Tagb",
+        "long": "Tagbanwa",
+        "aliases": [
+          "Tagb",
+          "Tagbanwa"
+        ]
+      },
+      {
+        "short": "Takr",
+        "long": "Takri",
+        "aliases": [
+          "Takr",
+          "Takri"
+        ]
+      },
+      {
+        "short": "Tale",
+        "long": "Tai_Le",
+        "aliases": [
+          "Tale",
+          "Tai_Le"
+        ]
+      },
+      {
+        "short": "Talu",
+        "long": "New_Tai_Lue",
+        "aliases": [
+          "Talu",
+          "New_Tai_Lue"
+        ]
+      },
+      {
+        "short": "Taml",
+        "long": "Tamil",
+        "aliases": [
+          "Taml",
+          "Tamil"
+        ]
+      },
+      {
+        "short": "Tang",
+        "long": "Tangut",
+        "aliases": [
+          "Tang",
+          "Tangut"
+        ]
+      },
+      {
+        "short": "Tavt",
+        "long": "Tai_Viet",
+        "aliases": [
+          "Tavt",
+          "Tai_Viet"
+        ]
+      },
+      {
+        "short": "Tayo",
+        "long": "Tai_Yo",
+        "aliases": [
+          "Tayo",
+          "Tai_Yo"
+        ]
+      },
+      {
+        "short": "Telu",
+        "long": "Telugu",
+        "aliases": [
+          "Telu",
+          "Telugu"
+        ]
+      },
+      {
+        "short": "Tfng",
+        "long": "Tifinagh",
+        "aliases": [
+          "Tfng",
+          "Tifinagh"
+        ]
+      },
+      {
+        "short": "Tglg",
+        "long": "Tagalog",
+        "aliases": [
+          "Tglg",
+          "Tagalog"
+        ]
+      },
+      {
+        "short": "Thaa",
+        "long": "Thaana",
+        "aliases": [
+          "Thaa",
+          "Thaana"
+        ]
+      },
+      {
+        "short": "Thai",
+        "long": "Thai",
+        "aliases": [
+          "Thai",
+          "Thai"
+        ]
+      },
+      {
+        "short": "Tibt",
+        "long": "Tibetan",
+        "aliases": [
+          "Tibt",
+          "Tibetan"
+        ]
+      },
+      {
+        "short": "Tirh",
+        "long": "Tirhuta",
+        "aliases": [
+          "Tirh",
+          "Tirhuta"
+        ]
+      },
+      {
+        "short": "Tnsa",
+        "long": "Tangsa",
+        "aliases": [
+          "Tnsa",
+          "Tangsa"
+        ]
+      },
+      {
+        "short": "Todr",
+        "long": "Todhri",
+        "aliases": [
+          "Todr",
+          "Todhri"
+        ]
+      },
+      {
+        "short": "Tols",
+        "long": "Tolong_Siki",
+        "aliases": [
+          "Tols",
+          "Tolong_Siki"
+        ]
+      },
+      {
+        "short": "Toto",
+        "long": "Toto",
+        "aliases": [
+          "Toto",
+          "Toto"
+        ]
+      },
+      {
+        "short": "Tutg",
+        "long": "Tulu_Tigalari",
+        "aliases": [
+          "Tutg",
+          "Tulu_Tigalari"
+        ]
+      },
+      {
+        "short": "Ugar",
+        "long": "Ugaritic",
+        "aliases": [
+          "Ugar",
+          "Ugaritic"
+        ]
+      },
+      {
+        "short": "Vaii",
+        "long": "Vai",
+        "aliases": [
+          "Vaii",
+          "Vai"
+        ]
+      },
+      {
+        "short": "Vith",
+        "long": "Vithkuqi",
+        "aliases": [
+          "Vith",
+          "Vithkuqi"
+        ]
+      },
+      {
+        "short": "Wara",
+        "long": "Warang_Citi",
+        "aliases": [
+          "Wara",
+          "Warang_Citi"
+        ]
+      },
+      {
+        "short": "Wcho",
+        "long": "Wancho",
+        "aliases": [
+          "Wcho",
+          "Wancho"
+        ]
+      },
+      {
+        "short": "Xpeo",
+        "long": "Old_Persian",
+        "aliases": [
+          "Xpeo",
+          "Old_Persian"
+        ]
+      },
+      {
+        "short": "Xsux",
+        "long": "Cuneiform",
+        "aliases": [
+          "Xsux",
+          "Cuneiform"
+        ]
+      },
+      {
+        "short": "Yezi",
+        "long": "Yezidi",
+        "aliases": [
+          "Yezi",
+          "Yezidi"
+        ]
+      },
+      {
+        "short": "Yiii",
+        "long": "Yi",
+        "aliases": [
+          "Yiii",
+          "Yi"
+        ]
+      },
+      {
+        "short": "Zanb",
+        "long": "Zanabazar_Square",
+        "aliases": [
+          "Zanb",
+          "Zanabazar_Square"
+        ]
+      },
+      {
+        "short": "Zinh",
+        "long": "Inherited",
+        "aliases": [
+          "Zinh",
+          "Inherited",
+          "Qaai"
+        ]
+      },
+      {
+        "short": "Zyyy",
+        "long": "Common",
+        "aliases": [
+          "Zyyy",
+          "Common"
+        ]
+      },
+      {
+        "short": "Zzzz",
+        "long": "Unknown",
+        "aliases": [
+          "Zzzz",
+          "Unknown"
+        ]
+      }
+    ],
+    "scriptDefault": "Unknown",
+    "scriptExtensionsDefault": "Script",
+    "simpleFoldMappings": 1512,
+    "simpleFoldEquivalenceClasses": 1482,
+    "maxSimpleFoldEquivalenceSize": 4
+  }
+}

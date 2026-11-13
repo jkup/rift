@@ -3,6 +3,7 @@ import { type OperationContext, type ThrowCompletion } from "./runtime.js";
 import { isStringWhitespace, stringUpperCase } from "./strings.js";
 import type { Location } from "./syntax.js";
 import { simpleCaseFold } from "./unicode-case-fold.js";
+import { propertyContains, foldedPropertyContains } from "./unicode-properties.js";
 
 export type RegExpMatchFlags = { ignoreCase: boolean; multiline: boolean; dotAll: boolean };
 type Instruction = { kind: "character"; value: number } | { kind: "dot" }
@@ -180,6 +181,9 @@ class PatternMatcher {
             if (found || !this.tick()) break;
             if (part.kind === "range") {
                 if (instruction.folded === null) found = code >= part.from && code <= part.to;
+            } else if (part.kind === "property") {
+                found = this.program.flags.ignoreCase ? foldedPropertyContains(part.index, code, part.inverted)
+                    : propertyContains(part.index, code) !== part.inverted;
             } else {
                 const member = part.name === "digit" ? code >= 48 && code <= 57 : part.name === "word" ? word(code) : isStringWhitespace(code);
                 found = member !== part.inverted;

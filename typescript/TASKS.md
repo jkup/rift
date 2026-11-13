@@ -5958,7 +5958,7 @@ the initial dynamic string-ordering result and reduced controls are retained.
 
 ## TS-519 — Unicode property escape parser and matcher
 
-**READY — isolated; combined lexical milestone pending**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Starting from verified TS-516 READY, integrate TS-518's complete Unicode tables
 into u-mode property escape parsing and matching. Own an isolated
 build/regexp-property-escapes-draft: generated property data and generator,
