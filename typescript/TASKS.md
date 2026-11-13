@@ -6632,7 +6632,7 @@ remain unsupported there too. TS-230/231 already resolved formal patterns.
 
 ## TS-543 — Ordered standalone declaration lists
 
-**ready**. Extend standalone let/const/var declarations to ordered identifier and
+**in progress — isolated implementation**. Owner: coordinator, 2026-11-13. Extend standalone let/const/var declarations to ordered identifier and
 binding-pattern declarators, using explicit syntax and existing initialization.
 Preserve declaration planning, duplicate/conflict errors, TDZ, initializer order,
 function-name inference, abrupt completion, iterator closing, suspension and source
@@ -6644,3 +6644,19 @@ an explicit follow-up; catch syntax is separate. Keep canonical unscopables inpu
 frozen and reserve native compiler capacity for the active matrix. Require full
 both-host/static regression before acceptance; preserve historical fixtures and
 review every changed rejection expectation.
+
+TS-543 isolated draft checkpoint: build/declaration-list-draft is based on the
+hash-verified unscopables READY inputs. Five engine files add an explicit ordered
+declaration-list node, parser admission, declaration traversal and execution in
+the existing scope; generator/async lists reuse sequence frames. Two manifests
+and test/declaration-list.ts add 18 independently specified reference controls.
+Typechecking and all focused Node controls pass. Initial full Node suite was
+991/994: const-bindings and two script-global-declarations variants still expected
+valid declaration lists to reject. Original inputs, snapshot and failing results
+are retained. The two test-only migrations preserve the original source strings,
+check const values and lexical TDZ/global-property behavior, and retain malformed
+var-list rejection. All three affected cases pass; production hashes are unchanged.
+Amended full Node/runner session 88025 is live. Native/tooling validation has not
+started; canonical compiler capacity belongs to unscopables session 15121.
+Before READY, add/review focused duplicate-list and invalid-declarator controls,
+Realm/resource behavior, native coverage and semantics, and full tooling evidence.
