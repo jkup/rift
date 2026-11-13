@@ -5796,3 +5796,20 @@ Three baseline controls execute and 55 valid sources remain unsupported. Four
 invalid separator controls retain existing certification. The corrected review
 preserves the initial malformed-quoting control and transcripts. See
 docs/legacy-numeric-literals-review.md for implementation boundaries.
+
+## TS-514 — Legacy numeric literals and strict-context rejection
+
+**ready — requires TS-511 READY**. Owner: coordinator, 2026-11-13.
+Implement TS-513's full reviewed legacy octal/non-octal decimal boundary in an
+isolated successor. Preserve source spans and token provenance, exact value
+conversion, integer/fraction/exponent separator rules and modern conversions.
+Use declaration-context strictness for literals and numeric keys; retain complete
+grammar/resource checks before a strict-legacy-number syntax certificate so eval
+and Function expose the reviewed catchable SyntaxError behavior. Extend the
+closed observation/protocol rule lists and their controls together. Own lexer,
+declaration collection, necessary parser/value conversion, outcomes/observation
+types and guards, protocol codecs/tests, focused tests, manifests and feature
+notes. Require all 110 retained controls on both hosts, malformed/unsupported
+precedence tests, full regression/tooling and static-only/zero-dynamic gates.
+Review any historical expectation migration separately; preserve original
+fixtures. Promotion requires acceptance of all predecessor milestones.
