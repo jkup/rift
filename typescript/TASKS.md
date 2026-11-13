@@ -6034,6 +6034,13 @@ protocol checks; do not amend frozen inputs until it exits successfully.
 The guarded three-test amendment and its native/READY verifiers are prepared.
 Original tests, full Node results and snapshot remain unchanged and retained.
 
+TS-521 amendment checkpoint: session59417 completed successfully with all 296
+tooling tests and both-host codec/envelope checks. Only the three reviewed
+standalone tests now change; the ownership verifier confirms the exact amendment
+and unchanged production inputs. The original files, source snapshot and 958/961
+ledger are archived. Typechecking passes. Full Node reruns in session23425;
+native builds/execution of the amended entries run sequentially in session43595.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516 and
