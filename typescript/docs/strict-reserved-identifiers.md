@@ -41,5 +41,4 @@ An additional 98 independent Node syntax comparisons cover directive handling,
 inherited strictness, nested functions, patterns and property names without a
 mismatch. All 15 native tooling build/coverage gates and 296 tooling tests pass,
 as do eight producer records per host and 16 parent envelopes. Integration and
-combined acceptance remain pending. Promotion requires TS-494 integration and
-TS-492 combined acceptance. Canonical validation inputs remain unchanged.
+combined validation passed in the contextual identifiers milestone.

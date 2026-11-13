@@ -26,8 +26,7 @@ codec. The 1068 source/control inputs are frozen. Focused execution, the histori
 strict-name driver and all 156 syntax controls now pass both hosts with static-only
 builds and zero dynamic coverage. The amended snapshot passes all 15 native
 tooling build gates and all 296 tooling tests without skips. Eight producer records
-per host and 16 parent envelopes pass. Combined canonical acceptance remains
-pending.
+per host and 16 parent envelopes pass. Combined canonical validation passed in the contextual identifiers milestone.
 
 The initial tooling run passed 295/296 tests. Reviewing all 140 historical lexical
 audit inputs found three newly supported expressions (`while(false) let=1;`,

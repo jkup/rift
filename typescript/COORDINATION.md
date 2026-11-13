@@ -3340,3 +3340,5 @@ Original failures and binaries are archived under the draft's
 build/before-assignment-token-fix. Corrected full Node session1200 and native
 session15429 are live; canonical native session19193 continues on frozen source.
 TS-516 remains gated on TS-514 READY. No unaccepted milestone has been pushed.
+
+2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.

@@ -27,5 +27,4 @@ all 136 syntax controls pass both hosts. All 15 native tooling builds pass stati
 compilation and zero-dynamic coverage; all 296 tooling tests pass without skips.
 Eight strict-error producer records per host and 16 envelopes pass the closed
 protocol checks. Final readiness checks verify source and executable hashes,
-predecessor ownership and exact manifest additions. Integration requires TS-501
-integration plus acceptance of the current canonical milestone.
+predecessor ownership and exact manifest additions. Integration and combined validation passed in the contextual identifiers milestone.

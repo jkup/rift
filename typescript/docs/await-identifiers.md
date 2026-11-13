@@ -35,5 +35,4 @@ All 1066 source/control inputs are frozen. All 15 native tooling builds pass
 static-only compilation and zero-dynamic coverage; all 296 tooling tests pass
 without skips. Eight producer records per host and 16 parent envelopes pass the
 closed protocol checks. Final readiness verifies the predecessor, source and
-executable hashes, exact manifest additions and owned-file boundaries. Promotion
-requires predecessor integration and completion of the canonical native milestone.
+executable hashes, exact manifest additions and owned-file boundaries. Integration and combined validation passed in the contextual identifiers milestone.

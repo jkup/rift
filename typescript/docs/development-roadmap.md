@@ -10,8 +10,8 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted Script-return milestone passes 950/950 guests on each
-host, 296/296 tooling checks, and all 457 native static gates.
+The accepted contextual identifiers milestone passes 955/955 guests on each
+host, 296/296 tooling checks, and all 462 native static gates.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
@@ -83,13 +83,11 @@ provides a fixed 225-file diagnostic selection in both hosts. Use its concrete
 failures alongside semantic tests to prioritize work; existing C++ runner counts
 are not an authoritative conformance score.
 
-The reviewed contextual `let`, `yield` and `await` changes are integrated locally,
-alongside strict reserved-name checks and async Statement certification. Separate
-grammar context protects async/generator parameters; `let` declaration lookahead
-keeps expression admission distinct from lexical declarations. Each isolated
-change passed its required checks. Combined validation is now running on frozen
-inputs: 955 guest cases and 462 native builds. These changes remain unaccepted
-and unpublished until the complete both-host regression and compiler gates pass.
+Contextual `let`, `yield` and `await` identifiers, strict reserved-name checks and
+async Statement certification are accepted. Separate grammar context protects
+async/generator parameters; `let` declaration lookahead keeps expression admission
+distinct from lexical declarations. Original fixtures and reviewed expectation
+migrations remain intact. The full combined validation passes on both hosts.
 
 The ordinary-identifier successor is READY in isolation: Unicode names and
 fixed/braced escapes pass 956 Node guests, 170 grammar controls on both hosts and
@@ -833,3 +831,5 @@ passes without parser certification and both-host controls.
 2026-11-12 zoned Temporal milestone accepted (TS-484,486,487):949/949 guests on both hosts without skips;456 native static-only/zero-dynamic gates;tooling296/296,runner35/35,ten probes and typechecking pass. Corpus node-lR4v4q/native-65hS99 matches all225 normalized records and preserves191 preceding completions. Named-zone local-time resolution, shared Temporal consumers and pinned2026f guest identifiers are accepted. Focused evidence includes 1170 public controls,1794 identifier controls and82800 rounding cases on both hosts; the documented PR3319 rounding and Factory admission differences retain independent justification. Original fixtures, failure evidence and range guards remain preserved. Evidence: build/iana-temporal-rollup-* and isolated feature reviews.
 
 2026-11-12 Script-return milestone accepted (TS-492): 950/950 guests on both hosts without skips; 457 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QNhNHq/native-gwfRnh matches all 225 normalized records and preserves 191 preceding completions. Bounded Script preparation certifies return outside functions only after a complete supported-grammar audit; original S20 bytes and the reviewed catchable eval SyntaxError migration are preserved. TS-494, TS-496, TS-501, TS-502 and TS-504 remain isolated and are not accepted by this milestone. Evidence: build/script-return-rollup-* and docs/script-return-certification.md.
+
+2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.

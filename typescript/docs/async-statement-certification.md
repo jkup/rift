@@ -26,6 +26,4 @@ Node guests and 35 runner tests pass. Focused native builds and the reviewed pro
 pass static-only compilation and zero-dynamic coverage; executable hashes and all
 1063 frozen inputs were verified before execution. All 15 native tooling builds,
 296 tooling tests, eight producer records per host and 16 parent envelopes pass.
-Capability admission remains unchanged. Integration and combined acceptance
-remain pending; canonical return-certification inputs stay frozen while their
-native validation runs.
+Capability admission remains unchanged. Integration and combined validation passed in the contextual identifiers milestone.

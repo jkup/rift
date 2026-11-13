@@ -5347,7 +5347,7 @@ passes all filesystem tests. Combined native milestone acceptance is still pendi
 
 ## TS-494 — Async function declaration Statement certification
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
+**done — accepted in contextual identifiers milestone**. Owner: coordinator, 2026-11-12.
 Implement TS-493's bounded async-function-statement rule for ordinary async
 function declarations in supported branch/label Statement positions. Require a
 complete non-emitting grammar audit and exact original first diagnostic; preserve
@@ -5396,7 +5396,7 @@ is complete: 84 valid sloppy identifier cases remain explicitly unsupported.
 
 ## TS-496 — Strict reserved identifiers and sloppy admission
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
+**done — accepted in contextual identifiers milestone**. Owner: coordinator, 2026-11-12.
 Implement TS-495's seven non-contextual strict-only names across bounded bindings,
 references, patterns, function/class names and labels, with valid sloppy execution
 and complete-source strict certification. Preserve property names and existing
@@ -5490,7 +5490,7 @@ on TS-492 acceptance and TS-494 integration; no full 952-case native claim.
 
 ## TS-501 — Contextual await identifiers
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
+**done — accepted in contextual identifiers milestone**. Owner: coordinator, 2026-11-12.
 Build on READY TS-496 to admit valid Script await identifiers using the reviewed
 grammar contexts. Preserve async parameters, arrow-cover disambiguation, named
 function distinctions, class fields/static blocks and nested-function resets.
@@ -5526,7 +5526,7 @@ Promotion remains gated on TS-492 acceptance and TS-496 integration.
 
 ## TS-502 — Contextual yield identifiers
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
+**done — accepted in contextual identifiers milestone**. Owner: coordinator, 2026-11-12.
 Extend the contextual-identifier work to valid sloppy Script yield bindings and
 references. Review generator declaration/expression names, parameters, nested
 ordinary functions/arrows and strict scopes before implementation. Preserve
@@ -5577,7 +5577,7 @@ boundaries and lexical BoundNames checks; keyword admission alone is insufficien
 
 ## TS-504 — Contextual let identifiers
 
-**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-12.
+**done — accepted in contextual identifiers milestone**. Owner: coordinator, 2026-11-12.
 Implement the TS-503 reviewed sloppy identifier, declaration-lookahead and loop
 boundaries in an isolated successor to frozen TS-502. Own parser, declaration
 collector, focused tests, exact prior let expectation migration, manifests and
@@ -5799,7 +5799,7 @@ docs/legacy-numeric-literals-review.md for implementation boundaries.
 
 ## TS-514 — Legacy numeric literals and strict-context rejection
 
-**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
+**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-13.
 Implement TS-513's full reviewed legacy octal/non-octal decimal boundary in an
 isolated successor. Preserve source spans and token provenance, exact value
 conversion, integer/fraction/exponent separator rules and modern conversions.
@@ -5864,7 +5864,7 @@ Source hashes and native provenance verify. See docs/legacy-string-escapes-revie
 
 ## TS-516 — Legacy string escapes and strict-context rejection
 
-**ready — requires TS-514 READY**. Owner: coordinator, 2026-11-13.
+**in progress — isolated successor**. Owner: coordinator, 2026-11-13.
 Implement TS-515's reviewed octal and non-octal decimal string escapes in an
 isolated successor. Preserve exact greedy decoding/code units, raw spans,
 directive recognition, numeric/string property provenance and legacy lexing.
@@ -5876,3 +5876,13 @@ protocol codecs/tests, focused tests, manifests and feature notes. Require all
 141 retained controls on both hosts, full regression/tooling and native static
 gates. Review historical expectation migrations individually and retain fixtures.
 Promotion requires acceptance of all predecessor milestones.
+
+TS-514 READY after correction: 958 Node guests, 110 reviewed controls and all
+102 original assignment-audit inputs on both hosts, 15 native tooling gates,
+296 tooling tests, 35 runner tests and producer/envelope checks pass. The source
+and ownership verifier passes; initial failures and original fixtures remain
+retained. TS-516 is claimed from that verified snapshot. Canonical contextual
+identifiers pass 955 guests on both hosts, 462 native gates and all 225 corpus
+comparisons; final combined tooling remains live in session30359.
+
+2026-11-13 Contextual identifiers milestone accepted (TS-494, TS-496, TS-501, TS-502, TS-504): 955/955 guests on both hosts without skips; 462 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. Corpus node-QsqHq3/native-nV5u73 matches all 225 normalized records and preserves all 191 preceding completions. Async Statement certification, strict reserved names, and contextual await/yield/let grammar are integrated. Original fixtures and explicit historical expectation migrations are retained. Evidence: build/contextual-identifiers-rollup-*.
