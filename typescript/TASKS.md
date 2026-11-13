@@ -5835,3 +5835,34 @@ sources. The updated snapshot changes only those two tests, preserving inherited
 strict rejection and all initial evidence. Full Node rerun is session44651;
 native revalidation, 15 tooling builds and full tooling/protocol checks run in
 session80466. Production source remains unchanged across the migration.
+
+## TS-515 — Legacy string escape boundary review
+
+**done — grammar and both-host baseline reviewed**. Owner: coordinator, 2026-11-13.
+Review C++ legacy octal and non-octal decimal string escapes against the current
+TypeScript lex.string-escape gap. Cover greedy decoding limits, NUL/digit
+boundaries, strict Script/function/class contexts, directives, property names,
+dynamic source and tagged/untagged templates with explicit expected code units.
+Own docs/legacy-string-escapes-review.md and ignored controls only. Preserve
+original fixtures and all frozen source snapshots; implementation needs a
+separately claimed successor after TS-514 READY.
+
+TS-515: all 141 independent expectations verify (75 valid, 66 invalid), with
+identical both-host results. Fourteen existing NUL/template controls execute;
+61 valid sources remain unsupported, without false syntax certificates.
+Source hashes and native provenance verify. See docs/legacy-string-escapes-review.md.
+
+## TS-516 — Legacy string escapes and strict-context rejection
+
+**ready — requires TS-514 READY**. Owner: coordinator, 2026-11-13.
+Implement TS-515's reviewed octal and non-octal decimal string escapes in an
+isolated successor. Preserve exact greedy decoding/code units, raw spans,
+directive recognition, numeric/string property provenance and legacy lexing.
+Check complete strict contexts, including earlier prologue literals; extend the
+closed syntax/observation protocols for catchable dynamic-source SyntaxErrors.
+Retain tagged/untagged template behavior and malformed/unsupported precedence.
+Own lexer/parser provenance, declaration collection, outcomes/observation guards,
+protocol codecs/tests, focused tests, manifests and feature notes. Require all
+141 retained controls on both hosts, full regression/tooling and native static
+gates. Review historical expectation migrations individually and retain fixtures.
+Promotion requires acceptance of all predecessor milestones.
