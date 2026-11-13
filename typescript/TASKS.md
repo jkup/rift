@@ -6711,3 +6711,20 @@ Do not start alongside the active canonical matrix or before the predecessor
 has passed its required native/tooling validation.
 
 Array unscopables accepted: 993/993 guests on each host without skips; 475 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. The original 225-file corpus matches the preceding milestone with 191 completions. Realm-local descriptors and mutation are covered; with statements remain unsupported. Evidence: build/unscopables-rollup-*.
+
+TS-543 tooling review: the initial isolated native run passed 19 gates and 31
+semantic cases. Tooling finished 294/296, exposing the retained G02-let-list plan
+expectation and a real lexical-Statement audit gap: the new declaration-list AST
+was omitted from candidate admission. Normal Script parsing still rejects the
+invalid Statement position. The isolated parser now recognizes that node in the
+same-parse audit; two tooling expectations explicitly cover the new plan and
+invalid while-body list. Original fixtures, failed logs and the prior snapshot
+remain in build/declaration-list-draft/build/before-tooling-repair and extended-*
+artifacts. Ownership adds tools/test262/parser-audits.test.mjs and
+script-inspection-drivers.test.mjs (thirteen paths total). Full Node/runner rerun
+session 59704 is live; fresh native and tooling reruns are required. Repaired
+snapshot SHA256: 1986ebec528ffddd06a08f4c42f51ec8b19dbb940c8709be235e75fea1b43a80.
+Use check-declaration-list-repaired-{node,native,tooling,ready}.mjs; the earlier
+READY helper intentionally cannot accept this amended snapshot. Promotion and
+canonical validation helpers are prepared but unrun; canonical source stays on
+the accepted unscopables implementation.

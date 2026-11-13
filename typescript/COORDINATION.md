@@ -4036,3 +4036,20 @@ TS-544 review complete: fifteen explicit reference programs pass Node; frozen un
 Array unscopables accepted: 993/993 guests on each host without skips; 475 native static-only/zero-dynamic gates; 296 tooling tests, 35 runner tests, ten probes and typechecking pass. The original 225-file corpus matches the preceding milestone with 191 completions. Realm-local descriptors and mutation are covered; with statements remain unsupported. Evidence: build/unscopables-rollup-*.
 
 2026-11-13 publication checkpoint: canonical unscopables session 15121 completed all stages with exit zero. All 993 guests per host, 475 static-only/zero-dynamic native gates, 296 tooling tests, 35 runner tests, ten probes, typechecking and unchanged 225-file corpus passed. Accepted and atomically pushed main/review to dc721945 after ancestry checks; local main updated. TS-543 native validation is now live in session 43006, running build/check-declaration-list-native.mjs with four workers and the pinned Zig PATH. It requires 19 gates and 31 executions, then build/check-declaration-list-tooling.mjs and full build/check-declaration-list-ready.mjs. No other native build is running. The declaration-list final snapshot remains 6b411e1997ad8a36a49332c3bf8081cd8f5fd175b7bd14bba27e4673dca19a04; Node 994/994 and runner 35/35 are already verified. TS-545 remains gated on TS-543 READY. Storage 90 GiB free. Preserve unrelated Claude roadmap edits, user TASKS proposal and untracked validation directory.
+
+TS-543 tooling review: the initial isolated native run passed 19 gates and 31
+semantic cases. Tooling finished 294/296, exposing the retained G02-let-list plan
+expectation and a real lexical-Statement audit gap: the new declaration-list AST
+was omitted from candidate admission. Normal Script parsing still rejects the
+invalid Statement position. The isolated parser now recognizes that node in the
+same-parse audit; two tooling expectations explicitly cover the new plan and
+invalid while-body list. Original fixtures, failed logs and the prior snapshot
+remain in build/declaration-list-draft/build/before-tooling-repair and extended-*
+artifacts. Ownership adds tools/test262/parser-audits.test.mjs and
+script-inspection-drivers.test.mjs (thirteen paths total). Full Node/runner rerun
+session 59704 is live; fresh native and tooling reruns are required. Repaired
+snapshot SHA256: 1986ebec528ffddd06a08f4c42f51ec8b19dbb940c8709be235e75fea1b43a80.
+Use check-declaration-list-repaired-{node,native,tooling,ready}.mjs; the earlier
+READY helper intentionally cannot accept this amended snapshot. Promotion and
+canonical validation helpers are prepared but unrun; canonical source stays on
+the accepted unscopables implementation.
