@@ -6216,7 +6216,7 @@ build/date-local-time-ready.log and build/date-local-time-owned-snapshot.json.
 
 ## TS-528 — Realm-configured local Date operations
 
-**READY — isolated successor; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Implement an immutable, validated Realm timezone setting with UTC as the default.
 Route component construction, offset-free date-time parsing, local getters,
 setters and display/locale fallback formatting through the shared provider.

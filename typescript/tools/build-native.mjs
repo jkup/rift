@@ -318,6 +318,7 @@ const entries = [
     ["test/regexp-property-escapes.ts", "regexp-property-escapes"],
     ["test/regexp-modifiers.ts", "regexp-modifiers"],
     ["test/date-local-time.ts", "date-local-time"],
+    ["test/date-named-zone.ts", "date-named-zone"],
     ["test/regexp-legacy-escapes.ts", "regexp-legacy-escapes"],
     ["test/private-elements.ts", "private-elements"],
     ["test/private-identifier-lexing.ts", "private-identifier-lexing"],

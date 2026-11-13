@@ -54,6 +54,7 @@ import { consumeScriptBuiltinPermit, consumeScriptConstructorPermit, createEvalI
 import type { ScriptEnvironment } from "./script-environment.js";
 import type { OperationContext } from "./runtime.js";
 import type { RandomState } from "./random.js";
+import { parseTemporalTimeZoneIdentifier, type TemporalTimeZone } from "./temporal-time-zone-parse.js";
 
 export type Output = (line: string) => void;
 export type RealmProfile = "legacy" | "script";
@@ -80,6 +81,7 @@ export class Realm {
     }
     randomState: RandomState | null = null;
     clockMilliseconds: (() => number) | null = null;
+    readonly dateTimeZone: TemporalTimeZone;
     private legacyGlobal: Environment | null = null;
     private scriptGlobal: GlobalEnvironment | null = null;
     private errorPrototypes: Map<ErrorName, GuestObject> = new Map();
@@ -123,8 +125,11 @@ export class Realm {
     readonly temporalPlainDatePrototype: GuestObject;
     readonly symbolPrototype: GuestObject;
     readonly stringPrototype: GuestStringObject;
-    constructor(output: Output, readonly profile: RealmProfile = "legacy") {
+    constructor(output: Output, readonly profile: RealmProfile = "legacy", dateTimeZoneIdentifier = "UTC") {
         if (profile !== "legacy" && profile !== "script") throw new Error("invalid Realm profile");
+        const dateTimeZone = parseTemporalTimeZoneIdentifier(dateTimeZoneIdentifier);
+        if (dateTimeZone === null) throw new RangeError("invalid Realm Date time zone: " + dateTimeZoneIdentifier);
+        this.dateTimeZone = dateTimeZone;
         // Bootstrap dependencies directly, before factories or global installation.
         this.objectPrototype = new GuestObject(null, true);
         if (profile === "script") {

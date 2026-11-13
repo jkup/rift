@@ -1,6 +1,8 @@
 import type { Realm } from "../realm.js";
 import { dateObject } from "../date-object.js";
-import { DATE_MILLISECONDS_PER_DAY, dateTimeFields, dateTimeClip, dateMakeTime, dateMakeDate } from "../date-time.js";
+import { dateTimeFields, dateTimeClip, dateMakeTime, dateMakeDate } from "../date-time.js";
+import { dateMakeDay } from "../date-calendar.js";
+import { dateLocalFields, dateEpochFromLocalTime } from "../date-time-zone.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toNumber } from "../conversion.js";
 import { normal, UNDEFINED, type ValueCompletion } from "../runtime.js";
@@ -23,7 +25,7 @@ export function registerDateTimeSetters(realm: Realm): void {
             const date = dateObject(receiver, context, loc);
             if (date.type === "throw") return date;
             const original = date.value.dateValue;
-            const fields = dateTimeFields(original);
+            const fields = prefix === "set" ? dateLocalFields(original, context.realm.dateTimeZone) : dateTimeFields(original);
             const values = fields === null ? [NaN, NaN, NaN, NaN] : [fields.hour, fields.minute, fields.second, fields.millisecond];
             for (let index = start; index < 4; index++) {
                 const argument = index - start;
@@ -36,7 +38,8 @@ export function registerDateTimeSetters(realm: Realm): void {
             }
             if (fields === null) return normal({ kind: "number", value: NaN });
             const time = dateMakeTime(values[0], values[1], values[2], values[3]);
-            const clipped = dateTimeClip(dateMakeDate(Math.floor(original / DATE_MILLISECONDS_PER_DAY), time));
+            const next = dateMakeDate(dateMakeDay(fields.year, fields.month, fields.day), time);
+            const clipped = prefix === "set" ? dateEpochFromLocalTime(next, context.realm.dateTimeZone) : dateTimeClip(next);
             date.value.dateValue = clipped;
             return normal({ kind: "number", value: clipped });
         });

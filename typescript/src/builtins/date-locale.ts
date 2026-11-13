@@ -9,7 +9,7 @@ export function registerDateLocale(realm: Realm): void {
             const date = dateObject(receiver, context, loc);
             if (date.type === "throw") return date;
             const style = name === "toLocaleString" ? "display" : name === "toLocaleDateString" ? "date" : "time";
-            return normal({ kind: "string", value: formatDateString(date.value.dateValue, style) });
+            return normal({ kind: "string", value: formatDateString(date.value.dateValue, style, context.realm.dateTimeZone) });
         });
     }
 }

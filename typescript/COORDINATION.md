@@ -3534,3 +3534,5 @@ Its 296-test tooling acceptance is still running.
 2026-11-13 TS-524 promoted after complete predecessor checks with 7 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
 
 2026-11-13 TS-527 promoted after complete predecessor checks with 5 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
+
+2026-11-13 TS-528 promoted after complete predecessor checks with 13 owned files. Isolated READY evidence and canonical focused Node/typechecking pass; combined acceptance is pending.
