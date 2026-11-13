@@ -3806,3 +3806,19 @@ Realm.createArray observer. The 312 expected records pass, including exact
 resource counts, provenance and effects. Evidence: build/array-species-schedule-review/
 schedule-reviewed.json. This is Node review only; original failures, frozen
 candidate tests and production sources remain unchanged pending native checks.
+
+2026-11-13 TS-539 test-only proposals reviewed outside the frozen draft.
+build/prepare-species-metadata-migrations.mjs retains the two original metadata
+tests and proposes Array's added symbol key and Error species result assertions.
+build/prepare-species-array-migrations.mjs retains three Array tests and checks
+the original host constructor exceptions for flat/flatMap/slice/concat/splice;
+map/filter preserve their original callback throws and now assert construction
+first. Invalid selection, callback validation, spreadability order and receiver
+mutation assertions remain. Both review trees typecheck. All seven original
+cases pass under Node with exact existing expected stdout, no changed inputs and
+no skipped cases. Hashes, process status and transcripts are retained in
+build/array-species-proposed-tests-reviewed.json and the two review directories.
+The helpers write proposals only; frozen candidate sources remain untouched.
+The other six initial failures (fromEntries, groupBy, map and throw-inspection
+variants) still need explicit migrations. Focused native checks remain queued
+behind the canonical matrix/finalizer in live session88122 (363/471 checkpoint).
