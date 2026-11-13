@@ -3595,3 +3595,22 @@ The existing Unicode equivalence data has 1482 groups, 2994 members and at most
 four members per group. A bounded interval-membership optimization is recorded
 in docs/regexp-range-compilation-review.md; TS-534 claims isolated implementation
 without changing either canonical inputs or READY lookbehind source.
+
+2026-11-13 TS-534 first candidate is frozen at 1088 inputs in
+build/regexp-range-draft/. The generated Unicode helper checks existing fold
+classes against intervals; legacy folding is unchanged. Focused Node tests
+cover every Unicode code point plus eleven independent reference expressions.
+The full Unicode interval compiles in three charged steps versus the original
+100001-step stop; Unicode ASCII/BMP intervals also take three steps, while
+non-Unicode counts are unchanged. Thirty-four Node diagnostic controls pass;
+the focused test and probe pass fresh native static/zero-dynamic gates.
+
+Session13425 runs all 991 Node guests. Its first launch failed before execution
+because the runner's archive inputs were missing; the original log is retained
+as guest-node-missing-archive.log, and the exact validated input closure was
+restored before rerunning unchanged source. Session94895 builds/runs identical
+baseline/successor native matching benchmarks sequentially, then runs 34 native
+diagnostic controls. Small-pattern matching performance remains under review;
+do not accept the candidate from compile-step savings alone. Session42456 still
+runs the separate canonical modifiers/Date matrix (60/471 recorded, zero failures
+at this checkpoint). All canonical and READY predecessor inputs remain unchanged.
