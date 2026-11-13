@@ -6240,7 +6240,7 @@ build/date-named-zone-owned-snapshot.json. No historical test expectation change
 
 ## TS-529 — CLI Date timezone selection
 
-**READY — isolated successor; canonical acceptance pending**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Add an optional leading `--time-zone <identifier>` to the existing file and
 `-e <source>` forms. Preserve UTC by default and the current file/source meaning
 after the optional prefix. Validate argument shape and the strict timezone

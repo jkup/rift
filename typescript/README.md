@@ -88,6 +88,19 @@ or another positive integer to choose the worker limit. Every entry still runs
 static-only compilation and an independent coverage check; the result file keeps
 the declared entry order.
 
+Date uses UTC by default. Select a named timezone or fixed minute offset with a
+leading `--time-zone` option for either file or inline execution:
+
+```powershell
+.\build\native\rift.exe --time-zone America/New_York -e 'console.log(new Date(2024, 2, 10, 2, 30).toISOString());'
+.\build\native\rift.exe --time-zone +05:30 examples/counter.js
+```
+
+The same option works with `node build/node/src/cli.js`. Named-zone gaps move
+forward and overlaps select the earlier instant. Invalid identifiers exit with
+status 64 before source I/O or execution. The option does not change the host
+timezone or enable system timezone discovery; omitting it always selects UTC.
+
 Expected example output:
 
 ```text
