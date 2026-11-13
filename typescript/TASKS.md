@@ -5864,7 +5864,7 @@ Source hashes and native provenance verify. See docs/legacy-string-escapes-revie
 
 ## TS-516 — Legacy string escapes and strict-context rejection
 
-**READY — isolated; predecessor acceptance pending**. Owner: coordinator, 2026-11-13.
+**in progress — integrated; combined validation pending**. Owner: coordinator, 2026-11-13.
 Implement TS-515's reviewed octal and non-octal decimal string escapes in an
 isolated successor. Preserve exact greedy decoding/code units, raw spans,
 directive recognition, numeric/string property provenance and legacy lexing.

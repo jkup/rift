@@ -4,7 +4,7 @@ import { identifierStart, scanIdentifier } from "./identifier-scan.js";
 import { scanPrivateIdentifier } from "./private-identifier.js";
 import type { Rejection } from "./outcomes.js";
 import type { Diagnostic, Location } from "./syntax.js";
-export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly escaped?: boolean; readonly legacyNumeric?: boolean; readonly cooked?: string | null; readonly raw?: string; readonly regexp?: { pattern: string; flags: string } };
+export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number; readonly escaped?: boolean; readonly legacyNumeric?: boolean; readonly legacyEscape?: boolean; readonly cooked?: string | null; readonly raw?: string; readonly regexp?: { pattern: string; flags: string } };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function digitValue(c: string): number {
@@ -257,6 +257,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
             if (c === "'" || c === '"') {
                 const quote = advance();
                 let text = "";
+                let legacyEscape = false;
                 while (i < source.length && source.charAt(i) !== quote && error === null) {
                     let unit = advance();
                     // Unlike CR/LF, raw U+2028/U+2029 are allowed in modern JS strings.
@@ -277,15 +278,25 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                         else if (script && unit === "f") unit = "\f";
                         else if (script && unit === "v") unit = "\v";
                         else if (script && unit === "0" && !digit(source.charAt(i))) unit = "\0";
+                        else if (script && digit(unit)) {
+                            legacyEscape = true;
+                            if (unit < "8") {
+                                let value = unit.charCodeAt(0) - 48;
+                                const limit = value < 4 ? 3 : 2;
+                                for (let count = 1; count < limit && digit(source.charAt(i)) && source.charAt(i) < "8"; count++)
+                                    value = value * 8 + advance().charCodeAt(0) - 48;
+                                unit = String.fromCharCode(value);
+                            }
+                        }
                         else if (script && (unit === "x" || unit === "u")) unit = hexEscape(unit, loc, "invalid string escape") ?? "";
-                        else if ((script && digit(unit)) || (!script && unit !== "\\" && unit !== "'" && unit !== '"'))
+                        else if (!script && unit !== "\\" && unit !== "'" && unit !== '"')
                             fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "unsupported string escape", loc);
                     }
                     text += unit;
                 }
                 if (i >= source.length) fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-string-end" }, "unterminated string", loc);
                 else advance();
-                tokens.push({ kind: "string", text, loc, start, end: i });
+                tokens.push({ kind: "string", text, legacyEscape, loc, start, end: i });
                 continue;
             }
             const four = source.slice(i, i + 4);

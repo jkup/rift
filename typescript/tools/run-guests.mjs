@@ -917,6 +917,7 @@ executeDriver("yield-identifiers", { stdout: "yield identifiers passed\n" });
 executeDriver("ordinary-identifiers", { stdout: "ordinary identifiers passed\n" });
 executeDriver("script-whitespace", { stdout: "script whitespace passed\n" });
 executeDriver("legacy-numeric-literals", { stdout: "legacy numeric literals passed\n" });
+executeDriver("legacy-string-escapes", { stdout: "legacy string escapes passed\n" });
 executeDriver("let-identifiers", { stdout: "let identifiers passed\n" });
 executeDriver("temporal-instant-string", { stdout: "temporal instant string passed\n" });
 executeDriver("for-binding-patterns", { stdout: "For binding patterns passed\n" });

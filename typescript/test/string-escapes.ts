@@ -48,7 +48,14 @@ const sourceResult=run(functionText+'f.toString();');
 check(sourceResult.type==='normal'&&sameValue(sourceResult.value,{kind:'string',value:functionText}),'raw function source');
 const located=run("'a\\\r\nb';\nmissing;");
 check(located.type==='throw'&&located.diagnostic.loc.line===3&&located.diagnostic.loc.column===1,'continuation location');
-for(const source of ["'\\x';","'\\x0';","'\\xGG';","'\\u';","'\\u123';","'\\u12z4';","'\\u{}';","'\\u{110000}';","'\\u{1f600';","'\\u{-1}';","'\\u{1_0}';","'\\01';","'\\08';","'\\1';","'\\8';","'\\9';","'unterminated\\","'raw\nline';"]){
+for(const [source,expected] of [["'\\01';","\u0001"],["'\\08';","\u00008"],["'\\1';","\u0001"],["'\\8';","8"],["'\\9';","9"]]){
+    const result=run(source);
+    check(result.type==='normal'&&sameValue(result.value,{kind:'string',value:expected}),'legacy value '+source);
+    const realm=fresh(),prepared=prepareBoundedScript({id:'strict-legacy',text:"'use strict';var touched=1;"+source},realm);
+    check(prepared.kind==='blocked'&&prepared.rejection.kind==='syntax-error'&&prepared.rejection.ruleCode==='strict-legacy-escape','strict legacy rejection');
+    check(realm.globalObject.getOwnProperty('touched')===undefined,'inert strict rejection');
+}
+for(const source of ["'\\x';","'\\x0';","'\\xGG';","'\\u';","'\\u123';","'\\u12z4';","'\\u{}';","'\\u{110000}';","'\\u{1f600';","'\\u{-1}';","'\\u{1_0}';","'unterminated\\","'raw\nline';"]){
     const realm=fresh(),prepared=prepareBoundedScript({id:'invalid',text:'var touched=1;'+source},realm);
     check(prepared.kind!=='ready','reject '+source);
     check(realm.globalObject.getOwnProperty('touched')===undefined,'inert rejection');

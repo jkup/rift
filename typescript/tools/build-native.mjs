@@ -15,6 +15,7 @@ const entries = [
     ["test/ordinary-identifiers.ts", "ordinary-identifiers"],
     ["test/script-whitespace.ts", "script-whitespace"],
     ["test/legacy-numeric-literals.ts", "legacy-numeric-literals"],
+    ["test/legacy-string-escapes.ts", "legacy-string-escapes"],
     ["test/await-identifiers.ts", "await-identifiers"],
     ["test/yield-identifiers.ts", "yield-identifiers"],
     ["test/let-identifiers.ts", "let-identifiers"],

@@ -294,7 +294,7 @@ function copySite(site: DeclarationSite): DeclarationSite {
 }
 
 class DeclarationCollector {
-    private strictLegacyNumber: Location | null = null;
+    private strictLegacyLiteral: { kind: "number" | "escape"; loc: Location } | null = null;
     readonly strictIdentifiers: { name: string; scope: number; loc: Location }[] = [];
     private strictIdentifier(name: string, scope: number, loc: Location): void {
         if (isStrictReservedIdentifier(name) || name === "yield" || name === "let") this.strictIdentifiers.push({ name, scope, loc });
@@ -662,10 +662,12 @@ class DeclarationCollector {
             }
             case "literal": {
                 const token = this.tokens[this.tokenIndex(node.loc)];
-                const first = this.strictLegacyNumber;
-                if (token.kind === "number" && token.legacyNumeric === true && this.scopes[scope].strict &&
-                    (first === null || token.loc.line < first.line || (token.loc.line === first.line && token.loc.column < first.column)))
-                    this.strictLegacyNumber = token.loc;
+                const first = this.strictLegacyLiteral;
+                const legacyNumber = token.kind === "number" && token.legacyNumeric === true;
+                const legacyEscape = token.kind === "string" && token.legacyEscape === true;
+                if ((legacyNumber || legacyEscape) && this.scopes[scope].strict &&
+                    (first === null || token.loc.line < first.loc.line || (token.loc.line === first.loc.line && token.loc.column < first.loc.column)))
+                    this.strictLegacyLiteral = { kind: legacyNumber ? "number" : "escape", loc: token.loc };
                 break;
             }
             case "template-object": case "regexp": case "bigint": case "this": case "new-target": break;
@@ -746,11 +748,12 @@ class DeclarationCollector {
                 ? { kind: "syntax-error", ruleCode: "strict-reserved-identifier" }
                 : { kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: identifier.name + " is reserved in strict code", loc: identifier.loc } };
-        if (this.strictLegacyNumber !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
+        const legacy = this.strictLegacyLiteral;
+        if (legacy !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: certifyStrictSyntax
-                ? { kind: "syntax-error", ruleCode: "strict-legacy-number" }
-                : { kind: "unsupported-syntax", capabilityCode: "parse.strict-legacy-number" },
-            diagnostic: { phase: "parse", name: "SyntaxError", message: "legacy numeric literal in strict code", loc: this.strictLegacyNumber } };
+                ? { kind: "syntax-error", ruleCode: legacy.kind === "number" ? "strict-legacy-number" : "strict-legacy-escape" }
+                : { kind: "unsupported-syntax", capabilityCode: legacy.kind === "number" ? "parse.strict-legacy-number" : "parse.strict-legacy-escape" },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: legacy.kind === "number" ? "legacy numeric literal in strict code" : "legacy string escape in strict code", loc: legacy.loc } };
         // Preserve the ordinary first-failure projection, including interleaved
         // catch/conflict checks. The audit below has a separate global veto.
         // No conflicts are reported until all grammar/resource checks and every
