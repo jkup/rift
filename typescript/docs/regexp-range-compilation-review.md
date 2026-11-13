@@ -54,8 +54,10 @@ path for ranges of at most 256 code points and uses interval lookup above that
 bound in Unicode mode. This caps per-range expansion while retaining the measured
 small-range path; 256 is a conservative bound, not a claimed optimal threshold.
 The full Unicode range then compiles in four charged steps, while ASCII and
-non-Unicode counts remain unchanged. Revised native performance and full
-regression acceptance are still pending.
+non-Unicode counts remain unchanged. Revised alternating native comparisons have
+eight of nine medians equal to baseline at 7 ms and one at 7.5 ms, with identical
+semantic transcripts and charged matching work. No consistent small-pattern
+slowdown remains in this sample; full regression acceptance is still pending.
 
 Evidence: `build/regexp-range-cost-review/observations.json` retains all twelve
 Rift observations, source hashes, expected outputs and the native executable

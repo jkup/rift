@@ -3630,3 +3630,15 @@ Session60982 reruns all 991 Node cases with original historical tests unchanged;
 session44993 builds/runs the revised native benchmark. Any expectation migration
 waits for those results. Canonical session42456 remains live, with 75/471 gates
 recorded and no failures at this checkpoint. Weekly usage is 64% used.
+
+2026-11-13 The hybrid range benchmark passed its fresh native gate. Three
+alternating baseline/successor rounds preserve identical matches, compiler work
+for small ranges and matching-step transcripts; eight of nine native medians
+are 7 ms in both, with one successor median at 7.5 ms. No consistent regression
+remains in this bounded sample; no general throughput claim is made.
+Session69819 builds all 15 fresh range tooling drivers with one worker, then
+runs the complete 296-test tooling suite and producer/envelope controls. Its
+inputs remain frozen until terminal completion. Session60982 continues the
+full hybrid Node suite; preserve any historical budget failure for explicit
+review after tooling finishes. Canonical session42456 remains active at 81/471
+recorded native gates, zero failures at this checkpoint.
