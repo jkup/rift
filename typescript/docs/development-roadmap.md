@@ -148,9 +148,21 @@ ten probes and the Node corpus run pass. The 468-entry native matrix is active.
 [Scoped RegExp modifiers](regexp-modifiers-review.md) are the next isolated
 successor. The C++ binary supports the reviewed scoped examples; its unscoped
 and duplicate-flag extensions remain outside ECMAScript admission. Rift's
-isolated implementation passes all 145 controls on both hosts and focused native
-static gates. Full regression/tooling remains pending, and canonical promotion
-waits for lexical acceptance.
+isolated implementation is READY: 962 Node guests, all 145 controls on both
+hosts, native static gates and 296 tooling tests pass. Its one historical
+expectation migration retains the original test and failure evidence. Canonical
+promotion waits for lexical acceptance.
+
+The [Date timezone review](date-named-zone-review.md) replaces the unsuitable
+host local-time boundary with the accepted IANA provider. Pure Date conversion
+helpers are READY with 963 Node guests and the required native/tooling checks.
+The complete Realm-configured Date successor passes focused native tests and
+58 controls on each host; its 964-case Node and fresh tooling checks are active.
+Historical offset seconds, setter coercion order, range edges and defining-Realm
+behavior have explicit expectations. UTC remains the default. TS-529 will expose
+a leading `--time-zone <identifier>` CLI option after the Realm feature is READY;
+invalid configuration must fail before source I/O or execution. Neither Date
+successor is included in the accepted canonical counts above.
 
 ## Historical feature checkpoints
 

@@ -6231,6 +6231,23 @@ fresh native static gates and complete regression/tooling checks. Exclude system
 timezone discovery, Intl and CLI options; CLI configuration is a later bounded
 task after these semantics pass. Canonical promotion waits for prior acceptance.
 
+## TS-529 — CLI Date timezone selection
+
+**blocked on TS-528 READY; scope reviewed**. Owner: coordinator, 2026-11-13.
+Add an optional leading `--time-zone <identifier>` to the existing file and
+`-e <source>` forms. Preserve UTC by default and the current file/source meaning
+after the optional prefix. Validate argument shape and the strict timezone
+identifier before reading a file or executing guest source. Invalid configuration
+returns usage status 64 with a clear diagnostic, not internal-fault status 70.
+Use the Realm setting without mutating TZ or enabling system zone discovery.
+Own src/cli.ts, tools/run-guests.mjs and README.md in an isolated successor;
+preserve the original two usage expectations when updating their text.
+Cover file and inline execution, aliases/fixed offsets, gaps/folds, invalid and
+missing zone values, extra arguments, unchanged UTC defaults and existing error
+statuses on both hosts. Require a fresh CLI static/zero-dynamic gate and complete
+successor regression/tooling validation. No runtime semantics or general argument
+parser refactor. Canonical promotion still waits for preceding acceptance.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 Resume checkpoint: the restart preserved 299/468 native gate records and the
