@@ -6233,6 +6233,16 @@ task after these semantics pass. Canonical promotion waits for prior acceptance.
 
 ## Canonical lexical milestone sequence (2026-11-13)
 
+Resume checkpoint: the restart preserved 299/468 native gate records and the
+1079-input freeze verifies. Session52275 resumes that matrix, reusing only
+successful gates whose executable hashes still match. TS-528 focused native
+and diagnostic builds pass; all 58 original review controls pass on each host.
+Ownership and predecessor checks pass for its 13 files and 1085 frozen inputs.
+Session11481 reruns the interrupted 964-case Node regression with the original
+partial log retained. Session22560 builds 15 fresh tooling drivers and then runs
+296 tooling tests. No canonical engine inputs changed during restart recovery.
+The Date feature remains unaccepted pending these checks and later integration.
+
 After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516,
 TS-519 and TS-521 in that order as one bounded milestone. All five must have verified READY
 snapshots before promotion starts. Verify each predecessor's canonical source

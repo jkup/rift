@@ -3456,3 +3456,12 @@ tooling binary proof is explicit; only unchanged inputs reuse prior builds.
 TS-528 claims complete Realm-configured local Date semantics in an isolated
 successor, retaining UTC as the default and deferring CLI configuration. Current
 canonical lexical validation remains untouched (231/468 native checkpoints).
+
+2026-11-13 restart recovery: canonical frozen inputs verify and 299 native
+checkpoint records survived. Session52275 resumes the remaining gates with
+executable-hash verification; no old process remained running. TS-528's focused
+native builds and 58 controls per host pass. Full Node regression restarts in
+session11481 with its interrupted log preserved; fresh tooling validation runs
+in session22560. The prepared READY verifier checks ownership, predecessor,
+source and executable hashes, both-host controls and complete required reports.
+Its ownership-only check passes; full READY acceptance is still pending.
