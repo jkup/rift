@@ -6428,6 +6428,21 @@ This avoids a redundant intermediate native matrix while retaining final-source
 coverage of both changes. The earlier single-lookbehind helpers remain retained;
 use the combined matcher helpers for this sequence.
 
+The coordinator may extend this cohort with TS-539 before the matcher matrix
+starts, provided Array species first has a verified READY snapshot: all 992 Node
+guests, 296 tooling and 35 runner tests; both-host focused/reference controls;
+fresh static-only/zero-dynamic gates and native execution for every owned test
+driver plus the CLI/probe; and explicit review of all original expectation
+migrations. Its predecessor must still match the READY Unicode-range snapshot.
+Promote each feature in a separate commit after modifiers/Date and TS-532 are
+published. The extended final freeze requires 992 guests on both hosts, 474 fresh
+native gates, 296 tooling tests, 35 runner checks, ten probes, typechecking and
+the unchanged 225-file corpus. No feature is accepted or pushed before that
+combined validation passes. If TS-539 is not READY when the matcher matrix starts,
+retain the existing 991/473 matcher sequence and integrate species afterward.
+This conditional extension avoids a second nearly identical full rebuild without
+dropping focused checks or final-source validation. Do not alter a running freeze.
+
 
 TS-534 READY verification passes: 991 Node guests, 34 controls per host,
 296 tooling tests, 35 runner checks and 19 fresh native static/zero-dynamic
@@ -6533,7 +6548,7 @@ creation must be guest TypeError rather than a fresh-array invariant fault.
 
 ## TS-539 — Array species construction
 
-**in progress — isolated implementation; integration waits for accepted matcher milestone**. Owner: coordinator.
+**in progress — isolated implementation; integration follows the guarded combined-milestone plan**. Owner: coordinator.
 Implement the reviewed ArraySpeciesCreate boundary for all seven callers and
 install the Array species getter atomically. Own src/array-species.ts,
 src/array-map.ts, src/builtins/array.ts, array-copy.ts, array-iteration.ts,

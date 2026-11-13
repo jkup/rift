@@ -3866,3 +3866,13 @@ Its read-only preflight passes with native proof pending. After session88122 is
 terminal0, run it with --apply, then build/check-species-amended-node.mjs for
 992 guests/35 runner/296 tooling checks. Both helpers pass syntax checks.
 Session88122 remains live; canonical checkpoint393/471 still verifies.
+
+2026-11-13 validation scheduling review: TASKS permits a conditional TS-539
+extension of the next matcher cohort, only after its independent READY gates and
+before that matrix starts. Preserve separate feature commits and final992/474
+both-host/static acceptance. If species is not READY, use the existing991/473
+matcher route. This avoids redundant full rebuilds; no current freeze changed.
+Existing matcher-only preparation/acceptance helpers remain unchanged and must
+not be used for the extended cohort. Array species behavior documentation is
+drafted at build/array-species-docs-draft/array-species.md with acceptance pending.
+Session88122 checkpoint403/471 verifies and the process remains live.
