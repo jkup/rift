@@ -4126,3 +4126,7 @@ TS-548 isolated implementation now typechecks and passes fourteen independent po
 TS-548 follow-up: independent expectation proposals pass; guarded migration and fresh Node/native/tooling helpers are prepared. Initial Node session 3982 and canonical native session 79399 were both polled live. No frozen input has changed and no successor native compilation has started. Native successor review selects 26 static gates and 37 semantic executions, gated on predecessor acceptance on main.
 
 TS-548 migration installed after terminal initial results confirmed exactly the two expected failures. Fresh Node/runner session 31791 is active. Ownership-only READY review passes eight paths and preservation of the original expectations/failure evidence; full native, tooling and canonical acceptance remain pending. Main remains the accepted TS-545 milestone.
+
+TS-549 claimed as a bounded read-only catch review while TS-547 canonical and TS-548 amended Node validation run. Review uses existing hash-verified binaries and does not claim new C++ corpus passes or authorize changes to frozen runtime inputs.
+
+TS-549 review passed fourteen controls on both existing Rift hosts against explicit independent Node outcomes. docs/catch-binding-review.md records the eight valid rejected contexts, existing identifier controls and implementation boundaries. TS-550 optional bindings and TS-551 patterns are queued behind predecessor READY; no implementation or native compilation was started.
