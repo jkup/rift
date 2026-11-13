@@ -4130,3 +4130,5 @@ TS-548 migration installed after terminal initial results confirmed exactly the 
 TS-549 claimed as a bounded read-only catch review while TS-547 canonical and TS-548 amended Node validation run. Review uses existing hash-verified binaries and does not claim new C++ corpus passes or authorize changes to frozen runtime inputs.
 
 TS-549 review passed fourteen controls on both existing Rift hosts against explicit independent Node outcomes. docs/catch-binding-review.md records the eight valid rejected contexts, existing identifier controls and implementation boundaries. TS-550 optional bindings and TS-551 patterns are queued behind predecessor READY; no implementation or native compilation was started.
+
+TS-548 amended Node validation is terminal PASS: 997 guests, 35 runner checks, unchanged expectations and all 995 unaffected raw results preserved. Native successor execution remains gated on TS-547 canonical acceptance/publication. Session 79399 is the sole live validation owner; last checkpoint 37/478 native entries, no failures. TS-550/551 remain queued behind full TS-548 READY.
