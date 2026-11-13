@@ -37,3 +37,13 @@ patterns, iterator-close failures, current caller budgets, defining-Realm
 allocation, async/generator resumption from a different session and cleanup after
 resource exhaustion. Optional catch bindings remain a separate, smaller change;
 they require no pattern initializer or fabricated parameter binding.
+
+Admission boundary follow-up: six additional independent references cover
+suspended defaults/computed keys in declarations, assignment patterns and for-of
+bindings. Node produces the expected outputs. Both hash-verified TS-547 Rift
+hosts reject them explicitly with the existing unsupported yield/await diagnostic;
+no host failure occurred. Evidence: build/binding-suspension-boundary-review/.
+Parser.admitSuspendingBody visits input expressions but does not admit pattern
+initializers or computed keys. This guard must remain until the new continuation
+path handles them; accepting the grammar alone would bypass the current safety
+boundary. These six rejections are unsupported outcomes, not conformance passes.

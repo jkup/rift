@@ -4150,3 +4150,5 @@ TS-550 Node acceptance is terminal PASS: 998 guests/35 runner checks, unchanged 
 TS-553 groups TS-548/550 for publication after separate isolated READY checks and feature commits. One full combined 998/480 canonical suite replaces two nearly identical full rebuilds; all runner/tooling/probe/corpus gates remain. TS-550 cohort native validation may depend on exact TS-548 READY plus accepted TS-547 main, rather than an intermediate TS-548 publication. Use cohort-specific helpers; old individual publication helpers remain unrun.
 
 Cohort-specific helpers are prepared for TS-548/550 without weakening isolated or full combined acceptance. Use check-optional-catch-cohort-native.mjs and promote-optional-catch-cohort.mjs under TS-553; do not run the superseded individual-main prerequisite path. Combined canonical target remains 998/480 with all existing acceptance gates. No runtime source edits were made.
+
+TS-552 follow-up confirms the existing binding-suspension boundary is explicit on both hosts (six controls), rather than a hidden runtime failure. This refines TS-551 planning without changing the current publication cohort or active canonical inputs.
