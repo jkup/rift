@@ -6117,6 +6117,14 @@ session91491 with the validated reduced input closure; its first missing-input
 launch is retained. One old regexp-pattern expectation has an independent
 old/new both-host review; it remains unchanged until frozen tooling finishes.
 
+TS-524 resumed checkpoint: session91491 finished at 961/962. Its sole failure
+is regexp-pattern's historical rejection of `(?i:a)`, matching the retained
+independent migration review. Source remains unchanged pending session56342;
+13/15 tooling builds have passed. The guarded one-test amendment and subsequent
+native/full-Node verification helpers are prepared. Canonical session21360 is
+live with 87/468 verified checkpoints and unchanged frozen inputs. Main remains
+at the accepted TS-509 milestone until combined lexical acceptance completes.
+
 ## Canonical lexical milestone sequence (2026-11-13)
 
 After TS-509 completes combined acceptance, integrate TS-511, TS-514, TS-516,
