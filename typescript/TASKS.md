@@ -6988,7 +6988,9 @@ TS-560's complete Node/probe/runner/corpus stage exited 0: 1002/1002 guests with
 
 ## TS-561 — Measure native validation subprocess durations
 
-**in progress — preparation only**. Owner: coordinator. Add monotonic elapsed durations to each fresh build and coverage process record in the upcoming TS-560 runner, addressing TS-554's missing timing evidence. Own the unlaunched cohort runner preparation, scoped validation-cost documentation and task notes. Do not change frozen runtime inputs, active builds, test counts, verdicts or checkpoint eligibility. These concurrent wall-clock measurements do not authorize caching or establish isolated compiler performance; review the completed cohort records before drawing conclusions.
+**done — compiler-stage timings reviewed; no result reuse**. Owner: coordinator. Add monotonic elapsed durations to each fresh build and coverage process record in the upcoming TS-560 runner, addressing TS-554's missing timing evidence. Own the unlaunched cohort runner preparation, scoped validation-cost documentation and task notes. Do not change frozen runtime inputs, active builds, test counts, verdicts or checkpoint eligibility. These concurrent wall-clock measurements do not authorize caching or establish isolated compiler performance; review the completed cohort records before drawing conclusions.
+
+All 484 compiler entries passed on their first attempt. Independent review verifies executable hashes and finite build/coverage durations: 9,107,498 ms stage wall time with four workers, 30,745,361 ms summed build elapsed time and 5,535,481 ms summed coverage elapsed time. These overlapping durations do not measure CPU time or prove cache savings. Evidence: build/pattern-cohort-rollup-timings-reviewed.json; interpretation: docs/native-validation-reuse-review.md. TS-560 native behavior/tooling/corpus acceptance remains pending.
 
 ## TS-562 — Remaining C++ fixture outcome review
 

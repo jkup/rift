@@ -36,10 +36,17 @@ Evidence: build/native-reuse-review/{reviewed,entries,graph}.json and resolution
 The first review script used the old TypeScript parser API, which is not exported
 by the installed package; the successful compiler trace replaced that attempt.
 
-TS-561 prepares timing collection for the upcoming TS-560 combined run. Each
-fresh build and coverage record will include monotonic `durationMs`, measured
-around the existing subprocess call; final verification requires finite,
-nonnegative durations for all entries. The active isolated runs are unchanged.
-These measurements include contention between concurrent workers and describe
-that validation run, not isolated compiler speed. No timing results or cache
-reuse are claimed before the combined run completes.
+TS-561 measured the completed TS-560 compiler stage: all 484 entries passed on
+their first attempt, in 9,107,498 ms (about 2 hours 32 minutes) with four workers.
+Summed subprocess elapsed time was 30,745,361 ms for builds and 5,535,481 ms for
+coverage, approximately 85% and 15% of the total. These overlapping durations
+include worker contention; they are neither CPU time nor isolated benchmarks.
+The slowest combined entry was `test/regexp-literals.ts` at 90,861 ms. The runner
+removed 30,852,948,152 bytes of regenerable LLVM output after successful checks.
+
+The independent timing review verifies all executable hashes and finite,
+nonnegative build/coverage durations. Evidence is retained in
+`build/pattern-cohort-rollup-timings-reviewed.json`, including hashes of the
+source snapshot, final results and complete attempt log. This measures validation
+cost; it does not establish a safe cache key or authorize result reuse. Native
+behavioral and corpus acceptance remain separate from compiler-stage completion.
