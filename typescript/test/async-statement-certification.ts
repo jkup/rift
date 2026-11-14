@@ -49,6 +49,7 @@ for (const strict of [false, true]) {
 }
 for (const text of [
     "if(false)function f(){}",
+    "label:function f(){}",
     "while(false){async function f(){}}", "do{async function f(){}}while(false);",
     "for(;false;){async function f(){}}", "for(var x in {}){async function f(){}}",
     "for(var x of []){async function f(){}}", "if(false){async function f(){}}",
@@ -60,7 +61,6 @@ for (const text of [
     check(prepareBoundedScript({ id: "valid", text }, new Realm((_line: string) => {}, "script")).kind === "ready", "valid neighbor: " + text);
 }
 for (const text of [
-    "label:function f(){}",
     "while(false)function* f(){}", "while(false)async function* f(){}",
     "while(false)class C{}", "while(false)async function f(){};import x from 'x'",
     "while(false)async function f(){};with({}){}",

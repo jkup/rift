@@ -403,6 +403,10 @@ class Parser {
     }
     branch(context: LexicalStatementContext): Stmt {
         const keyword = this.current();
+        let labelledEnd = this.index;
+        while (this.labelAhead(labelledEnd)) labelledEnd += 2;
+        if (labelledEnd !== this.index && this.token(labelledEnd).text === "function")
+            this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "labelled functions require a statement list", keyword.loc);
         if ((context === "if-consequent" || context === "if-alternate") && this.structuralPlan() &&
             this.at("function") && this.token(this.index + 1).text !== "*") {
             const declaration = this.statement();
@@ -438,7 +442,7 @@ class Parser {
             const iteration = token.kind === "word" && token.escaped !== true && (token.text === "for" || token.text === "while" || token.text === "do");
             this.labels.push({ name, iteration });
             const auditAsync = this.auditAsyncDeclarationStatement();
-            if (this.letDeclarationAhead() || this.at("const") || this.at("function") || (this.asyncFunctionAhead() && !auditAsync) || this.at("class"))
+            if (this.letDeclarationAhead() || this.at("const") || (this.at("function") && this.token(this.index + 1).text === "*") || (this.asyncFunctionAhead() && !auditAsync) || this.at("class"))
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "labelled declarations are unsupported", this.current().loc);
             const body = this.statement();
             this.labels.pop();

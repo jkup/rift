@@ -313,6 +313,7 @@ class DeclarationCollector {
     readonly restrictedAssignments: { name: string; scope: number; loc: Location }[] = [];
     readonly initializerArguments: Location[] = [];
     readonly strictConditionalFunctions: Location[] = [];
+    readonly strictLabelledFunctions: Location[] = [];
     readonly scopes: MutableScope[] = [];
     readonly declarations: Declaration[] = [];
     readonly functions: PlannedFunction[] = [];
@@ -545,6 +546,7 @@ class DeclarationCollector {
             case "do-while": this.expression(node.test, scope, variableScope); this.statement(node.body, scope, variableScope); break;
             case "labelled":
                 this.strictIdentifier(node.name, scope, node.loc);
+                if (node.body.kind === "function" && this.scopes[scope].strict) this.strictLabelledFunctions.push(node.body.loc);
                 this.statement(node.body, scope, variableScope);
                 break;
             case "break": case "continue":
@@ -744,6 +746,9 @@ class DeclarationCollector {
         }
     }
     project(ignoreStrictParameters = false, certifyStrictSyntax = false): DeclarationPlanResult {
+        if (this.strictLabelledFunctions.length !== 0) return { kind: "blocked", goal: "Script", unit: this.unit,
+            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "labelled function declarations are forbidden in strict code", loc: this.strictLabelledFunctions[0] } };
         if (this.strictConditionalFunctions.length !== 0) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: "conditional function declarations are forbidden in strict code", loc: this.strictConditionalFunctions[0] } };

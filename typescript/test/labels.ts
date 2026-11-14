@@ -59,11 +59,19 @@ for (const text of [
     "a:{a:;}", "break missing;", "while(true){continue missing;}", "a:{continue a;}",
     "a:{while(true){continue a;}}", "a:if(true)while(true){continue a;}",
     "a:while(true){function f(){break a;}}", "a:while(true){var f=()=>{continue a;};}",
-    "a:while(true){var o={m(){break a;}};}", "a:let x;", "a:const x=1;", "a:function f(){}",
+    "a:while(true){var o={m(){break a;}};}", "a:let x;", "a:const x=1;",
     "a:{break;}",
 ]) {
     const prepared = prepareBoundedScript({ id: "invalid-label", text }, fresh());
     check(prepared.kind === "blocked" && prepared.rejection.kind === "unsupported-syntax" && prepared.diagnostic.phase === "parse", text);
+}
+{
+    const realm = fresh();
+    const prepared = prepareBoundedScript({id: "labelled-function", text: "a:function f(){}"}, realm);
+    check(prepared.kind === "ready", "labelled function prepares");
+    if (prepared.kind === "ready") check(evaluateScript(createScriptSession(), prepared.record).completion.type === "normal", "labelled function executes");
+    const property = realm.globalObject.getOwnProperty("f");
+    check(property !== undefined && property.kind === "data" && property.value.kind === "object", "labelled function binding");
 }
 check(parse("a:{break a;}").error !== null, "legacy label grammar stays excluded");
 const bounded = run("outer:while(true){try{continue outer;}finally{1;}}", 100);
