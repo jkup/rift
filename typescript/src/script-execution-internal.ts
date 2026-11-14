@@ -186,12 +186,14 @@ class BlockActivation extends ScriptDeclarativeEnvironment {
 export type ScriptBlockEnvironmentCompletion = { type: "normal"; environment: ScriptDeclarativeEnvironment } | ThrowCompletion;
 // A distinct private activation prevents ordinary block setup from consuming it.
 class CatchActivation extends ScriptDeclarativeEnvironment {
+    readonly simpleParameter: boolean;
     #key: ActivationKey;
     #scope: number;
     #outer: ScriptEnvironment;
     #phase: "fresh" | "started" | "complete" = "fresh";
-    constructor(key: ActivationKey, scope: number, outer: ScriptEnvironment) {
+    constructor(key: ActivationKey, scope: number, outer: ScriptEnvironment, simpleParameter: boolean) {
         super(outer); this.#key = key; this.#scope = scope; this.#outer = outer;
+        this.simpleParameter = simpleParameter;
     }
     begin(key: ActivationKey, scope: number): void {
         if (key !== this.#key || scope !== this.#scope || this.outer !== this.#outer || this.#phase !== "fresh")
@@ -340,11 +342,18 @@ class ExecutableScript {
                     throw new Error("invalid catch node identity");
                 const node = entry.node;
                 const parameter = scope.catchParameter;
-                if (parameter === null || parameter !== node.parameter || scope.start !== node.catchStart || scope.end !== node.catchEnd ||
+                if (node.parameter === null) throw new Error("catch scope without parameter");
+                const sites = "pattern" in node.parameter ? node.parameter.bindings : [node.parameter];
+                if ("pattern" in node.parameter) {
+                    if (parameter !== null || scope.catchBindings !== node.parameter.bindings) throw new Error("invalid catch pattern identity");
+                } else if (parameter === null || parameter !== node.parameter || scope.catchBindings !== undefined) throw new Error("invalid catch parameter identity");
+                if (scope.start !== node.catchStart || scope.end !== node.catchEnd ||
                     scope.parent === null || scope.strict !== plan.scopes[scope.parent].strict ||
                     scope.formals.length !== 0 || scope.lexicalDeclarations.length !== 0 || scope.varDeclarations.length !== 0 ||
-                    scope.varNames.length !== 0 || scope.lexicalNames.length !== 1 || scope.lexicalNames[0] !== parameter.name)
+                    scope.varNames.length !== 0 || scope.lexicalNames.length !== sites.length)
                     throw new Error("invalid catch metadata");
+                for (let i = 0; i < sites.length; i++)
+                    if (scope.lexicalNames[i] !== sites[i].name) throw new Error("invalid catch binding name");
                 scopes.set(node, scope.id);
             } else {
                 if (entry.node === null || (entry.node.kind !== "block" && entry.node.kind !== "function") || entry.node.kind !== scope.kind || entry.body !== entry.node.body || scopes.has(entry.node))
@@ -360,7 +369,7 @@ class ExecutableScript {
                 }
                 scopes.set(entry.node, scope.id);
             }
-            if (scope.kind !== "catch" && scope.catchParameter !== null) throw new Error("foreign catch parameter");
+            if (scope.kind !== "catch" && (scope.catchParameter !== null || scope.catchBindings !== undefined)) throw new Error("foreign catch parameter");
             if (scope.parent !== null) {
                 const parent = plan.scopes[scope.parent];
                 if (scope.kind === "switch" || parent.kind === "switch") {
@@ -454,24 +463,32 @@ class ExecutableScript {
     static activateCatch(record: ExecutableScript, node: TryCatchStmt, outer: ScriptEnvironment, value: Value,
         context: OperationContext, key: ExecutionKey): ScriptBlockEnvironmentCompletion {
         if (node.parameter === null) throw new Error("catch activation requires a parameter");
+        const parameter = node.parameter;
+        const pattern = "pattern" in parameter;
         const state = ExecutableScript.state(record, key);
         const scopeId = ExecutableScript.scopeOfNode(record, node, key);
         const scope = state.plan.scopes[scopeId], entry = state.nodes.scopes.get(scopeId);
-        if (scope.kind !== "catch" || entry === undefined || entry.node !== node || entry.body !== node.handler.body || scope.catchParameter !== node.parameter)
+        if (scope.kind !== "catch" || entry === undefined || entry.node !== node || entry.body !== node.handler.body ||
+            ("pattern" in parameter ? scope.catchBindings !== parameter.bindings : scope.catchParameter !== parameter))
             throw new Error("invalid catch activation association");
         record.#validateEnvironment(outer, context);
         const allocation = context.tick(node.catchLoc);
         if (allocation.type === "throw") { const abrupt: ThrowCompletion = allocation; return abrupt; }
-        const activation = new CatchActivation(record.#activationKey, scopeId, outer);
+        const activation = new CatchActivation(record.#activationKey, scopeId, outer, !pattern);
         activation.begin(record.#activationKey, scopeId);
-        const creation = context.tick(node.parameter.loc);
-        if (creation.type === "throw") { const abrupt: ThrowCompletion = creation; return abrupt; }
-        const created = activation.createMutableBinding(node.parameter.name, node.parameter.loc);
-        if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
-        const initialization = context.tick(node.parameter.loc);
-        if (initialization.type === "throw") { const abrupt: ThrowCompletion = initialization; return abrupt; }
-        const initialized = activation.initializeBinding(node.parameter.name, value, context, node.parameter.loc);
-        if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+        const sites = "pattern" in parameter ? parameter.bindings : [parameter];
+        for (const site of sites) {
+            const creation = context.tick(site.loc);
+            if (creation.type === "throw") { const abrupt: ThrowCompletion = creation; return abrupt; }
+            const created = activation.createMutableBinding(site.name, site.loc);
+            if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
+        }
+        if (!("pattern" in parameter)) {
+            const initialization = context.tick(parameter.loc);
+            if (initialization.type === "throw") { const abrupt: ThrowCompletion = initialization; return abrupt; }
+            const initialized = activation.initializeBinding(parameter.name, value, context, parameter.loc);
+            if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+        }
         activation.complete(record.#activationKey, scopeId);
         return { type: "normal", environment: activation };
     }
@@ -1111,7 +1128,7 @@ class ExecutableScript {
             const tick = context.tick(site.loc);
             if (tick.type === "throw") return tick;
             if (current.kind === "global") throw new Error("eval variable environment is not an ancestor");
-            if (!skipCatch || !(current instanceof CatchActivation)) {
+            if (!skipCatch || !(current instanceof CatchActivation) || !current.simpleParameter) {
                 const present = current.hasBinding(site.name, site.loc);
                 if (present.type === "throw" || present.value) return present;
             }
@@ -1148,6 +1165,7 @@ class ExecutableScript {
             consumedUnits: plan.consumedUnits, strictness: copyStrictness(plan.strictness),
             scopes: plan.scopes.map(scope => ({ id: scope.id, kind: scope.kind, parent: scope.parent,
                 catchParameter: scope.catchParameter === null ? null : copySite(scope.catchParameter),
+                ...(scope.catchBindings === undefined ? {} : { catchBindings: scope.catchBindings.map(copySite) }),
                 start: scope.start, end: scope.end, strict: scope.strict, formals: scope.formals.map(copySite),
                 lexicalDeclarations: scope.lexicalDeclarations.slice(), varDeclarations: scope.varDeclarations.slice(),
                 lexicalNames: scope.lexicalNames.slice(), varNames: scope.varNames.slice() })),
@@ -1307,7 +1325,12 @@ type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string;
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number;
     selection: { statement: SwitchStmt; discriminant: Value; nextClause: number; fallback: number } | null };
 type AsyncIteratorCloseFrame = { kind: "async-close"; frame: ScriptFrameSnapshot; loc: Location; depth: number; pending: GeneratorAbrupt; abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null };
-type GeneratorFrame = GeneratorForSource | AsyncIteratorCloseFrame | GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
+type PatternFrameBase = { frame: ScriptFrameSnapshot; depth: number; environment: ScriptEnvironment };
+type GeneratorPatternValue = PatternFrameBase & { kind: "pattern-value"; pattern: DestructuringPattern; initializer: Expr | null; value: Value };
+type GeneratorPatternArray = PatternFrameBase & { kind: "pattern-array"; pattern: ArrayPattern; iterator: IteratorRecord; index: number };
+type GeneratorPatternObject = PatternFrameBase & { kind: "pattern-object"; pattern: ObjectPattern; input: Value; object: GuestObject; excluded: Set<PropertyKey>; index: number };
+type GeneratorPattern = GeneratorPatternValue | GeneratorPatternArray | GeneratorPatternObject;
+type GeneratorFrame = GeneratorPattern | GeneratorForSource | AsyncIteratorCloseFrame | GeneratorSwitch | GeneratorSequence | GeneratorLoop | GeneratorForLoop | GeneratorCatch | GeneratorFinally | GeneratorCleanup | GeneratorForOf | GeneratorForIn | GeneratorLabel;
 type ExecutionContinuation = { asyncGenerator?: true; sequences: GeneratorFrame[]; expressionFrames: GeneratorExpressionFrame[]; yieldLoc: Location | null; receiver: GeneratorYieldReceiver | null; delegate: { iterator: IteratorRecord; asynchronous: AsyncDelegate | null; loc: Location; depth: number } | null };
 type ContinuationResult = ValueCompletion | { type: "async-delegate-yield"; value: Value } | { type: "yield"; result: Value } | { type: "await"; value: Value; loc: Location; depth: number };
 type ExpressionContinuationResult = ContinuationResult | { type: "suspended-delegate" };
@@ -2889,6 +2912,10 @@ class ExecutionEngine {
                     if (created.type === "throw") { this.#capture(created); return created; }
                     const scopeId = ExecutableScript.scopeOfNode(saved.record, stmt, executionKey);
                     this.#frame = { ...saved, scopeId, lexical: created.environment };
+                    if ("pattern" in stmt.parameter) {
+                        const initialized = this.#initializePattern(stmt.parameter.pattern, null, result.value, created.environment, null);
+                        if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; this.#capture(abrupt); return abrupt; }
+                    }
                     return updateScriptEmpty(this.#statement(stmt.handler), { kind: "value", value: UNDEFINED });
                 } finally { this.#frame = saved; }
             }
@@ -4390,6 +4417,113 @@ class ExecutionEngine {
             value = computed.value;
         }
     }
+    #patternProperty(continuation: ExecutionContinuation, frame: GeneratorPatternObject, value: Value): ValueCompletion {
+        const property = frame.pattern.properties[frame.index - 1];
+        const key = toPropertyKey(value, this.context, property.key.loc);
+        if (key.type === "throw") return key;
+        frame.excluded.add(key.value);
+        const obtained = frame.object.internalGet(key.value, frame.input, this.context, property.key.loc);
+        if (obtained.type === "throw") return obtained;
+        continuation.sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1,
+            environment: frame.environment, pattern: property.element.pattern, initializer: property.element.initializer, value: obtained.value });
+        return normal();
+    }
+    #advancePattern(continuation: ExecutionContinuation, frame: GeneratorPattern, callerDepth: number): ContinuationResult | null {
+        const sequences = continuation.sequences;
+        const fail = (result: ThrowCompletion): ContinuationResult | null => {
+            this.#capture(result);
+            return this.#unwindContinuation(continuation, result, callerDepth);
+        };
+        if (this.depth > 256) return fail(resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", frame.pattern.loc));
+        if (frame.kind === "pattern-value") {
+            const pattern = frame.pattern;
+            if (frame.value.kind === "undefined" && frame.initializer !== null) {
+                const expression = frame.initializer;
+                frame.initializer = null;
+                return this.#startSuspendingExpression(continuation, expression, { kind: "pattern-default" }, callerDepth,
+                    pattern.kind === "binding" ? pattern.site.name : null);
+            }
+            sequences.pop();
+            if (pattern.kind === "array-pattern") {
+                const acquired = getIterator(frame.value, this.context, pattern.loc);
+                if (acquired.type === "throw") return fail(acquired);
+                sequences.push({ kind: "pattern-array", frame: frame.frame, depth: frame.depth, environment: frame.environment,
+                    pattern, iterator: acquired.value, index: 0 });
+            } else if (pattern.kind === "object-pattern") {
+                const boxed = toObject(frame.value, this.context, pattern.loc);
+                if (boxed.type === "throw") return fail(boxed);
+                sequences.push({ kind: "pattern-object", frame: frame.frame, depth: frame.depth, environment: frame.environment,
+                    pattern, input: frame.value, object: boxed.value, excluded: new Set<PropertyKey>(), index: 0 });
+            } else {
+                if (pattern.kind !== "binding") throw new Error("assignment target in catch binding");
+                const initialized = frame.environment.kind === "global"
+                    ? frame.environment.record.initializeBinding(pattern.site.name, frame.value, this.context, pattern.loc)
+                    : frame.environment.initializeBinding(pattern.site.name, frame.value, this.context, pattern.loc);
+                if (initialized.type === "throw") return fail(initialized);
+            }
+            return null;
+        }
+        if (frame.kind === "pattern-object") {
+            if (frame.index < frame.pattern.properties.length) {
+                const property = frame.pattern.properties[frame.index++];
+                const tick = this.context.tick(property.key.loc);
+                if (tick.type === "throw") return fail(tick);
+                return this.#startSuspendingExpression(continuation, property.key, { kind: "pattern-key" }, callerDepth);
+            }
+            sequences.pop();
+            if (frame.pattern.rest !== null) {
+                const rest = this.context.realm.createObject();
+                const copied = copyDataProperties(rest, { kind: "object", object: frame.object }, frame.excluded, this.context, frame.pattern.rest.loc);
+                if (copied.type === "throw") return fail(copied);
+                sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1, environment: frame.environment,
+                    pattern: frame.pattern.rest, initializer: null, value: { kind: "object", object: rest } });
+            }
+            return null;
+        }
+        if (frame.index < frame.pattern.elements.length) {
+            const element = frame.pattern.elements[frame.index++];
+            const tick = this.context.tick(frame.pattern.loc);
+            if (tick.type === "throw") return fail(tick);
+            if (element === null) {
+                if (!frame.iterator.done) {
+                    const skipped = iteratorStep(frame.iterator, this.context, frame.pattern.loc);
+                    if (skipped.type === "throw") return fail(skipped);
+                }
+                return null;
+            }
+            let value: Value = UNDEFINED;
+            if (!frame.iterator.done) {
+                const next = iteratorStepValue(frame.iterator, this.context, element.pattern.loc);
+                if (next.type === "throw") return fail(next);
+                value = next.value;
+            }
+            sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1, environment: frame.environment,
+                pattern: element.pattern, initializer: element.initializer, value });
+            return null;
+        }
+        if (frame.index === frame.pattern.elements.length && frame.pattern.rest !== null) {
+            frame.index++;
+            const rest = this.context.realm.createArray();
+            let index = 0;
+            while (!frame.iterator.done) {
+                const next = iteratorStepValue(frame.iterator, this.context, frame.pattern.rest.loc);
+                if (next.type === "throw") return fail(next);
+                if (next.done) break;
+                const defined = rest.defineOwnProperty(String(index++), { value: next.value, writable: true, enumerable: true, configurable: true }, this.context, frame.pattern.rest.loc);
+                if (defined.type === "throw") return fail(defined);
+                if (!defined.value) throw new Error("fresh catch rest array invariant");
+            }
+            sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1, environment: frame.environment,
+                pattern: frame.pattern.rest, initializer: null, value: { kind: "object", object: rest } });
+            return null;
+        }
+        sequences.pop();
+        if (!frame.iterator.done) {
+            const closed = iteratorCloseNormally(frame.iterator, this.context, frame.pattern.loc);
+            if (closed.type === "throw") return fail(closed);
+        }
+        return null;
+    }
     #startSuspendingExpression(continuation: ExecutionContinuation, expression: Expr, receiver: GeneratorYieldReceiver | null, callerDepth: number, name: string | null = null): ContinuationResult | null {
         continuation.receiver = receiver;
         const evaluated = this.#evaluateSuspendingExpression(continuation, expression, UNDEFINED, callerDepth, name);
@@ -4422,6 +4556,17 @@ class ExecutionEngine {
             const failure = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", continuation.yieldLoc);
             this.#capture(failure);
             return failure;
+        }
+        if (receiver.kind === "pattern-default") {
+            if (frame.kind !== "pattern-value") throw new Error("default without pattern frame");
+            frame.value = value;
+            return null;
+        }
+        if (receiver.kind === "pattern-key") {
+            if (frame.kind !== "pattern-object") throw new Error("key without pattern object");
+            const result = this.#patternProperty(continuation, frame, value);
+            if (result.type === "throw") { this.#capture(result); return this.#unwindContinuation(continuation, result, callerDepth); }
+            return null;
         }
         if (receiver.kind === "switch-selector") {
             if (frame.kind !== "switch" || frame.selection === null) throw new Error("selector without switch frame");
@@ -4535,6 +4680,23 @@ class ExecutionEngine {
         const sequences = continuation.sequences;
         while (sequences.length !== 0) {
             const boundary = sequences.pop()!;
+            if (boundary.kind === "pattern-array") {
+                this.#frame = boundary.frame;
+                this.depth = callerDepth + boundary.depth;
+                if (!boundary.iterator.done) {
+                    if (completion.type === "throw") {
+                        const pending = completion, abrupt = this.#abrupt, source = this.#lastAbrupt;
+                        completion = iteratorCloseOnThrow(boundary.iterator, pending, this.context, boundary.pattern.loc);
+                        if (completion === pending) { this.#abrupt = abrupt; this.#lastAbrupt = source; }
+                        else this.#capture(completion);
+                    } else {
+                        const closed = iteratorCloseNormally(boundary.iterator, this.context, boundary.pattern.loc);
+                        if (closed.type === "throw") { this.#capture(closed); completion = closed; }
+                    }
+                }
+                if (completion.type === "throw" && fatalPromiseCompletion(completion)) return completion;
+                continue;
+            }
             if (boundary.kind === "iterator") {
                 this.#frame = boundary.frame;
                 this.depth = callerDepth + boundary.depth;
@@ -4599,6 +4761,9 @@ class ExecutionEngine {
             const scopeId = ExecutableScript.scopeOfNode(boundary.frame.record, boundary.statement, executionKey);
             const frame = { ...boundary.frame, scopeId, lexical: created.environment };
             sequences.push({ kind: "sequence", frame, body: [boundary.statement.handler], nextStatement: 0, depth: boundary.depth });
+            if ("pattern" in boundary.statement.parameter)
+                sequences.push({ kind: "pattern-value", frame, depth: boundary.depth + 1, environment: created.environment,
+                    pattern: boundary.statement.parameter.pattern, initializer: null, value: completion.value });
             return null;
         }
         if (completion.type === "throw") return completion;
@@ -4721,6 +4886,11 @@ class ExecutionEngine {
                 const sequence = sequences[sequences.length - 1];
                 this.#frame = sequence.frame;
                 this.depth = callerDepth + sequence.depth;
+                if (sequence.kind === "pattern-value" || sequence.kind === "pattern-array" || sequence.kind === "pattern-object") {
+                    const result = this.#advancePattern(continuation, sequence, callerDepth);
+                    if (result !== null) return result;
+                    continue;
+                }
                 if (sequence.kind === "switch") {
                     const selection = sequence.selection;
                     if (selection === null) { sequences.pop(); continue; }

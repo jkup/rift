@@ -4,6 +4,8 @@ import type { ScriptBindingReference, ScriptEnvironment } from "./script-environ
 import type { DestructuringPattern, Location, Stmt, SwitchStmt, ForStmt } from "./syntax.js";
 
 export type GeneratorYieldReceiver = { kind: "return" }
+    | { kind: "pattern-default" }
+    | { kind: "pattern-key" }
     | { kind: "async-return" }
     | { kind: "loop-test" }
     | { kind: "for-update" }

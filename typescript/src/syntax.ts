@@ -12,7 +12,8 @@ export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[]; synthetic?
 export type SwitchClause = { loc: Location; start: number; end: number; test: Expr | null; body: Stmt[] };
 export type CaseBlock = { loc: Location; start: number; end: number; clauses: SwitchClause[]; body: Stmt[] };
 export type SwitchStmt = { kind: "switch"; loc: Location; discriminant: Expr; caseBlock: CaseBlock };
-export type TryCatchStmt = { kind: "try-catch"; loc: Location; block: BlockStmt; parameter: DeclarationSite | null;
+export type CatchBindingPattern = { readonly pattern: ArrayPattern | ObjectPattern; readonly bindings: DeclarationSite[] };
+export type TryCatchStmt = { kind: "try-catch"; loc: Location; block: BlockStmt; parameter: DeclarationSite | CatchBindingPattern | null;
     catchLoc: Location; catchStart: number; catchEnd: number; handler: BlockStmt };
 export type TryFinallyStmt = { kind: "try-finally"; loc: Location; body: BlockStmt | TryCatchStmt; finalizer: BlockStmt };
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };

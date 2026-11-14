@@ -1,4 +1,4 @@
-import type { DeclarationStmt, ForStmt } from "./syntax.js";
+import type { CatchBindingPattern, DeclarationStmt, ForStmt } from "./syntax.js";
 import { isStrictReservedIdentifier } from "./identifier-names.js";
 import { PrivateSyntaxScope, type PrivateSyntaxIssue } from "./private-syntax.js";
 import type { PrivateNameSyntax } from "./syntax.js";
@@ -491,12 +491,18 @@ class Parser {
             if (this.at("finally") && block.kind === "block") return this.finishTry(loc, block);
             const catchToken = this.current();
             this.expect("catch");
-            let parameter: DeclarationSite | null = null;
+            let parameter: DeclarationSite | CatchBindingPattern | null = null;
             if (this.eat("(")) {
-                const token = this.current();
-                const name = this.name();
+                if (this.at("[") || this.at("{")) {
+                    const bindings: ParsedBinding[] = [];
+                    const pattern = this.at("[") ? this.arrayBindingPattern(bindings) : this.objectBindingPattern(bindings);
+                    parameter = { pattern, bindings: bindings.map(binding => binding.site) };
+                } else {
+                    const token = this.current();
+                    const name = this.name();
+                    parameter = { name, start: token.start, end: token.end, loc: token.loc };
+                }
                 this.expect(")");
-                parameter = { name, start: token.start, end: token.end, loc: token.loc };
             }
             const handler = this.statement();
             if (block.kind !== "block" || handler.kind !== "block") {
@@ -970,6 +976,27 @@ class Parser {
             } else if (isSuspendingGeneratorExpression(node.test) || isSuspendingGeneratorExpression(node.consequent) || isSuspendingGeneratorExpression(node.alternate)) node.suspends = true;
         }
     }
+    private admitCatchPattern(pattern: DestructuringPattern, supported: Set<Stmt | Expr>): void {
+        const pending: DestructuringPattern[] = [pattern];
+        while (pending.length !== 0) {
+            const current = pending.pop()!;
+            if (current.kind === "array-pattern") {
+                for (const element of current.elements) {
+                    if (element === null) continue;
+                    pending.push(element.pattern);
+                    if (element.initializer !== null) this.admitGeneratorExpression(element.initializer, supported);
+                }
+                if (current.rest !== null) pending.push(current.rest);
+            } else if (current.kind === "object-pattern") {
+                for (const property of current.properties) {
+                    this.admitGeneratorExpression(property.key, supported);
+                    pending.push(property.element.pattern);
+                    if (property.element.initializer !== null) this.admitGeneratorExpression(property.element.initializer, supported);
+                }
+                if (current.rest !== null) pending.push(current.rest);
+            }
+        }
+    }
     private admitSuspendingBody(body: Stmt[]): void {
         if (this.generatorYields.length !== 0 || this.awaits.length !== 0) {
             const supported = new Set<Stmt | Expr>();
@@ -1006,7 +1033,11 @@ class Parser {
                     pending.push(statement.body);
                 }
                 else if (statement.kind === "try-finally") pending.push(statement.body, statement.finalizer);
-                else if (statement.kind === "try-catch") pending.push(statement.block, statement.handler);
+                else if (statement.kind === "try-catch") {
+                    pending.push(statement.block, statement.handler);
+                    if (statement.parameter !== null && "pattern" in statement.parameter)
+                        this.admitCatchPattern(statement.parameter.pattern, supported);
+                }
                 else if (statement.kind === "if") {
                     this.admitGeneratorExpression(statement.test, supported);
                     pending.push(statement.consequent);

@@ -21,6 +21,7 @@ export type Declaration = {
 export type DeclarationScope = {
   readonly id: number; readonly kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class" | "field-initializer" | "static-block";
   readonly catchParameter: DeclarationSite | null;
+  readonly catchBindings?: readonly DeclarationSite[];
   readonly parent: number | null;
   readonly start: number; readonly end: number;
   readonly strict: boolean;
@@ -77,6 +78,7 @@ export type ParsedBinding = {
 type MutableScope = {
     id: number; kind: "script" | "function" | "block" | "catch" | "switch" | "for-of" | "for-in" | "for-lexical" | "class" | "field-initializer" | "static-block"; parent: number | null;
     catchParameter: DeclarationSite | null;
+    catchBindings?: DeclarationSite[];
     start: number; end: number; strict: boolean; formals: DeclarationSite[];
     lexicalDeclarations: number[]; varDeclarations: number[];
     lexicalNames: string[]; varNames: string[];
@@ -728,9 +730,18 @@ class DeclarationCollector {
                     continue;
                 }
                 const id = this.scope("catch", item.scope, node.catchStart, node.catchEnd, this.scopes[item.scope].strict, []);
-                this.scopes[id].catchParameter = node.parameter;
-                this.strictIdentifier(node.parameter.name, id, node.parameter.loc);
-                this.scopes[id].lexicalNames.push(node.parameter.name);
+                if ("pattern" in node.parameter) {
+                    this.scopes[id].catchBindings = node.parameter.bindings;
+                    for (const site of node.parameter.bindings) {
+                        this.strictIdentifier(site.name, id, site.loc);
+                        this.scopes[id].lexicalNames.push(site.name);
+                    }
+                    this.pattern(node.parameter.pattern, id, item.variableScope);
+                } else {
+                    this.scopes[id].catchParameter = node.parameter;
+                    this.strictIdentifier(node.parameter.name, id, node.parameter.loc);
+                    this.scopes[id].lexicalNames.push(node.parameter.name);
+                }
                 if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: node.handler.body });
                 this.statement(node.handler, id, item.variableScope);
             }
@@ -813,11 +824,18 @@ class DeclarationCollector {
             if (scope.kind === "catch") {
                 const parameter = scope.catchParameter;
                 const handler = this.scopes[scope.id + 1];
-                if (parameter === null || handler.parent !== scope.id) throw new Error("invalid catch scope");
-                if ((!this.bounded && !scope.strict) || handler.lexicalNames.includes(parameter.name) || (!this.bounded && handler.varNames.includes(parameter.name)))
-                    return { kind: "blocked", goal: "Script", unit: this.unit,
+                if (scope.catchBindings !== undefined) {
+                    const conflict = this.catchPatternConflict(scope);
+                    if (conflict !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
                         rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
-                        diagnostic: { phase: "parse", name: "SyntaxError", message: "unsupported catch binding conflict or non-strict catch", loc: parameter.loc } };
+                        diagnostic: { phase: "parse", name: "SyntaxError", message: "catch pattern binding conflict", loc: conflict.loc } };
+                } else {
+                    if (parameter === null || handler.parent !== scope.id) throw new Error("invalid catch scope");
+                    if ((!this.bounded && !scope.strict) || handler.lexicalNames.includes(parameter.name) || (!this.bounded && handler.varNames.includes(parameter.name)))
+                        return { kind: "blocked", goal: "Script", unit: this.unit,
+                            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
+                            diagnostic: { phase: "parse", name: "SyntaxError", message: "unsupported catch binding conflict or non-strict catch", loc: parameter.loc } };
+                }
             }
             const conflict = declarationConflict(scope, this.declarations);
             if (conflict !== null) {
@@ -832,6 +850,18 @@ class DeclarationCollector {
         const legacyBlockFunctions = this.legacyBlockFunctions();
         return legacyBlockFunctions.length === 0 ? plan : { ...plan, legacyBlockFunctions };
     }
+    private catchPatternConflict(scope: MutableScope): DeclarationSite | null {
+        const bindings = scope.catchBindings;
+        if (bindings === undefined) return null;
+        const handler = this.scopes[scope.id + 1];
+        if (scope.catchParameter !== null || handler.parent !== scope.id) throw new Error("invalid catch pattern scope");
+        const names = new Set<string>();
+        for (const site of bindings) {
+            if (names.has(site.name) || handler.lexicalNames.includes(site.name) || handler.varNames.includes(site.name)) return site;
+            names.add(site.name);
+        }
+        return null;
+    }
     private legacyBlockFunctions(): number[] {
         const result: number[] = [];
         for (const declaration of this.declarations) {
@@ -845,6 +875,8 @@ class DeclarationCollector {
             let parent = scope.parent;
             while (eligible && parent !== null) {
                 const enclosing: MutableScope = this.scopes[parent];
+                if (enclosing.catchBindings !== undefined)
+                    for (const site of enclosing.catchBindings) if (site.name === name) eligible = false;
                 for (const id of enclosing.lexicalDeclarations) {
                     const other = this.declarations[id];
                     if (other.site.name === name && other.kind !== "function") eligible = false;
@@ -862,6 +894,8 @@ class DeclarationCollector {
             if (!scope.strict) continue;
             for (const formal of scope.formals) if (formal.name === "arguments" || formal.name === "eval") return formal;
             if (scope.catchParameter !== null && (scope.catchParameter.name === "arguments" || scope.catchParameter.name === "eval")) return scope.catchParameter;
+            if (scope.catchBindings !== undefined)
+                for (const site of scope.catchBindings) if (site.name === "arguments" || site.name === "eval") return site;
         }
         for (const declaration of this.declarations) {
             if (declaration.site.name !== "arguments" && declaration.site.name !== "eval") continue;
@@ -938,6 +972,13 @@ class DeclarationCollector {
             if (scope.kind !== "catch") continue;
             const parameter = scope.catchParameter;
             const handler = this.scopes[scope.id + 1];
+            if (scope.catchBindings !== undefined) {
+                const conflict = this.catchPatternConflict(scope);
+                if (conflict !== null) return { kind: "blocked", reason: "scope-restriction",
+                    rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
+                    diagnostic: { phase: "parse", name: "SyntaxError", message: "catch pattern binding conflict", loc: conflict.loc } };
+                continue;
+            }
             if (parameter === null || handler.parent !== scope.id) throw new Error("invalid catch scope");
             if (handler.lexicalNames.includes(parameter.name)) {
                 return { kind: "blocked", reason: "scope-restriction",
