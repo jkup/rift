@@ -1,6 +1,8 @@
 # Conditional function declarations
 
-TS-547 is an isolated candidate. Native and full canonical acceptance are pending.
+TS-547 is accepted: 996 guests on each host, 478 static-only/zero-dynamic native
+gates, 296 tooling checks, 35 runner checks and ten compiler probes pass. The
+225-file C++ comparison remains unchanged, with 191 completions.
 
 Ordinary function declarations in non-strict if branches receive explicit synthetic
 block nodes. Their scope range is the original function range, without fabricated
