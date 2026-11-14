@@ -13,7 +13,11 @@ focused native compilation and execution, tooling suite and READY review:
 | TS-557 assignments | 1001 | 49 | 57 |
 | TS-559 loops | 1002 | 57 | 65 |
 
-All three require 35 runner and 296 tooling checks. Native builds must pass
+All three require 35 runner and 296 tooling checks. Each also builds four native
+tooling prerequisites: number-radix, return-audit, script-strict-parameter-audit
+and script-strict-parameter-dispatch. These are additional to the feature gates
+in the table; tooling and final review verify their coverage and executable hashes.
+Native builds must pass
 static-only compilation and parsed zero-dynamic coverage. A provisional draft
 cannot be promoted until its predecessor's final validated hashes match its
 recorded base. Any compiler fix that changes a predecessor requires reconciling
