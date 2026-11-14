@@ -104,8 +104,18 @@ const admittedAssignments: { text: string; expected: string }[] = [
     "expected": "key 0\n4 get\n"
   }
 ];
+const admittedLoops: { text: string; expected: string }[] = [
+  {
+    "text": "function* g(){for(const [x=yield \"init\"] of [[]])return x;}var i=g();console.log(i.next().value);console.log(i.next(7).value);\n",
+    "expected": "init\n7\n"
+  },
+  {
+    "text": "var log=[];function it(name,value){return {[Symbol.iterator](){return {next(){return {value:value,done:false}},return(){log.push(name);return {}}}}}}function* g(){try{for(let [x=yield 1] of it(\"outer\",it(\"inner\",undefined))){log.push(\"body\")}}finally{log.push(\"finally\")}}var i=g();i.next();var r=i.return(9);console.log(r.value,r.done,log.join(\",\"));",
+    "expected": "9 true inner,outer,finally\n"
+  }
+];
 for (const text of unsupported) {
-    const admitted = admittedAssignments.find(item => item.text === text);
+    const admitted = admittedAssignments.find(item => item.text === text) ?? admittedLoops.find(item => item.text === text);
     if (admitted !== undefined) {
         let output = "";
         const realm = new Realm((line: string) => { output += line + "\n"; }, "script");

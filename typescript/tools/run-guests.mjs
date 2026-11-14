@@ -933,6 +933,7 @@ executeDriver("optional-catch", { stdout: "optional catch passed\n" });
 executeDriver("catch-pattern", { stdout: "catch pattern controls passed\n" });
 executeDriver("declaration-pattern", { stdout: "declaration pattern controls passed\n" });
 executeDriver("assignment-pattern", { stdout: "assignment pattern controls passed\n" });
+executeDriver("loop-pattern", { stdout: "loop pattern controls passed\n" });
 executeDriver("regexp-legacy-escapes", { stdout: "regexp legacy escapes passed\n" });
 executeDriver("private-elements", { stdout: "private elements passed\n" });
 executeDriver("private-identifier-lexing", { stdout: "private identifier lexing passed\n" });

@@ -4174,3 +4174,5 @@ TS-551 full canonical acceptance passed (2026-11-14): session 17237 exited 0 wit
 TS-556 integrated after isolated acceptance: 1000 Node guests, 35 runner checks, 296 tooling checks, 41 native static/coverage gates and 48 semantic executions. Publication remains gated on combined TS-560 canonical acceptance.
 
 TS-557 integrated after isolated acceptance: 1001 Node guests, 35 runner checks, 296 tooling checks, 49 native static/coverage gates and 57 semantic executions. Publication remains gated on combined TS-560 canonical acceptance.
+
+TS-559 integrated after isolated acceptance: 1002 Node guests, 35 runner checks, 296 tooling checks, 57 native static/coverage gates and 65 semantic executions. Publication remains gated on combined TS-560 canonical acceptance.

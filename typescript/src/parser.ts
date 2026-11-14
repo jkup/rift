@@ -1034,6 +1034,8 @@ class Parser {
                     pending.push(statement.body);
                 } else if (statement.kind === "for-of" || statement.kind === "for-in") {
                     this.admitGeneratorExpression(statement.iterable, supported);
+                    if (statement.head.kind === "pattern" || statement.head.kind === "assignment-pattern")
+                        this.admitPattern(statement.head.pattern, supported);
                     pending.push(statement.body);
                 }
                 else if (statement.kind === "try-finally") pending.push(statement.body, statement.finalizer);

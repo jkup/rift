@@ -2685,6 +2685,27 @@ class ExecutionEngine {
         if (assigned.type !== "normal") throw new Error("invalid loop assignment completion");
         return normal(assigned.value);
     }
+    #scheduleForEachBody(continuation: ExecutionContinuation, loop: GeneratorForOf | GeneratorForIn, value: Value): ValueCompletion {
+        const head = loop.statement.head;
+        if ((head.kind === "pattern" || head.kind === "assignment-pattern") && isSuspendingPattern(head.pattern)) {
+            let environment: ScriptEnvironment | null = null;
+            if (loop.lexical) {
+                const created = ExecutableScript.activateLoop(loop.frame.record, loop.statement, loop.frame.lexical, value, this.context, executionKey);
+                if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
+                environment = created.environment;
+                this.#frame = { ...loop.frame, scopeId: loop.scopeId, lexical: environment };
+            }
+            const frame = this.#active();
+            continuation.sequences.push({ kind: "sequence", frame, body: [loop.statement.body], nextStatement: 0, depth: loop.depth });
+            continuation.sequences.push({ kind: "pattern-value", frame, depth: loop.depth + 1,
+                environment, pattern: head.pattern, initializer: null, value, reference: null });
+            return normal();
+        }
+        const initialized = this.#initializeForEach(loop.statement, loop.frame, loop.scopeId, loop.lexical, loop.target, value);
+        if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+        continuation.sequences.push({ kind: "sequence", frame: this.#active(), body: [loop.statement.body], nextStatement: 0, depth: loop.depth });
+        return normal();
+    }
     #prepareForIteration(stmt: ForStmt | ForLexicalStmt, outer: ScriptEnvironment | null): ValueCompletion {
         if (stmt.kind === "for-lexical" && stmt.declarationKind === "let" && stmt.bindings.length !== 0) {
             const frame = this.#active();
@@ -4956,9 +4977,8 @@ class ExecutionEngine {
             this.#capture(next);
             return this.#unwindContinuation(continuation, next, callerDepth);
         }
-        const initialized = this.#initializeForEach(loop.statement, loop.frame, loop.scopeId, loop.lexical, loop.target, next.value);
+        const initialized = this.#scheduleForEachBody(continuation, loop, next.value);
         if (initialized.type === "throw") { this.#capture(initialized); return this.#unwindContinuation(continuation, initialized, callerDepth); }
-        sequences.push({ kind: "sequence", frame: this.#active(), body: [loop.statement.body], nextStatement: 0, depth: loop.depth });
         return null;
     }
     #expressionContext(continuation: ExecutionContinuation, fallback: ScriptFrameSnapshot): ScriptFrameSnapshot {
@@ -5125,14 +5145,13 @@ class ExecutionEngine {
                         continue;
                     }
                     if (next.done) { sequences.pop(); continue; }
-                    const initialized = this.#initializeForEach(sequence.statement, sequence.frame, sequence.scopeId, sequence.lexical, sequence.target, next.value);
+                    const initialized = this.#scheduleForEachBody(continuation, sequence, next.value);
                     if (initialized.type === "throw") {
                         this.#capture(initialized);
                         const result = this.#unwindContinuation(continuation, initialized, callerDepth);
                         if (result !== null) return result;
                         continue;
                     }
-                    sequences.push({ kind: "sequence", frame: this.#active(), body: [sequence.statement.body], nextStatement: 0, depth: sequence.depth });
                     continue;
                 }
                 if (sequence.kind === "for") {

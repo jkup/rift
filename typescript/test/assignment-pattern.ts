@@ -103,7 +103,31 @@ for (const item of cases) {
     if (jobs.fatal || jobs.failures.length !== 0) throw new Error("jobs " + item.id);
     if (output !== item.expected) throw new Error("output " + item.id + ": " + output);
 }
+const admittedLoops: { text: string; execution: string; expected: string }[] = [
+  {
+    "text": "function* g(){for(let [x=yield 1] of [[]]){}}",
+    "execution": "var i=g();var first=i.next();var last=i.next(7);console.log(first.value,first.done,last.done);",
+    "expected": "1 false true\n"
+  },
+  {
+    "text": "async function f(){for await(let {x=await 1} of [{}]){}}",
+    "execution": "f().then(()=>console.log(\"done\"));",
+    "expected": "done\n"
+  }
+];
 for (const text of ["function* g(){for(let [x=yield 1] of [[]]){}}", "async function f(){for await(let {x=await 1} of [{}]){}}", "function* g(x=yield 1){}", "async function f(x=await 1){}"]) {
+    const admitted = admittedLoops.find(item => item.text === text);
+    if (admitted !== undefined) {
+        let output = "";
+        const realm = new Realm((line: string) => { output += line + "\n"; }, "script");
+        const session = createScriptSession();
+        if (prepareBoundedScript({ id: "pattern-boundary", text }, realm).kind !== "ready") throw new Error("original loop preparation");
+        if (run(text, realm, session).type !== "normal" || output !== "") throw new Error("original loop definition");
+        if (run(admitted.execution, realm, session).type !== "normal") throw new Error("original loop execution");
+        const jobs = drainScriptJobs(session);
+        if (jobs.fatal || jobs.failures.length !== 0 || output !== admitted.expected) throw new Error("original loop output");
+        continue;
+    }
     const prepared = prepareBoundedScript({ id: "pattern-boundary", text }, new Realm((_line: string) => {}, "script"));
     if (prepared.kind === "ready") throw new Error("loop or parameter boundary admitted");
 }
