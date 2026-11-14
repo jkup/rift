@@ -10,10 +10,9 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted conditional-function milestone passes 996/996 guests on each
-host, 296/296 tooling checks, and all 478 native static gates.
-Labelled ordinary functions and optional catch bindings are the next publication
-cohort; catch patterns remain a separate draft pending native acceptance.
+The accepted labelled-function and optional-catch milestone passes 998/998 guests
+on each host, 296/296 tooling checks, and all 480 native static gates.
+Catch patterns remain a separate draft pending native acceptance.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
 74 unchecked completions. Remaining outcomes: 2 parse errors, 31 runtime
 errors and 1 reported failure(s). These are diagnostic fixture results, not a

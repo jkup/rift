@@ -14,3 +14,5 @@ syntax errors, defining-Realm allocation, current-caller resource limits, creato
 session isolation, cleanup and source ownership. No original fixtures are changed.
 
 Reference: https://tc39.es/ecma262/2025/multipage/additional-ecmascript-features-for-web-browsers.html#sec-labelled-function-declarations
+
+TS-553 full canonical acceptance passed: 998 guests per host, 480 native static/coverage gates, 296 tooling tests, 35 runner checks, ten probes and 225 unchanged corpus records.

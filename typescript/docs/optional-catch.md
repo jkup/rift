@@ -13,8 +13,8 @@ legacy block functions. Eight invalid programs retain parse SyntaxErrors.
 Defining-Realm arrays, resumed generators using caller budgets, creator-session
 isolation, resource cleanup and declaration ownership have focused checks.
 
-This draft starts from the exact frozen, Node-tested TS-548 snapshot. Its
-predecessor provenance is provisional until final TS-548 READY reconciliation.
-Full regression, native static-only/zero-dynamic validation, tooling and canonical
-acceptance remain pending. Catch binding patterns remain separately scoped under
-TS-551, including the suspension prerequisite recorded by TS-552.
+Final TS-548 predecessor reconciliation and TS-553 canonical acceptance passed:
+998 guests on each host, 480 static-only/zero-dynamic native gates, 296 tooling
+checks, 35 runner checks, ten probes and the unchanged 225-file corpus.
+Catch binding patterns remain separately scoped under TS-551, including the
+suspension prerequisite recorded by TS-552.
