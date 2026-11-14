@@ -22,6 +22,12 @@ The unchanged 225-file C++ corpus has 191 completions: 117 reported successes an
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
 Test262 conformance score.
 
+The [remaining-outcome review](corpus-remaining-outcomes.md) accounts for all 34
+non-completing/failing files: 12 nonstandard-helper dependencies, seven weak-storage
+backend gaps, nine Temporal contract mismatches, five other invalid expectations
+and one intentional uncaught throw. Keep these outcomes visible; completion count
+alone is no longer a useful guide to the next interpreter feature.
+
 Classes, Promise combinators/checkpoints and bounded RegExp protocols/literals
 are accepted. Incremental lexing and arrow cover parsing are integrated.
 Array.of/from/fill/copyWithin, String.raw/repeat/padStart/padEnd and Realm-local
