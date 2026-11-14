@@ -14,4 +14,7 @@ contexts retain their existing unsupported admission boundary.
 Independent references cover evaluation order, TDZ, eval/Annex B conflicts, suspended
 keys/defaults, injected return/throw, close failure precedence and async generators.
 Focused tests also cover detached metadata, defining Realms, caller budgets and cleanup.
-Node/native canonical acceptance is pending; this draft is outside TS-553 publication.
+TS-551 canonical acceptance passed on 2026-11-14: 999 guests per host, 481 native
+static-only/zero-dynamic gates, 296 tooling checks, 35 runner checks, ten probes
+and the unchanged original 225-file corpus. Declaration, assignment and loop
+pattern suspension remain separate pending successors.

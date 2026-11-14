@@ -1,6 +1,6 @@
 # Development roadmap
 
-Updated 2026-11-13. The original catch-up review covered history through `ec63ebee` and
+Updated 2026-11-14. The original catch-up review covered history through `ec63ebee` and
 [Claude's review, PR #82](https://github.com/jkup/rift/pull/82).
 
 ## Current checkpoint
@@ -10,12 +10,11 @@ with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
 when reviewing the [compiler evidence](validation/ts-465-private-key-union/README.md).
 
-The accepted labelled-function and optional-catch milestone passes 998/998 guests
-on each host, 296/296 tooling checks, and all 480 native static gates.
-Catch patterns have passed isolated both-host validation; their full canonical
-native suite remains in progress. Declaration, assignment and loop pattern
-suspension have passed isolated Node regression. These are
-pending work, not accepted main support.
+The accepted catch-pattern milestone passes 999/999 guests on each host,
+296/296 tooling checks, and all 481 native static gates. Catch patterns preserve
+TDZ, iterator cleanup and suspended initialization before entering the handler.
+Declaration, assignment and loop pattern suspension have passed isolated Node
+regression. These remain pending work, not accepted main support.
 Their [publication plan](shared-pattern-publication.md) retains separate focused
 native acceptance and feature commits, followed by one combined full suite.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and

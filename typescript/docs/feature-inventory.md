@@ -1,6 +1,6 @@
 # Feature scope and history
 
-This overview describes accepted Script behavior through the optional-catch
+This overview describes accepted Script behavior through the catch-pattern
 milestone. It groups implemented features; it does not claim complete ECMAScript
 conformance. The [roadmap](development-roadmap.md) records validation counts and
 pending successors. Historical milestone notes below retain their original scope.
@@ -10,7 +10,7 @@ pending successors. Historical milestone notes below retain their original scope
 | Scripts | Strict/sloppy execution, ordered standalone and classic-for var/let/const identifier and binding-pattern lists, lexical environments, loops, labels, exceptions, optional chaining and automatic semicolon insertion. Module loading is absent. |
 | Functions | Ordinary and arrow functions, non-strict conditional and labelled function declarations with Annex B scope rules, parameter/binding patterns, rest/spread, closures, calls and construction, bounded direct/indirect eval and Function construction. |
 | Classes | Inheritance, super and new.target, public/private fields, methods and accessors, static blocks and private-in checks. |
-| Suspension | Generators, yield/delegation, async functions/arrows/methods, await, async generators and for-await-of. Promise jobs drain at explicit host checkpoints; there is no browser event loop or Node API layer. |
+| Suspension | Generators, yield/delegation, async functions/arrows/methods, await, async generators and for-await-of. Catch binding patterns support suspended defaults and computed keys with TDZ and iterator cleanup. Promise jobs drain at explicit host checkpoints; there is no browser event loop or Node API layer. |
 | Values and collections | Number, exact BigInt, strings and symbols; ordinary objects, sparse arrays with custom species construction and Realm-local unscopables, Map/Set, iterators, descriptors, JSON and Reflect operations. |
 | Text and patterns | UTF-16 string operations, ordinary/tagged templates, Unicode identifiers and RegExp Unicode mode, property escapes, backreferences, lookahead and scoped modifiers. Positive and negative lookbehind and bounded wide Unicode range compilation are accepted; Unicode sets mode remains unsupported. |
 | Date and Temporal | UTC-default Date with explicit Realm/CLI timezone selection, pinned IANA zones, local gap/fold resolution, and Temporal ISO-calendar operations. System timezone discovery, Intl and other calendars are absent. |
