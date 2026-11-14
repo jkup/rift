@@ -30,6 +30,11 @@ that suspends before iterator advancement, rest-target ordering, nested loop
 iterator close order, and TDZ observed through a closure across resumption.
 They establish expected behavior, not Rift support.
 
+Both hash-verified TS-551 isolated hosts reject all eleven programs with explicit
+unsupported yield/await diagnostics (22 outcomes), without execution or host
+failure. `boundary-reviewed.json` records the source snapshot and native
+executable hash. Catch support has not accidentally admitted these other contexts.
+
 Implement in three reviewable steps after the catch milestone:
 
 1. Extend pattern frames with explicit initialization/assignment destinations,
