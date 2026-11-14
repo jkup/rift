@@ -60,10 +60,11 @@ export function isSuspendingGeneratorExpression(expression: Expr | null): boolea
         ((expression.kind === "private-in" || expression.kind === "class" || expression.kind === "chain" || expression.kind === "destructure" || expression.kind === "super-call" || expression.kind === "array" || expression.kind === "super-member" || expression.kind === "update" || expression.kind === "compound" || expression.kind === "assign" || expression.kind === "object" || expression.kind === "template" || expression.kind === "new" || expression.kind === "call" || expression.kind === "member" || expression.kind === "binary" || expression.kind === "conditional" || expression.kind === "unary") && expression.suspends === true));
 }
 
-export function isSuspendingBindingPattern(pattern: DestructuringPattern): boolean {
+export function isSuspendingPattern(pattern: DestructuringPattern): boolean {
     const pending = [pattern];
     while (pending.length !== 0) {
         const current = pending.pop()!;
+        if (current.kind === "target" && isSuspendingGeneratorExpression(current.target)) return true;
         if (current.kind === "array-pattern") {
             for (const element of current.elements) {
                 if (element === null) continue;

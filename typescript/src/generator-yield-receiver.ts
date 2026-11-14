@@ -1,5 +1,5 @@
 import type { EvaluationReference } from "./evaluation-reference.js";
-import type { Value } from "./runtime.js";
+import type { GuestObject, Value } from "./runtime.js";
 import type { ScriptBindingReference, ScriptEnvironment } from "./script-environment.js";
 import type { DestructuringPattern, Location, Stmt, SwitchStmt, ForStmt } from "./syntax.js";
 
@@ -7,6 +7,9 @@ export type GeneratorYieldReceiver = { kind: "return" }
     | { kind: "declaration-pattern"; pattern: DestructuringPattern; environment: ScriptEnvironment | null }
     | { kind: "pattern-default" }
     | { kind: "pattern-key" }
+    | { kind: "pattern-target-base"; strict: boolean }
+    | { kind: "pattern-target-key"; base: Value; strict: boolean }
+    | { kind: "pattern-target-super-key"; homeObject: GuestObject; receiver: Value }
     | { kind: "async-return" }
     | { kind: "loop-test" }
     | { kind: "for-update" }

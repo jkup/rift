@@ -330,6 +330,7 @@ const entries = [
     ["test/optional-catch.ts", "optional-catch"],
     ["test/catch-pattern.ts", "catch-pattern"],
     ["test/declaration-pattern.ts", "declaration-pattern"],
+    ["test/assignment-pattern.ts", "assignment-pattern"],
     ["test/regexp-legacy-escapes.ts", "regexp-legacy-escapes"],
     ["test/private-elements.ts", "private-elements"],
     ["test/private-identifier-lexing.ts", "private-identifier-lexing"],

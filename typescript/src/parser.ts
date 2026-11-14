@@ -3,7 +3,7 @@ import { isStrictReservedIdentifier } from "./identifier-names.js";
 import { PrivateSyntaxScope, type PrivateSyntaxIssue } from "./private-syntax.js";
 import type { PrivateNameSyntax } from "./syntax.js";
 import type { TemplateObjectExpr } from "./syntax.js";
-import { isSuspendingGeneratorExpression } from "./generator-expression.js";
+import { isSuspendingPattern, isSuspendingGeneratorExpression } from "./generator-expression.js";
 import type { GeneratorYieldStmt, AwaitExpr } from "./syntax.js";
 import { validateRegExpLiteral } from "./regexp-literal-validation.js";
 import type { SuperContext } from "./syntax.js";
@@ -901,7 +901,10 @@ class Parser {
                         else for (const arg of link.args) pending.push({ expression: arg.kind === "spread" ? arg.expression : arg, visited: false });
                     }
                 }
-                else if (node.kind === "destructure") pending.push({ expression: node.value, visited: false });
+                else if (node.kind === "destructure") {
+                    pending.push({ expression: node.value, visited: false });
+                    this.admitPattern(node.pattern, supported);
+                }
                 else if (node.kind === "super-call") {
                     for (let i = node.args.length - 1; i >= 0; i--) { const arg = node.args[i]; pending.push({ expression: arg.kind === "spread" ? arg.expression : arg, visited: false }); }
                 }
@@ -943,7 +946,7 @@ class Parser {
                     ? isSuspendingGeneratorExpression(link.key)
                     : link.args.some(arg => isSuspendingGeneratorExpression(arg.kind === "spread" ? arg.expression : arg)))) node.suspends = true;
             } else if (node.kind === "destructure") {
-                if (isSuspendingGeneratorExpression(node.value)) node.suspends = true;
+                if (isSuspendingGeneratorExpression(node.value) || isSuspendingPattern(node.pattern)) node.suspends = true;
             } else if (node.kind === "super-call") {
                 if (node.args.some(arg => isSuspendingGeneratorExpression(arg.kind === "spread" ? arg.expression : arg))) node.suspends = true;
             } else if (node.kind === "super-member") {
@@ -976,10 +979,11 @@ class Parser {
             } else if (isSuspendingGeneratorExpression(node.test) || isSuspendingGeneratorExpression(node.consequent) || isSuspendingGeneratorExpression(node.alternate)) node.suspends = true;
         }
     }
-    private admitBindingPattern(pattern: DestructuringPattern, supported: Set<Stmt | Expr>): void {
+    private admitPattern(pattern: DestructuringPattern, supported: Set<Stmt | Expr>): void {
         const pending: DestructuringPattern[] = [pattern];
         while (pending.length !== 0) {
             const current = pending.pop()!;
+            if (current.kind === "target") this.admitGeneratorExpression(current.target, supported);
             if (current.kind === "array-pattern") {
                 for (const element of current.elements) {
                     if (element === null) continue;
@@ -1036,7 +1040,7 @@ class Parser {
                 else if (statement.kind === "try-catch") {
                     pending.push(statement.block, statement.handler);
                     if (statement.parameter !== null && "pattern" in statement.parameter)
-                        this.admitBindingPattern(statement.parameter.pattern, supported);
+                        this.admitPattern(statement.parameter.pattern, supported);
                 }
                 else if (statement.kind === "if") {
                     this.admitGeneratorExpression(statement.test, supported);
@@ -1045,7 +1049,7 @@ class Parser {
                 } else if ((statement.kind === "return" || statement.kind === "throw") && statement.value !== null) this.admitGeneratorExpression(statement.value, supported);
                 else if (statement.kind === "pattern-declaration") {
                     this.admitGeneratorExpression(statement.init, supported);
-                    this.admitBindingPattern(statement.pattern, supported);
+                    this.admitPattern(statement.pattern, supported);
                 } else if ((statement.kind === "let" || statement.kind === "const") && statement.init !== null) this.admitGeneratorExpression(statement.init, supported);
                 else if (statement.kind === "var") {
                     for (const declaration of statement.declarations) if (declaration.init !== null) this.admitGeneratorExpression(declaration.init, supported);

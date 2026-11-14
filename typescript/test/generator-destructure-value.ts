@@ -44,6 +44,15 @@ for(let i=0;i<cases.length;i++){const result=run(cases[i],new Realm((_line:strin
 for(const source of ['var x;async function f(){return ([x]=await [7])[0]}f().then(v=>out=v)', 'var x;async function* f(){yield ([x]=await [7])[0]}f().next().then(r=>out=r.value)']){
  const realm=new Realm((_line:string)=>{},'script'),session=createScriptSession();check(run('var out=0;'+source,realm,session).type==='normal','async setup');const jobs=drainScriptJobs(session);check(!jobs.fatal&&jobs.failures.length===0,'async jobs');const result=run('out===7',realm,session);check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'async destructure value');
 }
-for(const source of ['function* f(){return [x=yield 1]=[]}', 'function* f(){return ({[yield 1]:x}={})}'])check(prepareBoundedScript({id:'pattern-boundary',text:source},new Realm((_line:string)=>{},'script')).kind==='blocked','pattern suspension remains explicit');
+for(const source of ['function* f(){return [x=yield 1]=[]}', 'function* f(){return ({[yield 1]:x}={})}']){
+ const realm=new Realm((_line:string)=>{},'script');
+ check(prepareBoundedScript({id:'pattern-boundary',text:source},realm).kind==='ready','original nested assignment admitted');
+ check(run(source,realm).type==='normal','original nested assignment definition');
+ const program=source.includes('return [')
+  ? 'var x,iter=f();var first=iter.next();var last=iter.next(7);first.value===1&&!first.done&&last.done&&x===7&&Array.isArray(last.value)&&last.value.length===0;'
+  : 'var x=3,iter=f();var first=iter.next();var last=iter.next("key");first.value===1&&!first.done&&last.done&&x===undefined&&typeof last.value==="object"&&!Array.isArray(last.value);';
+ const result=run(program,realm);
+ check(result.type==='normal'&&result.value.kind==='boolean'&&result.value.value,'original nested assignment result');
+}
 const A=new Realm((_line:string)=>{},'script'),B=new Realm((_line:string)=>{},'script'),creator=createScriptSession();run('var x,o={set x(v){while(true){}}};function* f(){return [x]=yield 1}function* h(){return [o.x]=yield 1}var g=f(),slow=h();g.next();slow.next();',A,creator);define(B,'g',own(A,'g'));define(B,'slow',own(A,'slow'));const steps=creator.inspect().steps,session=createScriptSession();const result=run('g.next(null)',B,session);check(result.type==='throw'&&result.value.kind==='object'&&result.value.object.getPrototypeOf()===A.getErrorPrototype('TypeError'),'destructure error Realm');const stopped=run('slow.next([7])',B,createScriptSession({maxSteps:100,maxCalls:16}));check(stopped.type==='throw'&&stopped.origin.kind==='resource-limit','destructure current budget');check(creator.inspect().steps===steps,'creator session untouched');
 console.log('generator destructure value passed');

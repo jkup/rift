@@ -86,7 +86,35 @@ const unsupported = [
   "var log=[];var target={};var input={get x(){log.push(\"get\");return 4}};function* g(){({...target[yield \"key\"]}=input);console.log(target.rest.x,log.join(\",\"))}var i=g();console.log(i.next().value,log.length);i.next(\"rest\");",
   "var log=[];function it(name,value){return {[Symbol.iterator](){return {next(){return {value:value,done:false}},return(){log.push(name);return {}}}}}}function* g(){try{for(let [x=yield 1] of it(\"outer\",it(\"inner\",undefined))){log.push(\"body\")}}finally{log.push(\"finally\")}}var i=g();i.next();var r=i.return(9);console.log(r.value,r.done,log.join(\",\"));"
 ];
+const admittedAssignments: { text: string; expected: string }[] = [
+  {
+    "text": "function* g(){var x;[x=yield \"init\"]=[];return x;}var i=g();console.log(i.next().value);console.log(i.next(7).value);\n",
+    "expected": "init\n7\n"
+  },
+  {
+    "text": "var log=[];var first={};var target=first;var input={get x(){log.push(\"get\");return undefined}};function ref(){log.push(\"target\");return target}function* g(){var result=({x:ref().x=yield \"default\"}=input);console.log(result===input,first.x,target.x,log.join(\",\"))}var i=g();console.log(i.next().value,log.join(\",\"));target={};i.next(7);",
+    "expected": "default target,get\ntrue 7 undefined target,get\n"
+  },
+  {
+    "text": "var log=[];var target={};var input={[Symbol.iterator](){log.push(\"iterator\");return {next(){log.push(\"next\");return {value:4,done:false}},return(){log.push(\"close\");return {}}}}};function* g(){[target[yield \"key\"]]=input;console.log(target.x,log.join(\",\"))}var i=g();console.log(i.next().value,log.join(\",\"));i.next(\"x\");",
+    "expected": "key iterator\n4 iterator,next,close\n"
+  },
+  {
+    "text": "var log=[];var target={};var input={get x(){log.push(\"get\");return 4}};function* g(){({...target[yield \"key\"]}=input);console.log(target.rest.x,log.join(\",\"))}var i=g();console.log(i.next().value,log.length);i.next(\"rest\");",
+    "expected": "key 0\n4 get\n"
+  }
+];
 for (const text of unsupported) {
+    const admitted = admittedAssignments.find(item => item.text === text);
+    if (admitted !== undefined) {
+        let output = "";
+        const realm = new Realm((line: string) => { output += line + "\n"; }, "script");
+        const session = createScriptSession();
+        if (run(text, realm, session).type !== "normal") throw new Error("original assignment boundary execution");
+        const jobs = drainScriptJobs(session);
+        if (jobs.fatal || jobs.failures.length !== 0 || output !== admitted.expected) throw new Error("original assignment boundary output");
+        continue;
+    }
     const prepared = prepareBoundedScript({ id: "unsupported-pattern", text }, new Realm((_line: string) => {}, "script"));
     if (prepared.kind === "ready" || !("diagnostic" in prepared) || !prepared.diagnostic.message.includes("unsupported"))
         throw new Error("unsupported pattern admitted");

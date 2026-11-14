@@ -52,6 +52,14 @@ for (const source of ["function* f(){let [x=yield 1]=[];}", "function* f(){({[yi
         check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original declaration resumes");
         continue;
     }
+    if (source === "function* f(){({[yield 1]:x}={});}") {
+        const realm = new Realm((_line: string): void => {}, "script");
+        check(prepareBoundedScript({id: "boundary", text: source}, realm).kind === "ready", "assignment pattern admitted");
+        check(run(source, realm).type === "normal", "original assignment prepares without execution");
+        const result = run('var x=3,iter=f();var first=iter.next();var last=iter.next("key");first.value===1&&!first.done&&last.done&&x===undefined;', realm);
+        check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original assignment resumes");
+        continue;
+    }
     check(prepareBoundedScript({id: "boundary", text: source}, new Realm((_line: string): void => {}, "script")).kind === "blocked", "pattern boundary");
 }
 const A = new Realm((_line: string): void => {}, "script"), B = new Realm((_line: string): void => {}, "script");
