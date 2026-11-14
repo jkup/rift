@@ -79,6 +79,11 @@ for (const source of rejects) {
         else check(result.type === "normal" && log.length === 0, "empty finally executes");
         continue;
     }
+    if (source === "try{}catch{}") {
+        check(p.kind === "ready" && log.length === 0, "optional catch preparation is inert");
+        check(run('"use strict";' + source, r).type === "normal" && log.length === 0, "original optional catch executes");
+        continue;
+    }
     if (source === "try{}catch(e){class X{}}") {
         check(p.kind === "ready" && log.length === 0, "class catch preparation is inert");
         check(run('"use strict";' + source,r).type === "normal" && log.length === 0, "original unentered class catch executes");

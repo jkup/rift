@@ -40,12 +40,12 @@ for(const prefix of ["","'use strict';"]) for(const source of [
     "var caught=0;try{try{throw 1;}catch(e){throw 2;}finally{3;}}catch(e){caught=e;}caught===2;",
     "var s='';var it={next:function(){return {value:1,done:false};},return:function(){s+='C';return {};}};var a={};a[Symbol.iterator]=function(){return it;};for(const x of a){try{break;}finally{s+=x;}}s==='1C';",
 ]) passes(prefix+source);
-const completionCases: [string,number|undefined][] = [["try{1;}finally{2;}",1],["try{}finally{2;}",undefined],["try{throw 1;}catch(e){3;}finally{4;}",3]];
+const completionCases: [string,number|undefined][] = [["try{}catch{}finally{}",undefined],["try{1;}finally{2;}",1],["try{}finally{2;}",undefined],["try{throw 1;}catch(e){3;}finally{4;}",3]];
 for(const [source,expected] of completionCases) {
     const result=run(source);
     check(result.type === "normal" && sameValue(result.value,expected === undefined ? {kind:"undefined"} : {kind:"number",value:expected}),"completion payload");
 }
-for(const source of ["try{}", "try{}finally;", "try{}finally let x;", "try{}finally{}catch(e){}", "try{}catch{}finally{}", "try{}finally{return 1;}"])
+for(const source of ["try{}", "try{}finally;", "try{}finally let x;", "try{}finally{}catch(e){}", "try{}finally{return 1;}"])
     check(prepareBoundedScript({id:"invalid",text:source},fresh()).kind !== "ready","reject "+source);
 check(parse("try{}finally{}").error !== null,"legacy boundary");
 const realm=fresh();

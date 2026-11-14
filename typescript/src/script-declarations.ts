@@ -723,6 +723,10 @@ class DeclarationCollector {
             }
             else if (item.kind === "catch") {
                 const node = item.node;
+                if (node.parameter === null) {
+                    this.statement(node.handler, item.scope, item.variableScope);
+                    continue;
+                }
                 const id = this.scope("catch", item.scope, node.catchStart, node.catchEnd, this.scopes[item.scope].strict, []);
                 this.scopes[id].catchParameter = node.parameter;
                 this.strictIdentifier(node.parameter.name, id, node.parameter.loc);

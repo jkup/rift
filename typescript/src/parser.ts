@@ -491,17 +491,20 @@ class Parser {
             if (this.at("finally") && block.kind === "block") return this.finishTry(loc, block);
             const catchToken = this.current();
             this.expect("catch");
-            this.expect("(");
-            const token = this.current();
-            const name = this.name();
-            this.expect(")");
+            let parameter: DeclarationSite | null = null;
+            if (this.eat("(")) {
+                const token = this.current();
+                const name = this.name();
+                this.expect(")");
+                parameter = { name, start: token.start, end: token.end, loc: token.loc };
+            }
             const handler = this.statement();
             if (block.kind !== "block" || handler.kind !== "block") {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "try/catch requires blocks", loc);
                 return { kind: "empty", loc };
             }
             return this.finishTry(loc, { kind: "try-catch", loc, block, handler,
-                parameter: { name, start: token.start, end: token.end, loc: token.loc },
+                parameter,
                 catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.token(this.index - 1).end });
         }
         if (this.structuralPlan() && (this.letDeclarationAhead() || this.at("const") || this.at("var")))

@@ -340,7 +340,7 @@ class ExecutableScript {
                     throw new Error("invalid catch node identity");
                 const node = entry.node;
                 const parameter = scope.catchParameter;
-                if (parameter !== node.parameter || scope.start !== node.catchStart || scope.end !== node.catchEnd ||
+                if (parameter === null || parameter !== node.parameter || scope.start !== node.catchStart || scope.end !== node.catchEnd ||
                     scope.parent === null || scope.strict !== plan.scopes[scope.parent].strict ||
                     scope.formals.length !== 0 || scope.lexicalDeclarations.length !== 0 || scope.varDeclarations.length !== 0 ||
                     scope.varNames.length !== 0 || scope.lexicalNames.length !== 1 || scope.lexicalNames[0] !== parameter.name)
@@ -453,6 +453,7 @@ class ExecutableScript {
     }
     static activateCatch(record: ExecutableScript, node: TryCatchStmt, outer: ScriptEnvironment, value: Value,
         context: OperationContext, key: ExecutionKey): ScriptBlockEnvironmentCompletion {
+        if (node.parameter === null) throw new Error("catch activation requires a parameter");
         const state = ExecutableScript.state(record, key);
         const scopeId = ExecutableScript.scopeOfNode(record, node, key);
         const scope = state.plan.scopes[scopeId], entry = state.nodes.scopes.get(scopeId);
@@ -2882,6 +2883,8 @@ class ExecutionEngine {
                 this.#abrupt = null;
                 const saved = this.#active();
                 try {
+                    if (stmt.parameter === null)
+                        return updateScriptEmpty(this.#statement(stmt.handler), { kind: "value", value: UNDEFINED });
                     const created = ExecutableScript.activateCatch(saved.record, stmt, saved.lexical, result.value, this.context, executionKey);
                     if (created.type === "throw") { this.#capture(created); return created; }
                     const scopeId = ExecutableScript.scopeOfNode(saved.record, stmt, executionKey);
@@ -4582,6 +4585,10 @@ class ExecutionEngine {
             this.#abrupt = null;
             this.#frame = boundary.frame;
             this.depth = callerDepth + boundary.depth;
+            if (boundary.statement.parameter === null) {
+                sequences.push({ kind: "sequence", frame: boundary.frame, body: [boundary.statement.handler], nextStatement: 0, depth: boundary.depth });
+                return null;
+            }
             const created = ExecutableScript.activateCatch(boundary.frame.record, boundary.statement, boundary.frame.lexical, completion.value, this.context, executionKey);
             if (created.type === "throw") {
                 this.#capture(created);

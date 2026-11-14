@@ -327,6 +327,7 @@ const entries = [
     ["test/classic-for-declarations.ts", "classic-for-declarations"],
     ["test/conditional-function.ts", "conditional-function"],
     ["test/labelled-function.ts", "labelled-function"],
+    ["test/optional-catch.ts", "optional-catch"],
     ["test/regexp-legacy-escapes.ts", "regexp-legacy-escapes"],
     ["test/private-elements.ts", "private-elements"],
     ["test/private-identifier-lexing.ts", "private-identifier-lexing"],
