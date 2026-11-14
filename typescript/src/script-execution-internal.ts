@@ -6,7 +6,7 @@ import { bigintOperation } from "./bigint-arithmetic.js";
 import { appendArrayElement, finishArrayLiteral } from "./array-literal.js";
 import { resumeAsyncDelegate, type AsyncDelegate } from "./async-generator-delegate.js";
 import { getAsyncIterator } from "./async-iterator.js";
-import { isSuspendingGeneratorExpression, type GeneratorExpressionFrame } from "./generator-expression.js";
+import { isSuspendingBindingPattern, isSuspendingGeneratorExpression, type GeneratorExpressionFrame } from "./generator-expression.js";
 import { hasParameterExpressions, hasParameterPatterns } from "./formal-parameters.js";
 import type { GeneratorYieldReceiver } from "./generator-yield-receiver.js";
 import type { GeneratorYieldStmt } from "./syntax.js";
@@ -1325,8 +1325,8 @@ type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string;
 type GeneratorSwitch = { kind: "switch"; frame: ScriptFrameSnapshot; depth: number;
     selection: { statement: SwitchStmt; discriminant: Value; nextClause: number; fallback: number } | null };
 type AsyncIteratorCloseFrame = { kind: "async-close"; frame: ScriptFrameSnapshot; loc: Location; depth: number; pending: GeneratorAbrupt; abrupt: ThrowCompletion | null; source: ScriptSourceSnapshot | null };
-type PatternFrameBase = { frame: ScriptFrameSnapshot; depth: number; environment: ScriptEnvironment };
-type GeneratorPatternValue = PatternFrameBase & { kind: "pattern-value"; pattern: DestructuringPattern; initializer: Expr | null; value: Value };
+type PatternFrameBase = { frame: ScriptFrameSnapshot; depth: number; environment: ScriptEnvironment | null };
+type GeneratorPatternValue = PatternFrameBase & { kind: "pattern-value"; pattern: DestructuringPattern; initializer: Expr | null; value: Value; reference: EvaluationReference | null };
 type GeneratorPatternArray = PatternFrameBase & { kind: "pattern-array"; pattern: ArrayPattern; iterator: IteratorRecord; index: number };
 type GeneratorPatternObject = PatternFrameBase & { kind: "pattern-object"; pattern: ObjectPattern; input: Value; object: GuestObject; excluded: Set<PropertyKey>; index: number };
 type GeneratorPattern = GeneratorPatternValue | GeneratorPatternArray | GeneratorPatternObject;
@@ -2955,6 +2955,16 @@ class ExecutionEngine {
                 return this.#list(stmt.declarations);
             }
             case "pattern-declaration": {
+                if (sequences !== null && isSuspendingBindingPattern(stmt.pattern)) {
+                    const environment = stmt.declarationKind === "var" ? null : this.#active().lexical;
+                    if (isSuspendingGeneratorExpression(stmt.init))
+                        return this.#suspendingExpression(stmt.init, { kind: "declaration-pattern", pattern: stmt.pattern, environment });
+                    const input = this.#value(stmt.init);
+                    if (input.type === "throw") { const abrupt: ThrowCompletion = input; return abrupt; }
+                    sequences.push({ kind: "pattern-value", frame: this.#active(), depth: sequences[sequences.length - 1].depth + 1,
+                        environment, pattern: stmt.pattern, initializer: null, value: input.value, reference: null });
+                    return { type: "normal", payload: { kind: "empty" } };
+                }
                 if (isSuspendingGeneratorExpression(stmt.init) && sequences !== null)
                     return this.#suspendingExpression(stmt.init, { kind: "pattern", pattern: stmt.pattern, environment: stmt.declarationKind === "var" ? null : this.#active().lexical });
                 const input = this.#value(stmt.init);
@@ -4422,10 +4432,15 @@ class ExecutionEngine {
         const key = toPropertyKey(value, this.context, property.key.loc);
         if (key.type === "throw") return key;
         frame.excluded.add(key.value);
+        const target = this.#patternReference(property.element.pattern, frame.environment);
+        if (target !== null && target.type === "abrupt") {
+            if (target.completion.type !== "throw") throw new Error("invalid pattern reference completion");
+            return target.completion;
+        }
         const obtained = frame.object.internalGet(key.value, frame.input, this.context, property.key.loc);
         if (obtained.type === "throw") return obtained;
         continuation.sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1,
-            environment: frame.environment, pattern: property.element.pattern, initializer: property.element.initializer, value: obtained.value });
+            environment: frame.environment, pattern: property.element.pattern, initializer: property.element.initializer, value: obtained.value, reference: target === null ? null : target.reference });
         return normal();
     }
     #advancePattern(continuation: ExecutionContinuation, frame: GeneratorPattern, callerDepth: number): ContinuationResult | null {
@@ -4456,6 +4471,13 @@ class ExecutionEngine {
                     pattern, input: frame.value, object: boxed.value, excluded: new Set<PropertyKey>(), index: 0 });
             } else {
                 if (pattern.kind !== "binding") throw new Error("assignment target in catch binding");
+                if (frame.environment === null) {
+                    if (frame.reference === null) throw new Error("missing declaration pattern reference");
+                    const assigned = putReferenceValue(this.context, frame.reference, frame.value, pattern.loc);
+                    if (assigned.type === "throw") return fail(assigned);
+                    if (assigned.type !== "normal") throw new Error("invalid declaration pattern assignment");
+                    return null;
+                }
                 const initialized = frame.environment.kind === "global"
                     ? frame.environment.record.initializeBinding(pattern.site.name, frame.value, this.context, pattern.loc)
                     : frame.environment.initializeBinding(pattern.site.name, frame.value, this.context, pattern.loc);
@@ -4472,11 +4494,16 @@ class ExecutionEngine {
             }
             sequences.pop();
             if (frame.pattern.rest !== null) {
+                const target = this.#patternReference(frame.pattern.rest, frame.environment);
+                if (target !== null && target.type === "abrupt") {
+                    if (target.completion.type !== "throw") throw new Error("invalid rest reference completion");
+                    return fail(target.completion);
+                }
                 const rest = this.context.realm.createObject();
                 const copied = copyDataProperties(rest, { kind: "object", object: frame.object }, frame.excluded, this.context, frame.pattern.rest.loc);
                 if (copied.type === "throw") return fail(copied);
                 sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1, environment: frame.environment,
-                    pattern: frame.pattern.rest, initializer: null, value: { kind: "object", object: rest } });
+                    pattern: frame.pattern.rest, initializer: null, value: { kind: "object", object: rest }, reference: target === null ? null : target.reference });
             }
             return null;
         }
@@ -4491,6 +4518,11 @@ class ExecutionEngine {
                 }
                 return null;
             }
+            const target = this.#patternReference(element.pattern, frame.environment);
+            if (target !== null && target.type === "abrupt") {
+                if (target.completion.type !== "throw") throw new Error("invalid element reference completion");
+                return fail(target.completion);
+            }
             let value: Value = UNDEFINED;
             if (!frame.iterator.done) {
                 const next = iteratorStepValue(frame.iterator, this.context, element.pattern.loc);
@@ -4498,11 +4530,16 @@ class ExecutionEngine {
                 value = next.value;
             }
             sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1, environment: frame.environment,
-                pattern: element.pattern, initializer: element.initializer, value });
+                pattern: element.pattern, initializer: element.initializer, value, reference: target === null ? null : target.reference });
             return null;
         }
         if (frame.index === frame.pattern.elements.length && frame.pattern.rest !== null) {
             frame.index++;
+            const target = this.#patternReference(frame.pattern.rest, frame.environment);
+            if (target !== null && target.type === "abrupt") {
+                if (target.completion.type !== "throw") throw new Error("invalid array rest reference completion");
+                return fail(target.completion);
+            }
             const rest = this.context.realm.createArray();
             let index = 0;
             while (!frame.iterator.done) {
@@ -4514,7 +4551,7 @@ class ExecutionEngine {
                 if (!defined.value) throw new Error("fresh catch rest array invariant");
             }
             sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1, environment: frame.environment,
-                pattern: frame.pattern.rest, initializer: null, value: { kind: "object", object: rest } });
+                pattern: frame.pattern.rest, initializer: null, value: { kind: "object", object: rest }, reference: target === null ? null : target.reference });
             return null;
         }
         sequences.pop();
@@ -4626,6 +4663,11 @@ class ExecutionEngine {
                 diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: receiver.loc } };
             this.#capture(abrupt);
             return this.#unwindContinuation(continuation, abrupt, callerDepth);
+        }
+        if (receiver.kind === "declaration-pattern") {
+            continuation.sequences.push({ kind: "pattern-value", frame: frame.frame, depth: frame.depth + 1,
+                environment: receiver.environment, pattern: receiver.pattern, initializer: null, value, reference: null });
+            return null;
         }
         if (receiver.kind === "pattern") {
             const initialized = this.#initializePattern(receiver.pattern, null, value, receiver.environment, null);
@@ -4763,7 +4805,7 @@ class ExecutionEngine {
             sequences.push({ kind: "sequence", frame, body: [boundary.statement.handler], nextStatement: 0, depth: boundary.depth });
             if ("pattern" in boundary.statement.parameter)
                 sequences.push({ kind: "pattern-value", frame, depth: boundary.depth + 1, environment: created.environment,
-                    pattern: boundary.statement.parameter.pattern, initializer: null, value: completion.value });
+                    pattern: boundary.statement.parameter.pattern, initializer: null, value: completion.value, reference: null });
             return null;
         }
         if (completion.type === "throw") return completion;

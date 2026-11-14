@@ -44,6 +44,14 @@ for (let i = 0; i < cases.length; i++) {
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "pattern case " + i);
 }
 for (const source of ["function* f(){let [x=yield 1]=[];}", "function* f(){({[yield 1]:x}={});}"]) {
+    if (source === "function* f(){let [x=yield 1]=[];}") {
+        const realm = new Realm((_line: string): void => {}, "script");
+        check(prepareBoundedScript({id: "boundary", text: source}, realm).kind === "ready", "declaration pattern admitted");
+        check(run(source, realm).type === "normal", "original declaration prepares without execution");
+        const result = run("var iter=f();var first=iter.next();var last=iter.next(7);first.value===1&&!first.done&&last.done;", realm);
+        check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original declaration resumes");
+        continue;
+    }
     check(prepareBoundedScript({id: "boundary", text: source}, new Realm((_line: string): void => {}, "script")).kind === "blocked", "pattern boundary");
 }
 const A = new Realm((_line: string): void => {}, "script"), B = new Realm((_line: string): void => {}, "script");

@@ -976,7 +976,7 @@ class Parser {
             } else if (isSuspendingGeneratorExpression(node.test) || isSuspendingGeneratorExpression(node.consequent) || isSuspendingGeneratorExpression(node.alternate)) node.suspends = true;
         }
     }
-    private admitCatchPattern(pattern: DestructuringPattern, supported: Set<Stmt | Expr>): void {
+    private admitBindingPattern(pattern: DestructuringPattern, supported: Set<Stmt | Expr>): void {
         const pending: DestructuringPattern[] = [pattern];
         while (pending.length !== 0) {
             const current = pending.pop()!;
@@ -1036,14 +1036,17 @@ class Parser {
                 else if (statement.kind === "try-catch") {
                     pending.push(statement.block, statement.handler);
                     if (statement.parameter !== null && "pattern" in statement.parameter)
-                        this.admitCatchPattern(statement.parameter.pattern, supported);
+                        this.admitBindingPattern(statement.parameter.pattern, supported);
                 }
                 else if (statement.kind === "if") {
                     this.admitGeneratorExpression(statement.test, supported);
                     pending.push(statement.consequent);
                     if (statement.alternate !== null) pending.push(statement.alternate);
                 } else if ((statement.kind === "return" || statement.kind === "throw") && statement.value !== null) this.admitGeneratorExpression(statement.value, supported);
-                else if ((statement.kind === "let" || statement.kind === "const" || statement.kind === "pattern-declaration") && statement.init !== null) this.admitGeneratorExpression(statement.init, supported);
+                else if (statement.kind === "pattern-declaration") {
+                    this.admitGeneratorExpression(statement.init, supported);
+                    this.admitBindingPattern(statement.pattern, supported);
+                } else if ((statement.kind === "let" || statement.kind === "const") && statement.init !== null) this.admitGeneratorExpression(statement.init, supported);
                 else if (statement.kind === "var") {
                     for (const declaration of statement.declarations) if (declaration.init !== null) this.admitGeneratorExpression(declaration.init, supported);
                 }
