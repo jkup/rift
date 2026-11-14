@@ -6984,6 +6984,8 @@ TS-560 combined preparation is written in build/prepare-pattern-cohort-rollup.mj
 
 TS-560 preparation revalidated all three READY features and exact predecessor chains; the integrated source matches the final loop draft. Feature commits are 1fcce9da, 8e234bdf and c2cb6466. Canonical session 21893 is running on 1097 frozen inputs (SHA-256 99559e60217a2ffe67fb037e1fedf07072f75b635a98187b6f15d8876ee774fe). Source verification passed; Node/probe/runner/corpus validation is active before the 484-gate native stage. Remote main remains 1123399b. No cohort publication is claimed.
 
+TS-560's complete Node/probe/runner/corpus stage exited 0: 1002/1002 guests without skips, 35 runner checks, ten probes and typechecking pass. Canonical session 21893 has started the fresh 484-entry native build with four workers and zero prior checkpoint records. Native/runtime/tooling/corpus comparison and final acceptance remain pending. TS-561's independent timing summarizer is syntax checked in build/review-pattern-cohort-timings.mjs; it requires completed native evidence and has not run.
+
 ## TS-561 — Measure native validation subprocess durations
 
 **in progress — preparation only**. Owner: coordinator. Add monotonic elapsed durations to each fresh build and coverage process record in the upcoming TS-560 runner, addressing TS-554's missing timing evidence. Own the unlaunched cohort runner preparation, scoped validation-cost documentation and task notes. Do not change frozen runtime inputs, active builds, test counts, verdicts or checkpoint eligibility. These concurrent wall-clock measurements do not authorize caching or establish isolated compiler performance; review the completed cohort records before drawing conclusions.
