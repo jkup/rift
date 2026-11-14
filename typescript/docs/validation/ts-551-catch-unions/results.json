@@ -1,0 +1,31 @@
+{
+  "build": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\catch-union-probe.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\build\\catch-union-probe.ts\n\n  statements analyzed   14\n  compile statically    14  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "node": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "catch union probe passed\n",
+    "stderr": ""
+  },
+  "native": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "catch union probe passed\n",
+    "stderr": ""
+  },
+  "verdict": "PASS"
+}
