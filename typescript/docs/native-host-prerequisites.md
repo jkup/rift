@@ -18,3 +18,42 @@ Weak collections remain blocked until a genuine weak-storage implementation meet
 Date work can proceed with a separately reviewed host boundary and broader UTC/local-time/parser tests. These nine statements do not establish time-zone parity, complete Date semantics or Temporal support. Math.random needs Realm-owned state and deterministic state-isolation tests before guest registration; the host range probe establishes only a possible seed source.
 
 A suspected fixture discrepancy was checked and rejected: `Date.UTC.length` is **7**, both in [ECMAScript 2025](https://262.ecma-international.org/16.0/#sec-date.utc) and Node. The original method-length fixture is correct on that point.
+
+## Weak-storage integration route (TS-563)
+
+The 2026-11-14 source review found no proven route through the unchanged pinned
+backend. `scr_weak_collection_new` installs dynamic handle operations and a key
+disposal observer. `scr_weak_key` requires an observed managed identity and
+rejects reference types without that lifetime contract. A wrapper around these
+functions would still need fully static representation and value tracing.
+
+The runtime retains each WeakMap value and visits it in `scr_weak_map_trace`.
+Before accepting a replacement, test value-to-key backreferences and mutually
+dependent entries: a key reachable only through its own weak entry must not be
+kept alive by treating that value as an ordinary strong root. This is a source
+review finding and required validation, not a newly executed collection probe.
+
+The [documented native FFI](https://scriptc.dev/docs/ffi) supports scalar values,
+borrowed spans and opaque native pointers. That does not establish a way to
+export a managed GuestObject's identity, tracing and disposal contract. Current
+documentation is supporting context, not proof that the pinned compiler supports
+every advertised FFI format. Numeric IDs backed by a strong object table would
+keep keys alive and would not solve this problem.
+
+C++ uses its own roots, environment tracing and object-liveness registry;
+WeakRef.deref consults that registry. Those methods cannot simply be copied into
+the host-managed TypeScript heap. C++ source is also not proof of complete
+WeakRef job-lifetime or finalization semantics.
+
+The preferred next backend step is a reduced compiler/runtime change providing
+typed weak collection storage, stable managed identities and correct tracing,
+followed by both-host lifetime tests and zero-dynamic coverage. WeakRef and
+FinalizationRegistry additionally need job-scoped target retention and cleanup
+scheduling. An independently traced guest heap would be a substantial alternative
+architecture, requiring roots for environments, continuations, jobs and external
+host references; it is not an ordinary collection-method increment.
+
+No compiler patch, upgrade, native build or engine change was made in this review.
+`build/weak-storage-integration-review/reviewed.json` records seven exact source
+hashes, relevant locations and missing proof. The earlier failing native probes
+remain authoritative for the current pinned toolchain.
