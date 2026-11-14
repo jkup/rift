@@ -13,9 +13,9 @@ when reviewing the [compiler evidence](validation/ts-465-private-key-union/READM
 The accepted labelled-function and optional-catch milestone passes 998/998 guests
 on each host, 296/296 tooling checks, and all 480 native static gates.
 Catch patterns have passed isolated both-host validation; their full canonical
-native suite remains in progress. Declaration and assignment pattern suspension
-have passed isolated Node regression, and loop pattern suspension is undergoing
-its amended Node regression. These are pending work, not accepted main support.
+native suite remains in progress. Declaration, assignment and loop pattern
+suspension have passed isolated Node regression. These are
+pending work, not accepted main support.
 Their [publication plan](shared-pattern-publication.md) retains separate focused
 native acceptance and feature commits, followed by one combined full suite.
 The unchanged 225-file C++ corpus has 191 completions: 117 reported successes and
