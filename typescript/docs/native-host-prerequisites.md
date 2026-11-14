@@ -57,3 +57,13 @@ No compiler patch, upgrade, native build or engine change was made in this revie
 `build/weak-storage-integration-review/reviewed.json` records seven exact source
 hashes, relevant locations and missing proof. The earlier failing native probes
 remain authoritative for the current pinned toolchain.
+
+The public `v0.4.7` compiler source confirms the representation choice:
+[type-mapper.ts](https://github.com/vercel-labs/scriptc/blob/v0.4.7/packages/compiler/src/frontend/type-mapper.ts#L3621)
+explicitly maps standard WeakMap/WeakSet and FinalizationRegistry to `DYN`.
+Its Git blob is `552378151f24baaca97960267cf39171de69f6fd`. The same tag's
+[FFI lowering](https://github.com/vercel-labs/scriptc/blob/v0.4.7/packages/compiler/src/frontend/lowering/native-ffi.ts#L60)
+maps pointer arguments to BigInt, not managed class references. A reduced future
+experiment should introduce genuine typed weak storage and its lifetime contract;
+mapping WeakMap to the ordinary Map representation or relabeling its coverage
+would retain the wrong behavior. No upstream patch has been made or tested.
