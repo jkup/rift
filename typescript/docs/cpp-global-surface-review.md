@@ -54,3 +54,22 @@ Evidence: `build/cpp-global-surface-reviewed.json`,
 After the timezone milestones, prioritize a genuine static weak-storage/collector
 boundary or targeted semantic audits of supported features. Do not add placeholder
 GC APIs, strong-map substitutes, legacy Temporal exceptions or helper injection.
+
+## Current corpus refresh (TS-562, 2026-11-14)
+
+The accepted catch-pattern reports (`legacy-suite-node-gUQDzE` and
+`legacy-suite-native-AEE2IL`) preserve this classification. All 225 original and
+retained fixture hashes match; both Rift hosts agree on outcomes, checks, failures,
+exit status and stdout. Six exact-byte independent Node CommonJS executions
+reconfirm the disputed non-Temporal inputs, including identical failed-assertion
+output for boxed-string enumeration. The Temporal Instant fixture's Number
+nanosecond expectation and invalid-string `equals` expectation still conflict
+with [Instant slots](https://tc39.es/proposal-temporal/#sec-properties-of-temporal-instant-instances)
+and [equals](https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.equals).
+
+Fresh evidence: `build/corpus-residual-review/reviewed.json` and its six Node
+process records. This confirms the earlier audit; it identifies no new unblocked
+feature at the fixtures' first failures. TS-536 also compared the exact existing
+Linux C++ artifact under `build/cpp-artifact-corpus/`, with source-build provenance
+unverified and zero exits even for invalid syntax. Neither inventory establishes
+complete feature parity, deeper fixture behavior or a conformance percentage.

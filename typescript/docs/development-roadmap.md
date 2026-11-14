@@ -22,7 +22,7 @@ The unchanged 225-file C++ corpus has 191 completions: 117 reported successes an
 errors and 1 reported failure(s). These are diagnostic fixture results, not a
 Test262 conformance score.
 
-The [remaining-outcome review](corpus-remaining-outcomes.md) accounts for all 34
+The [remaining-outcome review](cpp-global-surface-review.md#current-corpus-refresh-ts-562-2026-11-14) accounts for all 34
 non-completing/failing files: 12 nonstandard-helper dependencies, seven weak-storage
 backend gaps, nine Temporal contract mismatches, five other invalid expectations
 and one intentional uncaught throw. Keep these outcomes visible; completion count
