@@ -189,9 +189,9 @@ review checks expected results, original observer linkage and the selected
 experimental collector object in `build/typed-weak-young-nursery/owners-reviewed.json`.
 Other key representations, broader compiler tests and typed lowering remain
 outstanding. Original integration source and process hashes are retained in
-`build/typed-weak-collector-integration/reviewed.json`. Both modified runtime
-objects remain isolated build artifacts; no compiler checkout or installed pack
-was edited.
+`build/typed-weak-collector-integration/reviewed.json`. For that experiment, both modified runtime objects remained isolated build
+artifacts; no compiler checkout or installed pack was edited. Subsequent compiler
+work is described below.
 
 The typed-lowering work now has a separate clean compiler worktree at
 `C:/Users/jonku/code/scriptc-typed-weak-storage`, branch `codex/typed-weak-storage`,
@@ -210,10 +210,10 @@ verify that committed LF bytes format unchanged while checkout CRLF bytes cause
 the reported differences. No unrelated files were reformatted. Evidence for
 those samples is `build/typed-weak-format-baseline-reviewed.json`.
 
-This local compiler foundation is not a runtime implementation or a published
-toolchain change. Its reference-counting symbol family still needs a typed
-runtime implementation, followed by construction/method lowering, lifetime and
-both-host semantic tests, static coverage, and broader compiler gates.
+That IR commit alone does not implement runtime behavior. The subsequent
+storage work below supplies the reference-counting family; conditional tracing,
+construction/method lowering, both-host semantic tests, static coverage and
+broader compiler gates remain required before a toolchain update.
 
 Compiler commit `3c8a2a927` adds thread-local disposal-observer registration so
 typed storage can coexist with dynamic weak collections and checked-record
@@ -231,9 +231,9 @@ Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
 process records, source programs and artifact hashes. Additional reductions and
 repeated-batch outputs are in `minimal-processes.json` and
 `pool-reuse-processes.json` in the same directory. Source tracing is recorded
-in `build/typed-weak-storage-review/source-reviewed.json`. Investigate disposal
-and collector accounting before implementing a typed weak-map backend.
+in `build/typed-weak-storage-review/source-reviewed.json`. These investigations
+established the ownership and collection requirements for the storage work below.
 
-Local compiler commits 009d56d82 and 10aca8234 add value-independent weak-key indexing and native lifetime tests. The index distinguishes owner, key and representation kind without dynamic-value boxing. Tests exercise 16,384 entries, deletion chains, address reuse, reentrant disposal, and callbacks that free themselves and sibling entries. The focused Windows Zig test passes; it is unsanitized. The index is not yet connected to collection storage or packaged runtime builds. Next: connect typed storage and conditional tracing, then lowering and broader validation.
+Local compiler commits 009d56d82 and 10aca8234 add value-independent weak-key indexing and native lifetime tests. The index distinguishes owner, key and representation kind without dynamic-value boxing. Tests exercise 16,384 entries, deletion chains, address reuse, reentrant disposal, and callbacks that free themselves and sibling entries. The focused Windows Zig test passes; it is unsanitized. The subsequent storage commit connects this index to typed entries; packaged runtime builds and conditional tracing remain outstanding.
 
 Local compiler commit 57c49ac4d adds typed weak-map storage with raw 64-bit scalar slots and reference adapters, using the shared key index. Set transfers value ownership; get retains reference results; replacement, deletion and key/owner disposal release owned values. Native tests cover scalar bits and absence, reference counts, replacement-triggered disposal, owner/value cycles and collected keys with acyclic values. Both default and young-nursery collectors pass at default, 1 and 7 candidate thresholds; lint and owned TypeScript formatting pass. Windows tests are unsanitized. The storage trace currently accounts for owned values as strong edges; conditional reachability must be integrated before enabling this runtime in compiled programs. Runtime-pack selection, frontend/backend lowering and broader acceptance remain outstanding.
