@@ -151,15 +151,40 @@ leave scope. These are lifetime diagnostics, not runtime performance benchmarks.
 Evidence: `build/typed-weak-ephemeron-worklist/reviewed.json`; isolated source:
 `build/weak-ephemeron-worklist.c`.
 
-This is not an integrated compiler change. The pass still runs only from the
-explicit diagnostic hook and accepts only the probes' headered native-key
-identities. Automatic collector scheduling, other key representations, mutation
-stress and typed lowering remain unvalidated. The long cases cross the nursery
-size but do not prove full generational integration. The installed
+This worklist version used the explicit diagnostic hook and accepted only the
+probes' headered native-key identities. Follow-up replacement/deletion controls
+also pass: 999 superseded values are collected while the latest value remains
+accessible, and deleting an entry does not destroy its still-rooted key.
+The installed
 toolchain, Rift source, original fixtures and accepted validation remain unchanged.
 Initial compile/access-violation failures are retained beside the successful run;
 the latter was fixed by using the runtime's compact-reference-count immortality
 check rather than comparing the whole allocation word.
+
+### Experimental collector integration
+
+A separate copy of `scr_cycle.c` now invokes the worklist pass after entering the
+collector's reentrancy guard and before unrestricted old-generation trial
+deletion. Restricted-set collections skip it. All eleven lifetime/graph/mutation
+controls reproduce using the original observer, which only calls the ordinary
+collector and counts Key frees; it no longer invokes the weak pass itself.
+
+In a separate 200,000-entry self-value workload, the unchanged runtime reports
+zero cyclic-key frees both before and after an explicit sweep. The experimental
+collector frees 199,469 automatically before that sweep and all 200,000 afterward,
+while retaining the kept-key lookup. Independent reexecution checks automatic
+progress and exact final disposal, without requiring a particular scheduling
+count. This establishes automatic reclamation in that workload, not complete
+collector correctness or a performance result.
+
+The selected runtime metadata uses the default collector. The optional
+`SCR_YIN` young-nursery variant was not selected, so the earlier 6000-key cases
+must not be read as nursery validation. That variant, owner-lifetime interactions,
+other key representations, broader compiler tests and typed lowering remain
+outstanding. Source and process hashes are retained in
+`build/typed-weak-collector-integration/reviewed.json`. Both modified runtime
+objects remain isolated build artifacts; no compiler checkout or installed pack
+was edited.
 
 Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
 process records, source programs and artifact hashes. Additional reductions and
