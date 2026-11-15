@@ -215,6 +215,18 @@ toolchain change. Its reference-counting symbol family still needs a typed
 runtime implementation, followed by construction/method lowering, lifetime and
 both-host semantic tests, static coverage, and broader compiler gates.
 
+Compiler commit `3c8a2a927` adds thread-local disposal-observer registration so
+typed storage can coexist with dynamic weak collections and checked-record
+sources. Registration is idempotent and preserves the null-hook fast path before
+any observer is registered. The existing native collector test suite, extended
+to check two observers and duplicate registration, passes all nine threshold and
+growth-cap configurations with Zig on Windows. Rebuilding the changed collector
+and dynamic runtime objects preserves the three original weak/strong diagnostic
+outputs. These are unsanitized local checks; broader compiler and sanitizer gates
+remain pending. Evidence: `build/typed-weak-observer-thresholds.json` and
+`build/typed-weak-observer-runtime/baseline-processes.json`. This is disposal
+infrastructure, not the typed storage or conditional-tracing implementation.
+
 Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
 process records, source programs and artifact hashes. Additional reductions and
 repeated-batch outputs are in `minimal-processes.json` and
