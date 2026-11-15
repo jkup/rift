@@ -177,14 +177,29 @@ progress and exact final disposal, without requiring a particular scheduling
 count. This establishes automatic reclamation in that workload, not complete
 collector correctness or a performance result.
 
-The selected runtime metadata uses the default collector. The optional
-`SCR_YIN` young-nursery variant was not selected, so the earlier 6000-key cases
-must not be read as nursery validation. That variant, owner-lifetime interactions,
-other key representations, broader compiler tests and typed lowering remain
-outstanding. Source and process hashes are retained in
+The original runtime metadata uses the default collector, so those initial
+6000-key runs were not nursery validation. A subsequent build explicitly selects
+the `SCR_YIN` young-nursery variant and reproduces all eleven cases. Three added
+owner-lifetime cases pass on both collectors: rooted owner chains survive,
+unrooted chains are collected, and a live key does not keep an otherwise dead
+owner alive. The first owner fixture incorrectly counted an ordinary
+reference-counted release as a cycle-collector free; its failed assertion is
+retained. Corrected fixtures make every counted object self-cyclic. Independent
+review checks expected results, original observer linkage and the selected
+experimental collector object in `build/typed-weak-young-nursery/owners-reviewed.json`.
+Other key representations, broader compiler tests and typed lowering remain
+outstanding. Original integration source and process hashes are retained in
 `build/typed-weak-collector-integration/reviewed.json`. Both modified runtime
 objects remain isolated build artifacts; no compiler checkout or installed pack
 was edited.
+
+The typed-lowering work now has a separate clean compiler worktree at
+`C:/Users/jonku/code/scriptc-typed-weak-storage`, branch `codex/typed-weak-storage`,
+based on v0.4.7 commit `6c60b0bcbfc6edd34ce5c1cdb588d42bdb7171ff`. Filtered,
+frozen-lockfile dependency installation and the unchanged compiler package build
+succeed. Running its source CLI on the backreference probe reproduces 13 static
+statements with three dynamic-tier operations. No compiler source has changed
+yet; this establishes the baseline for typed-lowering work, not its acceptance.
 
 Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
 process records, source programs and artifact hashes. Additional reductions and
