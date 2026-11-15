@@ -1,6 +1,6 @@
 # Assignment pattern suspension
 
-The isolated draft supports yield/await in destructuring assignment defaults,
+Destructuring assignments support yield/await in defaults,
 computed keys and member/private/super targets. It retains outer expression
 frames and receivers while initializing a pattern, then resumes that expression
 with the original RHS value. Nested patterns inside defaults use the same stack.
@@ -13,6 +13,9 @@ restores saved class scopes before continuing outer unwind.
 
 Sixteen independent references and focused Node-hosted tests pass, including
 class/private/super contexts, defining-Realm rest allocation, current-caller
-budgets and recovery after resource failure. Loop binding suspension and function
-parameter grammar remain guarded. Full Node, native and canonical acceptance are
-pending; integration requires final predecessor reconciliation.
+budgets and recovery after resource failure. Loop binding suspension is supported;
+function parameter suspension remains invalid. Isolated acceptance includes 1001
+Node guests, 49 native compiler checks, 57 native semantic executions and 296
+tooling checks. Combined TS-560 acceptance passes 1002 guests on each host, 484
+compiler checks and the unchanged 225-file original corpus. See the
+[publication record](shared-pattern-publication.md).

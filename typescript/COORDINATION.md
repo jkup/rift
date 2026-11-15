@@ -4176,3 +4176,6 @@ TS-556 integrated after isolated acceptance: 1000 Node guests, 35 runner checks,
 TS-557 integrated after isolated acceptance: 1001 Node guests, 35 runner checks, 296 tooling checks, 49 native static/coverage gates and 57 semantic executions. Publication remains gated on combined TS-560 canonical acceptance.
 
 TS-559 integrated after isolated acceptance: 1002 Node guests, 35 runner checks, 296 tooling checks, 57 native static/coverage gates and 65 semantic executions. Publication remains gated on combined TS-560 canonical acceptance.
+
+
+TS-560 full canonical acceptance passed (2026-11-15): session 21893 exited 0 through all five stages. Independent acceptance verifies 1002 guests per host without skips, 484 static-only/zero-dynamic compiler checks and executable hashes, 296 tooling checks, 35 runner checks, ten probes and typechecking. Snapshot: 99559e60217a2ffe67fb037e1fedf07072f75b635a98187b6f15d8876ee774fe. Corpus node-ZIMckm/native-K5lmj4 matches all 225 original records and preserves 191 completions, with no changed or added outcomes. TS-556/557/559 are accepted together; original fixtures remain unchanged.

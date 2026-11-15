@@ -18,6 +18,8 @@ and return, and synchronous/asynchronous iterator closing. The focused driver
 also checks defining-Realm rest allocation, cross-session resumption, current
 caller resource budgets and recovery after fatal exhaustion.
 
-Typechecking, focused checks and reference comparisons pass on Node-hosted Rift.
-Full regression, native static-only/zero-dynamic compilation, tooling and final
-predecessor reconciliation remain pending. This draft is not accepted for main.
+Isolated acceptance passes typechecking, 1002 Node guests, 57 native compiler
+checks, 65 native semantic executions, 296 tooling checks and final predecessor
+reconciliation. Combined TS-560 acceptance passes 1002 guests on each host, 484
+compiler checks and the unchanged 225-file original corpus. See the
+[publication record](shared-pattern-publication.md).
