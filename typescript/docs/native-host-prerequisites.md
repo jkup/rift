@@ -67,3 +67,30 @@ maps pointer arguments to BigInt, not managed class references. A reduced future
 experiment should introduce genuine typed weak storage and its lifetime contract;
 mapping WeakMap to the ordinary Map representation or relabeling its coverage
 would retain the wrong behavior. No upstream patch has been made or tested.
+
+### Isolated lifetime diagnostics (TS-564, 2026-11-15)
+
+A test-only C wrapper calls the pinned runtime's full `scr_collect_cycles()`
+pass and reads `scr_cyc_live`. Seven small native programs reproduce their output
+on a second execution. The wrapper and programs are outside the Rift runtime;
+the installed compiler is unchanged. The counter measures collector-managed
+objects, not bytes or all allocations.
+
+With a reachable WeakMap, two batches of 1000 self-cyclic keys stored as their
+own values produce counts 5 → 2005 → 4005 after full collection. The corresponding
+independent-value control produces 5 → 102 → 102. The source tracer visits weak
+map values unconditionally, so typed lowering must address value-to-key retention
+rather than simply reuse this representation.
+
+Cleanup also needs investigation. After a scoped weak map becomes unreachable,
+the backreference case leaves 1003 objects and the independent-value case leaves
+99, from a zero baseline. Four additional full collections leave those counts
+unchanged. Strong-map and plain-cycle controls return to zero. The original
+zero-after-cleanup assertion failed and is retained; these results are diagnostics,
+not successful weak-storage acceptance or a Node differential conformance claim.
+Weak cases still contain three dynamic operations.
+
+Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
+process records, source programs and artifact hashes. Source tracing is recorded
+in `build/typed-weak-storage-review/source-reviewed.json`. Investigate disposal
+and collector accounting before implementing a typed weak-map backend.
