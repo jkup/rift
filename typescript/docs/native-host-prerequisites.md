@@ -117,6 +117,38 @@ reference-counted release, and changes only these diagnostic processes. Evidence
 outputs. Typed lowering still needs conditional value tracing (ephemerons) and
 its own coverage/lifetime acceptance; this experiment implements neither.
 
+### Conditional-tracing prototype (TS-564)
+
+The specification's [liveness model](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-liveness)
+does not let a dependency cycle alone establish liveness. Collection remains
+optional; these diagnostics test our backend lifetime requirement rather than
+establishing a spec violation from collection timing.
+
+An isolated C prototype builds a temporary graph from weak-entry owners and
+native keys, accounts for incoming counted edges, and marks externally referenced
+objects. It follows ordinary strong edges and activates a weak value only when
+both owner and key are marked, repeating to a fixed point. It unlinks dead entries
+before releasing their values, then uses the existing collector. Actual object
+reference counts are not changed during the graph analysis.
+
+Before this experiment, rebuilding pristine `scr_json.c` in both selected runtime
+variants reproduced all three diagnostic baselines. Replacing only that object
+and the diagnostic observer now collects 1000/1000 cyclic keys in both weak cases
+while their maps remain reachable, preserves the kept-key lookup, and leaves the
+strong Map control at zero until scope exit. All three finish at 1000 and reproduce
+on a second execution. Evidence: `build/typed-weak-ephemeron-prototype/reviewed.json`;
+pristine controls: `build/typed-weak-runtime-relink/baseline-processes.json`.
+
+This is not an integrated compiler change. The pass runs only from the explicit
+diagnostic hook, accepts only the probes' headered native-key identities, and uses
+repeated scans whose worst-case cost needs improvement. It has not yet covered
+chained entries, externally retained values, automatic/generational collection,
+other key representations, mutation stress or typed lowering. The installed
+toolchain, Rift source, original fixtures and accepted validation remain unchanged.
+Initial compile/access-violation failures are retained beside the successful run;
+the latter was fixed by using the runtime's compact-reference-count immortality
+check rather than comparing the whole allocation word.
+
 Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
 process records, source programs and artifact hashes. Additional reductions and
 repeated-batch outputs are in `minimal-processes.json` and
