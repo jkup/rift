@@ -73,8 +73,9 @@ would retain the wrong behavior. No upstream patch has been made or tested.
 A test-only C wrapper calls the pinned runtime's full `scr_collect_cycles()`
 pass and reads `scr_cyc_live`. Seven small native programs reproduce their output
 on a second execution. The wrapper and programs are outside the Rift runtime;
-the installed compiler is unchanged. The counter measures collector-managed
-objects, not bytes or all allocations.
+the installed compiler is unchanged. The counter measures allocated collector
+blocks, including disposed dynamic objects in the runtime's bounded reuse pool;
+it does not measure reachable objects, bytes or all allocations.
 
 With a reachable WeakMap, two batches of 1000 self-cyclic keys stored as their
 own values produce counts 5 → 2005 → 4005 after full collection. The corresponding
@@ -82,15 +83,29 @@ independent-value control produces 5 → 102 → 102. The source tracer visits w
 map values unconditionally, so typed lowering must address value-to-key retention
 rather than simply reuse this representation.
 
-Cleanup also needs investigation. After a scoped weak map becomes unreachable,
+After a scoped weak map becomes unreachable,
 the backreference case leaves 1003 objects and the independent-value case leaves
 99, from a zero baseline. Four additional full collections leave those counts
-unchanged. Strong-map and plain-cycle controls return to zero. The original
-zero-after-cleanup assertion failed and is retained; these results are diagnostics,
-not successful weak-storage acceptance or a Node differential conformance claim.
+unchanged. Strong-map and plain-cycle controls return to zero. These differences
+do not establish a cleanup failure: `scr_dyn_dispose` explicitly keeps disposed
+blocks counted in `scr_cyc_live`, up to `SCR_DYN_FREE_MAX` (1,048,576 blocks).
+The original zero-after-cleanup assertion failed and is retained as an invalid
+acceptance assumption, not evidence of a leak.
+
+Reduced probes remove closures and key cycles. An empty WeakMap leaves two
+counted blocks, and 1000 self-value entries leave 1002. Five further scoped
+batches plateau at 1002; the original scoped backreference and independent-value
+programs likewise plateau at 1003 and 99. This supports pool reuse rather than
+unbounded cleanup retention. It does not prove all lifetimes correct. Reachable
+map value-to-key retention still needs a separate observer that distinguishes
+live native keys from pooled dynamic wrappers before drawing collector conclusions.
+These results are diagnostics, not successful weak-storage acceptance or a Node
+differential conformance claim.
 Weak cases still contain three dynamic operations.
 
 Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
-process records, source programs and artifact hashes. Source tracing is recorded
+process records, source programs and artifact hashes. Additional reductions and
+repeated-batch outputs are in `minimal-processes.json` and
+`pool-reuse-processes.json` in the same directory. Source tracing is recorded
 in `build/typed-weak-storage-review/source-reviewed.json`. Investigate disposal
 and collector accounting before implementing a typed weak-map backend.
