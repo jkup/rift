@@ -97,11 +97,25 @@ counted blocks, and 1000 self-value entries leave 1002. Five further scoped
 batches plateau at 1002; the original scoped backreference and independent-value
 programs likewise plateau at 1003 and 99. This supports pool reuse rather than
 unbounded cleanup retention. It does not prove all lifetimes correct. Reachable
-map value-to-key retention still needs a separate observer that distinguishes
-live native keys from pooled dynamic wrappers before drawing collector conclusions.
+map value-to-key retention requires a separate observer that distinguishes
+live native keys from pooled dynamic wrappers, described below.
 These results are diagnostics, not successful weak-storage acceptance or a Node
 differential conformance claim.
 Weak cases still contain three dynamic operations.
+
+A separate test-only observer now counts actual cyclic native-key disposal. It
+wraps the registered Key collector free callback, increments a counter and calls
+the original callback. Each generated LLVM descriptor is checked to identify
+Key as emitted kind 32. With 1000 self-cyclic keys, the independent-value WeakMap
+collects all 1000 while the map is reachable; the self-value WeakMap collects
+zero, like the strong Map control. After scope exit, all three report 1000 freed
+keys. A second execution independently reproduces each exact result. This
+isolates the reachable-map value-to-key retention concern and contradicts the
+earlier inferred scope-exit leak. The observer counts collector frees, not every
+reference-counted release, and changes only these diagnostic processes. Evidence:
+`build/typed-weak-key-disposal/reviewed.json`, including artifact hashes and raw
+outputs. Typed lowering still needs conditional value tracing (ephemerons) and
+its own coverage/lifetime acceptance; this experiment implements neither.
 
 Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
 process records, source programs and artifact hashes. Additional reductions and
