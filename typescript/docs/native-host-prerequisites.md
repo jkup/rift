@@ -198,8 +198,22 @@ The typed-lowering work now has a separate clean compiler worktree at
 based on v0.4.7 commit `6c60b0bcbfc6edd34ce5c1cdb588d42bdb7171ff`. Filtered,
 frozen-lockfile dependency installation and the unchanged compiler package build
 succeed. Running its source CLI on the backreference probe reproduces 13 static
-statements with three dynamic-tier operations. No compiler source has changed
-yet; this establishes the baseline for typed-lowering work, not its acceptance.
+statements with three dynamic-tier operations. This establishes the baseline for
+typed-lowering work, not its acceptance.
+
+Compiler commit `c66a91957` adds a distinct weak-map IR type, nested type identity
+and traversal, diagnostic formatting, and generated binary-codec support. The
+frontend does not emit the new type yet. All 160 focused IR tests pass, along
+with compiler typechecking, codec freshness and lint. Owned source formatting
+passes. Repository-wide formatting reports 1807 files; three untouched samples
+verify that committed LF bytes format unchanged while checkout CRLF bytes cause
+the reported differences. No unrelated files were reformatted. Evidence for
+those samples is `build/typed-weak-format-baseline-reviewed.json`.
+
+This local compiler foundation is not a runtime implementation or a published
+toolchain change. Its reference-counting symbol family still needs a typed
+runtime implementation, followed by construction/method lowering, lifetime and
+both-host semantic tests, static coverage, and broader compiler gates.
 
 Evidence: `build/typed-weak-storage-lifetime/diagnostics-reviewed.json`, raw
 process records, source programs and artifact hashes. Additional reductions and
