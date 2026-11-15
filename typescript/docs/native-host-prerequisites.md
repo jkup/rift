@@ -233,3 +233,5 @@ repeated-batch outputs are in `minimal-processes.json` and
 `pool-reuse-processes.json` in the same directory. Source tracing is recorded
 in `build/typed-weak-storage-review/source-reviewed.json`. Investigate disposal
 and collector accounting before implementing a typed weak-map backend.
+
+Local compiler commits 009d56d82 and 10aca8234 add value-independent weak-key indexing and native lifetime tests. The index distinguishes owner, key and representation kind without dynamic-value boxing. Tests exercise 16,384 entries, deletion chains, address reuse, reentrant disposal, and callbacks that free themselves and sibling entries. The focused Windows Zig test passes; it is unsanitized. The index is not yet connected to collection storage or packaged runtime builds. Next: connect typed storage and conditional tracing, then lowering and broader validation.
