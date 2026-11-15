@@ -139,11 +139,23 @@ strong Map control at zero until scope exit. All three finish at 1000 and reprod
 on a second execution. Evidence: `build/typed-weak-ephemeron-prototype/reviewed.json`;
 pristine controls: `build/typed-weak-runtime-relink/baseline-processes.json`.
 
-This is not an integrated compiler change. The pass runs only from the explicit
-diagnostic hook, accepts only the probes' headered native-key identities, and uses
-repeated scans whose worst-case cost needs improvement. It has not yet covered
-chained entries, externally retained values, automatic/generational collection,
-other key representations, mutation stress or typed lowering. The installed
+The initial version used repeated scans. A follow-up replaces them with a work
+queue and two dependency links per entry: each node is marked once, and each
+entry is reconsidered when its owner or key becomes live. Nine native diagnostics
+reproduce independently. Besides the original three controls, these cover a
+rooted chain, unrooted ring, externally retained value, shared value with one
+dead key, and 6000-key chain/ring cases. Rooted chains retain their live lookups;
+unrooted rings collect every key; the shared value survives its dead key while
+the other key remains rooted. All expected cyclic-key frees occur after roots
+leave scope. These are lifetime diagnostics, not runtime performance benchmarks.
+Evidence: `build/typed-weak-ephemeron-worklist/reviewed.json`; isolated source:
+`build/weak-ephemeron-worklist.c`.
+
+This is not an integrated compiler change. The pass still runs only from the
+explicit diagnostic hook and accepts only the probes' headered native-key
+identities. Automatic collector scheduling, other key representations, mutation
+stress and typed lowering remain unvalidated. The long cases cross the nursery
+size but do not prove full generational integration. The installed
 toolchain, Rift source, original fixtures and accepted validation remain unchanged.
 Initial compile/access-violation failures are retained beside the successful run;
 the latter was fixed by using the runtime's compact-reference-count immortality
