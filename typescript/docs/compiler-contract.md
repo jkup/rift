@@ -2,7 +2,19 @@
 
 What the pinned toolchain has been shown to do, by the probes in `probes/`. This file records evidence; the rewrite plan (`../../TypeScript Rewrite.md`) records intent. Update both when the toolchain changes.
 
-## Pinned toolchain (2026-11-01)
+## Current native toolchain (2026-11-18)
+
+Weak collections require the patched compiler pinned in
+[`toolchain/scriptc/source.json`](../toolchain/scriptc/source.json).
+Follow its [source-build instructions](../toolchain/scriptc/README.md); native
+tools use `build/toolchain/<platform>-<arch>/bin/scriptc[.exe]` or the explicit
+`RIFT_SCRIPTC` path. They do not fall back to the unmodified npm compiler.
+The source pin includes the upstream revision, patch/tree hashes and platform
+LLVM helper hashes. Node 24.22.0, pnpm 11.1.3 and Zig 0.16.0 were used for the
+validated Linux and Windows package builds. Both pass relocation and typed weak
+storage consumer checks. TS-565 records canonical integration acceptance.
+
+## Original toolchain baseline (2026-11-01)
 
 | Component | Version | Source |
 |---|---|---|

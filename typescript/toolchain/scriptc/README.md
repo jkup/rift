@@ -1,10 +1,11 @@
-# Typed weak-storage compiler candidate
+# Pinned typed weak-storage compiler
 
 This patch preserves the compiler used by the isolated Rift WeakMap/WeakSet
 trial. It adds typed weak storage and ownership tracing, plus the runtime-link
 and test-selection repairs recorded under TS-565 in `../../TASKS.md`.
-The installed Rift compiler remains the npm `scriptc@0.4.7` dependency;
-this directory does not activate or install the candidate.
+Rift's weak collections require this patched source. The unmodified npm
+`scriptc@0.4.7` is no longer a native build dependency. This directory preserves
+the source pin and build instructions; compiled distributions stay in `build/`.
 
 `source.json` pins the upstream base, patch hash and resulting Git tree.
 Applying the patch to a separate index at that base reproduced the complete
@@ -56,7 +57,7 @@ LLVM helper is byte-identical to the pinned helper in the clean source tree.
 The complete clean-source Linux package also builds and passes relocation,
 version, typed WeakMap consumer compilation/execution, and 5/5 static coverage
 with development overrides removed. Node and native consumer output agree.
-Production installation and canonical Rift integration remain pending.
+Canonical Rift integration acceptance is tracked under TS-565 in `../../TASKS.md`.
 
 Windows preparation uses the same pinned Node, pnpm and Zig versions, plus
 the Windows LLVM helper pinned in `source.json`. Frozen dependency installation
@@ -73,10 +74,27 @@ test filenames. Restoring those two files from the archive leaves all regular
 source files byte-identical; the symlink fixtures remain unavailable. These
 results do not establish a complete Windows compiler test-suite run.
 
-To exercise a built candidate with Rift's native build, probe or radix tools,
+To select a built compiler with Rift's native build, probe or radix tools,
 set `RIFT_SCRIPTC` to its relocated `bin/scriptc.exe` (Windows) or `bin/scriptc`
 (Linux). Relative paths resolve from the Rift TypeScript directory. An invalid
-explicit path fails instead of falling back to npm. Without the setting, these
-tools still use the installed `scriptc@0.4.7`; selecting a candidate does not
-install it or establish acceptance. Native build and probe reports record the
-selected executable. Keep the matching Zig toolchain on PATH when linking.
+explicit path fails instead of falling back. Without the setting, tools use
+`build/toolchain/<platform>-<arch>/bin/scriptc[.exe]`, where the exercised platform
+names are `win32-x64` and `linux-x64`. A missing compiler fails with setup
+instructions. Native build and probe reports record the selected executable.
+Keep Zig 0.16.0 on PATH when linking.
+
+After exporting the pinned source and installing/building its workspace as
+described above, place the hash-verified published LLVM helper under the matching
+`packages/llvm-<target>/bin` directory. Run these commands from the prepared source
+directory, replacing `<target>` with `win32-x64-msvc` or `linux-x64-gnu`:
+
+```sh
+node packages/runtime-<target>/scripts/build.mjs
+node packages/runtime-<target>/scripts/verify.mjs
+node --max-old-space-size=8192 --import tsx scripts/build-native-cli.mts /absolute/path/to/rift/typescript/build/toolchain/<platform>-x64
+```
+
+Use a new output directory. Keep development `SCRIPTC_*`, `CC` and `AR` overrides
+unset so the build uses the prepared source's local helper and patched runtime.
+The package includes compiler assets but still requires the host linker. Test
+the result with `npm run test:probes` from Rift's TypeScript directory before use.

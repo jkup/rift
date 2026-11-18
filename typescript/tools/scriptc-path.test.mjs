@@ -5,20 +5,22 @@ import {join} from 'node:path';
 import {test} from 'node:test';
 import {scriptcPath} from './scriptc-path.mjs';
 
-test('compiler selection preserves the npm default and honors explicit paths', t => {
+test('compiler selection uses the built toolchain and honors explicit paths', t => {
     const root = mkdtempSync(join(tmpdir(), 'rift-scriptc-path-'));
-    const npm = join(root, 'node_modules/scriptc/bin/scriptc.exe');
-    mkdirSync(join(root, 'node_modules/scriptc/bin'), {recursive: true});
-    writeFileSync(npm, 'default');
+    const platform = `${process.platform}-${process.arch}`;
+    const bin = join(root, 'build/toolchain', platform, 'bin');
+    const compiler = join(bin, process.platform === 'win32' ? 'scriptc.exe' : 'scriptc');
+    mkdirSync(bin, {recursive: true});
+    writeFileSync(compiler, 'default');
     const custom = join(root, 'custom compiler.exe');
     writeFileSync(custom, 'candidate');
     t.after(() => {
         unlinkSync(custom);
-        unlinkSync(npm);
-        for (const directory of ['node_modules/scriptc/bin', 'node_modules/scriptc', 'node_modules', ''])
+        unlinkSync(compiler);
+        for (const directory of [`build/toolchain/${platform}/bin`, `build/toolchain/${platform}`, 'build/toolchain', 'build', ''])
             rmdirSync(join(root, directory));
     });
-    assert.equal(scriptcPath(root, {}), npm);
+    assert.equal(scriptcPath(root, {}), compiler);
     assert.equal(scriptcPath(root, {RIFT_SCRIPTC: custom}), custom);
     assert.equal(scriptcPath(root, {RIFT_SCRIPTC: 'custom compiler.exe'}), custom);
     for (const setting of ['', '  ', 'missing.exe', '.'])
