@@ -63,7 +63,9 @@ Windows preparation uses the same pinned Node, pnpm and Zig versions, plus
 the Windows LLVM helper pinned in `source.json`. Frozen dependency installation
 and the compiler/CLI workspace build pass. The upstream package scripts use
 `true`; the exercised Windows build appends Git for Windows' `usr/bin` directory
-to PATH to supply that command. This does not build the patched runtime pack.
+to PATH to supply that command. A separate patched runtime build passes all
+seven flavors and five vendor archives; its verifier accepts 1,573 artifacts.
+The native Windows compiler package and relocation check remain pending.
 Windows tar failed to create 12 archived symlinks and mishandled two Unicode
 test filenames. Restoring those two files from the archive leaves all regular
 source files byte-identical; the symlink fixtures remain unavailable. These
