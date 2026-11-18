@@ -41,3 +41,18 @@ from 25,903 hash-identical validation copies. Their manifests are
 Each draft retained 126 read-only files that could not be removed.
 A follow-up disk check showed 127.0 GB (118.3 GiB) available.
 
+On 2026-11-18, two further hash-verified duplicate cleanups removed
+6,668,566,860 logical bytes across 3,936 files, with no deletion errors.
+Their catalogs and per-directory manifests are in
+`build/storage-20261118-duplicate-cleanup/` and
+`build/storage-20261118-extra-duplicate-cleanup/`.
+
+Lossless gzip archiving then retained 107 historical draft LLVM files
+(5,082,319,529 bytes) in 686,415,530 bytes. Each archive was read back,
+decompressed and SHA256-checked before removing its original `.ll` file.
+The archives remain beside the original paths as `.ll.gz`; restore them
+before tools that require those historical LLVM paths. The manifest is
+`build/historical-llvm-archive-20261118.jsonl`. Active weak-collection
+artifacts, executables, sources and reports were excluded. Physical free
+space reached 23.0 GiB, allowing the pending lifetime validation to resume.
+
