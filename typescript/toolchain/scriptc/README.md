@@ -72,3 +72,11 @@ Windows tar failed to create 12 archived symlinks and mishandled two Unicode
 test filenames. Restoring those two files from the archive leaves all regular
 source files byte-identical; the symlink fixtures remain unavailable. These
 results do not establish a complete Windows compiler test-suite run.
+
+To exercise a built candidate with Rift's native build, probe or radix tools,
+set `RIFT_SCRIPTC` to its relocated `bin/scriptc.exe` (Windows) or `bin/scriptc`
+(Linux). Relative paths resolve from the Rift TypeScript directory. An invalid
+explicit path fails instead of falling back to npm. Without the setting, these
+tools still use the installed `scriptc@0.4.7`; selecting a candidate does not
+install it or establish acceptance. Native build and probe reports record the
+selected executable. Keep the matching Zig toolchain on PATH when linking.

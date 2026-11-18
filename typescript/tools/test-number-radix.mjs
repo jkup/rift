@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { shortest, judge, roundingInterval } from '../fixtures/assistance/radix-formatter-options/oracle.mjs';
 import { probeVerdict } from './probe-verdict.mjs';
+import { scriptcPath } from './scriptc-path.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const evidence = new URL(process.env.RIFT_RADIX_EVIDENCE ?? '../build/number-radix/', import.meta.url);
 mkdirSync(evidence, { recursive: true });
@@ -14,7 +15,7 @@ if (process.argv.includes('--build')) {
         return { command, args, status: r.status, signal: r.signal, error: r.error?.message ?? null,
             stdout: r.stdout ?? '', stderr: r.stderr ?? '' };
     };
-    const compiler = root + 'node_modules/scriptc/bin/scriptc.exe';
+    const compiler = scriptcPath(root);
     const node = invoke(process.execPath, [root + 'node_modules/typescript/bin/tsc', '-p', 'tsconfig.json']);
     const version = invoke(compiler, ['--version']);
     const build = invoke(compiler, ['build', 'test/number-radix.ts', '--tier', 'static-only', '-o', root + 'build/native/number-radix.exe']);

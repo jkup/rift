@@ -11,11 +11,11 @@ import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { completed, probeVerdict } from "./probe-verdict.mjs";
+import { scriptcPath } from "./scriptc-path.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const EXE = process.platform === "win32" ? ".exe" : "";
-// The scriptc package ships its native CLI as bin/scriptc.exe on every platform.
-const scriptc = join(ROOT, "node_modules", "scriptc", "bin", "scriptc.exe");
+const scriptc = scriptcPath(ROOT);
 const tscJs = join(ROOT, "node_modules", "typescript", "bin", "tsc");
 
 // Guest-facing arguments for probes that need them.
@@ -72,7 +72,7 @@ for (const name of probes) {
     const expectedStatus = name === "host" ? 3 : 0;
     const verdict = probeVerdict({ build, coverage, node, native, expectedStatus });
 
-    results.push({ name, verdict, expectedStatus, node, build, coverage, native });
+    results.push({ name, compiler: scriptc, verdict, expectedStatus, node, build, coverage, native });
     console.log(`${verdict.padEnd(12)} ${name}  (build ${build.ms}ms)`);
 }
 

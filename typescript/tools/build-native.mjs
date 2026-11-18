@@ -1,11 +1,12 @@
 import { validateNativeEntries } from "./native-entry-manifest.mjs";
+import { scriptcPath } from "./scriptc-path.mjs";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { completed, probeVerdict } from "./probe-verdict.mjs";
 import { runNativeCommand, mapConcurrent } from "./native-build-runner.mjs";
 const root = fileURLToPath(new URL("..", import.meta.url));
-const scriptc = join(root, "node_modules/scriptc/bin/scriptc.exe");
+const scriptc = scriptcPath(root);
 const suffix = process.platform === "win32" ? ".exe" : "";
 const jobs = Number(process.env.RIFT_NATIVE_JOBS ?? 2);
 if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error("RIFT_NATIVE_JOBS must be a positive safe integer");
@@ -508,7 +509,7 @@ const results = await mapConcurrent(entries, jobs, async ([entry, name]) => {
     console.log(`${verdict} ${entry}`);
     if (!completed(build)) console.error(build.stderr);
     if (verdict !== "PASS") console.error(coverage.stdout, coverage.stderr);
-    return { entry, build, coverage, verdict };
+    return { entry, compiler: scriptc, build, coverage, verdict };
 });
 console.log(`Native build: ${entries.length} entries, ${Math.min(jobs, entries.length)} workers, ${Date.now() - started}ms`);
 writeFileSync(join(root, "build/native-build-results.json"), JSON.stringify(results, null, 2));
