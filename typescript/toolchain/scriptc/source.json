@@ -15,6 +15,13 @@
       "integrity": "sha512-6cqebbHdOQDk+kEAHmix2bbb4RxD0k0k/xNLGQvprDdot2zw+4g44/frM5VI/ZP2ryCPuPIfG0KRVAh2RX2v5Q==",
       "archiveSha256": "5f685532ea6ac7d863a2af24780ad9863f6c308f176b462d84863d1dfb3c8746",
       "helperSha256": "d0d73cf45e9686ad143803c57203a85b4b74d664019413eafa646a9bff255b84"
+    },
+    "windowsLLVMHelper": {
+      "name": "@scriptc/llvm-win32-x64-msvc",
+      "version": "0.4.7",
+      "integrity": "sha512-pNTo1d/tarCiN40PYbYoREc84NiaPEY6IghWsiE1/cKySdGzqC1Oi9ItHEQRTkEKayuj0eVngOYy+HvNJUAolw==",
+      "archiveSha256": "75942b9b33a559275f16578651248093a5d28d482577410844de1b19b7f12715",
+      "helperSha256": "f074804b1d87b42117ed45b5f6909219150cbe0d2716b5c238246b104169e3b9"
     }
   }
 }

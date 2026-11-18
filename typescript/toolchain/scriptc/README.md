@@ -58,3 +58,13 @@ version, typed WeakMap consumer compilation/execution, and 5/5 static coverage
 with development overrides removed. Node and native consumer output agree.
 This is not a validated Windows package. Production installation and
 canonical Rift integration remain pending.
+
+Windows preparation uses the same pinned Node, pnpm and Zig versions, plus
+the Windows LLVM helper pinned in `source.json`. Frozen dependency installation
+and the compiler/CLI workspace build pass. The upstream package scripts use
+`true`; the exercised Windows build appends Git for Windows' `usr/bin` directory
+to PATH to supply that command. This does not build the patched runtime pack.
+Windows tar failed to create 12 archived symlinks and mishandled two Unicode
+test filenames. Restoring those two files from the archive leaves all regular
+source files byte-identical; the symlink fixtures remain unavailable. These
+results do not establish a complete Windows compiler test-suite run.
