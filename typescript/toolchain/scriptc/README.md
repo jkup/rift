@@ -49,6 +49,12 @@ The Linux distribution passed a relocation trial with development compiler
 overrides and `NODE_PATH` removed: version, typed WeakMap compilation,
 execution, and 4/4 static coverage. It also compiled the three affected Rift
 inventory-test drivers, whose six executions and static coverage passed.
-The clean-source runtime rebuild and complete package reproduction are still
-pending. This is not a validated Windows package. Production installation and
+The clean-source runtime rebuild passes all seven runtime flavors and six vendor
+archives; its verifier accepts 1,608 artifacts. A second source audit finds no
+changes to the 19,943 archived files and symlinks. The runtime build's configured
+LLVM helper is byte-identical to the pinned helper in the clean source tree.
+The complete clean-source Linux package also builds and passes relocation,
+version, typed WeakMap consumer compilation/execution, and 5/5 static coverage
+with development overrides removed. Node and native consumer output agree.
+This is not a validated Windows package. Production installation and
 canonical Rift integration remain pending.
