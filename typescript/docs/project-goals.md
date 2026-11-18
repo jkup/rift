@@ -10,7 +10,32 @@ Readability is the primary design objective. Correctness is a constraint on simp
 
 There are no users or downstream developers to preserve compatibility for. Internal breaking changes are acceptable when they improve the implementation; update all affected code and tests together. Keep the C++ project intact as a reference while exploring the rewrite.
 
-## Starting decisions
+## Development priorities (owner update, 2026-11-18)
+
+The current milestone is to pass at least as many Test262 tests as the C++ Rift
+version passed, using a comparable pinned corpus and counting convention. Full
+Test262 conformance is a long-term ambition, not this milestone's finish line.
+Identify the recorded C++ Test262 baseline and measure the TypeScript engine
+against that scope; do not substitute the separate legacy-fixture completion count.
+C++ code and fixtures remain reference material. Matching their implementation,
+bugs or nonstandard APIs is not required. Resolve semantic disagreements using
+the specification.
+
+Prioritize bringing up the Test262 runner, measuring the baseline comparison and
+implementing the gaps needed to reach that target. Defer unrelated features and
+further conformance work to subsequent goals. Keep unsupported features explicit and distinguish engine
+failures from harness limitations, exclusions and unexecuted tests. Report
+progress with the tested Test262 scope and feature coverage, not a C++ parity
+percentage.
+
+Use typechecking, Node regression tests and relevant native semantic tests for
+the normal development loop. Native checks retain static-only compilation and
+zero-dynamic coverage requirements. Reserve exhaustive native rebuilds for
+toolchain changes, broad integration checkpoints or evidence of wider regressions;
+do not require rebuilding every test executable for each feature. Record the
+scope actually validated rather than treating focused checks as a full-suite pass.
+
+## Starting implementation decisions
 
 | Topic | Approved default |
 |---|---|

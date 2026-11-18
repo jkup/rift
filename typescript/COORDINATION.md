@@ -6,6 +6,13 @@ Repository: `C:\Users\jonku\code\rift`. Current integration branch: `codex/test2
 
 ## Accepted foundation
 
+Current direction (owner, clarified 2026-11-18): reach the C++ version's Test262
+pass count on comparable inputs, then close this milestone. Full conformance,
+implementation parity and legacy-fixture completion are not this finish line.
+TS-566 owns baseline identification, the focused validation loop and the required
+Test262-driven followups. TS-565's running native matrix is a toolchain integration
+check, not the project completion metric.
+
 - TS-001 implementation: `a016967`; original evidence: `b677091`.
 - Coordinator found U+2028/U+2029 silently swallowing source after line comments. Review fix: `93adcfe`.
 - Accepted `93adcfe` for the explicitly bounded foundation profile after inspecting lexer/tests and readability changes, independently rebuilding/running Node tests (90/90), and rerunning native guest tests (90/90) against the existing native executables. Producer evidence records rebuilt native binaries, 20 runner tests, ten probes, and static CLI/realm coverage. No full ECMAScript conformance claim.

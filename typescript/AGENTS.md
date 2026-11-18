@@ -4,6 +4,7 @@ These rules govern the TypeScript rewrite. The owner approved this direction on 
 
 ## Priorities
 
+- Owner update (2026-11-18): the current finish line is at least the C++ version's Test262 pass count on a comparable pinned corpus and counting convention, not full conformance or matching the C++ implementation. Preserve C++ as reference material, not a semantic oracle. Prioritize measuring that baseline and closing the required Test262 gaps; defer unrelated features. Use focused both-host checks during development and exhaustive native rebuilds at justified integration/toolchain checkpoints.
 - Choose the clearest correct implementation for a TypeScript developer learning JavaScript engines. Explain invariants and observable semantics, not obvious syntax.
 - Correctness constrains simplification. Full ECMAScript conformance is the long-term ambition; early unsupported behavior must be explicit. Preserve evaluation order, including calls caused by coercion and accessors.
 - Use recognizable engine concepts and precise names. Consult the specification and a relevant engine for new subsystems or difficult semantics; record consequential design choices with source links/revisions.
