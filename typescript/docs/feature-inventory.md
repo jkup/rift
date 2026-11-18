@@ -14,7 +14,7 @@ pending successors. Historical milestone notes below retain their original scope
 | Values and collections | Number, exact BigInt, strings and symbols; ordinary objects, sparse arrays with custom species construction and Realm-local unscopables, Map/Set, iterators, descriptors, JSON and Reflect operations. |
 | Text and patterns | UTF-16 string operations, ordinary/tagged templates, Unicode identifiers and RegExp Unicode mode, property escapes, backreferences, lookahead and scoped modifiers. Positive and negative lookbehind and bounded wide Unicode range compilation are accepted; Unicode sets mode remains unsupported. |
 | Date and Temporal | UTC-default Date with explicit Realm/CLI timezone selection, pinned IANA zones, local gap/fold resolution, and Temporal ISO-calendar operations. System timezone discovery, Intl and other calendars are absent. |
-| Weak storage | WeakMap, WeakSet, WeakRef and FinalizationRegistry remain blocked by the pinned native compiler/runtime contract. Strong maps are not substitutes. |
+| Weak storage | Object/function-keyed WeakMap and WeakSet, including WeakMap upsert methods, use typed weak storage in the patched compiler. Weak symbol keys report explicit unsupported behavior; WeakRef and FinalizationRegistry remain unimplemented. |
 
 Source, parser, execution-step, call-depth and operation-specific bounds remain enforced.
 Unsupported syntax or operations and engine resource stops are distinguished from

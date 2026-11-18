@@ -599,6 +599,7 @@ executeDriver("string-iterator", { stdout: "String iterators passed\n" });
 executeDriver("object-from-entries", { stdout: "Object fromEntries passed\n" });
 executeDriver("keyed-collection", { stdout: "Keyed collection storage passed\n" });
 executeDriver("map-object", { stdout: "Map ordinary methods passed\n" });
+executeDriver("weak-collections", { stdout: "weak-map prototype: 19 checks passed\nweak-map upsert: 21 checks passed\nweak-set prototype: 21 checks passed\nweak-collection boundaries: 14 checks passed\n" });
 executeDriver("map-iterator", { stdout: "Map iterators passed\n" });
 executeDriver("group-by", { stdout: "Object and Map grouping passed\n" });
 executeDriver("string-search", { stdout: "String search predicates passed\n" });

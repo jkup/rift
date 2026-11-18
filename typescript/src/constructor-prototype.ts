@@ -2,7 +2,7 @@ import type { GuestObject, OperationContext, ErrorName } from "./runtime.js";
 import type { ObjectCompletion } from "./object-conversion.js";
 import type { Location } from "./syntax.js";
 
-export type ConstructorPrototype = "Temporal.ZonedDateTime" | "Date" | "Temporal.PlainMonthDay" | "Temporal.PlainYearMonth" | "Temporal.PlainDateTime" | "Temporal.PlainDate" | "Temporal.Duration" | "Temporal.PlainTime" | "Temporal.Instant" | "Generator" | "GeneratorFunction" | "AsyncFunction" | "AsyncGenerator" | "AsyncGeneratorFunction" | "RegExp" | "Promise" | "Object" | "Function" | "Array" | "Boolean" | "Number" | "String" | "Map" | "Set" | ErrorName;
+export type ConstructorPrototype = "Temporal.ZonedDateTime" | "Date" | "Temporal.PlainMonthDay" | "Temporal.PlainYearMonth" | "Temporal.PlainDateTime" | "Temporal.PlainDate" | "Temporal.Duration" | "Temporal.PlainTime" | "Temporal.Instant" | "Generator" | "GeneratorFunction" | "AsyncFunction" | "AsyncGenerator" | "AsyncGeneratorFunction" | "RegExp" | "Promise" | "Object" | "Function" | "Array" | "Boolean" | "Number" | "String" | "WeakSet" | "WeakMap" | "Map" | "Set" | ErrorName;
 
 export function getPrototypeFromConstructor(constructor: GuestObject, intrinsic: ConstructorPrototype,
     context: OperationContext, loc: Location): ObjectCompletion {
@@ -37,6 +37,8 @@ export function getPrototypeFromConstructor(constructor: GuestObject, intrinsic:
         case "Boolean": return { type: "normal", value: realm.booleanPrototype };
         case "Number": return { type: "normal", value: realm.numberPrototype };
         case "String": return { type: "normal", value: realm.stringPrototype };
+        case "WeakSet": return { type: "normal", value: realm.weakSetPrototype };
+        case "WeakMap": return { type: "normal", value: realm.weakMapPrototype };
         case "Map": return { type: "normal", value: realm.mapPrototype };
         case "Set": return { type: "normal", value: realm.setPrototype };
         default: return { type: "normal", value: realm.getErrorPrototype(intrinsic) };

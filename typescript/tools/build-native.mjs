@@ -13,6 +13,7 @@ if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error("RIFT_NATIVE_JOBS m
 mkdirSync(join(root, "build/native"), { recursive: true });
 const run = args => runNativeCommand(scriptc, args, { cwd: root });
 const entries = [
+    ["test/weak-collections.ts", "weak-collections"],
     ["test/ordinary-identifiers.ts", "ordinary-identifiers"],
     ["test/script-whitespace.ts", "script-whitespace"],
     ["test/legacy-numeric-literals.ts", "legacy-numeric-literals"],
@@ -501,7 +502,7 @@ const entries = [
 validateNativeEntries(entries);
 const started = Date.now();
 const results = await mapConcurrent(entries, jobs, async ([entry, name]) => {
-    const build = await run(["build", entry, "--tier", "static-only", "-o", join(root, "build/native", name + suffix)]);
+    const build = await run(["build", entry, "--tier", "static-only", "--no-keep-llvm", "-o", join(root, "build/native", name + suffix)]);
     const coverage = await run(["coverage", entry]);
     // Reuse the fail-closed pinned coverage parser. Execution has its own suite.
     const success = { status: 0, signal: null, error: null, stdout: "" };

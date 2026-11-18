@@ -9,9 +9,10 @@ guest code. The original C++ implementation remains intact.
 
 The CLI executes Scripts with strict/sloppy semantics, lexical bindings,
 destructuring, classes, generators, async functions and Promise job checkpoints.
-Builtins include arrays, strings, Map/Set, JSON, BigInt, RegExp, Date, Reflect and
+Builtins include arrays, strings, Map/Set, object-keyed WeakMap/WeakSet, JSON, BigInt, RegExp, Date, Reflect and
 Temporal. Support is bounded by explicit resource limits and remaining grammar
-and API gaps. Modules, Intl and weak-storage APIs are not available.
+and API gaps. Modules, Intl, WeakRef and FinalizationRegistry are not available.
+Weak symbol keys report explicit unsupported behavior.
 
 See the [current feature inventory](docs/feature-inventory.md) for scope, the
 [reading guide](docs/architecture-decisions.md) for the execution path, and the
@@ -28,15 +29,22 @@ From this directory, with Node >=24 and the pinned npm dependencies:
 npm ci
 npm run build:node
 node build/node/src/cli.js examples/counter.js
+```
+
+Native builds require the [pinned patched scriptc toolchain](toolchain/scriptc/README.md).
+Build it into `build/toolchain/<platform>-<arch>` or set `RIFT_SCRIPTC` to its
+executable, then run:
+
+```sh
 npm run build:native
 ./build/native/rift examples/counter.js
 ```
 
-On Windows the executable is `build/native/rift.exe`. Put the installed Zig
+On Windows the executable is `build/native/rift.exe`. Put the pinned Zig 0.16.0
 directory on the process PATH first (PowerShell):
 
 ```powershell
-$env:PATH = 'C:\Users\jonku\AppData\Local\Microsoft\WinGet\Packages\zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe\zig-x86_64-windows-0.17.0;' + $env:PATH
+$env:PATH = 'C:\path\to\zig-0.16.0;' + $env:PATH
 npm run build:native
 .\build\native\rift.exe examples/counter.js
 .\build\native\rift.exe -e 'console.log(6 * 7);'
@@ -46,6 +54,9 @@ Native builds use two workers. Set `RIFT_NATIVE_JOBS=1` for sequential builds,
 or another positive integer to choose the worker limit. Every entry still runs
 static-only compilation and an independent coverage check; the result file keeps
 the declared entry order.
+The build discards generated LLVM text after successful compilation; executables
+and subprocess reports remain. To inspect LLVM for a specific entry, invoke
+scriptc directly without `--no-keep-llvm`.
 
 Date uses UTC by default. Select a named timezone or fixed minute offset with a
 leading `--time-zone` option for either file or inline execution:

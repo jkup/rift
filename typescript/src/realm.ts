@@ -12,6 +12,8 @@ import { registerArrayFlat } from "./builtins/array-flat.js";
 import { registerArrayIterators } from "./builtins/array-iterator.js";
 import { registerStringIterator } from "./builtins/string-iterator.js";
 import { registerStringSearch } from "./builtins/string-search.js";
+import { registerWeakSet } from "./builtins/weak-set.js";
+import { registerWeakMap } from "./builtins/weak-map.js";
 import { registerMap } from "./builtins/map.js";
 import { registerMapIterators } from "./builtins/map-iterator.js";
 import { registerSet } from "./builtins/set.js";
@@ -104,6 +106,8 @@ export class Realm {
     readonly promiseConstructor: GuestObject | null = null;
     readonly regexpPrototype: GuestObject;
     readonly mapPrototype: GuestObject;
+    readonly weakMapPrototype: GuestObject;
+    readonly weakSetPrototype: GuestObject;
     readonly mapIteratorPrototype: GuestObject;
     readonly setPrototype: GuestObject;
     readonly setIteratorPrototype: GuestObject;
@@ -162,6 +166,8 @@ export class Realm {
         this.promisePrototype = new GuestObject(this.objectPrototype);
         this.regexpPrototype = new GuestObject(this.objectPrototype);
         this.mapPrototype = new GuestObject(this.objectPrototype);
+        this.weakMapPrototype = new GuestObject(this.objectPrototype);
+        this.weakSetPrototype = new GuestObject(this.objectPrototype);
         this.mapIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.setPrototype = new GuestObject(this.objectPrototype);
         this.setIteratorPrototype = new GuestObject(this.iteratorPrototype);
@@ -258,6 +264,8 @@ export class Realm {
             registerStringIterator(this);
             registerStringSearch(this);
             registerMap(this);
+            registerWeakMap(this);
+            registerWeakSet(this);
             registerMapIterators(this);
             registerSet(this);
             registerSetIterators(this);
