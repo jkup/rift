@@ -12,11 +12,19 @@ tested tree, including all 97 changed files. The local tested revision need
 not be published: the upstream base and this patch contain the source changes.
 The source is covered by the accompanying upstream Apache-2.0 license.
 
-To reconstruct the source, create a clean worktree at `baseRevision` in an
-upstream scriptc checkout, then apply the patch with `git apply --index`.
-`git write-tree` must equal `sourceTree`. Verify the patch SHA256 first.
-Use native Git for a Windows-created worktree; WSL Git interprets its Windows
-`.git` pointer and global line-ending settings differently.
+To export the pinned source from an upstream checkout containing `baseRevision`,
+run from the Rift TypeScript directory:
+
+```sh
+node toolchain/scriptc/prepare.mjs /path/to/scriptc build/scriptc-source.tar
+```
+
+The helper verifies the patch, reconstructs the exact source tree in a separate
+Git index and exports an LF source archive with a hash manifest. It preserves
+the upstream worktree and its index, and refuses an existing destination.
+Extract the archive into a new directory on the build host. Use native Git
+for a Windows-created worktree; WSL Git interprets its Windows `.git` pointer
+and global line-ending settings differently.
 
 Build prerequisites and package commands are defined by that revision's
 `CONTRIBUTING.md` and package scripts. They include Node, locked pnpm

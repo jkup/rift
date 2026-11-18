@@ -56,3 +56,9 @@ before tools that require those historical LLVM paths. The manifest is
 artifacts, executables, sources and reports were excluded. Physical free
 space reached 23.0 GiB, allowing the pending lifetime validation to resume.
 
+A bounded followup archived two more historical LLVM files, reducing
+83,944,015 logical bytes to 11,460,714 archive bytes, with both hashes verified.
+Its manifest is `build/historical-llvm-archive-20261118-followup.jsonl`.
+Free space also changed during compiler code generation; that larger change
+is not attributed to these two archives.
+
