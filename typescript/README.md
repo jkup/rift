@@ -21,6 +21,13 @@ The [C++ fixture baseline](docs/legacy-fixture-baseline.md) keeps original tests
 and distinguishes incompatibilities from engine gaps; it is not a conformance
 percentage.
 
+The bounded Test262 milestone is complete: **32,366 files pass on both TypeScript
+hosts**, compared with **17,785** in a fresh run of the preserved C++ engine over
+the same 53,751-file selection. This includes one metadata-only parsing followup;
+full results, harness differences and exclusions are preserved in the
+[comparison evidence](docs/validation/test262-count-milestone/README.md).
+This is a pass-count milestone, not full conformance.
+
 ## Build and run
 
 From this directory, with Node >=24 and the pinned npm dependencies:

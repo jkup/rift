@@ -9,9 +9,14 @@ Repository: `C:\Users\jonku\code\rift`. Current integration branch: `codex/test2
 Current direction (owner, clarified 2026-11-18): reach the C++ version's Test262
 pass count on comparable inputs, then close this milestone. Full conformance,
 implementation parity and legacy-fixture completion are not this finish line.
-TS-566 owns baseline identification, the focused validation loop and the required
-Test262-driven followups. TS-565's running native matrix is a toolchain integration
-check, not the project completion metric.
+TS-566 is complete: 32,366 files pass on both TypeScript hosts versus 17,785 for
+the preserved C++ runner, over the same 53,751 selected files. The
+[evidence](docs/validation/test262-count-milestone/README.md) retains harness
+differences, primary counts and the metadata-only followup. TS-565's weak
+collections and source-pinned compiler are accepted with the documented focused
+checks, full Node suite and full native Test262 comparison. The old native matrix
+was deliberately stopped and is not claimed complete. No successor is dispatched;
+the owner wants to choose new project ideas after this finite milestone.
 
 - TS-001 implementation: `a016967`; original evidence: `b677091`.
 - Coordinator found U+2028/U+2029 silently swallowing source after line comments. Review fix: `93adcfe`.

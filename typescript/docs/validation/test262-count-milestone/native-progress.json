@@ -1,0 +1,19 @@
+{
+  "label": "Pinned upstream harness; phase-aware synchronous Script measurement",
+  "selected": 53751,
+  "completed": 53751,
+  "counts": {
+    "failed": 7312,
+    "passed": 32365,
+    "unsupported-operation": 331,
+    "resource-limit": 546,
+    "harness-error": 2334,
+    "unsupported-syntax": 4314,
+    "unsupported-async": 5523,
+    "unsupported-module": 843,
+    "runner-error": 183
+  },
+  "startedAt": "2026-11-18T21:28:41.523Z",
+  "complete": true,
+  "finishedAt": "2026-11-18T22:03:34.588Z"
+}

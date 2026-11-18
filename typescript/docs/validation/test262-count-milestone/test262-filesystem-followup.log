@@ -1,0 +1,34 @@
+✔ I01 I02 production pin/selection cannot be replaced by synthetic bytes (4.0606ms)
+✔ I03 I07 revision failure and retrieval preserve selected entry with unknown variants (2.7809ms)
+✔ I04 I05 I06 exact synthetic Unicode/BOM/NUL and invalid UTF-8 (0.2543ms)
+✔ I08 rejects metadata (3.0775ms)
+✔ I09 rejects metadata (0.6803ms)
+✔ I10 rejects metadata (0.4478ms)
+✔ I11 rejects metadata (0.2078ms)
+✔ I20 rejects metadata (0.2453ms)
+✔ I12 I13 metadata cardinality and missing description (0.2469ms)
+✔ I14 metadata drift including order and null negative (0.5898ms)
+✔ I15 all seven incompatible pairs (0.8313ms)
+✔ I16 paths and symlink escape never read outside (4.1581ms)
+✔ I17 missing include is an input error (0.2905ms)
+✔ I18 unknown flag and unknown execution fields fail closed (1.1603ms)
+✔ I19 unknown feature retains both variants (0.2455ms)
+✔ YAML supports folded prose, quoted strings, flow and legacy fields without execution (0.8072ms)
+✔ V01 V02 V03 V08 strict transforms and planning order (0.5506ms)
+✔ V04 V05 raw retains metadata and bytes but zero harness (0.2326ms)
+✔ V06 V07 V09 module async and strict all blocked (0.3323ms)
+✔ V10 V11 environment and nondeterminism (0.3155ms)
+✔ V12 comments do not invent feature blockers (execution deferred) (0.121ms)
+✔ H01 ordered harness plan retains repeated includes; semantic effects deferred (0.1261ms)
+{"lanes":2,"errors":94,"actual":6,"inputFaults":4,"captureChecks":17,"guestLaunches":0,"builds":0}
+✔ tools\test262\script-execution-inputs.test.mjs (140950.148ms)
+Checkpoint evidence: C:\Users\jonku\code\rift\typescript\build\checkpoint-suite-3d5fwV
+✔ checkpoint implementation: public ownership, boundaries, complete literals, migrations and isolated faults (330023.4049ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 330105.6868

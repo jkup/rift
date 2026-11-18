@@ -1,6 +1,6 @@
 # Development roadmap
 
-Updated 2026-11-15. The original catch-up review covered history through `ec63ebee` and
+Updated 2026-11-18. The original catch-up review covered history through `ec63ebee` and
 [Claude's review, PR #82](https://github.com/jkup/rift/pull/82).
 
 ## Current checkpoint
@@ -8,12 +8,15 @@ Updated 2026-11-15. The original catch-up review covered history through `ec63eb
 Owner clarification (2026-11-18): finish this milestone when the TypeScript
 engine reaches the C++ engine's Test262 pass count on comparable pinned inputs.
 Full conformance, implementation parity and the separate 225-file fixture
-completion count are not the finish line. TS-566 is measuring both engines on
-Test262 revision `91c70759363c46557b694792bf34a2551a7af5ba`; final totals are pending.
+completion count are not the finish line. **TS-566 is complete:** 32,366 files pass
+on both TypeScript hosts versus 17,785 for C++, over the same 53,751-file selection
+at Test262 revision `91c70759363c46557b694792bf34a2551a7af5ba`. The
+[comparison evidence](validation/test262-count-milestone/README.md) preserves primary
+counts, the metadata-only followup, all exclusions and the historical harness differences.
 Use focused native validation during development rather than rebuilding every
 test executable for each change.
 
-The ongoing comparison has identified these followups, none counted as passes:
+The completed comparison identifies these followups for a subsequent goal:
 
 - `built-ins/Number/prototype/toPrecision/exponential.js`: passes in Node-hosted
   Rift but fails in native Rift. Inspect native numeric formatting.
@@ -31,8 +34,12 @@ metadata parsing failure passes its separate both-host followup after normalizin
 metadata line endings without changing the JavaScript source.
 
 Retain these findings for subsequent work; they do not require extending this
-milestone beyond the agreed pass-count target. Detailed observations are in
-`build/test262-baseline-comparison/` while the runs finish.
+milestone beyond the agreed pass-count target. Compressed per-file observations
+are committed with the comparison evidence. Weak collections and the source-pinned
+compiler are integrated; the refreshed Windows CLI passes 17 expected-result checks.
+The previous exhaustive Windows matrix was stopped deliberately and is not claimed
+as a complete pass. This milestone is closed; choose the next project direction
+with the owner instead of automatically extending the parity backlog.
 
 Compiler investigation: TS-465's full-engine private field-key narrowing fails
 with SC2003; a local key capture passes focused native validation. Smaller

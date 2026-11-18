@@ -1,0 +1,7 @@
+{
+  "label": "Original C++ runner semantics, with corpus and executable paths adapted only",
+  "coreSha256": "8930c73c0ac27d97aa3e4b06f0ce175a2a951633a04c58889eb9b36e2a54444b",
+  "adaptedCoreSha256": "d96f57cbfe112b71cc779b8901dba73693e1cf4357ccfb09cce426b1f8373953",
+  "harnessSha256": "9ff274b0f8396316ab06967320d850e067f71a7dabb35208e53109596eea715b",
+  "executableSha256": "d2c4bfd8807869d8cbfe37491f0f337ff2b7a52df013117f36a6a2ca4f728f83"
+}

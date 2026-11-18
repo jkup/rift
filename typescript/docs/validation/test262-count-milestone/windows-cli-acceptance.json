@@ -1,0 +1,396 @@
+{
+  "compiler": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\toolchain\\win32-x64\\bin\\scriptc.exe",
+  "build": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\test262-baseline-comparison\\rift.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\src\\cli.ts\n\n  statements analyzed   21302\n  compile statically    21302  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "verdict": "PASS",
+  "cases": [
+    {
+      "test": {
+        "file": "test/fixtures/array-string-conversion.js",
+        "stdout": ""
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/numeric-operators.js",
+        "stdout": "4 12 3 0\n3 -3\nLRLRLRLRUU\n"
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "4 12 3 0\n3 -3\nLRLRLRLRUU\n",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "4 12 3 0\n3 -3\nLRLRLRLRUU\n",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/array-literals.js",
+        "stdout": "0 1 2 1 2\n4 undefined undefined null undefined\nfalse true\n1 11 12 12 5\n2 true 2\n5 undefined 9\n1 undefined\n"
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "0 1 2 1 2\n4 undefined undefined null undefined\nfalse true\n1 11 12 12 5\n2 true 2\n5 undefined 9\n1 undefined\n",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "0 1 2 1 2\n4 undefined undefined null undefined\nfalse true\n1 11 12 12 5\n2 true 2\n5 undefined 9\n1 undefined\n",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/number.js",
+        "stdout": "false false\ntrue false\ntrue false\nfalse false\nfalse false\nfalse true\nfalse true\nfalse true\nfalse true\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\ntrue\ntrue true true true\ntrue abc\ntrue abcde\nfalse false\ntrue true true\n1.7976931348623157e+308 5e-324 2.220446049250313e-16\n9007199254740991 -9007199254740991\ntrue true true\ntrue true true\nisNaN 1 isFinite 1\n23\n17\n"
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "false false\ntrue false\ntrue false\nfalse false\nfalse false\nfalse true\nfalse true\nfalse true\nfalse true\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\ntrue\ntrue true true true\ntrue abc\ntrue abcde\nfalse false\ntrue true true\n1.7976931348623157e+308 5e-324 2.220446049250313e-16\n9007199254740991 -9007199254740991\ntrue true true\ntrue true true\nisNaN 1 isFinite 1\n23\n17\n",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "false false\ntrue false\ntrue false\nfalse false\nfalse false\nfalse true\nfalse true\nfalse true\nfalse true\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\ntrue\ntrue true true true\ntrue abc\ntrue abcde\nfalse false\ntrue true true\n1.7976931348623157e+308 5e-324 2.220446049250313e-16\n9007199254740991 -9007199254740991\ntrue true true\ntrue true true\nisNaN 1 isFinite 1\n23\n17\n",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/conditional.js",
+        "stdout": "0\n2\n5\n7 7 0\n10 7 10\n12 12\n13 15\n18 19\n-6 22 14\n0 23\n25 28\n30 ta\n33 tafd\n34 35\n36 37\n0 0 0 0 0 0 0\n1 1 1 1 1 1\ntrue 38\ntrue\ntrue\n39\n"
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "0\n2\n5\n7 7 0\n10 7 10\n12 12\n13 15\n18 19\n-6 22 14\n0 23\n25 28\n30 ta\n33 tafd\n34 35\n36 37\n0 0 0 0 0 0 0\n1 1 1 1 1 1\ntrue 38\ntrue\ntrue\n39\n",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "0\n2\n5\n7 7 0\n10 7 10\n12 12\n13 15\n18 19\n-6 22 14\n0 23\n25 28\n30 ta\n33 tafd\n34 35\n36 37\n0 0 0 0 0 0 0\n1 1 1 1 1 1\ntrue 38\ntrue\ntrue\n39\n",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "examples/counter.js",
+        "stdout": "total 36\nnext 14\nsame object true\n"
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "total 36\nnext 14\nsame object true\n",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "total 36\nnext 14\nsame object true\n",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/semantics.js",
+        "stdout": "24\n1 2 11 3\n10 12\ntrue false 3 6 10 10\ntrue true\nundefined 12 12\n1 2\n7 undefined\n3\n5 8\n19\n7 9 3 4 -6 true\nfalse true 9 8\ntrue false false true\nhéllo let }\n5 5\n2\n1\n"
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "24\n1 2 11 3\n10 12\ntrue false 3 6 10 10\ntrue true\nundefined 12 12\n1 2\n7 undefined\n3\n5 8\n19\n7 9 3 4 -6 true\nfalse true 9 8\ntrue false false true\nhéllo let }\n5 5\n2\n1\n",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "24\n1 2 11 3\n10 12\ntrue false 3 6 10 10\ntrue true\nundefined 12 12\n1 2\n7 undefined\n3\n5 8\n19\n7 9 3 4 -6 true\nfalse true 9 8\ntrue false false true\nhéllo let }\n5 5\n2\n1\n",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/order.js",
+        "stdout": "bkr 7\ntrue bmrrc\nrr 7 7\n"
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "bkr 7\ntrue bmrrc\nrr 7 7\n",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "bkr 7\ntrue bmrrc\nrr 7 7\n",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/missing.js",
+        "status": 1,
+        "error": "2:13: runtime ReferenceError: missing is not defined"
+      },
+      "node": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/missing.js:2:13: runtime ReferenceError: missing is not defined\n"
+      },
+      "native": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/missing.js:2:13: runtime ReferenceError: missing is not defined\n"
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/invalid.js",
+        "status": 2,
+        "error": "2:9: parse SyntaxError: unsupported or unexpected syntax: ;"
+      },
+      "node": {
+        "status": 2,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/invalid.js:2:9: parse SyntaxError: unsupported or unexpected syntax: ;\n"
+      },
+      "native": {
+        "status": 2,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/invalid.js:2:9: parse SyntaxError: unsupported or unexpected syntax: ;\n"
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/tdz.js",
+        "status": 1,
+        "error": "2:15: runtime ReferenceError: outer is not initialized"
+      },
+      "node": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/tdz.js:2:15: runtime ReferenceError: outer is not initialized\n"
+      },
+      "native": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/tdz.js:2:15: runtime ReferenceError: outer is not initialized\n"
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/throw.js",
+        "status": 1,
+        "error": "1:19: runtime Uncaught: stop"
+      },
+      "node": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/throw.js:1:19: runtime Uncaught: stop\n"
+      },
+      "native": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/throw.js:1:19: runtime Uncaught: stop\n"
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/runaway.js",
+        "status": 1,
+        "errorPattern": "\\d+:\\d+: runtime RangeError: execution step limit exceeded"
+      },
+      "node": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/runaway.js:1:8: runtime RangeError: execution step limit exceeded\n"
+      },
+      "native": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/runaway.js:1:8: runtime RangeError: execution step limit exceeded\n"
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "file": "test/fixtures/recursion.js",
+        "status": 1,
+        "errorPattern": "\\d+:\\d+: runtime RangeError: (call depth|evaluation nesting) limit exceeded"
+      },
+      "node": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/recursion.js:1:29: runtime RangeError: call depth limit exceeded\n"
+      },
+      "native": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "test/fixtures/recursion.js:1:29: runtime RangeError: call depth limit exceeded\n"
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "args": [
+          "-e",
+          "let k={},m=new WeakMap([[k,7]]),s=new WeakSet([k]);console.log(m.get(k),s.has(k),m.getOrInsert(k,9));"
+        ],
+        "stdout": "7 true 7\n"
+      },
+      "node": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "7 true 7\n",
+        "stderr": ""
+      },
+      "native": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "7 true 7\n",
+        "stderr": ""
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "args": [],
+        "status": 64,
+        "error": "usage: rift"
+      },
+      "node": {
+        "status": 64,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "usage: rift [--time-zone <identifier>] <file.js> | -e <source>\n"
+      },
+      "native": {
+        "status": 64,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "usage: rift [--time-zone <identifier>] <file.js> | -e <source>\n"
+      },
+      "passed": true
+    },
+    {
+      "test": {
+        "args": [
+          "--time-zone",
+          "Not/AZone",
+          "-e",
+          "1"
+        ],
+        "status": 64,
+        "error": "invalid time zone: Not/AZone"
+      },
+      "node": {
+        "status": 64,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "invalid time zone: Not/AZone\n"
+      },
+      "native": {
+        "status": 64,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "invalid time zone: Not/AZone\n"
+      },
+      "passed": true
+    }
+  ],
+  "installed": true,
+  "previousExecutableSha256": "e80625c79338dfb7309b14e628969feb7eb0cbbc1d7670c2fa0f19c21fd76609",
+  "executableSha256": "f0e7799b24a763e164ea8cd3f1f196cb002aec36c84de0d29557fd9322b0049a"
+}

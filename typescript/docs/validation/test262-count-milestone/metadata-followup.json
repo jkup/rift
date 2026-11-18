@@ -1,0 +1,1362 @@
+{
+  "scanned": 53751,
+  "normalization": "YAML frontmatter CR/CRLF only; guest source unchanged",
+  "results": [
+    {
+      "path": "test/built-ins/Error/prototype/toString/tostring-get-throws.js",
+      "sha256": "6798b02ea7dcf899d1de43a0caf87594e746ed6b55986ddbe5d0b6b77f6655c4",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/built-ins/Function/prototype/toString/line-terminator-normalisation-CR-LF.js",
+      "sha256": "f015f83d217f0edd6d0261c9094f98073b6139592bb17c6411a5632888f13fb5",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u3",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1",
+                "u2"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u3",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1",
+                "u2"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u3",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1",
+                "u2"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u3",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1",
+                "u2"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/built-ins/Function/prototype/toString/line-terminator-normalisation-CR.js",
+      "sha256": "92b237a52b6a25b33d4f9e827620b4fef51fc426f082f24ff577627f2e913340",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u3",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1",
+                "u2"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u3",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1",
+                "u2"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u3",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1",
+                "u2"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u3",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1",
+                "u2"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/not-a-substring.js",
+      "sha256": "1fa0e88ffe6a342e6204c925918ae6fc29b003d47007210fc377c24bc56bd41d",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/language/expressions/arrow-function/arrow/binding-tests-1.js",
+      "sha256": "8fdaab321dd3fb9281ee3a0cea11a0935f10b10d5b699ee7a6f6459c75c659db",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/language/expressions/arrow-function/arrow/binding-tests-2.js",
+      "sha256": "8fdaab321dd3fb9281ee3a0cea11a0935f10b10d5b699ee7a6f6459c75c659db",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/language/expressions/arrow-function/arrow/binding-tests-3.js",
+      "sha256": "f863b06da48490f5769bb5e18f0e4e4e592da108ed511ecf8f6460e8c8d7602d",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/language/expressions/arrow-function/arrow/capturing-closure-variables-1.js",
+      "sha256": "ab105605b61012ae8ba88cc2d0e69d2c6227f1ce4835a883056646032b89d551",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/language/expressions/arrow-function/arrow/capturing-closure-variables-2.js",
+      "sha256": "a8c84b9d00b453683e12e4b9c524683a5dccdbb0506439c5fe1716b25b4c3dcc",
+      "node": {
+        "status": "unsupported-syntax",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "unsupported-syntax",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "parse",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": {
+                "unitId": "u2",
+                "realmId": "test",
+                "location": {
+                  "line": 12,
+                  "column": 5
+                }
+              },
+              "testBodyEvaluated": false,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "unsupported-syntax",
+                "capabilityCode": "parse.unexpected"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "unsupported-syntax",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "unsupported-syntax",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "parse",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": {
+                "unitId": "u2",
+                "realmId": "test",
+                "location": {
+                  "line": 12,
+                  "column": 5
+                }
+              },
+              "testBodyEvaluated": false,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "unsupported-syntax",
+                "capabilityCode": "parse.unexpected"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/language/expressions/arrow-function/arrow/concisebody-lookahead-assignmentexpression-1.js",
+      "sha256": "0e7bfd435fb24be1ad59606b533be66313064ee150eb83aa09a49786cf060e46",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/language/expressions/arrow-function/arrow/concisebody-lookahead-assignmentexpression-2.js",
+      "sha256": "1f6f778ba262b2f78581343adf81e50cfce54311bd31085597ec5c8741830724",
+      "node": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "passed",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "passed",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "normal"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "path": "test/language/statements/using/syntax/using-for-statement.js",
+      "sha256": "9b3a23111d2192f93cd99a473fbba7c154ba3e52dd11b66ac1ee1453268f7329",
+      "node": {
+        "status": "unsupported-syntax",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "unsupported-syntax",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "parse",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": {
+                "unitId": "u2",
+                "realmId": "test",
+                "location": {
+                  "line": 10,
+                  "column": 12
+                }
+              },
+              "testBodyEvaluated": false,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "unsupported-syntax",
+                "capabilityCode": "parse.expected-token"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "unsupported-syntax",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "parse",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": {
+                "unitId": "u2",
+                "realmId": "test",
+                "location": {
+                  "line": 11,
+                  "column": 12
+                }
+              },
+              "testBodyEvaluated": false,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "unsupported-syntax",
+                "capabilityCode": "parse.expected-token"
+              }
+            }
+          }
+        ]
+      },
+      "native": {
+        "status": "unsupported-syntax",
+        "variants": [
+          {
+            "mode": "non-strict",
+            "status": "unsupported-syntax",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "parse",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": {
+                "unitId": "u2",
+                "realmId": "test",
+                "location": {
+                  "line": 10,
+                  "column": 12
+                }
+              },
+              "testBodyEvaluated": false,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "unsupported-syntax",
+                "capabilityCode": "parse.expected-token"
+              }
+            }
+          },
+          {
+            "mode": "strict",
+            "status": "unsupported-syntax",
+            "observation": {
+              "driverVersion": 2,
+              "nonce": "baseline",
+              "requestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "mode": "script-observation",
+              "operation": {
+                "stage": "test",
+                "phase": "parse",
+                "unitId": "u2",
+                "realmId": "test"
+              },
+              "source": {
+                "unitId": "u2",
+                "realmId": "test",
+                "location": {
+                  "line": 11,
+                  "column": 12
+                }
+              },
+              "testBodyEvaluated": false,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [
+                "u0",
+                "u1"
+              ],
+              "inspection": null,
+              "result": {
+                "kind": "unsupported-syntax",
+                "capabilityCode": "parse.expected-token"
+              }
+            }
+          }
+        ]
+      },
+      "agrees": true
+    }
+  ]
+}
