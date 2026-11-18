@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/vercel-labs/scriptc.git",
+  "baseRevision": "6c60b0bcbfc6edd34ce5c1cdb588d42bdb7171ff",
+  "testedRevision": "f4f0d422d2051f7deef499a163bc4e7b97f6643c",
+  "sourceTree": "cc4868b5273a299ddca7414c0f848b42db638ba9",
+  "patch": "typed-weak-storage.patch",
+  "patchSha256": "0ea42244d343d63e8b8d76fbf7874df59b64f61b21c0414c831e12cd6b40aa92"
+}

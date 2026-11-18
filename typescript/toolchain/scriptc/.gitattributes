@@ -1,0 +1,2 @@
+# Preserve hashed patch bytes and required blank context lines.
+*.patch -text -whitespace
