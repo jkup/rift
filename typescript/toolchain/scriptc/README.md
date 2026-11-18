@@ -27,8 +27,18 @@ for a Windows-created worktree; WSL Git interprets its Windows `.git` pointer
 and global line-ending settings differently.
 
 Build prerequisites and package commands are defined by that revision's
-`CONTRIBUTING.md` and package scripts. They include Node, locked pnpm
-dependencies, LLVM 22 and Zig 0.16.0. Rebuild the matching native runtime pack
+`CONTRIBUTING.md` and package scripts. `source.json` records the exercised
+Node, pnpm and Zig versions. Install dependencies with `pnpm install
+--frozen-lockfile`, then build the workspace with `pnpm -r --filter
+'./packages/*' run build`. The exported source passes both steps without
+changing any of its 19,943 archived files and symlinks.
+
+For Linux, the published LLVM helper package pinned in `source.json` supplies
+the code-generation executable. Verify its archive integrity and executable
+hash, then place its `bin` directory under `packages/llvm-linux-x64-gnu/`.
+Its bytes match the helper used for the validated compiler trials; the patch
+does not change LLVM helper source. This avoids requiring an LLVM development
+SDK solely to rebuild that unchanged dependency. Rebuild the native runtime pack
 with the patched sources; an unchanged published runtime pack is insufficient.
 Build the compiler workspace and then run its `scripts/build-native-cli.mts`
 entry with Node's `tsx` loader and an 8 GiB heap limit. Its default asset staging
@@ -39,5 +49,6 @@ The Linux distribution passed a relocation trial with development compiler
 overrides and `NODE_PATH` removed: version, typed WeakMap compilation,
 execution, and 4/4 static coverage. It also compiled the three affected Rift
 inventory-test drivers, whose six executions and static coverage passed.
-This is not yet a clean-machine build recipe or a validated Windows package.
-Production installation and canonical Rift integration remain pending.
+The clean-source runtime rebuild and complete package reproduction are still
+pending. This is not a validated Windows package. Production installation and
+canonical Rift integration remain pending.
