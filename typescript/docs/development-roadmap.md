@@ -5,6 +5,35 @@ Updated 2026-11-15. The original catch-up review covered history through `ec63eb
 
 ## Current checkpoint
 
+Owner clarification (2026-11-18): finish this milestone when the TypeScript
+engine reaches the C++ engine's Test262 pass count on comparable pinned inputs.
+Full conformance, implementation parity and the separate 225-file fixture
+completion count are not the finish line. TS-566 is measuring both engines on
+Test262 revision `91c70759363c46557b694792bf34a2551a7af5ba`; final totals are pending.
+Use focused native validation during development rather than rebuilding every
+test executable for each change.
+
+The ongoing comparison has identified these followups, none counted as passes:
+
+- `built-ins/Number/prototype/toPrecision/exponential.js`: passes in Node-hosted
+  Rift but fails in native Rift. Inspect native numeric formatting.
+- `language/eval-code/direct/var-env-global-lex-non-strict.js`: the Node observation
+  path throws `unregistered Script source`. Inspect eval error-source tracking.
+- `language/expressions/class/class-name-ident-await-escaped.js`: the Node
+  observation path throws `invalid class source range`. Inspect escaped class-name
+  parsing and source ranges.
+
+The complete Node measurement groups diagnostic failures into sixteen eval
+source-tracking cases and two escaped class-name source-range cases. Separately,
+164 staging tests use nested harness filenames that the comparison adapter
+currently rejects; this is a runner limitation, not 164 engine crashes. A CR-only
+metadata parsing failure passes its separate both-host followup after normalizing
+metadata line endings without changing the JavaScript source.
+
+Retain these findings for subsequent work; they do not require extending this
+milestone beyond the agreed pass-count target. Detailed observations are in
+`build/test262-baseline-comparison/` while the runs finish.
+
 Compiler investigation: TS-465's full-engine private field-key narrowing fails
 with SC2003; a local key capture passes focused native validation. Smaller
 controls compile, so the trigger is not yet minimized. Preserve this distinction
