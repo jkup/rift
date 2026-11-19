@@ -10,21 +10,6 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# C++ source files (matches .clang-format)
-[*.{cpp,h,hpp,cc,cxx}]
-indent_style = space
-indent_size = 4
-max_line_length = 100
-
-# CMake files
-[CMakeLists.txt]
-indent_style = space
-indent_size = 4
-
-[*.cmake]
-indent_style = space
-indent_size = 4
-
 # JavaScript/TypeScript files
 [*.{js,mjs,cjs,ts,tsx}]
 indent_style = space
