@@ -9,6 +9,19 @@ import {
 import { parseTemporalTimeZoneIdentifier } from "./temporal/temporal-time-zone-parse.js";
 import { display } from "./runtime.js";
 import type { Diagnostic } from "./syntax.js";
+
+const usage = "usage: rift [--time-zone <identifier>] <file.js> | -e <source>";
+const help =
+    usage +
+    "\n\nRun a JavaScript file or evaluate source with Rift.\n\n" +
+    "Options:\n" +
+    "  -e <source>               Evaluate JavaScript source.\n" +
+    "  --time-zone <identifier>  Select the Date time zone (default: UTC).\n" +
+    "  -h, --help                Show this help.\n\n" +
+    "Examples:\n" +
+    "  rift examples/counter.js\n" +
+    "  rift -e 'console.log(6 * 7);'";
+
 function report(filename: string, diagnostic: Diagnostic): void {
     console.error(
         filename +
@@ -26,13 +39,22 @@ function report(filename: string, diagnostic: Diagnostic): void {
 }
 function main(): void {
     let args = process.argv.slice(2);
+    if (args.length === 1 && (args[0] === "--help" || args[0] === "-h")) {
+        console.log(help);
+        return;
+    }
     let timeZone = "UTC";
     if (args[0] === "--time-zone") {
         timeZone = args[1];
         args = args.slice(2);
     }
-    if (!((args.length === 1 && args[0] !== "-e") || (args.length === 2 && args[0] === "-e"))) {
-        console.error("usage: rift [--time-zone <identifier>] <file.js> | -e <source>");
+    if (
+        !(
+            (args.length === 1 && !args[0].startsWith("-")) ||
+            (args.length === 2 && args[0] === "-e")
+        )
+    ) {
+        console.error(usage);
         process.exitCode = 64;
         return;
     }

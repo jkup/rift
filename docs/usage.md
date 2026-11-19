@@ -31,6 +31,8 @@ Use a filename or `-e SOURCE`. A leading `--time-zone America/New_York` or
 `--time-zone +05:30` selects the Date timezone. UTC is the default, independent
 of the host timezone. Named-zone gaps move forward; overlaps use the earlier
 instant. Invalid options fail before reading or executing the script.
+Use `--help` or `-h` to print usage and examples. Unknown options are invalid
+invocations; prefix a filename beginning with `-` with `./` to read it as a file.
 
 | Exit | Meaning |
 | --- | --- |
