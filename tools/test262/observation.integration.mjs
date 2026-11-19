@@ -318,7 +318,7 @@ for (const lane of ["node", "native"]) {
         await writeFile(source, "console.log('MUST NOT RUN');");
         const entry = resolve(
             lane === "node"
-                ? "build/node/src/observation-driver.js"
+                ? "build/node/src/host/observation-driver.js"
                 : "build/native/observation-driver.exe",
         );
         const command = lane === "node" ? process.execPath : entry;

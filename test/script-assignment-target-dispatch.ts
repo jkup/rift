@@ -5,9 +5,9 @@ import { Realm } from "../src/realm.js";
 import { parseBoundedScriptPreparation } from "../src/parser.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { observeScripts, type ObservationUnit } from "../src/script-observation.js";
-import { scriptObservationJSONRecord } from "../src/script-observation-json.js";
-import type { ChildV2 } from "../src/script-observation-types.js";
+import { observeScripts, type ObservationUnit } from "../src/host/script-observation.js";
+import { scriptObservationJSONRecord } from "../src/host/script-observation-json.js";
+import type { ChildV2 } from "../src/host/script-observation-types.js";
 // Match the existing observation drivers' typed decimal argument boundary.
 function decimal(text: string): number {
     if (text.length === 0) {

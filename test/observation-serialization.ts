@@ -1,6 +1,6 @@
 import type { OperationContext } from "../src/runtime.js";
-import { observationJSONRecord } from "../src/observation-json.js";
-import { observe, type ObservationResult } from "../src/observation.js";
+import { observationJSONRecord } from "../src/host/observation-json.js";
+import { observe, type ObservationResult } from "../src/host/observation.js";
 import { Realm } from "../src/realm.js";
 import {
     GuestObject,

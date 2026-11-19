@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { auditScriptReturns, parse } from "../src/parser.js";
 import { Realm } from "../src/realm.js";
-import { observe } from "../src/observation.js";
+import { observe } from "../src/host/observation.js";
 import type { Binding } from "../src/runtime.js";
 
 // Internal test executable, never an observation protocol or executable AST API.

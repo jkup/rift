@@ -31,7 +31,7 @@ export async function buildDriver(root, directory) {
         directory,
         process.platform === "win32" ? "rift-test262.exe" : "rift-test262",
     );
-    const entry = "src/script-observation-driver.ts";
+    const entry = "src/host/script-observation-driver.ts";
     const started = performance.now();
     const build = await runNativeCommand(
         compiler,

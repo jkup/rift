@@ -65,7 +65,7 @@ async function buildIdentity(lane) {
         root,
         lane === "native"
             ? "build/native/observation-driver.exe"
-            : "build/node/src/observation-driver.js",
+            : "build/node/src/host/observation-driver.js",
     );
     const executable = lane === "node" ? process.execPath : entry;
     const files =

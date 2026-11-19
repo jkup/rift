@@ -5,9 +5,9 @@ import { parseSync, visitorKeys } from "oxc-parser";
 // These are host entry points or observation controls, not semantic operations.
 export const hostFiles = new Set([
     "src/cli.ts",
-    "src/observation-driver.ts",
-    "src/script-observation-driver.ts",
-    "src/script-observation.ts",
+    "src/host/observation-driver.ts",
+    "src/host/script-observation-driver.ts",
+    "src/host/script-observation.ts",
 ]);
 
 export function sourceFiles(root = ".") {

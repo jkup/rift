@@ -752,19 +752,19 @@
             "value": 196
         },
         {
-            "filename": "src/script-observation.ts",
+            "filename": "src/host/script-observation.ts",
             "name": "<module>",
             "rule": "fileLines",
             "value": 1162
         },
         {
-            "filename": "src/script-observation.ts",
+            "filename": "src/host/script-observation.ts",
             "name": "Attempt.controlSetup.callback",
             "rule": "functionLines",
             "value": 194
         },
         {
-            "filename": "src/script-observation.ts",
+            "filename": "src/host/script-observation.ts",
             "name": "Attempt.verifyControl.callback",
             "rule": "functionLines",
             "value": 156

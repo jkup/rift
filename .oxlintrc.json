@@ -50,9 +50,9 @@
             "files": ["src/**/*.ts"],
             "excludeFiles": [
                 "src/cli.ts",
-                "src/observation-driver.ts",
-                "src/script-observation-driver.ts",
-                "src/script-observation.ts"
+                "src/host/observation-driver.ts",
+                "src/host/script-observation-driver.ts",
+                "src/host/script-observation.ts"
             ],
             "rules": {
                 "no-console": "error",

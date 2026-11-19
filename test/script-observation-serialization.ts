@@ -1,7 +1,7 @@
 // Frozen synthetic data only. No guest execution or protocol parsed from stdout.
 import { readFileSync } from "node:fs";
-import type { ChildV2 } from "../src/script-observation-types.js";
-import { scriptObservationJSONRecord } from "../src/script-observation-json.js";
+import type { ChildV2 } from "../src/host/script-observation-types.js";
+import { scriptObservationJSONRecord } from "../src/host/script-observation-json.js";
 const input = readFileSync(process.argv[2], "utf8");
 if (input !== "alpha" && input !== "beta") {
     throw new Error("input");

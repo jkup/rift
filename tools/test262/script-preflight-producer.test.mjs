@@ -6,7 +6,7 @@ import { writeFileSync, mkdtempSync, existsSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import * as producer from "../../build/node/src/script-observation.js";
+import * as producer from "../../build/node/src/host/script-observation.js";
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 const evidence = "test/fixtures/tooling/ts-035e3d-p/correction";
 const pins = {

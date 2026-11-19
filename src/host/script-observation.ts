@@ -1,19 +1,19 @@
-import { Realm } from "./realm.js";
+import { Realm } from "../realm.js";
 import {
     prepareBoundedScript,
     type ExecutableScript,
     type ScriptPreparation,
-} from "./script-record.js";
+} from "../script-record.js";
 import {
     createScriptSession,
     type ScriptSourceSnapshot,
     type ScriptSession,
-} from "./script-execution.js";
+} from "../script-execution.js";
 import {
     evaluateScriptObserved,
     type ObservedScriptEvaluation,
-} from "./script-throw-inspection.js";
-import { parse } from "./parser.js";
+} from "../script-throw-inspection.js";
+import { parse } from "../parser.js";
 import {
     GuestObject,
     normal,
@@ -23,10 +23,10 @@ import {
     type ValueCompletion,
     type Builtin,
     type ThrowCompletion,
-} from "./runtime.js";
-import { GuestArray } from "./array-object.js";
-import { wellKnownSpecies } from "./symbols.js";
-import { mapObject } from "./array-map.js";
+} from "../runtime.js";
+import { GuestArray } from "../array-object.js";
+import { wellKnownSpecies } from "../symbols.js";
+import { mapObject } from "../array-map.js";
 import type {
     ChildV2,
     ScriptConstructor,

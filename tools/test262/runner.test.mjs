@@ -33,7 +33,7 @@ const execution = {
     command: process.env.RIFT_TEST262_TEST_DRIVER ?? process.execPath,
     prefix: process.env.RIFT_TEST262_TEST_DRIVER
         ? []
-        : [resolve("build/node/src/script-observation-driver.js")],
+        : [resolve("build/node/src/host/script-observation-driver.js")],
     directory,
     limits: defaultLimits,
 };

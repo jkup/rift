@@ -11,6 +11,8 @@ test("semantic imports stay within the semantic core", () => {
         'import fs from "fs";',
         'export * from "../tools/host.js";',
         'import "./cli.js";',
+        'import "./host/script-observation.js";',
+        'import "./host/observation-driver.js";',
         'import("node:fs");',
         "import(target);",
     ]) {
@@ -18,6 +20,7 @@ test("semantic imports stay within the semantic core", () => {
     }
     assert.deepEqual(rules('import { Value } from "./runtime.js";'), []);
     assert.deepEqual(rules('import fs from "node:fs";', "src/cli.ts"), []);
+    assert.deepEqual(rules('import fs from "node:fs";', "src/host/observation-driver.ts"), []);
     assert.deepEqual(rules('import fs from "node:fs";', "tools/host.mjs"), []);
 });
 

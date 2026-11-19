@@ -15,7 +15,7 @@ import { Realm } from "../src/realm.js";
 import { parse } from "../src/parser.js";
 import { lex } from "../src/lexer.js";
 import { run } from "../src/interpreter.js";
-import { observe, projectThrow, type ObservationResult } from "../src/observation.js";
+import { observe, projectThrow, type ObservationResult } from "../src/host/observation.js";
 import {
     GuestObject,
     UNDEFINED,

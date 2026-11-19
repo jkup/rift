@@ -112,7 +112,7 @@ async function closure(lane) {
     const driver = join(
         root,
         lane === "node"
-            ? "build/node/src/script-observation-driver.js"
+            ? "build/node/src/host/script-observation-driver.js"
             : "build/native/script-observation-driver.exe",
     );
     const control = join(

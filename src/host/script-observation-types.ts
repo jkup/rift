@@ -1,4 +1,4 @@
-import type { Guard, RuntimeCapability, SyntaxCapability } from "./outcomes.js";
+import type { Guard, RuntimeCapability, SyntaxCapability } from "../outcomes.js";
 
 // Data only. Sites identify parent-registered source occurrences and Realms;
 // they never carry guest objects, ASTs, or authority to execute a Script.

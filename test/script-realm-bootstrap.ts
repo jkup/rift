@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import { Realm, type RealmProfile } from "../src/realm.js";
 import { Evaluator } from "../src/evaluator.js";
 import { run } from "../src/interpreter.js";
-import { observe } from "../src/observation.js";
+import { observe } from "../src/host/observation.js";
 import {
     resolveStrictGlobalBinding,
     getStrictGlobalBinding,

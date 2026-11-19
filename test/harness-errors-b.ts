@@ -40,7 +40,7 @@ import {
 } from "../src/script-environment.js";
 import { toNumber, toString, toPropertyKey } from "../src/conversion.js";
 import { mapObject } from "../src/array-map.js";
-import { projectThrow } from "../src/observation.js";
+import { projectThrow } from "../src/host/observation.js";
 import type { Location } from "../src/syntax.js";
 function check(ok: boolean, label: string): void {
     if (!ok) {

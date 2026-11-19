@@ -1,5 +1,5 @@
-import { observeScripts, type ObservationUnit } from "../src/script-observation.js";
-import { scriptObservationJSONRecord } from "../src/script-observation-json.js";
+import { observeScripts, type ObservationUnit } from "../src/host/script-observation.js";
+import { scriptObservationJSONRecord } from "../src/host/script-observation-json.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);

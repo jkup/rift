@@ -11,9 +11,9 @@ import {
 import type { DeclarationNodes } from "../src/script-declarations.js";
 import { prepareBoundedScript, prepareStrictScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { observeScripts, type ObservationUnit } from "../src/script-observation.js";
-import { scriptObservationJSONRecord } from "../src/script-observation-json.js";
-import type { ChildV2 } from "../src/script-observation-types.js";
+import { observeScripts, type ObservationUnit } from "../src/host/script-observation.js";
+import { scriptObservationJSONRecord } from "../src/host/script-observation-json.js";
+import type { ChildV2 } from "../src/host/script-observation-types.js";
 function check(ok: boolean, label: string): void {
     if (!ok) {
         throw new Error(label);

@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { writeFileSync, mkdtempSync, existsSync, mkdirSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
-import * as producer from "../../build/node/src/script-observation.js";
+import * as producer from "../../build/node/src/host/script-observation.js";
 const { validateConformanceScriptArguments, produceConformanceScripts } = producer;
 const evidence = "test/fixtures/tooling/ts-035e3b-p";
 const read = (n) => JSON.parse(readFileSync(join(evidence, n)));
@@ -101,7 +101,7 @@ function launch(row) {
     const node = row.lane === "node",
         entry = resolve(
             node
-                ? "build/node/src/script-observation-driver.js"
+                ? "build/node/src/host/script-observation-driver.js"
                 : "build/native/script-observation-driver.exe",
         );
     const p = spawnSync(node ? process.execPath : entry, node ? [entry, ...args] : args, {
@@ -136,7 +136,7 @@ test("pure parser errors separately from generic driver rejection with checked s
             const node = lane === "node",
                 entry = resolve(
                     node
-                        ? "build/node/src/script-observation-driver.js"
+                        ? "build/node/src/host/script-observation-driver.js"
                         : "build/native/script-observation-driver.exe",
                 );
             const p = spawnSync(node ? process.execPath : entry, node ? [entry, ...args] : args, {
@@ -252,7 +252,7 @@ test("record JSON cannot replace positional controls in either OS entrypoint", (
             const node = lane === "node",
                 entry = resolve(
                     node
-                        ? "build/node/src/script-observation-driver.js"
+                        ? "build/node/src/host/script-observation-driver.js"
                         : "build/native/script-observation-driver.exe",
                 );
             const p = spawnSync(node ? process.execPath : entry, node ? [entry, ...args] : args, {

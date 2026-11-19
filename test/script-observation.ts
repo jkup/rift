@@ -4,8 +4,8 @@ import {
     validateConformancePreflightArguments,
     produceConformancePreflightControl,
     type ObservationUnit,
-} from "../src/script-observation.js";
-import { scriptObservationJSONRecord } from "../src/script-observation-json.js";
+} from "../src/host/script-observation.js";
+import { scriptObservationJSONRecord } from "../src/host/script-observation-json.js";
 
 function decimal(text: string): number {
     if (text.length === 0) {

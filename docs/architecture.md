@@ -17,6 +17,7 @@ simpler code must still preserve JavaScript's behavior and evaluation order.
 | `src/script-execution-internal.ts` | Declarations, function creation and evaluation. |
 | `src/script-associations.ts` | Validate parser/declaration identities before retaining executable state. |
 | `src/script-continuation.ts` | Suspended generator and async execution frame types. |
+| `src/host/` | Observation drivers, conformance controls and wire serialization for host tooling. |
 | `src/script-environment.ts`, `src/global-environment.ts` | Bindings and scope lookup. |
 | `src/realm.ts`, `src/runtime.ts`, `src/builtins/` | Guest values, objects and built-in operations. |
 
@@ -39,6 +40,8 @@ The `legacy` and `script` profiles select Rift execution paths, not JavaScript
 language versions. `new Realm(output)` retains the legacy default for older
 callers; `createScriptRealm(output)` selects the current path explicitly.
 The older `interpreter.ts`, `evaluator.ts` and observation path remain for earlier tests.
+Observation implementation lives under `src/host/`; a compatibility serializer
+re-export remains at `src/script-observation-json.ts` for a pinned historical fixture.
 For a small builtin, read
 `src/builtins/array-mutation.ts` and `test/array-mutation.ts`.
 

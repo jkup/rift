@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import { Realm } from "./realm.js";
+import { Realm } from "../realm.js";
 import { observe } from "./observation.js";
 import { observationJSONRecord } from "./observation-json.js";
 

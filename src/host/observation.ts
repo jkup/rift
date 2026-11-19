@@ -1,9 +1,14 @@
-import { parse } from "./parser.js";
-import { Evaluator } from "./evaluator.js";
-import type { Realm } from "./realm.js";
-import { UNDEFINED, type ThrowCompletion, type Value } from "./runtime.js";
-import type { Diagnostic, Location } from "./syntax.js";
-import type { Rejection, ResourceOrigin, RuntimeCapability, SyntaxCapability } from "./outcomes.js";
+import { parse } from "../parser.js";
+import { Evaluator } from "../evaluator.js";
+import type { Realm } from "../realm.js";
+import { UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
+import type { Diagnostic, Location } from "../syntax.js";
+import type {
+    Rejection,
+    ResourceOrigin,
+    RuntimeCapability,
+    SyntaxCapability,
+} from "../outcomes.js";
 
 export type ObservationMode = "parser-observation" | "body-observation";
 export type Observation =
