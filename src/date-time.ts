@@ -1,4 +1,4 @@
-import { utcDateTimeFromEpochNanoseconds, isoDayOfWeek } from "./iso-calendar.js";
+import { utcDateTimeFromEpochNanoseconds, isoDayOfWeek } from "./temporal/iso-calendar.js";
 
 export const DATE_MILLISECONDS_PER_DAY = 86400000;
 export const DATE_TIME_LIMIT = 8640000000000000;

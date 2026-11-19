@@ -1,5 +1,5 @@
-import { parseTemporalPlainTime } from "../src/temporal-plain-time-parse.js";
-import { formatTemporalTime } from "../src/temporal-time-format.js";
+import { parseTemporalPlainTime } from "../src/temporal/temporal-plain-time-parse.js";
+import { formatTemporalTime } from "../src/temporal/temporal-time-format.js";
 function check(ok: boolean, label: string): void {
     if (!ok) {
         throw new Error(label);

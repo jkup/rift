@@ -1,5 +1,5 @@
-import { formatTemporalDuration } from "../src/temporal-duration-format.js";
-import type { DurationFields } from "../src/temporal-duration.js";
+import { formatTemporalDuration } from "../src/temporal/temporal-duration-format.js";
+import type { DurationFields } from "../src/temporal/temporal-duration.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);

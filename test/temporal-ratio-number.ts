@@ -1,4 +1,4 @@
-import { temporalRatioToNumber } from "../src/temporal-ratio-number.js";
+import { temporalRatioToNumber } from "../src/temporal/temporal-ratio-number.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);

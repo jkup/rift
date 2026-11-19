@@ -1,8 +1,8 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { parseRegExpSyntax } from "../src/regexp-pattern-syntax.js";
-import { compileRegExpPattern, matchRegExp } from "../src/regexp-matcher.js";
+import { parseRegExpSyntax } from "../src/regexp/regexp-pattern-syntax.js";
+import { compileRegExpPattern, matchRegExp } from "../src/regexp/regexp-matcher.js";
 import {
     normal,
     resourceFailure,

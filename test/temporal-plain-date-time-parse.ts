@@ -1,7 +1,7 @@
-import { parseTemporalPlainDateTime } from "../src/temporal-plain-date-time-parse.js";
-import { parseTemporalPlainDate } from "../src/temporal-plain-date-parse.js";
-import { formatISODateTime } from "../src/temporal-time-format.js";
-import { isoDateTimeWithinLimits } from "../src/iso-date-time.js";
+import { parseTemporalPlainDateTime } from "../src/temporal/temporal-plain-date-time-parse.js";
+import { parseTemporalPlainDate } from "../src/temporal/temporal-plain-date-parse.js";
+import { formatISODateTime } from "../src/temporal/temporal-time-format.js";
+import { isoDateTimeWithinLimits } from "../src/temporal/iso-date-time.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

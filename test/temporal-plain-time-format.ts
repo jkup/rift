@@ -1,7 +1,7 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { formatTemporalTime } from "../src/temporal-time-format.js";
+import { formatTemporalTime } from "../src/temporal/temporal-time-format.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
 function check(ok: boolean, message: string): void {

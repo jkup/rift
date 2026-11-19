@@ -2,7 +2,7 @@ import {
     parseRegExpPattern,
     type RegExpPattern,
     type RegExpParseResult,
-} from "../src/regexp-pattern.js";
+} from "../src/regexp/regexp-pattern.js";
 import { Realm } from "../src/realm.js";
 import {
     normal,

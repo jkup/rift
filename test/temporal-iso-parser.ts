@@ -3,8 +3,8 @@ import {
     temporalISODate,
     temporalISOTime,
     temporalISOAnnotations,
-} from "../src/temporal-iso-parser.js";
-import { timeToNanoseconds } from "../src/temporal-time.js";
+} from "../src/temporal/temporal-iso-parser.js";
+import { timeToNanoseconds } from "../src/temporal/temporal-time.js";
 function check(ok: boolean, label: string): void {
     if (!ok) {
         throw new Error(label);

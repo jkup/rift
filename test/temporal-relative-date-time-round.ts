@@ -1,8 +1,11 @@
-import { roundDateTimeDifference } from "../src/temporal-relative-date-time-round.js";
-import { parseTemporalPlainDateTime } from "../src/temporal-plain-date-time-parse.js";
-import { balanceDurationTime, type DurationUnit } from "../src/temporal-duration-balance.js";
-import { formatTemporalDuration } from "../src/temporal-duration-format.js";
-import type { TemporalRoundingMode } from "../src/temporal-rounding.js";
+import { roundDateTimeDifference } from "../src/temporal/temporal-relative-date-time-round.js";
+import { parseTemporalPlainDateTime } from "../src/temporal/temporal-plain-date-time-parse.js";
+import {
+    balanceDurationTime,
+    type DurationUnit,
+} from "../src/temporal/temporal-duration-balance.js";
+import { formatTemporalDuration } from "../src/temporal/temporal-duration-format.js";
+import type { TemporalRoundingMode } from "../src/temporal/temporal-rounding.js";
 
 function parse(text: string) {
     const value = parseTemporalPlainDateTime(text);

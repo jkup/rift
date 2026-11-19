@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
-import { ianaZones } from "../src/iana-timezone-data.js";
-import { findIanaZoneData } from "../src/time-zone-transitions.js";
+import { ianaZones } from "../src/time-zone/iana-timezone-data.js";
+import { findIanaZoneData } from "../src/time-zone/time-zone-transitions.js";
 import {
     possibleIanaInstants,
     resolveIanaLocalTime,
     startOfIanaDay,
-} from "../src/time-zone-local.js";
+} from "../src/time-zone/time-zone-local.js";
 const lines = readFileSync("test/fixtures/iana-timezone-local.txt", "utf8").trim().split("\n");
 if (lines.length !== 63) {
     throw new Error("local control denominator");

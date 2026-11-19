@@ -3,8 +3,12 @@ import {
     isoDateToEpochDay,
     isoDayOfWeek,
     isISOLeapYear,
-} from "../src/iso-calendar.js";
-import { isoDateWithinLimits, isoDayOfYear, isoWeekOfYear } from "../src/iso-calendar-fields.js";
+} from "../src/temporal/iso-calendar.js";
+import {
+    isoDateWithinLimits,
+    isoDayOfYear,
+    isoWeekOfYear,
+} from "../src/temporal/iso-calendar-fields.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

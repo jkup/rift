@@ -1,8 +1,11 @@
 import { parseDateISO, parseDateISOFields } from "./date-iso-parse.js";
 import { dateTimeClip } from "./date-time.js";
-import { namedTemporalTimeZone, type TemporalTimeZone } from "./temporal-time-zone-operations.js";
-import { MAX_IANA_IDENTIFIER_LENGTH } from "./iana-timezone-identifiers.js";
-import { parseUTCOffset, formatUTCOffset } from "./utc-offset.js";
+import {
+    namedTemporalTimeZone,
+    type TemporalTimeZone,
+} from "./temporal/temporal-time-zone-operations.js";
+import { MAX_IANA_IDENTIFIER_LENGTH } from "./time-zone/iana-timezone-identifiers.js";
+import { parseUTCOffset, formatUTCOffset } from "./time-zone/utc-offset.js";
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

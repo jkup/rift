@@ -3,7 +3,7 @@ import { registerDateTimeSetters } from "./date-time-setters.js";
 import { registerDateCalendarSetters } from "./date-calendar-setters.js";
 import { registerDateJSON } from "./date-json.js";
 import { registerDateLocale } from "./date-locale.js";
-import { createTemporalInstant } from "../temporal-instant-object.js";
+import { createTemporalInstant } from "../temporal/temporal-instant-object.js";
 import type { Realm } from "../realm.js";
 import type { Location } from "../syntax.js";
 import { GuestDate, dateObject } from "../date-object.js";

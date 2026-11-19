@@ -6,7 +6,7 @@ import {
     evaluateScript,
     drainScriptJobs,
 } from "./script.js";
-import { parseTemporalTimeZoneIdentifier } from "./temporal-time-zone-parse.js";
+import { parseTemporalTimeZoneIdentifier } from "./temporal/temporal-time-zone-parse.js";
 import { display } from "./runtime.js";
 import type { Diagnostic } from "./syntax.js";
 function report(filename: string, diagnostic: Diagnostic): void {

@@ -1,4 +1,4 @@
-import { parseTemporalCalendarString } from "../src/temporal-calendar-parse.js";
+import { parseTemporalCalendarString } from "../src/temporal/temporal-calendar-parse.js";
 
 function expect(text: string, expected: string | null): void {
     const result = parseTemporalCalendarString(text);

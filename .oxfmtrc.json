@@ -12,11 +12,11 @@
         "docs/validation/**",
         "test/fixtures/**",
         "examples/**",
-        "src/iana-timezone-data.ts",
-        "src/iana-timezone-identifiers.ts",
-        "src/unicode-properties.ts",
-        "src/unicode-identifiers.ts",
-        "src/unicode-case-fold.ts",
+        "src/time-zone/iana-timezone-data.ts",
+        "src/time-zone/iana-timezone-identifiers.ts",
+        "src/unicode/unicode-properties.ts",
+        "src/unicode/unicode-identifiers.ts",
+        "src/unicode/unicode-case-fold.ts",
         "test/cases.json",
         "tools/**/*.json"
     ]

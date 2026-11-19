@@ -95,7 +95,7 @@ assert.equal(new Set(records.map((row) => row.primary)).size, 450);
 for (const row of records) {
     assert.equal(primary(row.primary), row.primary);
 }
-const dataSource = fs.readFileSync(path.join(project, "src/iana-timezone-data.ts"));
+const dataSource = fs.readFileSync(path.join(project, "src/time-zone/iana-timezone-data.ts"));
 const dataProvenance = JSON.parse(
     fs.readFileSync(path.join(project, "docs/data/iana-timezone-provenance.json"), "utf8"),
 );
@@ -147,7 +147,7 @@ const provenance = {
     reference: "https://tc39.es/ecma402/#sec-availablenamedtimezoneidentifiers",
 };
 for (const [name, text] of [
-    ["src/iana-timezone-identifiers.ts", generated],
+    ["src/time-zone/iana-timezone-identifiers.ts", generated],
     [
         "docs/data/iana-timezone-identifiers-provenance.json",
         JSON.stringify(provenance, null, 2) + "\n",

@@ -1,5 +1,5 @@
-import { temporalDateDurationDays } from "../src/temporal-date-duration-days.js";
-import type { DurationFields } from "../src/temporal-duration.js";
+import { temporalDateDurationDays } from "../src/temporal/temporal-date-duration-days.js";
+import type { DurationFields } from "../src/temporal/temporal-duration.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);

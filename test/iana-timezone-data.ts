@@ -1,6 +1,6 @@
-import { ianaZones, ianaLinks } from "../src/iana-timezone-data.js";
+import { ianaZones, ianaLinks } from "../src/time-zone/iana-timezone-data.js";
 import { stringCompare } from "../src/strings.js";
-import { findIanaZoneData, transitionTableOffset } from "../src/time-zone-transitions.js";
+import { findIanaZoneData, transitionTableOffset } from "../src/time-zone/time-zone-transitions.js";
 
 let boundaries = 0;
 for (let index = 0; index < ianaZones.length; index++) {

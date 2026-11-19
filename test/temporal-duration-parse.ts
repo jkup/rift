@@ -1,5 +1,5 @@
-import { parseTemporalDuration } from "../src/temporal-duration-parse.js";
-import { formatTemporalDuration } from "../src/temporal-duration-format.js";
+import { parseTemporalDuration } from "../src/temporal/temporal-duration-parse.js";
+import { formatTemporalDuration } from "../src/temporal/temporal-duration-format.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);

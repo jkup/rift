@@ -1,7 +1,10 @@
-import { differenceISODate, type DateDifferenceUnit } from "../src/iso-calendar-difference.js";
-import { addTemporalDate } from "../src/temporal-date-arithmetic.js";
-import { isoDaysInMonth, isoDateToEpochDay, type ISODate } from "../src/iso-calendar.js";
-import { isValidDuration } from "../src/temporal-duration.js";
+import {
+    differenceISODate,
+    type DateDifferenceUnit,
+} from "../src/temporal/iso-calendar-difference.js";
+import { addTemporalDate } from "../src/temporal/temporal-date-arithmetic.js";
+import { isoDaysInMonth, isoDateToEpochDay, type ISODate } from "../src/temporal/iso-calendar.js";
+import { isValidDuration } from "../src/temporal/temporal-duration.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

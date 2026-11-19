@@ -175,7 +175,7 @@ const provenance = {
     scope: "Internal offset records, recurrence rules and raw links; not a public identifier registry. Primary-identifier policy and local-time resolution are separate.",
 };
 for (const [name, bytes] of [
-    ["src/iana-timezone-data.ts", generated],
+    ["src/time-zone/iana-timezone-data.ts", generated],
     ["docs/data/iana-timezone-license.txt", license],
     ["docs/data/iana-timezone-provenance.json", JSON.stringify(provenance, null, 2) + "\n"],
 ]) {

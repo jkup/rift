@@ -1,7 +1,7 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { parseRegExpSyntax } from "../src/regexp-pattern-syntax.js";
+import { parseRegExpSyntax } from "../src/regexp/regexp-pattern-syntax.js";
 function check(value: boolean, message: string): void {
     if (!value) {
         throw new Error(message);

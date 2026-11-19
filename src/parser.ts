@@ -5,7 +5,7 @@ import type { PrivateNameSyntax } from "./syntax.js";
 import type { TemplateObjectExpr } from "./syntax.js";
 import { isSuspendingPattern, isSuspendingGeneratorExpression } from "./generator-expression.js";
 import type { GeneratorYieldStmt, AwaitExpr } from "./syntax.js";
-import { validateRegExpLiteral } from "./regexp-literal-validation.js";
+import { validateRegExpLiteral } from "./regexp/regexp-literal-validation.js";
 import type { SuperContext } from "./syntax.js";
 import type { ClassExpr, ClassElement, ClassFieldInitializer, ClassStaticBlock } from "./syntax.js";
 import type {

@@ -1,10 +1,10 @@
 import { registerDate } from "./builtins/date.js";
-import { registerTemporal } from "./builtins/temporal.js";
+import { registerTemporal } from "./builtins/temporal/temporal.js";
 import { registerBigInt } from "./builtins/bigint.js";
 import type { TemplateObjectExpr } from "./syntax.js";
 import { registerAsyncIterators } from "./async-iterator.js";
 import { registerPromise } from "./builtins/promise.js";
-import { registerRegExp } from "./builtins/regexp.js";
+import { registerRegExp } from "./builtins/regexp/regexp.js";
 import { registerReflect } from "./builtins/reflect.js";
 import {
     registerFunctionConstructor,
@@ -109,7 +109,7 @@ import type { RandomState } from "./random.js";
 import {
     parseTemporalTimeZoneIdentifier,
     type TemporalTimeZone,
-} from "./temporal-time-zone-parse.js";
+} from "./temporal/temporal-time-zone-parse.js";
 
 export type Output = (line: string) => void;
 export type RealmProfile = "legacy" | "script";

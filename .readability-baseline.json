@@ -152,31 +152,31 @@
             "value": 367
         },
         {
-            "filename": "src/builtins/regexp-execution.ts",
+            "filename": "src/builtins/regexp/regexp-execution.ts",
             "name": "regExpBuiltinExec",
             "rule": "functionLines",
             "value": 160
         },
         {
-            "filename": "src/builtins/regexp-match-search.ts",
+            "filename": "src/builtins/regexp/regexp-match-search.ts",
             "name": "match",
             "rule": "functionLines",
             "value": 106
         },
         {
-            "filename": "src/builtins/regexp-replace.ts",
+            "filename": "src/builtins/regexp/regexp-replace.ts",
             "name": "replaceRegExp",
             "rule": "functionLines",
             "value": 182
         },
         {
-            "filename": "src/builtins/regexp-split.ts",
+            "filename": "src/builtins/regexp/regexp-split.ts",
             "name": "split",
             "rule": "functionLines",
             "value": 176
         },
         {
-            "filename": "src/builtins/regexp.ts",
+            "filename": "src/builtins/regexp/regexp.ts",
             "name": "registerRegExp",
             "rule": "functionLines",
             "value": 169
@@ -218,109 +218,109 @@
             "value": 123
         },
         {
-            "filename": "src/builtins/temporal-duration-compare.ts",
+            "filename": "src/builtins/temporal/temporal-duration-compare.ts",
             "name": "registerTemporalDurationCompare",
             "rule": "functionLines",
             "value": 137
         },
         {
-            "filename": "src/builtins/temporal-duration-compare.ts",
+            "filename": "src/builtins/temporal/temporal-duration-compare.ts",
             "name": "registerTemporalDurationCompare.callback",
             "rule": "functionLines",
             "value": 130
         },
         {
-            "filename": "src/builtins/temporal-duration-round.ts",
+            "filename": "src/builtins/temporal/temporal-duration-round.ts",
             "name": "registerTemporalDurationRound",
             "rule": "functionLines",
             "value": 140
         },
         {
-            "filename": "src/builtins/temporal-duration-round.ts",
+            "filename": "src/builtins/temporal/temporal-duration-round.ts",
             "name": "registerTemporalDurationRound.callback",
             "rule": "functionLines",
             "value": 133
         },
         {
-            "filename": "src/builtins/temporal-duration.ts",
+            "filename": "src/builtins/temporal/temporal-duration.ts",
             "name": "registerTemporalDuration",
             "rule": "functionLines",
             "value": 192
         },
         {
-            "filename": "src/builtins/temporal-plain-date-time.ts",
+            "filename": "src/builtins/temporal/temporal-plain-date-time.ts",
             "name": "registerTemporalPlainDateTime",
             "rule": "functionLines",
             "value": 156
         },
         {
-            "filename": "src/builtins/temporal-plain-date.ts",
+            "filename": "src/builtins/temporal/temporal-plain-date.ts",
             "name": "registerTemporalPlainDate",
             "rule": "functionLines",
             "value": 119
         },
         {
-            "filename": "src/builtins/temporal-plain-month-day.ts",
+            "filename": "src/builtins/temporal/temporal-plain-month-day.ts",
             "name": "registerTemporalPlainMonthDay",
             "rule": "functionLines",
             "value": 122
         },
         {
-            "filename": "src/builtins/temporal-plain-time.ts",
+            "filename": "src/builtins/temporal/temporal-plain-time.ts",
             "name": "registerTemporalPlainTime",
             "rule": "functionLines",
             "value": 150
         },
         {
-            "filename": "src/builtins/temporal-plain-to-zoned.ts",
+            "filename": "src/builtins/temporal/temporal-plain-to-zoned.ts",
             "name": "registerTemporalPlainToZoned",
             "rule": "functionLines",
             "value": 135
         },
         {
-            "filename": "src/builtins/temporal-plain-year-month.ts",
+            "filename": "src/builtins/temporal/temporal-plain-year-month.ts",
             "name": "registerTemporalPlainYearMonth",
             "rule": "functionLines",
             "value": 140
         },
         {
-            "filename": "src/builtins/temporal-zoned-conversion.ts",
+            "filename": "src/builtins/temporal/temporal-zoned-conversion.ts",
             "name": "resolveTemporalZonedFields",
             "rule": "functionLines",
             "value": 141
         },
         {
-            "filename": "src/builtins/temporal-zoned-date-time-fields.ts",
+            "filename": "src/builtins/temporal/temporal-zoned-date-time-fields.ts",
             "name": "registerTemporalZonedDateTimeFields",
             "rule": "functionLines",
             "value": 108
         },
         {
-            "filename": "src/builtins/temporal-zoned-date-time-parts.ts",
+            "filename": "src/builtins/temporal/temporal-zoned-date-time-parts.ts",
             "name": "registerTemporalZonedDateTimeParts",
             "rule": "functionLines",
             "value": 138
         },
         {
-            "filename": "src/builtins/temporal-zoned-date-time-string.ts",
+            "filename": "src/builtins/temporal/temporal-zoned-date-time-string.ts",
             "name": "registerTemporalZonedDateTimeString",
             "rule": "functionLines",
             "value": 104
         },
         {
-            "filename": "src/builtins/temporal-zoned-date-time.ts",
+            "filename": "src/builtins/temporal/temporal-zoned-date-time.ts",
             "name": "registerTemporalZonedDateTime",
             "rule": "functionLines",
             "value": 155
         },
         {
-            "filename": "src/builtins/temporal-zoned-difference.ts",
+            "filename": "src/builtins/temporal/temporal-zoned-difference.ts",
             "name": "registerTemporalZonedDifference",
             "rule": "functionLines",
             "value": 102
         },
         {
-            "filename": "src/builtins/temporal.ts",
+            "filename": "src/builtins/temporal/temporal.ts",
             "name": "registerTemporal",
             "rule": "functionLines",
             "value": 175
@@ -336,6 +336,24 @@
             "name": "registerWeakSet",
             "rule": "functionLines",
             "value": 128
+        },
+        {
+            "filename": "src/host/script-observation.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 1162
+        },
+        {
+            "filename": "src/host/script-observation.ts",
+            "name": "Attempt.controlSetup.callback",
+            "rule": "functionLines",
+            "value": 194
+        },
+        {
+            "filename": "src/host/script-observation.ts",
+            "name": "Attempt.verifyControl.callback",
+            "rule": "functionLines",
+            "value": 156
         },
         {
             "filename": "src/json-reviver.ts",
@@ -488,49 +506,49 @@
             "value": 204
         },
         {
-            "filename": "src/regexp-matcher.ts",
+            "filename": "src/regexp/regexp-matcher.ts",
             "name": "<module>",
             "rule": "fileLines",
             "value": 659
         },
         {
-            "filename": "src/regexp-matcher.ts",
+            "filename": "src/regexp/regexp-matcher.ts",
             "name": "PatternCompiler.atom.callback",
             "rule": "depth",
             "value": 6
         },
         {
-            "filename": "src/regexp-matcher.ts",
+            "filename": "src/regexp/regexp-matcher.ts",
             "name": "PatternMatcher.match.callback",
             "rule": "functionLines",
             "value": 229
         },
         {
-            "filename": "src/regexp-matcher.ts",
+            "filename": "src/regexp/regexp-matcher.ts",
             "name": "PatternMatcher.match.callback",
             "rule": "depth",
             "value": 7
         },
         {
-            "filename": "src/regexp-pattern-syntax.ts",
+            "filename": "src/regexp/regexp-pattern-syntax.ts",
             "name": "<module>",
             "rule": "fileLines",
-            "value": 850
+            "value": 837
         },
         {
-            "filename": "src/regexp-pattern-syntax.ts",
+            "filename": "src/regexp/regexp-pattern-syntax.ts",
             "name": "PatternParser.atom.callback",
             "rule": "functionLines",
             "value": 139
         },
         {
-            "filename": "src/regexp-pattern-syntax.ts",
+            "filename": "src/regexp/regexp-pattern-syntax.ts",
             "name": "PatternParser.atom.callback",
             "rule": "depth",
             "value": 6
         },
         {
-            "filename": "src/regexp-pattern-syntax.ts",
+            "filename": "src/regexp/regexp-pattern-syntax.ts",
             "name": "PatternParser.escape.callback",
             "rule": "functionLines",
             "value": 128
@@ -752,49 +770,31 @@
             "value": 196
         },
         {
-            "filename": "src/host/script-observation.ts",
-            "name": "<module>",
-            "rule": "fileLines",
-            "value": 1162
-        },
-        {
-            "filename": "src/host/script-observation.ts",
-            "name": "Attempt.controlSetup.callback",
-            "rule": "functionLines",
-            "value": 194
-        },
-        {
-            "filename": "src/host/script-observation.ts",
-            "name": "Attempt.verifyControl.callback",
-            "rule": "functionLines",
-            "value": 156
-        },
-        {
             "filename": "src/string-substitution.ts",
             "name": "getSubstitution",
             "rule": "depth",
             "value": 7
         },
         {
-            "filename": "src/temporal-duration-round-options.ts",
+            "filename": "src/temporal/temporal-duration-round-options.ts",
             "name": "durationRoundSettings",
             "rule": "functionLines",
             "value": 112
         },
         {
-            "filename": "src/temporal-iso-parser.ts",
+            "filename": "src/temporal/temporal-iso-parser.ts",
             "name": "temporalISOTime",
             "rule": "depth",
             "value": 5
         },
         {
-            "filename": "src/temporal-relative-to-option.ts",
+            "filename": "src/temporal/temporal-relative-to-option.ts",
             "name": "temporalRelativeToOption",
             "rule": "functionLines",
             "value": 190
         },
         {
-            "filename": "src/utc-offset.ts",
+            "filename": "src/time-zone/utc-offset.ts",
             "name": "parseUTCOffset",
             "rule": "depth",
             "value": 5

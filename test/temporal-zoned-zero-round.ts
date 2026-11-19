@@ -1,5 +1,5 @@
-import { roundZonedDateTimeDifference } from "../src/temporal-zoned-difference-round.js";
-import { parseTemporalTimeZoneIdentifier } from "../src/temporal-time-zone-parse.js";
+import { roundZonedDateTimeDifference } from "../src/temporal/temporal-zoned-difference-round.js";
+import { parseTemporalTimeZoneIdentifier } from "../src/temporal/temporal-time-zone-parse.js";
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";

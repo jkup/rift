@@ -4,12 +4,12 @@ import {
     dateTimeClip,
     type DateFields,
 } from "./date-time.js";
-import { isoDateTimeFromEpochNanoseconds, isoDayOfWeek } from "./iso-calendar.js";
+import { isoDateTimeFromEpochNanoseconds, isoDayOfWeek } from "./temporal/iso-calendar.js";
 import {
     timeZoneOffsetNanoseconds,
     timeZoneEpochNanoseconds,
     type TemporalTimeZone,
-} from "./temporal-time-zone-operations.js";
+} from "./temporal/temporal-time-zone-operations.js";
 
 export function dateTimeZoneOffsetMilliseconds(time: number, zone: TemporalTimeZone): number {
     if (!Number.isInteger(time) || Math.abs(time) > DATE_TIME_LIMIT) {

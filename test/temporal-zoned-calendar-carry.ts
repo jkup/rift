@@ -1,7 +1,7 @@
-import { carryZonedCalendarDifference } from "../src/temporal-zoned-calendar-carry.js";
-import { dateDuration } from "../src/temporal-calendar-round.js";
-import { parseTemporalInstant } from "../src/temporal-instant-parse.js";
-import { parseTemporalTimeZoneIdentifier } from "../src/temporal-time-zone-parse.js";
+import { carryZonedCalendarDifference } from "../src/temporal/temporal-zoned-calendar-carry.js";
+import { dateDuration } from "../src/temporal/temporal-calendar-round.js";
+import { parseTemporalInstant } from "../src/temporal/temporal-instant-parse.js";
+import { parseTemporalTimeZoneIdentifier } from "../src/temporal/temporal-time-zone-parse.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

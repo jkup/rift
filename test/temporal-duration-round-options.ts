@@ -1,8 +1,8 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { durationRoundSettings } from "../src/temporal-duration-round-options.js";
-import { toTemporalDurationFields } from "../src/temporal-duration-fields.js";
+import { durationRoundSettings } from "../src/temporal/temporal-duration-round-options.js";
+import { toTemporalDurationFields } from "../src/temporal/temporal-duration-fields.js";
 import { normal, UNDEFINED, type ValueCompletion } from "../src/runtime.js";
 function passes(text: string): void {
     const realm = new Realm((_line: string) => {}, "script");

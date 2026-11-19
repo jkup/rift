@@ -2,8 +2,8 @@ import {
     balanceDurationTime,
     largestDurationUnit,
     type DurationUnit,
-} from "../src/temporal-duration-balance.js";
-import { durationTimeNanoseconds, type DurationFields } from "../src/temporal-duration.js";
+} from "../src/temporal/temporal-duration-balance.js";
+import { durationTimeNanoseconds, type DurationFields } from "../src/temporal/temporal-duration.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

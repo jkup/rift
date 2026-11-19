@@ -1,7 +1,7 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { timeDifferenceSettings } from "../src/temporal-difference-options.js";
+import { timeDifferenceSettings } from "../src/temporal/temporal-difference-options.js";
 import { normal, UNDEFINED, type ValueCompletion } from "../src/runtime.js";
 
 function check(ok: boolean, message: string): void {

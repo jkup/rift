@@ -1,6 +1,6 @@
-import { parseTemporalInstant } from "../src/temporal-instant-parse.js";
-import { formatUTCInstant } from "../src/temporal-time-format.js";
-import { MAX_EPOCH_NANOSECONDS } from "../src/iso-calendar.js";
+import { parseTemporalInstant } from "../src/temporal/temporal-instant-parse.js";
+import { formatUTCInstant } from "../src/temporal/temporal-time-format.js";
+import { MAX_EPOCH_NANOSECONDS } from "../src/temporal/iso-calendar.js";
 function check(ok: boolean, label: string): void {
     if (!ok) {
         throw new Error(label);

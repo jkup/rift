@@ -13,7 +13,10 @@ import {
     dateMakeDate,
 } from "../src/date-time.js";
 import { dateMakeDay } from "../src/date-calendar.js";
-import { parseTemporalTimeZone, type TemporalTimeZone } from "../src/temporal-time-zone-parse.js";
+import {
+    parseTemporalTimeZone,
+    type TemporalTimeZone,
+} from "../src/temporal/temporal-time-zone-parse.js";
 
 function check(value: boolean, message: string): void {
     if (!value) {

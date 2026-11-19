@@ -1,11 +1,11 @@
-import { combineISODateTime, isoDateTimeWithinLimits } from "../src/iso-date-time.js";
+import { combineISODateTime, isoDateTimeWithinLimits } from "../src/temporal/iso-date-time.js";
 import {
     isoDateTimeFromEpochNanoseconds,
     isoDateTimeToEpochNanoseconds,
     epochNanosecondsFromUTC,
     MAX_EPOCH_NANOSECONDS,
-} from "../src/iso-calendar.js";
-import { NANOSECONDS_PER_DAY } from "../src/temporal-time.js";
+} from "../src/temporal/iso-calendar.js";
+import { NANOSECONDS_PER_DAY } from "../src/temporal/temporal-time.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

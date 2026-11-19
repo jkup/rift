@@ -4,8 +4,8 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import {
     readTemporalDateTimeFields,
     resolveTemporalDateTimeFields,
-} from "../src/temporal-date-time-fields.js";
-import { formatISODateTime } from "../src/temporal-time-format.js";
+} from "../src/temporal/temporal-date-time-fields.js";
+import { formatISODateTime } from "../src/temporal/temporal-time-format.js";
 import { languageFailure, normal, type ValueCompletion } from "../src/runtime.js";
 
 function passes(text: string): void {

@@ -1,4 +1,4 @@
-import { scanRegExpLiteral } from "./regexp-literal.js";
+import { scanRegExpLiteral } from "./regexp/regexp-literal.js";
 import { isStringWhitespace } from "./strings.js";
 import { identifierStart, scanIdentifier } from "./identifier-scan.js";
 import { scanPrivateIdentifier } from "./private-identifier.js";

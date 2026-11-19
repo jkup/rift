@@ -1,7 +1,7 @@
-import { differenceTemporalZonedDateTime } from "../src/temporal-zoned-difference.js";
-import { parseTemporalTimeZoneIdentifier } from "../src/temporal-time-zone-parse.js";
-import { parseTemporalInstant } from "../src/temporal-instant-parse.js";
-import type { DateDifferenceUnit } from "../src/iso-calendar-difference.js";
+import { differenceTemporalZonedDateTime } from "../src/temporal/temporal-zoned-difference.js";
+import { parseTemporalTimeZoneIdentifier } from "../src/temporal/temporal-time-zone-parse.js";
+import { parseTemporalInstant } from "../src/temporal/temporal-instant-parse.js";
+import type { DateDifferenceUnit } from "../src/temporal/iso-calendar-difference.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

@@ -2,9 +2,9 @@ import {
     roundTemporalInteger,
     roundTemporalInstant,
     type TemporalRoundingMode,
-} from "../src/temporal-rounding.js";
-import { formatUTCInstant, formatISOYear } from "../src/temporal-time-format.js";
-import { MAX_EPOCH_NANOSECONDS, NANOSECONDS_PER_DAY } from "../src/iso-calendar.js";
+} from "../src/temporal/temporal-rounding.js";
+import { formatUTCInstant, formatISOYear } from "../src/temporal/temporal-time-format.js";
+import { MAX_EPOCH_NANOSECONDS, NANOSECONDS_PER_DAY } from "../src/temporal/iso-calendar.js";
 
 function check(ok: boolean, label: string): void {
     if (!ok) {

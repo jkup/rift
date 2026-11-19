@@ -1,4 +1,4 @@
-import { scanRegExpLiteral } from "../src/regexp-literal.js";
+import { scanRegExpLiteral } from "../src/regexp/regexp-literal.js";
 
 function check(value: boolean, message: string): void {
     if (!value) {

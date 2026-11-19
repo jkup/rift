@@ -9,7 +9,7 @@ import {
     MAX_EPOCH_NANOSECONDS,
     type ISODate,
     type ISODateTime,
-} from "../src/iso-calendar.js";
+} from "../src/temporal/iso-calendar.js";
 
 function check(ok: boolean, label: string): void {
     if (!ok) {

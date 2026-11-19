@@ -1,5 +1,5 @@
-import { parseRegExpSyntax, type RegExpPattern } from "../src/regexp-pattern-syntax.js";
-import { validateRegExpLiteral } from "../src/regexp-literal-validation.js";
+import { parseRegExpSyntax, type RegExpPattern } from "../src/regexp/regexp-pattern-syntax.js";
+import { validateRegExpLiteral } from "../src/regexp/regexp-literal-validation.js";
 
 function check(value: boolean, message: string): void {
     if (!value) {

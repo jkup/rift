@@ -1,7 +1,7 @@
 import type { GuestObject, OperationContext, ThrowCompletion, Value } from "./runtime.js";
 import type { StringCompletion } from "./conversion.js";
 import type { Location } from "./syntax.js";
-import { regExpString } from "./builtins/regexp.js";
+import { regExpString } from "./builtins/regexp/regexp.js";
 
 export class ReplacementText {
     private parts: string[] = [];

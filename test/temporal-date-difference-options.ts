@@ -1,7 +1,7 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { dateDifferenceSettings } from "../src/temporal-date-difference-options.js";
+import { dateDifferenceSettings } from "../src/temporal/temporal-date-difference-options.js";
 import { normal, UNDEFINED, type ValueCompletion } from "../src/runtime.js";
 
 function passes(text: string): void {

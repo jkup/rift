@@ -1,8 +1,11 @@
-import { differenceISODateTime } from "../src/iso-date-time-difference.js";
-import { parseTemporalPlainDateTime } from "../src/temporal-plain-date-time-parse.js";
-import { isoDateTimeToEpochNanoseconds } from "../src/iso-calendar.js";
-import { balanceDurationTime, type DurationUnit } from "../src/temporal-duration-balance.js";
-import { addTemporalDateTime } from "../src/temporal-date-time-arithmetic.js";
+import { differenceISODateTime } from "../src/temporal/iso-date-time-difference.js";
+import { parseTemporalPlainDateTime } from "../src/temporal/temporal-plain-date-time-parse.js";
+import { isoDateTimeToEpochNanoseconds } from "../src/temporal/iso-calendar.js";
+import {
+    balanceDurationTime,
+    type DurationUnit,
+} from "../src/temporal/temporal-duration-balance.js";
+import { addTemporalDateTime } from "../src/temporal/temporal-date-time-arithmetic.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

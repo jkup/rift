@@ -1,7 +1,10 @@
 import { readFileSync } from "node:fs";
-import { ianaIdentifiers, MAX_IANA_IDENTIFIER_LENGTH } from "../src/iana-timezone-identifiers.js";
-import { findIanaTimeZoneIdentifier } from "../src/time-zone-identifier.js";
-import { ianaOffsetSeconds } from "../src/time-zone-offset.js";
+import {
+    ianaIdentifiers,
+    MAX_IANA_IDENTIFIER_LENGTH,
+} from "../src/time-zone/iana-timezone-identifiers.js";
+import { findIanaTimeZoneIdentifier } from "../src/time-zone/time-zone-identifier.js";
+import { ianaOffsetSeconds } from "../src/time-zone/time-zone-offset.js";
 import { stringCompare } from "../src/strings.js";
 
 const lines = readFileSync("test/fixtures/iana-timezone-identifiers.txt", "utf8")

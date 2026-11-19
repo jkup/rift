@@ -1,9 +1,9 @@
-import { ianaOffsetSeconds } from "../src/time-zone-offset.js";
-import { findIanaZoneData } from "../src/time-zone-transitions.js";
-import { TimeZoneRecurrence } from "../src/time-zone-recurrence.js";
+import { ianaOffsetSeconds } from "../src/time-zone/time-zone-offset.js";
+import { findIanaZoneData } from "../src/time-zone/time-zone-transitions.js";
+import { TimeZoneRecurrence } from "../src/time-zone/time-zone-recurrence.js";
 import { readFileSync } from "node:fs";
-import { ianaZones, IanaZoneData } from "../src/iana-timezone-data.js";
-import { ianaTimeZoneTransition } from "../src/time-zone-adjacent.js";
+import { ianaZones, IanaZoneData } from "../src/time-zone/iana-timezone-data.js";
+import { ianaTimeZoneTransition } from "../src/time-zone/time-zone-adjacent.js";
 const historical = readFileSync("test/fixtures/iana-timezone-adjacent.txt", "utf8")
     .trim()
     .split("\n");

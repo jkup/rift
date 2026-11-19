@@ -1,5 +1,9 @@
-import { parseRegExpPattern } from "../src/regexp-pattern.js";
-import { compileRegExpPattern, matchRegExp, type RegExpProgram } from "../src/regexp-matcher.js";
+import { parseRegExpPattern } from "../src/regexp/regexp-pattern.js";
+import {
+    compileRegExpPattern,
+    matchRegExp,
+    type RegExpProgram,
+} from "../src/regexp/regexp-matcher.js";
 import { Realm } from "../src/realm.js";
 import {
     normal,

@@ -1,5 +1,5 @@
 import { dateEpochFromLocalTime } from "./date-time-zone.js";
-import type { TemporalTimeZone } from "./temporal-time-zone-operations.js";
+import type { TemporalTimeZone } from "./temporal/temporal-time-zone-operations.js";
 import { dateMakeDay } from "./date-calendar.js";
 import { dateMakeDate, dateMakeTime, dateTimeClip } from "./date-time.js";
 

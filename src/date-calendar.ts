@@ -1,4 +1,4 @@
-import { isoDaysInMonth } from "./iso-calendar.js";
+import { isoDaysInMonth } from "./temporal/iso-calendar.js";
 import { DATE_MILLISECONDS_PER_DAY } from "./date-time.js";
 
 function floorDivide(value: bigint, divisor: bigint): bigint {

@@ -1,4 +1,4 @@
-import { parseTemporalPlainYearMonth } from "../src/temporal-plain-year-month-parse.js";
+import { parseTemporalPlainYearMonth } from "../src/temporal/temporal-plain-year-month-parse.js";
 
 function expect(text: string, year: number, month: number, day = 1): void {
     const result = parseTemporalPlainYearMonth(text);

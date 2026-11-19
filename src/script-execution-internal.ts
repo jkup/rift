@@ -49,7 +49,7 @@ import {
 } from "./evaluation-reference.js";
 import { applyBinaryOperator, skipsRightOperand } from "./binary-operator.js";
 import { copyDataProperties } from "./copy-data-properties.js";
-import { regExpCreate } from "./builtins/regexp.js";
+import { regExpCreate } from "./builtins/regexp/regexp.js";
 import type { SuperContext } from "./syntax.js";
 import { getPrototypeFromConstructor } from "./constructor-prototype.js";
 import type {

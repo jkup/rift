@@ -4,8 +4,11 @@ import {
     timeFromNanoseconds,
     NANOSECONDS_PER_DAY,
     type TimeFields,
-} from "../src/temporal-time.js";
-import { utcDateTimeFromEpochNanoseconds, epochNanosecondsFromUTC } from "../src/iso-calendar.js";
+} from "../src/temporal/temporal-time.js";
+import {
+    utcDateTimeFromEpochNanoseconds,
+    epochNanosecondsFromUTC,
+} from "../src/temporal/iso-calendar.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

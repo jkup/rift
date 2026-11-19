@@ -1,14 +1,17 @@
 import { readFileSync } from "node:fs";
-import { ianaZones } from "../src/iana-timezone-data.js";
-import { ianaOffsetSeconds, ianaOffsetSecondsForLocalTime } from "../src/time-zone-offset.js";
+import { ianaZones } from "../src/time-zone/iana-timezone-data.js";
+import {
+    ianaOffsetSeconds,
+    ianaOffsetSecondsForLocalTime,
+} from "../src/time-zone/time-zone-offset.js";
 import {
     transitionTableOffset,
     transitionTableOffsetForLocalTime,
-} from "../src/time-zone-transitions.js";
+} from "../src/time-zone/time-zone-transitions.js";
 import {
     recurrenceOffsetSeconds,
     recurrenceOffsetSecondsForLocalTime,
-} from "../src/time-zone-recurrence.js";
+} from "../src/time-zone/time-zone-recurrence.js";
 const lines = readFileSync("test/fixtures/iana-timezone-candidate-offset.txt", "utf8")
     .trim()
     .split("\n");

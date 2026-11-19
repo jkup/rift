@@ -1,5 +1,5 @@
-import { relativeDurationTarget } from "../src/temporal-relative-duration-target.js";
-import type { DurationFields } from "../src/temporal-duration.js";
+import { relativeDurationTarget } from "../src/temporal/temporal-relative-duration-target.js";
+import type { DurationFields } from "../src/temporal/temporal-duration.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);

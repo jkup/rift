@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
-import { ianaZones, ianaRecurrences } from "../src/iana-timezone-data.js";
-import { findIanaZoneData } from "../src/time-zone-transitions.js";
-import { ianaOffsetSeconds } from "../src/time-zone-offset.js";
-import { recurrenceOffsetSeconds } from "../src/time-zone-recurrence.js";
+import { ianaZones, ianaRecurrences } from "../src/time-zone/iana-timezone-data.js";
+import { findIanaZoneData } from "../src/time-zone/time-zone-transitions.js";
+import { ianaOffsetSeconds } from "../src/time-zone/time-zone-offset.js";
+import { recurrenceOffsetSeconds } from "../src/time-zone/time-zone-recurrence.js";
 
 const lines = readFileSync("test/fixtures/iana-timezone-recurrence.txt", "utf8").trim().split("\n");
 if (lines.length !== 4962 || ianaZones.length !== 440 || ianaRecurrences.length !== 94) {

@@ -1,4 +1,4 @@
-import { parseUTCOffset, formatUTCOffsetMinutes } from "../src/utc-offset.js";
+import { parseUTCOffset, formatUTCOffsetMinutes } from "../src/time-zone/utc-offset.js";
 function check(ok: boolean, label: string): void {
     if (!ok) {
         throw new Error(label);

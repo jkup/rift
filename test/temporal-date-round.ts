@@ -1,7 +1,7 @@
-import { roundDateDifference } from "../src/temporal-date-round.js";
-import type { ISODate } from "../src/iso-calendar.js";
-import type { DateDifferenceUnit } from "../src/iso-calendar-difference.js";
-import type { TemporalRoundingMode } from "../src/temporal-rounding.js";
+import { roundDateDifference } from "../src/temporal/temporal-date-round.js";
+import type { ISODate } from "../src/temporal/iso-calendar.js";
+import type { DateDifferenceUnit } from "../src/temporal/iso-calendar-difference.js";
+import type { TemporalRoundingMode } from "../src/temporal/temporal-rounding.js";
 
 function expect(
     start: ISODate,

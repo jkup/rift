@@ -1,8 +1,8 @@
-import { roundZonedTimeDifference } from "../src/temporal-zoned-time-round.js";
-import { differenceTemporalZonedDateTime } from "../src/temporal-zoned-difference.js";
-import { parseTemporalTimeZoneIdentifier } from "../src/temporal-time-zone-parse.js";
-import { NANOSECONDS_PER_DAY } from "../src/temporal-time.js";
-import type { TemporalRoundingMode } from "../src/temporal-rounding.js";
+import { roundZonedTimeDifference } from "../src/temporal/temporal-zoned-time-round.js";
+import { differenceTemporalZonedDateTime } from "../src/temporal/temporal-zoned-difference.js";
+import { parseTemporalTimeZoneIdentifier } from "../src/temporal/temporal-time-zone-parse.js";
+import { NANOSECONDS_PER_DAY } from "../src/temporal/temporal-time.js";
+import type { TemporalRoundingMode } from "../src/temporal/temporal-rounding.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

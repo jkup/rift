@@ -1,7 +1,7 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { temporalRelativeToOption } from "../src/temporal-relative-to-option.js";
+import { temporalRelativeToOption } from "../src/temporal/temporal-relative-to-option.js";
 import { normal, UNDEFINED, type ValueCompletion } from "../src/runtime.js";
 function passes(text: string): void {
     const realm = new Realm((_line: string) => {}, "script");

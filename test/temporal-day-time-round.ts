@@ -1,8 +1,8 @@
-import { roundDayTimeDifference } from "../src/temporal-day-time-round.js";
-import { dateDuration } from "../src/temporal-calendar-round.js";
-import { NANOSECONDS_PER_DAY } from "../src/temporal-time.js";
-import { MAX_EPOCH_NANOSECONDS } from "../src/iso-calendar.js";
-import type { TemporalRoundingMode } from "../src/temporal-rounding.js";
+import { roundDayTimeDifference } from "../src/temporal/temporal-day-time-round.js";
+import { dateDuration } from "../src/temporal/temporal-calendar-round.js";
+import { NANOSECONDS_PER_DAY } from "../src/temporal/temporal-time.js";
+import { MAX_EPOCH_NANOSECONDS } from "../src/temporal/iso-calendar.js";
+import type { TemporalRoundingMode } from "../src/temporal/temporal-rounding.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

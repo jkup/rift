@@ -1,4 +1,7 @@
-import { unicodeIdentifierStart, unicodeIdentifierContinue } from "./unicode-identifiers.js";
+import {
+    unicodeIdentifierStart,
+    unicodeIdentifierContinue,
+} from "./unicode/unicode-identifiers.js";
 
 export type IdentifierScan =
     | { kind: "ready"; text: string; end: number; escaped: boolean }

@@ -2,16 +2,16 @@ import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { GuestTemporalZonedDateTime } from "../src/temporal-zoned-date-time-object.js";
+import { GuestTemporalZonedDateTime } from "../src/temporal/temporal-zoned-date-time-object.js";
 import {
     namedTemporalTimeZone,
     timeZoneEquals,
     timeZoneOffsetNanoseconds,
-} from "../src/temporal-time-zone-operations.js";
-import { parseTemporalTimeZoneIdentifier } from "../src/temporal-time-zone-parse.js";
-import { parseTemporalZonedDateTime } from "../src/temporal-zoned-parse.js";
-import { interpretTemporalZonedDateTime } from "../src/temporal-zoned-interpret.js";
-import { formatUTCOffset } from "../src/utc-offset.js";
+} from "../src/temporal/temporal-time-zone-operations.js";
+import { parseTemporalTimeZoneIdentifier } from "../src/temporal/temporal-time-zone-parse.js";
+import { parseTemporalZonedDateTime } from "../src/temporal/temporal-zoned-parse.js";
+import { interpretTemporalZonedDateTime } from "../src/temporal/temporal-zoned-interpret.js";
+import { formatUTCOffset } from "../src/time-zone/utc-offset.js";
 const realm = new Realm((_line: string) => {}, "script");
 const basic = readFileSync("test/fixtures/temporal-zone-operations.txt", "utf8").trim().split("\n");
 const calendar = readFileSync("test/fixtures/temporal-zone-operations-calendar.txt", "utf8")

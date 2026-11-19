@@ -1,8 +1,8 @@
-import { parseTemporalZonedDateTime } from "../src/temporal-zoned-parse.js";
+import { parseTemporalZonedDateTime } from "../src/temporal/temporal-zoned-parse.js";
 import {
     interpretTemporalZonedDateTime,
     type TemporalOffsetOption,
-} from "../src/temporal-zoned-interpret.js";
+} from "../src/temporal/temporal-zoned-interpret.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

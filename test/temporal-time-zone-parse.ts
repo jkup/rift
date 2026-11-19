@@ -1,5 +1,5 @@
-import { timeZoneOffsetNanoseconds } from "../src/temporal-time-zone-operations.js";
-import { parseTemporalTimeZone } from "../src/temporal-time-zone-parse.js";
+import { timeZoneOffsetNanoseconds } from "../src/temporal/temporal-time-zone-operations.js";
+import { parseTemporalTimeZone } from "../src/temporal/temporal-time-zone-parse.js";
 function check(text: string, identifier: string, minutes: number): void {
     const result = parseTemporalTimeZone(text);
     if (

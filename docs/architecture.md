@@ -20,6 +20,14 @@ simpler code must still preserve JavaScript's behavior and evaluation order.
 | `src/host/` | Observation drivers, conformance controls and wire serialization for host tooling. |
 | `src/script-environment.ts`, `src/global-environment.ts` | Bindings and scope lookup. |
 | `src/realm.ts`, `src/runtime.ts`, `src/builtins/` | Guest values, objects and built-in operations. |
+| `src/temporal/`, `src/builtins/temporal/` | ISO calendar arithmetic, Temporal objects and guest-facing methods. |
+| `src/regexp/`, `src/builtins/regexp/` | Pattern types, parsing, matching and guest-facing RegExp methods. |
+| `src/time-zone/` | Zone lookup, local-time resolution, recurrence rules and generated IANA tables. |
+| `src/unicode/` | Generated identifier, property and case-fold tables. |
+
+Generated tables retain their provenance and licenses under `docs/data/`. Their
+exact paths are excluded from formatting; the surrounding handwritten modules
+remain subject to the normal checks. Regenerate data with the tools under `tools/`.
 
 Mutable guest state belongs to a Realm. Guest throw, return, break and continue
 use completion records. Host exceptions indicate an implementation fault. I/O

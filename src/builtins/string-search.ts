@@ -3,7 +3,7 @@ import { languageFailure, normal, UNDEFINED, type ValueCompletion } from "../run
 import { toPrimitive } from "../primitive-conversion.js";
 import { toIntegerOrInfinity, toString } from "../conversion.js";
 import { stringEndsWith, stringIndexOf, stringLength, stringStartsWith } from "../strings.js";
-import { isRegExp } from "../regexp-object.js";
+import { isRegExp } from "../regexp/regexp-object.js";
 import { stringReceiver } from "./string.js";
 
 export function registerStringSearch(realm: Realm): void {

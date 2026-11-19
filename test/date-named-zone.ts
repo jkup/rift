@@ -4,7 +4,7 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import type { Value } from "../src/runtime.js";
 import { parseDateString } from "../src/date-string-parse.js";
 import { formatDateString } from "../src/date-format.js";
-import { parseTemporalTimeZoneIdentifier } from "../src/temporal-time-zone-parse.js";
+import { parseTemporalTimeZoneIdentifier } from "../src/temporal/temporal-time-zone-parse.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

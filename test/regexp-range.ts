@@ -1,7 +1,7 @@
-import { foldedRangeContains } from "../src/unicode-properties.js";
-import { simpleCaseFold } from "../src/unicode-case-fold.js";
-import { parseRegExpSyntax } from "../src/regexp-pattern-syntax.js";
-import { compileRegExpPattern, matchRegExp } from "../src/regexp-matcher.js";
+import { foldedRangeContains } from "../src/unicode/unicode-properties.js";
+import { simpleCaseFold } from "../src/unicode/unicode-case-fold.js";
+import { parseRegExpSyntax } from "../src/regexp/regexp-pattern-syntax.js";
+import { compileRegExpPattern, matchRegExp } from "../src/regexp/regexp-matcher.js";
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";

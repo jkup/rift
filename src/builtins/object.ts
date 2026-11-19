@@ -13,7 +13,7 @@ import { registerObjectPrototypes } from "./object-prototypes.js";
 import { registerObjectFromEntries } from "./object-from-entries.js";
 import { registerGroupBy } from "./group-by.js";
 import { GuestArray } from "../array-object.js";
-import { GuestRegExp } from "../regexp-object.js";
+import { GuestRegExp } from "../regexp/regexp-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import type { OperationContext, ValueCompletion } from "../runtime.js";

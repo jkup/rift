@@ -1,9 +1,9 @@
-import { parseTemporalPlainDateTime } from "../src/temporal-plain-date-time-parse.js";
-import { differenceISODateTime } from "../src/iso-date-time-difference.js";
-import { roundCalendarDateTimeDifference } from "../src/temporal-calendar-date-time-round.js";
-import { isoDateTimeToEpochNanoseconds } from "../src/iso-calendar.js";
-import type { TemporalRoundingMode } from "../src/temporal-rounding.js";
-import type { DurationUnit } from "../src/temporal-duration-balance.js";
+import { parseTemporalPlainDateTime } from "../src/temporal/temporal-plain-date-time-parse.js";
+import { differenceISODateTime } from "../src/temporal/iso-date-time-difference.js";
+import { roundCalendarDateTimeDifference } from "../src/temporal/temporal-calendar-date-time-round.js";
+import { isoDateTimeToEpochNanoseconds } from "../src/temporal/iso-calendar.js";
+import type { TemporalRoundingMode } from "../src/temporal/temporal-rounding.js";
+import type { DurationUnit } from "../src/temporal/temporal-duration-balance.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {

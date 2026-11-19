@@ -1,8 +1,11 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { readTemporalDateFields, resolveTemporalDateFields } from "../src/temporal-date-fields.js";
-import { formatISODate } from "../src/temporal-time-format.js";
+import {
+    readTemporalDateFields,
+    resolveTemporalDateFields,
+} from "../src/temporal/temporal-date-fields.js";
+import { formatISODate } from "../src/temporal/temporal-time-format.js";
 import { languageFailure, normal, type ValueCompletion } from "../src/runtime.js";
 
 function passes(text: string): void {

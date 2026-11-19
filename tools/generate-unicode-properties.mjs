@@ -294,7 +294,7 @@ const provenance = {
         "https://tc39.es/ecma262/multipage/text-processing.html#sec-runtime-semantics-unicodematchpropertyvalue-p-v",
 };
 for (const [name, text] of [
-    ["src/unicode-properties.ts", source],
+    ["src/unicode/unicode-properties.ts", source],
     ["docs/data/unicode-properties-provenance.json", JSON.stringify(provenance, null, 2) + "\n"],
     ["docs/data/unicode-license.txt", read("license.txt")],
 ]) {
