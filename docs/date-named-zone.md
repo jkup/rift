@@ -28,6 +28,6 @@ All 964 Node regression cases, 35 runner tests and 296 tooling checks pass with
 no skips. Focused native execution and all 58 controls per host pass. The focused
 driver, diagnostic probe and 15 tooling drivers have fresh static-only builds
 and parsed zero-dynamic coverage. Canonical combined validation passes.
-CLI configuration is covered in [CLI timezone selection](cli-time-zone.md).
+CLI configuration is covered in [CLI timezone selection](../README.md#build-and-run).
 System timezone discovery and Intl remain outside this feature. See
 date-named-zone-review.md for the semantic review and references.

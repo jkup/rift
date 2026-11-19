@@ -2,7 +2,7 @@
 
 TS-472, 2026-11-11. Reference review; implementation waits for Reflect.apply's
 native regression gates. C++ registers both globals in
-[global.cpp](../../src/builtins/global/global.cpp); TypeScript's URI scope
+global.cpp (retired implementation; historical comparison); TypeScript's URI scope
 explicitly excludes them.
 
 Follow [escape](https://tc39.es/ecma262/multipage/additional-ecmascript-features-for-web-browsers.html#sec-escape-string)

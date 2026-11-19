@@ -66,7 +66,7 @@ and all ten compiler probes pass. Logs: `build/numeric-object-keys-*`.
 This follows ECMA-262
 [PropName](https://tc39.es/ecma262/multipage/syntax-directed-operations.html#sec-static-semantics-propname)
 and its numeric-literal string conversion. The C++ engine's
-[`parse_object_literal`](../../src/frontend/parser/parser_expressions.cpp)
+`parse_object_literal` (retired implementation; historical comparison)
 was consulted for grammar scope; the TypeScript AST stores normalized string
 keys rather than adding a separate numeric-key node.
 
