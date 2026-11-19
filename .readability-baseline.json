@@ -593,19 +593,7 @@
             "filename": "src/script-execution-internal.ts",
             "name": "<module>",
             "rule": "fileLines",
-            "value": 12088
-        },
-        {
-            "filename": "src/script-execution-internal.ts",
-            "name": "ExecutableScript.prepare.callback",
-            "rule": "functionLines",
-            "value": 430
-        },
-        {
-            "filename": "src/script-execution-internal.ts",
-            "name": "ExecutableScript.prepare.callback",
-            "rule": "depth",
-            "value": 5
+            "value": 11503
         },
         {
             "filename": "src/script-execution-internal.ts",

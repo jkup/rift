@@ -15,6 +15,8 @@ simpler code must still preserve JavaScript's behavior and evaluation order.
 | `src/script-record.ts` | Parse and check a script before execution. |
 | `src/script-execution.ts` | Create a session and evaluate a prepared script. |
 | `src/script-execution-internal.ts` | Declarations, function creation and evaluation. |
+| `src/script-associations.ts` | Validate parser/declaration identities before retaining executable state. |
+| `src/script-continuation.ts` | Suspended generator and async execution frame types. |
 | `src/script-environment.ts`, `src/global-environment.ts` | Bindings and scope lookup. |
 | `src/realm.ts`, `src/runtime.ts`, `src/builtins/` | Guest values, objects and built-in operations. |
 
@@ -26,6 +28,11 @@ Property access and conversion can call guest getters or functions. Operations
 share an execution budget and must preserve the order of those effects.
 Generators keep explicit suspended state. Promise reactions run at Rift's host
 checkpoints, not on the host JavaScript engine's promise queue.
+
+The execution module keeps record construction and its private authority keys
+together. Association validation and continuation data are separate modules;
+neither grants execution authority. Further extractions should preserve that
+boundary and the native compiler's mutable-array identity constraints.
 
 New hosts and CLI features use `script.ts`; see the [embedding example](usage.md#embedding).
 The `legacy` and `script` profiles select Rift execution paths, not JavaScript

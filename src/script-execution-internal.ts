@@ -1,3 +1,23 @@
+import type {
+    GeneratorAbrupt,
+    GeneratorPending,
+    GeneratorFinally,
+    GeneratorForOf,
+    GeneratorForIn,
+    GeneratorSwitch,
+    AsyncIteratorCloseFrame,
+    PatternFrameBase,
+    GeneratorPatternObject,
+    PatternTargetSource,
+    GeneratorPatternTarget,
+    GeneratorPattern,
+    GeneratorFrame,
+    ExecutionContinuation,
+    ContinuationResult,
+    ExpressionContinuationResult,
+} from "./script-continuation.js";
+import { validateScriptAssociations } from "./script-associations.js";
+import { lexicalLoopBindings } from "./script-loop-bindings.js";
 import { PrivateEnvironment, PrivateName } from "./private-names.js";
 import {
     declarePrivateName,
@@ -12,15 +32,10 @@ import { bigintOperation } from "./bigint-arithmetic.js";
 import { appendArrayElement, finishArrayLiteral } from "./array-literal.js";
 import { resumeAsyncDelegate, type AsyncDelegate } from "./async-generator-delegate.js";
 import { getAsyncIterator } from "./async-iterator.js";
-import {
-    isSuspendingPattern,
-    isSuspendingGeneratorExpression,
-    type GeneratorExpressionFrame,
-} from "./generator-expression.js";
+import { isSuspendingPattern, isSuspendingGeneratorExpression } from "./generator-expression.js";
 import { hasParameterExpressions, hasParameterPatterns } from "./formal-parameters.js";
 import type { GeneratorYieldReceiver } from "./generator-yield-receiver.js";
 import type { GeneratorYieldStmt } from "./syntax.js";
-import type { TryFinallyStmt } from "./syntax.js";
 import { resumeGeneratorDelegate, type GeneratorResumeMode } from "./generator-delegate.js";
 import { iteratorResult } from "./iterator-result.js";
 import {
@@ -122,24 +137,26 @@ import {
     instantiateBoundedGlobalDeclarations,
     type DeclarationMaterializer,
 } from "./script-global-declarations.js";
+import {
+    GuestPromise,
+    promiseResolve,
+    intrinsicPromiseCapability,
+    fatalPromiseCompletion,
+    type PromiseCapability,
+} from "./promise.js";
+import { stringConcat } from "./strings.js";
+import "./array-object.js";
+import { toObject } from "./object-conversion.js";
+import { applyUnaryValueOperator } from "./unary-operator.js";
+import { toPrimitive } from "./primitive-conversion.js";
+import { toString, toPropertyKey } from "./conversion.js";
+import {
+    updateScriptEmpty,
+    scriptExpressionCompletion,
+    type ScriptStatementCompletion,
+    type ScriptStatementPayload,
+} from "./script-completion.js";
 
-function lexicalLoopBindings(
-    node: ForEachStmt | ForLexicalStmt,
-): { declarationKind: "let" | "const"; sites: readonly DeclarationSite[] } | null {
-    if (node.kind === "for-lexical") {
-        return {
-            declarationKind: node.declarationKind,
-            sites: node.bindings.map((binding) => binding.site),
-        };
-    }
-    if (node.head.kind === "lexical") {
-        return { declarationKind: node.head.declarationKind, sites: [node.head.site] };
-    }
-    if (node.head.kind === "pattern" && node.head.declarationKind !== "var") {
-        return { declarationKind: node.head.declarationKind, sites: node.head.sites };
-    }
-    return null;
-}
 function functionIntrinsicPrototype(realm: Realm, source: FunctionSource): GuestObject {
     if (source.async === true) {
         return source.generator === true
@@ -599,398 +616,8 @@ class ExecutableScript {
         if (!bounded && !plan.strictness.strict) {
             return { kind: "profile-rejected", reason: "strict" };
         }
-        // Associations were assigned in the collector's original iterative walk.
-        // Verify all identities before retaining any executable state.
-        if (
-            nodes.scopes.size !== plan.scopes.length ||
-            nodes.declarations.size !== plan.declarations.length
-        ) {
-            throw new Error("Script node association mismatch");
-        }
-        const root = nodes.scopes.get(0);
-        if (root === undefined || root.node !== null || root.body !== nodes.body) {
-            throw new Error("Script root body mismatch");
-        }
-        for (const fn of plan.functions) {
-            const entry = nodes.scopes.get(fn.scope);
-            if (entry === undefined || entry.node === null || entry.node.kind !== "function") {
-                throw new Error("Script function node mismatch");
-            }
-            const source = entry.node.source;
-            if (
-                source === null ||
-                source.source !== nodes.source ||
-                source.source.text !== plan.unit.text ||
-                source.start !== fn.start ||
-                source.end !== fn.end ||
-                entry.body !== entry.node.body
-            ) {
-                throw new Error("Script function source mismatch");
-            }
-            if (fn.declaration !== null) {
-                const declaration = nodes.declarations.get(fn.declaration);
-                if (
-                    declaration === undefined ||
-                    declaration.node.kind !== "function" ||
-                    declaration.node !== entry.node
-                ) {
-                    throw new Error("Script function declaration mismatch");
-                }
-            }
-        }
         const record = new ExecutableScript();
-        const scopes = new Map<Expr | Stmt | ClassInitializer, number>();
-        for (const scope of plan.scopes) {
-            const entry = nodes.scopes.get(scope.id);
-            if (entry === undefined) {
-                throw new Error("missing Script scope association");
-            }
-            if (scope.id === 0) {
-                if (scope.kind !== "script" || entry.node !== null || entry.body !== nodes.body) {
-                    throw new Error("invalid Script root");
-                }
-            } else if (scope.kind === "class") {
-                const node = entry.node;
-                if (
-                    node === null ||
-                    node.kind !== "class" ||
-                    scopes.has(node) ||
-                    !scope.strict ||
-                    node.source !== nodes.source ||
-                    node.start !== scope.start ||
-                    node.end !== scope.end ||
-                    entry.body.length !== 0 ||
-                    scope.parent === null ||
-                    scope.formals.length !== 0 ||
-                    scope.lexicalDeclarations.length !== 0 ||
-                    scope.varDeclarations.length !== 0 ||
-                    scope.varNames.length !== 0 ||
-                    scope.lexicalNames.length !== (node.name === null ? 0 : 1) ||
-                    (node.name !== null && scope.lexicalNames[0] !== node.name.name)
-                ) {
-                    throw new Error("invalid class scope association");
-                }
-                const parent = plan.scopes[scope.parent];
-                if (
-                    scope.parent >= scope.id ||
-                    scope.start < parent.start ||
-                    scope.end > parent.end ||
-                    (node.name !== null &&
-                        node.source.text.slice(node.name.start, node.name.end) !==
-                            node.name.name) ||
-                    (node.constructorMethod !== null &&
-                        node.elements.filter(
-                            (element) =>
-                                element.kind === "method" &&
-                                element.value === node.constructorMethod &&
-                                !element.isStatic,
-                        ).length !== 1)
-                ) {
-                    throw new Error("invalid class source range");
-                }
-                scopes.set(node, scope.id);
-            } else if (scope.kind === "field-initializer") {
-                const node = entry.node,
-                    parent = scope.parent === null ? undefined : nodes.scopes.get(scope.parent);
-                if (
-                    node === null ||
-                    node.kind !== "field-initializer" ||
-                    scopes.has(node) ||
-                    !scope.strict ||
-                    scope.start !== node.start ||
-                    scope.end !== node.end ||
-                    node.end <= node.start ||
-                    entry.body.length !== 0 ||
-                    scope.formals.length !== 0 ||
-                    scope.lexicalNames.length !== 0 ||
-                    scope.varNames.length !== 0 ||
-                    scope.lexicalDeclarations.length !== 0 ||
-                    scope.varDeclarations.length !== 0 ||
-                    parent === undefined ||
-                    parent.node === null ||
-                    parent.node.kind !== "class" ||
-                    scope.parent === null ||
-                    scope.parent >= scope.id ||
-                    node.start < parent.node.start ||
-                    node.end > parent.node.end ||
-                    !parent.node.elements.some(
-                        (element) => element.kind === "field" && element.initializer === node,
-                    )
-                ) {
-                    throw new Error("invalid class field initializer association");
-                }
-                scopes.set(node, scope.id);
-            } else if (scope.kind === "static-block") {
-                const node = entry.node,
-                    parent = scope.parent === null ? undefined : nodes.scopes.get(scope.parent);
-                if (
-                    node === null ||
-                    node.kind !== "static-block" ||
-                    scopes.has(node) ||
-                    !scope.strict ||
-                    scope.start !== node.start ||
-                    scope.end !== node.end ||
-                    entry.body !== node.body ||
-                    scope.formals.length !== 0 ||
-                    parent === undefined ||
-                    parent.node === null ||
-                    parent.node.kind !== "class" ||
-                    scope.parent === null ||
-                    scope.parent >= scope.id ||
-                    node.start < parent.node.start ||
-                    node.end > parent.node.end ||
-                    !parent.node.elements.includes(node)
-                ) {
-                    throw new Error("invalid class static block association");
-                }
-                scopes.set(node, scope.id);
-            } else if (scope.kind === "switch") {
-                if (entry.node === null || entry.node.kind !== "switch" || scopes.has(entry.node)) {
-                    throw new Error("invalid switch owner");
-                }
-                const block = entry.node.caseBlock;
-                if (
-                    entry.body !== block.body ||
-                    scope.start !== block.start ||
-                    scope.end !== block.end ||
-                    scope.parent === null ||
-                    scope.strict !== plan.scopes[scope.parent].strict ||
-                    scope.formals.length !== 0
-                ) {
-                    throw new Error("invalid CaseBlock association");
-                }
-                let previous = block.start,
-                    offset = 0,
-                    defaults = 0;
-                const statements = new Map<Stmt, boolean>();
-                for (const clause of block.clauses) {
-                    if (
-                        clause.start <= previous ||
-                        clause.end <= clause.start ||
-                        clause.end >= block.end
-                    ) {
-                        throw new Error("invalid switch clause range");
-                    }
-                    previous = clause.end - 1;
-                    if (clause.test === null) {
-                        defaults++;
-                    }
-                    for (const statement of clause.body) {
-                        if (block.body[offset++] !== statement || statements.has(statement)) {
-                            throw new Error("invalid CaseBlock body identity");
-                        }
-                        statements.set(statement, true);
-                    }
-                }
-                if (defaults > 1 || offset !== block.body.length) {
-                    throw new Error("invalid CaseBlock flattening");
-                }
-                scopes.set(entry.node, scope.id);
-            } else if (
-                scope.kind === "for-of" ||
-                scope.kind === "for-in" ||
-                scope.kind === "for-lexical"
-            ) {
-                if (
-                    entry.node === null ||
-                    (entry.node.kind !== "for-lexical" &&
-                        entry.node.kind !== "for-of" &&
-                        entry.node.kind !== "for-in") ||
-                    scopes.has(entry.node)
-                ) {
-                    throw new Error("invalid lexical loop owner");
-                }
-                const node = entry.node;
-                const head = lexicalLoopBindings(node);
-                if (head === null || scope.kind !== node.kind) {
-                    throw new Error("invalid lexical loop kind");
-                }
-                if (
-                    entry.body.length !== 1 ||
-                    entry.body[0] !== node.body ||
-                    scope.start !== node.start ||
-                    scope.end !== node.end ||
-                    scope.parent === null ||
-                    scope.parent >= scope.id ||
-                    scope.strict !== plan.scopes[scope.parent].strict ||
-                    scope.formals.length !== 0 ||
-                    scope.start < plan.scopes[scope.parent].start ||
-                    scope.end > plan.scopes[scope.parent].end ||
-                    scope.lexicalDeclarations.length !== head.sites.length ||
-                    scope.lexicalNames.length !== head.sites.length
-                ) {
-                    throw new Error("invalid lexical loop association");
-                }
-                for (let i = 0; i < head.sites.length; i++) {
-                    const site = head.sites[i];
-                    const initializer =
-                        node.kind === "for-lexical" ? node.bindings[i].initializer : null;
-                    const declaration = plan.declarations[scope.lexicalDeclarations[i]];
-                    if (
-                        scope.lexicalNames[i] !== site.name ||
-                        declaration === undefined ||
-                        declaration.kind !== head.declarationKind ||
-                        declaration.site.start !== site.start ||
-                        declaration.site.end !== site.end ||
-                        declaration.site.name !== site.name ||
-                        declaration.scope !== scope.id ||
-                        declaration.functionScope !== null ||
-                        (initializer === null
-                            ? declaration.initializer !== null
-                            : declaration.initializer === null ||
-                              declaration.initializer.start !== initializer.start ||
-                              declaration.initializer.end !== initializer.end) ||
-                        site.start <= node.start ||
-                        site.end >= node.end ||
-                        (initializer !== null &&
-                            (initializer.start <= site.end ||
-                                initializer.end >= node.end ||
-                                initializer.end <= initializer.start))
-                    ) {
-                        throw new Error("invalid lexical loop binding association");
-                    }
-                }
-                scopes.set(node, scope.id);
-            } else if (scope.kind === "catch") {
-                if (
-                    entry.node === null ||
-                    entry.node.kind !== "try-catch" ||
-                    entry.body !== entry.node.handler.body ||
-                    scopes.has(entry.node)
-                ) {
-                    throw new Error("invalid catch node identity");
-                }
-                const node = entry.node;
-                const parameter = scope.catchParameter;
-                if (node.parameter === null) {
-                    throw new Error("catch scope without parameter");
-                }
-                const sites =
-                    "pattern" in node.parameter ? node.parameter.bindings : [node.parameter];
-                if ("pattern" in node.parameter) {
-                    if (parameter !== null || scope.catchBindings !== node.parameter.bindings) {
-                        throw new Error("invalid catch pattern identity");
-                    }
-                } else if (
-                    parameter === null ||
-                    parameter !== node.parameter ||
-                    scope.catchBindings !== undefined
-                ) {
-                    throw new Error("invalid catch parameter identity");
-                }
-                if (
-                    scope.start !== node.catchStart ||
-                    scope.end !== node.catchEnd ||
-                    scope.parent === null ||
-                    scope.strict !== plan.scopes[scope.parent].strict ||
-                    scope.formals.length !== 0 ||
-                    scope.lexicalDeclarations.length !== 0 ||
-                    scope.varDeclarations.length !== 0 ||
-                    scope.varNames.length !== 0 ||
-                    scope.lexicalNames.length !== sites.length
-                ) {
-                    throw new Error("invalid catch metadata");
-                }
-                for (let i = 0; i < sites.length; i++) {
-                    if (scope.lexicalNames[i] !== sites[i].name) {
-                        throw new Error("invalid catch binding name");
-                    }
-                }
-                scopes.set(node, scope.id);
-            } else {
-                if (
-                    entry.node === null ||
-                    (entry.node.kind !== "block" && entry.node.kind !== "function") ||
-                    entry.node.kind !== scope.kind ||
-                    entry.body !== entry.node.body ||
-                    scopes.has(entry.node)
-                ) {
-                    throw new Error("invalid Script scope identity");
-                }
-                if (
-                    entry.node.kind === "block" &&
-                    entry.node.synthetic === "conditional-function"
-                ) {
-                    const declaration = entry.node.body[0];
-                    if (
-                        scope.strict ||
-                        entry.node.body.length !== 1 ||
-                        declaration.kind !== "function" ||
-                        declaration.source === null ||
-                        declaration.source.async === true ||
-                        declaration.source.generator === true ||
-                        scope.start !== declaration.source.start ||
-                        scope.end !== declaration.source.end ||
-                        scope.parent === null ||
-                        scope.lexicalDeclarations.length !== 1 ||
-                        scope.varDeclarations.length !== 0 ||
-                        declaration.loc.line !== entry.node.loc.line ||
-                        declaration.loc.column !== entry.node.loc.column
-                    ) {
-                        throw new Error("invalid conditional function block association");
-                    }
-                }
-                scopes.set(entry.node, scope.id);
-            }
-            if (
-                scope.kind !== "catch" &&
-                (scope.catchParameter !== null || scope.catchBindings !== undefined)
-            ) {
-                throw new Error("foreign catch parameter");
-            }
-            if (scope.parent !== null) {
-                const parent = plan.scopes[scope.parent];
-                if (scope.kind === "switch" || parent.kind === "switch") {
-                    if (
-                        scope.parent >= scope.id ||
-                        scope.start < parent.start ||
-                        scope.end > parent.end ||
-                        (scope.kind !== "function" &&
-                            scope.kind !== "class" &&
-                            scope.strict !== parent.strict)
-                    ) {
-                        throw new Error("invalid CaseBlock child scope");
-                    }
-                }
-            }
-        }
-        for (const scope of plan.scopes) {
-            if (scope.kind !== "catch") {
-                continue;
-            }
-            const entry = nodes.scopes.get(scope.id);
-            if (entry === undefined || entry.node === null || entry.node.kind !== "try-catch") {
-                throw new Error("missing catch association");
-            }
-            const node = entry.node;
-            const tryId = scopes.get(node.block),
-                handlerId = scopes.get(node.handler);
-            if (
-                tryId === undefined ||
-                handlerId === undefined ||
-                tryId >= scope.id ||
-                handlerId !== scope.id + 1 ||
-                node.block === node.handler ||
-                node.block.body === node.handler.body
-            ) {
-                throw new Error("invalid catch children");
-            }
-            const protectedScope = plan.scopes[tryId],
-                handlerScope = plan.scopes[handlerId];
-            if (
-                protectedScope.kind !== "block" ||
-                handlerScope.kind !== "block" ||
-                protectedScope.parent !== scope.parent ||
-                handlerScope.parent !== scope.id ||
-                protectedScope.end > scope.start ||
-                handlerScope.start < scope.start ||
-                handlerScope.end !== scope.end ||
-                handlerScope.strict !== scope.strict ||
-                protectedScope.strict !== scope.strict
-            ) {
-                throw new Error("invalid catch child scope");
-            }
-        }
+        const scopes = validateScriptAssociations(plan, nodes);
         record.#state = { realm, plan, nodes, scopes };
         return { kind: "ready", record };
     }
@@ -2989,26 +2616,6 @@ function copyStrictness(strictness: StrictnessMetadata): StrictnessMetadata {
     };
 }
 
-import {
-    GuestPromise,
-    promiseResolve,
-    intrinsicPromiseCapability,
-    fatalPromiseCompletion,
-    type PromiseCapability,
-} from "./promise.js";
-import { stringConcat } from "./strings.js";
-import "./array-object.js";
-import { toObject } from "./object-conversion.js";
-import { applyUnaryValueOperator } from "./unary-operator.js";
-import { toPrimitive } from "./primitive-conversion.js";
-import { toString, toPropertyKey } from "./conversion.js";
-
-import {
-    updateScriptEmpty,
-    scriptExpressionCompletion,
-    type ScriptStatementCompletion,
-    type ScriptStatementPayload,
-} from "./script-completion.js";
 class ExecutionKey {}
 const executionKey = new ExecutionKey();
 export type ScriptJobFailure = {
@@ -3101,201 +2708,6 @@ export function createGeneratorResumeIntrinsic(
     object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, configurable: true });
     return object;
 }
-type GeneratorSequence = {
-    kind: "sequence";
-    frame: ScriptFrameSnapshot;
-    body: Stmt[];
-    nextStatement: number;
-    depth: number;
-    labels?: readonly string[] | null;
-};
-type GeneratorLoop = {
-    kind: "loop";
-    frame: ScriptFrameSnapshot;
-    test: Expr;
-    body: Stmt;
-    testFirst: boolean;
-    first: boolean;
-    depth: number;
-    labels?: readonly string[] | null;
-};
-type GeneratorForLoop = {
-    kind: "for";
-    frame: ScriptFrameSnapshot;
-    statement: ForStmt | ForLexicalStmt;
-    outer: ScriptEnvironment | null;
-    first: boolean;
-    phase: "prepare" | "test";
-    depth: number;
-    labels?: readonly string[] | null;
-};
-type GeneratorCatch = {
-    kind: "catch";
-    frame: ScriptFrameSnapshot;
-    statement: TryCatchStmt;
-    depth: number;
-};
-type GeneratorAbrupt =
-    | { type: "return"; value: Value }
-    | { type: "break" | "continue"; target?: string }
-    | ThrowCompletion;
-type GeneratorPending = GeneratorAbrupt | { type: "normal" };
-type GeneratorFinally = {
-    kind: "finally";
-    frame: ScriptFrameSnapshot;
-    statement: TryFinallyStmt;
-    depth: number;
-};
-type GeneratorCleanup = {
-    kind: "cleanup";
-    frame: ScriptFrameSnapshot;
-    pending: GeneratorPending;
-    abrupt: ThrowCompletion | null;
-    source: ScriptSourceSnapshot | null;
-    depth: number;
-};
-type GeneratorForOf = {
-    kind: "iterator";
-    awaiting?: boolean;
-    frame: ScriptFrameSnapshot;
-    statement: ForEachStmt;
-    iterator: IteratorRecord;
-    target: Expr | null;
-    lexical: boolean;
-    scopeId: number;
-    depth: number;
-    labels?: readonly string[] | null;
-};
-type GeneratorForIn = {
-    kind: "enumerator";
-    frame: ScriptFrameSnapshot;
-    statement: ForEachStmt;
-    enumerator: ForInEnumerator;
-    target: Expr | null;
-    lexical: boolean;
-    scopeId: number;
-    depth: number;
-    labels?: readonly string[] | null;
-};
-type GeneratorForSource = {
-    kind: "for-source";
-    frame: ScriptFrameSnapshot;
-    outer: ScriptFrameSnapshot;
-    statement: ForEachStmt;
-    lexical: boolean;
-    scopeId: number;
-    depth: number;
-    labels: readonly string[] | null;
-};
-type GeneratorLabel = { kind: "label"; frame: ScriptFrameSnapshot; name: string; depth: number };
-type GeneratorSwitch = {
-    kind: "switch";
-    frame: ScriptFrameSnapshot;
-    depth: number;
-    selection: {
-        statement: SwitchStmt;
-        discriminant: Value;
-        nextClause: number;
-        fallback: number;
-    } | null;
-};
-type AsyncIteratorCloseFrame = {
-    kind: "async-close";
-    frame: ScriptFrameSnapshot;
-    loc: Location;
-    depth: number;
-    pending: GeneratorAbrupt;
-    abrupt: ThrowCompletion | null;
-    source: ScriptSourceSnapshot | null;
-};
-type PatternFrameBase = {
-    frame: ScriptFrameSnapshot;
-    depth: number;
-    environment: ScriptEnvironment | null;
-};
-type GeneratorPatternValue = PatternFrameBase & {
-    kind: "pattern-value";
-    pattern: DestructuringPattern;
-    initializer: Expr | null;
-    value: Value;
-    reference: EvaluationReference | null;
-};
-type GeneratorPatternArray = PatternFrameBase & {
-    kind: "pattern-array";
-    pattern: ArrayPattern;
-    iterator: IteratorRecord;
-    index: number;
-};
-type GeneratorPatternObject = PatternFrameBase & {
-    kind: "pattern-object";
-    pattern: ObjectPattern;
-    input: Value;
-    object: GuestObject;
-    excluded: Set<PropertyKey>;
-    index: number;
-};
-type PatternTargetSource =
-    | { kind: "property"; object: GuestObject; input: Value; key: PropertyKey }
-    | { kind: "iterator"; iterator: IteratorRecord; rest: boolean }
-    | { kind: "object-rest"; object: GuestObject; excluded: Set<PropertyKey> };
-type GeneratorPatternTarget = PatternFrameBase & {
-    kind: "pattern-target";
-    pattern: DestructuringPattern;
-    initializer: Expr | null;
-    source: PatternTargetSource;
-    phase: "reference" | "read";
-    reference: EvaluationReference | null;
-};
-type GeneratorPattern =
-    | GeneratorPatternTarget
-    | GeneratorPatternValue
-    | GeneratorPatternArray
-    | GeneratorPatternObject;
-type GeneratorPatternResume = {
-    kind: "pattern-resume";
-    frame: ScriptFrameSnapshot;
-    depth: number;
-    value: Value;
-    expressions: GeneratorExpressionFrame[];
-    receiver: GeneratorYieldReceiver | null;
-};
-type GeneratorFrame =
-    | GeneratorPatternResume
-    | GeneratorPattern
-    | GeneratorForSource
-    | AsyncIteratorCloseFrame
-    | GeneratorSwitch
-    | GeneratorSequence
-    | GeneratorLoop
-    | GeneratorForLoop
-    | GeneratorCatch
-    | GeneratorFinally
-    | GeneratorCleanup
-    | GeneratorForOf
-    | GeneratorForIn
-    | GeneratorLabel;
-type ExecutionContinuation = {
-    asyncGenerator?: true;
-    sequences: GeneratorFrame[];
-    expressionFrames: GeneratorExpressionFrame[];
-    yieldLoc: Location | null;
-    receiver: GeneratorYieldReceiver | null;
-    delegate: {
-        iterator: IteratorRecord;
-        asynchronous: AsyncDelegate | null;
-        loc: Location;
-        depth: number;
-    } | null;
-};
-type ContinuationResult =
-    | ValueCompletion
-    | { type: "async-delegate-yield"; value: Value }
-    | { type: "yield"; result: Value }
-    | { type: "await"; value: Value; loc: Location; depth: number };
-type ExpressionContinuationResult =
-    | ContinuationResult
-    | { type: "suspended-delegate" }
-    | { type: "suspended-pattern" };
 class GuestGenerator extends GuestObject {
     #state: "suspended-start" | "suspended-yield" | "executing" | "completed" = "suspended-start";
     #continuation: ExecutionContinuation | null;
