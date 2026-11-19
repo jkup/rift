@@ -2,6 +2,11 @@
 
 Updated 2026-11-19. One implementation writer at a time in this checkout.
 
+TS-572 CI efficiency review is complete; implementation ownership is released.
+The owner authorized committing and pushing the workflow/docs changes to main.
+All local acceptance checks pass; see TASKS.md for scope. The inspected remote CI
+run was blocked by account billing before execution.
+
 TS-570 supporting-folder cleanup is complete; implementation ownership is released.
 TS-571 native Test262 runner is complete; implementation and native build ownership
 are released. The final top-level review is complete;

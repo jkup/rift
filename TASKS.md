@@ -1,5 +1,31 @@
 # Current work
 
+## TS-572 — CI efficiency review
+
+Status: complete (2026-11-19). Implementation ownership released.
+
+Reviewed the sole workflow and retained both useful check names. Push runs now
+target main; PRs and manual dispatch cover branches. Added cancellation of
+superseded runs and 10/15-minute job timeouts, removed full-history checkout and
+duplicate TypeScript emission, and added ten Test262 runner regressions. Existing
+assertions, semantic scope and structural allowances are unchanged.
+
+GitHub run 44625939890 blocked both jobs before execution with a payments/spending
+limit annotation. The repository is private; the exact balance/cause within that
+billing category is unverified. No remote settings or spending limits changed.
+`docs/ci.md` records coverage gaps and staged native/conformance recommendations,
+plus the recommendation to keep standard GitHub-hosted runners for public launch.
+
+Validation: format, lint, readability 9/9, typecheck, runner 36/36, Node guests
+1003/1003, Test262 runner 10/10, native guests 1003/1003 using existing binaries,
+and all ten freshly built compiler probes pass. Guest suites report no skips.
+Workflow YAML parsing, unique keys, trigger/check-name inspection and diff checks
+pass. Native/compiler logs are `build/ci-review-{native,compiler}.log`; guest
+results are `build/guest-{node,native}-results.json`. No full native engine rebuild,
+full Test262 execution, hosted Linux run or actionlint validation was performed.
+The owner authorized committing and pushing the accepted changes to main.
+The inspected remote CI run was blocked by account billing before execution.
+
 ## TS-571 — Native Test262 runner
 
 Status: complete (2026-11-19). Implementation ownership released.

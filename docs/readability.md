@@ -29,6 +29,8 @@ branch protection. Adding workflow jobs alone does not configure branch protecti
 The 2026-11-19 setup check returned GitHub HTTP 403 for protection and rulesets:
 this private repository needs GitHub Pro or public visibility for those features.
 CI is configured; merge blocking is therefore not enforced by the current plan.
+See [CI scope and cost](ci.md) for triggers, timeouts, the billing diagnosis and
+recommended native/conformance coverage.
 
 ## Tools and scope
 
