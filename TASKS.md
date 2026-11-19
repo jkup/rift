@@ -1,5 +1,36 @@
 # TypeScript implementation backlog
 
+## TS-567 — Readability gates and repository cleanup
+
+Status: **in progress**. Owner: current Codex goal; base `7f109be0`.
+
+Implement the owner-approved Oxlint/Oxfmt recommendation across handwritten
+source, host tests, probes and tooling. Preserve guest fixture bytes, generated
+tables and historical evidence. Establish formatting, low-noise correctness and
+readability rules, host/core boundaries, explained narrow suppressions and a
+reviewable baseline for existing structural violations. Evaluate typed rules
+against the pinned TypeScript/compiler contract; retain full callback arity.
+
+Acceptance: clean format/lint gates with regression tests for custom enforcement,
+required CI checks and contributor instructions; typecheck, runner and Node
+guest/tooling tests, compiler probes and relevant fresh native semantic checks.
+Measure actual lint runtime, document exceptions and validation scope. Small
+commits may separate mechanical formatting from behavioral refactoring.
+
+Progress (2026-11-19): pinned Oxlint 1.94.0, Oxfmt 0.79.0, tsgolint
+7.0.2007 and Oxc parser; added formatter commands and initial diagnostic config.
+The first mechanical formatting/braces pass preserves parsed structure across
+891 existing TS/MJS files (normalizing optional control-body braces, literal
+spelling and noncomputed property-name quotes). Guest strings remain compared
+as literal values. Typecheck, 36 runner tests and all ten Node/native compiler
+probes pass; initial Node guest run passed 1003/1003 without skips. The first
+probe attempt failed at sandboxed Zig lookup; its report is retained separately
+under build/readability. A fresh formatted CLI build is pending. Formatting
+exposed brittle historical source comparisons and isolated fault-injection
+imports: repairs preserve expected source/hash assertions, compare parsed
+structure and require exactly one matching import. Full tooling revalidation,
+lint cleanup, architectural/structural gates, CI and documentation remain open.
+
 > Layout update (2026-11-19): the TypeScript project now lives at the repository root. Earlier entries retain historical paths and retired-engine references as acceptance records. Current instructions are in AGENTS.md and README.md.
 
 Statuses: **ready**, **blocked**, **in progress**, **done**. Claim a ready task before coding. Record owner/chat, base revision, evidence and handoff notes. A task becomes done only after integration and successful acceptance. Split broad tasks into bounded batches as interfaces become concrete.

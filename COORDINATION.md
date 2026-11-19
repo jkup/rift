@@ -1,5 +1,13 @@
 # Rewrite coordination state
 
+## Active readability cleanup (TS-567, 2026-11-19)
+
+The current Codex goal is the sole implementation writer, starting from clean
+`7f109be0`. The owner authorized implementing the lint/format recommendations
+and cleaning all handwritten code, with small commits. No compiler pin changes
+or guest-fixture rewrites are planned. Acceptance and remaining work are tracked
+in TS-567; the prior finite conformance milestone remains complete.
+
 > Layout update (2026-11-19): the TypeScript project now lives at the repository root. Earlier entries retain historical paths and retired-engine references as acceptance records. Current instructions are in AGENTS.md and README.md.
 
 Owner authorization: continue bounded rewrite tasks autonomously, create new Codex chats, review them rigorously, and commit/push tested milestones while the owner is away. Ask only for material decisions or blockers not resolvable from the approved goals. The owner subsequently authorized merging the reviewed branch to main after TS-007P completes, pushing, then continuing on a fresh branch. Current policy (owner, 2026-11-03): regularly update and push main with independently reviewed, tested milestones without further approval. Older per-merge restrictions in historical entries are superseded. Do not force-push, remove C++, or manufacture work.

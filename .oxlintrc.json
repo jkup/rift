@@ -1,0 +1,38 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["typescript", "oxc", "unicorn"],
+    "categories": { "correctness": "error" },
+    "rules": {
+        "curly": ["error", "all"],
+        "no-nested-ternary": "error",
+        "no-sequences": "error",
+        "no-cond-assign": ["error", "always"],
+        "no-eval": "error",
+        "no-new-func": "error",
+        "typescript/no-explicit-any": "error",
+        "no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_",
+                "caughtErrorsIgnorePattern": "^_"
+            }
+        ]
+    },
+    "ignorePatterns": [
+        "build/**",
+        "node_modules/**",
+        ".cache/**",
+        ".scriptc/**",
+        "docs/**",
+        "toolchain/**",
+        "test/fixtures/**",
+        "test/legacy/**",
+        "examples/**",
+        "src/iana-timezone-data.ts",
+        "src/iana-timezone-identifiers.ts",
+        "src/unicode-properties.ts",
+        "src/unicode-identifiers.ts",
+        "src/unicode-case-fold.ts"
+    ]
+}
