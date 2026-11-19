@@ -29,6 +29,7 @@ export function sourceFiles(root = ".") {
     for (const directory of ["src", "test", "probes", "tools"]) {
         visit(directory);
     }
+    files.push("toolchain/scriptc/prepare.mjs");
     return files.sort();
 }
 

@@ -53,6 +53,7 @@ export function measureStructure(filename, source) {
             .filter((line) => line.trim() !== "").length;
     const production =
         filename.startsWith("src/") ||
+        filename === "toolchain/scriptc/prepare.mjs" ||
         (filename.startsWith("tools/") &&
             !filename.includes("/test-support/") &&
             !/\.(?:test|integration)\.mjs$/.test(filename));

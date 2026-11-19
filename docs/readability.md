@@ -37,9 +37,10 @@ oxc-parser 0.159.0. The TypeScript and scriptc pins are unchanged. Oxfmt uses fo
 spaces and a 100-column target. Import and package sorting are disabled to keep
 evaluation order and intentional grouping intact.
 
-The checks cover handwritten code in `src`, `test`, `probes` and `tools`.
+The checks cover handwritten code in `src`, `test`, `probes` and `tools`, plus
+the toolchain archive preparation script `toolchain/scriptc/prepare.mjs`.
 Generated Unicode/timezone tables, build output, vendored toolchain code,
-historical evidence, guest fixtures and examples are excluded. Guest programs
+historical evidence, guest fixtures, benchmark workloads and examples are excluded. Guest programs
 are interpreter inputs, including intentionally invalid syntax; formatting them
 would change test locations and inputs. Byte-pinned JSON manifests are also
 excluded. Generators and their surrounding handwritten code remain checked.
@@ -57,8 +58,9 @@ On the Windows development checkout, three local runs including Node process
 startup measured median times of 121 ms for formatting, 106 ms for basic lint,
 468 ms for typed lint, 658 ms for policy and 1,370 ms for structure. These are
 local measurements under concurrent validation load, not CI guarantees. npm's
-wrapper overhead is additional. Formatting matched 919 files; the custom
-source checks inspected 911 code files.
+wrapper overhead is additional. That measurement covered 919 formatting inputs
+and 911 code files; the final scope also includes the toolchain setup script
+(920 formatting inputs and 912 code files).
 
 ## Rules with a purpose
 
