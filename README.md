@@ -95,6 +95,17 @@ Windows x64 and Linux x64 toolchain packages have been validated.
 
 ## Validation
 
+Readability is checked alongside semantic behavior:
+
+```sh
+npm run format:check
+npm run lint
+npm run test:readability
+```
+
+Use `npm run format` to apply formatting. See the [readability policy](docs/readability.md)
+for rules, exclusions, structural limits and the workflow for agents and reviewers.
+
 Prepare the pinned test262 selection before running tooling tests:
 
 ```sh

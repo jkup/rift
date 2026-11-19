@@ -1,0 +1,22 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["typescript"],
+    "categories": { "correctness": "off" },
+    "rules": {
+        "typescript/no-unsafe-assignment": "error",
+        "typescript/no-unsafe-call": "error",
+        "typescript/no-unsafe-member-access": "error",
+        "typescript/no-unsafe-return": "error",
+        "typescript/switch-exhaustiveness-check": [
+            "error",
+            { "considerDefaultExhaustiveForUnions": true }
+        ]
+    },
+    "ignorePatterns": [
+        "src/iana-timezone-data.ts",
+        "src/iana-timezone-identifiers.ts",
+        "src/unicode-properties.ts",
+        "src/unicode-identifiers.ts",
+        "src/unicode-case-fold.ts"
+    ]
+}

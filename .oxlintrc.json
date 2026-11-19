@@ -1,7 +1,9 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
     "plugins": ["typescript", "oxc", "unicorn"],
-    "categories": { "correctness": "error" },
+    "categories": {
+        "correctness": "error"
+    },
     "rules": {
         "curly": ["error", "all"],
         "no-nested-ternary": "error",
@@ -16,6 +18,16 @@
                 "argsIgnorePattern": "^_",
                 "varsIgnorePattern": "^_",
                 "caughtErrorsIgnorePattern": "^_"
+            }
+        ],
+        "typescript/no-this-alias": "off",
+        "unicorn/no-thenable": "off",
+        "unicorn/no-new-array": "off",
+        "no-restricted-globals": ["error", "eval", "Function"],
+        "no-restricted-imports": [
+            "error",
+            {
+                "paths": ["vm", "node:vm"]
             }
         ]
     },
@@ -34,5 +46,20 @@
         "src/unicode-properties.ts",
         "src/unicode-identifiers.ts",
         "src/unicode-case-fold.ts"
+    ],
+    "overrides": [
+        {
+            "files": ["src/**/*.ts"],
+            "excludeFiles": [
+                "src/cli.ts",
+                "src/observation-driver.ts",
+                "src/script-observation-driver.ts",
+                "src/script-observation.ts"
+            ],
+            "rules": {
+                "no-console": "error",
+                "no-restricted-globals": ["error", "eval", "Function", "process", "require"]
+            }
+        }
     ]
 }

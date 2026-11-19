@@ -1,0 +1,1049 @@
+{
+    "version": 1,
+    "limits": {
+        "fileLines": 600,
+        "functionLines": 100,
+        "depth": 4
+    },
+    "policy": "Existing measured exceptions only. New or larger violations fail; --ratchet only reduces allowances. Review baseline edits as policy changes.",
+    "entries": [
+        {
+            "filename": "src/array-from.ts",
+            "name": "arrayFrom",
+            "rule": "functionLines",
+            "value": 136
+        },
+        {
+            "filename": "src/binary-operator.ts",
+            "name": "applyBinaryOperator",
+            "rule": "functionLines",
+            "value": 137
+        },
+        {
+            "filename": "src/builtins/array-copy.ts",
+            "name": "registerArrayConcat.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/builtins/array-iteration.ts",
+            "name": "registerScriptArrayIteration",
+            "rule": "functionLines",
+            "value": 162
+        },
+        {
+            "filename": "src/builtins/array-mutation.ts",
+            "name": "registerArrayRangeMutators",
+            "rule": "functionLines",
+            "value": 105
+        },
+        {
+            "filename": "src/builtins/array-mutation.ts",
+            "name": "registerArrayMutators",
+            "rule": "functionLines",
+            "value": 258
+        },
+        {
+            "filename": "src/builtins/array-mutation.ts",
+            "name": "registerArraySplice",
+            "rule": "functionLines",
+            "value": 170
+        },
+        {
+            "filename": "src/builtins/array-mutation.ts",
+            "name": "registerArraySplice.callback",
+            "rule": "functionLines",
+            "value": 163
+        },
+        {
+            "filename": "src/builtins/array-search.ts",
+            "name": "registerArraySearch",
+            "rule": "functionLines",
+            "value": 200
+        },
+        {
+            "filename": "src/builtins/array-sort.ts",
+            "name": "stableSort",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/builtins/bigint.ts",
+            "name": "registerBigInt",
+            "rule": "functionLines",
+            "value": 136
+        },
+        {
+            "filename": "src/builtins/date-calendar-setters.ts",
+            "name": "registerDateCalendarSetters",
+            "rule": "functionLines",
+            "value": 110
+        },
+        {
+            "filename": "src/builtins/date.ts",
+            "name": "registerDate",
+            "rule": "functionLines",
+            "value": 259
+        },
+        {
+            "filename": "src/builtins/error.ts",
+            "name": "registerErrors",
+            "rule": "functionLines",
+            "value": 107
+        },
+        {
+            "filename": "src/builtins/map.ts",
+            "name": "registerMap",
+            "rule": "functionLines",
+            "value": 219
+        },
+        {
+            "filename": "src/builtins/math.ts",
+            "name": "registerMath",
+            "rule": "functionLines",
+            "value": 251
+        },
+        {
+            "filename": "src/builtins/number-parse.ts",
+            "name": "registerNumericParsing",
+            "rule": "functionLines",
+            "value": 121
+        },
+        {
+            "filename": "src/builtins/number-parse.ts",
+            "name": "registerNumericParsing.method.callback",
+            "rule": "functionLines",
+            "value": 106
+        },
+        {
+            "filename": "src/builtins/object-descriptors.ts",
+            "name": "registerObjectDescriptors",
+            "rule": "functionLines",
+            "value": 140
+        },
+        {
+            "filename": "src/builtins/object-prototypes.ts",
+            "name": "registerObjectPrototypes",
+            "rule": "functionLines",
+            "value": 102
+        },
+        {
+            "filename": "src/builtins/object.ts",
+            "name": "registerObject",
+            "rule": "functionLines",
+            "value": 103
+        },
+        {
+            "filename": "src/builtins/promise-combinators.ts",
+            "name": "performCombinator",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/builtins/promise.ts",
+            "name": "registerPromise",
+            "rule": "functionLines",
+            "value": 145
+        },
+        {
+            "filename": "src/builtins/reflect.ts",
+            "name": "registerReflect",
+            "rule": "functionLines",
+            "value": 367
+        },
+        {
+            "filename": "src/builtins/regexp-execution.ts",
+            "name": "regExpBuiltinExec",
+            "rule": "functionLines",
+            "value": 160
+        },
+        {
+            "filename": "src/builtins/regexp-match-search.ts",
+            "name": "match",
+            "rule": "functionLines",
+            "value": 106
+        },
+        {
+            "filename": "src/builtins/regexp-replace.ts",
+            "name": "replaceRegExp",
+            "rule": "functionLines",
+            "value": 182
+        },
+        {
+            "filename": "src/builtins/regexp-split.ts",
+            "name": "split",
+            "rule": "functionLines",
+            "value": 176
+        },
+        {
+            "filename": "src/builtins/regexp.ts",
+            "name": "registerRegExp",
+            "rule": "functionLines",
+            "value": 169
+        },
+        {
+            "filename": "src/builtins/set.ts",
+            "name": "registerSet",
+            "rule": "functionLines",
+            "value": 168
+        },
+        {
+            "filename": "src/builtins/string-split.ts",
+            "name": "registerStringSplit",
+            "rule": "functionLines",
+            "value": 117
+        },
+        {
+            "filename": "src/builtins/string-split.ts",
+            "name": "registerStringSplit.callback",
+            "rule": "functionLines",
+            "value": 110
+        },
+        {
+            "filename": "src/builtins/string.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 682
+        },
+        {
+            "filename": "src/builtins/string.ts",
+            "name": "registerStringMethods",
+            "rule": "functionLines",
+            "value": 377
+        },
+        {
+            "filename": "src/builtins/symbol.ts",
+            "name": "registerSymbol",
+            "rule": "functionLines",
+            "value": 123
+        },
+        {
+            "filename": "src/builtins/temporal-duration-compare.ts",
+            "name": "registerTemporalDurationCompare",
+            "rule": "functionLines",
+            "value": 137
+        },
+        {
+            "filename": "src/builtins/temporal-duration-compare.ts",
+            "name": "registerTemporalDurationCompare.callback",
+            "rule": "functionLines",
+            "value": 130
+        },
+        {
+            "filename": "src/builtins/temporal-duration-round.ts",
+            "name": "registerTemporalDurationRound",
+            "rule": "functionLines",
+            "value": 140
+        },
+        {
+            "filename": "src/builtins/temporal-duration-round.ts",
+            "name": "registerTemporalDurationRound.callback",
+            "rule": "functionLines",
+            "value": 133
+        },
+        {
+            "filename": "src/builtins/temporal-duration.ts",
+            "name": "registerTemporalDuration",
+            "rule": "functionLines",
+            "value": 192
+        },
+        {
+            "filename": "src/builtins/temporal-plain-date-time.ts",
+            "name": "registerTemporalPlainDateTime",
+            "rule": "functionLines",
+            "value": 156
+        },
+        {
+            "filename": "src/builtins/temporal-plain-date.ts",
+            "name": "registerTemporalPlainDate",
+            "rule": "functionLines",
+            "value": 119
+        },
+        {
+            "filename": "src/builtins/temporal-plain-month-day.ts",
+            "name": "registerTemporalPlainMonthDay",
+            "rule": "functionLines",
+            "value": 122
+        },
+        {
+            "filename": "src/builtins/temporal-plain-time.ts",
+            "name": "registerTemporalPlainTime",
+            "rule": "functionLines",
+            "value": 150
+        },
+        {
+            "filename": "src/builtins/temporal-plain-to-zoned.ts",
+            "name": "registerTemporalPlainToZoned",
+            "rule": "functionLines",
+            "value": 135
+        },
+        {
+            "filename": "src/builtins/temporal-plain-year-month.ts",
+            "name": "registerTemporalPlainYearMonth",
+            "rule": "functionLines",
+            "value": 140
+        },
+        {
+            "filename": "src/builtins/temporal-zoned-conversion.ts",
+            "name": "resolveTemporalZonedFields",
+            "rule": "functionLines",
+            "value": 141
+        },
+        {
+            "filename": "src/builtins/temporal-zoned-date-time-fields.ts",
+            "name": "registerTemporalZonedDateTimeFields",
+            "rule": "functionLines",
+            "value": 108
+        },
+        {
+            "filename": "src/builtins/temporal-zoned-date-time-parts.ts",
+            "name": "registerTemporalZonedDateTimeParts",
+            "rule": "functionLines",
+            "value": 138
+        },
+        {
+            "filename": "src/builtins/temporal-zoned-date-time-string.ts",
+            "name": "registerTemporalZonedDateTimeString",
+            "rule": "functionLines",
+            "value": 104
+        },
+        {
+            "filename": "src/builtins/temporal-zoned-date-time.ts",
+            "name": "registerTemporalZonedDateTime",
+            "rule": "functionLines",
+            "value": 155
+        },
+        {
+            "filename": "src/builtins/temporal-zoned-difference.ts",
+            "name": "registerTemporalZonedDifference",
+            "rule": "functionLines",
+            "value": 102
+        },
+        {
+            "filename": "src/builtins/temporal.ts",
+            "name": "registerTemporal",
+            "rule": "functionLines",
+            "value": 175
+        },
+        {
+            "filename": "src/builtins/weak-map.ts",
+            "name": "registerWeakMap",
+            "rule": "functionLines",
+            "value": 159
+        },
+        {
+            "filename": "src/builtins/weak-set.ts",
+            "name": "registerWeakSet",
+            "rule": "functionLines",
+            "value": 128
+        },
+        {
+            "filename": "src/json-reviver.ts",
+            "name": "reviveJSON",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "src/json-stringify.ts",
+            "name": "JSONSerializer.configure.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/lexer.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 753
+        },
+        {
+            "filename": "src/lexer.ts",
+            "name": "createLexer",
+            "rule": "functionLines",
+            "value": 690
+        },
+        {
+            "filename": "src/lexer.ts",
+            "name": "createLexer.templatePart",
+            "rule": "functionLines",
+            "value": 110
+        },
+        {
+            "filename": "src/lexer.ts",
+            "name": "createLexer.next",
+            "rule": "functionLines",
+            "value": 398
+        },
+        {
+            "filename": "src/lexer.ts",
+            "name": "createLexer.next",
+            "rule": "depth",
+            "value": 7
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 4593
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.statementInner.callback",
+            "rule": "functionLines",
+            "value": 450
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.statementInner.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.declarationList.callback",
+            "rule": "functionLines",
+            "value": 149
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.admitGeneratorExpression.callback",
+            "rule": "functionLines",
+            "value": 270
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.admitGeneratorExpression.callback",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.admitSuspendingBody.callback",
+            "rule": "functionLines",
+            "value": 116
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.admitSuspendingBody.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.expression.callback",
+            "rule": "functionLines",
+            "value": 347
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.expression.callback",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.classDefinition.callback",
+            "rule": "functionLines",
+            "value": 193
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.objectExpression.callback",
+            "rule": "functionLines",
+            "value": 173
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.objectExpression.callback",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.parenthesizedExpression.callback",
+            "rule": "functionLines",
+            "value": 149
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.primary.callback",
+            "rule": "functionLines",
+            "value": 532
+        },
+        {
+            "filename": "src/parser.ts",
+            "name": "Parser.primary.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/realm.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 653
+        },
+        {
+            "filename": "src/realm.ts",
+            "name": "Realm.constructor.callback",
+            "rule": "functionLines",
+            "value": 204
+        },
+        {
+            "filename": "src/regexp-matcher.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 659
+        },
+        {
+            "filename": "src/regexp-matcher.ts",
+            "name": "PatternCompiler.atom.callback",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "src/regexp-matcher.ts",
+            "name": "PatternMatcher.match.callback",
+            "rule": "functionLines",
+            "value": 229
+        },
+        {
+            "filename": "src/regexp-matcher.ts",
+            "name": "PatternMatcher.match.callback",
+            "rule": "depth",
+            "value": 7
+        },
+        {
+            "filename": "src/regexp-pattern-syntax.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 850
+        },
+        {
+            "filename": "src/regexp-pattern-syntax.ts",
+            "name": "PatternParser.atom.callback",
+            "rule": "functionLines",
+            "value": 139
+        },
+        {
+            "filename": "src/regexp-pattern-syntax.ts",
+            "name": "PatternParser.atom.callback",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "src/regexp-pattern-syntax.ts",
+            "name": "PatternParser.escape.callback",
+            "rule": "functionLines",
+            "value": 128
+        },
+        {
+            "filename": "src/runtime.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 814
+        },
+        {
+            "filename": "src/runtime.ts",
+            "name": "validatePropertyDescriptor",
+            "rule": "functionLines",
+            "value": 108
+        },
+        {
+            "filename": "src/script-declarations.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 2177
+        },
+        {
+            "filename": "src/script-declarations.ts",
+            "name": "DeclarationCollector.visitStatement.callback",
+            "rule": "functionLines",
+            "value": 291
+        },
+        {
+            "filename": "src/script-declarations.ts",
+            "name": "DeclarationCollector.visitExpression.callback",
+            "rule": "functionLines",
+            "value": 209
+        },
+        {
+            "filename": "src/script-declarations.ts",
+            "name": "DeclarationCollector.collect.callback",
+            "rule": "functionLines",
+            "value": 116
+        },
+        {
+            "filename": "src/script-declarations.ts",
+            "name": "DeclarationCollector.project.callback",
+            "rule": "functionLines",
+            "value": 281
+        },
+        {
+            "filename": "src/script-declarations.ts",
+            "name": "DeclarationCollector.legacyBlockFunctions.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/script-declarations.ts",
+            "name": "DeclarationCollector.audit.callback",
+            "rule": "functionLines",
+            "value": 102
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 12088
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutableScript.prepare.callback",
+            "rule": "functionLines",
+            "value": 430
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutableScript.prepare.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutableScript.materializeFunction.callback",
+            "rule": "functionLines",
+            "value": 134
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutableScript.instantiateFunction.callback#2",
+            "rule": "functionLines",
+            "value": 383
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutableScript.instantiateEval.callback",
+            "rule": "functionLines",
+            "value": 209
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.statementInner.callback",
+            "rule": "functionLines",
+            "value": 107
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.expression.callback#2",
+            "rule": "functionLines",
+            "value": 415
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.expression.callback#2",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.arrayPattern.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.initializeClassElements.callback",
+            "rule": "functionLines",
+            "value": 133
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.forEachBody.callback",
+            "rule": "functionLines",
+            "value": 151
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.scriptStatement.callback",
+            "rule": "functionLines",
+            "value": 746
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.scriptStatement.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.construct.callback",
+            "rule": "functionLines",
+            "value": 183
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.resumeAsync.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.performEval.callback",
+            "rule": "functionLines",
+            "value": 153
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.callScript.callback",
+            "rule": "functionLines",
+            "value": 133
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.evaluateSuspendingExpression.callback",
+            "rule": "functionLines",
+            "value": 1596
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.evaluateSuspendingExpression.callback",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.advancePatternTarget.callback",
+            "rule": "functionLines",
+            "value": 115
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.advancePattern.callback",
+            "rule": "functionLines",
+            "value": 285
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.receiveSuspension.callback",
+            "rule": "functionLines",
+            "value": 328
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.unwindContinuation.callback",
+            "rule": "functionLines",
+            "value": 271
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.unwindContinuation.callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.runContinuation.callback",
+            "rule": "functionLines",
+            "value": 627
+        },
+        {
+            "filename": "src/script-execution-internal.ts",
+            "name": "ExecutionEngine.runContinuation.callback",
+            "rule": "depth",
+            "value": 7
+        },
+        {
+            "filename": "src/script-global-declarations.ts",
+            "name": "validatePlan",
+            "rule": "functionLines",
+            "value": 101
+        },
+        {
+            "filename": "src/script-global-declarations.ts",
+            "name": "instantiateDeclarations",
+            "rule": "functionLines",
+            "value": 196
+        },
+        {
+            "filename": "src/script-observation.ts",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 1162
+        },
+        {
+            "filename": "src/script-observation.ts",
+            "name": "Attempt.controlSetup.callback",
+            "rule": "functionLines",
+            "value": 194
+        },
+        {
+            "filename": "src/script-observation.ts",
+            "name": "Attempt.verifyControl.callback",
+            "rule": "functionLines",
+            "value": 156
+        },
+        {
+            "filename": "src/string-substitution.ts",
+            "name": "getSubstitution",
+            "rule": "depth",
+            "value": 7
+        },
+        {
+            "filename": "src/temporal-duration-round-options.ts",
+            "name": "durationRoundSettings",
+            "rule": "functionLines",
+            "value": 112
+        },
+        {
+            "filename": "src/temporal-iso-parser.ts",
+            "name": "temporalISOTime",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "src/temporal-relative-to-option.ts",
+            "name": "temporalRelativeToOption",
+            "rule": "functionLines",
+            "value": 190
+        },
+        {
+            "filename": "src/utc-offset.ts",
+            "name": "parseUTCOffset",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/abstract-equality.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "test/compound-assignment.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "test/global-environment.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/harness-catch.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/harness-construct.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "test/harness-errors-a.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/harness-errors-b.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 7
+        },
+        {
+            "filename": "test/harness-for-update.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "test/harness-formatting.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 9
+        },
+        {
+            "filename": "test/harness-map-default.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 9
+        },
+        {
+            "filename": "test/harness-nonstrict.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/harness-switch.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/in-operator.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "test/key-coercion.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/numeric-update-audit.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/primitive-reads.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "test/property-accessors.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/property-assignment.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/script-assignment-target-dispatch.ts",
+            "name": "controls",
+            "rule": "depth",
+            "value": 9
+        },
+        {
+            "filename": "test/script-execution.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/script-lexical-statement-dispatch.ts",
+            "name": "controls",
+            "rule": "depth",
+            "value": 9
+        },
+        {
+            "filename": "test/script-realm-bootstrap.ts",
+            "name": "inventory",
+            "rule": "depth",
+            "value": 6
+        },
+        {
+            "filename": "test/script-realm-bootstrap.ts",
+            "name": "row",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/script-strict-parameter-dispatch.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/script-strict-parameter-dispatch.ts",
+            "name": "controls",
+            "rule": "depth",
+            "value": 8
+        },
+        {
+            "filename": "test/script-strict-rule-dispatch.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "test/script-throw-inspection.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 7
+        },
+        {
+            "filename": "test/typeof-void.ts",
+            "name": "<module>",
+            "rule": "depth",
+            "value": 7
+        },
+        {
+            "filename": "tools/run-guests.mjs",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 3313
+        },
+        {
+            "filename": "tools/test262/dispatch-controls.test.mjs",
+            "name": "callback",
+            "rule": "depth",
+            "value": 5
+        },
+        {
+            "filename": "tools/test262/observe.mjs",
+            "name": "prepareObservation",
+            "rule": "functionLines",
+            "value": 115
+        },
+        {
+            "filename": "tools/test262/observe.mjs",
+            "name": "launchObservation",
+            "rule": "functionLines",
+            "value": 106
+        },
+        {
+            "filename": "tools/test262/script-ledger.mjs",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 904
+        },
+        {
+            "filename": "tools/test262/script-ledger.mjs",
+            "name": "validateSelection",
+            "rule": "functionLines",
+            "value": 238
+        },
+        {
+            "filename": "tools/test262/script-observe.mjs",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 845
+        },
+        {
+            "filename": "tools/test262/script-observe.mjs",
+            "name": "processAttempt",
+            "rule": "functionLines",
+            "value": 157
+        },
+        {
+            "filename": "tools/test262/script-observe.mjs",
+            "name": "preflight",
+            "rule": "functionLines",
+            "value": 121
+        },
+        {
+            "filename": "tools/test262/script-observe.mjs",
+            "name": "prepareScriptObservation",
+            "rule": "functionLines",
+            "value": 206
+        },
+        {
+            "filename": "tools/test262/script-result.mjs",
+            "name": "<module>",
+            "rule": "fileLines",
+            "value": 861
+        }
+    ]
+}
