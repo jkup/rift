@@ -2,7 +2,8 @@
 
 ## TS-567 — Readability gates and repository cleanup
 
-Status: **in progress**. Owner: current Codex goal; base `7f109be0`.
+Status: **done** (repository implementation; hosted merge enforcement unavailable
+on the current GitHub plan). Owner: current Codex goal; base `7f109be0`.
 
 Implement the owner-approved Oxlint/Oxfmt recommendation across handwritten
 source, host tests, probes and tooling. Preserve guest fixture bytes, generated
@@ -49,6 +50,53 @@ pass without changing expected records. The baseline run and retries remain
 separate under build/readability. Fresh source cleanup removes unused imports
 and helpers, retains callback arity, and explains intentional test-only lint
 exceptions. Nested conditional cleanup and final consolidated acceptance remain.
+
+Gate checkpoint: all handwritten code passes basic/typed lint, formatting,
+architectural boundaries and explained-suppression checks. The structural ratchet
+records 103 function-size, 56 depth and 14 file-size exceptions (173 total), with
+new/growing violations rejected. Custom checker/source-contract tests pass 9/9.
+Fresh typecheck and runner pass; the full Node guest run passes 1003/1003 with no
+skips. The final native CLI builds 21,718/21,718 statements statically and passes
+486/486 file-based CLI cases with independent expected results. Four fresh native
+host drivers, the frozen full tooling suite and final probes are still running
+or pending. CI, contributor guidance and measured local gate timings are added.
+GitHub protection/ruleset APIs return 403: the private repository's current plan
+requires Pro or public visibility for merge-blocking protection. The workflow
+runs the gates, but that account limitation prevents enforcing required statuses.
+
+Final acceptance (2026-11-19): source cleanup through `5e366a31`, enforcement
+through `bd5032b8`, and the final handwritten toolchain-setup scope audit at
+`38cc10bb` are accepted. Earlier mechanical commits are `cc86f0a7`, `bae6286c`
+and `ddfc4911`. All handwritten implementation/tooling sources are formatted and
+lint-clean; custom checks cover 912 code files, formatter checks 920 inputs.
+The 173 structural exceptions remain explicit debt, not a claim that all large
+functions were decomposed. Compiler/source pins, guest fixture bytes and
+historical evidence were preserved. The setup script's formatting/braces were
+also verified by parsed-structure comparison. The repository changes are local
+commits; no push was performed for this goal.
+
+- Format, basic/typed lint, policy and structural gates: pass. Custom tests: 9/9.
+- Typecheck: pass. Runner: 36/36. Full Node guest suite: 1003/1003, no skips.
+- Fresh native CLI: 21,718/21,718 statements static; 486/486 file-based CLI cases
+  meet their independent expectations. Four fresh native host drivers
+  (property-assignment, harness-formatting, script-execution and
+  script-function-setup) pass all seven expected-output cases and static gates.
+  No full native host-test matrix or new Test262 conformance run is claimed.
+- Final compiler probes: 10/10 on both hosts with verified static coverage.
+- Frozen full tooling run: 298/299, zero skips; checkpoint literal-api exceeded
+  its 300-second subprocess timeout (`ETIMEDOUT`, `SIGTERM`). The unchanged
+  checkpoint suite then passed alone in 184.7 seconds, including all seven
+  subprocess stages. The full-run timeout remains a failure in its own report;
+  the isolated retry is separate evidence. The earlier 297/299 checkpoint and
+  its repairs/retries remain recorded above.
+
+Local raw reports are under `build/readability/`: `lint-final.txt`,
+`readability-final.txt`, `typecheck-final.txt`, `runner-final.txt`,
+`guests-final.txt`, `native-cli-final.json`, `native-host-final.json`,
+`probes-final.json`, `tooling-final.txt` and `checkpoint-final-retry.txt`.
+Tool configuration, exclusions, measurements and the GitHub plan limitation
+are documented in `docs/readability.md`. No test denominator was reduced and
+no timeout was converted into a skip or pass.
 
 > Layout update (2026-11-19): the TypeScript project now lives at the repository root. Earlier entries retain historical paths and retired-engine references as acceptance records. Current instructions are in AGENTS.md and README.md.
 

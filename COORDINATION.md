@@ -1,12 +1,23 @@
 # Rewrite coordination state
 
-## Active readability cleanup (TS-567, 2026-11-19)
+## Accepted readability cleanup (TS-567, 2026-11-19)
 
-The current Codex goal is the sole implementation writer, starting from clean
-`7f109be0`. The owner authorized implementing the lint/format recommendations
-and cleaning all handwritten code, with small commits. No compiler pin changes
-or guest-fixture rewrites are planned. Acceptance and remaining work are tracked
-in TS-567; the prior finite conformance milestone remains complete.
+The Codex goal completed TS-567 from clean `7f109be0`, with six implementation
+commits through `38cc10bb` and a final acceptance-record commit. Implementation
+ownership is released; no successor is dispatched. Commits remain local.
+Oxlint/Oxfmt, typed checks, architectural/suppression rules, a structural ratchet,
+CI and contributor guidance are installed. All handwritten code is lint/format
+clean; 173 measured structural exceptions remain explicit existing debt.
+
+Acceptance: Node guests 1003/1003, runner 36/36, custom checks 9/9, probes 10/10;
+fresh static CLI passes 486 file cases and four fresh native host drivers pass
+seven cases. Full tooling is 298/299 with one retained subprocess timeout; the
+unchanged checkpoint suite passes its isolated retry. See TS-567 for exact
+scope and local evidence. Compiler pins, fixture bytes and historical evidence
+are preserved. GitHub rejects protection/rulesets with HTTP 403 on the current
+private-repository plan, so configured CI cannot yet be required before merge.
+No account-plan or visibility changes were made. The prior finite conformance
+milestone remains complete.
 
 > Layout update (2026-11-19): the TypeScript project now lives at the repository root. Earlier entries retain historical paths and retired-engine references as acceptance records. Current instructions are in AGENTS.md and README.md.
 
