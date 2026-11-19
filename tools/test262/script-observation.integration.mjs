@@ -1,10 +1,11 @@
+import { readFixtureFile as readFile } from "./test-support/fixture-files.mjs";
 import { scratchRoot } from "./test-support/environment.mjs";
 import test, { after } from "node:test";
-import { acquireScriptTestLease } from "../../docs/validation/ts-035c/test-lease.mjs";
+import { acquireScriptTestLease } from "../../test/fixtures/tooling/ts-035c/test-lease.mjs";
 const releaseLease = await acquireScriptTestLease();
 after(releaseLease);
 import assert from "node:assert/strict";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { prepareScriptObservation, launchScriptObservation } from "./script-observe.mjs";
 import { inspectScriptEnvelope, parseScriptEnvelope } from "./script-result.mjs";

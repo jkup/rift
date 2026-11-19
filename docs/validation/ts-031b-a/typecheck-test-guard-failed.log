@@ -1,8 +1,0 @@
-
-> typecheck
-> tsc -p tsconfig.json
-
-test/structured-outcomes.ts(187,11): error TS18048: 'retained' is possibly 'undefined'.
-test/structured-outcomes.ts(187,47): error TS18048: 'retained' is possibly 'undefined'.
-test/structured-outcomes.ts(189,9): error TS18048: 'retained' is possibly 'undefined'.
-test/structured-outcomes.ts(190,26): error TS18048: 'retained' is possibly 'undefined'.

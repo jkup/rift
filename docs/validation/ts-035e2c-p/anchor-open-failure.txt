@@ -1,8 +1,0 @@
-Retained first anchors.mjs run, 2026-11-05. No production mutation.
-Command: node docs/validation/ts-035e2c-p/anchors.mjs docs/validation/ts-035e2c-p/run-20CkKl
-Exit 1 after node lane and during native-lane repeated isolated tamper writes:
-Error: UNKNOWN: unknown error, open 'C:\Users\jonku\code\rift\typescript\docs\validation\ts-035e2c-p\run-20CkKl\anchor-native\checkpoint-1.json'
-errno -4094, code UNKNOWN, syscall open. Node v26.13.0.
-This is a probe harness filesystem-open failure, not an accepted checkpoint result.
-The complete first script is retained as anchors-initial.mjs.txt; original files
-in anchor-node and anchor-native remain evidence. Do not retry writes there.

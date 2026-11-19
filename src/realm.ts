@@ -97,7 +97,7 @@ import type { ExecutableScript } from "./script-record.js";
 // scriptc follows value-import reachability when lowering opaque class types.
 // Keep the factory's module reachable without exporting its private classes;
 // Callable still imports ScriptGuestCallable as a type only. No setup runs here.
-// Reduced before/after evidence: docs/validation/ts-033e3a/reachability-*.ts.
+// Native compiler constraints are documented in docs/compiler-contract.md.
 import {
     consumeScriptBuiltinPermit,
     consumeScriptConstructorPermit,

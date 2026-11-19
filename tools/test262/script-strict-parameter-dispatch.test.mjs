@@ -1,13 +1,14 @@
+import { readFixtureFileSync as readFileSync } from "./test-support/fixture-files.mjs";
 import { join } from "node:path";
 import { scratchRoot } from "./test-support/environment.mjs";
 import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import test from "node:test";
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import { parseScriptEnvelope, assertScriptContext } from "./script-result.mjs";
-const matrix = JSON.parse(readFileSync("docs/validation/ts-035d4-p/wire-matrix.json"));
+const matrix = JSON.parse(readFileSync("test/fixtures/tooling/ts-035d4-p/wire-matrix.json"));
 test("D4 real serializer bytes: both hosts, two runtime inputs, all three closed codes", () => {
     const results = [];
     for (const row of matrix.rows) {
@@ -84,11 +85,15 @@ test("D4 real serializer bytes: both hosts, two runtime inputs, all three closed
     assert.equal(results.length, 96);
 });
 test("D4 frozen mutations, closed schema, v1 exclusion and independent transport priority", () => {
-    const r = spawnSync(process.execPath, ["docs/validation/ts-035d4-p/wire.mjs", "--future"], {
-        encoding: "utf8",
-        timeout: 60000,
-        maxBuffer: 4 * 1024 * 1024,
-    });
+    const r = spawnSync(
+        process.execPath,
+        ["test/fixtures/tooling/ts-035d4-p/wire.mjs", "--future"],
+        {
+            encoding: "utf8",
+            timeout: 60000,
+            maxBuffer: 4 * 1024 * 1024,
+        },
+    );
     writeFileSync(
         join(scratchRoot, "script-strict-parameter-wire-mutations.log"),
         r.stdout + r.stderr,

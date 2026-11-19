@@ -1,1 +1,0 @@
-{"directory":"C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\dispatch-oaZi3S","literals":9,"mutantsRejected":["no-stop","only-verified","first-harness","omit-verification","omit-cleanup"],"engineExecutions":0}

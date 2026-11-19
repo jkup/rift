@@ -1,108 +1,43 @@
 # Building Rift's ScriptC compiler
 
-This guide is for developers preparing the compiler used by Rift's native builds.
-To try Rift using Node.js, follow the [quick start](../../README.md#try-rift).
+To try Rift, use the [Node quick start](../../README.md#try-rift).
+Native builds need the patched compiler in this directory. Installing the
+unmodified npm compiler is not enough: Rift's weak collections need the patch.
 
-ScriptC compiles Rift's TypeScript into a native executable. Rift currently needs
-a specific ScriptC revision plus patches for weak collections. "Pinned" means
-that exact revision and patch set, recorded in `source.json`. Installing the
-unmodified npm compiler is insufficient.
+`source.json` pins the upstream revision, patched tree, patch hash and LLVM
+helpers. It also records the tested Node, pnpm and Zig versions. The source is
+covered by the accompanying [Apache-2.0 license](LICENSE).
 
-Setup involves exporting the patched compiler source, installing its dependencies,
-building its runtime and compiler, and making Zig 0.16.0 available for linking.
-It is not yet a one-command install. The instructions and validation details below
-document that developer process.
+## Prepare the source
 
-## Source and build details
-
-This patch preserves the compiler used by the isolated Rift WeakMap/WeakSet
-trial. It adds typed weak storage and ownership tracing, plus the runtime-link
-and test-selection repairs included in `typed-weak-storage.patch`.
-Rift's weak collections require this patched source. The unmodified npm
-`scriptc@0.4.7` is no longer a native build dependency. This directory preserves
-the source pin and build instructions; compiled distributions stay in `build/`.
-
-`source.json` pins the upstream base, patch hash and resulting Git tree.
-Applying the patch to a separate index at that base reproduced the complete
-tested tree, including all 97 changed files. The local tested revision need
-not be published: the upstream base and this patch contain the source changes.
-The source is covered by the accompanying upstream Apache-2.0 license.
-
-To export the pinned source from an upstream checkout containing `baseRevision`,
-run from the repository root:
+From the Rift repository root, use an upstream ScriptC checkout containing the
+pinned base revision:
 
 ```sh
 node toolchain/scriptc/prepare.mjs /path/to/scriptc build/scriptc-source.tar
 ```
 
-The helper verifies the patch, reconstructs the exact source tree in a separate
-Git index and exports an LF source archive with a hash manifest. It preserves
-the upstream worktree and its index, and refuses an existing destination.
-Extract the archive into a new directory on the build host. Use native Git
-for a Windows-created worktree; WSL Git interprets its Windows `.git` pointer
-and global line-ending settings differently.
+The helper verifies the patch, reconstructs the pinned tree in a separate Git
+index and exports an LF archive with a hash manifest. It does not change the
+upstream checkout and refuses an existing destination. Extract the archive into
+a new directory. Use native Git for a Windows worktree, rather than WSL Git.
 
-Build prerequisites and package commands are defined by that revision's
-`CONTRIBUTING.md` and package scripts. `source.json` records the exercised
-Node, pnpm and Zig versions. Install dependencies with `pnpm install
---frozen-lockfile`, then build the workspace with `pnpm -r --filter
-'./packages/*' run build`. The exported source passes both steps without
-changing any of its 19,943 archived files and symlinks.
+## Build
 
-For Linux, the published LLVM helper package pinned in `source.json` supplies
-the code-generation executable. Verify its archive integrity and executable
-hash, then place its `bin` directory under `packages/llvm-linux-x64-gnu/`.
-Its bytes match the helper used for the validated compiler trials; the patch
-does not change LLVM helper source. This avoids requiring an LLVM development
-SDK solely to rebuild that unchanged dependency. Rebuild the native runtime pack
-with the patched sources; an unchanged published runtime pack is insufficient.
-Build the compiler workspace and then run its `scripts/build-native-cli.mts`
-entry with Node's `tsx` loader and an 8 GiB heap limit. Its default asset staging
-creates a relocatable distribution. For Linux release packaging, leave
-`SCRIPTC_CC` unset so the versioned libc target selects upstream's Zig default.
+Follow the pinned compiler revision's CONTRIBUTING.md for its prerequisites.
+Use the Node, pnpm and Zig versions in `source.json`. From the extracted source:
 
-The Linux distribution passed a relocation trial with development compiler
-overrides and `NODE_PATH` removed: version, typed WeakMap compilation,
-execution, and 4/4 static coverage. It also compiled the three affected Rift
-inventory-test drivers, whose six executions and static coverage passed.
-The clean-source runtime rebuild passes all seven runtime flavors and six vendor
-archives; its verifier accepts 1,608 artifacts. A second source audit finds no
-changes to the 19,943 archived files and symlinks. The runtime build's configured
-LLVM helper is byte-identical to the pinned helper in the clean source tree.
-The complete clean-source Linux package also builds and passes relocation,
-version, typed WeakMap consumer compilation/execution, and 5/5 static coverage
-with development overrides removed. Node and native consumer output agree.
-See the [compiler contract](../../docs/compiler-contract.md) for Rift's native
-validation requirements and known compiler constraints.
+```sh
+pnpm install --frozen-lockfile
+pnpm -r --filter './packages/*' run build
+```
 
-Windows preparation uses the same pinned Node, pnpm and Zig versions, plus
-the Windows LLVM helper pinned in `source.json`. Frozen dependency installation
-and the compiler/CLI workspace build pass. The upstream package scripts use
-`true`; the exercised Windows build appends Git for Windows' `usr/bin` directory
-to PATH to supply that command. A separate patched runtime build passes all
-seven flavors and five vendor archives; its verifier accepts 1,573 artifacts.
-The native Windows compiler package also builds and passes relocation, version,
-typed WeakMap compilation/execution and 5/5 static coverage. Its Node and native
-consumer output agree with empty execution stderr. The compiler build retains
-a 75.2% profile-match warning; this establishes no performance result.
-Windows tar failed to create 12 archived symlinks and mishandled two Unicode
-test filenames. Restoring those two files from the archive leaves all regular
-source files byte-identical; the symlink fixtures remain unavailable. These
-results do not establish a complete Windows compiler test-suite run.
+Install the published LLVM helper identified in `source.json`. Verify its archive
+integrity and executable hash, then put its `bin` directory under
+`packages/llvm-<target>/`. Use `linux-x64-gnu` or `win32-x64-msvc` for `<target>`.
+This reuses the unchanged LLVM helper; the patched native runtime must be rebuilt.
 
-To select a built compiler with Rift's native build, probe or radix tools,
-set `RIFT_SCRIPTC` to its relocated `bin/scriptc.exe` (Windows) or `bin/scriptc`
-(Linux). Relative paths resolve from the Rift TypeScript directory. An invalid
-explicit path fails instead of falling back. Without the setting, tools use
-`build/toolchain/<platform>-<arch>/bin/scriptc[.exe]`, where the exercised platform
-names are `win32-x64` and `linux-x64`. A missing compiler fails with setup
-instructions. Native build and probe reports record the selected executable.
-Keep Zig 0.16.0 on PATH when linking.
-
-After exporting the pinned source and installing/building its workspace as
-described above, place the hash-verified published LLVM helper under the matching
-`packages/llvm-<target>/bin` directory. Run these commands from the prepared source
-directory, replacing `<target>` with `win32-x64-msvc` or `linux-x64-gnu`:
+With Zig 0.16.0 on PATH, run from the prepared source directory:
 
 ```sh
 node packages/runtime-<target>/scripts/build.mjs
@@ -110,7 +45,26 @@ node packages/runtime-<target>/scripts/verify.mjs
 node --max-old-space-size=8192 --import tsx scripts/build-native-cli.mts /absolute/path/to/rift/build/toolchain/<platform>-x64
 ```
 
-Use a new output directory. Keep development `SCRIPTC_*`, `CC` and `AR` overrides
-unset so the build uses the prepared source's local helper and patched runtime.
-The package includes compiler assets but still requires the host linker. Test
-the result with `npm run test:compiler` from Rift's TypeScript directory before use.
+Use `linux` or `win32` for `<platform>` and a new output directory. Leave
+development `SCRIPTC_*`, `CC` and `AR` overrides unset so the build uses the local
+helper and patched runtime. The resulting package still needs the host linker.
+
+On Windows, append Git for Windows' `usr/bin` to PATH because upstream scripts
+use `true`. Windows tar may fail to restore symlink fixtures or Unicode filenames;
+check extraction before treating it as a complete compiler test checkout.
+
+## Use with Rift
+
+The default executable is `build/toolchain/<platform>-<arch>/bin/scriptc[.exe]`.
+Set `RIFT_SCRIPTC` to select another built compiler; relative paths resolve from
+the Rift root. An invalid path fails without falling back. Keep Zig 0.16.0 on PATH.
+
+From Rift, validate the compiler before use:
+
+```sh
+npm run test:compiler
+```
+
+Linux x64 and Windows x64 packages have been exercised. Other targets are not
+established by those checks. See the [compiler constraints](../../docs/compiler-contract.md)
+for required coverage checks and workarounds.

@@ -1,8 +1,9 @@
+import { readFixtureFileSync as readFileSync } from "../fixture-files.mjs";
 import { corpusRoot, scratchRoot } from "../environment.mjs";
 import { createHash as sourceHash } from "node:crypto";
 import assert from "node:assert/strict";
 import * as fs from "node:fs/promises";
-import { readFileSync, writeFileSync, mkdirSync, cpSync, mkdtempSync } from "node:fs";
+import { writeFileSync, mkdirSync, cpSync, mkdtempSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
@@ -68,7 +69,7 @@ const error = (prefix, code) => (e) => {
 };
 const rejects = (promise, code) => assert.rejects(promise, error("script-ledger-store", code));
 const ledgerError = (code) => error("script-ledger", code);
-const reportRows = read("docs/validation/ts-035e2b-p/report-literals.json");
+const reportRows = read("test/fixtures/tooling/ts-035e2b-p/report-literals.json");
 const selections = {};
 for (const lane of ["node", "native"]) {
     const selected = await plan.prepareScriptSelection(options(lane));
@@ -168,12 +169,12 @@ save("actual-selections.json", selections);
 // Independent literal materialization: immutable prior expected reports and full
 // histories; no values obtained from the proposed report implementation.
 const legacy = [
-    ...read("docs/validation/ts-035e2b-p/design-selections.json").rows,
-    ...read("docs/validation/ts-035e2b-p/supplemental-literals.json").rows,
+    ...read("test/fixtures/tooling/ts-035e2b-p/design-selections.json").rows,
+    ...read("test/fixtures/tooling/ts-035e2b-p/supplemental-literals.json").rows,
 ];
 const rows = [
     ...reportRows,
-    ...read("docs/validation/ts-035e2b-p/supplemental-literals.json").reports,
+    ...read("test/fixtures/tooling/ts-035e2b-p/supplemental-literals.json").reports,
 ];
 const literals = [];
 for (const [index, row] of rows.entries()) {

@@ -1,14 +1,7 @@
+import { readFixtureFileSync as readFileSync } from "./test-support/fixture-files.mjs";
 import assert from "node:assert/strict";
 import { replaceImportSources } from "./test-support/source-structure.mjs";
-import {
-    readFileSync,
-    writeFileSync,
-    mkdirSync,
-    mkdtempSync,
-    copyFileSync,
-    unlinkSync,
-    linkSync,
-} from "node:fs";
+import { writeFileSync, mkdirSync, mkdtempSync, copyFileSync, unlinkSync, linkSync } from "node:fs";
 import { corpusRoot } from "./test-support/environment.mjs";
 import { resolve, dirname } from "node:path";
 import { gzipSync, gunzipSync } from "node:zlib";
@@ -38,7 +31,10 @@ const save = (name, value) =>
 const { manifest } = await frozenManifest(),
     paths = manifest.entries.map((e) => e.path);
 const reports = JSON.parse(
-    readFileSync(resolve(process.cwd(), "docs/validation/ts-035e2-p/report-literals.json"), "utf8"),
+    readFileSync(
+        resolve(process.cwd(), "test/fixtures/tooling/ts-035e2-p/report-literals.json"),
+        "utf8",
+    ),
 );
 // Golden data comes from pinned bytes and explicit manifest occurrence tables,
 // independently of this module's output and of E2's planner/transform helpers.
@@ -47,7 +43,7 @@ const captureLiterals = JSON.parse(
         readFileSync(
             resolve(
                 process.cwd(),
-                "docs/validation/ts-035e3c-p/correction/expected-captures.json.gz",
+                "test/fixtures/tooling/ts-035e3c-p/correction/expected-captures.json.gz",
             ),
         ),
     ),

@@ -1,6 +1,0 @@
-import {spawnSync} from 'node:child_process';
-import {readFileSync,writeFileSync} from 'node:fs';
-import {probeVerdict} from '../../../tools/probe-verdict.mjs';
-const run=args=>{const r=spawnSync('node_modules/scriptc/bin/scriptc.exe',args,{encoding:'utf8',timeout:600000,maxBuffer:32*1024*1024});return{status:r.status,signal:r.signal,error:r.error?{code:r.error.code,message:r.error.message}:null,stdout:r.stdout??'',stderr:r.stderr??''};};
-const entry='test/harness-for-update.ts',build=run(['build',entry,'--tier','static-only','-o','build/native/harness-for-update.exe']),coverage=run(['coverage',entry,'--explain-dynamic']),success={status:0,signal:null,error:null,stdout:''};const row={entry,build,coverage,verdict:probeVerdict({build,coverage,node:success,native:success})};
-writeFileSync(import.meta.dirname+'/corrected-h3-gate.json',JSON.stringify(row,null,2)+'\n');const results=JSON.parse(readFileSync('build/native-build-results.json'));if(results.length!==52||results[51].entry!==entry||results.slice(0,51).some(r=>r.verdict!=='PASS'))throw Error('old gate failure');results[51]=row;writeFileSync('build/native-build-results.json',JSON.stringify(results,null,2)+'\n');console.log(row.verdict,coverage.stdout);if(row.verdict!=='PASS')process.exitCode=1;

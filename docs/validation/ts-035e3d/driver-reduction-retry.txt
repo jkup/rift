@@ -1,1 +1,0 @@
-{"directory":"C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\driver-got4Ej","literals":6,"mutantsRejected":3,"engineExecutions":0}

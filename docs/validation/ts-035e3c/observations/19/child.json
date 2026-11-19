@@ -1,1 +1,0 @@
-{"driverVersion":1,"nonce":"50bb29a3-49f4-402c-bc2c-3900fcefea7a","mode":"body-observation","unit":"test/synthetic.js","stage":"test","bodyEvaluated":true,"location":{"line":1,"column":12},"observation":{"kind":"resource-limit","guardCode":"steps","count":100001,"limit":100000,"diagnostic":"execution step limit exceeded"}}

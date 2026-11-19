@@ -1,6 +1,0 @@
-scriptc coverage C:\Users\jonku\code\rift\typescript\docs\validation\ts-032a\import-control.ts
-
-  statements analyzed   1
-  compile statically    1  (100%)
-
-  fully static — all analyzed statements compile to native code.

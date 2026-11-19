@@ -1,5 +1,5 @@
 // Unicode 17.0.0 CaseFolding.txt, copyright 2025 Unicode, Inc.
-// Common and simple mappings; see docs/design/unicode-case-fold-review.md and docs/data/unicode-license.txt.
+// Common and simple mappings; see docs/data/unicode-provenance.json and docs/data/unicode-license.txt.
 const mappings: number[] = [
     0x41, 0x61,
     0x42, 0x62,

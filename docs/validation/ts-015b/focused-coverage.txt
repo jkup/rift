@@ -1,6 +1,0 @@
-scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-length-coercion.ts
-
-  statements analyzed   1616
-  compile statically    1616  (100%)
-
-  fully static — all analyzed statements compile to native code.

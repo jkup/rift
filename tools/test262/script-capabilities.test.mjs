@@ -1,13 +1,14 @@
+import { readFixtureFile as readFile } from "./test-support/fixture-files.mjs";
 import assert from "node:assert/strict";
 import test from "node:test";
-import { readFile, writeFile, mkdir, copyFile, mkdtemp } from "node:fs/promises";
+import { writeFile, mkdir, copyFile, mkdtemp } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { join, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { readScriptCapabilities, reconstructScriptDebts } from "./script-capabilities.mjs";
 import { scratchRoot } from "./test-support/environment.mjs";
 
-const evidence = new URL("../../docs/validation/ts-035e1/", import.meta.url);
+const evidence = new URL("../../test/fixtures/tooling/ts-035e1/", import.meta.url);
 const literals = JSON.parse(await readFile(new URL("../ts-035e-p/e1-literals.json", evidence)));
 const normal = () => ({ flags: [], features: [], includes: [], locale: [], negative: null });
 const exactError = (message) => (error) =>

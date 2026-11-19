@@ -1,12 +1,16 @@
+import {
+    readFixtureFileSync as readFileSync,
+    readFixtureFile as readFile,
+} from "./test-support/fixture-files.mjs";
 import test, { after } from "node:test";
-import { acquireScriptTestLease } from "../../docs/validation/ts-035c/test-lease.mjs";
+import { acquireScriptTestLease } from "../../test/fixtures/tooling/ts-035c/test-lease.mjs";
 const releaseLease = await acquireScriptTestLease();
 after(releaseLease);
 import assert from "node:assert/strict";
 import childProcess from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
-import { readFileSync, writeFileSync } from "node:fs";
-import { mkdir, readFile, writeFile, chmod } from "node:fs/promises";
+import { writeFileSync } from "node:fs";
+import { mkdir, writeFile, chmod } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import {
     prepareScriptObservation,

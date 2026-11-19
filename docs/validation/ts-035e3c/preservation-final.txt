@@ -1,1 +1,0 @@
-{"preserved":7480,"originalArtifacts":170,"correctionArtifacts":238,"unchangedImplementation":true,"oldTestLinesRetained":133,"captureComparisons":17,"controls":94,"mutants":55,"rejections":110,"guestLaunches":0,"builds":0}

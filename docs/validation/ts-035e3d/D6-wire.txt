@@ -1,9 +1,0 @@
-✔ D6 actual both-host producer and serializer bytes match all 256 frozen wire literals (10099.7933ms)
-ℹ tests 1
-ℹ suites 0
-ℹ pass 1
-ℹ fail 0
-ℹ cancelled 0
-ℹ skipped 0
-ℹ todo 0
-ℹ duration_ms 10198.3169

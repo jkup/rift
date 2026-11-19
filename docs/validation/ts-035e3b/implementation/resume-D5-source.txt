@@ -1,1 +1,0 @@
-PASS 408 source runs, 102 full literals, seven ordinary outputs, retention and identity controls

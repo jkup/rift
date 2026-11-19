@@ -1,6 +1,0 @@
-scriptc coverage C:\Users\jonku\code\rift\typescript\test\observation-serialization.ts
-
-  statements analyzed   1601
-  compile statically    1601  (100%)
-
-  fully static — all analyzed statements compile to native code.

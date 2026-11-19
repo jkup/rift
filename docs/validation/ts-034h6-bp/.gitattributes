@@ -1,3 +1,0 @@
-# Review artifacts preserve exact proposed checkout bytes, including CRLF.
-proposed/** -text
-proposed.patch -text

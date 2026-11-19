@@ -1,9 +1,10 @@
+import { readFixtureFileSync as readFileSync } from "../fixture-files.mjs";
 import { scratchRoot } from "../environment.mjs";
 // Complete retained literals are exercised through actual checkpoint/reopen APIs.
 // Synthetic input cases use the accepted isolated E2b authenticated inspector;
 // this is explicitly private fixture coverage, not public snapshot authority.
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdirSync, cpSync, mkdtempSync } from "node:fs";
+import { writeFileSync, mkdirSync, cpSync, mkdtempSync } from "node:fs";
 import { resolve, join, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
@@ -35,12 +36,13 @@ for (const path of [
     "package-lock.json",
     "node_modules/yaml",
     "tools/test262/test-support/ledger-support.mjs",
+    "tools/test262/test-support/fixture-files.mjs",
     "tools/test262/test-support/historical-paths.mjs",
     "tools/test262/test-support/source-structure.mjs",
     "tools/test262/test-support/environment.mjs",
-    "docs/validation/ts-035e2b-p/design-selections.json",
-    "docs/validation/ts-035e2b-p/supplemental-literals.json",
-    "docs/validation/ts-035e2b-p/report-literals.json",
+    "test/fixtures/tooling/ts-035e2b-p/design-selections.json",
+    "test/fixtures/tooling/ts-035e2b-p/supplemental-literals.json",
+    "test/fixtures/tooling/ts-035e2b-p/report-literals.json",
 ]) {
     copy(path);
 }

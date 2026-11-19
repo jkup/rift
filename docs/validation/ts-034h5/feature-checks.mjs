@@ -1,5 +1,0 @@
-import {spawnSync} from 'node:child_process';
-import {writeFileSync} from 'node:fs';
-const steps=[["construct","docs/validation/ts-034h5/validate.mjs"],["nonstrict","docs/validation/ts-034h5/replay-nonstrict.mjs"],["for-update","docs/validation/ts-034h5/replay-for-update.mjs"],["switch","docs/validation/ts-034h5/replay-switch.mjs"],["catch","docs/validation/ts-034h5/replay-catch.mjs"],["E4","docs/validation/ts-034h5/replays/validate.mjs"],["Node reflection","docs/validation/ts-034h5/replays/node-boundary.mjs"],["Node bounded reflection","docs/validation/ts-034h5/replays/bounded-boundary.mjs"],["Node slots","docs/validation/ts-034h5/node-slots.mjs"]];
-const results=[];
-for(const [name,...args] of steps){const r=spawnSync(process.execPath,args,{encoding:'utf8',timeout:900000,maxBuffer:32*1024*1024});const row={name,status:r.status,signal:r.signal,error:r.error?.message??null,stdout:r.stdout??'',stderr:r.stderr??''};results.push(row);writeFileSync(import.meta.dirname+'/feature-checks.json',JSON.stringify(results,null,2)+'\n');console.log(name+': '+r.status);if(r.status!==0||r.signal||r.error){console.error(row.stdout,row.stderr);process.exitCode=1;}}

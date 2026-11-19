@@ -3,7 +3,7 @@ import { display, truthy } from "../src/runtime.js";
 import { toString, toIntegerOrInfinity, toLength } from "../src/conversion.js";
 import { Realm } from "../src/realm.js";
 // scriptc 0.4.7 needs this runtime class reachable when analyzing Realm's types.
-// See docs/validation/ts-016a/coverage-notes.md for the reduced failure.
+// See docs/compiler-contract.md for native compiler constraints.
 import "../src/array-object.js";
 import { stringToNumber, toNumber, toUint32 } from "../src/conversion.js";
 import type { NumberCompletion } from "../src/conversion.js";

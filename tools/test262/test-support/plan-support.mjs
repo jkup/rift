@@ -1,10 +1,11 @@
+import { readFixtureFile as readFile } from "./fixture-files.mjs";
 import { corpusRoot, scratchRoot } from "./environment.mjs";
-import { readFile, writeFile, mkdir, cp, mkdtemp } from "node:fs/promises";
+import { writeFile, mkdir, cp, mkdtemp } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
 import assert from "node:assert/strict";
 import { replaceImportSources } from "./source-structure.mjs";
-export const evidence = resolve("docs/validation/ts-035e2a");
+export const evidence = resolve("test/fixtures/tooling/ts-035e2a");
 export { corpusRoot, scratchRoot };
 export const json = async (path) => JSON.parse(await readFile(path));
 export const save = async (name, value) =>

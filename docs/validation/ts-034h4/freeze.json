@@ -1,9 +1,0 @@
-{
-  "base": "3742d71",
-  "files": {
-    "frozen-contract.md": "cff32a7fb6e39c31153786882ee4cd624eb734906586f22c196fd15354ce49a2",
-    "prefixes.json": "ac987a34f2ade0f4604c10917d37c7084fc4c91f8b23233f0b47b270af2b0e10",
-    "input-seven.js": "35bb43e6051c555de1e55796d38740671144d571381aa56694db32c235bda828",
-    "input-eleven.js": "64f261e074dc0e5ef23c9aec4f3fe8b3a5ae63673dec482f4228dffcf6cf03f3"
-  }
-}

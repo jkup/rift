@@ -1,9 +1,0 @@
-1 'in' {}; {"phase":"parse","name":"SyntaxError","message":"expected ';', found 'in'","loc":{"line":1,"column":3}}
-let in = 1; {"phase":"parse","name":"SyntaxError","message":"expected binding identifier","loc":{"line":1,"column":5}}
-function f(in) {} {"phase":"parse","name":"SyntaxError","message":"expected binding identifier","loc":{"line":1,"column":12}}
-in o; {"phase":"parse","name":"SyntaxError","message":"unsupported or unexpected syntax: in","loc":{"line":1,"column":1}}
-'x' in; {"phase":"parse","name":"SyntaxError","message":"unsupported or unexpected syntax: ;","loc":{"line":1,"column":7}}
-('x' in o) = true; {"phase":"parse","name":"SyntaxError","message":"invalid assignment target","loc":{"line":1,"column":1}}
-for; {"phase":"parse","name":"SyntaxError","message":"unsupported or unexpected syntax: for","loc":{"line":1,"column":1}}
-x instanceof o; {"phase":"parse","name":"SyntaxError","message":"expected ';', found 'instanceof'","loc":{"line":1,"column":3}}
-(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((k in o))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))); {"phase":"parse","name":"SyntaxError","message":"syntax nesting limit exceeded","loc":{"line":1,"column":128}}

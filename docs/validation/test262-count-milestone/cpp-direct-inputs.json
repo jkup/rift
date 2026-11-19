@@ -1,8 +1,0 @@
-{
-  "label": "Original C++ classification and harness, direct executable spawn to terminate timed-out children",
-  "coreSha256": "8930c73c0ac27d97aa3e4b06f0ce175a2a951633a04c58889eb9b36e2a54444b",
-  "adaptedCoreSha256": "6589673d2380155b70d210c1326824a5bf2af8b396837dabe79beee261d90d7a",
-  "harnessSha256": "9ff274b0f8396316ab06967320d850e067f71a7dabb35208e53109596eea715b",
-  "executableSha256": "d2c4bfd8807869d8cbfe37491f0f337ff2b7a52df013117f36a6a2ca4f728f83",
-  "priorAttempt": "cpp-results.jsonl: interrupted after detecting orphan processes from shell timeout handling"
-}

@@ -1,1 +1,0 @@
-{"out":"C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e3d\\root-mutant-Qpmqbz","status":1,"expectedRejection":true,"stdout":""}

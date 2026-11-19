@@ -1,8 +1,0 @@
-{
-  "mutant": false,
-  "status": 0,
-  "signal": null,
-  "error": null,
-  "stdout": "{\"lanes\":2,\"errors\":94,\"actual\":6,\"inputFaults\":4,\"captureChecks\":17,\"guestLaunches\":0,\"builds\":0}\n",
-  "stderr": ""
-}

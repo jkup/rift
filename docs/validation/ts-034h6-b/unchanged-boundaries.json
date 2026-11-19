@@ -1,6 +1,0 @@
-{
-  "ordinaryConstruction": "byte-identical after sole languageFailure replacement and builtin branch dispatch",
-  "callDispatch": "byte-identical except tagged call permit",
-  "OperationContext": "byte-identical",
-  "failureResourceUnsupported": "byte-identical"
-}

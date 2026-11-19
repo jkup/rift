@@ -1,16 +1,17 @@
+import { readFixtureFileSync as readFileSync } from "./fixture-files.mjs";
 import { replaceImportSources } from "./source-structure.mjs";
 import { currentManifestPath } from "./historical-paths.mjs";
 import { corpusRoot, scratchRoot } from "./environment.mjs";
 import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
+import { writeFileSync, mkdtempSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import * as canonical from "../../../tools/test262/script-plan.mjs";
 import { frozenManifest, REVISION } from "../../../tools/test262/input.mjs";
 export const own = scratchRoot;
 export const read = (name) =>
-    migrate(JSON.parse(readFileSync(resolve("docs/validation/ts-035e2b-p", name))));
+    migrate(JSON.parse(readFileSync(resolve("test/fixtures/tooling/ts-035e2b-p", name))));
 export const save = (name, value) =>
     writeFileSync(join(own, name), JSON.stringify(value, null, 2) + "\n");
 export const error = (code) => (e) => {

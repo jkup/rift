@@ -1,23 +1,14 @@
+import { readFixtureFile as readFile } from "./test-support/fixture-files.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import {
     parseScriptEnvelope,
     assertScriptContext,
     inspectScriptEnvelope,
 } from "./script-result.mjs";
-const runs = JSON.parse(await readFile("docs/validation/ts-035c/integration-latest.json"));
-// The saved records retain their original checkout paths. The root-layout move
-// relocated local build artifacts; resolve only that known archive prefix here.
-// Bindings, observations and the saved evidence itself remain unchanged.
-function archivedPath(path) {
-    const normalized = path.replaceAll("\\", "/");
-    const marker = "/typescript/build/";
-    const at = normalized.lastIndexOf(marker);
-    return at < 0 ? path : resolve("build", normalized.slice(at + marker.length));
-}
+const runs = JSON.parse(await readFile("test/fixtures/tooling/ts-035c/integration-latest.json"));
 for (const lane of ["node", "native"]) {
     test(lane + " actual child/full-envelope bytes and closed mutation neighbors", async () => {
         const rows = runs.filter(
@@ -28,14 +19,13 @@ for (const lane of ["node", "native"]) {
         );
         assert.ok(rows.length >= 50);
         for (const row of rows) {
-            const directory = archivedPath(row.directory);
-            const p = JSON.parse(await readFile(join(directory, "plan.json"))),
-                bytes = await readFile(archivedPath(p.paths.result)),
-                child = parseScriptDriverResult(bytes, p.binding),
-                record = row.record;
+            const p = row;
+            const bytes = Buffer.from(row.childBytes, "utf8");
+            const child = parseScriptDriverResult(bytes, p.binding);
+            const record = row.record;
             assert.deepEqual(parseScriptEnvelope(JSON.stringify(record), p.binding), record);
             assert.deepEqual(assertScriptContext(record, p.context, p.binding), record);
-            const f = JSON.parse(await readFile(join(directory, "transport.json"))),
+            const f = row.transport,
                 t = {
                     process: f.process,
                     outputBytes: f.outputBytes,

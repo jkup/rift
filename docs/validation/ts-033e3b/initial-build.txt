@@ -1,8 +1,0 @@
-C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:27:26 - error SC1090: the reference to 'realm' (a binding form with no lowering) is not supported yet
-
-  26 |     constructor(readonly realm: Realm, readonly limit = 1000, readonly host = false) {
-  27 |         this.context = { realm, call: (_c: Value, _r: Value, _a: Value[], _l: Location): ValueCompletion => { throw new Error("invocation"); },
-     |                          ^~~~~
-  28 |             tick: (at: Location): ValueCompletion => {
-
-1 error.

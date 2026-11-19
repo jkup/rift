@@ -1,141 +1,77 @@
-# CLI and validation reference
+# Running and testing Rift
 
-## Build and run
-
-From the repository root, with Node >=24 and the pinned npm dependencies:
+With Node 24 or later, run from the repository root:
 
 ```sh
 npm ci
 npm run build:node
 node build/node/src/cli.js examples/counter.js
+node build/node/src/cli.js -e 'console.log(6 * 7);'
 ```
 
-### Native builds (optional)
+The counter prints `total 36`, `next 14`, and `same object true` on separate lines.
 
-Use the Node build above to try Rift without setting up a native compiler.
-Native builds compile the same interpreter into an executable that runs without
-Node.js. The build process still uses Node.js and npm.
+## Native builds (optional)
 
-This is currently a developer setup: `npm ci` does not install the native
-compiler, and `npm run build:native` does not build that compiler for you.
-The native command builds the CLI and the full set of test drivers, so it does
-more work than producing a single executable.
-
-First prepare ScriptC using the [compiler build instructions](../toolchain/scriptc/README.md).
-Rift uses a specific compiler revision with patches needed for its weak collections;
-this is what "pinned toolchain" means. The compiler setup also requires Zig 0.16.0.
-Build it into `build/toolchain/<platform>-<arch>` or set `RIFT_SCRIPTC` to its
-executable, then run:
+Prepare the [patched compiler](../toolchain/scriptc/README.md) and put Zig 0.16.0
+on PATH. `npm ci` does not install either. Then run:
 
 ```sh
 npm run build:native
 ./build/native/rift examples/counter.js
 ```
 
-On Windows the executable is `build/native/rift.exe`. Put the pinned Zig 0.16.0
-directory on the process PATH first (PowerShell):
+On Windows use `.\build\native\rift.exe`. The build compiles the CLI and all
+native test drivers. It uses two workers; `RIFT_NATIVE_JOBS` sets another positive
+worker count. Reports are written to `build/native-build-results.json`.
 
-```powershell
-$env:PATH = 'C:\path\to\zig-0.16.0;' + $env:PATH
-npm run build:native
-.\build\native\rift.exe examples/counter.js
-.\build\native\rift.exe -e 'console.log(6 * 7);'
-```
+## CLI
 
-Native builds use two workers. Set `RIFT_NATIVE_JOBS=1` for sequential builds,
-or another positive integer to choose the worker limit. Every entry still runs
-static-only compilation and an independent coverage check; the result file keeps
-the declared entry order.
-The build discards generated LLVM text after successful compilation; executables
-and subprocess reports remain. To inspect LLVM for a specific entry, invoke
-scriptc directly without `--no-keep-llvm`.
+Use a filename or `-e SOURCE`. A leading `--time-zone America/New_York` or
+`--time-zone +05:30` selects the Date timezone. UTC is the default, independent
+of the host timezone. Named-zone gaps move forward; overlaps use the earlier
+instant. Invalid options fail before reading or executing the script.
 
-## CLI options
+| Exit | Meaning |
+| --- | --- |
+| 0 | Success |
+| 1 | Guest runtime failure or uncaught throw |
+| 2 | Parse failure, including source or syntax limits |
+| 64 | Invalid invocation |
+| 66 | Unreadable source file |
+| 70 | Unexpected host or implementation fault |
 
-Date uses UTC by default. Select a named timezone or fixed minute offset with a
-leading `--time-zone` option for either file or inline execution:
-
-```powershell
-.\build\native\rift.exe --time-zone America/New_York -e 'console.log(new Date(2024, 2, 10, 2, 30).toISOString());'
-.\build\native\rift.exe --time-zone +05:30 examples/counter.js
-```
-
-The same option works with `node build/node/src/cli.js`. Named-zone gaps move
-forward and overlaps select the earlier instant. Invalid identifiers exit with
-status 64 before source I/O or execution. The option does not change the host
-timezone or enable system timezone discovery; omitting it always selects UTC.
-
-Expected example output:
-
-```text
-total 36
-next 14
-same object true
-```
-
-Use the [compiler contract](compiler-contract.md) for exact tested versions
-and Windows linker requirements. A sandbox may require permission to access Zig's
-libraries. A blocked native build is a failure, not a reason to disable coverage.
-Windows x64 and Linux x64 toolchain packages have been validated.
+Diagnostics include the filename and one-based line and UTF-16 column.
 
 ## Validation
 
-Readability is checked alongside semantic behavior:
+The normal contributor checks are in [CONTRIBUTING.md](../CONTRIBUTING.md).
+For native or toolchain work, also use:
 
 ```sh
-npm run format:check
-npm run lint
-npm run test:readability
-```
-
-Use `npm run format` to apply formatting. See the [readability policy](readability.md)
-for rules, exclusions, structural limits and the workflow for agents and reviewers.
-
-Prepare the pinned test262 selection before running tooling tests:
-
-```sh
-node tools/test262/prepare-corpus.mjs
-```
-
-This downloads from the manifest's exact upstream revision and verifies each Git
-blob hash. For offline setup, pass an existing test262 checkout as the argument.
-Files go under `build/test262-corpus`; set `RIFT_TEST262_ROOT` to use another
-location. Existing differing files are rejected rather than overwritten. Test
-scratch output goes under `build/test262-tests` (`RIFT_TEST_OUTPUT_ROOT` overrides
-it). The tooling tests still require built Node and native drivers; run the build
-commands above before `npm run test:test262` on a fresh checkout.
-
-```sh
-npm run typecheck
-npm run test:runner
 npm run test:compiler
-npm run test:guest:node
 npm run test:guest:native
 ```
 
-Each guest command builds its lane before testing. `build:native` compiles the CLI,
-host test drivers and observation drivers with `--tier static-only`, then checks
-each coverage report with the same fail-closed gate as the probes.
-Guest source is read at runtime. The generated negative and resource
-fixtures in `build/guest-fixtures/` are identical across lanes and never passed to
-scriptc. Cases assert expected stdout, error phase/name/location where fixed, and
-exit status independently; matching two wrong implementations cannot pass.
+`test:guest:node` and `test:guest:native` build their respective lane before
+running it. Each case checks expected output, exit status and relevant error
+details. Reports go to `build/guest-{node,native}-results.json`. Unsupported-input
+tests check rejection; they do not establish support for those features.
 
-Full subprocess records are retained in `build/probe-results.json`,
-`build/native-build-results.json`, and `build/guest-{node,native}-results.json`.
-The runner distinguishes timeout, crash, harness, exit-status, output and diagnostic
-failures. Unsupported-syntax tests expect rejection and count in the denominator;
-there are no skipped cases and no test262 conformance claim.
+The broader tooling suite requires built Node and native drivers and a small
+pinned Test262 selection:
 
-The guest runner also executes Script Realm bootstrap, function/accessor checks
-and the catch, loop, constructor, error, map and formatting harness checks on two
-committed runtime inputs. `tools/script-host-cases.mjs` holds their expectations
-or reads accepted transcripts without rewriting them. Each driver retains its
-semantic assertions. Other compiled drivers still need an entry-point audit;
-see the roadmap. Building a test executable alone does not exercise it.
+```sh
+node tools/test262/prepare-corpus.mjs
+npm run test:test262
+node tools/test262/script-observation.integration.mjs
+```
 
-CLI exit statuses: **0** success, **1** guest runtime failure/uncaught throw,
-**2** parse failure (including syntax/source limits), **64** invalid invocation,
-**66** unreadable source file, **70** unexpected host/internal fault. Diagnostics
-include filename and one-based line/UTF-16 column. The CLI's console adapter emits
-one line per `console.log` call; the semantic core has no filesystem/process I/O.
+Preparation verifies upstream Git blob hashes. Pass an existing Test262 checkout
+for offline preparation. `RIFT_TEST262_ROOT` overrides `build/test262-corpus`;
+`RIFT_TEST_OUTPUT_ROOT` overrides scratch output under `build/test262-tests`.
+
+For corpus execution, use `npm run test262`; see the
+[Test262 guide](../tools/test262/README.md). Keep passes, failures, skips,
+unsupported cases, resource limits, crashes and harness errors separate.
+A focused run is not a full conformance result.

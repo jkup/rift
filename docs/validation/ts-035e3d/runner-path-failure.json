@@ -1,6 +1,0 @@
-{
-  "failure": "ENOENT before mutations: relocation accidentally changed ts-035e3c-p literal directory to ts-035e3d-p",
-  "originalRunner": "mutations.mjs",
-  "correctedRunner": "mutations-retry.mjs",
-  "change": "one path token restored; original literal archive and implementation unchanged"
-}

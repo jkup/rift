@@ -1,8 +1,0 @@
-Retained setup/test failures before successful validation:
-1. Python WindowsApps alias could not be started; no file write occurred. Used available Node for text edits.
-2. Initial freeze file destination mistakenly repeated typescript/ from the typescript cwd; Set-Content and subsequent Node invocation failed before creation. Corrected destination and froze before production edits.
-3. Initial typecheck invoked npm at repository root (no typecheck script); reran in typescript/ successfully.
-4. First new driver Node execution failed with "ordinary result after audit": copied driver's after snapshot still used D2 key while before used D3/preparation. Corrected test-only key set; no production semantic change.
-5. Zig discovery using sandbox LOCALAPPDATA found no WinGet directory. Used the known installed absolute Zig path and approved native-build access; no compiler workaround.
-6. First commit attempt failed before creating a commit: "Author identity unknown" / "fatal: unable to auto-detect email address". Recent commits e708881/e82f296/267e4e8 consistently record Jon Kuperman <jon.kuperman@gmail.com>; retry uses that identity via command-local -c options, without changing Git configuration.
-7. git diff --cached --check reports node-build.log:4 new blank line at EOF. This is the exact captured successful npm/tsc output and is deliberately retained as raw evidence.

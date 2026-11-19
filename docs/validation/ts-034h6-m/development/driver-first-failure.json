@@ -1,5 +1,0 @@
-{
-  "status": 1,
-  "stdout": "PASS frozen prefixes=308 calls=224 input-a\nPASS semantic selection=108\nPASS abrupt prefixes=480\n",
-  "stderr": "file:///C:/Users/jonku/code/rift/typescript/build/node/test/harness-map-default.js:12\r\n    throw new Error(label); }\r\n          ^\r\n\r\nError: parsed constructor throwing=false seed=0 calls=false limit=4 source actual=getter:1:C expected=getter:14\r\n    at check (file:///C:/Users/jonku/code/rift/typescript/build/node/test/harness-map-default.js:12:11)\r\n    at file:///C:/Users/jonku/code/rift/typescript/build/node/test/harness-map-default.js:498:29\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\r\n    at async node:internal/modules/esm/loader:650:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)\r\n\r\nNode.js v26.13.0\r\n"
-}

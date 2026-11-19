@@ -1,5 +1,0 @@
-import {spawnSync} from 'node:child_process';
-import {writeFileSync} from 'node:fs';
-const steps=[['guest-native','tools/run-guests.mjs','native'],['for-update','docs/validation/ts-034h3/validate.mjs'],['switch','docs/validation/ts-034h3/replay-switch.mjs'],['catch','docs/validation/ts-034h3/replay-catch.mjs'],['E4','docs/validation/ts-034h3/replays/validate.mjs'],['inherited','docs/validation/ts-034h3/replays/replays.mjs'],['Node reflection','docs/validation/ts-034h3/replays/node-boundary.mjs']];
-const results=[];
-for(const [name,...args] of steps.filter(s=>!process.argv.includes("--inherited-only")||s[0]!=="for-update")){const r=spawnSync(process.execPath,args,{encoding:'utf8',timeout:900000,maxBuffer:32*1024*1024});const row={name,status:r.status,signal:r.signal,error:r.error?.message??null,stdout:r.stdout??'',stderr:r.stderr??''};results.push(row);writeFileSync(import.meta.dirname+(process.argv.includes('--inherited-only')?'/inherited-checks.json':'/final-checks.json'),JSON.stringify(results,null,2)+'\n');console.log(name+': '+r.status);if(r.status!==0||r.signal||r.error){console.error(row.stdout,row.stderr);process.exitCode=1;}}

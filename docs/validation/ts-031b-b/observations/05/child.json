@@ -1,1 +1,0 @@
-{"driverVersion":1,"nonce":"79a91655-8091-4418-b113-b19d25a1d2ca","mode":"body-observation","unit":"test/synthetic.js","stage":"test","bodyEvaluated":true,"location":{"line":1,"column":14},"observation":{"kind":"resource-limit","guardCode":"calls","count":64,"limit":64,"diagnostic":"call depth limit exceeded"}}

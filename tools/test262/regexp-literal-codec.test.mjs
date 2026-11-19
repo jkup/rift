@@ -2,7 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import { composeScriptEnvelope, parseScriptEnvelope } from "./script-result.mjs";
-import { rows as frozenRows, copy, envelope } from "../../docs/validation/ts-035a/controls.mjs";
+import {
+    rows as frozenRows,
+    copy,
+    envelope,
+} from "../../test/fixtures/tooling/ts-035a/controls.mjs";
 
 const rows = frozenRows.filter((row) => row.id.endsWith("/syntax"));
 function accepted(child, row) {

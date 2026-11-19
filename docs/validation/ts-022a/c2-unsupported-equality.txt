@@ -1,1 +1,0 @@
-test/fixtures/array-string-conversion.js:14:13: parse SyntaxError: unsupported operator: ==

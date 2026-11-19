@@ -1,12 +1,13 @@
+import { readFixtureFileSync as readFileSync } from "../fixture-files.mjs";
 import { corpusRoot, scratchRoot } from "../environment.mjs";
 import { currentManifestPath } from "../historical-paths.mjs";
 import { createHash as sourceHash } from "node:crypto";
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdirSync, cpSync, mkdtempSync } from "node:fs";
+import { writeFileSync, mkdirSync, cpSync, mkdtempSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
-const previous = "docs/validation/ts-035e2c-p",
+const previous = "test/fixtures/tooling/ts-035e2c-p",
     own = scratchRoot,
     run = mkdtempSync(join(own, "migration-"));
 const root = join(run, "isolated");
@@ -44,11 +45,9 @@ for (const path of [
 ]) {
     copy(path);
 }
-const manifest = read("docs/validation/ts-035e2c-p/correction/proposal-manifest.json");
-for (const p of manifest) {
-    mkdirSync(dirname(join(root, p.path)), { recursive: true });
-    cpSync(p.path, join(root, p.path));
-}
+copy("tools/test262/script-plan.mjs");
+copy("tools/test262/script-ledger.mjs");
+copy("tools/test262/test-support/fixture-files.mjs");
 copy("tools/test262/test-support/environment.mjs");
 copy("tools/test262/test-support/ledger-support.mjs");
 copy("tools/test262/test-support/historical-paths.mjs");
@@ -75,7 +74,7 @@ for (const lane of ["node", "native"]) {
 save("actual-policies.json", policies);
 let migrated = 0;
 for (const file of ["design-selections.json", "supplemental-literals.json"]) {
-    const before = read("docs/validation/ts-035e2b-p/" + file),
+    const before = read("test/fixtures/tooling/ts-035e2b-p/" + file),
         after = helper.read(file);
     for (let i = 0; i < before.rows.length; i++) {
         const a = structuredClone(before.rows[i]),
@@ -92,7 +91,7 @@ for (const file of ["design-selections.json", "supplemental-literals.json"]) {
     save(file, after);
 }
 let negatives = 0;
-const base = read("docs/validation/ts-035e2b-p/design-selections.json").rows[0].selection;
+const base = read("test/fixtures/tooling/ts-035e2b-p/design-selections.json").rows[0].selection;
 for (const edit of [
     (s) => (s.policy.id = "rift-script-blocked-v4"),
     (s) => s.policy.files.pop(),
@@ -106,14 +105,13 @@ for (const edit of [
     negatives++;
 }
 // Refresh input identities and the manifest path; retain checkpoint histories/reports.
-const oldRoot = previous + "/run-20CkKl",
-    literalManifest = read(oldRoot + "/literal-manifest.json"),
+const literalManifest = read(previous + "/checkpoint-literals.json"),
     rows = [];
 const oldLedger = read(previous + "/proposal-manifest.json").find(
     (p) => p.path === "tools/test262/script-ledger.mjs",
 ).proposedSha256;
-for (const row of literalManifest) {
-    const raw = readFileSync(oldRoot + "/" + row.path);
+for (const { text, ...row } of literalManifest) {
+    const raw = Buffer.from(text, "utf8");
     assert.equal(hash(raw), row.sha256);
     const before = JSON.parse(raw),
         after = structuredClone(before),

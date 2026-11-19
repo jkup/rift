@@ -1,4 +1,0 @@
-# Preserve historical artifact bytes, including their original whitespace.
-* -text -whitespace
-README.md text eol=lf whitespace
-.gitattributes text eol=lf whitespace

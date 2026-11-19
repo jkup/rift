@@ -1,1 +1,0 @@
-console.log('{"driverVersion":1,"observation":{"kind":"normal"}}'); throw 3;

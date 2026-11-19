@@ -1,7 +1,0 @@
-scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-string-conversion.ts
-
-  statements analyzed   1878
-  compile statically    1878  (100%)
-    in dynamic tier     2  (operate on values typed only at runtime; --explain-dynamic lists them)
-
-  fully static — all analyzed statements compile to native code.

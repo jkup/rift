@@ -1,3 +1,0 @@
-inputs/*.js -text whitespace=cr-at-eol
-proposed-emission/** -text whitespace=cr-at-eol
-original-blocked-oracle/** -text whitespace=cr-at-eol

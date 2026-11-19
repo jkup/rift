@@ -267,7 +267,7 @@ export function testNumberConversions(): void {
     const lookalike = new GuestObject(a.numberPrototype);
     put(lookalike, "numberData", num(2));
     // Pinned scriptc adapts an inferred never-return callback through the dynamic tier.
-    // Retained reduction: docs/validation/ts-021a/reduction/. Keep the hook throwing.
+    // Keep the hook throwing: this checks abrupt completion during conversion.
     put(
         lookalike,
         "valueOf",

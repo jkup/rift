@@ -1,9 +1,0 @@
-{
-  "traces": 14,
-  "frozenSemanticRows": 54,
-  "frozenPrefixes": 308,
-  "frozenCallControls": 224,
-  "parsedGetterAmendment": "approved; return8/throw7; instantiation4-5/body6-7",
-  "driverSha256": "baf2708c282c30a01179c15c3d2358e7d9e25d9908c1e134622d0f42835f3299",
-  "claim": "source comparison, not runtime mutation proof"
-}

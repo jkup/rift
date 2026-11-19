@@ -1,6 +1,7 @@
+import { readFixtureFileSync as readFileSync } from "./test-support/fixture-files.mjs";
 import assert from "node:assert/strict";
 import test, { after } from "node:test";
-import { readFileSync } from "node:fs";
+
 import { createDriverRunner } from "./test-support/driver-runner.mjs";
 import { constPlanExpectation } from "./test-support/const-plan-migrations.mjs";
 
@@ -9,8 +10,8 @@ const json = (path) => JSON.parse(readFileSync(path, "utf8"));
 after(save);
 
 test("Script metadata: 136 accepted snapshots and detached source invariants in both hosts", () => {
-    const node = json("docs/validation/ts-033a/metadata-node.json");
-    const native = json("docs/validation/ts-033a/metadata-native.json");
+    const node = json("test/fixtures/tooling/ts-033a/metadata-node.json");
+    const native = json("test/fixtures/tooling/ts-033a/metadata-native.json");
     assert.equal(node.length, 136);
     assert.equal(native.length, 136);
     for (const snapshot of node) {
@@ -437,7 +438,7 @@ function objectBindingPlanExpectation(record) {
 }
 
 test("Script declarations: 135 plans and 71 historical literals with explicit feature migrations in both hosts", () => {
-    const snapshots = json("docs/validation/ts-034h6-c/replays/plans-results.json");
+    const snapshots = json("test/fixtures/tooling/ts-034h6-c/replays/plans-results.json");
     const literals = json("test/fixtures/script-declarations/literal.json");
     assert.equal(literals.length, 71);
     const expected = new Map();

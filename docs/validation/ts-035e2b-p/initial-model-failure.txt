@@ -1,1 +1,0 @@
-Initial model matched fixture anchors by runId; retained E2a literal runIds are normalized and repeated. It rejected a valid input fixture with script-ledger/selection before controls. Fixed evidence-only anchor lookup to full structural equality. Initial source retained as model.mjs.initial; no contract/production/history changed.

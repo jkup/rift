@@ -1,12 +1,13 @@
+import { readFixtureFileSync as readFileSync } from "./test-support/fixture-files.mjs";
 // Implementation-only test. This design does not run or build these drivers.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdtempSync, existsSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdtempSync, existsSync, mkdirSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import * as producer from "../../build/node/src/script-observation.js";
 const { validateConformanceScriptArguments, produceConformanceScripts } = producer;
-const evidence = "docs/validation/ts-035e3b-p";
+const evidence = "test/fixtures/tooling/ts-035e3b-p";
 const read = (n) => JSON.parse(readFileSync(join(evidence, n)));
 // BEGIN offline-audited negative setup (no producer or process invocation).
 function assertNegativeSetup(row, setup) {
@@ -234,7 +235,9 @@ test("revised positional API rejects records and has no public request construct
 
 test("record JSON cannot replace positional controls in either OS entrypoint", () => {
     const rows = JSON.parse(
-        readFileSync("docs/validation/ts-035e3b/request-boundary/positional-record-spoofs.json"),
+        readFileSync(
+            "test/fixtures/tooling/ts-035e3b/request-boundary/positional-record-spoofs.json",
+        ),
     );
     assert.equal(rows.length, 4);
     for (const row of rows) {

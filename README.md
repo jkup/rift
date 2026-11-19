@@ -1,4 +1,4 @@
-<img src="docs/assets/rift.png" alt="Rift logo" width="160">
+<img src=".github/assets/rift.png" alt="Rift logo" width="160">
 
 # Rift
 
@@ -11,7 +11,7 @@ Rift parses JavaScript into a syntax tree and walks that tree to execute it. It
 implements its own values, objects, scopes and control flow. The same TypeScript
 source runs under Node.js or compiles to a native executable with ScriptC.
 
-Rift is a work in progress. See the [feature inventory](docs/feature-inventory.md)
+Rift is a work in progress. See [supported features and limits](docs/architecture.md#supported-features-and-limits)
 for supported JavaScript features and known gaps.
 
 ## Try Rift
@@ -60,7 +60,7 @@ up Zig. That is a separate developer setup, not part of the quick start. See
 See the [usage guide](docs/usage.md) for CLI options and validation commands, or
 the [Test262 runner guide](tools/test262/README.md#native-corpus-runner) for
 conformance testing (requires native compiler setup).
-Read the [architecture guide](docs/architecture-decisions.md) to explore the code,
+Read the [architecture guide](docs/architecture.md) to explore the code,
 or [CONTRIBUTING.md](CONTRIBUTING.md) to get involved.
 
 Licensed under [MIT](LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md)

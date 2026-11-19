@@ -1,5 +1,0 @@
-{
-  "failure": "First corrected freeze.mjs run failed before writing outputs: cases.mjs imported blocked while a local helper already used that name; SyntaxError Identifier blocked has already been declared.",
-  "followingCheck": "The subsequent full verifier correctly rejected the still-original coarse matrix; complete failed-check-1.json retained.",
-  "correction": "Rename only the evidence JSON import to blockedLiterals, regenerate the corrected matrix, then run full-object probe/oracle/verification checks. No production, old-file or historical-output changes."
-}

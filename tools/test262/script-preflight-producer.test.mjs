@@ -1,13 +1,14 @@
+import { readFixtureFileSync as readFileSync } from "./test-support/fixture-files.mjs";
 // FUTURE implementation test. Design work must not run this guest/driver suite.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdtempSync, existsSync } from "node:fs";
+import { writeFileSync, mkdtempSync, existsSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import * as producer from "../../build/node/src/script-observation.js";
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
-const evidence = "docs/validation/ts-035e3d-p/correction";
+const evidence = "test/fixtures/tooling/ts-035e3d-p/correction";
 const pins = {
     "future-literals.json": "c9e11ac4f8bcfec1c9aa029fe55bb0abca1182e795b7bfb8c3ddd3db938740b2",
     "argv-negatives.json": "9bfad0ab8c1165ba5671bb9c36dc2a12414f8aa717a4c080f29d73c0f3e7835a",

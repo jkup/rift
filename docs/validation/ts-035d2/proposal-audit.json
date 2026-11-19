@@ -1,8 +1,0 @@
-{
-  "status": "offline proposal validation only, NOT applied or accepted",
-  "oldTestUnchanged": true,
-  "wholeProposedFileVerified": true,
-  "exactCurrentDecoderDiffs": 2,
-  "originalSha256": "661453223026c2be6f0d837f5c051b4d85a0f08c32b92fbbf129425a488f7b0a",
-  "resultSha256": "e8e8a78a388a2a4069b2991de2974f5718218b92b97006ea334a074933eee49a"
-}

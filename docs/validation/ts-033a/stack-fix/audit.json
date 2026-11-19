@@ -1,9 +1,0 @@
-{
-  "priorCommit": "61220eb37b80547bc07a33b99b6ccdc519ff9cfe",
-  "fullMetadataRecordsUnchangedPerLane": 136,
-  "baselineAndOriginalEvidenceUnchanged": true,
-  "oldEvidenceChanges": [
-    "typescript/docs/validation/ts-033a/preserve.mjs",
-    "typescript/docs/validation/ts-033a/validate.mjs"
-  ]
-}

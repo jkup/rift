@@ -1,6 +1,0 @@
-{
-  "ok": false,
-  "code": "EPERM",
-  "syscall": "link",
-  "message": "EPERM: operation not permitted, link 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\link-reduction-7vTU8S\\source' -> 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\link-reduction-7vTU8S\\destination'"
-}

@@ -126,7 +126,7 @@ const kinds: GuestObject[] = [
     a.createArray(),
     a.functionPrototype,
     // Explicit return type avoids the pinned compiler's throw-only adapter;
-    // see docs/validation/ts-018b/callback-{inferred,annotated}.ts.
+    // see docs/compiler-contract.md for the callback arity requirement.
     a.createBuiltin("unused", 0, (_r, _args, _ctx, _at): ValueCompletion => {
         throw new Error("unexpected receiver Call");
     }),

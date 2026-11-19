@@ -1,7 +1,0 @@
-scriptc coverage C:\Users\jonku\code\rift\typescript\test\script-record.ts
-
-  statements analyzed   1842
-  compile statically    1842  (100%)
-    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)
-
-  fully static — all analyzed statements compile to native code.

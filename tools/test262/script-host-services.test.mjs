@@ -1,9 +1,12 @@
+import { readFixtureFileSync as readFileSync } from "./test-support/fixture-files.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+
 import { createHash } from "node:crypto";
 import * as api from "./script-host-services.mjs";
 const root = new URL("../../", import.meta.url);
-const bytes = readFileSync(new URL("docs/validation/ts-035e3e-p/descriptor-literals.json", root));
+const bytes = readFileSync(
+    new URL("test/fixtures/tooling/ts-035e3e-p/descriptor-literals.json", root),
+);
 const hash = (b) => createHash("sha256").update(b).digest("hex");
 assert.equal(
     hash(bytes),

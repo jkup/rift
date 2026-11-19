@@ -1,8 +1,0 @@
-{
-  "status": "PASS offline only",
-  "traces": 4,
-  "prefixesPerInput": 94,
-  "callControlsPerInput": 32,
-  "inputs": 2,
-  "mutations": 5
-}

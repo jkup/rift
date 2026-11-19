@@ -1,7 +1,0 @@
-{
-  "rows": 64,
-  "existingBlockRejected": 32,
-  "surrogateMutationChecks": 1792,
-  "transportChecks": 256,
-  "claims": "Future exact v2 rows, not current block emission. Existing decoders reject every block row. Structural probes substitute only accepted return rule; this is not widened decoder validation."
-}

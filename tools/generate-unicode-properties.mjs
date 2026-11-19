@@ -211,7 +211,7 @@ const aliasEntries = [...aliases].sort((a, b) => {
     }
 });
 const source = `// Generated from Unicode 17.0.0 by tools/generate-unicode-properties.mjs.
-// Source hashes and license: docs/data/unicode-properties-provenance.json and unicode-properties-license.txt.
+// Source hashes and license: docs/data/unicode-properties-provenance.json and unicode-license.txt.
 const tables: number[][] = ${JSON.stringify(tables.map((row) => row.ranges))};
 const aliasNames: string[] = ${JSON.stringify(aliasEntries.map((row) => row[0]))};
 const aliasIndices: number[] = ${JSON.stringify(aliasEntries.map((row) => row[1]))};
@@ -296,7 +296,7 @@ const provenance = {
 for (const [name, text] of [
     ["src/unicode-properties.ts", source],
     ["docs/data/unicode-properties-provenance.json", JSON.stringify(provenance, null, 2) + "\n"],
-    ["docs/data/unicode-properties-license.txt", read("license.txt")],
+    ["docs/data/unicode-license.txt", read("license.txt")],
 ]) {
     const destination = path.join(root, name);
     if (process.argv.includes("--check")) {

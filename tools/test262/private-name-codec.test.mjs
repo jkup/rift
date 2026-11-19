@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import { composeScriptEnvelope, parseScriptEnvelope } from "./script-result.mjs";
-import { rows, copy, envelope } from "../../docs/validation/ts-035a/controls.mjs";
+import { rows, copy, envelope } from "../../test/fixtures/tooling/ts-035a/controls.mjs";
 
 test("private-name errors require the exact parse rule at both protocol boundaries", () => {
     const syntax = rows.filter((row) => row.id.endsWith("/syntax"));

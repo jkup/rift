@@ -1,11 +1,12 @@
+import { readFixtureFile as readFile } from "./test-support/fixture-files.mjs";
 import test, { after } from "node:test";
-import { acquireScriptTestLease } from "../../docs/validation/ts-035c/test-lease.mjs";
+import { acquireScriptTestLease } from "../../test/fixtures/tooling/ts-035c/test-lease.mjs";
 const releaseLease = await acquireScriptTestLease();
 after(releaseLease);
 import assert from "node:assert/strict";
 import childProcess from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
-import { readFile, writeFile, mkdir, lstat, chmod } from "node:fs/promises";
+import { writeFile, mkdir, lstat, chmod } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import {
     prepareScriptObservation,
@@ -57,7 +58,7 @@ for (const lane of ["node", "native"]) {
                     const child = spawn(
                         process.execPath,
                         [
-                            resolve("docs/validation/ts-035c/transport-process.mjs"),
+                            resolve("test/fixtures/tooling/ts-035c/transport-process.mjs"),
                             "fixture",
                             mode,
                             exe,

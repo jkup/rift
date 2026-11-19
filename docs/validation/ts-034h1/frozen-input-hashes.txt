@@ -1,8 +1,0 @@
-
-Algorithm : SHA256
-Hash      : BA73D4508D9667AC354241ADA640E601C1AE6A55D717609035A2ED4F6CA3D7AC
-Path      : C:\Users\jonku\code\rift\typescript\fixtures\harness-catch\other.txt
-
-Algorithm : SHA256
-Hash      : C3404BCA8F179B838CA3C7961BE7E308250646BCC88A7037A3C89A321E4DDA3D
-Path      : C:\Users\jonku\code\rift\typescript\fixtures\harness-catch\seed.txt

@@ -1,1 +1,0 @@
-{"driverVersion":1,"nonce":"7210b8d1-c176-4ac5-9961-978716fe3896","mode":"parser-observation","unit":"test/synthetic.js","stage":"test","bodyEvaluated":false,"location":{"line":1,"column":1},"observation":{"kind":"unsupported-syntax","capabilityCode":"parse.return-context","diagnostic":"return outside function"}}

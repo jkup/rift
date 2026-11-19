@@ -1,1 +1,0 @@
-function outer(){"use strict"; {function beta(){} function beta(){}}}

@@ -1,6 +1,0 @@
-scriptc coverage C:\Users\jonku\code\rift\typescript\src\observation-driver.ts
-
-  statements analyzed   1611
-  compile statically    1611  (100%)
-
-  fully static — all analyzed statements compile to native code.

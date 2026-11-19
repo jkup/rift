@@ -1,6 +1,0 @@
-scriptc coverage C:\Users\jonku\code\rift\typescript\test\harness-nonstrict.ts
-
-  statements analyzed   3916
-  compile statically    3916  (100%)
-
-  fully static — all analyzed statements compile to native code.

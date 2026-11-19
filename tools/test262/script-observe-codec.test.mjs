@@ -1,13 +1,16 @@
+import { readFixtureFileSync as readFileSync } from "./test-support/fixture-files.mjs";
 import { sourceStructure } from "./test-support/source-structure.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import { parseScriptEnvelope } from "./script-result.mjs";
 const original = JSON.parse(
-    readFileSync(new URL("../../docs/validation/ts-035c/parse-only-review.json", import.meta.url)),
+    readFileSync(
+        new URL("../../test/fixtures/tooling/ts-035c/parse-only-review.json", import.meta.url),
+    ),
 ).results.find((r) => r.action === "parse-only");
 const copy = () => structuredClone(original);
 function rebind(r) {

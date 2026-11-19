@@ -16,7 +16,7 @@ import {
     harnessRow,
     rebind,
     hash,
-} from "../../docs/validation/ts-035a/controls.mjs";
+} from "../../test/fixtures/tooling/ts-035a/controls.mjs";
 const rows = serialized();
 const parse = (v, b) => parseScriptEnvelope(JSON.stringify(v), b);
 

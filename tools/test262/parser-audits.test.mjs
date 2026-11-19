@@ -1,8 +1,9 @@
+import { readFixtureFileSync as readFileSync } from "./test-support/fixture-files.mjs";
 import assert from "node:assert/strict";
 import test, { after } from "node:test";
-import { readFileSync } from "node:fs";
+
 import { createDriverRunner } from "./test-support/driver-runner.mjs";
-import { rows as returns } from "../../docs/validation/ts-031c-a/cases.mjs";
+import { rows as returns } from "../../test/fixtures/tooling/ts-031c-a/cases.mjs";
 
 const { run, save } = createDriverRunner("parser-audits-");
 const json = (path) => JSON.parse(readFileSync(path, "utf8"));
@@ -42,7 +43,7 @@ for (const [driver, directory, count] of [
     ["script-strict-parameter-audit", "ts-035d3", 77],
 ]) {
     test(`${driver}: complete accepted audit outputs, both hosts`, () => {
-        const base = `docs/validation/${directory}`;
+        const base = `test/fixtures/tooling/${directory}`;
         const frozen = json(base + "/frozen.json");
         const rows = Array.isArray(frozen) ? frozen : frozen.rows;
         assert.equal(rows.length, count);
@@ -517,7 +518,7 @@ for (const [driver, directory, count, variants] of [
     ["script-lexical-statement-audit", "ts-035d7-p", 140, ["alpha", "beta"]],
 ]) {
     test(`${driver}: full audit literals, both input orders and hosts`, () => {
-        const rows = json(`docs/validation/${directory}/semantic-matrix.json`).rows;
+        const rows = json(`test/fixtures/tooling/${directory}/semantic-matrix.json`).rows;
         assert.equal(rows.length, count);
         if (driver === "script-assignment-target-audit") {
             for (const [id, text] of [

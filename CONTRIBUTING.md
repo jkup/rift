@@ -1,58 +1,84 @@
 # Contributing
 
-Start with [README.md](README.md), the [project goals](docs/project-goals.md)
-and the [architecture reading guide](docs/architecture-decisions.md).
-[AGENTS.md](AGENTS.md) contains repository instructions for coding agents.
+Rift is meant to make a JavaScript engine understandable to a TypeScript developer.
+Keep implementations clear and preserve JavaScript's observable behavior. The API
+is experimental; internal changes are welcome when code, tests and docs move together.
 
-## Issues and pull requests
+Start with the [architecture guide](docs/architecture.md) and
+[compiler constraints](docs/compiler-contract.md). `src/` holds the interpreter,
+`test/` its drivers and fixtures, and `tools/` the build and test runners.
 
-Report bugs through [GitHub issues](https://github.com/jkup/rift/issues). Include
-a small JavaScript example, expected and actual output, the Rift revision, your
-OS and Node version, and whether you used Node or the native build. For native
-failures, include the compiler version and build/coverage diagnostics.
+## Bugs and changes
 
-Discuss substantial features or architecture changes in an issue before starting.
-Keep pull requests focused and explain the behavior changed, checks run, and any
-known failures or untested scope. Update relevant documentation and expected-result
-tests with behavior changes. See the [roadmap](docs/development-roadmap.md) for
-known followups.
+Open a [GitHub issue](https://github.com/jkup/rift/issues) with a small example,
+expected and actual output, revision, OS, Node version and execution lane. Include
+compiler and coverage diagnostics for native failures. Discuss substantial changes
+before implementing them. In a PR, explain what changed, why, and what you tested.
 
-## Development checks
+Use the ECMAScript specification to resolve semantic questions. Credit algorithms
+and code adapted from other projects. Keep guest state in a Realm, guest control
+flow in completion records, and I/O outside the semantic core. Never execute guest
+code through host eval, Function, vm or a dynamic compiler fallback.
 
-With Node >=24, run from the repository root:
+## Checks
+
+With Node 24 or later:
 
 ```sh
 npm ci
 npm run format
 npm run lint
 npm run test:readability
-npm run typecheck
 npm test
 ```
 
-Follow the [readability policy](docs/readability.md). Keep full compiler-required
-callback arity and observable evaluation order. Do not increase structural
-allowances or widen ignores to make a change pass. After reducing existing
-structural violations, run `npm run lint:ratchet`.
+`npm test` runs the runner tests, builds TypeScript and runs Node guest tests.
+`npm run typecheck` also emits the Node build. Semantic changes need relevant fresh
+native checks; toolchain or integration changes need `npm run test:compiler`.
+See [validation](docs/usage.md#validation) for setup. Keep static-only compilation
+and zero-dynamic coverage. Report failures, skips and untested scope honestly.
+Expected-result assertions must remain; do not shrink conformance denominators.
 
-Native semantic changes require relevant fresh native checks using the
-[pinned compiler](toolchain/scriptc/README.md). Toolchain/integration changes
-also require `npm run test:compiler`. Keep static-only compilation and the
-independent zero-dynamic coverage gate. See the
-[validation reference](docs/usage.md#validation) for full guest and Test262 setup.
-Typechecking emits `build/node`; do not run it concurrently with tests consuming
-that output. Report tested scope and failures explicitly.
+Do not build Node output while tests read it, or replace native binaries while
+they are running. Keep source fixed during tooling tests that check its hashes.
+When sharing a checkout, coordinate one writer and preserve unrelated changes.
+Track work in issues and PRs, not session logs in the repository.
 
-## Finding your way around
+## Readability
 
-The [layout guide](docs/repository-layout.md) explains each root entry. Runtime
-inputs in `test/fixtures/` include deliberately invalid syntax;
-do not format or rewrite them as incidental cleanup. Saved reports under
-`docs/validation/` retain their original paths, measurements and failures.
+Use clear names, early returns and helpers with a single job. Preserve evaluation
+order, including getters, coercions and abrupt completion. Use braces, avoid nested
+ternaries and assignments in conditions, and keep every compiler-required callback
+parameter. Prefix intentionally unused parameters with `_`.
 
-Keep mutable guest state in a Realm, guest control flow in completion records,
-and I/O outside the semantic core. Never run guest code through host eval,
-Function, vm or a dynamic compiler fallback.
+Oxfmt uses four spaces and a 100-column target without sorting imports. Oxlint
+checks correctness and unsafe typed operations; custom checks enforce semantic
+import boundaries, compiler constraints and structural limits. Generated tables
+and guest fixtures are excluded. Fixtures may contain invalid syntax or pinned
+bytes: do not format them as incidental cleanup.
 
-When sharing a checkout, coordinate one implementation writer at a time and
-preserve unrelated changes. Track work and validation in issues and pull requests.
+Production functions are limited to 100 nonblank, noncomment lines, files to 600,
+and nesting to four levels. Tests and test helpers are exempt from size limits,
+but retain nesting checks. `.readability-baseline.json` records existing exceptions.
+New or growing violations fail. After reducing one, run `npm run lint:ratchet`.
+Do not increase allowances, widen ignores or disable rules to pass a check.
+Policy changes need explicit review. Do not split coherent code into arbitrary
+wrappers merely to meet a metric.
+
+A suppression must name the rule, apply to one line and explain why after `--`:
+
+```ts
+// oxlint-disable-next-line no-unused-expressions -- Reading this getter is the operation whose abrupt completion the test asserts.
+target.value;
+```
+
+## CI
+
+The `readability` and `node` jobs run on main pushes, PRs and manual dispatch.
+They check formatting, lint, checker regressions, TypeScript, Node guests and
+focused Test262 runner regressions. They do not run native builds, the complete
+tooling suite or the full Test262 corpus. Require both statuses in repository
+settings; the workflow does not configure merge protection.
+
+Actions are pinned to commits and have read-only repository permissions. When
+updating an action, verify its upstream release commit and update both jobs.

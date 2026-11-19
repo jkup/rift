@@ -1,1 +1,0 @@
-[{"name":"baseline","accepted":true},{"name":"wrong-revision-with-slots","accepted":false,"error":"script-ledger/selection"},{"name":"empty-host","accepted":false,"error":"script-ledger/selection"},{"name":"empty-platform","accepted":false,"error":"script-ledger/selection"}]

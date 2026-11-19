@@ -1,5 +1,5 @@
 // Private numerical implementation and test seams. No guest-facing API.
-// Derived from docs/design/radix-formatter-backend.md; free-format remainder/margin
+// Derived from docs/architecture.md#number-formatting; free-format remainder/margin
 // method attributed to Burger and Dybvig (1996). No paper/engine code copied.
 const DIGITS = "0123456789abcdefghijklmnopqrstuvwxyz";
 const WIDTH_HALF = (1n << 16383n) - 1n;

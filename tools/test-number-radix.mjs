@@ -1,5 +1,6 @@
+import { readFixtureFileSync as readFileSync } from "./test262/test-support/fixture-files.mjs";
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -56,12 +57,14 @@ if (process.argv.includes("--build")) {
     assert.equal(verdict, "PASS");
 }
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const frozen = readFileSync(new URL("../docs/validation/ts-032p/corpus.txt", import.meta.url));
+const frozen = readFileSync(
+    new URL("../test/fixtures/tooling/ts-032p/corpus.txt", import.meta.url),
+);
 assert.equal(hash(frozen), "9102f9fe83fc37b2b883a55e29c9ec173e4c0d54118eaf96113a166702dc1c6d");
 const frozenRows = frozen.toString().trimEnd().split("\n");
 assert.equal(frozenRows.length, 13350);
 const vectors = JSON.parse(
-    readFileSync(new URL("../docs/validation/ts-032p/vectors.json", import.meta.url)),
+    readFileSync(new URL("../test/fixtures/tooling/ts-032p/vectors.json", import.meta.url)),
 );
 const view = new DataView(new ArrayBuffer(8));
 const fromBits = (bits) => {

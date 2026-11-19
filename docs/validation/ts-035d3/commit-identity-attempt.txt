@@ -1,4 +1,0 @@
-The initial git commit attempt failed before creating a commit:
-Author identity unknown; fatal: unable to auto-detect email address.
-
-The five preceding commits have the same author/committer identity. The retry uses that established identity through command-scoped git -c settings only. No global or repository configuration is changed. Staged content and validation remain unchanged.

@@ -1,17 +1,8 @@
+import { readFixtureFile as readFile } from "./test-support/fixture-files.mjs";
 import test from "node:test";
 import { currentManifestPath } from "./test-support/historical-paths.mjs";
 import assert from "node:assert/strict";
-import {
-    readFile,
-    writeFile,
-    mkdir,
-    cp,
-    rm,
-    unlink,
-    link,
-    symlink,
-    rename,
-} from "node:fs/promises";
+import { writeFile, mkdir, cp, rm, unlink, link, symlink, rename } from "node:fs/promises";
 import { resolve, dirname, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import * as api from "./script-plan.mjs";
@@ -297,7 +288,7 @@ test("selected path order, unknown and fixture rejection, retrieval and partial 
 });
 
 test("all twelve ordered second-check traces execute planner logic with isolated faults", async () => {
-    const literals = await json("docs/validation/ts-035e2-p/second-check-literals.json"),
+    const literals = await json("test/fixtures/tooling/ts-035e2-p/second-check-literals.json"),
         results = [];
     for (const lane of ["node", "native"]) {
         for (const row of literals) {

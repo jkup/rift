@@ -5,7 +5,7 @@ import { createDispatchDriver } from "./test-support/dispatch-driver.mjs";
 const { output, read, observe, results } = createDispatchDriver(
     "script-assignment-target-dispatch",
     "test/fixtures/script-assignment-target-dispatch",
-    "docs/validation/ts-035d6-p",
+    "test/fixtures/tooling/ts-035d6-p",
 );
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import { parseScriptEnvelope, assertScriptContext } from "./script-result.mjs";

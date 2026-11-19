@@ -1,3 +1,0 @@
-* -text
-*.ts whitespace=cr-at-eol
-run-*/*.mjs -whitespace

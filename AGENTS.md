@@ -1,15 +1,19 @@
-# Rift contributor instructions
+# Rift agent instructions
 
-Rift is a TypeScript JavaScript interpreter compiled with the pinned scriptc toolchain. Read CONTRIBUTING.md, docs/project-goals.md and docs/compiler-contract.md before implementation.
+Read CONTRIBUTING.md and docs/compiler-contract.md before implementation.
 
-- Choose clear implementations a TypeScript developer can follow. Correctness constrains simplification; preserve observable evaluation order.
-- Follow docs/readability.md. Run npm run format, npm run lint and npm run test:readability before handoff, in addition to semantic checks. Fix findings; do not widen ignores, disable rules or raise structural allowances to make a change pass.
-- Prefer named intermediate values, early returns and small helpers with clear responsibilities. Preserve full compiler-required callback arity with underscore-prefixed unused parameters. Use only rule-specific, single-line lint suppressions with an explanation after --.
-- Existing structural exceptions are measured per file/function in .readability-baseline.json. New or growing violations fail. Run npm run lint:ratchet after improvements; it only lowers/removes allowances. Treat configuration/baseline increases as explicit policy changes requiring review.
-- Keep the same source runnable under Node. Never execute guest code through host eval, Function, Node vm or a dynamic compiler fallback.
-- Keep I/O outside the semantic core and mutable guest state inside a Realm. Guest control flow uses completion records; host exceptions indicate implementation faults.
-- Keep static-only native compilation and the zero-dynamic coverage gate. Isolate and explain compiler workarounds; do not change the pinned toolchain for unrelated features.
-- Run typechecking, test:runner, relevant Node and native guest checks, and test:compiler for toolchain/integration changes. Report tested scope and failures honestly.
-- Keep expected-result assertions; report skips, unsupported features, timeouts, crashes and harness failures separately. Do not change conformance denominators to improve claims.
-- Coordinate one implementation writer at a time when sharing a checkout. Preserve unrelated work. Record scope and validation in the issue or pull request; do not create session-tracking files in the repository.
-- Historical evidence under docs/validation retains original paths and measurements. It is not a current build instruction. The retired implementation is no longer part of this project.
+- Prefer clear TypeScript and preserve observable evaluation order.
+- Keep guest state in a Realm, control flow in completion records and I/O outside
+  the semantic core. Never use host eval, Function, vm or a dynamic compiler fallback.
+- Preserve the pinned compiler, full callback arity, static-only builds and the
+  separate zero-dynamic coverage gate. Explain compiler workarounds where used.
+- Run format, lint and test:readability before handoff. Do not widen ignores,
+  disable rules or increase structural allowances to pass. Run lint:ratchet after
+  reducing existing violations. Follow CONTRIBUTING.md's suppression policy.
+- Run typecheck, test:runner and relevant Node/native checks. Run test:compiler for
+  toolchain or integration changes. Report actual scope, failures and skips.
+- Preserve expected-result assertions and conformance denominators.
+- Coordinate one writer per shared checkout. Preserve unrelated changes and record
+  scope and validation in the issue or PR, not repository session logs.
+- Test fixtures include pinned bytes and intentionally invalid syntax. Do not
+  format them or rewrite their expected results as incidental cleanup.

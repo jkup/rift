@@ -1,6 +1,0 @@
-scriptc coverage C:\Users\jonku\code\rift\typescript\test\script-execution.ts
-
-  statements analyzed   3908
-  compile statically    3908  (100%)
-
-  fully static — all analyzed statements compile to native code.

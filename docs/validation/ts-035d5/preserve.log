@@ -1,7 +1,0 @@
-warning: in the working copy of 'typescript/COORDINATION.md', CRLF will be replaced by LF the next time Git touches it
-warning: in the working copy of 'typescript/TASKS.md', CRLF will be replaced by LF the next time Git touches it
-warning: in the working copy of 'typescript/docs/feature-inventory.md', CRLF will be replaced by LF the next time Git touches it
-warning: in the working copy of 'typescript/src/parser.ts', CRLF will be replaced by LF the next time Git touches it
-warning: in the working copy of 'typescript/src/script-declarations.ts', CRLF will be replaced by LF the next time Git touches it
-{"wholeFiles":873,"D5migrations":0,"futureEmissionMigrations":3,"protected":4971,"rows":102,"all60Blocked":true,"emission":false,"implementation":true}
-PASS exact scope, historical bytes, 873 old files, 212 both, 67+1 zero-dynamic gates, 36 suites, 60 blocked

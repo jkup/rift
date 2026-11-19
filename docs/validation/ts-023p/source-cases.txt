@@ -1,10 +1,0 @@
-TS-023P data-only source ledger; no runtime support tested.
-{"id":"S1","input":"/*lead*/ function /*a*/ f ( x ) { /*b*/ return x; } /*tail*/","ranges":[[9,51,"function /*a*/ f ( x ) { /*b*/ return x; }"]]}
-{"id":"S2","input":"let f = (function /*a*/ (x) {return x;}) /*tail*/;","ranges":[[9,39,"function /*a*/ (x) {return x;}"]]}
-{"id":"S3","input":"//lead\r\nfunction f() {\r\n//keep\r\n}\r\n","ranges":[[8,33,"function f() {\r\n//keep\r\n}"]]}
-{"id":"S4","input":"function outer() { function inner() { return 1; } return inner; }","ranges":[[0,65,"function outer() { function inner() { return 1; } return inner; }"],[19,49,"function inner() { return 1; }"]]}
-{"id":"S5","input":"let f=function(){return 'a\\n\\t\\\\b';};","ranges":[[6,36,"function(){return 'a\\n\\t\\\\b';}"]]}
-{"id":"S6","input":"/*😀*/let f=function(){return '😀\ud800x\udc00\u0000';};","ranges":[[12,40,"function(){return '😀\ud800x\udc00\u0000';}"]]}
-{"id":"S7","input":"function f(){/*  */return 1;}","ranges":[[0,29,"function f(){/*  */return 1;}"]]}
-{"id":"S8","input":"function f(){/* } function */return '}';} //tail","ranges":[[0,41,"function f(){/* } function */return '}';}"]]}
-{"id":"S9","input":"function a(){} /*gap*/ function b(){}","ranges":[[0,14,"function a(){}"],[23,37,"function b(){}"]]}

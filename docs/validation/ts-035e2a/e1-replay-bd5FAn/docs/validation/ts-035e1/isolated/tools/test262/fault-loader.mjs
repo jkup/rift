@@ -1,2 +1,0 @@
-import { registerHooks } from 'node:module';
-registerHooks({resolve(s,c,n){if(s==='node:fs/promises' && c.parentURL?.endsWith('/script-capabilities.mjs')) return {url:'data:text/javascript,'+encodeURIComponent('export async function readFile(){ throw Object.assign(new Error("IO"), {code:null}); }'),shortCircuit:true};return n(s,c);}});

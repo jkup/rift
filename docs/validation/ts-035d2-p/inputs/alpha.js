@@ -1,1 +1,0 @@
-"use strict"; {function alpha(){} function alpha(){}}

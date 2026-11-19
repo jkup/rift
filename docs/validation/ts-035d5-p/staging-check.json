@@ -1,9 +1,0 @@
-{
-  "initialFinding": "git diff --cached --check reported trailing whitespace on intentional CRLF input lines and four original CRLF lines in the complete D2-P proposal.",
-  "correction": "Directory-local attributes retain exact bytes with -text and declare whitespace=cr-at-eol; no source, fixture or proposal bytes normalized.",
-  "initialStageWarning": "Git warned that proposed D2-P CRLF would normalize before -text was added. Re-staged after adding exact-byte attributes; verify index bytes before commit.",
-  "ignoredProposal": "Repository tools/test262 ignore rule also matches the nested rendered C proposal. Stage that exact owned proposed-emission file with git add -f; do not change ignore rules or real tests.",
-  "indexVerificationFailure": "First exact staged-byte assertion failed on D2-P proposed verify-future-wire.mjs: index length 5006 versus intended checkout length 5010, four CR bytes missing. Ordinary re-add had reused cached content after the attribute change. No committed or protected bytes were changed.",
-  "indexCorrection": "Force attribute reapplication with git add --renormalize on the exact owned rendered proposals; all five CRLF/proposal files then matched index bytes and cached diff check passed.",
-  "commitFailure": "First git commit exited 128-equivalent tool exit 1: Author identity unknown; unable to auto-detect email address. No commit created. Existing three accepted commits identify Jon Kuperman <jon.kuperman@gmail.com>; use command-local author settings for candidate commit, without changing global or repository configuration."
-}

@@ -1,8 +1,0 @@
-{
-  "baseline": "73af503",
-  "validateLaunch": "accepted",
-  "variant": "strict",
-  "source": "return 1;",
-  "transformedSourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
-  "unprefixedSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc"
-}

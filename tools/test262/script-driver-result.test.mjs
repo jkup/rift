@@ -8,7 +8,7 @@ import {
     mutations,
     rebind,
     harnessRow,
-} from "../../docs/validation/ts-035a/controls.mjs";
+} from "../../test/fixtures/tooling/ts-035a/controls.mjs";
 const rows = serialized();
 const encode = (x) => Buffer.from(JSON.stringify(x));
 test("T01 both runtime inputs/lane bytes match literal ASCII and all valid closed arms", () => {

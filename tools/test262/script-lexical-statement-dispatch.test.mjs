@@ -5,7 +5,7 @@ import { createDispatchDriver } from "./test-support/dispatch-driver.mjs";
 const { output, read, observe, results } = createDispatchDriver(
     "script-lexical-statement-dispatch",
     "test/fixtures/script-lexical-statement-dispatch",
-    "docs/validation/ts-035d8-p",
+    "test/fixtures/tooling/ts-035d8-p",
 );
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import { parseScriptEnvelope, assertScriptContext } from "./script-result.mjs";
