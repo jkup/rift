@@ -36,6 +36,17 @@ npm run build:native
 On Windows, use `./build/native/rift.exe`. See the [usage guide](docs/usage.md)
 for platform setup and CLI options.
 
+To build a single native driver and run Test262 with parallel workers:
+
+```sh
+git -c core.autocrlf=false clone --depth 1 https://github.com/tc39/test262.git ../test262
+npm run test262
+```
+
+Reuse an existing corpus with `-- --corpus PATH`. See the
+[runner guide](tools/test262/README.md#native-corpus-runner) for filtering,
+worker counts, explicit unsupported-feature skips and reports.
+
 Read the [architecture guide](docs/architecture-decisions.md) to explore the code,
 or [CONTRIBUTING.md](CONTRIBUTING.md) to get involved.
 

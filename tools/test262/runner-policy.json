@@ -1,0 +1,9 @@
+{
+    "features": {
+        "SharedArrayBuffer": "shared memory is not implemented",
+        "Atomics": "agent and shared-memory services are not implemented",
+        "WeakRef": "weak-reference host jobs are not implemented",
+        "FinalizationRegistry": "finalization host jobs are not implemented",
+        "IsHTMLDDA": "the host does not provide IsHTMLDDA"
+    }
+}

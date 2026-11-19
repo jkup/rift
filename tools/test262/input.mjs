@@ -111,7 +111,7 @@ const keys = new Set([
     "locale",
     "negative",
 ]);
-export function metadata(source) {
+export function metadata(source, { allowRawModule = false } = {}) {
     const starts = [...source.matchAll(/\/\*---/g)];
     const ends = [...source.matchAll(/---\*\//g)];
     if (starts.length !== 1 || ends.length !== 1 || ends[0].index < starts[0].index) {
@@ -186,6 +186,11 @@ export function metadata(source) {
         ["raw", "async"],
         ["CanBlockIsTrue", "CanBlockIsFalse"],
     ]) {
+        // The frozen adapter retains its original profile restrictions. Current
+        // Test262 also uses raw modules (for example, hashbang fixtures).
+        if (allowRawModule && pair[0] === "raw" && pair[1] === "module") {
+            continue;
+        }
         if (pair.every((x) => value.flags.includes(x))) {
             reject("incompatible-flags");
         }
