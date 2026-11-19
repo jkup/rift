@@ -62,9 +62,19 @@ mkdirSync(join(ROOT, "build", "native"), { recursive: true });
 const results = [];
 for (const name of probes) {
     const args = ARGS[name] ?? [];
-    const node = run(process.execPath, [join(ROOT, "build", "node", "probes", name + ".js"), ...args]);
+    const node = run(process.execPath, [
+        join(ROOT, "build", "node", "probes", name + ".js"),
+        ...args,
+    ]);
     const exe = join(ROOT, "build", "native", name + EXE);
-    const build = run(scriptc, ["build", join("probes", name + ".ts"), "--tier", "static-only", "-o", exe]);
+    const build = run(scriptc, [
+        "build",
+        join("probes", name + ".ts"),
+        "--tier",
+        "static-only",
+        "-o",
+        exe,
+    ]);
     const native = completed(build) ? run(exe, args) : null;
     // static-only forbids fallback demotions but still admits runtime-typed
     // values ("dynamic tier"); the coverage report is the stricter gate.
@@ -72,24 +82,43 @@ for (const name of probes) {
     const expectedStatus = name === "host" ? 3 : 0;
     const verdict = probeVerdict({ build, coverage, node, native, expectedStatus });
 
-    results.push({ name, compiler: scriptc, verdict, expectedStatus, node, build, coverage, native });
+    results.push({
+        name,
+        compiler: scriptc,
+        verdict,
+        expectedStatus,
+        node,
+        build,
+        coverage,
+        native,
+    });
     console.log(`${verdict.padEnd(12)} ${name}  (build ${build.ms}ms)`);
 }
 
 // Full transcripts for inspection; build/ is ignored by git.
 writeFileSync(join(ROOT, "build", "probe-results.json"), JSON.stringify(results, null, 2));
 for (const r of results) {
-    if (r.verdict === "PASS") continue;
+    if (r.verdict === "PASS") {
+        continue;
+    }
     console.log(`\n=== ${r.name}: ${r.verdict}`);
     console.log(`  expected execution status: ${r.expectedStatus}`);
     for (const lane of ["build", "coverage", "node", "native"]) {
         const result = r[lane];
-        if (!result) continue;
+        if (!result) {
+            continue;
+        }
         console.log(`  ${lane}: status=${result.status} signal=${result.signal ?? "none"}`);
-        if (result.error) console.log(`  ${result.error.code}: ${result.error.message}`);
-        if (result.stdout) console.log(result.stdout.trim().slice(0, 2000));
+        if (result.error) {
+            console.log(`  ${result.error.code}: ${result.error.message}`);
+        }
+        if (result.stdout) {
+            console.log(result.stdout.trim().slice(0, 2000));
+        }
         // Linker diagnostics often end with the useful error after a long command.
-        if (result.stderr) console.log(result.stderr.trim().slice(-4000));
+        if (result.stderr) {
+            console.log(result.stderr.trim().slice(-4000));
+        }
     }
 }
 process.exitCode = results.every((r) => r.verdict === "PASS") ? 0 : 1;

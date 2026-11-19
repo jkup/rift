@@ -43,18 +43,23 @@ const AREA_RULES = [
 
 function areaOf(relativePath) {
     for (const [area, pattern] of AREA_RULES) {
-        if (pattern.test(relativePath)) return area;
+        if (pattern.test(relativePath)) {
+            return area;
+        }
     }
     return "other / mixed status scripts";
 }
 
 function walk(dir, out) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
-        a.name.localeCompare(b.name),
-    )) {
+    for (const entry of fs
+        .readdirSync(dir, { withFileTypes: true })
+        .sort((a, b) => a.name.localeCompare(b.name))) {
         const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) walk(full, out);
-        else out.push(full);
+        if (entry.isDirectory()) {
+            walk(full, out);
+        } else {
+            out.push(full);
+        }
     }
     return out;
 }
@@ -91,10 +96,18 @@ function signalsOf(source) {
 
 // Primary category: how a failure in this file could become visible.
 function categoryOf(s) {
-    if (s.throwingAssert || s.throwsOnCheck) return "assertion-bearing (throws)";
-    if (s.detectedFailMarker) return "assertion-bearing (prints FAIL:/❌)";
-    if (s.undetectedFailMarker) return "marker-only, invisible to harness (FAIL without colon/✗)";
-    if (s.printsComparisons) return "output-only (prints comparison booleans)";
+    if (s.throwingAssert || s.throwsOnCheck) {
+        return "assertion-bearing (throws)";
+    }
+    if (s.detectedFailMarker) {
+        return "assertion-bearing (prints FAIL:/❌)";
+    }
+    if (s.undetectedFailMarker) {
+        return "marker-only, invisible to harness (FAIL without colon/✗)";
+    }
+    if (s.printsComparisons) {
+        return "output-only (prints comparison booleans)";
+    }
     return "output-only (demo/trace)";
 }
 
@@ -107,7 +120,10 @@ function inventory() {
         return {
             file: `test/${relative}`,
             directory: path.dirname(relative) === "." ? "(root)" : path.dirname(relative),
-            harnessRuns: isJs && !relative.split("/").includes("skipped") && !path.basename(relative).startsWith("temp_"),
+            harnessRuns:
+                isJs &&
+                !relative.split("/").includes("skipped") &&
+                !path.basename(relative).startsWith("temp_"),
             lines: isJs ? source.split("\n").length : 0,
             area: isJs ? areaOf(relative) : "non-JS",
             category: isJs ? categoryOf(signals) : "non-JS",
@@ -118,13 +134,17 @@ function inventory() {
 
 function countBy(records, key) {
     const counts = new Map();
-    for (const r of records) counts.set(key(r), (counts.get(key(r)) ?? 0) + 1);
+    for (const r of records) {
+        counts.set(key(r), (counts.get(key(r)) ?? 0) + 1);
+    }
     return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
 function printTable(title, rows) {
     console.log(`\n## ${title}\n`);
-    for (const [name, count] of rows) console.log(`${String(count).padStart(4)}  ${name}`);
+    for (const [name, count] of rows) {
+        console.log(`${String(count).padStart(4)}  ${name}`);
+    }
 }
 
 const records = inventory();
@@ -133,10 +153,21 @@ if (process.argv.includes("--json")) {
 } else {
     const js = records.filter((r) => r.area !== "non-JS");
     const run = js.filter((r) => r.harnessRuns);
-    console.log(`files under test/: ${records.length}; .js: ${js.length}; run by npm test: ${run.length}`);
-    printTable("By directory (all .js)", countBy(js, (r) => r.directory));
-    printTable("By area (run by npm test)", countBy(run, (r) => r.area));
-    printTable("By failure-visibility category (run by npm test)", countBy(run, (r) => r.category));
+    console.log(
+        `files under test/: ${records.length}; .js: ${js.length}; run by npm test: ${run.length}`,
+    );
+    printTable(
+        "By directory (all .js)",
+        countBy(js, (r) => r.directory),
+    );
+    printTable(
+        "By area (run by npm test)",
+        countBy(run, (r) => r.area),
+    );
+    printTable(
+        "By failure-visibility category (run by npm test)",
+        countBy(run, (r) => r.category),
+    );
     const flags = Object.keys(run[0].signals);
     printTable(
         "Signal counts (run by npm test; a file may have several)",

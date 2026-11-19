@@ -9,9 +9,11 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const scriptc = scriptcPath(root);
 const suffix = process.platform === "win32" ? ".exe" : "";
 const jobs = Number(process.env.RIFT_NATIVE_JOBS ?? 2);
-if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error("RIFT_NATIVE_JOBS must be a positive safe integer");
+if (!Number.isSafeInteger(jobs) || jobs < 1) {
+    throw new Error("RIFT_NATIVE_JOBS must be a positive safe integer");
+}
 mkdirSync(join(root, "build/native"), { recursive: true });
-const run = args => runNativeCommand(scriptc, args, { cwd: root });
+const run = (args) => runNativeCommand(scriptc, args, { cwd: root });
 const entries = [
     ["test/weak-collections.ts", "weak-collections"],
     ["test/ordinary-identifiers.ts", "ordinary-identifiers"],
@@ -502,16 +504,30 @@ const entries = [
 validateNativeEntries(entries);
 const started = Date.now();
 const results = await mapConcurrent(entries, jobs, async ([entry, name]) => {
-    const build = await run(["build", entry, "--tier", "static-only", "--no-keep-llvm", "-o", join(root, "build/native", name + suffix)]);
+    const build = await run([
+        "build",
+        entry,
+        "--tier",
+        "static-only",
+        "--no-keep-llvm",
+        "-o",
+        join(root, "build/native", name + suffix),
+    ]);
     const coverage = await run(["coverage", entry]);
     // Reuse the fail-closed pinned coverage parser. Execution has its own suite.
     const success = { status: 0, signal: null, error: null, stdout: "" };
     const verdict = probeVerdict({ build, coverage, node: success, native: success });
     console.log(`${verdict} ${entry}`);
-    if (!completed(build)) console.error(build.stderr);
-    if (verdict !== "PASS") console.error(coverage.stdout, coverage.stderr);
+    if (!completed(build)) {
+        console.error(build.stderr);
+    }
+    if (verdict !== "PASS") {
+        console.error(coverage.stdout, coverage.stderr);
+    }
     return { entry, compiler: scriptc, build, coverage, verdict };
 });
-console.log(`Native build: ${entries.length} entries, ${Math.min(jobs, entries.length)} workers, ${Date.now() - started}ms`);
+console.log(
+    `Native build: ${entries.length} entries, ${Math.min(jobs, entries.length)} workers, ${Date.now() - started}ms`,
+);
 writeFileSync(join(root, "build/native-build-results.json"), JSON.stringify(results, null, 2));
-process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;
+process.exitCode = results.every((r) => r.verdict === "PASS") ? 0 : 1;

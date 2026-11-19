@@ -13,8 +13,10 @@ function success(stdout = "") {
 
 function fixture() {
     return {
-        build: success(), coverage: success(staticReport),
-        node: success("result\n"), native: success("result\n"),
+        build: success(),
+        coverage: success(staticReport),
+        node: success("result\n"),
+        native: success("result\n"),
     };
 }
 
@@ -49,10 +51,14 @@ for (const lane of ["build", "coverage", "node", "native"]) {
 }
 
 test("fails closed on missing, changed or incomplete coverage reports", () => {
-    for (const report of ["", "new format", "in dynamic tier 0",
+    for (const report of [
+        "",
+        "new format",
+        "in dynamic tier 0",
         staticReport.replace("39  (100%)", "38  (100%)"),
         staticReport.replace("fully static", "partially static"),
-        staticReport.replaceAll("39", "0")]) {
+        staticReport.replaceAll("39", "0"),
+    ]) {
         const f = fixture();
         f.coverage.stdout = report;
         assert.equal(probeVerdict(f), "COVERAGE-UNKNOWN");

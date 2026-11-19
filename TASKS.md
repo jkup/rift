@@ -40,6 +40,16 @@ delta. This is not a full native guest-suite claim. Source-contract regression
 tests pass 6/6; repaired ledger fault injection passes its 149 checks/28 literal
 reports. Remaining tooling failures are being revalidated with link permissions.
 
+Tooling checkpoint: the frozen full tooling run passed 297/299 (zero skips).
+The last quote-sensitive isolated capture import was repaired and its complete
+test now passes; the other failure was one subprocess timeout under full-run
+load, and the unchanged preflight-producer suite passes on focused retry.
+Checkpoint/ledger, source-contract and relocated historical codec assertions
+pass without changing expected records. The baseline run and retries remain
+separate under build/readability. Fresh source cleanup removes unused imports
+and helpers, retains callback arity, and explains intentional test-only lint
+exceptions. Nested conditional cleanup and final consolidated acceptance remain.
+
 > Layout update (2026-11-19): the TypeScript project now lives at the repository root. Earlier entries retain historical paths and retired-engine references as acceptance records. Current instructions are in AGENTS.md and README.md.
 
 Statuses: **ready**, **blocked**, **in progress**, **done**. Claim a ready task before coding. Record owner/chat, base revision, evidence and handoff notes. A task becomes done only after integration and successful acceptance. Split broad tasks into bounded batches as interfaces become concrete.
