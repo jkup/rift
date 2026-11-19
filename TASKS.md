@@ -1,5 +1,24 @@
 # Current work
 
+## TS-573 — Clearer getting started
+
+Status: complete (2026-11-19). Implementation ownership released.
+
+Make the Node quick start the default, explain which program each build compiles,
+and label native compiler preparation and Test262 as separate developer workflows.
+Documentation only; preserve compiler pins, build commands and semantic behavior.
+
+README now leads with a Node quick start and expected output, explains Node vs
+native builds, and links optional native setup and Test262 separately. Usage and
+compiler guides explain the pinned patched compiler, setup scope and full native
+driver build without presenting them as quick-start prerequisites.
+
+Validation: format, lint, readability 9/9, typecheck and runner 36/36 pass. The
+README counter example produces its expected output on Node and the existing
+native executable; inline Node execution prints 42. Diff checks pass. No native
+rebuild or full semantic suite was needed for these documentation-only changes.
+The owner authorized committing and pushing the accepted changes to main.
+
 ## TS-572 — CI efficiency review
 
 Status: complete (2026-11-19). Implementation ownership released.

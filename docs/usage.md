@@ -10,7 +10,20 @@ npm run build:node
 node build/node/src/cli.js examples/counter.js
 ```
 
-Native builds require the [pinned patched scriptc toolchain](../toolchain/scriptc/README.md).
+### Native builds (optional)
+
+Use the Node build above to try Rift without setting up a native compiler.
+Native builds compile the same interpreter into an executable that runs without
+Node.js. The build process still uses Node.js and npm.
+
+This is currently a developer setup: `npm ci` does not install the native
+compiler, and `npm run build:native` does not build that compiler for you.
+The native command builds the CLI and the full set of test drivers, so it does
+more work than producing a single executable.
+
+First prepare ScriptC using the [compiler build instructions](../toolchain/scriptc/README.md).
+Rift uses a specific compiler revision with patches needed for its weak collections;
+this is what "pinned toolchain" means. The compiler setup also requires Zig 0.16.0.
 Build it into `build/toolchain/<platform>-<arch>` or set `RIFT_SCRIPTC` to its
 executable, then run:
 
@@ -36,6 +49,8 @@ the declared entry order.
 The build discards generated LLVM text after successful compilation; executables
 and subprocess reports remain. To inspect LLVM for a specific entry, invoke
 scriptc directly without `--no-keep-llvm`.
+
+## CLI options
 
 Date uses UTC by default. Select a named timezone or fixed minute offset with a
 leading `--time-zone` option for either file or inline execution:

@@ -2,6 +2,11 @@
 
 Updated 2026-11-19. One implementation writer at a time in this checkout.
 
+TS-573 getting-started documentation is complete; implementation ownership is
+released. README, usage and compiler-guide wording is simplified. Local checks
+and both-host counter examples pass; no build or interpreter behavior changed.
+The owner authorized committing and pushing these documentation changes to main.
+
 TS-572 CI efficiency review is complete; implementation ownership is released.
 The owner authorized committing and pushing the workflow/docs changes to main.
 All local acceptance checks pass; see TASKS.md for scope. The inspected remote CI

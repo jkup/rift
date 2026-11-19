@@ -1,4 +1,19 @@
-# Pinned typed weak-storage compiler
+# Building Rift's ScriptC compiler
+
+This guide is for developers preparing the compiler used by Rift's native builds.
+To try Rift using Node.js, follow the [quick start](../../README.md#try-rift).
+
+ScriptC compiles Rift's TypeScript into a native executable. Rift currently needs
+a specific ScriptC revision plus patches for weak collections. "Pinned" means
+that exact revision and patch set, recorded in `source.json`. Installing the
+unmodified npm compiler is insufficient.
+
+Setup involves exporting the patched compiler source, installing its dependencies,
+building its runtime and compiler, and making Zig 0.16.0 available for linking.
+It is not yet a one-command install. The instructions and validation details below
+document that developer process.
+
+## Source and build details
 
 This patch preserves the compiler used by the isolated Rift WeakMap/WeakSet
 trial. It adds typed weak storage and ownership tracing, plus the runtime-link
