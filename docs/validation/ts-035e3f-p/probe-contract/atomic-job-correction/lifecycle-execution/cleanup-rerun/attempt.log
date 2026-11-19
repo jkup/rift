@@ -1,6 +1,0 @@
-{"baseline":9333,"priorSealedRows":[39,44,42],"archiveFiles":163,"archiveBytes":19246373,"matched":10,"failed":1,"unrun":14,"outerEmptyBeforeFallback":11,"sourceProposalsChecked":2,"lifecycleRetries":0,"passed":true}
-Exception: C:\Users\jonku\code\rift\typescript\build\ts035e3fp-cleanup-reviewed-inputs\lifecycle-runner.ps1:118
-Line |
- 118 |  … ') $results;throw 'Lifecycle failed. No retry or compiler invocation. …
-     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     | Lifecycle failed. No retry or compiler invocation.

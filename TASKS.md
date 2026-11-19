@@ -1,50 +1,42 @@
 # Current work
 
-## TS-569 — Simple README and logo
+## TS-570 — Supporting-folder cleanup
 
 Status: complete (2026-11-19). Implementation ownership released.
 
-Simplify the README to purpose, execution model and local Node/ScriptC commands.
-Add the owner's emailed Rift PNG unchanged as a repository asset.
-Acceptance: required readability, typecheck and runner/Node checks; verify the
-quick-start output and README links. No runtime or toolchain changes.
+Consolidated runtime inputs under `test/fixtures` and ten active ScriptC checks
+under `test/compiler`; the command is now `npm run test:compiler`. Kept the
+single tested quick-start example. Retained current guides, cited design
+references, data provenance/licenses and referenced validation records.
 
-Validation: format, lint, typecheck, readability tests 9/9, runner tests 36/36
-and Node guests 1003/1003 pass with no skips. Both Node quick-start examples
-produce expected output; every README link and image target resolves. The
-downloaded PNG was visually inspected. Native builds and probes were not rerun
-for this documentation-only change.
+Removed 5,225 obsolete tracked files, including 529 standalone milestone notes
+and 4,655 unreferenced archive files (about 374 MB). Retired plans, one-off
+migration probes and audit scripts remain recoverable at `150d2625` in Git.
+Moved 325 files; all 293 moved fixture/compiler inputs retain their exact bytes.
+The retained archive was selected conservatively through direct and transitive
+references; its original records were not rewritten.
 
-## TS-568 — Open-source repository cleanup
+Validation: format, lint, readability 9/9, typecheck, runner 36/36, Node guests
+1003/1003, native guests 1003/1003 and ten fresh compiler checks pass. Native
+guests used existing binaries: interpreter changes are documentation comments
+only. Generated table contents and source pins are unchanged; provenance output
+hashes reflect the relocated header references. All maintained Markdown links
+resolve. The structural baseline decreased from 3313 to 3300 lines for the guest
+runner; no allowance increased and no test denominator changed.
 
-Status: complete (2026-11-19). Implementation ownership released.
+The first tooling run passed 292/299: filesystem sandbox restrictions and three
+historical manifest-path lookups caused failures. After the explicit path
+migration, an unsandboxed full run passed 298/299; the remaining checkpoint
+lookup was corrected and its complete isolated rerun passed (1/1, no skips).
+Compiler attempts with the default Zig and sandbox cache failed before execution;
+the pinned Zig outside the sandbox passed all ten static-only/zero-dynamic gates.
+Original and corrected logs remain under `build/layout-*`.
 
-Audit every root entry against current build/test consumers. Remove redundant
-instructions and obsolete one-off tooling, consolidate historical benchmarks
-under docs, and make onboarding and current task state concise. Preserve semantic
-source, fixture bytes, compiler pins and saved validation evidence.
-
-Acceptance: format, lint, readability tests, typecheck, runner and Node guests;
-verify the documented example, benchmark byte preservation and local documentation
-links. No compiler/runtime change is intended; no full native rebuild is required.
-
-Validation: format, all lint layers, readability tests 9/9, typecheck, runner
-36/36 and Node guests 1003/1003 pass with no skips. The structural ratchet remains
-at 173 exceptions with no baseline change. Both quick-start commands pass;
-43 local documentation links resolve. All six moved benchmark Git blobs match
-(the initial raw-byte comparison encountered Windows checkout line endings;
-Git-filtered hashes verify the preserved tracked contents). No fresh native
-build, probes or full Test262 run was performed for this documentation/deletion
-cleanup. Runtime source, fixtures, expectations and compiler pins are unchanged.
-EditorConfig now agrees with the existing four-space formatter setting.
-
-## Follow-up candidates
-
-No semantic feature is currently assigned. See the
-[roadmap](docs/development-roadmap.md) for concrete remaining findings and the
-[feature inventory](docs/feature-inventory.md) for supported scope.
-
-TS-566 (bounded Test262 comparison) and TS-567 (readability gates) are complete.
-The previous migration backlog and acceptance chronology remain in Git at
-`ee58390b78a8fd4f12488fa00af6b1f029d045a9:TASKS.md`; recover with
-`git show ee58390b:TASKS.md`. Historical proposals are not current assignments.
+No fresh full-engine native rebuild or full Test262 conformance run was performed.
+Final top-level review found no further obsolete root entries. Removed duplicated
+fixture wording in CONTRIBUTING and checked every README link and image target.
+All seven targets resolve; format, lint, readability, typecheck and runner tests
+passed again. All 325 relocated files are present without obsolete duplicates.
+The owner authorized committing and pushing the complete cleanup after this review.
+See the [roadmap](docs/development-roadmap.md) for runtime followups. Earlier task
+histories remain in Git.

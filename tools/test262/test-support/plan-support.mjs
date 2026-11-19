@@ -31,7 +31,7 @@ export async function sandbox(setup = null) {
         "tools/test262/script-capabilities.json",
         "tools/test262/script-plan.mjs",
         "tools/test262/script-ledger.mjs",
-        "fixtures/assistance/test262-starter-corpus/manifest.json",
+        "test/fixtures/test262-selection/manifest.json",
         "package.json",
         "package-lock.json",
     ]) {

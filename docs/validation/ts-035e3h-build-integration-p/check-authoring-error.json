@@ -1,6 +1,0 @@
-{
-  "phase": "checker authoring",
-  "error": "Compared named before object to all-alias after array; corrected comparison to before named row plus aliases array.",
-  "compilerInvocations": 0,
-  "addTypeInvocations": 0
-}

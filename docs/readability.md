@@ -17,7 +17,7 @@ npm run test:runner
 ```
 
 Run relevant Node and fresh native semantic checks as described in README.md and
-the compiler contract. Toolchain/integration changes also require `test:probes`.
+the compiler contract. Toolchain/integration changes also require `test:compiler`.
 Typechecking emits `build/node`; do not run it, `build:node`, or probes while a
 Node guest/tooling test is consuming that output. Tooling contract tests also
 hash source files: freeze source edits during their run.
@@ -37,7 +37,7 @@ oxc-parser 0.159.0. The TypeScript and scriptc pins are unchanged. Oxfmt uses fo
 spaces and a 100-column target. Import and package sorting are disabled to keep
 evaluation order and intentional grouping intact.
 
-The checks cover handwritten code in `src`, `test`, `probes` and `tools`, plus
+The checks cover handwritten code in `src`, `test` and `tools`, plus
 the toolchain archive preparation script `toolchain/scriptc/prepare.mjs`.
 Generated Unicode/timezone tables, build output, vendored toolchain code,
 historical evidence, guest fixtures, benchmark workloads and examples are excluded. Guest programs
@@ -99,7 +99,7 @@ they add noise or risk without making this code clearer.
 New production functions should stay within 100 nonblank, noncomment lines;
 production files within 600; control-flow nesting within four levels. Size
 checks apply to interpreter and production tooling, including the guest runner.
-Files under `test` and `probes`, tooling `*.test.mjs`/`*.integration.mjs` files and
+Files under `test`, tooling `*.test.mjs`/`*.integration.mjs` files and
 `test-support` modules are exempt from size limits, but retain nesting checks.
 Flat `else if` chains do not
 add depth, and callbacks are measured independently.

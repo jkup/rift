@@ -48,14 +48,14 @@ for (const [variant, name, value] of [
         scriptHostCases.push({
             driver,
             variant,
-            fixture: `fixtures/${driver}/${variant}.txt`,
+            fixture: `test/fixtures/${driver}/${variant}.txt`,
             stdout: prefix + `INPUT ${name} ${value} PASS\n`,
         });
     }
     scriptHostCases.push({
         driver: "property-accessors",
         variant,
-        fixture: `fixtures/property-accessors/${variant}.txt`,
+        fixture: `test/fixtures/property-accessors/${variant}.txt`,
         stdout: `R01-R28 R33-R34 PASS ${name}|${value}\n`,
     });
 }
@@ -66,7 +66,7 @@ for (const [variant, input] of [
     scriptHostCases.push({
         driver: "script-restricted-properties",
         variant,
-        fixture: `fixtures/script-restricted-properties/${variant}.txt`,
+        fixture: `test/fixtures/script-restricted-properties/${variant}.txt`,
         stdout: `R29 PASS\nR30 dispatch projection PASS ${input}\nR31 PASS\nR32 PASS\nR35 guarded invocation PASS\n`,
     });
 }
@@ -78,64 +78,64 @@ for (const [driver, report, inputs] of [
         "script-execution",
         "replays/execution",
         [
-            ["seed", "fixtures/script-execution/seed.txt"],
-            ["other", "fixtures/script-execution/other.txt"],
+            ["seed", "test/fixtures/script-execution/seed.txt"],
+            ["other", "test/fixtures/script-execution/other.txt"],
         ],
     ],
     [
         "harness-catch",
         "catch",
         [
-            ["seed", "fixtures/harness-catch/seed.txt"],
-            ["other", "fixtures/harness-catch/other.txt"],
+            ["seed", "test/fixtures/harness-catch/seed.txt"],
+            ["other", "test/fixtures/harness-catch/other.txt"],
         ],
     ],
     [
         "harness-switch",
         "switch",
         [
-            ["seven", "fixtures/harness-switch/input-seven.js"],
-            ["eleven", "fixtures/harness-switch/input-eleven.js"],
+            ["seven", "test/fixtures/harness-switch/input-seven.js"],
+            ["eleven", "test/fixtures/harness-switch/input-eleven.js"],
         ],
     ],
     [
         "harness-for-update",
         "for-update",
         [
-            ["seven", "fixtures/harness-for-update/input-seven.js"],
-            ["eleven", "fixtures/harness-for-update/input-eleven.js"],
+            ["seven", "test/fixtures/harness-for-update/input-seven.js"],
+            ["eleven", "test/fixtures/harness-for-update/input-eleven.js"],
         ],
     ],
     [
         "harness-nonstrict",
         "nonstrict",
         [
-            ["seven", "fixtures/harness-nonstrict/input-seven.js"],
-            ["eleven", "fixtures/harness-nonstrict/input-eleven.js"],
+            ["seven", "test/fixtures/harness-nonstrict/input-seven.js"],
+            ["eleven", "test/fixtures/harness-nonstrict/input-eleven.js"],
         ],
     ],
     [
         "harness-construct",
         "construct",
         [
-            ["seven", "fixtures/harness-construct/input-seven.js"],
-            ["eleven", "fixtures/harness-construct/input-eleven.js"],
+            ["seven", "test/fixtures/harness-construct/input-seven.js"],
+            ["eleven", "test/fixtures/harness-construct/input-eleven.js"],
         ],
     ],
     [
         "harness-errors-a",
         "kernel",
         [
-            ["seven", "fixtures/harness-errors-a/input-seven.js"],
-            ["eleven", "fixtures/harness-errors-a/input-eleven.js"],
+            ["seven", "test/fixtures/harness-errors-a/input-seven.js"],
+            ["eleven", "test/fixtures/harness-errors-a/input-eleven.js"],
         ],
     ],
     [
         "harness-errors-b",
         "error",
         [
-            ["input-a", "fixtures/harness-errors-b/input-a.js"],
-            ["input-b", "fixtures/harness-errors-b/input-b.js"],
+            ["input-a", "test/fixtures/harness-errors-b/input-a.js"],
+            ["input-b", "test/fixtures/harness-errors-b/input-b.js"],
         ],
     ],
     [
@@ -235,7 +235,7 @@ for (const [variant, value] of [
         scriptHostCases.push({
             driver,
             variant,
-            fixture: `fixtures/${driver}/${variant}.txt`,
+            fixture: `test/fixtures/${driver}/${variant}.txt`,
             stdout,
         });
     }
@@ -296,3 +296,15 @@ scriptHostCases.push({
         .map((line) => (line ? line.replace(/\|([^|]+)\|/, "|runtime_$1|") : line))
         .join("\n"),
 });
+
+export function bootstrapFixtures(root) {
+    const rows = readFileSync(root + "/test/fixtures/script-realm-bootstrap/rows.txt", "utf8");
+    const stdout = Array.from(
+        { length: 18 },
+        (_, index) => `B${String(index + 1).padStart(2, "0")} PASS\n`,
+    ).join("");
+    return [
+        { name: "seed", text: rows, stdout },
+        { name: "other", text: rows.replaceAll("|seed|7", "|other|11"), stdout },
+    ];
+}

@@ -438,7 +438,7 @@ function objectBindingPlanExpectation(record) {
 
 test("Script declarations: 135 plans and 71 historical literals with explicit feature migrations in both hosts", () => {
     const snapshots = json("docs/validation/ts-034h6-c/replays/plans-results.json");
-    const literals = json("fixtures/script-declarations/literal.json");
+    const literals = json("test/fixtures/script-declarations/literal.json");
     assert.equal(literals.length, 71);
     const expected = new Map();
     for (const snapshot of snapshots) {

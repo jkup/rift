@@ -1,6 +1,0 @@
-
-### TS-035E3h unicode inert — bounded diagnostic controller
-
-Status: inert implementation complete; stopped for review with cap/retention ambiguity unresolved; sole writer chat 01a1afd0-5fa8-73b2-98a9-d887c42b9aee; base 45fcaf6f6c93dec9783a4280b037d80cecb42720. Own only docs/validation/ts-035e3h-unicode-inert/ and this entry. Preserve exact accepted diagnostic source/input/stdout/contract. Gate remains false; synthetic transport and separate filesystem fixtures only. No diagnostic or child execution, fixedroot reservation/materialization, PowerShell/API/Add-Type/helper/compiler/recorder/linker, scans, binary loading/reflection, fix or oracle normalization. Stop actual/root/second before readiness/execution; COORDINATION root-owned.
-
-Handoff: false-gated entry, nine bound source/tool rows, exact accepted contract/literals, readonly preflight fixedroot absent. Final controller passes90synthetic controls plus38extra; retained initial sandbox EPERM and final fixture-env error. Explicit bounded overflow-sentinel proposal requires review before readiness; no hidden contract amendment. Known-process exit only/no descendant census. No diagnostic/child/API/PowerShell/compiler/helper/recorder/linker run, no fix or normalization. Preserve13801baseline/alloldseals/failed observation. Stop actual/root/second.

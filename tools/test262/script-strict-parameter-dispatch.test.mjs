@@ -17,7 +17,7 @@ test("D4 real serializer bytes: both hosts, two runtime inputs, all three closed
                 ? "script-strict-parameter-dispatch"
                 : "script-strict-rule-dispatch";
         const args = [
-            "fixtures/" + sourceDir + "/" + input + ".js",
+            "test/fixtures/" + sourceDir + "/" + input + ".js",
             input,
             "wire",
             action,
@@ -121,7 +121,7 @@ test("D4 fixed source authority across variant and expected-negative metadata on
                 )
                 .digest("hex");
             const args = [
-                "fixtures/script-strict-parameter-dispatch/" + input + ".js",
+                "test/fixtures/script-strict-parameter-dispatch/" + input + ".js",
                 input,
                 "wire",
                 action,

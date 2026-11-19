@@ -20,7 +20,7 @@ const reject = (code) => {
 
 export async function frozenManifest() {
     const bytes = await readFile(
-        new URL("../../fixtures/assistance/test262-starter-corpus/manifest.json", import.meta.url),
+        new URL("../../test/fixtures/test262-selection/manifest.json", import.meta.url),
     );
     const manifest = JSON.parse(bytes);
     // The selection is immutable, including the declared execution metadata. The

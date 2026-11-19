@@ -128,7 +128,7 @@ async function main(lane) {
             : "build/native/rift" + (process.platform === "win32" ? ".exe" : ""),
     );
     const entrySha256 = hash(await readFile(entry));
-    const testRoot = resolve(root, "fixtures/legacy");
+    const testRoot = resolve(root, "test/fixtures/legacy");
     const selection = await selectFixtures(testRoot);
     await mkdir(resolve(root, "build"), { recursive: true });
     const output = await mkdtemp(resolve(root, "build/legacy-suite-" + lane + "-"));

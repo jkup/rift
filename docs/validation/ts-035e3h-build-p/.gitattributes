@@ -1,4 +1,0 @@
-* -text
-supervisor.cs.unchanged.txt whitespace=cr-at-eol
-*.retained.txt -diff
-version-metadata.json whitespace=cr-at-eol

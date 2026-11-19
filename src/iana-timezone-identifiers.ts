@@ -1,4 +1,4 @@
-// Generated from IANA 2026f; see docs/iana-timezone-identifiers-provenance.json.
+// Generated from IANA 2026f; see docs/data/iana-timezone-identifiers-provenance.json.
 import { ianaZones, type IanaZoneData } from "./iana-timezone-data.js";
 
 export class IanaIdentifier {

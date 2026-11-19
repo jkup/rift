@@ -1,8 +1,0 @@
-[
-  {"case":"source-ABA-during-copy","before":"original\n","copied":"replacement\n","after":"original\n","endpointEqual":true,"copyEqualsBefore":false},
-  {"case":"input-ABA-during-consumption","sealed":"original\n","consumed":"replacement\n","after":"original\n","endpointEqual":true,"consumedEqualsSealed":false},
-  {"case":"exclusive-owner-is-cooperative","first":"acquired","second":"EEXIST","outsideWriter":"replacement\n","ownerStillPresent":true},
-  {"case":"wx-is-not-complete-publication","partial":"{\"version\":","second":"EEXIST","originalPreserved":true,"parse":"SyntaxError"},
-  {"case":"hardlink-alias","original":"original\n","alias":"original\n","sameIdentity":true,"originalLinks":2,"aliasLinks":2},
-  {"case":"ancestor-junction","throughAlias":"original\n","ancestorIsLink":true,"leafIsLink":false,"realpathEqualsSpelling":false}
-]

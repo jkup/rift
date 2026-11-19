@@ -58,7 +58,7 @@ next 14
 same object true
 ```
 
-Use the [compiler contract](../docs/compiler-contract.md) for exact tested versions
+Use the [compiler contract](compiler-contract.md) for exact tested versions
 and Windows linker requirements. A sandbox may require permission to access Zig's
 libraries. A blocked native build is a failure, not a reason to disable coverage.
 Windows x64 and Linux x64 toolchain packages have been validated.
@@ -73,7 +73,7 @@ npm run lint
 npm run test:readability
 ```
 
-Use `npm run format` to apply formatting. See the [readability policy](../docs/readability.md)
+Use `npm run format` to apply formatting. See the [readability policy](readability.md)
 for rules, exclusions, structural limits and the workflow for agents and reviewers.
 
 Prepare the pinned test262 selection before running tooling tests:
@@ -93,7 +93,7 @@ commands above before `npm run test:test262` on a fresh checkout.
 ```sh
 npm run typecheck
 npm run test:runner
-npm run test:probes
+npm run test:compiler
 npm run test:guest:node
 npm run test:guest:native
 ```

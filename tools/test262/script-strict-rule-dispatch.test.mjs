@@ -12,7 +12,7 @@ test("D2 real serializer bytes: both hosts, two runtime inputs, both closed code
     for (const row of matrix.rows) {
         const [lane, input, action, role, rule, diagnostic] = row.id.split("/");
         const args = [
-            "fixtures/script-strict-rule-dispatch/" + input + ".js",
+            "test/fixtures/script-strict-rule-dispatch/" + input + ".js",
             input,
             "wire",
             action,

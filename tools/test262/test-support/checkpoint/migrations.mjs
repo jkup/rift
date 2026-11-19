@@ -1,4 +1,5 @@
 import { corpusRoot, scratchRoot } from "../environment.mjs";
+import { currentManifestPath } from "../historical-paths.mjs";
 import { createHash as sourceHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync, mkdirSync, cpSync, mkdtempSync } from "node:fs";
@@ -36,7 +37,7 @@ for (const path of [
     "tools/test262/input.mjs",
     "tools/test262/script-capabilities.mjs",
     "tools/test262/script-capabilities.json",
-    "fixtures/assistance/test262-starter-corpus/manifest.json",
+    "test/fixtures/test262-selection/manifest.json",
     "package.json",
     "package-lock.json",
     "node_modules/yaml",
@@ -50,6 +51,7 @@ for (const p of manifest) {
 }
 copy("tools/test262/test-support/environment.mjs");
 copy("tools/test262/test-support/ledger-support.mjs");
+copy("tools/test262/test-support/historical-paths.mjs");
 copy("tools/test262/test-support/source-structure.mjs");
 const support = join(root, "tools/test262/test-support/ledger-support.mjs");
 writeFileSync(support, readFileSync(support, "utf8") + "\nexport {migrate};\n");
@@ -81,7 +83,7 @@ for (const file of ["design-selections.json", "supplemental-literals.json"]) {
         assert.deepEqual(b.selection.policy, policies[b.selection.lane]);
         assert.deepEqual(
             b.selection.policy.files.map((f) => f.path),
-            a.selection.policy.files.map((f) => f.path),
+            a.selection.policy.files.map((f) => currentManifestPath(f.path)).sort(),
         );
         b.selection.policy = a.selection.policy;
         assert.deepEqual(b, a);
@@ -103,7 +105,7 @@ for (const edit of [
     assert.throws(() => helper.migrate(bad));
     negatives++;
 }
-// Refresh only input identities. Retain complete checkpoint histories/reports.
+// Refresh input identities and the manifest path; retain checkpoint histories/reports.
 const oldRoot = previous + "/run-20CkKl",
     literalManifest = read(oldRoot + "/literal-manifest.json"),
     rows = [];
@@ -120,6 +122,7 @@ for (const row of literalManifest) {
     const entry = policy.files.find((f) => f.path === "tools/test262/script-ledger.mjs");
     assert.equal(entry.sha256, oldLedger);
     for (const file of policy.files) {
+        file.path = currentManifestPath(file.path);
         let path;
         if (file.path === "@node") {
             path = process.execPath;
@@ -130,6 +133,15 @@ for (const row of literalManifest) {
         }
         file.sha256 = hash(readFileSync(path));
     }
+    policy.files.sort((a, b) => {
+        if (a.path < b.path) {
+            return -1;
+        }
+        if (a.path > b.path) {
+            return 1;
+        }
+        return 0;
+    });
     policy.closureSha256 = hash(JSON.stringify(policy.files));
     assert.deepEqual(policy, policies[after.ledger.selection.lane]);
     const check = structuredClone(after);
@@ -151,7 +163,7 @@ save("results.json", {
     completeCheckpointMigrations: rows.length,
     actualLanes: 2,
     slotsPerLane: 60,
-    closurePathsPreserved: true,
+    closurePathsPreservedExceptManifestRelocation: true,
     noPublicChange: true,
 });
 console.log(

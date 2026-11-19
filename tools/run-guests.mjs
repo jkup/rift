@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { scriptHostCases } from "./script-host-cases.mjs";
+import { scriptHostCases, bootstrapFixtures } from "./script-host-cases.mjs";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const lane = process.argv[2];
 if (process.argv.length !== 3 || !["node", "native"].includes(lane)) {
@@ -2733,23 +2733,10 @@ executeDriver("realms", { stdout: "a 41\nb 7 undefined\na 42\na 23\nrealms indep
     "test/fixtures/realm-setup.js",
     "test/fixtures/realm-check.js",
 ]);
-const bootstrapRows = readFileSync(join(root, "fixtures/script-realm-bootstrap/rows.txt"), "utf8");
-const bootstrapExpected = Array.from(
-    { length: 18 },
-    (_, index) => `B${String(index + 1).padStart(2, "0")} PASS\n`,
-).join("");
-for (const [name, text] of [
-    ["seed", bootstrapRows],
-    ["other", bootstrapRows.replaceAll("|seed|7", "|other|11")],
-]) {
+for (const { name, text, stdout } of bootstrapFixtures(root)) {
     const file = join(root, "build/guest-fixtures/script-realm-bootstrap-" + name + ".txt");
     writeFileSync(file, text);
-    executeDriver(
-        "script-realm-bootstrap",
-        { stdout: bootstrapExpected },
-        [file],
-        "script-realm-bootstrap-" + name,
-    );
+    executeDriver("script-realm-bootstrap", { stdout }, [file], "script-realm-bootstrap-" + name);
 }
 executeDriver("string-methods", { stdout: "string methods passed\n" });
 executeDriver("boolean-constructor", { stdout: "Boolean constructor passed\n" });

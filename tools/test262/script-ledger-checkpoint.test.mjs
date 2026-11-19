@@ -27,9 +27,6 @@ test(
     "checkpoint implementation: public ownership, boundaries, complete literals, migrations and isolated faults",
     { timeout: 1200000 },
     () => {
-        // preservation.mjs verifies the entire historical acceptance checkout, including
-        // roadmap bytes. It is retained as an archival verifier, not a regression gate
-        // for today's implementation. All checkpoint behavior checks remain below.
         const actual = run("public");
         run("boundaries", [actual.run]);
         const migrated = run("migrations");

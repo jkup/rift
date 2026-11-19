@@ -38,7 +38,6 @@
         ".scriptc/**",
         "docs/**",
         "test/fixtures/**",
-        "test/legacy/**",
         "examples/**",
         "src/iana-timezone-data.ts",
         "src/iana-timezone-identifiers.ts",

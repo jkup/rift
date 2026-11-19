@@ -24,7 +24,7 @@ structural violations, run `npm run lint:ratchet`.
 
 Native semantic changes require relevant fresh native checks using the
 [pinned compiler](toolchain/scriptc/README.md). Toolchain/integration changes
-also require `npm run test:probes`. Keep static-only compilation and the
+also require `npm run test:compiler`. Keep static-only compilation and the
 independent zero-dynamic coverage gate. See the
 [validation reference](docs/usage.md#validation) for full guest and Test262 setup.
 Typechecking emits `build/node`; do not run it concurrently with tests consuming
@@ -33,7 +33,7 @@ that output. Report tested scope and failures explicitly.
 ## Finding your way around
 
 The [layout guide](docs/repository-layout.md) explains each root entry. Runtime
-inputs in `fixtures/` and `test/fixtures/` include deliberately invalid syntax;
+inputs in `test/fixtures/` include deliberately invalid syntax;
 do not format or rewrite them as incidental cleanup. Saved reports under
 `docs/validation/` retain their original paths, measurements and failures.
 

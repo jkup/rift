@@ -1,8 +1,0 @@
-Packaging only; validation completed successfully before these attempts.
-Initial git add failed: .git/index.lock Permission denied under workspace sandbox.
-Authorized elevated staging succeeded; both staged addition hashes match manifest.
-Initial git commit failed: Author identity unknown / unable to auto-detect email.
-Read-only git log -5 showed all five author and committer identities as:
-Jon Kuperman <jon.kuperman@gmail.com>.
-Retry uses command-local user.name/user.email with that established identity;
-no repository/global configuration change. COORDINATION remains unstaged.

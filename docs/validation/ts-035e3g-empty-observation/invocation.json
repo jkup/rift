@@ -1,6 +1,0 @@
-{
-  "command": "node typescript/docs/validation/ts-035e3g-empty-observation/observe.mjs",
-  "outerExitCode": 0,
-  "invocations": 1,
-  "realInputs": 42
-}

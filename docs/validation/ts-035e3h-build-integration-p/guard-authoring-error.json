@@ -1,4 +1,0 @@
-{
-  "phase": "guard authoring",
-  "error": "Old prior-guard has no allowed-path predicate. Initial generation stopped before manifest or verifier; partial copies were compared byte-for-byte and reused. No prior files changed."
-}

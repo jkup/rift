@@ -1,7 +1,0 @@
-{
-  "originalCommit": "32e721c1",
-  "finding": "Public validateBindings read pinned binding file and could throw ArchiveFault before ORDER for null.",
-  "change": "Embed exact sealed 42 binding literal as immutable text and frozen array/rows; pure public validation uses only embedded data. Fixed real archive adapter still loads and verifies archive pins separately.",
-  "originalReduction": "ts035e3g-root-purity.json",
-  "realArchiveAdapterInvocations": 0
-}

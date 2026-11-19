@@ -1,6 +1,0 @@
-{
-  "phase": "checker authoring",
-  "error": "Missing named-path argument to retained alias parser; corrected checker call.",
-  "compilerInvocations": 0,
-  "addTypeInvocations": 0
-}

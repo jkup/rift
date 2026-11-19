@@ -1,6 +1,0 @@
-
-### TS-035E3h build integration-P — inert staging and named alias policy
-
-Status: complete inert DESIGN handoff; sole writer Codex chat 01a1afd0-5fa8-73b2-98a9-d887c42b9aee; base c83490055ccd778f38b27a254cca5f9182ea4e05. Own only docs/validation/ts-035e3h-build-integration-p/ and this entry. Coordinator chooses cooperative named Framework/PowerShell/OS trust and one helpercsc plus one supervisorAdd-Type budget, not execution authorization. Narrow readonly alias audit only six measured multilink files; inert integration and synthetic filesystem/state controls. Keep run gate closed; no compiler/Add-Type/helper/benign/scriptc/linker. Preserve recorder/source/pins/oldseals/history; stop actual/root/second review. COORDINATION root-owned.
-
-Review: six named groups / 15 actual aliases / 12 authorized metadata-only utility calls; 104 synthetic and 12 filesystem controls passed. Runner syntax only. Run gate closed; zero compiler/Add-Type/helper/scriptc/linker invocations. Full preservation verifier and source/output manifests included. Stop for actual/root/second review; no successor execution authorized.

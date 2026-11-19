@@ -1,4 +1,4 @@
-// Generated from IANA 2026f; see docs/iana-timezone-provenance.json.
+// Generated from IANA 2026f; see docs/data/iana-timezone-provenance.json.
 import { TimeZoneRule, TimeZoneRecurrence } from "./time-zone-recurrence.js";
 
 export const ianaRecurrences: TimeZoneRecurrence[] = [

@@ -8,7 +8,7 @@ const root = fileURLToPath(new URL("../../", import.meta.url));
 test("dispatch controls retain identity, histories and current admissions on both hosts", () => {
     for (const name of ["assignment-target", "lexical-statement", "strict-parameter"]) {
         const driver = "script-" + name + "-dispatch",
-            fixture = (name === "lexical-statement" ? "test/fixtures/" : "fixtures/") + driver;
+            fixture = "test/fixtures/" + driver;
         const args = [fixture + "/alpha.js", "same", "controls", fixture + "/beta.js"];
         const outputs = [];
         for (const lane of ["node", "native"]) {

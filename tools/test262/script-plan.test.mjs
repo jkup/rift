@@ -1,4 +1,5 @@
 import test from "node:test";
+import { currentManifestPath } from "./test-support/historical-paths.mjs";
 import assert from "node:assert/strict";
 import {
     readFile,
@@ -53,6 +54,7 @@ async function ledgerPolicyLiteral(selection) {
     assert(!policy.files.some((f) => f.path === "tools/test262/script-ledger.mjs"));
     policy.files.push({ path: "tools/test262/script-ledger.mjs", sha256: "" });
     for (const file of policy.files) {
+        file.path = currentManifestPath(file.path);
         let path;
         if (file.path === "@node") {
             path = process.execPath;
@@ -340,7 +342,7 @@ test("malformed metadata after exact byte verification retains a null-slot file 
         "/*---\ndescription: metadata mismatch\nflags: [raw]\n---*/\n",
     ]) {
         const box = await sandbox(async (root, modules) => {
-            const path = resolve(root, "fixtures/assistance/test262-starter-corpus/manifest.json");
+            const path = resolve(root, "test/fixtures/test262-selection/manifest.json");
             const manifestCopy = await json(path);
             manifestCopy.entries[0].blob = blobHash(Buffer.from(source));
             await writeFile(path, JSON.stringify(manifestCopy));

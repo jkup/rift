@@ -1,7 +1,0 @@
-# Array.from
-
-Array.from validates the mapper before observing the input, captures the iterator method once, then chooses iterable or array-like processing. Iterable construction receives no length argument and happens before calling the iterator method. Array-like construction receives the converted length and observes each indexed value in order, including holes and inherited properties. Both paths create own data properties and finish with a throwing length assignment.
-
-The iterator path reuses the existing step/value and close operations. Mapper or property-definition failures close the iterator while preserving the original guest throw. Failures acquiring or advancing the iterator, or reading its done/value fields, propagate directly. Final length failure after exhaustion does not close again. Engine resource stops do not resume guest cleanup. The extracted getIteratorFromMethod helper lets this path use the previously captured method without re-reading it; existing getIterator callers retain their behavior.
-
-The implementation follows [ECMAScript 2025 Array.from](https://262.ecma-international.org/16.0/#sec-array.from), reviewed against [engine262 at 18cdeb03](https://github.com/engine262/engine262/blob/18cdeb03c363eb31d775648a0d070bdc8a26ced1/src/intrinsics/Array.mts). Tests include Unicode string iteration, Set input, sparse array-like objects, custom constructors, access/mapping order, mutation, descriptors, cross-Realm fallback arrays, cleanup precedence and bounded infinite iteration. Array.fromAsync remains unsupported.

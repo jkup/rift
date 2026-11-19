@@ -1,9 +1,0 @@
-# Numeric separators
-
-TS-138 admits separators between digits in Script decimal and radix literals. The digit scanner checks the current radix and both neighboring digits; leading-zero decimal integer parts retain their existing restrictions. Fractions and exponents allow separators independently. Malformed positions continue to fail during whole-source preparation.
-
-Tokens retain raw spelling and spans. The parser removes separators only when converting an already validated numeric token or numeric property key. Function source, identifiers, string-to-number conversion, JSON and legacy parsing are unchanged.
-
-References consulted 2026-11-09: ECMAScript [numeric literal grammar](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-literals-numeric-literals) and V8 [ScanDigitsWithNumericSeparators](https://github.com/v8/v8/blob/main/src/parsing/scanner.cc). Rift shares one bounded digit loop across decimal parts and radix forms, without changing the numeric conversion backend.
-
-Both guest suites pass 626/626 with no skips, tooling 290/290, runner 32/32, all ten probes and typechecking. All 136 native entries pass a fresh static-only build and parsed coverage in one run; separator driver 7711/7711 static. Decimal/radix forms, invalid placement, raw source spans, property keys, unchanged string conversions and whole-source rejection pass on both hosts. Three historical decimal/radix rejection sources retain explicit positive expectations. All 225 complete fixture results match: 96 reported successes, 48 unchecked completions, 35 parse errors, 45 runtime errors and one reported failure; all 144 prior completions remain. numeric-separators.js now reaches unsupported eval during preparation; no additional fixture completes. Reports: build/legacy-suite-node-91rB6E/report.json and build/legacy-suite-native-JNo1cH/report.json. Native evidence: build/numeric-separators-native-results.json. Logs: build/numeric-separators-*.

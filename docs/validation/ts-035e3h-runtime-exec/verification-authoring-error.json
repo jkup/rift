@@ -1,9 +1,0 @@
-{
-  "exit": 1,
-  "phase": "copied historical checker parsing",
-  "file": "_preserve/readiness-evidence-check.mjs",
-  "error": "SyntaxError: Unexpected end of input",
-  "cause": "An inserted line comment hid the enclosing materialization-loop closing brace on the same line.",
-  "correction": "Use a block comment in the new guard transformation; original checker and runtime bytes unchanged.",
-  "recorderRetries": 0
-}

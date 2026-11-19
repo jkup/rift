@@ -43,7 +43,7 @@ for (const path of [
     "tools/test262/input.mjs",
     "tools/test262/script-capabilities.mjs",
     "tools/test262/script-capabilities.json",
-    "fixtures/assistance/test262-starter-corpus/manifest.json",
+    "test/fixtures/test262-selection/manifest.json",
     "package.json",
     "package-lock.json",
     "node_modules/yaml",

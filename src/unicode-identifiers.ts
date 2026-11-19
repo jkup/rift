@@ -1,5 +1,5 @@
 // Unicode 17.0.0 DerivedCoreProperties, copyright 2025 Unicode, Inc.
-// Generated ID_Start/ID_Continue ranges; see docs/unicode-identifiers-review.md and docs/unicode-license.txt.
+// Generated ID_Start/ID_Continue ranges; see docs/design/unicode-identifiers-review.md and docs/data/unicode-license.txt.
 const starts: number[] = [
     0x41, 0x5a,
     0x61, 0x7a,

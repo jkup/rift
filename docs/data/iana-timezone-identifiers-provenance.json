@@ -1,0 +1,16 @@
+{
+  "release": "2026f",
+  "sourceHashes": {
+    "tzdata.zi": "b8e91f3bb6b0d2af2db2affb8669c07d2cd366c74cebcef0805d0a44ea414b0e",
+    "zone.tab": "e2e8e31c4e10f44576c79345e76060591dbb3eef6ce14e006afc8a373caa9593",
+    "backzone": "8cce95d550862a443806fcf7ec1baf799d69a21a74af714291cba7ee4b7d2346",
+    "factory": "ae2ec1d36dabf79a69cb7dd4fb6fd9168d05fc8cfd31aee2dd19e4f18beb9885"
+  },
+  "dataSourceSha256": "451208d4833bd53b61dbf4cf4e74c2929e9c06382788c14a9a588eb7615585c7",
+  "outputSha256": "d15cd090f4a3f34b5ead52ddb8b73f29826b148c58db81ea37f37fb2f1715b61",
+  "identifiers": 598,
+  "primaryIdentifiers": 450,
+  "maximumLength": 32,
+  "policy": "ASCII casing; UTC and zone.tab primary exceptions; backzone resolution with the pinned Jan_Mayen country exception; Factory included; primary identity selects data.",
+  "reference": "https://tc39.es/ecma402/#sec-availablenamedtimezoneidentifiers"
+}

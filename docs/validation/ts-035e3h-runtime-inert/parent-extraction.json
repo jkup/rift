@@ -1,5 +1,0 @@
-{
-  "prefix": "import {spawn} from 'node:child_process';\nimport {join} from 'node:path';\nimport {openSync,writeSync,closeSync,fsyncSync} from 'node:fs';\n",
-  "suffix": "\nexport {supervise};\n",
-  "fragmentSha256": "6bad6cf49fa3556d14f95563c7957ec79a9dcc0a43bca37746857d91fee35ae6"
-}

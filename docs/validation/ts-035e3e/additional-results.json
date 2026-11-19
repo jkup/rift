@@ -1,8 +1,0 @@
-{
-  "variants": 20,
-  "calls": 40,
-  "freshObjects": 2994,
-  "boundaryErrors": 8,
-  "coercionGetterReads": 0,
-  "coercionHookCalls": 0
-}

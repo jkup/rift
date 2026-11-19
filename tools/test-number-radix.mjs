@@ -7,7 +7,7 @@ import {
     shortest,
     judge,
     roundingInterval,
-} from "../fixtures/assistance/radix-formatter-options/oracle.mjs";
+} from "../test/fixtures/number-radix-reference/oracle.mjs";
 import { probeVerdict } from "./probe-verdict.mjs";
 import { scriptcPath } from "./scriptc-path.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));

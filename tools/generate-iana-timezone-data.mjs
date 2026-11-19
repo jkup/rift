@@ -121,7 +121,7 @@ assert.equal(
     zones.reduce((count, zone) => count + zone.transitions.length, 0),
     26448,
 );
-let generated = "// Generated from IANA 2026f; see docs/iana-timezone-provenance.json.\n";
+let generated = "// Generated from IANA 2026f; see docs/data/iana-timezone-provenance.json.\n";
 generated += 'import { TimeZoneRule, TimeZoneRecurrence } from "./time-zone-recurrence.js";\n\n';
 const footers = [...new Set(zones.map((zone) => zone.footer))];
 assert.equal(footers.length, 94);
@@ -176,8 +176,8 @@ const provenance = {
 };
 for (const [name, bytes] of [
     ["src/iana-timezone-data.ts", generated],
-    ["docs/iana-timezone-license.txt", license],
-    ["docs/iana-timezone-provenance.json", JSON.stringify(provenance, null, 2) + "\n"],
+    ["docs/data/iana-timezone-license.txt", license],
+    ["docs/data/iana-timezone-provenance.json", JSON.stringify(provenance, null, 2) + "\n"],
 ]) {
     const destination = path.join(project, name);
     if (process.argv.includes("--check")) {

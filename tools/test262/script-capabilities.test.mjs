@@ -125,18 +125,15 @@ test("isolated actual reader bytes, IO failures, fresh imports and private mappi
     const root = pathToFileURL((await mkdtemp(join(scratchRoot, "capabilities-"))) + sep);
     const moduleDir = new URL("tools/test262/", root);
     await mkdir(moduleDir, { recursive: true });
-    await mkdir(new URL("fixtures/assistance/test262-starter-corpus/", root), { recursive: true });
+    await mkdir(new URL("test/fixtures/test262-selection/", root), { recursive: true });
     for (const name of ["script-capabilities.mjs", "input.mjs"]) {
         await copyFile(new URL(name, import.meta.url), new URL(name, moduleDir));
     }
     const manifestSource = new URL(
-        "../../fixtures/assistance/test262-starter-corpus/manifest.json",
+        "../../test/fixtures/test262-selection/manifest.json",
         import.meta.url,
     );
-    const manifestTarget = new URL(
-        "fixtures/assistance/test262-starter-corpus/manifest.json",
-        root,
-    );
+    const manifestTarget = new URL("test/fixtures/test262-selection/manifest.json", root);
     await copyFile(manifestSource, manifestTarget);
     const runner = new URL("runner.mjs", moduleDir);
     await writeFile(

@@ -11,11 +11,14 @@ Start here:
 - [Roadmap](development-roadmap.md): accepted state and concrete followups.
 - [Repository layout](repository-layout.md): why each root entry exists.
 
-The other topic-named documents explain individual features and design reviews.
-They include historical checkpoints; use the feature inventory for current scope.
+Supporting material has separate homes:
 
-`validation/` retains acceptance evidence, failures and measured results, including
-[the Test262 comparison](validation/test262-count-milestone/README.md) and
-[saved native benchmarks](validation/native-benchmarks/README.md).
-`history/` and `assistance/` contain historical planning and supporting reviews.
-Captured paths and commands describe their original checkout, not current setup.
+- `design/`: technical references cited by the code and guides. These include
+  historical compiler investigations; the feature inventory defines current support.
+- `data/`: Unicode and timezone source provenance and required licenses.
+- `assets/`: the README logo.
+- `validation/`: saved results and regression inputs for runner tests. Captured
+  paths describe their original checkout, not current setup.
+
+Old plans, session reports and feature-by-feature milestone notes are recoverable
+from Git at `150d2625:docs/`. They are not current contributor instructions.

@@ -1,8 +1,0 @@
-{"baseline":9333,"priorSealedRows":[39,44,42],"archiveFiles":163,"archiveBytes":19246373,"matched":10,"failed":1,"unrun":14,"outerEmptyBeforeFallback":11,"sourceProposalsChecked":2,"lifecycleRetries":0,"passed":true}
-{"rerunFiles":205,"rerunBytes":19725266,"matched":13,"failed":1,"unrun":11,"outerEmptyBeforeFallback":13,"safetyCleanupReturnedSuccessfully":1,"sourceTransformations":11,"checkpointProposalsUnexecuted":3,"scriptcInvocations":0,"passed":true}
-{"designSourceTransformations":11,"exactRemainingCases":12,"approvedCheckpointSourcesUnchanged":3,"supervisorCleanupUnchanged":true,"lifecycleInvocations":0,"scriptcInvocations":0,"passed":true}
-Exception: C:\Users\jonku\code\rift\typescript\docs\validation\ts-035e3f-p\probe-contract\atomic-job-correction\lifecycle-execution\cleanup-rerun\descendant-publication\lifecycle-runner.ps1:118
-Line |
- 118 |  … ') $results;throw 'Lifecycle failed. No retry or compiler invocation. …
-     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     | Lifecycle failed. No retry or compiler invocation.

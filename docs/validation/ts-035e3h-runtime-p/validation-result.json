@@ -1,6 +1,0 @@
-{
-  "exit": 0,
-  "stdout": "{\"controls\":102,\"smokeRecordBytes\":3346,\"inheritedByteLiterals\":38,\"inheritedSnapshotLiterals\":31,\"environmentKeys\":19,\"designOnly\":true,\"recorderLaunches\":0,\"addTypeCalls\":0,\"binaryInterpretations\":0,\"passed\":true}\n",
-  "stderr": "",
-  "proposedSourcesExecuted": false
-}

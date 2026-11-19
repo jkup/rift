@@ -97,4 +97,4 @@ node --max-old-space-size=8192 --import tsx scripts/build-native-cli.mts /absolu
 Use a new output directory. Keep development `SCRIPTC_*`, `CC` and `AR` overrides
 unset so the build uses the prepared source's local helper and patched runtime.
 The package includes compiler assets but still requires the host linker. Test
-the result with `npm run test:probes` from Rift's TypeScript directory before use.
+the result with `npm run test:compiler` from Rift's TypeScript directory before use.

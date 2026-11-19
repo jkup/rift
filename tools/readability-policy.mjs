@@ -26,7 +26,7 @@ export function sourceFiles(root = ".") {
             }
         }
     }
-    for (const directory of ["src", "test", "probes", "tools"]) {
+    for (const directory of ["src", "test", "tools"]) {
         visit(directory);
     }
     files.push("toolchain/scriptc/prepare.mjs");

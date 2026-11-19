@@ -983,7 +983,7 @@
             "filename": "tools/run-guests.mjs",
             "name": "<module>",
             "rule": "fileLines",
-            "value": 3313
+            "value": 3300
         },
         {
             "filename": "tools/test262/dispatch-controls.test.mjs",

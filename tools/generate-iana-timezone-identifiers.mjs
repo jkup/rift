@@ -97,13 +97,13 @@ for (const row of records) {
 }
 const dataSource = fs.readFileSync(path.join(project, "src/iana-timezone-data.ts"));
 const dataProvenance = JSON.parse(
-    fs.readFileSync(path.join(project, "docs/iana-timezone-provenance.json"), "utf8"),
+    fs.readFileSync(path.join(project, "docs/data/iana-timezone-provenance.json"), "utf8"),
 );
 assert.equal(dataProvenance.release, "2026f");
 assert.equal(dataProvenance.sourceSha256, pins["tzdata.zi"]);
 assert.equal(dataProvenance.outputSha256, hash(dataSource));
 const maximum = Math.max(...records.map((row) => row.identifier.length));
-let generated = `// Generated from IANA 2026f; see docs/iana-timezone-identifiers-provenance.json.
+let generated = `// Generated from IANA 2026f; see docs/data/iana-timezone-identifiers-provenance.json.
 import { ianaZones, type IanaZoneData } from "./iana-timezone-data.js";
 
 export class IanaIdentifier {
@@ -148,7 +148,10 @@ const provenance = {
 };
 for (const [name, text] of [
     ["src/iana-timezone-identifiers.ts", generated],
-    ["docs/iana-timezone-identifiers-provenance.json", JSON.stringify(provenance, null, 2) + "\n"],
+    [
+        "docs/data/iana-timezone-identifiers-provenance.json",
+        JSON.stringify(provenance, null, 2) + "\n",
+    ],
 ]) {
     const destination = path.join(project, name);
     if (process.argv.includes("--check")) {

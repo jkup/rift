@@ -1,4 +1,5 @@
 import { replaceImportSources } from "./source-structure.mjs";
+import { currentManifestPath } from "./historical-paths.mjs";
 import { corpusRoot, scratchRoot } from "./environment.mjs";
 import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
@@ -149,6 +150,7 @@ function migrate(value) {
                 "0921bc26ea39f6cb6c4583387553480a996ac4fd2f78a2f303c0a7a7c89e65dd",
             );
             for (const file of p.files) {
+                file.path = currentManifestPath(file.path);
                 let path;
                 if (file.path === "@node") {
                     path = process.execPath;
@@ -159,6 +161,15 @@ function migrate(value) {
                 }
                 file.sha256 = createHash("sha256").update(readFileSync(path)).digest("hex");
             }
+            p.files.sort((a, b) => {
+                if (a.path < b.path) {
+                    return -1;
+                }
+                if (a.path > b.path) {
+                    return 1;
+                }
+                return 0;
+            });
             p.id = "rift-script-blocked-v4";
             p.closureSha256 = createHash("sha256").update(JSON.stringify(p.files)).digest("hex");
             return value;
