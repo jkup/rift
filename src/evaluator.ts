@@ -1,2 +1,2 @@
-// Legacy API; Script execution is available only through its opaque session facade.
+// Legacy API retained for regression tests. New hosts should use script.ts.
 export { Evaluator } from "./script-execution-internal.js";

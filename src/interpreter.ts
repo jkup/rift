@@ -1,3 +1,4 @@
+// Legacy execution API retained for regression tests. New hosts should use script.ts.
 import type { Rejection } from "./outcomes.js";
 import { parse } from "./parser.js";
 import { Evaluator } from "./evaluator.js";

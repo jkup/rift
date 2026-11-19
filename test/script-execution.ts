@@ -1,3 +1,4 @@
+import { checkScriptAPI } from "./script-api.js";
 import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
 import { prepareStrictScript, type ExecutableScript } from "../src/script-record.js";
@@ -42,6 +43,7 @@ function number(completion: ValueCompletion, expected: number): void {
         "expected number " + expected,
     );
 }
+checkScriptAPI();
 const input = readFileSync(process.argv[2], "utf8").trim().split("|");
 check(
     input.length === 2 &&

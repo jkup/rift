@@ -202,6 +202,7 @@ export class Realm {
     readonly temporalPlainDatePrototype: GuestObject;
     readonly symbolPrototype: GuestObject;
     readonly stringPrototype: GuestStringObject;
+    // Preserve the legacy default for existing callers; new hosts use createScriptRealm.
     constructor(
         output: Output,
         readonly profile: RealmProfile = "legacy",

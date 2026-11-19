@@ -43,6 +43,49 @@ instant. Invalid options fail before reading or executing the script.
 
 Diagnostics include the filename and one-based line and UTF-16 column.
 
+## Embedding
+
+For a TypeScript host inside this checkout, import the current API from `src/script.ts`
+(use a relative `.js` import as below). External Node hosts can import the emitted
+`build/node/src/script.js` after building. The API is experimental.
+
+```ts
+import {
+    createScriptRealm,
+    prepareBoundedScript,
+    createScriptSession,
+    evaluateScript,
+    drainScriptJobs,
+} from "./src/script.js";
+
+const realm = createScriptRealm((line: string) => console.log(line));
+const prepared = prepareBoundedScript(
+    { id: "example.js", text: "Promise.resolve(42).then(value => console.log(value));" },
+    realm,
+);
+if (prepared.kind !== "ready") {
+    throw new Error("Script preparation failed: " + prepared.kind);
+}
+const session = createScriptSession({ maxSteps: 100000, maxCalls: 64 });
+const result = evaluateScript(session, prepared.record);
+if (result.completion.type === "throw") {
+    console.error(result.completion.diagnostic);
+}
+// Run queued jobs even after a guest throw, as the CLI does.
+const jobs = drainScriptJobs(session);
+for (const failure of jobs.failures) {
+    console.error(failure.completion.diagnostic);
+}
+```
+
+A Realm owns guest globals and builtins. A session tracks execution and its shared
+budget; reuse both to run successive scripts in the same guest world. Use a fresh
+Realm and session for an independent run. Preparation returns an opaque executable
+record or a rejection; guest throws are completion records, not host exceptions.
+Job failures and resource stops must be checked as well as the script's completion.
+The older `interpreter.ts` and `evaluator.ts` interfaces serve legacy regression
+tests and are not the starting point for new hosts.
+
 ## Validation
 
 The normal contributor checks are in [CONTRIBUTING.md](../CONTRIBUTING.md).

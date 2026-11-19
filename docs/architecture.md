@@ -10,6 +10,7 @@ simpler code must still preserve JavaScript's behavior and evaluation order.
 | File | Responsibility |
 | --- | --- |
 | `src/cli.ts` | File input, console output, exit codes and a fresh Realm for each run. |
+| `src/script.ts` | Current host API: create a Script Realm, prepare source, execute and drain jobs. |
 | `src/lexer.ts`, `src/parser.ts`, `src/syntax.ts` | Tokens, grammar and syntax trees. |
 | `src/script-record.ts` | Parse and check a script before execution. |
 | `src/script-execution.ts` | Create a session and evaluate a prepared script. |
@@ -26,8 +27,12 @@ share an execution budget and must preserve the order of those effects.
 Generators keep explicit suspended state. Promise reactions run at Rift's host
 checkpoints, not on the host JavaScript engine's promise queue.
 
-New CLI features use the Script modules above. The older `interpreter.ts` and
-observation path remain for earlier tests. For a small builtin, read
+New hosts and CLI features use `script.ts`; see the [embedding example](usage.md#embedding).
+The `legacy` and `script` profiles select Rift execution paths, not JavaScript
+language versions. `new Realm(output)` retains the legacy default for older
+callers; `createScriptRealm(output)` selects the current path explicitly.
+The older `interpreter.ts`, `evaluator.ts` and observation path remain for earlier tests.
+For a small builtin, read
 `src/builtins/array-mutation.ts` and `test/array-mutation.ts`.
 
 ## Supported features and limits

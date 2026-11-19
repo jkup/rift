@@ -1,7 +1,11 @@
 import { readFileSync } from "node:fs";
-import { prepareBoundedScript } from "./script-record.js";
-import { createScriptSession, evaluateScript, drainScriptJobs } from "./script-execution.js";
-import { Realm } from "./realm.js";
+import {
+    createScriptRealm,
+    prepareBoundedScript,
+    createScriptSession,
+    evaluateScript,
+    drainScriptJobs,
+} from "./script.js";
 import { parseTemporalTimeZoneIdentifier } from "./temporal-time-zone-parse.js";
 import { display } from "./runtime.js";
 import type { Diagnostic } from "./syntax.js";
@@ -50,13 +54,9 @@ function main(): void {
             return;
         }
     }
-    const realm = new Realm(
-        (line) => {
-            console.log(line);
-        },
-        "script",
-        timeZone,
-    );
+    const realm = createScriptRealm((line) => {
+        console.log(line);
+    }, timeZone);
     const prepared = prepareBoundedScript({ id: filename, text: source }, realm);
     if (prepared.kind === "profile-rejected") {
         throw new Error("CLI Script profile rejected");
