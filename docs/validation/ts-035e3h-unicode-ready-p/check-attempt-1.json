@@ -1,0 +1,8 @@
+{
+  "attempt": 1,
+  "command": "node typescript/docs/validation/ts-035e3h-unicode-ready-p/check-proposal.mjs",
+  "exit": "failed before pass; no mutation or root creation",
+  "failure": "Expected manifest source paths in Windows separator form, but checker literals used forward slashes. Actual files and hashes were not changed.",
+  "next": "Correct independent expected-path literals and rerun once; retain this record.",
+  "resolution": "Corrected expected manifest source literals to Windows separators; the later root verification passed."
+}

@@ -1,0 +1,59 @@
+{
+  "status": "DESIGN ONLY; execution unauthorized",
+  "runnerRoot": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-runner-1",
+  "diagnosticRoot": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-diagnostic-1",
+  "runnerDirectories": [
+    "tmp",
+    "home",
+    "home\\AppData",
+    "home\\AppData\\Roaming",
+    "home\\AppData\\Local"
+  ],
+  "runnerRows": [
+    {
+      "source": "typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\controller.mjs",
+      "destination": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-runner-1\\controller.mjs",
+      "bytes": 9681,
+      "sha256": "b6bce21f9ffa856a6244f6855e586d1da80edea6e27707fa27b54ae45e5d0a69",
+      "mode": "exclusive-new-file"
+    },
+    {
+      "source": "typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\transport.mjs",
+      "destination": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-runner-1\\transport.mjs",
+      "bytes": 1384,
+      "sha256": "8cfc90600ea06a18aa045e7f781b9522b9bc650f99b03401ef87f39655747f07",
+      "mode": "exclusive-new-file"
+    },
+    {
+      "source": "typescript\\docs\\validation\\ts-035e3h-unicode-corrected\\inventory.mjs",
+      "destination": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-runner-1\\inventory.mjs",
+      "bytes": 4092,
+      "sha256": "11bd1578801b325d0ecb24b51681ca59e64eb1de264c54cc40ec712cd43b5db6",
+      "mode": "exclusive-new-file"
+    },
+    {
+      "path": "typescript\\docs\\validation\\ts-035e3h-unicode-ready-p\\enabled-bindings.json.txt",
+      "destination": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-runner-1\\bindings.json",
+      "bytes": 3706,
+      "sha256": "cd34842707f92c09b6ec3afe84e23bab71b8105db765c98083e601159b6c92ed",
+      "mode": "exclusive-new-file"
+    },
+    {
+      "path": "typescript\\docs\\validation\\ts-035e3h-unicode-ready-p\\enabled-entry.mjs.txt",
+      "destination": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3h-unicode-runner-1\\entry.mjs",
+      "bytes": 1459,
+      "sha256": "5fa58f52a780bdc223d9e73f22e8804ebd45f1934db470cab27bce526bd01e61",
+      "mode": "exclusive-new-file"
+    }
+  ],
+  "controllerStagedRows": "The reviewed controller stages exactly diagnostic.ps1 and input.json under diagnosticRoot; it creates tmp/home/AppData/Roaming/Local there and two output files later.",
+  "childContractBytes": 3736,
+  "childContractSha256": "2cd2ec5b6c10d5f92aa97f27c2a7b3f9e64396b8b29e8789de09393e678740cc",
+  "protocol": [
+    "Before any write: verify both fixed roots are absent; verify C:\\Users\\jonku\\code\\rift\\typescript\\build and every named ancestor with the exact alias policy pinned by proposal.json; rehash all eleven source/tool rows and both derived artifact rows; verify every destination name is unique.",
+    "Create runnerRoot with a single non-recursive mkdir; create the five listed subdirectories one at a time; create each of the five listed files with exclusive-new-file semantics. Never overwrite, retry, or remove a partial tree.",
+    "After writes: reopen each of the five files, verify type, size and SHA-256; rehash all original source/tool rows and require before/after identity equality. Any mismatch retains the partial runner tree and prevents dispatch.",
+    "Only after the complete successful preflight and writes, dispatch exactly one pinned Node process with the exact argv, cwd and ten-key future-invocation environment. The Node entry then validates bundle bindings and invokes the unchanged bounded controller; no shell or fallback command."
+  ],
+  "partialFailure": "Retain runnerRoot and all created bytes/status/errors; do not retry or clean recursively."
+}

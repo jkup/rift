@@ -1,59 +1,9 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# Build directory
-build/
-
-# Test262 test suite (downloaded automatically)
-test262/
-!/typescript/tools/test262/
-
-# Test262 results (ephemeral, generated files)
-test262-results*.json
-test262-group-*-results.json
-test262-impact-report.json
-.test262-cache.json
-
-# LLM working notes (local only)
-notes/
-
-# Node.js dependencies (if any)
 node_modules/
-
-# Temporary files
+build/
+.scriptc/
+.cache/
+notes/
+tmp/
+.vscode/
 *.tmp
 *.temp
-/tmp/
-
-.vscode/
-.cache/

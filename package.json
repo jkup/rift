@@ -1,38 +1,28 @@
 {
   "name": "rift",
-  "version": "1.0.0",
-  "description": "A minimal JavaScript runtime written in C++",
+  "private": true,
   "type": "module",
-  "main": "scripts/test262/runner.js",
-  "scripts": {
-    "build": "./build.sh",
-    "test": "node test-runner.js",
-    "test262": "node scripts/test262/runner.js",
-    "test262:diff": "node scripts/test262/diff.js",
-    "test262:group": "node scripts/test262/group-runner.js",
-    "test262:groups": "node scripts/test262/group-runner.js --list",
-    "test262:all-groups": "node scripts/test262/group-runner.js --all",
-    "test262:analyze": "node scripts/test262/impact-analyzer.js",
-    "playground": "./build/rift test/test-file.js",
-    "benchmark": "./bench/benchmark.sh",
-    "clean": "rm -rf build test262",
-    "repl": "cd repl && ./run.sh"
-  },
-  "keywords": [
-    "javascript",
-    "runtime",
-    "interpreter",
-    "c++",
-    "test262"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=24"
   },
-  "dependencies": {
-    "chalk": "^4.1.2",
-    "cli-boxes": "^3.0.0",
-    "yaml": "^2.8.2"
-  }
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "typescript": "7.0.2",
+    "yaml": "2.8.3"
+  },
+  "scripts": {
+    "test:observations": "node tools/test262/observation.integration.mjs",
+    "test:test262": "node --test tools/test262/*.test.mjs",
+    "test:runner": "node --test tools/probe-verdict.test.mjs tools/native-entry-manifest.test.mjs tools/native-build-runner.test.mjs tools/legacy-suite.test.mjs tools/scriptc-path.test.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test:probes": "node tools/run-probes.mjs",
+    "build:node": "tsc -p tsconfig.json",
+    "build:native": "node tools/build-native.mjs",
+    "test:guest:node": "npm run build:node && node tools/run-guests.mjs node",
+    "test:guest:native": "npm run build:native && node tools/run-guests.mjs native",
+    "build": "npm run build:node",
+    "test": "npm run test:runner && npm run test:guest:node"
+  },
+  "description": "A JavaScript interpreter written in TypeScript and compiled with scriptc",
+  "license": "MIT"
 }

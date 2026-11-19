@@ -1,0 +1,8 @@
+{
+  "attempt": 2,
+  "command": "node typescript/docs/validation/ts-035e3h-unicode-ready-p/check-proposal.mjs",
+  "exit": "failed before pass; no mutation or root creation",
+  "failure": "The manifest schema uses path for derived binding and entry artifacts; the independent literal expected source. No artifacts or roots changed.",
+  "next": "Correct the expected property names and rerun; retain this record.",
+  "resolution": "Corrected expected manifest property names from source to path for derived artifacts; the later root verification passed."
+}

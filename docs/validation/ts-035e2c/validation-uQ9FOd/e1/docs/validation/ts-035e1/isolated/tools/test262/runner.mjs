@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {readScriptCapabilities as read} from './script-capabilities.mjs';
+import {unlink,writeFile} from 'node:fs/promises';
+const path=new URL('script-capabilities.json',import.meta.url);
+await unlink(path);
+await assert.rejects(read(undefined), {message:'script-capabilities/arguments'});
+await assert.rejects(read(), {message:'script-capabilities/read'});
+await writeFile(path, "{\"registryVersion\":1,\"kind\":\"script-runtime-capabilities\",\"entries\":[]}\n");
+await read(); await writeFile(path,'{}');
+await assert.rejects(read(), {message:'script-capabilities/registry-bytes'});
