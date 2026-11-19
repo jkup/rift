@@ -1,5 +1,20 @@
 # Current work
 
+## TS-569 — Simple README and logo
+
+Status: complete (2026-11-19). Implementation ownership released.
+
+Simplify the README to purpose, execution model and local Node/ScriptC commands.
+Add the owner's emailed Rift PNG unchanged as a repository asset.
+Acceptance: required readability, typecheck and runner/Node checks; verify the
+quick-start output and README links. No runtime or toolchain changes.
+
+Validation: format, lint, typecheck, readability tests 9/9, runner tests 36/36
+and Node guests 1003/1003 pass with no skips. Both Node quick-start examples
+produce expected output; every README link and image target resolves. The
+downloaded PNG was visually inspected. Native builds and probes were not rerun
+for this documentation-only change.
+
 ## TS-568 — Open-source repository cleanup
 
 Status: complete (2026-11-19). Implementation ownership released.
