@@ -2,15 +2,23 @@ import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { Value, ValueCompletion } from "../src/runtime.js";
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
 function run(text: string, realm: Realm): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "temporal-instant-conversion", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 function own(realm: Realm, name: string): Value {
     const property = realm.globalObject.getOwnProperty(name);
-    if (property === undefined || property.kind !== "data") throw new Error("missing " + name);
+    if (property === undefined || property.kind !== "data") {
+        throw new Error("missing " + name);
+    }
     return property.value;
 }
 const cases = [
@@ -36,33 +44,88 @@ const cases = [
     `var d=Object.getOwnPropertyDescriptor(Temporal.Instant,"from");d.writable&&!d.enumerable&&d.configurable`,
     `var d=Object.getOwnPropertyDescriptor(Temporal.Instant.prototype,"equals");d.writable&&!d.enumerable&&d.configurable`,
     `var caught=false;try{new Temporal.Instant.from("1970-01-01T00Z")}catch(e){caught=e instanceof TypeError}caught`,
-    `Temporal.Instant.from("+275760-09-13T23:59:59+23:59:59").epochNanoseconds===8640000000000000000000n`
+    `Temporal.Instant.from("+275760-09-13T23:59:59+23:59:59").epochNanoseconds===8640000000000000000000n`,
 ];
-for (const value of ["undefined", "null", "true", "0", "0n", "Symbol()", "{[Symbol.toPrimitive](){return 0n}}", "{toString(){return {}},valueOf(){return {}}}"]) {
-    cases.push("var ok=false;try{Temporal.Instant.from(" + value + ")}catch(e){ok=e instanceof TypeError}ok");
+for (const value of [
+    "undefined",
+    "null",
+    "true",
+    "0",
+    "0n",
+    "Symbol()",
+    "{[Symbol.toPrimitive](){return 0n}}",
+    "{toString(){return {}},valueOf(){return {}}}",
+]) {
+    cases.push(
+        "var ok=false;try{Temporal.Instant.from(" +
+            value +
+            ")}catch(e){ok=e instanceof TypeError}ok",
+    );
 }
-for (const text of ["bad", "1970-01-01", "1900-02-29T00Z", "1970-01-01T00Z[!x=y]", "+275760-09-13T00:00:00.000000001Z"]) {
-    cases.push("var ok=false;try{Temporal.Instant.from(" + JSON.stringify(text) + ")}catch(e){ok=e instanceof RangeError}ok");
+for (const text of [
+    "bad",
+    "1970-01-01",
+    "1900-02-29T00Z",
+    "1970-01-01T00Z[!x=y]",
+    "+275760-09-13T00:00:00.000000001Z",
+]) {
+    cases.push(
+        "var ok=false;try{Temporal.Instant.from(" +
+            JSON.stringify(text) +
+            ")}catch(e){ok=e instanceof RangeError}ok",
+    );
 }
 for (let i = 0; i < cases.length; i++) {
     const result = run(cases[i], new Realm((_line: string) => {}, "script"));
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "conversion case " + i);
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "conversion case " + i,
+    );
 }
-const defining = new Realm((_line: string) => {}, "script"), calling = new Realm((_line: string) => {}, "script");
+const defining = new Realm((_line: string) => {}, "script"),
+    calling = new Realm((_line: string) => {}, "script");
 run("var from=Temporal.Instant.from;var equals=Temporal.Instant.prototype.equals", defining);
 calling.defineScriptGlobal("from", { value: own(defining, "from") });
 calling.defineScriptGlobal("equals", { value: own(defining, "equals") });
 const cloned = run("from(new Temporal.Instant(1n))", calling);
-check(cloned.type === "normal" && cloned.value.kind === "object" && cloned.value.object.getPrototypeOf() === defining.temporalInstantPrototype, "defining Realm allocation");
+check(
+    cloned.type === "normal" &&
+        cloned.value.kind === "object" &&
+        cloned.value.object.getPrototypeOf() === defining.temporalInstantPrototype,
+    "defining Realm allocation",
+);
 const equal = run('equals.call(new Temporal.Instant(0n),"1970-01-01T00Z")', calling);
-check(equal.type === "normal" && equal.value.kind === "boolean" && equal.value.value, "cross-Realm brand");
+check(
+    equal.type === "normal" && equal.value.kind === "boolean" && equal.value.value,
+    "cross-Realm brand",
+);
 const failed = run('from("bad")', calling);
-check(failed.type === "throw" && failed.value.kind === "object" && failed.value.object.getPrototypeOf() === defining.getErrorPrototype("RangeError"), "defining Realm error");
-calling.defineScriptGlobal("longInput", { value: { kind: "string", value: "1970-01-01T00Z[x=" + "a".repeat(1000) + "]" } });
-const prepared = prepareBoundedScript({ id: "instant-budget", text: "try{from(longInput)}catch(e){true}" }, calling);
-if (prepared.kind !== "ready") throw new Error("budget preparation");
+check(
+    failed.type === "throw" &&
+        failed.value.kind === "object" &&
+        failed.value.object.getPrototypeOf() === defining.getErrorPrototype("RangeError"),
+    "defining Realm error",
+);
+calling.defineScriptGlobal("longInput", {
+    value: { kind: "string", value: "1970-01-01T00Z[x=" + "a".repeat(1000) + "]" },
+});
+const prepared = prepareBoundedScript(
+    { id: "instant-budget", text: "try{from(longInput)}catch(e){true}" },
+    calling,
+);
+if (prepared.kind !== "ready") {
+    throw new Error("budget preparation");
+}
 const session = createScriptSession({ maxSteps: 200, maxCalls: 64 });
 const stopped = evaluateScript(session, prepared.record).completion;
-check(stopped.type === "throw" && stopped.origin.kind === "resource-limit", "parsing work charged before scanning");
-check(session.inspect().active === null && session.inspect().calls === 0 && session.inspect().depth === 0, "budget cleanup");
+check(
+    stopped.type === "throw" && stopped.origin.kind === "resource-limit",
+    "parsing work charged before scanning",
+);
+check(
+    session.inspect().active === null &&
+        session.inspect().calls === 0 &&
+        session.inspect().depth === 0,
+    "budget cleanup",
+);
 console.log("temporal instant conversion passed");

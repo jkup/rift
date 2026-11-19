@@ -27,16 +27,26 @@ function toNum(v: Value): number {
 
 // Option A: function values in a Map.
 const table: Map<string, BuiltinFunction> = new Map();
-table.set("max", new BuiltinFunction("max", 2, (_t, args) => {
-    let best = -Infinity;
-    for (const a of args) best = Math.max(best, toNum(a));
-    return { kind: "number", value: best };
-}));
-table.set("concat", new BuiltinFunction("concat", 1, (t, args) => {
-    let s = t.kind === "string" ? t.value : String(t.value);
-    for (const a of args) s += a.kind === "string" ? a.value : String(a.value);
-    return { kind: "string", value: s };
-}));
+table.set(
+    "max",
+    new BuiltinFunction("max", 2, (_t, args) => {
+        let best = -Infinity;
+        for (const a of args) {
+            best = Math.max(best, toNum(a));
+        }
+        return { kind: "number", value: best };
+    }),
+);
+table.set(
+    "concat",
+    new BuiltinFunction("concat", 1, (t, args) => {
+        let s = t.kind === "string" ? t.value : String(t.value);
+        for (const a of args) {
+            s += a.kind === "string" ? a.value : String(a.value);
+        }
+        return { kind: "string", value: s };
+    }),
+);
 
 // A closure-producing factory: each built-in captures its own state.
 function makeCounter(start: number): BuiltinFunction {
@@ -57,12 +67,28 @@ function show(v: Value): string {
 const none: Value = { kind: "number", value: 0 };
 const maxFn = table.get("max");
 if (maxFn !== undefined) {
-    console.log(maxFn.name, maxFn.length, show(maxFn.impl(none, [{ kind: "number", value: 3 }, { kind: "string", value: "7" }])));
+    console.log(
+        maxFn.name,
+        maxFn.length,
+        show(
+            maxFn.impl(none, [
+                { kind: "number", value: 3 },
+                { kind: "string", value: "7" },
+            ]),
+        ),
+    );
     console.log("missing arg:", show(arg([], 0)));
 }
 const concat = table.get("concat");
 if (concat !== undefined) {
-    console.log(show(concat.impl({ kind: "string", value: "a" }, [{ kind: "number", value: 1 }, { kind: "string", value: "b" }])));
+    console.log(
+        show(
+            concat.impl({ kind: "string", value: "a" }, [
+                { kind: "number", value: 1 },
+                { kind: "string", value: "b" },
+            ]),
+        ),
+    );
 }
 const counter = table.get("counter");
 if (counter !== undefined) {
@@ -93,6 +119,9 @@ function callBuiltin(id: BuiltinId, args: Value[]): Value {
     }
 }
 
-console.log("by id:", show(callBuiltin(BuiltinId.MathAbs, [{ kind: "number", value: -4 }])),
+console.log(
+    "by id:",
+    show(callBuiltin(BuiltinId.MathAbs, [{ kind: "number", value: -4 }])),
     show(callBuiltin(BuiltinId.MathFloor, [{ kind: "number", value: -1.5 }])),
-    show(callBuiltin(BuiltinId.StringLength, [{ kind: "string", value: "hello" }])));
+    show(callBuiltin(BuiltinId.StringLength, [{ kind: "string", value: "hello" }])),
+);

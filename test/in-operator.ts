@@ -1,6 +1,11 @@
-import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+import type {
+    DataDescriptor as InspectionDataDescriptor,
+    PropertyDescriptor as InspectionDescriptor,
+} from "../src/runtime.js";
 function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
-    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    if (d !== undefined && d.kind !== "data") {
+        throw new Error("expected data descriptor");
+    }
     return d;
 }
 import type { OperationContext } from "../src/runtime.js";
@@ -139,7 +144,12 @@ class Target extends GuestObject {
     ) {
         super(proto);
     }
-    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
+    internalGet(
+        _key: PropertyKey,
+        _receiver: Value,
+        context: OperationContext,
+        _at: Location,
+    ): ValueCompletion {
         throw new Error("target Get forbidden");
     }
     internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
@@ -161,7 +171,12 @@ class Target extends GuestObject {
 // These subclasses retain the real exotic descriptor/definition dispatch.
 class ArrayTarget extends GuestArray {
     has = 0;
-    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
+    internalGet(
+        _key: PropertyKey,
+        _receiver: Value,
+        context: OperationContext,
+        _at: Location,
+    ): ValueCompletion {
         throw new Error("array target Get forbidden");
     }
     internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
@@ -171,7 +186,12 @@ class ArrayTarget extends GuestArray {
 }
 class StringTarget extends GuestStringObject {
     has = 0;
-    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
+    internalGet(
+        _key: PropertyKey,
+        _receiver: Value,
+        context: OperationContext,
+        _at: Location,
+    ): ValueCompletion {
         throw new Error("string target Get forbidden");
     }
     internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
@@ -185,7 +205,12 @@ class Key extends GuestObject {
     constructor(public trace: Trace) {
         super();
     }
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         this.trace.text += key === wellKnownToPrimitive ? "K" : key === "toString" ? "S" : "V";
         check(receiver.kind === "object" && receiver.object === this, "key receiver");
         if (this.fault !== null) {
@@ -220,7 +245,8 @@ function preserved(target: GuestObject, key: Value, expected: boolean, name: str
         const d = target.getOwnProperty(keys[i]);
         check(
             target.ownPropertyKeys()[i] === keys[i] &&
-                d !== undefined && d.kind === "data" &&
+                d !== undefined &&
+                d.kind === "data" &&
                 sameValue(d.value, dataDescriptor(descriptors[i])!.value) &&
                 d.writable === dataDescriptor(descriptors[i])!.writable &&
                 d.enumerable === descriptors[i].enumerable &&
@@ -278,7 +304,10 @@ for (const inherited of [false, true]) {
     preserved(target, s("x"), true, "V7 Shadow before");
     target.internalDelete("x");
     preserved(target, s("x"), true, "V7 Shadow after");
-    check(sameValue(dataDescriptor(parent.getOwnProperty("x"))!.value, n(7)), "V7 parent unchanged");
+    check(
+        sameValue(dataDescriptor(parent.getOwnProperty("x"))!.value, n(7)),
+        "V7 parent unchanged",
+    );
 }
 for (const key of ["x", "toString"]) {
     preserved(new Target(), s(key), false, "V8 NullChain");
@@ -384,7 +413,9 @@ for (const key of ["", "01", "-0", "\0", "\ud800"]) {
         if (value.kind === "object") {
             const d = value.object.getOwnProperty("length")!;
             check(
-                d.kind === "data" && sameValue(d.value, n(source === "[];" ? 0 : 1)) && !d.enumerable,
+                d.kind === "data" &&
+                    sameValue(d.value, n(source === "[];" ? 0 : 1)) &&
+                    !d.enumerable,
                 "V21-V23 length",
             );
             check(
@@ -783,7 +814,10 @@ for (const mode of [
     }
     if (mode === "E21 HookAdds" || mode === "E32 ThrowMutation") {
         check(
-            sameValue(dataDescriptor(t.target.getOwnProperty("x"))!.value, mode === "E21 HookAdds" ? U : n(9)),
+            sameValue(
+                dataDescriptor(t.target.getOwnProperty("x"))!.value,
+                mode === "E21 HookAdds" ? U : n(9),
+            ),
             mode + " mutation",
         );
     }
@@ -862,7 +896,12 @@ class Member extends GuestObject {
     constructor(public value: Value) {
         super();
     }
-    internalGet(key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        _receiver: Value,
+        context: OperationContext,
+        _at: Location,
+    ): ValueCompletion {
         this.reads++;
         check(key === "member", "E28 member key");
         return normal(this.value);

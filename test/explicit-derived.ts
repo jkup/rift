@@ -3,11 +3,18 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { normal, sameValue, type ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
 function run(text: string, realm = new Realm((_line: string) => {}, "script")) {
     const p = prepareBoundedScript({ id: "explicit-derived", text }, realm);
-    if (p.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: 20000, maxCalls: 32 }), p.record).completion;
+    if (p.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: 20000, maxCalls: 32 }), p.record)
+        .completion;
 }
 function truth(text: string, realm = new Realm((_line: string) => {}, "script")): void {
     const r = run(text, realm);
@@ -40,55 +47,125 @@ for (const text of [
     "var f;class B{}class D extends B{constructor(){f=()=>this;return {}}}new D();var caught=false;try{f()}catch(e){caught=e instanceof ReferenceError}caught",
     "var f;class B{constructor(){this.x=7}}class D extends B{constructor(){f=()=>super();return {}}}new D();var d=f(),caught=false;try{f()}catch(e){caught=e instanceof ReferenceError}d.x===7&&d instanceof D&&caught",
     "class B{}class D extends B{constructor(){super();return undefined}}new D() instanceof D",
-    "class B{}class D extends B{constructor(){var f=()=>()=>this;super();this.f=f()}}var d=new D();d.f()===d"
-]) truth(text);
-for (const invalid of ["42=1", "1_", "if(false) let x", 'function f(a,a){"use strict";}'])
-    truth("class B{}class D extends B{constructor(){var caught=false;try{eval('super();" + invalid + "')}catch(e){caught=e instanceof SyntaxError}super();this.caught=caught}}new D().caught");
-const owner = new Realm((_line: string) => {}, "script"), caller = new Realm((_line: string) => {}, "script");
+    "class B{}class D extends B{constructor(){var f=()=>()=>this;super();this.f=f()}}var d=new D();d.f()===d",
+]) {
+    truth(text);
+}
+for (const invalid of ["42=1", "1_", "if(false) let x", 'function f(a,a){"use strict";}']) {
+    truth(
+        "class B{}class D extends B{constructor(){var caught=false;try{eval('super();" +
+            invalid +
+            "')}catch(e){caught=e instanceof SyntaxError}super();this.caught=caught}}new D().caught",
+    );
+}
+const owner = new Realm((_line: string) => {}, "script"),
+    caller = new Realm((_line: string) => {}, "script");
 for (const [name, text] of [
     ["Primitive", "(class extends Object{constructor(){return 7}})"],
     ["Missing", "(class extends Object{constructor(){}})"],
     ["Early", "(class extends Object{constructor(){this}})"],
     ["ForeignReferenceError", "ReferenceError"],
-    ["ForeignTypeError", "TypeError"]
+    ["ForeignTypeError", "TypeError"],
 ]) {
     const result = run(text, owner);
-    if (result.type !== "normal") throw new Error("foreign setup");
+    if (result.type !== "normal") {
+        throw new Error("foreign setup");
+    }
     caller.defineScriptGlobal(name, { value: result.value });
 }
-truth("var caught=false;try{new Primitive()}catch(e){caught=e instanceof TypeError&&!(e instanceof ForeignTypeError)}caught", caller);
-truth("var caught=false;try{new Missing()}catch(e){caught=e instanceof ReferenceError&&!(e instanceof ForeignReferenceError)}caught", caller);
-truth("var caught=false;try{new Early()}catch(e){caught=e instanceof ForeignReferenceError&&!(e instanceof ReferenceError)}caught", caller);
-const limited = run("class B{}var D=B;for(var i=0;i<50;i++){D=class extends D{constructor(){super()}}}new D()");
-check(limited.type === "throw" && limited.origin.kind === "resource-limit", "explicit constructor depth budget");
-const argumentLimit = run("class B{}class D extends B{constructor(){try{super((function(){while(true){}})())}catch(e){return {}}}}new D()");
-check(argumentLimit.type === "throw" && argumentLimit.origin.kind === "resource-limit", "fatal super argument budget");
+truth(
+    "var caught=false;try{new Primitive()}catch(e){caught=e instanceof TypeError&&!(e instanceof ForeignTypeError)}caught",
+    caller,
+);
+truth(
+    "var caught=false;try{new Missing()}catch(e){caught=e instanceof ReferenceError&&!(e instanceof ForeignReferenceError)}caught",
+    caller,
+);
+truth(
+    "var caught=false;try{new Early()}catch(e){caught=e instanceof ForeignReferenceError&&!(e instanceof ReferenceError)}caught",
+    caller,
+);
+const limited = run(
+    "class B{}var D=B;for(var i=0;i<50;i++){D=class extends D{constructor(){super()}}}new D()",
+);
+check(
+    limited.type === "throw" && limited.origin.kind === "resource-limit",
+    "explicit constructor depth budget",
+);
+const argumentLimit = run(
+    "class B{}class D extends B{constructor(){try{super((function(){while(true){}})())}catch(e){return {}}}}new D()",
+);
+check(
+    argumentLimit.type === "throw" && argumentLimit.origin.kind === "resource-limit",
+    "fatal super argument budget",
+);
 for (const text of [
     "class D extends Object{constructor(){(0,eval)('super()')}}new D()",
     "class D extends Object{constructor(){function f(){eval('super()')}f()}}new D()",
-    "class D extends Object{constructor(){Function('super()')}}new D()"
+    "class D extends Object{constructor(){Function('super()')}}new D()",
 ]) {
     const result = run(text);
-    check(result.type === "throw" && result.origin.kind === "unsupported-operation", "super context does not leak: " + text);
+    check(
+        result.type === "throw" && result.origin.kind === "unsupported-operation",
+        "super context does not leak: " + text,
+    );
 }
-const inspected = new Realm((_line: string) => {}, "script"), session = createScriptSession();
+const inspected = new Realm((_line: string) => {}, "script"),
+    session = createScriptSession();
 let observations = 0;
-const inspect = inspected.createBuiltin("inspectThis", 1, (_receiver, args, _context, _loc): ValueCompletion => {
-    const frame = session.inspect().active;
-    check(frame !== null && sameValue(frame.thisValue, args[0]), "current this binding in snapshot");
-    observations++;
-    return normal();
-});
+const inspect = inspected.createBuiltin(
+    "inspectThis",
+    1,
+    (_receiver, args, _context, _loc): ValueCompletion => {
+        const frame = session.inspect().active;
+        check(
+            frame !== null && sameValue(frame.thisValue, args[0]),
+            "current this binding in snapshot",
+        );
+        observations++;
+        return normal();
+    },
+);
 inspected.defineScriptGlobal("inspectThis", { value: { kind: "object", object: inspect } });
-const prepared = prepareBoundedScript({ id: "derived-inspection", text: "class D extends Object{constructor(){inspectThis(undefined);(()=>super())();inspectThis(this);(()=>inspectThis(this))()}}new D()" }, inspected);
-if (prepared.kind !== "ready") throw new Error("inspection preparation");
-check(evaluateScript(session, prepared.record).completion.type === "normal" && observations === 3, "derived inspection");
-check(session.inspect().active === null && session.inspect().calls === 0 && session.inspect().depth === 0, "constructor cleanup");
+const prepared = prepareBoundedScript(
+    {
+        id: "derived-inspection",
+        text: "class D extends Object{constructor(){inspectThis(undefined);(()=>super())();inspectThis(this);(()=>inspectThis(this))()}}new D()",
+    },
+    inspected,
+);
+if (prepared.kind !== "ready") {
+    throw new Error("inspection preparation");
+}
+check(
+    evaluateScript(session, prepared.record).completion.type === "normal" && observations === 3,
+    "derived inspection",
+);
+check(
+    session.inspect().active === null &&
+        session.inspect().calls === 0 &&
+        session.inspect().depth === 0,
+    "constructor cleanup",
+);
 for (const text of [
-    "super()", "function f(){super()}", "class B{constructor(){super()}}",
-    "class B{}class D extends B{m(){super()}}", "class B{}class D extends B{constructor(){function f(){super()}}}",
+    "super()",
+    "function f(){super()}",
+    "class B{constructor(){super()}}",
+    "class B{}class D extends B{m(){super()}}",
+    "class B{}class D extends B{constructor(){function f(){super()}}}",
     "class B{}class D extends B{constructor(){new super()}}",
-    "class B{}class D extends B{constructor(){super?.()}}"
-]) check(prepareBoundedScript({ id: "super-boundary", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
-check(run("class B{}class D extends B{constructor(){super.x}}").type === "normal", "super property constructor declaration");
+    "class B{}class D extends B{constructor(){super?.()}}",
+]) {
+    check(
+        prepareBoundedScript(
+            { id: "super-boundary", text },
+            new Realm((_line: string) => {}, "script"),
+        ).kind !== "ready",
+        text,
+    );
+}
+check(
+    run("class B{}class D extends B{constructor(){super.x}}").type === "normal",
+    "super property constructor declaration",
+);
 console.log("Explicit derived constructors passed");

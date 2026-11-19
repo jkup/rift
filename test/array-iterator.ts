@@ -4,18 +4,31 @@ import { wellKnownIterator, wellKnownToStringTag } from "../src/symbols.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
-function seed(realm: Realm, name: string, value: Value): void { realm.defineScriptGlobal(name, {value, writable: true, configurable: true}); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
+function seed(realm: Realm, name: string, value: Value): void {
+    realm.defineScriptGlobal(name, { value, writable: true, configurable: true });
+}
 function own(object: GuestObject, key: string): Value {
     const descriptor = object.getOwnProperty(key);
-    if (descriptor === undefined || descriptor.kind !== "data") throw new Error("own " + key);
+    if (descriptor === undefined || descriptor.kind !== "data") {
+        throw new Error("own " + key);
+    }
     return descriptor.value;
 }
 function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
-    const prepared = prepareBoundedScript({id: "array-iterator", text}, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({maxSteps: steps, maxCalls: 64}), prepared.record).completion;
+    const prepared = prepareBoundedScript({ id: "array-iterator", text }, realm);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 for (const source of [
     "let i=[7,8].values();let a=i.next();let b=i.next();let c=i.next();a.value===7&&!a.done&&b.value===8&&!b.done&&c.value===undefined&&c.done;",
@@ -48,45 +61,94 @@ for (const source of [
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
     "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).length===0&&Object.getOwnPropertySymbols(root)[0]===Symbol.iterator&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
-    "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;"
+    "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {
     const result = run(source);
-    check(result.type === "normal" && sameValue(result.value, {kind: "boolean", value: true}), source);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        source,
+    );
 }
 for (const source of [
-    "Array.prototype.values.call(null);", "Array.prototype.keys.call(undefined);",
-    "Array.prototype.entries.call(null);", "[].values().next.call({});", "[].values().next.call(null);",
+    "Array.prototype.values.call(null);",
+    "Array.prototype.keys.call(undefined);",
+    "Array.prototype.entries.call(null);",
+    "[].values().next.call({});",
+    "[].values().next.call(null);",
     "let i=[].values();i.next.call(Object.create(Object.getPrototypeOf(i)));",
-    "new Array.prototype.values();", "new Array.prototype.keys();", "new Array.prototype.entries();",
-    "Array.prototype.values.call({length:Symbol()}).next();"
+    "new Array.prototype.values();",
+    "new Array.prototype.keys();",
+    "new Array.prototype.entries();",
+    "Array.prototype.values.call({length:Symbol()}).next();",
 ]) {
     const result = run(source);
     check(result.type === "throw" && result.diagnostic.name === "TypeError", source);
 }
 {
-    const owner = fresh(), caller = fresh();
+    const owner = fresh(),
+        caller = fresh();
     seed(caller, "values", own(owner.arrayPrototype, "values"));
     seed(caller, "entries", own(owner.arrayPrototype, "entries"));
     seed(caller, "foreignNext", own(owner.arrayIteratorPrototype, "next"));
     const iterator = run("values.call([7]);", caller);
-    check(iterator.type === "normal" && iterator.value.kind === "object" && iterator.value.object.getPrototypeOf() === owner.arrayIteratorPrototype, "iterator allocation Realm");
+    check(
+        iterator.type === "normal" &&
+            iterator.value.kind === "object" &&
+            iterator.value.object.getPrototypeOf() === owner.arrayIteratorPrototype,
+        "iterator allocation Realm",
+    );
     const result = run("foreignNext.call([7].entries());", caller);
-    check(result.type === "normal" && result.value.kind === "object" && result.value.object.getPrototypeOf() === owner.objectPrototype, "result allocation Realm");
-    if (result.type !== "normal" || result.value.kind !== "object") throw new Error("entry result");
+    check(
+        result.type === "normal" &&
+            result.value.kind === "object" &&
+            result.value.object.getPrototypeOf() === owner.objectPrototype,
+        "result allocation Realm",
+    );
+    if (result.type !== "normal" || result.value.kind !== "object") {
+        throw new Error("entry result");
+    }
     const pair = own(result.value.object, "value");
-    check(pair.kind === "object" && pair.object.getPrototypeOf() === owner.arrayPrototype, "entry pair Realm");
+    check(
+        pair.kind === "object" && pair.object.getPrototypeOf() === owner.arrayPrototype,
+        "entry pair Realm",
+    );
     for (const source of ["values.call(null);", "foreignNext.call({});"]) {
         const failure = run(source, caller);
-        check(failure.type === "throw" && failure.value.kind === "object" && failure.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"), "iterator error Realm");
+        check(
+            failure.type === "throw" &&
+                failure.value.kind === "object" &&
+                failure.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+            "iterator error Realm",
+        );
     }
-    check(owner.iteratorPrototype !== caller.iteratorPrototype && owner.arrayIteratorPrototype !== caller.arrayIteratorPrototype, "fresh iterator prototypes");
+    check(
+        owner.iteratorPrototype !== caller.iteratorPrototype &&
+            owner.arrayIteratorPrototype !== caller.arrayIteratorPrototype,
+        "fresh iterator prototypes",
+    );
     const tag = owner.arrayIteratorPrototype.getOwnProperty(wellKnownToStringTag);
-    check(tag !== undefined && tag.kind === "data" && sameValue(tag.value, {kind: "string", value: "Array Iterator"}), "iterator tag");
+    check(
+        tag !== undefined &&
+            tag.kind === "data" &&
+            sameValue(tag.value, { kind: "string", value: "Array Iterator" }),
+        "iterator tag",
+    );
 }
 {
-    const result = run("let i=Array.prototype.values.call({length:Infinity});while(true){i.next();}", fresh(), 100);
-    check(result.type === "throw" && result.origin.kind === "resource-limit", "large live iterator budget");
+    const result = run(
+        "let i=Array.prototype.values.call({length:Infinity});while(true){i.next();}",
+        fresh(),
+        100,
+    );
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "large live iterator budget",
+    );
 }
 const legacy = new Realm((_line: string) => {});
-check(legacy.arrayPrototype.getOwnProperty("values") === undefined && legacy.arrayPrototype.getOwnProperty(wellKnownIterator) === undefined, "legacy iterator absent");
+check(
+    legacy.arrayPrototype.getOwnProperty("values") === undefined &&
+        legacy.arrayPrototype.getOwnProperty(wellKnownIterator) === undefined,
+    "legacy iterator absent",
+);
 console.log("Array iterators passed");

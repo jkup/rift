@@ -31,6 +31,15 @@ imports: repairs preserve expected source/hash assertions, compare parsed
 structure and require exactly one matching import. Full tooling revalidation,
 lint cleanup, architectural/structural gates, CI and documentation remain open.
 
+Mechanical source checkpoint: fresh CLI compiles 21,302/21,302 statements
+statically and passes all 14 committed CLI cases on both hosts (28 executions).
+All ten probes and 36 runner tests pass after explicit braces. The 1,003-case
+Node run used the initial formatted emission, before the brace pass; parsed
+structure comparison and focused fresh native checks cover that mechanical
+delta. This is not a full native guest-suite claim. Source-contract regression
+tests pass 6/6; repaired ledger fault injection passes its 149 checks/28 literal
+reports. Remaining tooling failures are being revalidated with link permissions.
+
 > Layout update (2026-11-19): the TypeScript project now lives at the repository root. Earlier entries retain historical paths and retired-engine references as acceptance records. Current instructions are in AGENTS.md and README.md.
 
 Statuses: **ready**, **blocked**, **in progress**, **done**. Claim a ready task before coding. Record owner/chat, base revision, evidence and handoff notes. A task becomes done only after integration and successful acceptance. Split broad tasks into bounded batches as interfaces become concrete.

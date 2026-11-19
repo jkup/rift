@@ -3,20 +3,34 @@ import { sameValue, type GuestObject, type Value, type ValueCompletion } from ".
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
-    const prepared = prepareBoundedScript({id: "map-upsert", text}, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({maxSteps: steps, maxCalls: 64}), prepared.record).completion;
+    const prepared = prepareBoundedScript({ id: "map-upsert", text }, realm);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function passes(text: string, realm = fresh()): void {
     const result = run(text, realm);
-    check(result.type === "normal" && sameValue(result.value, {kind: "boolean", value: true}), text);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        text,
+    );
 }
 function own(object: GuestObject, key: string): Value {
     const descriptor = object.getOwnProperty(key);
-    if (descriptor === undefined || descriptor.kind !== "data") throw new Error("own " + key);
+    if (descriptor === undefined || descriptor.kind !== "data") {
+        throw new Error("own " + key);
+    }
     return descriptor.value;
 }
 
@@ -44,21 +58,58 @@ for (const source of [
     "let m=Object.freeze(new Map());m.getOrInsert('x',1)===1&&m.getOrInsertComputed('y',function(){return 2;})===2&&m.size===2;",
     "let m=new Map();let a=m.getOrInsert;let b=m.getOrInsertComputed;let get=m.get;Object.setPrototypeOf(m,null);a.call(m,'x',1)===1&&b.call(m,'y',function(){return 2;})===2&&get.call(m,'y')===2;",
     "let m=new Map();let get=m.get;m.get=function(){throw 1;};m.has=function(){throw 2;};m.set=function(){throw 3;};m.getOrInsert('x',1)===1&&m.getOrInsertComputed('y',function(){return 2;})===2&&get.call(m,'y')===2;",
-]) passes(source);
+]) {
+    passes(source);
+}
 for (const name of ["getOrInsert", "getOrInsertComputed"]) {
-    passes("let d=Object.getOwnPropertyDescriptor(Map.prototype,'"+name+"');d.value.name==='"+name+"'&&d.value.length===2&&!Object.hasOwn(d.value,'prototype')&&d.writable&&!d.enumerable&&d.configurable;");
-    for (const receiver of ["null", "undefined", "1", "{}", "Map.prototype", "Object.create(Map.prototype)"]) {
-        const result = run("Map.prototype."+name+".call("+receiver+",'x',function(){throw 1;});");
-        check(result.type === "throw" && result.diagnostic.name === "TypeError", "Map brand " + name);
+    passes(
+        "let d=Object.getOwnPropertyDescriptor(Map.prototype,'" +
+            name +
+            "');d.value.name==='" +
+            name +
+            "'&&d.value.length===2&&!Object.hasOwn(d.value,'prototype')&&d.writable&&!d.enumerable&&d.configurable;",
+    );
+    for (const receiver of [
+        "null",
+        "undefined",
+        "1",
+        "{}",
+        "Map.prototype",
+        "Object.create(Map.prototype)",
+    ]) {
+        const result = run(
+            "Map.prototype." + name + ".call(" + receiver + ",'x',function(){throw 1;});",
+        );
+        check(
+            result.type === "throw" && result.diagnostic.name === "TypeError",
+            "Map brand " + name,
+        );
     }
-    const constructed = run("new Map.prototype."+name+"();");
-    check(constructed.type === "throw" && constructed.diagnostic.name === "TypeError", "not constructible " + name);
-    const owner = fresh(), caller = fresh();
-    caller.defineScriptGlobal("foreign", {value: own(owner.mapPrototype,name)});
-    passes("let m=new Map();foreign.call(m,'x',"+(name === "getOrInsert" ? "7" : "function(){return 7;}")+")===7&&m.get('x')===7;",caller);
-    const error = run("foreign.call({});",caller);
-    check(error.type === "throw" && error.value.kind === "object" && error.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"), "error Realm " + name);
-    check(new Realm((_line: string) => {}).mapPrototype.getOwnProperty(name) === undefined, "legacy method absent");
+    const constructed = run("new Map.prototype." + name + "();");
+    check(
+        constructed.type === "throw" && constructed.diagnostic.name === "TypeError",
+        "not constructible " + name,
+    );
+    const owner = fresh(),
+        caller = fresh();
+    caller.defineScriptGlobal("foreign", { value: own(owner.mapPrototype, name) });
+    passes(
+        "let m=new Map();foreign.call(m,'x'," +
+            (name === "getOrInsert" ? "7" : "function(){return 7;}") +
+            ")===7&&m.get('x')===7;",
+        caller,
+    );
+    const error = run("foreign.call({});", caller);
+    check(
+        error.type === "throw" &&
+            error.value.kind === "object" &&
+            error.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+        "error Realm " + name,
+    );
+    check(
+        new Realm((_line: string) => {}).mapPrototype.getOwnProperty(name) === undefined,
+        "legacy method absent",
+    );
 }
 for (const source of [
     "let m=new Map();m.getOrInsertComputed('x',function(){while(true){}});",

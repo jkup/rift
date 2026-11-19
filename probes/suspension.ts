@@ -4,7 +4,9 @@
 
 // (1) Host generator delegating through recursion.
 function* walk(depth: number): Generator<number, void, number> {
-    if (depth === 0) return;
+    if (depth === 0) {
+        return;
+    }
     const received: number = yield depth;
     console.log("  resumed at depth", depth, "with", received);
     yield* walk(depth - 1);

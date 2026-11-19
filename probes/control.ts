@@ -23,9 +23,13 @@ function show(c: Completion): string {
 
 // A guest throw propagating up 50 frames of recursive evaluation.
 function guestThrower(depth: number): Completion {
-    if (depth === 0) return { type: "throw", value: str("from depth 0") };
+    if (depth === 0) {
+        return { type: "throw", value: str("from depth 0") };
+    }
     const inner = guestThrower(depth - 1);
-    if (inner.type !== "normal") return inner;
+    if (inner.type !== "normal") {
+        return inner;
+    }
     return { type: "normal", value: { kind: "number", value: depth } };
 }
 console.log("propagated:", show(guestThrower(50)));
@@ -35,8 +39,14 @@ console.log("propagated:", show(guestThrower(50)));
 function guestTryFinally(block: Completion, finalizer: Completion): Completion {
     return finalizer.type === "normal" ? block : finalizer;
 }
-console.log("finally normal keeps throw:", show(guestTryFinally({ type: "throw", value: str("t") }, { type: "normal", value: str("f") })));
-console.log("finally return wins:", show(guestTryFinally({ type: "throw", value: str("t") }, { type: "return", value: str("f") })));
+console.log(
+    "finally normal keeps throw:",
+    show(guestTryFinally({ type: "throw", value: str("t") }, { type: "normal", value: str("f") })),
+);
+console.log(
+    "finally return wins:",
+    show(guestTryFinally({ type: "throw", value: str("t") }, { type: "return", value: str("f") })),
+);
 
 // Host try/finally ordering, which the evaluator will rely on for cleanup.
 const log: string[] = [];

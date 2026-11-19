@@ -2,21 +2,42 @@
 // can change representation without changing guest string operations.
 export type GuestString = string;
 export type NormalizationForm = "NFC" | "NFD" | "NFKC" | "NFKD";
-export function stringNormalize(value: GuestString, form: NormalizationForm): GuestString { return value.normalize(form); }
-export function stringStartsWith(value: GuestString, search: GuestString, start: number): boolean { return value.startsWith(search, start); }
-export function stringEndsWith(value: GuestString, search: GuestString, end: number): boolean { return value.endsWith(search, end); }
-export function stringLength(value: GuestString): number { return value.length; }
-export function stringUnit(value: GuestString, index: number): GuestString { return value.charAt(index); }
-export function stringCodeUnit(value: GuestString, index: number): number { return value.charCodeAt(index); }
-export function stringFromCodeUnit(code: number): GuestString { return String.fromCharCode(code); }
-export function stringConcat(left: GuestString, right: GuestString): GuestString { return left + right; }
+export function stringNormalize(value: GuestString, form: NormalizationForm): GuestString {
+    return value.normalize(form);
+}
+export function stringStartsWith(value: GuestString, search: GuestString, start: number): boolean {
+    return value.startsWith(search, start);
+}
+export function stringEndsWith(value: GuestString, search: GuestString, end: number): boolean {
+    return value.endsWith(search, end);
+}
+export function stringLength(value: GuestString): number {
+    return value.length;
+}
+export function stringUnit(value: GuestString, index: number): GuestString {
+    return value.charAt(index);
+}
+export function stringCodeUnit(value: GuestString, index: number): number {
+    return value.charCodeAt(index);
+}
+export function stringFromCodeUnit(code: number): GuestString {
+    return String.fromCharCode(code);
+}
+export function stringConcat(left: GuestString, right: GuestString): GuestString {
+    return left + right;
+}
 
 export function stringRepeat(value: GuestString, count: number): GuestString {
-    let result = "", chunk = value;
+    let result = "",
+        chunk = value;
     while (count > 0) {
-        if (count % 2 === 1) result += chunk;
+        if (count % 2 === 1) {
+            result += chunk;
+        }
         count = Math.floor(count / 2);
-        if (count > 0) chunk += chunk;
+        if (count > 0) {
+            chunk += chunk;
+        }
     }
     return result;
 }
@@ -28,12 +49,20 @@ export function stringCompare(left: GuestString, right: GuestString): number {
     while (i < left.length && i < right.length) {
         const a = left.charCodeAt(i);
         const b = right.charCodeAt(i);
-        if (a < b) return -1;
-        if (a > b) return 1;
+        if (a < b) {
+            return -1;
+        }
+        if (a > b) {
+            return 1;
+        }
         i++;
     }
-    if (left.length < right.length) return -1;
-    if (left.length > right.length) return 1;
+    if (left.length < right.length) {
+        return -1;
+    }
+    if (left.length > right.length) {
+        return 1;
+    }
     return 0;
 }
 
@@ -49,14 +78,33 @@ export function stringLastIndexOf(value: GuestString, search: GuestString, start
     return value.lastIndexOf(search, start);
 }
 
-export function stringJoin(parts: GuestString[]): GuestString { return parts.join(""); }
-
-export function isStringWhitespace(code: number): boolean {
-    return code === 0x09 || code === 0x0b || code === 0x0c || code === 0x20
-        || code === 0xa0 || code === 0x1680 || (code >= 0x2000 && code <= 0x200a)
-        || code === 0x202f || code === 0x205f || code === 0x3000 || code === 0xfeff
-        || code === 0x0a || code === 0x0d || code === 0x2028 || code === 0x2029;
+export function stringJoin(parts: GuestString[]): GuestString {
+    return parts.join("");
 }
 
-export function stringLowerCase(value: GuestString): GuestString { return value.toLowerCase(); }
-export function stringUpperCase(value: GuestString): GuestString { return value.toUpperCase(); }
+export function isStringWhitespace(code: number): boolean {
+    return (
+        code === 0x09 ||
+        code === 0x0b ||
+        code === 0x0c ||
+        code === 0x20 ||
+        code === 0xa0 ||
+        code === 0x1680 ||
+        (code >= 0x2000 && code <= 0x200a) ||
+        code === 0x202f ||
+        code === 0x205f ||
+        code === 0x3000 ||
+        code === 0xfeff ||
+        code === 0x0a ||
+        code === 0x0d ||
+        code === 0x2028 ||
+        code === 0x2029
+    );
+}
+
+export function stringLowerCase(value: GuestString): GuestString {
+    return value.toLowerCase();
+}
+export function stringUpperCase(value: GuestString): GuestString {
+    return value.toUpperCase();
+}

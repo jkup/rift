@@ -66,10 +66,18 @@ function toBoolean(v: Value): boolean {
 }
 
 function show(v: Value): string {
-    if (v.kind === "number") return `num(${v.value})`;
-    if (v.kind === "string") return `str(${JSON.stringify(v.value)})`;
-    if (v.kind === "boolean") return `bool(${v.value})`;
-    if (v.kind === "object") return `obj(${v.object.className})`;
+    if (v.kind === "number") {
+        return `num(${v.value})`;
+    }
+    if (v.kind === "string") {
+        return `str(${JSON.stringify(v.value)})`;
+    }
+    if (v.kind === "boolean") {
+        return `bool(${v.value})`;
+    }
+    if (v.kind === "object") {
+        return `obj(${v.object.className})`;
+    }
     return v.kind;
 }
 

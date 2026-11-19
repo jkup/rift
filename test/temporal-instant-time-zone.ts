@@ -3,10 +3,19 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm: Realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm: Realm = new Realm((_line: string) => {}, "script"),
+): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "temporal-instant-time-zone", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 const cases = [
@@ -27,16 +36,43 @@ for (const text of cases) {
     const result = run(text);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
-for (const zone of ['Invalid/Zone', '12:30Z', '2020-01-01', '+01:00:01', '2020-02-30T00:00Z', 'Z']) {
-    const result = run('var ok=false;try{new Temporal.Instant(0n).toString({timeZone:'+JSON.stringify(zone)+'})}catch(e){ok=e instanceof RangeError}ok');
+for (const zone of [
+    "Invalid/Zone",
+    "12:30Z",
+    "2020-01-01",
+    "+01:00:01",
+    "2020-02-30T00:00Z",
+    "Z",
+]) {
+    const result = run(
+        "var ok=false;try{new Temporal.Instant(0n).toString({timeZone:" +
+            JSON.stringify(zone) +
+            "})}catch(e){ok=e instanceof RangeError}ok",
+    );
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, zone);
 }
-const defining = new Realm((_line: string) => {}, "script"), calling = new Realm((_line: string) => {}, "script");
+const defining = new Realm((_line: string) => {}, "script"),
+    calling = new Realm((_line: string) => {}, "script");
 const method = run("Temporal.Instant.prototype.toString", defining);
-if (method.type !== "normal") throw new Error("method lookup");
+if (method.type !== "normal") {
+    throw new Error("method lookup");
+}
 calling.defineScriptGlobal("formatInstant", { value: method.value });
-const crossRealm = run('formatInstant.call(new Temporal.Instant(0n),{timeZone:new Temporal.ZonedDateTime(0n,"+01:00")})', calling);
-check(crossRealm.type === "normal" && crossRealm.value.kind === "string" && crossRealm.value.value === "1970-01-01T01:00:00+01:00", "cross-Realm slots");
+const crossRealm = run(
+    'formatInstant.call(new Temporal.Instant(0n),{timeZone:new Temporal.ZonedDateTime(0n,"+01:00")})',
+    calling,
+);
+check(
+    crossRealm.type === "normal" &&
+        crossRealm.value.kind === "string" &&
+        crossRealm.value.value === "1970-01-01T01:00:00+01:00",
+    "cross-Realm slots",
+);
 const failed = run('formatInstant.call(new Temporal.Instant(0n),{timeZone:"invalid"})', calling);
-check(failed.type === "throw" && failed.value.kind === "object" && failed.value.object.getPrototypeOf() === defining.getErrorPrototype("RangeError"), "defining Realm error");
+check(
+    failed.type === "throw" &&
+        failed.value.kind === "object" &&
+        failed.value.object.getPrototypeOf() === defining.getErrorPrototype("RangeError"),
+    "defining Realm error",
+);
 console.log("temporal instant time zone passed");

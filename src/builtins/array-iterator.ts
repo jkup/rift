@@ -6,17 +6,38 @@ import { wellKnownIterator, wellKnownToStringTag } from "../symbols.js";
 
 export function registerArrayIterators(realm: Realm): Value {
     let values: Value = UNDEFINED;
-    const identity = realm.createBuiltin("[Symbol.iterator]", 0, (receiver, _args, _context, _loc) => normal(receiver));
+    const identity = realm.createBuiltin(
+        "[Symbol.iterator]",
+        0,
+        (receiver, _args, _context, _loc) => normal(receiver),
+    );
     realm.iteratorPrototype.bootstrapDefine(wellKnownIterator, {
-        value: { kind: "object", object: identity }, writable: true, enumerable: false, configurable: true,
+        value: { kind: "object", object: identity },
+        writable: true,
+        enumerable: false,
+        configurable: true,
     });
-    realm.registerBuiltin(realm.arrayIteratorPrototype, "next", 0, (receiver, _args, context, loc) => {
-        if (receiver.kind !== "object" || !(receiver.object instanceof GuestArrayIterator))
-            return languageFailure(context.realm, "TypeError", "receiver is not an Array iterator", loc);
-        return receiver.object.next(context, loc);
-    });
+    realm.registerBuiltin(
+        realm.arrayIteratorPrototype,
+        "next",
+        0,
+        (receiver, _args, context, loc) => {
+            if (receiver.kind !== "object" || !(receiver.object instanceof GuestArrayIterator)) {
+                return languageFailure(
+                    context.realm,
+                    "TypeError",
+                    "receiver is not an Array iterator",
+                    loc,
+                );
+            }
+            return receiver.object.next(context, loc);
+        },
+    );
     realm.arrayIteratorPrototype.bootstrapDefine(wellKnownToStringTag, {
-        value: { kind: "string", value: "Array Iterator" }, writable: false, enumerable: false, configurable: true,
+        value: { kind: "string", value: "Array Iterator" },
+        writable: false,
+        enumerable: false,
+        configurable: true,
     });
     const methods: { name: string; kind: ArrayIterationKind }[] = [
         { name: "keys", kind: "key" },
@@ -24,17 +45,36 @@ export function registerArrayIterators(realm: Realm): Value {
         { name: "entries", kind: "key+value" },
     ];
     for (const method of methods) {
-        const value = realm.registerBuiltin(realm.arrayPrototype, method.name, 0, (receiver, _args, context, loc) => {
-            const array = toObject(receiver, context, loc);
-            if (array.type === "throw") return array;
-            const allocation = context.tick(loc);
-            if (allocation.type === "throw") return allocation;
-            return normal({ kind: "object", object: new GuestArrayIterator(array.value, method.kind, context.realm.arrayIteratorPrototype) });
-        });
+        const value = realm.registerBuiltin(
+            realm.arrayPrototype,
+            method.name,
+            0,
+            (receiver, _args, context, loc) => {
+                const array = toObject(receiver, context, loc);
+                if (array.type === "throw") {
+                    return array;
+                }
+                const allocation = context.tick(loc);
+                if (allocation.type === "throw") {
+                    return allocation;
+                }
+                return normal({
+                    kind: "object",
+                    object: new GuestArrayIterator(
+                        array.value,
+                        method.kind,
+                        context.realm.arrayIteratorPrototype,
+                    ),
+                });
+            },
+        );
         if (method.kind === "value") {
             values = value;
             realm.arrayPrototype.bootstrapDefine(wellKnownIterator, {
-                value, writable: true, enumerable: false, configurable: true,
+                value,
+                writable: true,
+                enumerable: false,
+                configurable: true,
             });
         }
     }

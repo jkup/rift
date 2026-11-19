@@ -3,9 +3,18 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { parseRegExpSyntax } from "../src/regexp-pattern-syntax.js";
 import { compileRegExpPattern, matchRegExp } from "../src/regexp-matcher.js";
-import { normal, resourceFailure, type OperationContext, type ValueCompletion } from "../src/runtime.js";
+import {
+    normal,
+    resourceFailure,
+    type OperationContext,
+    type ValueCompletion,
+} from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
 for (const text of [
     String.raw`/(?i:a)b/.test('Ab')&&!/(?i:a)b/.test('AB')`,
     String.raw`/(?i:a(?-i:b)c)/.test('AbC')&&!/(?i:a(?-i:b)c)/.test('ABC')`,
@@ -25,37 +34,75 @@ for (const text of [
     String.raw`/(?i-:a)/.test('A')&&/(?smi:a)/.test('A')&&!/(?-smi:a)/ims.test('A')`,
     String.raw`['(?-:a)','(?ii:a)','(?i-i:a)','(?g:a)','(?i)'].every(function(p){try{new RegExp(p);return false}catch(e){return e instanceof SyntaxError}})`,
 ]) {
-    const realm = new Realm((_line: string) => {}, "script"), session = createScriptSession();
+    const realm = new Realm((_line: string) => {}, "script"),
+        session = createScriptSession();
     const prepared = prepareBoundedScript({ id: "scoped-modifiers", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("preparation: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("preparation: " + text);
+    }
     const result = evaluateScript(session, prepared.record).completion;
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
     check(session.inspect().active === null && session.inspect().calls === 0, "caller restored");
 }
 const source = String.raw`(?im-s:(a|b)+)(?-i:\1)`;
 let parsingSteps = 0;
-const parsed = parseRegExpSyntax(source, () => { parsingSteps++; return true; });
-if (parsed.kind !== "ready") throw new Error("budget pattern");
+const parsed = parseRegExpSyntax(source, () => {
+    parsingSteps++;
+    return true;
+});
+if (parsed.kind !== "ready") {
+    throw new Error("budget pattern");
+}
 for (let limit = 0; limit < parsingSteps; limit++) {
     let steps = 0;
-    check(parseRegExpSyntax(source, () => steps++ < limit).kind === "stopped", "modifier parsing budget");
+    check(
+        parseRegExpSyntax(source, () => steps++ < limit).kind === "stopped",
+        "modifier parsing budget",
+    );
 }
-const realm = new Realm((_line: string) => {}, "script"), loc = { line: 1, column: 1 };
-let steps = 0, limit = 100000;
+const realm = new Realm((_line: string) => {}, "script"),
+    loc = { line: 1, column: 1 };
+let steps = 0,
+    limit = 100000;
 const context: OperationContext = {
-    realm, call: (_callee, _receiver, _args, _loc): ValueCompletion => { throw new Error("no guest calls"); },
-    tick: (location): ValueCompletion => ++steps > limit ? resourceFailure("steps", steps, limit, "modifier budget", location) : normal(),
+    realm,
+    call: (_callee, _receiver, _args, _loc): ValueCompletion => {
+        throw new Error("no guest calls");
+    },
+    tick: (location): ValueCompletion =>
+        ++steps > limit
+            ? resourceFailure("steps", steps, limit, "modifier budget", location)
+            : normal(),
 };
-const compiled = compileRegExpPattern(parsed.pattern, { ignoreCase: false, multiline: false, dotAll: false }, context, loc);
-if (compiled.kind !== "ready") throw new Error("budget compilation");
+const compiled = compileRegExpPattern(
+    parsed.pattern,
+    { ignoreCase: false, multiline: false, dotAll: false },
+    context,
+    loc,
+);
+if (compiled.kind !== "ready") {
+    throw new Error("budget compilation");
+}
 const compilationSteps = steps;
 for (limit = 0; limit < compilationSteps; limit++) {
     steps = 0;
-    const result = compileRegExpPattern(parsed.pattern, { ignoreCase: false, multiline: false, dotAll: false }, context, loc);
-    check(result.kind === "abrupt" && result.completion.origin.kind === "resource-limit", "modifier compilation budget");
+    const result = compileRegExpPattern(
+        parsed.pattern,
+        { ignoreCase: false, multiline: false, dotAll: false },
+        context,
+        loc,
+    );
+    check(
+        result.kind === "abrupt" && result.completion.origin.kind === "resource-limit",
+        "modifier compilation budget",
+    );
 }
-limit = 3; steps = 0;
+limit = 3;
+steps = 0;
 const stopped = matchRegExp(compiled.program, "aAb", 0, true, context, loc);
-check(stopped.kind === "abrupt" && stopped.completion.origin.kind === "resource-limit", "modifier matching budget");
+check(
+    stopped.kind === "abrupt" && stopped.completion.origin.kind === "resource-limit",
+    "modifier matching budget",
+);
 check(parseRegExpSyntax("(?i:(?<=a))", () => true).kind === "ready", "lookbehind inside modifiers");
 console.log("regexp modifiers passed");

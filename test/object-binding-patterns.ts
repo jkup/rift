@@ -3,11 +3,18 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { parse } from "../src/parser.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
 function run(text: string, steps = 100000, realm = new Realm((_line: string) => {}, "script")) {
     const prepared = prepareBoundedScript({ id: "array-pattern", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function expect(text: string): void {
     const result = run(text);
@@ -47,39 +54,89 @@ for (const text of [
     "function f(){let {a=()=>b,b=7}={};return a}f()()===7",
     "var ok=false;var input={get a(){throw 7}};try{let {a}=input}catch(e){ok=e===7}ok",
     "var closed=0;var xs={};xs[Symbol.iterator]=function(){return {next(){return {done:false,value:null}},return(){closed++;return {}}}};var ok=false;try{const [{}]=xs}catch(e){ok=e instanceof TypeError}ok&&closed===1",
-    "Object.defineProperty(Number.prototype,'x',{get:function(){'use strict';return typeof this}});const {x}=1;x==='number'"
-]) expect(text);
-for (const text of [
-    "let {a,a}={};", "const {a:x,b:x}={};", "const {a};", "var {a};", "let {...rest,}={};",
-    "let {...rest,a}={};", "let {...rest=1}={};", "let {...[a]}={};", "let {...{a}}={};",
-    "let {a:o.x}={};", "let {a:(x)}={};", "let {'a'}={};", "let {1}={};",
-    "let {a(){}}={};", "let {get a(){}}={};", "let {[a,b]:x}={};", "'use strict';let {eval}={};",
-    "if(true)let {a}={};", "while(false)const {a}={};", "({a=1});"
+    "Object.defineProperty(Number.prototype,'x',{get:function(){'use strict';return typeof this}});const {x}=1;x==='number'",
 ]) {
-    const prepared=prepareBoundedScript({id:'invalid-object-binding',text},new Realm((_line:string)=>{},'script'));
-    check(prepared.kind !== 'ready','must reject: '+text);
+    expect(text);
 }
-check(parse('let {a}={a:1};').error !== null,'legacy parser boundary');
-const owner = new Realm((_line: string) => {}, "script"), caller = new Realm((_line: string) => {}, "script");
-const foreign = run("function f(input){const {...rest}=input;return rest}f",100000,owner);
-if(foreign.type !== 'normal') throw new Error('foreign setup');
-caller.defineScriptGlobal('foreign',{value:foreign.value});
-const rest=run('foreign({a:1})',100000,caller);
-check(rest.type==='normal'&&rest.value.kind==='object'&&rest.value.object.getPrototypeOf()===owner.objectPrototype,'rest defining Realm');
-const error=run('foreign(null)',100000,caller);
-check(error.type==='throw'&&error.value.kind==='object'&&error.value.object.getPrototypeOf()===owner.getErrorPrototype('TypeError'),'error defining Realm');
-const limitedRealm=new Realm((_line:string)=>{},'script');
-run("var input={};for(var i=0;i<100;i++){input[i]=i}var caught=false;",100000,limitedRealm);
-const limited=run("try{const {...rest}=input}catch(e){caught=true}",100,limitedRealm);
-check(limited.type==='throw'&&limited.origin.kind==='resource-limit','rest copy budget');
-const caught=run('caught',100000,limitedRealm);
-check(caught.type==='normal'&&caught.value.kind==='boolean'&&!caught.value.value,'resource stop cannot enter catch');
-const interrupted=new Realm((_line:string)=>{},'script');
-const failed=run("var input={a:1,get b(){throw 7}};let {a,...rest}=input;",100000,interrupted);
-check(failed.type==='throw'&&failed.value.kind==='number'&&failed.value.value===7,'rest getter throw');
-const first=run('a',100000,interrupted),pending=run('rest',100000,interrupted);
-check(first.type==='normal'&&first.value.kind==='number'&&first.value.value===1,'earlier binding remains initialized');
-check(pending.type==='throw'&&pending.diagnostic.name==='ReferenceError','rest remains in TDZ after failed copy');
-expect("var called=false;function key(){called=true;return 'a'}var ok=false;try{let {[key()]:x}=null}catch(e){ok=e instanceof TypeError}ok&&!called");
-expect("const {...rest}={get a(){return 7}};const d=Object.getOwnPropertyDescriptor(rest,'a');d.value===7&&d.writable&&d.enumerable&&d.configurable&&d.get===undefined");
-console.log('Object binding patterns passed');
+for (const text of [
+    "let {a,a}={};",
+    "const {a:x,b:x}={};",
+    "const {a};",
+    "var {a};",
+    "let {...rest,}={};",
+    "let {...rest,a}={};",
+    "let {...rest=1}={};",
+    "let {...[a]}={};",
+    "let {...{a}}={};",
+    "let {a:o.x}={};",
+    "let {a:(x)}={};",
+    "let {'a'}={};",
+    "let {1}={};",
+    "let {a(){}}={};",
+    "let {get a(){}}={};",
+    "let {[a,b]:x}={};",
+    "'use strict';let {eval}={};",
+    "if(true)let {a}={};",
+    "while(false)const {a}={};",
+    "({a=1});",
+]) {
+    const prepared = prepareBoundedScript(
+        { id: "invalid-object-binding", text },
+        new Realm((_line: string) => {}, "script"),
+    );
+    check(prepared.kind !== "ready", "must reject: " + text);
+}
+check(parse("let {a}={a:1};").error !== null, "legacy parser boundary");
+const owner = new Realm((_line: string) => {}, "script"),
+    caller = new Realm((_line: string) => {}, "script");
+const foreign = run("function f(input){const {...rest}=input;return rest}f", 100000, owner);
+if (foreign.type !== "normal") {
+    throw new Error("foreign setup");
+}
+caller.defineScriptGlobal("foreign", { value: foreign.value });
+const rest = run("foreign({a:1})", 100000, caller);
+check(
+    rest.type === "normal" &&
+        rest.value.kind === "object" &&
+        rest.value.object.getPrototypeOf() === owner.objectPrototype,
+    "rest defining Realm",
+);
+const error = run("foreign(null)", 100000, caller);
+check(
+    error.type === "throw" &&
+        error.value.kind === "object" &&
+        error.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+    "error defining Realm",
+);
+const limitedRealm = new Realm((_line: string) => {}, "script");
+run("var input={};for(var i=0;i<100;i++){input[i]=i}var caught=false;", 100000, limitedRealm);
+const limited = run("try{const {...rest}=input}catch(e){caught=true}", 100, limitedRealm);
+check(limited.type === "throw" && limited.origin.kind === "resource-limit", "rest copy budget");
+const caught = run("caught", 100000, limitedRealm);
+check(
+    caught.type === "normal" && caught.value.kind === "boolean" && !caught.value.value,
+    "resource stop cannot enter catch",
+);
+const interrupted = new Realm((_line: string) => {}, "script");
+const failed = run("var input={a:1,get b(){throw 7}};let {a,...rest}=input;", 100000, interrupted);
+check(
+    failed.type === "throw" && failed.value.kind === "number" && failed.value.value === 7,
+    "rest getter throw",
+);
+const first = run("a", 100000, interrupted),
+    pending = run("rest", 100000, interrupted);
+check(
+    first.type === "normal" && first.value.kind === "number" && first.value.value === 1,
+    "earlier binding remains initialized",
+);
+check(
+    pending.type === "throw" && pending.diagnostic.name === "ReferenceError",
+    "rest remains in TDZ after failed copy",
+);
+expect(
+    "var called=false;function key(){called=true;return 'a'}var ok=false;try{let {[key()]:x}=null}catch(e){ok=e instanceof TypeError}ok&&!called",
+);
+expect(
+    "const {...rest}={get a(){return 7}};const d=Object.getOwnPropertyDescriptor(rest,'a');d.value===7&&d.writable&&d.enumerable&&d.configurable&&d.get===undefined",
+);
+console.log("Object binding patterns passed");

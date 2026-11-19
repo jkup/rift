@@ -6,16 +6,35 @@ import { normal, UNDEFINED, type ValueCompletion } from "../src/runtime.js";
 
 function passes(text: string): void {
     const realm = new Realm((_line: string) => {}, "script");
-    realm.registerBuiltin(realm.globalObject, "dateOptions", 1, (_receiver, args, context, loc): ValueCompletion => {
-        const result = dateDifferenceSettings(args.length === 0 ? UNDEFINED : args[0], context, loc);
-        if (result.type === "throw") return result;
-        const value = result.value;
-        return normal({ kind: "string", value: value.largest+":"+value.smallest+":"+value.increment+":"+value.mode });
-    });
+    realm.registerBuiltin(
+        realm.globalObject,
+        "dateOptions",
+        1,
+        (_receiver, args, context, loc): ValueCompletion => {
+            const result = dateDifferenceSettings(
+                args.length === 0 ? UNDEFINED : args[0],
+                context,
+                loc,
+            );
+            if (result.type === "throw") {
+                return result;
+            }
+            const value = result.value;
+            return normal({
+                kind: "string",
+                value:
+                    value.largest + ":" + value.smallest + ":" + value.increment + ":" + value.mode,
+            });
+        },
+    );
     const prepared = prepareBoundedScript({ id: "date-difference-options", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     const result = evaluateScript(createScriptSession(), prepared.record).completion;
-    if (result.type !== "normal" || result.value.kind !== "boolean" || !result.value.value) throw new Error(text);
+    if (result.type !== "normal" || result.value.kind !== "boolean" || !result.value.value) {
+        throw new Error(text);
+    }
 }
 for (const text of [
     'dateOptions()==="day:day:1:trunc"',
@@ -29,18 +48,60 @@ for (const text of [
     'var touched=false,ok=false;try{dateOptions({largestUnit:"bad",get roundingIncrement(){touched=true}})}catch(e){ok=e instanceof RangeError}ok&&!touched',
     'var touched=false,ok=false;try{dateOptions({roundingMode:"bad",get smallestUnit(){touched=true}})}catch(e){ok=e instanceof RangeError}ok&&!touched',
     'dateOptions({get relativeTo(){throw 1},get overflow(){throw 2}})==="day:day:1:trunc"',
-]) passes(text);
-const units = ["year", "month", "week", "day"];
-for (let large = 0; large < units.length; large++) for (let small = 0; small < units.length; small++) {
-    const options = '{largestUnit:"'+units[large]+'",smallestUnit:"'+units[small]+'"}';
-    if (large <= small) passes('dateOptions('+options+')==="'+units[large]+':'+units[small]+':1:trunc"');
-    else passes('var ok=false;try{dateOptions('+options+')}catch(e){ok=e instanceof RangeError}ok');
+]) {
+    passes(text);
 }
-for (const unit of units) passes('dateOptions({smallestUnit:"'+unit+'"})==="'+unit+':'+unit+':1:trunc"');
-for (const mode of ["ceil","floor","expand","trunc","halfCeil","halfFloor","halfExpand","halfTrunc","halfEven"])
-    passes('dateOptions({roundingMode:"'+mode+'"})==="day:day:1:'+mode+'"');
-for (const options of ['null','1','"day"','true'])
-    passes('var ok=false;try{dateOptions('+options+')}catch(e){ok=e instanceof TypeError}ok');
-for (const options of ['{largestUnit:"hour"}','{smallestUnit:"hour"}','{smallestUnit:"auto"}','{roundingIncrement:0}','{roundingIncrement:NaN}','{roundingIncrement:Infinity}','{roundingIncrement:1000000001}'])
-    passes('var ok=false;try{dateOptions('+options+')}catch(e){ok=e instanceof RangeError}ok');
+const units = ["year", "month", "week", "day"];
+for (let large = 0; large < units.length; large++) {
+    for (let small = 0; small < units.length; small++) {
+        const options = '{largestUnit:"' + units[large] + '",smallestUnit:"' + units[small] + '"}';
+        if (large <= small) {
+            passes(
+                "dateOptions(" +
+                    options +
+                    ')==="' +
+                    units[large] +
+                    ":" +
+                    units[small] +
+                    ':1:trunc"',
+            );
+        } else {
+            passes(
+                "var ok=false;try{dateOptions(" +
+                    options +
+                    ")}catch(e){ok=e instanceof RangeError}ok",
+            );
+        }
+    }
+}
+for (const unit of units) {
+    passes('dateOptions({smallestUnit:"' + unit + '"})==="' + unit + ":" + unit + ':1:trunc"');
+}
+for (const mode of [
+    "ceil",
+    "floor",
+    "expand",
+    "trunc",
+    "halfCeil",
+    "halfFloor",
+    "halfExpand",
+    "halfTrunc",
+    "halfEven",
+]) {
+    passes('dateOptions({roundingMode:"' + mode + '"})==="day:day:1:' + mode + '"');
+}
+for (const options of ["null", "1", '"day"', "true"]) {
+    passes("var ok=false;try{dateOptions(" + options + ")}catch(e){ok=e instanceof TypeError}ok");
+}
+for (const options of [
+    '{largestUnit:"hour"}',
+    '{smallestUnit:"hour"}',
+    '{smallestUnit:"auto"}',
+    "{roundingIncrement:0}",
+    "{roundingIncrement:NaN}",
+    "{roundingIncrement:Infinity}",
+    "{roundingIncrement:1000000001}",
+]) {
+    passes("var ok=false;try{dateOptions(" + options + ")}catch(e){ok=e instanceof RangeError}ok");
+}
 console.log("temporal date difference options passed");

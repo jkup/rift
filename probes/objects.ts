@@ -41,27 +41,38 @@ class GuestObject {
     }
 
     getOwn(key: PropertyKey): Property | undefined {
-        if (typeof key === "string") return this.stringProps.get(key);
+        if (typeof key === "string") {
+            return this.stringProps.get(key);
+        }
         return this.symbolProps.get(key);
     }
 
     define(key: PropertyKey, desc: PartialDescriptor): void {
         const existing = this.getOwn(key);
         if (existing !== undefined) {
-            if (desc.value !== undefined) existing.value = desc.value;
-            if (desc.writable !== undefined) existing.writable = desc.writable;
+            if (desc.value !== undefined) {
+                existing.value = desc.value;
+            }
+            if (desc.writable !== undefined) {
+                existing.writable = desc.writable;
+            }
             return;
         }
         const prop = new Property(desc.value ?? 0, desc.writable ?? false, true, true);
-        if (typeof key === "string") this.stringProps.set(key, prop);
-        else this.symbolProps.set(key, prop);
+        if (typeof key === "string") {
+            this.stringProps.set(key, prop);
+        } else {
+            this.symbolProps.set(key, prop);
+        }
     }
 
     get(key: PropertyKey): number | undefined {
         let current: GuestObject | null = this;
         while (current !== null) {
             const prop = current.getOwn(key);
-            if (prop !== undefined) return prop.value;
+            if (prop !== undefined) {
+                return prop.value;
+            }
             current = current.proto;
         }
         return undefined;
@@ -73,8 +84,11 @@ class GuestObject {
         const others: string[] = [];
         for (const key of this.stringProps.keys()) {
             const n = Number(key);
-            if (String(n >>> 0) === key && n !== 4294967295) indices.push(n);
-            else others.push(key);
+            if (String(n >>> 0) === key && n !== 4294967295) {
+                indices.push(n);
+            } else {
+                others.push(key);
+            }
         }
         indices.sort((x, y) => x - y);
         return indices.map((n) => String(n)).concat(others);

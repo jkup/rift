@@ -4,18 +4,29 @@ import { parse } from "../src/parser.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, steps = 50000): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "labels", text }, fresh());
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function expect(text: string, expected: Value): void {
     const result = run(text);
     check(result.type === "normal" && sameValue(result.value, expected), text);
 }
-function passes(text: string): void { expect(text, { kind: "boolean", value: true }); }
+function passes(text: string): void {
+    expect(text, { kind: "boolean", value: true });
+}
 for (const source of [
     "var n=0;outer:for(var i=0;i<3;i++){for(var j=0;j<3;j++){n++;if(j===1)break outer;}}n===2&&i===0;",
     "var n=0;outer:for(var i=0;i<3;i++){for(var j=0;j<3;j++){if(j===1)continue outer;n++;}}n===3&&i===3;",
@@ -41,43 +52,100 @@ for (const source of [
     "var f=()=>{a:{return 7;}};f()===7;",
     "Function('a:{break a;}return 7;')()===7;",
     "function f(){a:{break a;}}f.toString()==='function f(){a:{break a;}}';",
-]) passes(source);
+]) {
+    passes(source);
+}
 
-for (const source of ["1;a:{break a;}", "a:{1;break a;}", "a:while(true){1;break a;}", "a:{b:{1;break a;}}", "a:try{1;break a;}finally{9;}"])
+for (const source of [
+    "1;a:{break a;}",
+    "a:{1;break a;}",
+    "a:while(true){1;break a;}",
+    "a:{b:{1;break a;}}",
+    "a:try{1;break a;}finally{9;}",
+]) {
     expect(source, { kind: "number", value: 1 });
-for (const source of ["1;a:if(true)break a;", "a:try{throw 1;}finally{break a;}", "a:while(true){break\na;}"])
+}
+for (const source of [
+    "1;a:if(true)break a;",
+    "a:try{throw 1;}finally{break a;}",
+    "a:while(true){break\na;}",
+]) {
     expect(source, { kind: "undefined" });
+}
 
-const iterators = "var log='';function make(name){var n=0;var it={next(){n++;return {value:n,done:n>2};},return(){log+=name;return {};}};it[Symbol.iterator]=function(){return this;};return it;}";
-passes(iterators + "var sum=0;outer:for(var x of make('O')){for(var y of make('I')){sum+=x;continue outer;}}sum===3&&log==='II';");
-passes(iterators + "outer:for(var x of make('O')){for(var y of make('I')){break outer;}}log==='IO';");
+const iterators =
+    "var log='';function make(name){var n=0;var it={next(){n++;return {value:n,done:n>2};},return(){log+=name;return {};}};it[Symbol.iterator]=function(){return this;};return it;}";
+passes(
+    iterators +
+        "var sum=0;outer:for(var x of make('O')){for(var y of make('I')){sum+=x;continue outer;}}sum===3&&log==='II';",
+);
+passes(
+    iterators + "outer:for(var x of make('O')){for(var y of make('I')){break outer;}}log==='IO';",
+);
 passes(iterators + "var sum=0;a:b:for(var x of make('O')){sum+=x;continue a;}sum===3&&log==='';");
-passes(iterators + "var e={};var caught=false;try{outer:for(var x of make('O')){var inner=make('I');inner.return=function(){log+='X';throw e;};for(var y of inner){continue outer;}}}catch(q){caught=q===e;}caught&&log==='XO';");
-passes(iterators + "var e={},other={};var outerIt=make('O');outerIt.return=function(){log+='O';throw other;};var caught=false;try{outer:for(var x of outerIt){var inner=make('I');inner.return=function(){log+='I';throw e;};for(var y of inner){break outer;}}}catch(q){caught=q===e;}caught&&log==='IO';");
+passes(
+    iterators +
+        "var e={};var caught=false;try{outer:for(var x of make('O')){var inner=make('I');inner.return=function(){log+='X';throw e;};for(var y of inner){continue outer;}}}catch(q){caught=q===e;}caught&&log==='XO';",
+);
+passes(
+    iterators +
+        "var e={},other={};var outerIt=make('O');outerIt.return=function(){log+='O';throw other;};var caught=false;try{outer:for(var x of outerIt){var inner=make('I');inner.return=function(){log+='I';throw e;};for(var y of inner){break outer;}}}catch(q){caught=q===e;}caught&&log==='IO';",
+);
 
 for (const text of [
-    "a:{a:;}", "break missing;", "while(true){continue missing;}", "a:{continue a;}",
-    "a:{while(true){continue a;}}", "a:if(true)while(true){continue a;}",
-    "a:while(true){function f(){break a;}}", "a:while(true){var f=()=>{continue a;};}",
-    "a:while(true){var o={m(){break a;}};}", "a:let x;", "a:const x=1;",
+    "a:{a:;}",
+    "break missing;",
+    "while(true){continue missing;}",
+    "a:{continue a;}",
+    "a:{while(true){continue a;}}",
+    "a:if(true)while(true){continue a;}",
+    "a:while(true){function f(){break a;}}",
+    "a:while(true){var f=()=>{continue a;};}",
+    "a:while(true){var o={m(){break a;}};}",
+    "a:let x;",
+    "a:const x=1;",
     "a:{break;}",
 ]) {
     const prepared = prepareBoundedScript({ id: "invalid-label", text }, fresh());
-    check(prepared.kind === "blocked" && prepared.rejection.kind === "unsupported-syntax" && prepared.diagnostic.phase === "parse", text);
+    check(
+        prepared.kind === "blocked" &&
+            prepared.rejection.kind === "unsupported-syntax" &&
+            prepared.diagnostic.phase === "parse",
+        text,
+    );
 }
 {
     const realm = fresh();
-    const prepared = prepareBoundedScript({id: "labelled-function", text: "a:function f(){}"}, realm);
+    const prepared = prepareBoundedScript(
+        { id: "labelled-function", text: "a:function f(){}" },
+        realm,
+    );
     check(prepared.kind === "ready", "labelled function prepares");
-    if (prepared.kind === "ready") check(evaluateScript(createScriptSession(), prepared.record).completion.type === "normal", "labelled function executes");
+    if (prepared.kind === "ready") {
+        check(
+            evaluateScript(createScriptSession(), prepared.record).completion.type === "normal",
+            "labelled function executes",
+        );
+    }
     const property = realm.globalObject.getOwnProperty("f");
-    check(property !== undefined && property.kind === "data" && property.value.kind === "object", "labelled function binding");
+    check(
+        property !== undefined && property.kind === "data" && property.value.kind === "object",
+        "labelled function binding",
+    );
 }
 check(parse("a:{break a;}").error !== null, "legacy label grammar stays excluded");
 const bounded = run("outer:while(true){try{continue outer;}finally{1;}}", 100);
-check(bounded.type === "throw" && bounded.origin.kind === "resource-limit", "labelled loop is bounded");
+check(
+    bounded.type === "throw" && bounded.origin.kind === "resource-limit",
+    "labelled loop is bounded",
+);
 let deep = "";
-for (let i = 0; i < 130; i++) deep += "label" + i + ":";
+for (let i = 0; i < 130; i++) {
+    deep += "label" + i + ":";
+}
 const rejected = prepareBoundedScript({ id: "label-depth", text: deep + ";" }, fresh());
-check(rejected.kind === "blocked" && rejected.rejection.kind === "resource-limit", "label nesting is bounded");
+check(
+    rejected.kind === "blocked" && rejected.rejection.kind === "resource-limit",
+    "label nesting is bounded",
+);
 console.log("Labelled statements passed");

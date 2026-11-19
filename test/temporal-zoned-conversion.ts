@@ -3,10 +3,19 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm: Realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm: Realm = new Realm((_line: string) => {}, "script"),
+): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "temporal-zoned-conversion", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 const cases = [
@@ -39,11 +48,23 @@ for (const text of cases) {
     const result = run(text);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
-const order = run('var t="",x={};for(var k of ["calendar","day","hour","microsecond","millisecond","minute","month","monthCode","nanosecond","offset","second","timeZone","year"]){(function(k){Object.defineProperty(x,k,{get(){t+=k+",";if(k==="calendar")return "iso8601";if(k==="timeZone")return "UTC";if(k==="year")return 1970;if(k==="month"||k==="day")return 1;return undefined}})})(k)}Temporal.ZonedDateTime.from(x,{get disambiguation(){t+="D"},get offset(){t+="O"},get overflow(){t+="F"}});t==="calendar,day,hour,microsecond,millisecond,minute,month,monthCode,nanosecond,offset,second,timeZone,year,DOF"');
-check(order.type === "normal" && order.value.kind === "boolean" && order.value.value, "field order");
+const order = run(
+    'var t="",x={};for(var k of ["calendar","day","hour","microsecond","millisecond","minute","month","monthCode","nanosecond","offset","second","timeZone","year"]){(function(k){Object.defineProperty(x,k,{get(){t+=k+",";if(k==="calendar")return "iso8601";if(k==="timeZone")return "UTC";if(k==="year")return 1970;if(k==="month"||k==="day")return 1;return undefined}})})(k)}Temporal.ZonedDateTime.from(x,{get disambiguation(){t+="D"},get offset(){t+="O"},get overflow(){t+="F"}});t==="calendar,day,hour,microsecond,millisecond,minute,month,monthCode,nanosecond,offset,second,timeZone,year,DOF"',
+);
+check(
+    order.type === "normal" && order.value.kind === "boolean" && order.value.value,
+    "field order",
+);
 for (const options of ['{disambiguation:"bad"}', '{offset:"bad"}', '{overflow:"bad"}']) {
-    const result = run('var ok=false;try{Temporal.ZonedDateTime.from(new Temporal.ZonedDateTime(0n,"UTC"),'+options+')}catch(e){ok=e instanceof RangeError}ok');
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, options);
+    const result = run(
+        'var ok=false;try{Temporal.ZonedDateTime.from(new Temporal.ZonedDateTime(0n,"UTC"),' +
+            options +
+            ")}catch(e){ok=e instanceof RangeError}ok",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        options,
+    );
 }
 for (const expression of [
     'Temporal.ZonedDateTime.from("1970-01-01T00+01[UTC]")',
@@ -52,17 +73,36 @@ for (const expression of [
     'Temporal.ZonedDateTime.from("+275760-09-13T23:59:00.000000001[+23:59]")',
     'Temporal.ZonedDateTime.from({year:1970,month:1,day:1,timeZone:"UTC",offset:"Z"})',
 ]) {
-    const result = run('var ok=false;try{'+expression+'}catch(e){ok=e instanceof RangeError}ok');
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, expression);
+    const result = run(
+        "var ok=false;try{" + expression + "}catch(e){ok=e instanceof RangeError}ok",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        expression,
+    );
 }
-for (const input of ['null','undefined','1','true','1n','Symbol()']) {
-    const result = run('var ok=false;try{Temporal.ZonedDateTime.from('+input+')}catch(e){ok=e instanceof TypeError}ok');
+for (const input of ["null", "undefined", "1", "true", "1n", "Symbol()"]) {
+    const result = run(
+        "var ok=false;try{Temporal.ZonedDateTime.from(" +
+            input +
+            ")}catch(e){ok=e instanceof TypeError}ok",
+    );
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, input);
 }
-const defining = new Realm((_line: string) => {}, "script"), calling = new Realm((_line: string) => {}, "script");
-const method = run("Temporal.ZonedDateTime.from", defining), prototype = run("Temporal.ZonedDateTime.prototype", defining);
-if (method.type !== "normal" || prototype.type !== "normal") throw new Error("lookup");
+const defining = new Realm((_line: string) => {}, "script"),
+    calling = new Realm((_line: string) => {}, "script");
+const method = run("Temporal.ZonedDateTime.from", defining),
+    prototype = run("Temporal.ZonedDateTime.prototype", defining);
+if (method.type !== "normal" || prototype.type !== "normal") {
+    throw new Error("lookup");
+}
 calling.defineScriptGlobal("convertZoned", { value: method.value });
 const value = run('convertZoned(new Temporal.ZonedDateTime(0n,"UTC"))', calling);
-check(value.type === "normal" && value.value.kind === "object" && prototype.value.kind === "object" && value.value.object.getPrototypeOf() === prototype.value.object, "intrinsic Realm");
+check(
+    value.type === "normal" &&
+        value.value.kind === "object" &&
+        prototype.value.kind === "object" &&
+        value.value.object.getPrototypeOf() === prototype.value.object,
+    "intrinsic Realm",
+);
 console.log("temporal zoned conversion passed");

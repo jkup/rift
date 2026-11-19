@@ -4,10 +4,19 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import { formatOffsetInstant, formatUTCInstant } from "../src/temporal-time-format.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm: Realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm: Realm = new Realm((_line: string) => {}, "script"),
+): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "temporal-instant-string", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 const cases = [
@@ -49,26 +58,63 @@ for (const text of cases) {
     const result = run(text);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
-for (const option of ['null', 'true', '1', '"UTC"', '1n', 'Symbol()']) {
-    const result = run('var ok=false;try{new Temporal.Instant(0n).toString('+option+')}catch(e){ok=e instanceof TypeError}ok');
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "options " + option);
+for (const option of ["null", "true", "1", '"UTC"', "1n", "Symbol()"]) {
+    const result = run(
+        "var ok=false;try{new Temporal.Instant(0n).toString(" +
+            option +
+            ")}catch(e){ok=e instanceof TypeError}ok",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "options " + option,
+    );
 }
-for (const option of ['-0.1', '10', 'NaN', 'Infinity', '"0"', 'new Number(3)', 'null', '1n']) {
-    const result = run('var ok=false;try{new Temporal.Instant(0n).toString({fractionalSecondDigits:'+option+'})}catch(e){ok=e instanceof RangeError}ok');
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "digits " + option);
+for (const option of ["-0.1", "10", "NaN", "Infinity", '"0"', "new Number(3)", "null", "1n"]) {
+    const result = run(
+        "var ok=false;try{new Temporal.Instant(0n).toString({fractionalSecondDigits:" +
+            option +
+            "})}catch(e){ok=e instanceof RangeError}ok",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "digits " + option,
+    );
 }
-for (const zone of ['Invalid/Zone', '+01:00:00', '+24:00', 'Z', '']) {
-    const result = run('var ok=false;try{new Temporal.Instant(0n).toString({timeZone:'+JSON.stringify(zone)+'})}catch(e){ok=e instanceof RangeError}ok');
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "zone " + zone);
+for (const zone of ["Invalid/Zone", "+01:00:00", "+24:00", "Z", ""]) {
+    const result = run(
+        "var ok=false;try{new Temporal.Instant(0n).toString({timeZone:" +
+            JSON.stringify(zone) +
+            "})}catch(e){ok=e instanceof RangeError}ok",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "zone " + zone,
+    );
 }
 check(formatUTCInstant(8640000000000000000001n) === null, "UTC range unchanged");
-check(formatOffsetInstant(0n, 1440) === null && formatOffsetInstant(0n, 0.5) === null, "offset bounds");
-const defining = new Realm((_line: string) => {}, "script"), calling = new Realm((_line: string) => {}, "script");
+check(
+    formatOffsetInstant(0n, 1440) === null && formatOffsetInstant(0n, 0.5) === null,
+    "offset bounds",
+);
+const defining = new Realm((_line: string) => {}, "script"),
+    calling = new Realm((_line: string) => {}, "script");
 const method = run("Temporal.Instant.prototype.toString", defining);
-if (method.type !== "normal") throw new Error("method lookup");
+if (method.type !== "normal") {
+    throw new Error("method lookup");
+}
 calling.defineScriptGlobal("formatInstant", { value: method.value });
 const crossRealm = run("formatInstant.call(new Temporal.Instant(0n))", calling);
-check(crossRealm.type === "normal" && crossRealm.value.kind === "string" && crossRealm.value.value === "1970-01-01T00:00:00Z", "cross-Realm branding");
+check(
+    crossRealm.type === "normal" &&
+        crossRealm.value.kind === "string" &&
+        crossRealm.value.value === "1970-01-01T00:00:00Z",
+    "cross-Realm branding",
+);
 const failed = run("formatInstant.call(new Temporal.Instant(0n), null)", calling);
-check(failed.type === "throw" && failed.value.kind === "object" && failed.value.object.getPrototypeOf() === defining.getErrorPrototype("TypeError"), "defining Realm error");
+check(
+    failed.type === "throw" &&
+        failed.value.kind === "object" &&
+        failed.value.object.getPrototypeOf() === defining.getErrorPrototype("TypeError"),
+    "defining Realm error",
+);
 console.log("temporal instant string passed");

@@ -3,16 +3,28 @@ import { sameValue, type ThrowCompletion, type ValueCompletion } from "../src/ru
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "locale-string", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function passes(text: string, realm = fresh()): void {
     const result = run(text, realm);
-    check(result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }), text);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        text,
+    );
 }
 for (const source of [
     "[1,2,3].toLocaleString()==='1,2,3'&&[].toLocaleString()==='';",
@@ -37,38 +49,81 @@ for (const source of [
     "Object.prototype.toLocaleString.length===0&&Number.prototype.toLocaleString.length===0&&Number.prototype.toLocaleString!==Number.prototype.toString;",
     "var e={};var caught=false;try{[{toLocaleString(){throw e;}}].toLocaleString();}catch(q){caught=q===e;}caught;",
     "var e={};var caught=false;try{[{toLocaleString(){return {toString(){throw e;}};}}].toLocaleString();}catch(q){caught=q===e;}caught;",
-]) passes(source);
+]) {
+    passes(source);
+}
 
 for (const source of [
-    "Object.prototype.toLocaleString.call(null);", "Object.prototype.toLocaleString.call(undefined);",
-    "Array.prototype.toLocaleString.call(null);", "Array.prototype.toLocaleString.call(undefined);",
-    "Object.prototype.toLocaleString.call({toString:null});", "[{toLocaleString:3}].toLocaleString();",
+    "Object.prototype.toLocaleString.call(null);",
+    "Object.prototype.toLocaleString.call(undefined);",
+    "Array.prototype.toLocaleString.call(null);",
+    "Array.prototype.toLocaleString.call(undefined);",
+    "Object.prototype.toLocaleString.call({toString:null});",
+    "[{toLocaleString:3}].toLocaleString();",
     "[{toLocaleString(){return Symbol();}}].toLocaleString();",
-    "Number.prototype.toLocaleString.call({valueOf(){return 7;}});", "Number.prototype.toLocaleString.call('7');",
+    "Number.prototype.toLocaleString.call({valueOf(){return 7;}});",
+    "Number.prototype.toLocaleString.call('7');",
 ]) {
     const result = run(source);
     check(result.type === "throw" && result.diagnostic.name === "TypeError", source);
 }
 {
-    const realm = fresh(), other = fresh();
+    const realm = fresh(),
+        other = fresh();
     const method = run("Array.prototype.toLocaleString;", realm);
-    if (method.type !== "normal") throw new Error("foreign method setup");
+    if (method.type !== "normal") {
+        throw new Error("foreign method setup");
+    }
     other.defineScriptGlobal("format", { value: method.value });
-    run("Number.prototype.toLocaleString=function(){'use strict';return this===3?'home':'bad';};", realm);
-    passes("Number.prototype.toLocaleString=function(){return 'other';};format.call([3])==='home';", other);
+    run(
+        "Number.prototype.toLocaleString=function(){'use strict';return this===3?'home':'bad';};",
+        realm,
+    );
+    passes(
+        "Number.prototype.toLocaleString=function(){return 'other';};format.call([3])==='home';",
+        other,
+    );
     const constructor = run("TypeError;", realm);
-    if (constructor.type !== "normal") throw new Error("foreign constructor setup");
+    if (constructor.type !== "normal") {
+        throw new Error("foreign constructor setup");
+    }
     other.defineScriptGlobal("HomeError", { value: constructor.value });
-    passes("var caught=false;try{format.call(null);}catch(e){caught=e.constructor===HomeError;}caught;", other);
+    passes(
+        "var caught=false;try{format.call(null);}catch(e){caught=e.constructor===HomeError;}caught;",
+        other,
+    );
 }
 {
     const realm = fresh();
-    const sentinel: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: { kind: "number", value: 7 },
-        diagnostic: { phase: "runtime", name: "Sentinel", message: "identity", loc: { line: 9, column: 4 } } };
-    const fail = realm.createBuiltin("fail", 0, (_receiver, _args, _context, _loc): ValueCompletion => sentinel);
+    const sentinel: ThrowCompletion = {
+        type: "throw",
+        origin: { kind: "guest" },
+        value: { kind: "number", value: 7 },
+        diagnostic: {
+            phase: "runtime",
+            name: "Sentinel",
+            message: "identity",
+            loc: { line: 9, column: 4 },
+        },
+    };
+    const fail = realm.createBuiltin(
+        "fail",
+        0,
+        (_receiver, _args, _context, _loc): ValueCompletion => sentinel,
+    );
     realm.defineScriptGlobal("fail", { value: { kind: "object", object: fail } });
-    check(run("[{toLocaleString:fail}].toLocaleString();", realm) === sentinel, "exact abrupt completion");
+    check(
+        run("[{toLocaleString:fail}].toLocaleString();", realm) === sentinel,
+        "exact abrupt completion",
+    );
 }
-const bounded = run("try{Array.prototype.toLocaleString.call({length:1000000});}catch(e){1;}", fresh(), 50);
-check(bounded.type === "throw" && bounded.origin.kind === "resource-limit", "large array-like traversal stays bounded");
+const bounded = run(
+    "try{Array.prototype.toLocaleString.call({length:1000000});}catch(e){1;}",
+    fresh(),
+    50,
+);
+check(
+    bounded.type === "throw" && bounded.origin.kind === "resource-limit",
+    "large array-like traversal stays bounded",
+);
 console.log("Locale string conversions passed");

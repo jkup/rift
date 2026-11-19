@@ -3,11 +3,18 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
 function run(text: string, realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
     const p = prepareBoundedScript({ id: "default-derived", text }, realm);
-    if (p.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: 20000, maxCalls: 32 }), p.record).completion;
+    if (p.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: 20000, maxCalls: 32 }), p.record)
+        .completion;
 }
 function truth(text: string, realm = new Realm((_line: string) => {}, "script")): void {
     const r = run(text, realm);
@@ -49,21 +56,53 @@ for (const text of [
     "class D extends Symbol{}var caught=false;try{new D()}catch(e){caught=e instanceof TypeError}caught&&Object.getPrototypeOf(D)===Symbol",
     "class B{constructor(){this.nt=new.target}}class D extends B{}function N(){}var x=Reflect.construct(D,[],N);x.nt===N&&x instanceof N",
     "class B{}class D extends (class extends B{}){}new D() instanceof B",
-    "class B{}class D extends B{['constructor'](){return 7}}new D().constructor()===7"
-]) truth(text);
-for (const text of ["class B{}class D extends B{constructor(){}}", "class B{}class D extends B{constructor(){super()}}"])
+    "class B{}class D extends B{['constructor'](){return 7}}new D().constructor()===7",
+]) {
+    truth(text);
+}
+for (const text of [
+    "class B{}class D extends B{constructor(){}}",
+    "class B{}class D extends B{constructor(){super()}}",
+]) {
     check(run(text).type === "normal", "explicit constructor preparation: " + text);
-check(run("class B{}class D extends B{m(){return super.x}}").type === "normal", "super property method declaration");
-for (const text of ["class D extends -1{}", "class D extends (function(){})++{}"])
-    check(prepareBoundedScript({ id: "derived-boundary", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
-const owner = new Realm((_line: string) => {}, "script"), caller = new Realm((_line: string) => {}, "script");
-for (const [name, source] of [["Base", "class B{constructor(){this.nt=new.target}}B"], ["NullDerived", "class D extends null{}D"], ["ForeignTypeError", "TypeError"]]) {
+}
+check(
+    run("class B{}class D extends B{m(){return super.x}}").type === "normal",
+    "super property method declaration",
+);
+for (const text of ["class D extends -1{}", "class D extends (function(){})++{}"]) {
+    check(
+        prepareBoundedScript(
+            { id: "derived-boundary", text },
+            new Realm((_line: string) => {}, "script"),
+        ).kind !== "ready",
+        text,
+    );
+}
+const owner = new Realm((_line: string) => {}, "script"),
+    caller = new Realm((_line: string) => {}, "script");
+for (const [name, source] of [
+    ["Base", "class B{constructor(){this.nt=new.target}}B"],
+    ["NullDerived", "class D extends null{}D"],
+    ["ForeignTypeError", "TypeError"],
+]) {
     const r = run(source, owner);
-    if (r.type !== "normal") throw new Error("foreign setup");
+    if (r.type !== "normal") {
+        throw new Error("foreign setup");
+    }
     caller.defineScriptGlobal(name, { value: r.value });
 }
-truth("class D extends Base{}var x=new D();x.nt===D&&Object.getPrototypeOf(x)===D.prototype&&x instanceof Base", caller);
-truth("var caught=false;try{new NullDerived()}catch(e){caught=e instanceof ForeignTypeError&&!(e instanceof TypeError)}caught", caller);
+truth(
+    "class D extends Base{}var x=new D();x.nt===D&&Object.getPrototypeOf(x)===D.prototype&&x instanceof Base",
+    caller,
+);
+truth(
+    "var caught=false;try{new NullDerived()}catch(e){caught=e instanceof ForeignTypeError&&!(e instanceof TypeError)}caught",
+    caller,
+);
 const limited = run("class B{}var D=B;for(var i=0;i<50;i++){D=class extends D{}}new D()");
-check(limited.type === "throw" && limited.origin.kind === "resource-limit", "derived constructor call budget");
+check(
+    limited.type === "throw" && limited.origin.kind === "resource-limit",
+    "derived constructor call budget",
+);
 console.log("Default derived classes passed");

@@ -40,7 +40,9 @@ class Environment {
         let env: Environment | null = this;
         while (env !== null) {
             const v = env.bindings.get(name);
-            if (v !== undefined) return v;
+            if (v !== undefined) {
+                return v;
+            }
             env = env.outer;
         }
         throw new Error(`ReferenceError: ${name} is not defined`);
@@ -64,7 +66,9 @@ type Completion = { type: "normal" } | { type: "return"; value: Value };
 const NORMAL: Completion = { type: "normal" };
 
 function asNumber(v: Value): number {
-    if (v.kind !== "number") throw new Error("TypeError: not a number");
+    if (v.kind !== "number") {
+        throw new Error("TypeError: not a number");
+    }
     return v.value;
 }
 
@@ -93,13 +97,17 @@ function evaluate(node: Node, env: Environment): Value {
             return { kind: "closure", closure: new Closure(node.params, node.body, env) };
         case "call": {
             const callee = evaluate(node.callee, env);
-            if (callee.kind !== "closure") throw new Error("TypeError: not a function");
+            if (callee.kind !== "closure") {
+                throw new Error("TypeError: not a function");
+            }
             const fnEnv = new Environment(callee.closure.env);
             for (let i = 0; i < callee.closure.params.length; i++) {
                 fnEnv.bindings.set(callee.closure.params[i], evaluate(node.args[i], env));
             }
             const completion = executeBlock(callee.closure.body, fnEnv);
-            if (completion.type === "return") return completion.value;
+            if (completion.type === "return") {
+                return completion.value;
+            }
             return { kind: "number", value: 0 };
         }
         default:
@@ -125,7 +133,9 @@ function execute(node: Node, env: Environment): Completion {
         case "while":
             while (asNumber(evaluate(node.test, env)) !== 0) {
                 const c = executeBlock(node.body, new Environment(env));
-                if (c.type === "return") return c;
+                if (c.type === "return") {
+                    return c;
+                }
             }
             return NORMAL;
         case "if": {
@@ -141,7 +151,9 @@ function execute(node: Node, env: Environment): Completion {
 function executeBlock(body: Node[], env: Environment): Completion {
     for (const statement of body) {
         const c = execute(statement, env);
-        if (c.type !== "normal") return c;
+        if (c.type !== "normal") {
+            return c;
+        }
     }
     return NORMAL;
 }

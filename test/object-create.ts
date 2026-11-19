@@ -4,13 +4,24 @@ import { wellKnownSpecies } from "../src/symbols.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
-function seed(realm: Realm, name: string, value: Value): void { realm.defineScriptGlobal(name, {value,writable:true,configurable:true}); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
+function seed(realm: Realm, name: string, value: Value): void {
+    realm.defineScriptGlobal(name, { value, writable: true, configurable: true });
+}
 function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
-    const prepared = prepareBoundedScript({id:"object-create",text},realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({maxSteps:steps,maxCalls:64}),prepared.record).completion;
+    const prepared = prepareBoundedScript({ id: "object-create", text }, realm);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 for (const source of [
     "let p={inherited:1};let o=Object.create(p,{x:{value:2,enumerable:true}});o.inherited===1&&o.x===2&&Object.keys(o).join(',')==='x'&&Object.isExtensible(o);",
@@ -31,46 +42,131 @@ for (const source of [
     "let p={};Object.defineProperty(p,'x',{set:function(){throw 1;}});let o=Object.create(p,{x:{value:7}});o.x===7&&Object.hasOwn(o,'x');",
     "let o={};Object.defineProperties(o,7)===o&&Object.defineProperties(o,true)===o&&Object.defineProperties(o,'')===o;",
     "let proto={};Object.create(proto,undefined)!==Object.create(proto)&&Object.create(proto,7)!==proto;",
-    "Object.create.length===2&&Object.defineProperties.length===2&&Object.create.name==='create'&&Object.defineProperties.name==='defineProperties';"
+    "Object.create.length===2&&Object.defineProperties.length===2&&Object.create.name==='create'&&Object.defineProperties.name==='defineProperties';",
 ]) {
-    const result=run(source);check(result.type==="normal"&&sameValue(result.value,{kind:"boolean",value:true}),source);
+    const result = run(source);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        source,
+    );
 }
-for(const source of ["Object.create();","Object.create(1);","Object.create(null,null);","Object.defineProperties({},undefined);","Object.defineProperties({},null);","Object.defineProperties({},'a');","Object.defineProperties(1,{});"]){
-    const result=run(source);check(result.type==="throw"&&result.diagnostic.name==="TypeError",source);
+for (const source of [
+    "Object.create();",
+    "Object.create(1);",
+    "Object.create(null,null);",
+    "Object.defineProperties({},undefined);",
+    "Object.defineProperties({},null);",
+    "Object.defineProperties({},'a');",
+    "Object.defineProperties(1,{});",
+]) {
+    const result = run(source);
+    check(result.type === "throw" && result.diagnostic.name === "TypeError", source);
 }
 {
-    const r=fresh(),props=r.createObject(),descriptor=r.createObject();
-    descriptor.bootstrapDefine("value",{value:{kind:"number",value:7}});
-    props.bootstrapDefine(wellKnownSpecies,{value:{kind:"object",object:descriptor},enumerable:true});
-    seed(r,"props",{kind:"object",object:props});const result=run("Object.create(null,props);",r);
-    if(result.type!=="normal"||result.value.kind!=="object")throw new Error("symbol create");
-    const actual=result.value.object.getOwnProperty(wellKnownSpecies);
-    check(result.value.object.getPrototypeOf()===null&&actual!==undefined&&actual.kind==="data"&&sameValue(actual.value,{kind:"number",value:7}),"symbol key and null prototype");
-}
-{
-    const r=fresh(),descriptor=r.createObject();let order="";
-    for(const field of ["enumerable","configurable","value","writable","get","set"]){
-        descriptor.bootstrapDefine(field,{get:{kind:"object",object:r.createBuiltin("read",0,(_receiver,_args,_context,_loc):ValueCompletion=>{order+=field+",";return normal();})}});
+    const r = fresh(),
+        props = r.createObject(),
+        descriptor = r.createObject();
+    descriptor.bootstrapDefine("value", { value: { kind: "number", value: 7 } });
+    props.bootstrapDefine(wellKnownSpecies, {
+        value: { kind: "object", object: descriptor },
+        enumerable: true,
+    });
+    seed(r, "props", { kind: "object", object: props });
+    const result = run("Object.create(null,props);", r);
+    if (result.type !== "normal" || result.value.kind !== "object") {
+        throw new Error("symbol create");
     }
-    const props=r.createObject();props.bootstrapDefine("x",{value:{kind:"object",object:descriptor},enumerable:true});seed(r,"props",{kind:"object",object:props});
-    const result=run("Object.defineProperties({},props);",r);
-    check(result.type==="throw"&&result.diagnostic.name==="TypeError"&&order==="enumerable,configurable,value,writable,get,set,","all fields read before mixed-descriptor rejection");
-}
-for(const name of ["create","defineProperties"]){
-    const owner=fresh(),caller=fresh(),ctor=owner.globalObject.getOwnProperty("Object");
-    if(ctor===undefined||ctor.kind!=="data"||ctor.value.kind!=="object")throw new Error("Object constructor");
-    const method=ctor.value.object.getOwnProperty(name);if(method===undefined||method.kind!=="data")throw new Error("Object method");
-    seed(caller,"method",method.value);const result=run("method(1,null);",caller);
-    check(result.type==="throw"&&result.value.kind==="object"&&result.value.object.getPrototypeOf()===owner.getErrorPrototype("TypeError"),"creation error Realm");
+    const actual = result.value.object.getOwnProperty(wellKnownSpecies);
+    check(
+        result.value.object.getPrototypeOf() === null &&
+            actual !== undefined &&
+            actual.kind === "data" &&
+            sameValue(actual.value, { kind: "number", value: 7 }),
+        "symbol key and null prototype",
+    );
 }
 {
-    let empty=false,partial=false,complete=false;
-    for(let steps=0;steps<=900;steps+=20){
-        const r=fresh(),target=r.createObject(),props=r.createObject();
-        for(let i=0;i<100;i++){const d=r.createObject();d.bootstrapDefine("value",{value:{kind:"number",value:i}});props.bootstrapDefine(String(i),{value:{kind:"object",object:d},enumerable:true});}
-        seed(r,"target",{kind:"object",object:target});seed(r,"props",{kind:"object",object:props});const result=run("Object.defineProperties(target,props);",r,steps),count=target.ownPropertyKeys().length;
-        if(result.type==="throw"){check(result.origin.kind==="resource-limit","descriptor budget");if(count===0)empty=true;else if(count<100)partial=true;}else{check(count===100,"all descriptors applied");complete=true;}
+    const r = fresh(),
+        descriptor = r.createObject();
+    let order = "";
+    for (const field of ["enumerable", "configurable", "value", "writable", "get", "set"]) {
+        descriptor.bootstrapDefine(field, {
+            get: {
+                kind: "object",
+                object: r.createBuiltin(
+                    "read",
+                    0,
+                    (_receiver, _args, _context, _loc): ValueCompletion => {
+                        order += field + ",";
+                        return normal();
+                    },
+                ),
+            },
+        });
     }
-    check(empty&&partial&&complete,"both descriptor phases bounded");
+    const props = r.createObject();
+    props.bootstrapDefine("x", { value: { kind: "object", object: descriptor }, enumerable: true });
+    seed(r, "props", { kind: "object", object: props });
+    const result = run("Object.defineProperties({},props);", r);
+    check(
+        result.type === "throw" &&
+            result.diagnostic.name === "TypeError" &&
+            order === "enumerable,configurable,value,writable,get,set,",
+        "all fields read before mixed-descriptor rejection",
+    );
+}
+for (const name of ["create", "defineProperties"]) {
+    const owner = fresh(),
+        caller = fresh(),
+        ctor = owner.globalObject.getOwnProperty("Object");
+    if (ctor === undefined || ctor.kind !== "data" || ctor.value.kind !== "object") {
+        throw new Error("Object constructor");
+    }
+    const method = ctor.value.object.getOwnProperty(name);
+    if (method === undefined || method.kind !== "data") {
+        throw new Error("Object method");
+    }
+    seed(caller, "method", method.value);
+    const result = run("method(1,null);", caller);
+    check(
+        result.type === "throw" &&
+            result.value.kind === "object" &&
+            result.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+        "creation error Realm",
+    );
+}
+{
+    let empty = false,
+        partial = false,
+        complete = false;
+    for (let steps = 0; steps <= 900; steps += 20) {
+        const r = fresh(),
+            target = r.createObject(),
+            props = r.createObject();
+        for (let i = 0; i < 100; i++) {
+            const d = r.createObject();
+            d.bootstrapDefine("value", { value: { kind: "number", value: i } });
+            props.bootstrapDefine(String(i), {
+                value: { kind: "object", object: d },
+                enumerable: true,
+            });
+        }
+        seed(r, "target", { kind: "object", object: target });
+        seed(r, "props", { kind: "object", object: props });
+        const result = run("Object.defineProperties(target,props);", r, steps),
+            count = target.ownPropertyKeys().length;
+        if (result.type === "throw") {
+            check(result.origin.kind === "resource-limit", "descriptor budget");
+            if (count === 0) {
+                empty = true;
+            } else if (count < 100) {
+                partial = true;
+            }
+        } else {
+            check(count === 100, "all descriptors applied");
+            complete = true;
+        }
+    }
+    check(empty && partial && complete, "both descriptor phases bounded");
 }
 console.log("Object creation passed");

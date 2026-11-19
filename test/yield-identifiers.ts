@@ -4,14 +4,21 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import { parse } from "../src/parser.js";
 
 function check(condition: boolean, message: string): void {
-    if (!condition) throw new Error(message);
+    if (!condition) {
+        throw new Error(message);
+    }
 }
 function expectTrue(text: string): void {
     const realm = new Realm((_line: string) => {}, "script");
     const prepared = prepareBoundedScript({ id: "yield-execution", text }, realm);
     check(prepared.kind === "ready", "prepare: " + text);
-    if (prepared.kind !== "ready") return;
-    const result = evaluateScript(createScriptSession({ maxSteps: 10000, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        return;
+    }
+    const result = evaluateScript(
+        createScriptSession({ maxSteps: 10000, maxCalls: 64 }),
+        prepared.record,
+    ).completion;
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
 const executions = [
@@ -52,7 +59,9 @@ const executions = [
     '"use strict";var o={yield:7};o.yield===7',
     '"use strict";function* f(){yield 7}f().next().value===7',
 ];
-for (const text of executions) expectTrue(text);
+for (const text of executions) {
+    expectTrue(text);
+}
 for (const text of [
     '"use strict";var yield=1;',
     '"use strict";yield;',
@@ -60,14 +69,24 @@ for (const text of [
     'function yield(){"use strict";}',
     'function* yield(){"use strict";}',
     'function f(yield){"use strict";}',
-    'class C{x=yield}',
-    'class C{m(yield){}}',
-    'class C{static{function f(yield){return yield}}}',
+    "class C{x=yield}",
+    "class C{m(yield){}}",
+    "class C{static{function f(yield){return yield}}}",
 ]) {
     let effects = 0;
-    const realm = new Realm((_line: string) => { effects++; }, "script");
-    const prepared = prepareBoundedScript({ id: "yield-strict", text: text + ';console.log("no effect");' }, realm);
-    check(prepared.kind === "blocked" && prepared.rejection.kind === "syntax-error" && prepared.rejection.ruleCode === "strict-reserved-identifier", text);
+    const realm = new Realm((_line: string) => {
+        effects++;
+    }, "script");
+    const prepared = prepareBoundedScript(
+        { id: "yield-strict", text: text + ';console.log("no effect");' },
+        realm,
+    );
+    check(
+        prepared.kind === "blocked" &&
+            prepared.rejection.kind === "syntax-error" &&
+            prepared.rejection.ruleCode === "strict-reserved-identifier",
+        text,
+    );
     check(effects === 0, "strict preparation must not execute");
 }
 for (const text of [
@@ -83,7 +102,10 @@ for (const text of [
     '"use strict";var yield=1;import x from "x";',
     '"use strict";var yield=1;var x=;',
 ]) {
-    const prepared = prepareBoundedScript({ id: "yield-unsupported", text }, new Realm((_line: string) => {}, "script"));
+    const prepared = prepareBoundedScript(
+        { id: "yield-unsupported", text },
+        new Realm((_line: string) => {}, "script"),
+    );
     check(prepared.kind === "blocked" && prepared.rejection.kind === "unsupported-syntax", text);
 }
 check(parse("var yield=1;").rejection?.kind === "unsupported-syntax", "legacy admission unchanged");

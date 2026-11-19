@@ -4,20 +4,34 @@ import { sameValue, type GuestObject, type Value, type ValueCompletion } from ".
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
-    const prepared = prepareBoundedScript({id: "set-object", text}, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({maxSteps: steps, maxCalls: 64}), prepared.record).completion;
+    const prepared = prepareBoundedScript({ id: "set-object", text }, realm);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function passes(text: string, realm = fresh()): void {
     const result = run(text, realm);
-    check(result.type === "normal" && sameValue(result.value, {kind: "boolean", value: true}), text);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        text,
+    );
 }
 function own(object: GuestObject, key: string): Value {
     const descriptor = object.getOwnProperty(key);
-    if (descriptor === undefined || descriptor.kind !== "data") throw new Error("own " + key);
+    if (descriptor === undefined || descriptor.kind !== "data") {
+        throw new Error("own " + key);
+    }
     return descriptor.value;
 }
 
@@ -53,41 +67,102 @@ for (const source of [
     "let d=Object.getOwnPropertyDescriptor(Set,Symbol.species);let x={};Set[Symbol.species]===Set&&d.get.call(x)===x&&d.get.name==='get [Symbol.species]'&&d.get.length===0&&d.set===undefined&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Set.prototype,Symbol.toStringTag);d.value==='Set'&&!d.writable&&!d.enumerable&&d.configurable&&Object.prototype.toString.call(new Set())==='[object Set]';",
     "Set.length===0&&Set.name==='Set'&&Set.prototype.constructor===Set&&Object.getPrototypeOf(Set)===Object.getPrototypeOf(Map);",
-]) passes(source);
+]) {
+    passes(source);
+}
 for (const name of ["add", "has", "delete", "clear", "forEach"]) {
-    passes("let d=Object.getOwnPropertyDescriptor(Set.prototype,'"+name+"');d.value.name==='"+name+"'&&d.value.length==="+(name === "clear" ? 0 : 1)+"&&!Object.hasOwn(d.value,'prototype')&&d.writable&&!d.enumerable&&d.configurable;");
-    for (const receiver of ["null", "undefined", "1", "{}", "Set.prototype", "Object.create(Set.prototype)", "new Map()"]) {
-        const result = run("Set.prototype."+name+".call("+receiver+");");
-        check(result.type === "throw" && result.diagnostic.name === "TypeError", "Set brand " + name);
+    passes(
+        "let d=Object.getOwnPropertyDescriptor(Set.prototype,'" +
+            name +
+            "');d.value.name==='" +
+            name +
+            "'&&d.value.length===" +
+            (name === "clear" ? 0 : 1) +
+            "&&!Object.hasOwn(d.value,'prototype')&&d.writable&&!d.enumerable&&d.configurable;",
+    );
+    for (const receiver of [
+        "null",
+        "undefined",
+        "1",
+        "{}",
+        "Set.prototype",
+        "Object.create(Set.prototype)",
+        "new Map()",
+    ]) {
+        const result = run("Set.prototype." + name + ".call(" + receiver + ");");
+        check(
+            result.type === "throw" && result.diagnostic.name === "TypeError",
+            "Set brand " + name,
+        );
     }
 }
-for (const source of ["Set();", "Set.call({});", "new Set(1);", "new Set({});", "new Set().forEach(7);", "Object.getOwnPropertyDescriptor(Set.prototype,'size').get.call(Set.prototype);", "Map.prototype.has.call(new Set(),1);"]) {
+for (const source of [
+    "Set();",
+    "Set.call({});",
+    "new Set(1);",
+    "new Set({});",
+    "new Set().forEach(7);",
+    "Object.getOwnPropertyDescriptor(Set.prototype,'size').get.call(Set.prototype);",
+    "Map.prototype.has.call(new Set(),1);",
+]) {
     const result = run(source);
     check(result.type === "throw" && result.diagnostic.name === "TypeError", source);
 }
-passes("let marker={};let closed=0;Set.prototype.add=function(){throw marker;};let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;throw 9;};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{new Set(a);}catch(e){caught=e===marker;}caught&&closed===1;");
-for (const step of ["throw marker;", "let r={};Object.defineProperty(r,'done',{get:function(){throw marker;}});return r;", "let r={done:false};Object.defineProperty(r,'value',{get:function(){throw marker;}});return r;"]) {
-    passes("let marker={};let closed=0;let i={next:function(){"+step+"}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{new Set(a);}catch(e){caught=e===marker;}caught&&closed===0;");
+passes(
+    "let marker={};let closed=0;Set.prototype.add=function(){throw marker;};let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;throw 9;};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{new Set(a);}catch(e){caught=e===marker;}caught&&closed===1;",
+);
+for (const step of [
+    "throw marker;",
+    "let r={};Object.defineProperty(r,'done',{get:function(){throw marker;}});return r;",
+    "let r={done:false};Object.defineProperty(r,'value',{get:function(){throw marker;}});return r;",
+]) {
+    passes(
+        "let marker={};let closed=0;let i={next:function(){" +
+            step +
+            "}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{new Set(a);}catch(e){caught=e===marker;}caught&&closed===0;",
+    );
 }
 {
-    const owner = fresh(), caller = fresh();
-    caller.defineScriptGlobal("ForeignSet", {value: own(owner.globalObject,"Set")});
-    caller.defineScriptGlobal("foreignHas", {value: own(owner.setPrototype,"has")});
-    const result = run("var s=new ForeignSet([1]);s;",caller);
-    check(result.type === "normal" && result.value.kind === "object" && result.value.object instanceof GuestSet && result.value.object.getPrototypeOf() === owner.setPrototype, "Set allocation Realm");
-    passes("Set.prototype.has.call(s,1)&&foreignHas.call(new Set([1]),1);",caller);
+    const owner = fresh(),
+        caller = fresh();
+    caller.defineScriptGlobal("ForeignSet", { value: own(owner.globalObject, "Set") });
+    caller.defineScriptGlobal("foreignHas", { value: own(owner.setPrototype, "has") });
+    const result = run("var s=new ForeignSet([1]);s;", caller);
+    check(
+        result.type === "normal" &&
+            result.value.kind === "object" &&
+            result.value.object instanceof GuestSet &&
+            result.value.object.getPrototypeOf() === owner.setPrototype,
+        "Set allocation Realm",
+    );
+    passes("Set.prototype.has.call(s,1)&&foreignHas.call(new Set([1]),1);", caller);
     for (const source of ["ForeignSet();", "new ForeignSet(1);", "foreignHas.call({});"]) {
-        const error = run(source,caller);
-        check(error.type === "throw" && error.value.kind === "object" && error.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"), "Set error Realm");
+        const error = run(source, caller);
+        check(
+            error.type === "throw" &&
+                error.value.kind === "object" &&
+                error.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+            "Set error Realm",
+        );
     }
-    check(owner.setPrototype !== caller.setPrototype && own(owner.setPrototype,"add") !== own(caller.setPrototype,"add"), "fresh Set roots");
+    check(
+        owner.setPrototype !== caller.setPrototype &&
+            own(owner.setPrototype, "add") !== own(caller.setPrototype, "add"),
+        "fresh Set roots",
+    );
 }
 for (const source of [
     "let s=new Set([1]);s.forEach(function(v){s.delete(v);s.add(v);});",
     "let a={};a[Symbol.iterator]=function(){return {next:function(){return {done:false,value:1};}};};new Set(a);",
 ]) {
-    const result = run(source,fresh(),300);
-    check(result.type === "throw" && result.origin.kind === "resource-limit", "bounded Set traversal");
+    const result = run(source, fresh(), 300);
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "bounded Set traversal",
+    );
 }
-check(new Realm((_line: string) => {}).global.bindings.get("Set") === undefined, "legacy Set absent");
+check(
+    new Realm((_line: string) => {}).global.bindings.get("Set") === undefined,
+    "legacy Set absent",
+);
 console.log("Set ordinary methods passed");

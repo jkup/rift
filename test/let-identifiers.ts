@@ -4,14 +4,21 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import { parse } from "../src/parser.js";
 
 function check(condition: boolean, message: string): void {
-    if (!condition) throw new Error(message);
+    if (!condition) {
+        throw new Error(message);
+    }
 }
 function expectTrue(text: string): void {
     const realm = new Realm((_line: string) => {}, "script");
     const prepared = prepareBoundedScript({ id: "let-execution", text }, realm);
     check(prepared.kind === "ready", "prepare: " + text);
-    if (prepared.kind !== "ready") return;
-    const result = evaluateScript(createScriptSession({ maxSteps: 10000, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        return;
+    }
+    const result = evaluateScript(
+        createScriptSession({ maxSteps: 10000, maxCalls: 64 }),
+        prepared.record,
+    ).completion;
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
 const executions = [
@@ -52,34 +59,60 @@ const executions = [
     "var let=7;eval('let')===7",
     "Function('let','return let')(7)===7",
 ];
-for (const text of executions) expectTrue(text);
+for (const text of executions) {
+    expectTrue(text);
+}
 for (const text of [
     '"use strict";var let=1;',
     '"use strict";let;',
     '"use strict";let:while(false){break let;}',
     'function let(){"use strict";}',
     'function f(let){"use strict";}',
-    'class C{x=let}',
-    'class C{m(let){}}',
+    "class C{x=let}",
+    "class C{m(let){}}",
 ]) {
     let effects = 0;
-    const prepared = prepareBoundedScript({ id: "let-strict", text }, new Realm((_line: string) => { effects++; }, "script"));
-    check(prepared.kind === "blocked" && prepared.rejection.kind === "syntax-error" && prepared.rejection.ruleCode === "strict-reserved-identifier", text);
+    const prepared = prepareBoundedScript(
+        { id: "let-strict", text },
+        new Realm((_line: string) => {
+            effects++;
+        }, "script"),
+    );
+    check(
+        prepared.kind === "blocked" &&
+            prepared.rejection.kind === "syntax-error" &&
+            prepared.rejection.ruleCode === "strict-reserved-identifier",
+        text,
+    );
     check(effects === 0, "strict preparation must not execute");
 }
 for (const text of [
-    "let let=1;", "const let=1;", "let {let}={};", "let {x:let}={};",
-    "let [let]=[];", "for(let let in {}){}", "for(const let of []){}",
-    "let[0];", "let\n[0];", "if(true)let[0];",
-    "for(let of []){}", "for(let.x of []){}", "for(let[0] in {}){}",
+    "let let=1;",
+    "const let=1;",
+    "let {let}={};",
+    "let {x:let}={};",
+    "let [let]=[];",
+    "for(let let in {}){}",
+    "for(const let of []){}",
+    "let[0];",
+    "let\n[0];",
+    "if(true)let[0];",
+    "for(let of []){}",
+    "for(let.x of []){}",
+    "for(let[0] in {}){}",
     '"use strict";var let=1;import x from "x";',
 ]) {
-    const prepared = prepareBoundedScript({ id: "let-unsupported", text }, new Realm((_line: string) => {}, "script"));
+    const prepared = prepareBoundedScript(
+        { id: "let-unsupported", text },
+        new Realm((_line: string) => {}, "script"),
+    );
     check(prepared.kind === "blocked" && prepared.rejection.kind === "unsupported-syntax", text);
 }
 expectTrue('"use strict";class C{let(){return 7}}new C().let()===7');
 expectTrue('"use strict";let {let:x}={let:7};x===7');
-expectTrue('var ok=false;try{eval("\\\"use strict\\\";var let=1")}catch(e){ok=e instanceof SyntaxError}ok');
+expectTrue(
+    'var ok=false;try{eval("\\\"use strict\\\";var let=1")}catch(e){ok=e instanceof SyntaxError}ok',
+);
 check(parse("var let=1;").rejection?.kind === "unsupported-syntax", "legacy admission unchanged");
 check(executions.length === 36, "execution denominator");
 console.log("let identifiers passed");

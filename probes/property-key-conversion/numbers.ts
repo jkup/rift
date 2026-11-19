@@ -18,17 +18,37 @@ const cases: { label: string; input: number; expected: string }[] = [
     { label: "min-subnormal", input: Number.MIN_VALUE, expected: "5e-324" },
     { label: "negative-subnormal", input: -Number.MIN_VALUE, expected: "-5e-324" },
     { label: "next-subnormal", input: 1e-323, expected: "1e-323" },
-    { label: "largest-subnormal", input: 2.225073858507201e-308, expected: "2.225073858507201e-308" },
+    {
+        label: "largest-subnormal",
+        input: 2.225073858507201e-308,
+        expected: "2.225073858507201e-308",
+    },
     { label: "min-normal", input: 2.2250738585072014e-308, expected: "2.2250738585072014e-308" },
-    { label: "below-small-boundary", input: 9.999999999999997e-7, expected: "9.999999999999997e-7" },
+    {
+        label: "below-small-boundary",
+        input: 9.999999999999997e-7,
+        expected: "9.999999999999997e-7",
+    },
     { label: "small-boundary", input: 1e-6, expected: "0.000001" },
-    { label: "above-small-boundary", input: 0.0000010000000000000002, expected: "0.0000010000000000000002" },
+    {
+        label: "above-small-boundary",
+        input: 0.0000010000000000000002,
+        expected: "0.0000010000000000000002",
+    },
     { label: "small-exponent", input: 1e-7, expected: "1e-7" },
     { label: "negative-small-boundary", input: -1e-6, expected: "-0.000001" },
     { label: "large-decimal", input: 1e20, expected: "100000000000000000000" },
-    { label: "below-large-boundary", input: 999999999999999900000, expected: "999999999999999900000" },
+    {
+        label: "below-large-boundary",
+        input: 999999999999999900000,
+        expected: "999999999999999900000",
+    },
     { label: "large-boundary", input: 1e21, expected: "1e+21" },
-    { label: "above-large-boundary", input: 1.0000000000000001e21, expected: "1.0000000000000001e+21" },
+    {
+        label: "above-large-boundary",
+        input: 1.0000000000000001e21,
+        expected: "1.0000000000000001e+21",
+    },
     { label: "negative-large-boundary", input: -1e21, expected: "-1e+21" },
     { label: "tenth", input: 0.1, expected: "0.1" },
     { label: "sum", input: 0.1 + 0.2, expected: "0.30000000000000004" },
@@ -39,13 +59,17 @@ const cases: { label: string; input: number; expected: string }[] = [
 ];
 
 // Typed numeric payload only. Never pass a guest wrapper to host String.
-function numberToString(value: number): string { return String(value); }
+function numberToString(value: number): string {
+    return String(value);
+}
 
 let failures = 0;
 for (const row of cases) {
     const actual = numberToString(row.input);
     const pass = actual === row.expected;
-    if (!pass) failures++;
+    if (!pass) {
+        failures++;
+    }
     console.log(row.label + "|" + row.expected + "|" + actual + "|" + (pass ? "PASS" : "FAIL"));
 }
 console.log("cases=" + cases.length + "; failures=" + failures);

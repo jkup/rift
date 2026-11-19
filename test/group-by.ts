@@ -3,24 +3,40 @@ import { sameValue, type GuestObject, type Value, type ValueCompletion } from ".
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
-    const prepared = prepareBoundedScript({id: "group-by", text}, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({maxSteps: steps, maxCalls: 64}), prepared.record).completion;
+    const prepared = prepareBoundedScript({ id: "group-by", text }, realm);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function passes(text: string): void {
     const result = run(text);
-    check(result.type === "normal" && sameValue(result.value, {kind: "boolean", value: true}), text);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        text,
+    );
 }
 function own(object: GuestObject, key: string): Value {
     const descriptor = object.getOwnProperty(key);
-    if (descriptor === undefined || descriptor.kind !== "data") throw new Error("own " + key);
+    if (descriptor === undefined || descriptor.kind !== "data") {
+        throw new Error("own " + key);
+    }
     return descriptor.value;
 }
 function object(value: Value): GuestObject {
-    if (value.kind !== "object") throw new Error("object value");
+    if (value.kind !== "object") {
+        throw new Error("object value");
+    }
     return value.object;
 }
 
@@ -43,55 +59,162 @@ for (const source of [
     "let g=Map.groupBy.call(function(){throw 1;},[1],function(){return 'x';});g instanceof Map&&g.get('x')[0]===1;",
     "let group=Map.groupBy;let proto=Map.prototype;Map.prototype.set=function(){throw 1;};Object.defineProperty(Map,Symbol.species,{get:function(){throw 2;}});Map=function(){throw 3;};Array=function(){throw 4;};let g=group([1,2],function(){return 'x';});Object.getPrototypeOf(g)===proto&&g.get('x').join(',')==='1,2';",
     "Object.defineProperty(Array.prototype,'0',{set:function(v){throw 1;},get:function(){throw 2;}});let g=Object.groupBy([7],function(){return 'x';});g.x[0]===7&&Object.hasOwn(g.x,'0');",
-]) passes(source);
+]) {
+    passes(source);
+}
 
 for (const owner of ["Object", "Map"]) {
-    passes("let d=Object.getOwnPropertyDescriptor(" + owner + ",'groupBy');d.value.name==='groupBy'&&d.value.length===2&&!Object.hasOwn(d.value,'prototype')&&d.writable&&!d.enumerable&&d.configurable;");
-    passes("let calls=0;let g=" + owner + ".groupBy([],function(){calls++;});calls===0&&" + (owner === "Object" ? "Object.keys(g).length===0&&Object.getPrototypeOf(g)===null" : "g.size===0") + ";");
-    passes("let trace='';" + owner + ".groupBy([8,9],function(v,i){'use strict';if(this!==undefined)throw 1;trace+=v+':'+i+',';return 'x';});trace==='8:0,9:1,';");
-    passes("let touched=0;let a={};Object.defineProperty(a,Symbol.iterator,{get:function(){touched++;throw 1;}});let caught=false;try{" + owner + ".groupBy(a,7);}catch(e){caught=e instanceof TypeError;}caught&&touched===0;");
-    passes("let n=0;let i={next:function(){n++;return {done:n>2,value:n};}};let a={};a[Symbol.iterator]=function(){return i;};let g=" + owner + ".groupBy(a,function(v){i.next=function(){throw 1;};return 'x';});" + (owner === "Object" ? "g.x" : "g.get('x')") + ".join(',')==='1,2';");
-    for (const source of ["undefined,function(){}", "null,function(){}", "1,function(){}", "{},function(){}", "[],null"]) {
-        passes("let caught=false;try{" + owner + ".groupBy(" + source + ");}catch(e){caught=e instanceof TypeError;}caught;");
+    passes(
+        "let d=Object.getOwnPropertyDescriptor(" +
+            owner +
+            ",'groupBy');d.value.name==='groupBy'&&d.value.length===2&&!Object.hasOwn(d.value,'prototype')&&d.writable&&!d.enumerable&&d.configurable;",
+    );
+    passes(
+        "let calls=0;let g=" +
+            owner +
+            ".groupBy([],function(){calls++;});calls===0&&" +
+            (owner === "Object"
+                ? "Object.keys(g).length===0&&Object.getPrototypeOf(g)===null"
+                : "g.size===0") +
+            ";",
+    );
+    passes(
+        "let trace='';" +
+            owner +
+            ".groupBy([8,9],function(v,i){'use strict';if(this!==undefined)throw 1;trace+=v+':'+i+',';return 'x';});trace==='8:0,9:1,';",
+    );
+    passes(
+        "let touched=0;let a={};Object.defineProperty(a,Symbol.iterator,{get:function(){touched++;throw 1;}});let caught=false;try{" +
+            owner +
+            ".groupBy(a,7);}catch(e){caught=e instanceof TypeError;}caught&&touched===0;",
+    );
+    passes(
+        "let n=0;let i={next:function(){n++;return {done:n>2,value:n};}};let a={};a[Symbol.iterator]=function(){return i;};let g=" +
+            owner +
+            ".groupBy(a,function(v){i.next=function(){throw 1;};return 'x';});" +
+            (owner === "Object" ? "g.x" : "g.get('x')") +
+            ".join(',')==='1,2';",
+    );
+    for (const source of [
+        "undefined,function(){}",
+        "null,function(){}",
+        "1,function(){}",
+        "{},function(){}",
+        "[],null",
+    ]) {
+        passes(
+            "let caught=false;try{" +
+                owner +
+                ".groupBy(" +
+                source +
+                ");}catch(e){caught=e instanceof TypeError;}caught;",
+        );
     }
-    passes("let marker={};let closed=0;let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;throw 9;};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{" + owner + ".groupBy(a,function(){throw marker;});}catch(e){caught=e===marker;}caught&&closed===1;");
+    passes(
+        "let marker={};let closed=0;let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;throw 9;};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{" +
+            owner +
+            ".groupBy(a,function(){throw marker;});}catch(e){caught=e===marker;}caught&&closed===1;",
+    );
     for (const step of [
         "throw marker;",
         "let r={};Object.defineProperty(r,'done',{get:function(){throw marker;}});return r;",
         "let r={done:false};Object.defineProperty(r,'value',{get:function(){throw marker;}});return r;",
     ]) {
-        passes("let marker={};let closed=0;let i={next:function(){" + step + "}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{" + owner + ".groupBy(a,function(){return 'x';});}catch(e){caught=e===marker;}caught&&closed===0;");
+        passes(
+            "let marker={};let closed=0;let i={next:function(){" +
+                step +
+                "}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{" +
+                owner +
+                ".groupBy(a,function(){return 'x';});}catch(e){caught=e===marker;}caught&&closed===0;",
+        );
     }
-    const loop = run("let a={};a[Symbol.iterator]=function(){return {next:function(){return {done:false,value:1};}};};" + owner + ".groupBy(a,function(){return 'x';});", fresh(), 300);
-    check(loop.type === "throw" && loop.origin.kind === "resource-limit", "grouping budget " + owner);
-    const cleanup = run("let i={next:function(){return {done:false,value:1};}};i['return']=function(){while(true){}};let a={};a[Symbol.iterator]=function(){return i;};try{" + owner + ".groupBy(a,function(){throw 1;});}catch(e){true;}", fresh(), 300);
-    check(cleanup.type === "throw" && cleanup.origin.kind === "resource-limit", "cleanup cannot hide engine stop " + owner);
+    const loop = run(
+        "let a={};a[Symbol.iterator]=function(){return {next:function(){return {done:false,value:1};}};};" +
+            owner +
+            ".groupBy(a,function(){return 'x';});",
+        fresh(),
+        300,
+    );
+    check(
+        loop.type === "throw" && loop.origin.kind === "resource-limit",
+        "grouping budget " + owner,
+    );
+    const cleanup = run(
+        "let i={next:function(){return {done:false,value:1};}};i['return']=function(){while(true){}};let a={};a[Symbol.iterator]=function(){return i;};try{" +
+            owner +
+            ".groupBy(a,function(){throw 1;});}catch(e){true;}",
+        fresh(),
+        300,
+    );
+    check(
+        cleanup.type === "throw" && cleanup.origin.kind === "resource-limit",
+        "cleanup cannot hide engine stop " + owner,
+    );
 }
-passes("let marker={};let key={toString:function(){throw marker;}};let closed=0;let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;return 3;};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{Object.groupBy(a,function(){return key;});}catch(e){caught=e===marker;}caught&&closed===1;");
+passes(
+    "let marker={};let key={toString:function(){throw marker;}};let closed=0;let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;return 3;};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{Object.groupBy(a,function(){return key;});}catch(e){caught=e===marker;}caught&&closed===1;",
+);
 {
     const realm = fresh();
-    const source = "var closed=0;let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};Object.groupBy(a,function(){let x=[1];x.constructor={};x.constructor[Symbol.species]=function(){};x.map(function(v){return v;});});";
+    const source =
+        "var closed=0;let i={next:function(){return {done:false,value:1};}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};Object.groupBy(a,function(){let x=[1];x.constructor={};x.constructor[Symbol.species]=function(){};x.map(function(v){return v;});});";
     const result = run(source, realm);
-    check(result.type === "throw" && result.origin.kind === "resource-limit" && sameValue(own(realm.globalObject, "closed"), {kind: "number", value: 0}), "supported species leaves infinite iterator bounded without cleanup");
+    check(
+        result.type === "throw" &&
+            result.origin.kind === "resource-limit" &&
+            sameValue(own(realm.globalObject, "closed"), { kind: "number", value: 0 }),
+        "supported species leaves infinite iterator bounded without cleanup",
+    );
     const unsupportedRealm = fresh();
-    const unsupportedSource = source.replace("let x=[1];x.constructor={};x.constructor[Symbol.species]=function(){};x.map(function(v){return v;});", "new RegExp(\"a\",\"v\");");
+    const unsupportedSource = source.replace(
+        "let x=[1];x.constructor={};x.constructor[Symbol.species]=function(){};x.map(function(v){return v;});",
+        'new RegExp("a","v");',
+    );
     const stopped = run(unsupportedSource, unsupportedRealm);
-    check(stopped.type === "throw" && stopped.origin.kind === "unsupported-operation" && stopped.origin.capabilityCode === "runtime.regexp-pattern" && sameValue(own(unsupportedRealm.globalObject, "closed"), {kind:"number",value:0}), "unsupported callback stops without cleanup");
+    check(
+        stopped.type === "throw" &&
+            stopped.origin.kind === "unsupported-operation" &&
+            stopped.origin.capabilityCode === "runtime.regexp-pattern" &&
+            sameValue(own(unsupportedRealm.globalObject, "closed"), { kind: "number", value: 0 }),
+        "unsupported callback stops without cleanup",
+    );
 }
 {
-    const owner = fresh(), caller = fresh();
+    const owner = fresh(),
+        caller = fresh();
     for (const name of ["Object", "Map"]) {
-        caller.defineScriptGlobal("group", {value: own(object(own(owner.globalObject, name)), "groupBy"), writable: true, configurable: true});
+        caller.defineScriptGlobal("group", {
+            value: own(object(own(owner.globalObject, name)), "groupBy"),
+            writable: true,
+            configurable: true,
+        });
         const result = run("group([1,2],function(){return 'x';});", caller);
         check(result.type === "normal", "foreign grouping result");
-        if (result.type !== "normal") throw new Error("normal grouping result");
+        if (result.type !== "normal") {
+            throw new Error("normal grouping result");
+        }
         const grouped = object(result.value);
-        check(grouped.getPrototypeOf() === (name === "Map" ? owner.mapPrototype : null), "grouped result prototype");
-        caller.defineScriptGlobal("grouped", {value: result.value, writable: true, configurable: true});
+        check(
+            grouped.getPrototypeOf() === (name === "Map" ? owner.mapPrototype : null),
+            "grouped result prototype",
+        );
+        caller.defineScriptGlobal("grouped", {
+            value: result.value,
+            writable: true,
+            configurable: true,
+        });
         const elements = run(name === "Map" ? "grouped.get('x');" : "grouped.x;", caller);
-        check(elements.type === "normal" && object(elements.value).getPrototypeOf() === owner.arrayPrototype, "group array Realm");
+        check(
+            elements.type === "normal" &&
+                object(elements.value).getPrototypeOf() === owner.arrayPrototype,
+            "group array Realm",
+        );
         const error = run("group([],null);", caller);
-        check(error.type === "throw" && object(error.value).getPrototypeOf() === owner.getErrorPrototype("TypeError"), "grouping error Realm");
+        check(
+            error.type === "throw" &&
+                object(error.value).getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+            "grouping error Realm",
+        );
     }
 }
 console.log("Object and Map grouping passed");

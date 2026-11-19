@@ -6,8 +6,11 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 function run(text: string) {
     const realm = new Realm((_line: string) => {}, "script");
     const prepared = prepareBoundedScript({ id: "weak-map-object", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({ maxSteps: 10000, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: 10000, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 
 const cases = [
@@ -24,14 +27,32 @@ const cases = [
 ];
 for (const text of cases) {
     const result = run(text);
-    if (result.type !== "normal" || !sameValue(result.value, {kind: "boolean", value: true})) throw new Error(text);
+    if (result.type !== "normal" || !sameValue(result.value, { kind: "boolean", value: true })) {
+        throw new Error(text);
+    }
 }
-for (const source of ["WeakMap();", "WeakMap.prototype.get.call({},{});", "WeakMap.prototype.has.call(WeakMap.prototype,{});", "new WeakMap().set(1,2);", "new WeakMap().set(Symbol.for('x'),2);"]) {
-    const result = run("let caught=false;try{" + source + "}catch(e){caught=e instanceof TypeError}caught;");
-    if (result.type !== "normal" || !sameValue(result.value, {kind: "boolean", value: true})) throw new Error(source);
+for (const source of [
+    "WeakMap();",
+    "WeakMap.prototype.get.call({},{});",
+    "WeakMap.prototype.has.call(WeakMap.prototype,{});",
+    "new WeakMap().set(1,2);",
+    "new WeakMap().set(Symbol.for('x'),2);",
+]) {
+    const result = run(
+        "let caught=false;try{" + source + "}catch(e){caught=e instanceof TypeError}caught;",
+    );
+    if (result.type !== "normal" || !sameValue(result.value, { kind: "boolean", value: true })) {
+        throw new Error(source);
+    }
 }
 for (const method of ["get", "has", "delete", "set"]) {
     const result = run("new WeakMap()." + method + "(Symbol('key'),1);");
-    if (result.type !== "throw" || result.origin.kind !== "unsupported-operation" || result.origin.capabilityCode !== "runtime.weak-symbol-key") throw new Error("symbol " + method);
+    if (
+        result.type !== "throw" ||
+        result.origin.kind !== "unsupported-operation" ||
+        result.origin.capabilityCode !== "runtime.weak-symbol-key"
+    ) {
+        throw new Error("symbol " + method);
+    }
 }
 console.log("weak-map prototype: 19 checks passed");

@@ -6,16 +6,40 @@ import { roundTemporalInstant } from "../temporal-rounding.js";
 import { UNDEFINED, type ValueCompletion } from "../runtime.js";
 
 export function registerTemporalPlainTimeRound(realm: Realm): void {
-    realm.registerBuiltin(realm.temporalPlainTimePrototype, "round", 1, (receiver, args, context, loc): ValueCompletion => {
-        const time = temporalPlainTimeValue(receiver, context, loc);
-        if (time.type === "throw") return time;
-        const settings = temporalTimeRoundSettings(args.length === 0 ? UNDEFINED : args[0], false, context, loc);
-        if (settings.type === "throw") return settings;
-        const ns = timeToNanoseconds(time.value);
-        if (ns === null) throw new Error("PlainTime field invariant");
-        const rounded = roundTemporalInstant(ns, settings.quantum, settings.mode) % NANOSECONDS_PER_DAY;
-        const result = timeFromNanoseconds(rounded);
-        if (result === null) throw new Error("rounded time range invariant");
-        return createTemporalPlainTime(result, context.realm.temporalPlainTimePrototype, context, loc);
-    });
+    realm.registerBuiltin(
+        realm.temporalPlainTimePrototype,
+        "round",
+        1,
+        (receiver, args, context, loc): ValueCompletion => {
+            const time = temporalPlainTimeValue(receiver, context, loc);
+            if (time.type === "throw") {
+                return time;
+            }
+            const settings = temporalTimeRoundSettings(
+                args.length === 0 ? UNDEFINED : args[0],
+                false,
+                context,
+                loc,
+            );
+            if (settings.type === "throw") {
+                return settings;
+            }
+            const ns = timeToNanoseconds(time.value);
+            if (ns === null) {
+                throw new Error("PlainTime field invariant");
+            }
+            const rounded =
+                roundTemporalInstant(ns, settings.quantum, settings.mode) % NANOSECONDS_PER_DAY;
+            const result = timeFromNanoseconds(rounded);
+            if (result === null) {
+                throw new Error("rounded time range invariant");
+            }
+            return createTemporalPlainTime(
+                result,
+                context.realm.temporalPlainTimePrototype,
+                context,
+                loc,
+            );
+        },
+    );
 }

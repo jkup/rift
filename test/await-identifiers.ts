@@ -4,14 +4,21 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import { parse } from "../src/parser.js";
 
 function check(condition: boolean, message: string): void {
-    if (!condition) throw new Error(message);
+    if (!condition) {
+        throw new Error(message);
+    }
 }
 function expectTrue(text: string): void {
     const realm = new Realm((_line: string) => {}, "script");
     const prepared = prepareBoundedScript({ id: "await-execution", text }, realm);
     check(prepared.kind === "ready", "prepare: " + text);
-    if (prepared.kind !== "ready") return;
-    const result = evaluateScript(createScriptSession({ maxSteps: 10000, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        return;
+    }
+    const result = evaluateScript(
+        createScriptSession({ maxSteps: 10000, maxCalls: 64 }),
+        prepared.record,
+    ).completion;
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
 const executions = [
@@ -76,8 +83,13 @@ for (const text of [
     "class C{static{await:while(false){}}}",
 ]) {
     let effects = 0;
-    const realm = new Realm((_line: string) => { effects++; }, "script");
-    const prepared = prepareBoundedScript({ id: "await-invalid", text: 'console.log("no effect");' + text }, realm);
+    const realm = new Realm((_line: string) => {
+        effects++;
+    }, "script");
+    const prepared = prepareBoundedScript(
+        { id: "await-invalid", text: 'console.log("no effect");' + text },
+        realm,
+    );
     check(prepared.kind === "blocked" && prepared.rejection.kind === "unsupported-syntax", text);
     check(effects === 0, "invalid preparation must not execute");
 }

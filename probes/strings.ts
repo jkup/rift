@@ -3,7 +3,9 @@
 
 function codeUnits(s: string): string {
     const units: string[] = [];
-    for (let i = 0; i < s.length; i++) units.push(s.charCodeAt(i).toString(16));
+    for (let i = 0; i < s.length; i++) {
+        units.push(s.charCodeAt(i).toString(16));
+    }
     return units.join(" ");
 }
 
@@ -29,5 +31,7 @@ console.log("json lone:", JSON.stringify(loneHigh));
 
 // Building a string one code unit at a time, as a lexer would.
 let built = "";
-for (const unit of [0x48, 0xd83d, 0xde00, 0xdc00, 0x21]) built += String.fromCharCode(unit);
+for (const unit of [0x48, 0xd83d, 0xde00, 0xdc00, 0x21]) {
+    built += String.fromCharCode(unit);
+}
 console.log("built:", built.length, codeUnits(built));

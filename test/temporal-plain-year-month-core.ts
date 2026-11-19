@@ -3,76 +3,194 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm: Realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm: Realm = new Realm((_line: string) => {}, "script"),
+): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "plain-date-core", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 function passes(text: string): void {
     const result = run(text);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
-passes("var d=new Temporal.PlainYearMonth(2024,2);d.year===2024&&d.month===2&&d.monthCode===\"M02\"&&d.calendarId===\"iso8601\"");
-passes("var d=new Temporal.PlainYearMonth(2024,2,undefined,29);d.daysInMonth===29&&d.daysInYear===366&&d.monthsInYear===12&&d.inLeapYear&&d.era===undefined&&d.eraYear===undefined");
-passes("new Temporal.PlainYearMonth(1900,2).daysInMonth===28&&new Temporal.PlainYearMonth(2000,2).inLeapYear");
-passes("new Temporal.PlainYearMonth(-271821,4,undefined,1).month===4&&new Temporal.PlainYearMonth(275760,9,undefined,30).month===9");
-passes("var d=new Temporal.PlainYearMonth(2024.9,2.9,\"ISO8601\",29.9);d.year===2024&&d.month===2&&d.calendarId===\"iso8601\"");
+passes(
+    'var d=new Temporal.PlainYearMonth(2024,2);d.year===2024&&d.month===2&&d.monthCode==="M02"&&d.calendarId==="iso8601"',
+);
+passes(
+    "var d=new Temporal.PlainYearMonth(2024,2,undefined,29);d.daysInMonth===29&&d.daysInYear===366&&d.monthsInYear===12&&d.inLeapYear&&d.era===undefined&&d.eraYear===undefined",
+);
+passes(
+    "new Temporal.PlainYearMonth(1900,2).daysInMonth===28&&new Temporal.PlainYearMonth(2000,2).inLeapYear",
+);
+passes(
+    "new Temporal.PlainYearMonth(-271821,4,undefined,1).month===4&&new Temporal.PlainYearMonth(275760,9,undefined,30).month===9",
+);
+passes(
+    'var d=new Temporal.PlainYearMonth(2024.9,2.9,"ISO8601",29.9);d.year===2024&&d.month===2&&d.calendarId==="iso8601"',
+);
 passes("var d=new Temporal.PlainYearMonth(-0.9,true);1/d.year===Infinity&&d.month===1");
 passes("new Temporal.PlainYearMonth(null,1).year===0");
-passes("var d=new Temporal.PlainYearMonth(2024,1);d.year=9;Object.keys(d).length===0&&d.year===2024");
-passes("var d=new Temporal.PlainYearMonth(2024,1);Object.defineProperty(d,\"year\",{value:9});Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"year\").get.call(d)===2024");
-passes("class D extends Temporal.PlainYearMonth{}var d=new D(2024,2);d instanceof D&&d instanceof Temporal.PlainYearMonth&&d.year===2024");
-passes("Temporal.PlainYearMonth.name===\"PlainYearMonth\"&&Temporal.PlainYearMonth.length===2&&Temporal.PlainYearMonth.prototype.constructor===Temporal.PlainYearMonth");
-passes("Object.prototype.toString.call(new Temporal.PlainYearMonth(2024,1))===\"[object Temporal.PlainYearMonth]\"");
-passes("var log=\"\";new Temporal.PlainYearMonth({valueOf(){log+=\"y\";return 2024}},{valueOf(){log+=\"m\";return 2}},\"iso8601\",{valueOf(){log+=\"d\";return 29}});log===\"ymd\"");
-passes("var touched=false,ok=false;try{new Temporal.PlainYearMonth(2024,2,null,{valueOf(){touched=true;return 1}})}catch(e){ok=e instanceof TypeError}ok&&!touched");
-passes("var touched=false,ok=false;try{Temporal.PlainYearMonth({valueOf(){touched=true;return 2024}},1)}catch(e){ok=e instanceof TypeError}ok&&!touched");
-passes("var marker={},ok=false;try{new Temporal.PlainYearMonth(2024,99,\"iso8601\",{valueOf(){throw marker}})}catch(e){ok=e===marker}ok");
-passes("var d=new Temporal.PlainYearMonth(2024,1);Object.defineProperty(d,\"calendar\",{get(){throw 1}});new Temporal.PlainDate(2024,1,1).withCalendar(d).calendarId===\"iso8601\"");
-passes("var d=new Temporal.PlainYearMonth(2024,1);Object.defineProperty(d,\"calendar\",{get(){throw 1}});var ok=false;try{new Temporal.PlainDate(2024,1,1).with(d)}catch(e){ok=e instanceof TypeError}ok");
-passes("var d=new Temporal.PlainYearMonth(2024,1);d.day===undefined&&d.dayOfWeek===undefined&&d.weekOfYear===undefined");
-passes("var ok=false;try{+new Temporal.PlainYearMonth(2024,1)}catch(e){ok=e instanceof TypeError}ok");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"calendarId\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get calendarId\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"era\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get era\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"eraYear\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get eraYear\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"year\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get year\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"month\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get month\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"monthCode\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get monthCode\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"daysInMonth\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get daysInMonth\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"daysInYear\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get daysInYear\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"monthsInYear\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get monthsInYear\"&&d.set===undefined&&!d.enumerable&&d.configurable");
-passes("var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,\"inLeapYear\");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name===\"get inLeapYear\"&&d.set===undefined&&!d.enumerable&&d.configurable");
+passes(
+    "var d=new Temporal.PlainYearMonth(2024,1);d.year=9;Object.keys(d).length===0&&d.year===2024",
+);
+passes(
+    'var d=new Temporal.PlainYearMonth(2024,1);Object.defineProperty(d,"year",{value:9});Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"year").get.call(d)===2024',
+);
+passes(
+    "class D extends Temporal.PlainYearMonth{}var d=new D(2024,2);d instanceof D&&d instanceof Temporal.PlainYearMonth&&d.year===2024",
+);
+passes(
+    'Temporal.PlainYearMonth.name==="PlainYearMonth"&&Temporal.PlainYearMonth.length===2&&Temporal.PlainYearMonth.prototype.constructor===Temporal.PlainYearMonth',
+);
+passes(
+    'Object.prototype.toString.call(new Temporal.PlainYearMonth(2024,1))==="[object Temporal.PlainYearMonth]"',
+);
+passes(
+    'var log="";new Temporal.PlainYearMonth({valueOf(){log+="y";return 2024}},{valueOf(){log+="m";return 2}},"iso8601",{valueOf(){log+="d";return 29}});log==="ymd"',
+);
+passes(
+    "var touched=false,ok=false;try{new Temporal.PlainYearMonth(2024,2,null,{valueOf(){touched=true;return 1}})}catch(e){ok=e instanceof TypeError}ok&&!touched",
+);
+passes(
+    "var touched=false,ok=false;try{Temporal.PlainYearMonth({valueOf(){touched=true;return 2024}},1)}catch(e){ok=e instanceof TypeError}ok&&!touched",
+);
+passes(
+    'var marker={},ok=false;try{new Temporal.PlainYearMonth(2024,99,"iso8601",{valueOf(){throw marker}})}catch(e){ok=e===marker}ok',
+);
+passes(
+    'var d=new Temporal.PlainYearMonth(2024,1);Object.defineProperty(d,"calendar",{get(){throw 1}});new Temporal.PlainDate(2024,1,1).withCalendar(d).calendarId==="iso8601"',
+);
+passes(
+    'var d=new Temporal.PlainYearMonth(2024,1);Object.defineProperty(d,"calendar",{get(){throw 1}});var ok=false;try{new Temporal.PlainDate(2024,1,1).with(d)}catch(e){ok=e instanceof TypeError}ok',
+);
+passes(
+    "var d=new Temporal.PlainYearMonth(2024,1);d.day===undefined&&d.dayOfWeek===undefined&&d.weekOfYear===undefined",
+);
+passes(
+    "var ok=false;try{+new Temporal.PlainYearMonth(2024,1)}catch(e){ok=e instanceof TypeError}ok",
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"calendarId");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get calendarId"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"era");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get era"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"eraYear");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get eraYear"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"year");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get year"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"month");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get month"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"monthCode");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get monthCode"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"daysInMonth");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get daysInMonth"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"daysInYear");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get daysInYear"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"monthsInYear");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get monthsInYear"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
+passes(
+    'var d=Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"inLeapYear");var bad=false;try{d.get.call(Temporal.PlainYearMonth.prototype)}catch(e){bad=e instanceof TypeError}bad&&d.get.length===0&&d.get.name==="get inLeapYear"&&d.set===undefined&&!d.enumerable&&d.configurable',
+);
 passes("var ok=false;try{new Temporal.PlainYearMonth()}catch(e){ok=e instanceof RangeError}ok");
 passes("var ok=false;try{new Temporal.PlainYearMonth(2024)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,0)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,13)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(NaN,1)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(Infinity,1)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(-271821,3)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(275760,10)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2023,2,undefined,29)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,2,undefined,30)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,2,undefined,0)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,2,undefined,Infinity)}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,2,\"gregory\")}catch(e){ok=e instanceof RangeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,2,\"İSO8601\")}catch(e){ok=e instanceof RangeError}ok");
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2024,0)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2024,13)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(NaN,1)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(Infinity,1)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(-271821,3)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(275760,10)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2023,2,undefined,29)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2024,2,undefined,30)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2024,2,undefined,0)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2024,2,undefined,Infinity)}catch(e){ok=e instanceof RangeError}ok",
+);
+passes(
+    'var ok=false;try{new Temporal.PlainYearMonth(2024,2,"gregory")}catch(e){ok=e instanceof RangeError}ok',
+);
+passes(
+    'var ok=false;try{new Temporal.PlainYearMonth(2024,2,"İSO8601")}catch(e){ok=e instanceof RangeError}ok',
+);
 passes("var ok=false;try{new Temporal.PlainYearMonth(1n,1)}catch(e){ok=e instanceof TypeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,Symbol())}catch(e){ok=e instanceof TypeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,1,null)}catch(e){ok=e instanceof TypeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,1,new String(\"iso8601\"))}catch(e){ok=e instanceof TypeError}ok");
-passes("var ok=false;try{new Temporal.PlainYearMonth(2024,1,undefined,1n)}catch(e){ok=e instanceof TypeError}ok");
-const defining=new Realm((_line:string)=>{},"script"),calling=new Realm((_line:string)=>{},"script");
-const getter=run('Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"year").get',defining);
-if(getter.type!=="normal")throw new Error("getter lookup");
-calling.defineScriptGlobal("year",{value:getter.value});
-const read=run('year.call(new Temporal.PlainYearMonth(2024,1))',calling);
-check(read.type==="normal"&&read.value.kind==="number"&&read.value.value===2024,"cross-Realm brand");
-const failed=run('year.call({})',calling);
-check(failed.type==="throw"&&failed.value.kind==="object"&&failed.value.object.getPrototypeOf()===defining.getErrorPrototype("TypeError"),"defining Realm error");
-const target=run('var F=function(){};F.prototype=0;F',defining);
-if(target.type!=="normal")throw new Error("target lookup");
-calling.defineScriptGlobal("F",{value:target.value});
-const constructed=run('Reflect.construct(Temporal.PlainYearMonth,[2024,1],F)',calling);
-check(constructed.type==="normal"&&constructed.value.kind==="object"&&constructed.value.object.getPrototypeOf()===defining.temporalPlainYearMonthPrototype,"newTarget Realm fallback");
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2024,Symbol())}catch(e){ok=e instanceof TypeError}ok",
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2024,1,null)}catch(e){ok=e instanceof TypeError}ok",
+);
+passes(
+    'var ok=false;try{new Temporal.PlainYearMonth(2024,1,new String("iso8601"))}catch(e){ok=e instanceof TypeError}ok',
+);
+passes(
+    "var ok=false;try{new Temporal.PlainYearMonth(2024,1,undefined,1n)}catch(e){ok=e instanceof TypeError}ok",
+);
+const defining = new Realm((_line: string) => {}, "script"),
+    calling = new Realm((_line: string) => {}, "script");
+const getter = run(
+    'Object.getOwnPropertyDescriptor(Temporal.PlainYearMonth.prototype,"year").get',
+    defining,
+);
+if (getter.type !== "normal") {
+    throw new Error("getter lookup");
+}
+calling.defineScriptGlobal("year", { value: getter.value });
+const read = run("year.call(new Temporal.PlainYearMonth(2024,1))", calling);
+check(
+    read.type === "normal" && read.value.kind === "number" && read.value.value === 2024,
+    "cross-Realm brand",
+);
+const failed = run("year.call({})", calling);
+check(
+    failed.type === "throw" &&
+        failed.value.kind === "object" &&
+        failed.value.object.getPrototypeOf() === defining.getErrorPrototype("TypeError"),
+    "defining Realm error",
+);
+const target = run("var F=function(){};F.prototype=0;F", defining);
+if (target.type !== "normal") {
+    throw new Error("target lookup");
+}
+calling.defineScriptGlobal("F", { value: target.value });
+const constructed = run("Reflect.construct(Temporal.PlainYearMonth,[2024,1],F)", calling);
+check(
+    constructed.type === "normal" &&
+        constructed.value.kind === "object" &&
+        constructed.value.object.getPrototypeOf() === defining.temporalPlainYearMonthPrototype,
+    "newTarget Realm fallback",
+);
 console.log("temporal plain year month core passed");

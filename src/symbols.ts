@@ -11,7 +11,9 @@ const symbolRegistry = new Map<GuestString, GuestSymbol>();
 
 export function symbolFor(key: GuestString): GuestSymbol {
     const existing = symbolRegistry.get(key);
-    if (existing !== undefined) return existing;
+    if (existing !== undefined) {
+        return existing;
+    }
     const symbol = new GuestSymbol(key);
     symbolRegistry.set(key, symbol);
     return symbol;

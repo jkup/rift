@@ -5,9 +5,13 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 function passes(text: string): void {
     const realm = new Realm((_line: string) => {}, "script");
     const prepared = prepareBoundedScript({ id: "zoned-relative", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     const result = evaluateScript(createScriptSession(), prepared.record).completion;
-    if (result.type !== "normal" || result.value.kind !== "boolean" || !result.value.value) throw new Error(text);
+    if (result.type !== "normal" || result.value.kind !== "boolean" || !result.value.value) {
+        throw new Error(text);
+    }
 }
 for (const text of [
     'new Temporal.Duration(0,1).total({unit:"days",relativeTo:"2020-01-31T12[+05:30]"})===29',
@@ -29,7 +33,9 @@ for (const text of [
     'var log="";new Temporal.Duration().total({get relativeTo(){log+="r";return{get calendar(){log+="c"},year:2020,month:1,get day(){log+="d";return 1},get timeZone(){log+="z";return "UTC"}}},get unit(){log+="u";return "hour"}});log==="rcdzu"',
     'var log="";new Temporal.Duration().round({get largestUnit(){log+="l"},get relativeTo(){log+="r";return "2020-01-01[UTC]"},get roundingIncrement(){log+="i"},get roundingMode(){log+="m"},get smallestUnit(){log+="s";return "hour"}});log==="lrims"',
     'var t=false,ok=false;try{new Temporal.Duration().total({relativeTo:"2020-01-01T00+01:00[UTC]",get unit(){t=true;return "hour"}})}catch(e){ok=e instanceof RangeError}ok&&!t',
-]) passes(text);
+]) {
+    passes(text);
+}
 for (const expression of [
     'new Temporal.Duration().total({unit:"day",relativeTo:new Temporal.ZonedDateTime(8640000000000000000000n,"UTC")})',
     'new Temporal.Duration().round({smallestUnit:"day",relativeTo:new Temporal.ZonedDateTime(8640000000000000000000n,"UTC")})',
@@ -37,5 +43,7 @@ for (const expression of [
     'Temporal.Duration.compare("P1D","PT1H",{relativeTo:new Temporal.ZonedDateTime(8640000000000000000000n,"UTC")})',
     'new Temporal.Duration().total({unit:"hour",relativeTo:{year:2020,month:1,day:1,timeZone:"UTC",offset:"+01:00"}})',
     'new Temporal.Duration().round({smallestUnit:"hour",relativeTo:"2020-01-01[Invalid/Zone]"})',
-]) passes('var ok=false;try{'+expression+'}catch(e){ok=e instanceof RangeError}ok');
+]) {
+    passes("var ok=false;try{" + expression + "}catch(e){ok=e instanceof RangeError}ok");
+}
 console.log("temporal zoned relative to passed");

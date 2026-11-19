@@ -3,10 +3,19 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm: Realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm: Realm = new Realm((_line: string) => {}, "script"),
+): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "temporal-zoned-arithmetic", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 const cases = [
@@ -37,15 +46,30 @@ for (const expression of [
     'new Temporal.ZonedDateTime(8640000000000000000000n,"+23:59").add({days:1})',
     'new Temporal.ZonedDateTime(0n,"UTC").add({days:1,hours:-1})',
 ]) {
-    const result = run('var ok=false;try{'+expression+'}catch(e){ok=e instanceof RangeError}ok');
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, expression);
+    const result = run(
+        "var ok=false;try{" + expression + "}catch(e){ok=e instanceof RangeError}ok",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        expression,
+    );
 }
 for (const name of ["add", "subtract"]) {
-    const defining = new Realm((_line: string) => {}, "script"), calling = new Realm((_line: string) => {}, "script");
-    const method = run('Temporal.ZonedDateTime.prototype.'+name, defining), prototype = run('Temporal.ZonedDateTime.prototype', defining);
-    if (method.type !== "normal" || prototype.type !== "normal") throw new Error("lookup");
+    const defining = new Realm((_line: string) => {}, "script"),
+        calling = new Realm((_line: string) => {}, "script");
+    const method = run("Temporal.ZonedDateTime.prototype." + name, defining),
+        prototype = run("Temporal.ZonedDateTime.prototype", defining);
+    if (method.type !== "normal" || prototype.type !== "normal") {
+        throw new Error("lookup");
+    }
     calling.defineScriptGlobal("arithmetic", { value: method.value });
     const value = run('arithmetic.call(new Temporal.ZonedDateTime(0n,"UTC"),"PT1S")', calling);
-    check(value.type === "normal" && value.value.kind === "object" && prototype.value.kind === "object" && value.value.object.getPrototypeOf() === prototype.value.object, name + " Realm");
+    check(
+        value.type === "normal" &&
+            value.value.kind === "object" &&
+            prototype.value.kind === "object" &&
+            value.value.object.getPrototypeOf() === prototype.value.object,
+        name + " Realm",
+    );
 }
 console.log("temporal zoned arithmetic passed");

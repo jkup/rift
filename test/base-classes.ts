@@ -1,13 +1,24 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import { auditBoundedScriptNumericAssignments, auditBoundedScriptNumericSeparators, parse } from "../src/parser.js";
+import {
+    auditBoundedScriptNumericAssignments,
+    auditBoundedScriptNumericSeparators,
+    parse,
+} from "../src/parser.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
 function run(text: string, steps = 100000, realm = new Realm((_line: string) => {}, "script")) {
     const prepared = prepareBoundedScript({ id: "base-class", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function expect(text: string): void {
     const result = run(text);
@@ -37,9 +48,11 @@ for (const text of [
     "class C { constructor() {} m() {} }C.toString()==='class C { constructor() {} m() {} }'&&C.prototype.m.toString()==='m() {}'",
     "var C=class { m() {} };C.toString()==='class { m() {} }'",
     "function f(x){class C{[arguments[0]](){return 7}}return new C().m()}f('m')===7",
-    "class C{constructor(x){this.x=x}m(a=()=>this.x){return a()}}new C(7).m()===7"
-]) expect(text);
-for(const text of [
+    "class C{constructor(x){this.x=x}m(a=()=>this.x){return a()}}new C(7).m()===7",
+]) {
+    expect(text);
+}
+for (const text of [
     "class C{m(){return eval('C')}}new C().m()===C",
     "var ok=false;try{class C{[(missing=1)](){}}}catch(e){ok=e instanceof ReferenceError}ok&&typeof missing==='undefined'",
     "class C{m(){var ok=false;try{C=1}catch(e){ok=e instanceof TypeError}return ok}}new C().m()",
@@ -49,48 +62,120 @@ for(const text of [
     "var leak;try{class C{[(leak=()=>C,(()=>{throw 7})())](){}}}catch(e){}var ok=false;try{leak()}catch(e){ok=e instanceof ReferenceError}ok",
     "var ok=false;try{class C{constructor(){leaked=1}}new C()}catch(e){ok=e instanceof ReferenceError}ok",
     "function f(){class C{}return C}var A=f(),B=f();A!==B&&A.prototype!==B.prototype",
-    "var C;{class C{m(){return 7}}var D=C}C===undefined&&new D().m()===7"
-]) expect(text);
-const owner=new Realm((_line:string)=>{},"script"),caller=new Realm((_line:string)=>{},"script");
-const foreign=run("class C{constructor(x){this.x=x}m(){return this.x}}C",100000,owner);
-if(foreign.type!=="normal")throw new Error("class setup");
-caller.defineScriptGlobal("Foreign",{value:foreign.value});
-const instance=run("new Foreign(7)",100000,caller);
-check(instance.type==="normal"&&instance.value.kind==="object"&&instance.value.object.getPrototypeOf()?.getPrototypeOf()===owner.objectPrototype,"class defining Realm allocation");
-const error=run("Foreign()",100000,caller);
-check(error.type==="throw"&&error.value.kind==="object"&&error.value.object.getPrototypeOf()===owner.getErrorPrototype("TypeError"),"class defining Realm error");
-for (const text of ["class C extends B{}", "class C{field=1}", "class C{static{}}", "class C{#x}", "class C{async m(){}}", "class C{*m(){}}", "class C{m(){super.x}}", "class C{constructor(){super()}}", "class C{constructor(){}constructor(){}}", "class C{get constructor(){}}", "class C{static prototype(){}}", "class C{m(eval){}}", "class C{m(){delete x}}", "class C{m(){var arguments}}", "class C{}var C", "if(true)class C{}", "label:class C{}"]) {
-    const prepared=prepareBoundedScript({id:"invalid-class",text},new Realm((_line:string)=>{},"script"));
+    "var C;{class C{m(){return 7}}var D=C}C===undefined&&new D().m()===7",
+]) {
+    expect(text);
+}
+const owner = new Realm((_line: string) => {}, "script"),
+    caller = new Realm((_line: string) => {}, "script");
+const foreign = run("class C{constructor(x){this.x=x}m(){return this.x}}C", 100000, owner);
+if (foreign.type !== "normal") {
+    throw new Error("class setup");
+}
+caller.defineScriptGlobal("Foreign", { value: foreign.value });
+const instance = run("new Foreign(7)", 100000, caller);
+check(
+    instance.type === "normal" &&
+        instance.value.kind === "object" &&
+        instance.value.object.getPrototypeOf()?.getPrototypeOf() === owner.objectPrototype,
+    "class defining Realm allocation",
+);
+const error = run("Foreign()", 100000, caller);
+check(
+    error.type === "throw" &&
+        error.value.kind === "object" &&
+        error.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+    "class defining Realm error",
+);
+for (const text of [
+    "class C extends B{}",
+    "class C{field=1}",
+    "class C{static{}}",
+    "class C{#x}",
+    "class C{async m(){}}",
+    "class C{*m(){}}",
+    "class C{m(){super.x}}",
+    "class C{constructor(){super()}}",
+    "class C{constructor(){}constructor(){}}",
+    "class C{get constructor(){}}",
+    "class C{static prototype(){}}",
+    "class C{m(eval){}}",
+    "class C{m(){delete x}}",
+    "class C{m(){var arguments}}",
+    "class C{}var C",
+    "if(true)class C{}",
+    "label:class C{}",
+]) {
+    const prepared = prepareBoundedScript(
+        { id: "invalid-class", text },
+        new Realm((_line: string) => {}, "script"),
+    );
     if (text === "class C extends B{}") {
         check(prepared.kind === "ready", "default derived preparation is inert");
         const missing = run(text);
-        check(missing.type === "throw" && missing.diagnostic.name === "ReferenceError", "original heritage lookup occurs during execution");
+        check(
+            missing.type === "throw" && missing.diagnostic.name === "ReferenceError",
+            "original heritage lookup occurs during execution",
+        );
     } else if (text === "class C{m(){super.x}}") {
-        check(prepared.kind === "ready" && run(text).type === "normal", "super property class method declaration");
+        check(
+            prepared.kind === "ready" && run(text).type === "normal",
+            "super property class method declaration",
+        );
     } else if (text === "class C{async m(){}}") {
         check(prepared.kind === "ready", "async class preparation is inert");
         expect(text + ";new C().m() instanceof Promise;");
     } else if (text === "class C{*m(){}}") {
         check(prepared.kind === "ready", "generator class preparation is inert");
         const result = run(text + ";new C().m().next().done;");
-        check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original generator class executes");
+        check(
+            result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+            "original generator class executes",
+        );
     } else if (text === "class C{field=1}") {
         check(prepared.kind === "ready", "field initializer preparation is inert");
         expect(text + ";new C().field===1;");
     } else if (text === "class C{#x}") {
-        check(prepared.kind === "ready" && run(text).type === "normal", "original private field declaration executes");
+        check(
+            prepared.kind === "ready" && run(text).type === "normal",
+            "original private field declaration executes",
+        );
     } else if (text === "class C{static{}}") {
-        check(prepared.kind === "ready" && run(text).type === "normal", "original static block executes");
-    } else check(prepared.kind!=="ready","reject "+text);
+        check(
+            prepared.kind === "ready" && run(text).type === "normal",
+            "original static block executes",
+        );
+    } else {
+        check(prepared.kind !== "ready", "reject " + text);
+    }
 }
-check(auditBoundedScriptNumericAssignments("1=2;class C{field=1}").kind==="eligible","field initializer permits assignment certification");
-check(auditBoundedScriptNumericAssignments("1=2;class C{static{}}").kind==="eligible","static block permits assignment certification");
-check(auditBoundedScriptNumericAssignments("1=2;class C{#x}").kind==="eligible","private field permits assignment certification");
-check(auditBoundedScriptNumericSeparators("1_;class C extends B{}").kind==="eligible","default inheritance permits numeric certification");
-const limitedRealm=new Realm((_line:string)=>{},"script");
-run("var caught=false;",100000,limitedRealm);
-const limited=run("try{class C{[(()=>{while(true){}})()](){}}}catch(e){caught=true}",100,limitedRealm);
-check(limited.type==="throw"&&limited.origin.kind==="resource-limit","computed key budget");
-const caught=run("caught",100000,limitedRealm);
-check(caught.type==="normal"&&caught.value.kind==="boolean"&&!caught.value.value,"class fatal limit bypasses catch");
+check(
+    auditBoundedScriptNumericAssignments("1=2;class C{field=1}").kind === "eligible",
+    "field initializer permits assignment certification",
+);
+check(
+    auditBoundedScriptNumericAssignments("1=2;class C{static{}}").kind === "eligible",
+    "static block permits assignment certification",
+);
+check(
+    auditBoundedScriptNumericAssignments("1=2;class C{#x}").kind === "eligible",
+    "private field permits assignment certification",
+);
+check(
+    auditBoundedScriptNumericSeparators("1_;class C extends B{}").kind === "eligible",
+    "default inheritance permits numeric certification",
+);
+const limitedRealm = new Realm((_line: string) => {}, "script");
+run("var caught=false;", 100000, limitedRealm);
+const limited = run(
+    "try{class C{[(()=>{while(true){}})()](){}}}catch(e){caught=true}",
+    100,
+    limitedRealm,
+);
+check(limited.type === "throw" && limited.origin.kind === "resource-limit", "computed key budget");
+const caught = run("caught", 100000, limitedRealm);
+check(
+    caught.type === "normal" && caught.value.kind === "boolean" && !caught.value.value,
+    "class fatal limit bypasses catch",
+);
 console.log("Base classes passed");

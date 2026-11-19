@@ -4,24 +4,40 @@ import { sameValue, type GuestObject, type Value, type ValueCompletion } from ".
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "map-object", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function passes(text: string): void {
     const result = run(text);
-    check(result.type === "normal" && sameValue(result.value, {kind: "boolean", value: true}), text);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        text,
+    );
 }
 function own(object: GuestObject, key: string): Value {
     const descriptor = object.getOwnProperty(key);
-    if (descriptor === undefined || descriptor.kind !== "data") throw new Error("own " + key);
+    if (descriptor === undefined || descriptor.kind !== "data") {
+        throw new Error("own " + key);
+    }
     return descriptor.value;
 }
 function object(value: Value): GuestObject {
-    if (value.kind !== "object") throw new Error("object value");
+    if (value.kind !== "object") {
+        throw new Error("object value");
+    }
     return value.object;
 }
 
@@ -57,16 +73,50 @@ for (const source of [
     "Object.prototype.toString.call(new Map())==='[object Map]'&&Object.prototype.toString.call(Map.prototype)==='[object Map]';",
     "'use strict';let m=new Map();let caught=false;try{m.size=9;}catch(e){caught=e instanceof TypeError;}caught&&!Object.hasOwn(m,'size')&&m.size===0;",
     "let m=new Map();m.size=9;!Object.hasOwn(m,'size')&&m.size===0;",
-]) passes(source);
+]) {
+    passes(source);
+}
 
 for (const name of ["get", "set", "has", "delete", "clear", "forEach"]) {
     const length = name === "set" ? 2 : name === "clear" ? 0 : 1;
-    passes("let f=Map.prototype['" + name + "'];let d=Object.getOwnPropertyDescriptor(Map.prototype,'" + name + "');f.name==='" + name + "'&&f.length===" + length + "&&!Object.hasOwn(f,'prototype')&&d.writable&&!d.enumerable&&d.configurable;");
-    for (const receiver of ["undefined", "null", "3", "{}", "Map.prototype", "Object.create(Map.prototype)"]) {
-        passes("let caught=false;try{Map.prototype['" + name + "'].call(" + receiver + ");}catch(e){caught=e instanceof TypeError;}caught;");
+    passes(
+        "let f=Map.prototype['" +
+            name +
+            "'];let d=Object.getOwnPropertyDescriptor(Map.prototype,'" +
+            name +
+            "');f.name==='" +
+            name +
+            "'&&f.length===" +
+            length +
+            "&&!Object.hasOwn(f,'prototype')&&d.writable&&!d.enumerable&&d.configurable;",
+    );
+    for (const receiver of [
+        "undefined",
+        "null",
+        "3",
+        "{}",
+        "Map.prototype",
+        "Object.create(Map.prototype)",
+    ]) {
+        passes(
+            "let caught=false;try{Map.prototype['" +
+                name +
+                "'].call(" +
+                receiver +
+                ");}catch(e){caught=e instanceof TypeError;}caught;",
+        );
     }
 }
-for (const source of ["Map();", "Map.call({});", "new Map(7);", "new Map({});", "new Map('x');", "new Map([3]);", "new Map().forEach(7);", "Object.getOwnPropertyDescriptor(Map.prototype,'size').get.call(Map.prototype);"]) {
+for (const source of [
+    "Map();",
+    "Map.call({});",
+    "new Map(7);",
+    "new Map({});",
+    "new Map('x');",
+    "new Map([3]);",
+    "new Map().forEach(7);",
+    "Object.getOwnPropertyDescriptor(Map.prototype,'size').get.call(Map.prototype);",
+]) {
     passes("let caught=false;try{" + source + "}catch(e){caught=e instanceof TypeError;}caught;");
 }
 for (const failure of [
@@ -74,29 +124,59 @@ for (const failure of [
     "Object.defineProperty(entry,'1',{get:function(){throw marker;}});",
     "Map.prototype.set=function(){throw marker;};",
 ]) {
-    passes("let marker={};let entry={0:'x',1:1};" + failure + "let closed=0;let i={next:function(){return {done:false,value:entry};}};i['return']=function(){closed++;throw 9;};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{new Map(a);}catch(e){caught=e===marker;}caught&&closed===1;");
+    passes(
+        "let marker={};let entry={0:'x',1:1};" +
+            failure +
+            "let closed=0;let i={next:function(){return {done:false,value:entry};}};i['return']=function(){closed++;throw 9;};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{new Map(a);}catch(e){caught=e===marker;}caught&&closed===1;",
+    );
 }
-passes("let marker={};let closed=0;let i={next:function(){throw marker;}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{new Map(a);}catch(e){caught=e===marker;}caught&&closed===0;");
+passes(
+    "let marker={};let closed=0;let i={next:function(){throw marker;}};i['return']=function(){closed++;return {};};let a={};a[Symbol.iterator]=function(){return i;};let caught=false;try{new Map(a);}catch(e){caught=e===marker;}caught&&closed===0;",
+);
 {
-    const owner = fresh(), caller = fresh();
-    caller.defineScriptGlobal("ForeignMap", {value: own(owner.globalObject, "Map")});
-    caller.defineScriptGlobal("foreignGet", {value: own(owner.mapPrototype, "get")});
+    const owner = fresh(),
+        caller = fresh();
+    caller.defineScriptGlobal("ForeignMap", { value: own(owner.globalObject, "Map") });
+    caller.defineScriptGlobal("foreignGet", { value: own(owner.mapPrototype, "get") });
     const result = run("var m=new ForeignMap([['x',1]]);m;", caller);
-    check(result.type === "normal" && result.value.kind === "object" && result.value.object instanceof GuestMap && result.value.object.getPrototypeOf() === owner.mapPrototype, "Map allocation Realm");
+    check(
+        result.type === "normal" &&
+            result.value.kind === "object" &&
+            result.value.object instanceof GuestMap &&
+            result.value.object.getPrototypeOf() === owner.mapPrototype,
+        "Map allocation Realm",
+    );
     const read = run("Map.prototype.get.call(m,'x');", caller);
-    check(read.type === "normal" && sameValue(read.value, {kind: "number", value: 1}), "cross-Realm Map brand");
+    check(
+        read.type === "normal" && sameValue(read.value, { kind: "number", value: 1 }),
+        "cross-Realm Map brand",
+    );
     for (const source of ["ForeignMap();", "new ForeignMap([3]);", "foreignGet.call({});"]) {
         const error = run(source, caller);
-        check(error.type === "throw" && object(error.value).getPrototypeOf() === owner.getErrorPrototype("TypeError"), "Map error Realm");
+        check(
+            error.type === "throw" &&
+                object(error.value).getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+            "Map error Realm",
+        );
     }
-    check(owner.mapPrototype !== caller.mapPrototype && own(owner.mapPrototype, "set") !== own(caller.mapPrototype, "set"), "fresh Map roots and methods");
+    check(
+        owner.mapPrototype !== caller.mapPrototype &&
+            own(owner.mapPrototype, "set") !== own(caller.mapPrototype, "set"),
+        "fresh Map roots and methods",
+    );
 }
 for (const source of [
     "let m=new Map([['x',1]]);m.forEach(function(v,k){m.delete(k);m.set(k,v);});",
     "let a={};a[Symbol.iterator]=function(){return {next:function(){return {done:false,value:['x',1]};}};};new Map(a);",
 ]) {
     const result = run(source, fresh(), 300);
-    check(result.type === "throw" && result.origin.kind === "resource-limit", "Map work is bounded");
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "Map work is bounded",
+    );
 }
-check(new Realm((_line: string) => {}).global.bindings.get("Map") === undefined, "legacy Map absent");
+check(
+    new Realm((_line: string) => {}).global.bindings.get("Map") === undefined,
+    "legacy Map absent",
+);
 console.log("Map ordinary methods passed");

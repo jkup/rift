@@ -4,12 +4,20 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { parseDeclarationPlan } from "../src/parser.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, realm = fresh(), steps = 20000): ValueCompletion {
-    const prepared = prepareBoundedScript({id: "lexical-for", text}, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + prepared.kind + " " + text);
-    const session = createScriptSession({maxSteps: steps, maxCalls: 64});
+    const prepared = prepareBoundedScript({ id: "lexical-for", text }, realm);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + prepared.kind + " " + text);
+    }
+    const session = createScriptSession({ maxSteps: steps, maxCalls: 64 });
     const result = evaluateScript(session, prepared.record).completion;
     const state = session.inspect();
     check(state.active === null && state.calls === 0 && state.depth === 0, "restored session");
@@ -17,7 +25,10 @@ function run(text: string, realm = fresh(), steps = 20000): ValueCompletion {
 }
 function passes(text: string): void {
     const result = run(text);
-    check(result.type === "normal" && sameValue(result.value, {kind:"boolean",value:true}), text);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        text,
+    );
 }
 for (const prefix of ["", "'use strict';"]) {
     for (const source of [
@@ -46,35 +57,90 @@ for (const prefix of ["", "'use strict';"]) {
         "var f;var n=0;for(const i={x:0};n<2;n++){i.x++;f=function(){return i.x;};}f()===2;",
         "var i=9;try{for(let i=0;(function(){throw 1;})();){}}catch(e){}i===9;",
         "var i=9;try{for(let i=0;;(function(){throw 1;})()){}}catch(e){}i===9;",
-    ]) passes(prefix+source);
-    for (const kind of ["let","const"]) for (const body of ["var i;","{var i;}","{if(false){var i;}}"])
-        check(prepareBoundedScript({id:"conflict",text:prefix+"for("+kind+" i=0;false;)"+body},fresh()).kind === "conflict", "head/body var conflict");
-    const completion=run(prefix+"for(let i=0;i<3;i++){i;}");
-    check(completion.type === "normal" && sameValue(completion.value,{kind:"number",value:2}),"completion value");
-    const empty=run(prefix+"7;for(let i=0;false;i++){}");
-    check(empty.type === "normal" && empty.value.kind === "undefined","zero iterations completion");
-}
-for(const text of ["for(let i var j;;){}","for(const i;;){}","for(let i=0,j=1;false;){}","for(let [i]=[];false;){}","for(let i in {}){}","for(let i=0;;)let x=1;","for(let i=0;;)const x=1;"])
-    if (text === "for(let i in {}){}") passes(text+"typeof i==='undefined';");
-    else if (text === "for(let i=0,j=1;false;){}" || text === "for(let [i]=[];false;){}") passes(text+"typeof i==='undefined'&&typeof j==='undefined';");
-    else check(prepareBoundedScript({id:"unsupported",text},fresh()).kind !== "ready","reject "+text);
-const owner=fresh(),caller=fresh();
-const fn=run("var f;for(const i=0;;){f=function(){i=1;};break;}f;",owner);
-check(fn.type === "normal","foreign setup");
-if(fn.type === "normal")caller.defineScriptGlobal("f",{value:fn.value});
-const failure=run("f();",caller);
-check(failure.type === "throw" && failure.value.kind === "object" && failure.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),"foreign error Realm");
-for (const source of ["for(let i=0;;i++){}","for(const i=0;;){}"])
-    for(const budget of [0,10,50,200]) {
-        const result=run(source,fresh(),budget);
-        check(result.type === "throw" && result.origin.kind === "resource-limit","bounded loop");
+    ]) {
+        passes(prefix + source);
     }
-const text="for(let i=function(){return i;};false;){var y;let z;}";
-const plan=parseDeclarationPlan({id:"plan",text});
-check(plan.kind === "complete","plan ready");
-if(plan.kind === "complete") {
-    check(plan.scopes[1].kind === "for-lexical" && plan.scopes[1].start === 0 && plan.scopes[1].end === text.length,"loop range");
-    check(plan.scopes[1].lexicalNames.join(',') === 'i' && plan.scopes[0].varNames.join(',') === 'y',"declaration ownership");
-    check(plan.scopes[2].parent === 1 && plan.scopes[3].parent === 1 && plan.declarations[0].initializer !== null,"initializer and body scopes");
+    for (const kind of ["let", "const"]) {
+        for (const body of ["var i;", "{var i;}", "{if(false){var i;}}"]) {
+            check(
+                prepareBoundedScript(
+                    { id: "conflict", text: prefix + "for(" + kind + " i=0;false;)" + body },
+                    fresh(),
+                ).kind === "conflict",
+                "head/body var conflict",
+            );
+        }
+    }
+    const completion = run(prefix + "for(let i=0;i<3;i++){i;}");
+    check(
+        completion.type === "normal" && sameValue(completion.value, { kind: "number", value: 2 }),
+        "completion value",
+    );
+    const empty = run(prefix + "7;for(let i=0;false;i++){}");
+    check(
+        empty.type === "normal" && empty.value.kind === "undefined",
+        "zero iterations completion",
+    );
+}
+for (const text of [
+    "for(let i var j;;){}",
+    "for(const i;;){}",
+    "for(let i=0,j=1;false;){}",
+    "for(let [i]=[];false;){}",
+    "for(let i in {}){}",
+    "for(let i=0;;)let x=1;",
+    "for(let i=0;;)const x=1;",
+]) {
+    if (text === "for(let i in {}){}") {
+        passes(text + "typeof i==='undefined';");
+    } else if (text === "for(let i=0,j=1;false;){}" || text === "for(let [i]=[];false;){}") {
+        passes(text + "typeof i==='undefined'&&typeof j==='undefined';");
+    } else {
+        check(
+            prepareBoundedScript({ id: "unsupported", text }, fresh()).kind !== "ready",
+            "reject " + text,
+        );
+    }
+}
+const owner = fresh(),
+    caller = fresh();
+const fn = run("var f;for(const i=0;;){f=function(){i=1;};break;}f;", owner);
+check(fn.type === "normal", "foreign setup");
+if (fn.type === "normal") {
+    caller.defineScriptGlobal("f", { value: fn.value });
+}
+const failure = run("f();", caller);
+check(
+    failure.type === "throw" &&
+        failure.value.kind === "object" &&
+        failure.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+    "foreign error Realm",
+);
+for (const source of ["for(let i=0;;i++){}", "for(const i=0;;){}"]) {
+    for (const budget of [0, 10, 50, 200]) {
+        const result = run(source, fresh(), budget);
+        check(result.type === "throw" && result.origin.kind === "resource-limit", "bounded loop");
+    }
+}
+const text = "for(let i=function(){return i;};false;){var y;let z;}";
+const plan = parseDeclarationPlan({ id: "plan", text });
+check(plan.kind === "complete", "plan ready");
+if (plan.kind === "complete") {
+    check(
+        plan.scopes[1].kind === "for-lexical" &&
+            plan.scopes[1].start === 0 &&
+            plan.scopes[1].end === text.length,
+        "loop range",
+    );
+    check(
+        plan.scopes[1].lexicalNames.join(",") === "i" && plan.scopes[0].varNames.join(",") === "y",
+        "declaration ownership",
+    );
+    check(
+        plan.scopes[2].parent === 1 &&
+            plan.scopes[3].parent === 1 &&
+            plan.declarations[0].initializer !== null,
+        "initializer and body scopes",
+    );
 }
 console.log("Lexical for passed");

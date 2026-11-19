@@ -1,10 +1,16 @@
 import { scanRegExpLiteral } from "../src/regexp-literal.js";
 
-function check(value: boolean, message: string): void { if (!value) throw new Error(message); }
+function check(value: boolean, message: string): void {
+    if (!value) {
+        throw new Error(message);
+    }
+}
 function ready(source: string, pattern: string, flags: string, end: number, start = 0): void {
     const result = scanRegExpLiteral(source, start);
     check(result.kind === "ready", "literal scans: " + source);
-    if (result.kind !== "ready") throw new Error("ready scan invariant");
+    if (result.kind !== "ready") {
+        throw new Error("ready scan invariant");
+    }
     check(result.pattern === pattern && result.flags === flags, "raw body and flags: " + source);
     check(result.start === start && result.end === end, "UTF-16 range: " + source);
 }
@@ -31,20 +37,32 @@ ready("x = /a/g;", "a", "g", 8, 4);
 ready("/a/ / 2", "a", "", 3);
 ready("/a//*comment*/", "a", "", 3);
 for (const source of ["/", "/a", "/a\\", "/[", "/[/", "/[a/", "/[\\]/", "//", "/**/"]) {
-    check(scanRegExpLiteral(source, 0).kind === "syntax-error", "invalid delimiter form: " + source);
+    check(
+        scanRegExpLiteral(source, 0).kind === "syntax-error",
+        "invalid delimiter form: " + source,
+    );
 }
 for (const line of ["\n", "\r", "\u2028", "\u2029"]) {
     for (const prefix of ["/a", "/[a", "/a\\", "/[a\\"]) {
         const result = scanRegExpLiteral(prefix + line + "/", 0);
-        check(result.kind === "syntax-error" && result.offset === prefix.length, "line terminator rejected inside body/escape/class");
+        check(
+            result.kind === "syntax-error" && result.offset === prefix.length,
+            "line terminator rejected inside body/escape/class",
+        );
     }
 }
 for (const suffix of ["é", "😀", "\u200c", "\u00a0"]) {
     const result = scanRegExpLiteral("/a/g" + suffix, 0);
-    check(result.kind === "unsupported" && result.offset === 4, "Unicode flag boundary stays explicit");
+    check(
+        result.kind === "unsupported" && result.offset === 4,
+        "Unicode flag boundary stays explicit",
+    );
 }
 const maximum = "/" + "a".repeat(99998) + "/";
 ready(maximum, "a".repeat(99998), "", 100000);
 const limited = scanRegExpLiteral(maximum + "g", 0);
-check(limited.kind === "resource-limit" && limited.count === 100001 && limited.limit === 100000, "source-size budget");
+check(
+    limited.kind === "resource-limit" && limited.count === 100001 && limited.limit === 100000,
+    "source-size budget",
+);
 console.log("RegExp literal scan passed");

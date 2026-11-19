@@ -4,11 +4,19 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { parse } from "../src/parser.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, realm = fresh(), steps = 20000): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "object-methods", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + prepared.kind + " " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + prepared.kind + " " + text);
+    }
     const session = createScriptSession({ maxSteps: steps, maxCalls: 64 });
     const result = evaluateScript(session, prepared.record).completion;
     const state = session.inspect();
@@ -17,7 +25,10 @@ function run(text: string, realm = fresh(), steps = 20000): ValueCompletion {
 }
 function passes(text: string): void {
     const result = run(text);
-    check(result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }), text);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        text,
+    );
 }
 for (const prefix of ["", "'use strict';"]) {
     for (const text of [
@@ -43,33 +54,89 @@ for (const prefix of ["", "'use strict';"]) {
         "var o={set x(v){throw v;}};var ok=false;try{o.x=7;}catch(e){ok=e===7;}ok;",
         "var o={x:1,get y(){return this.x;},set y(v){this.x=v;}};o.y++;o.y+=3;o.x===5;",
         "var p={get x(){return this.y;},set x(v){this.y=v;}};var o=Object.create(p);o.x=4;o.x===4&&!p.hasOwnProperty('y');",
-    ]) passes(prefix + text);
-    for (const expression of ["o.m", "Object.getOwnPropertyDescriptor(o,'x').get", "Object.getOwnPropertyDescriptor(o,'x').set"])
-        passes(prefix + "var o={m(){throw 9;},get x(){throw 9;},set x(v){throw 9;}};var f=" + expression + ";var ok=false;try{new f();}catch(e){ok=e instanceof TypeError;}ok;");
+    ]) {
+        passes(prefix + text);
+    }
+    for (const expression of [
+        "o.m",
+        "Object.getOwnPropertyDescriptor(o,'x').get",
+        "Object.getOwnPropertyDescriptor(o,'x').set",
+    ]) {
+        passes(
+            prefix +
+                "var o={m(){throw 9;},get x(){throw 9;},set x(v){throw 9;}};var f=" +
+                expression +
+                ";var ok=false;try{new f();}catch(e){ok=e instanceof TypeError;}ok;",
+        );
+    }
 }
 passes("var o={m(){return this;}};var f=o.m;f()===this;");
 passes("'use strict';var o={m(){return this;}};var f=o.m;f()===undefined;");
 passes("var o={m(){'use strict';return this;}};var f=o.m;f()===undefined;");
-passes("var o={m /* a */ (x) { return x; },get x() { return 1; }};o.m.toString()==='m /* a */ (x) { return x; }'&&Object.getOwnPropertyDescriptor(o,'x').get.toString()==='get x() { return 1; }';");
+passes(
+    "var o={m /* a */ (x) { return x; },get x() { return 1; }};o.m.toString()==='m /* a */ (x) { return x; }'&&Object.getOwnPropertyDescriptor(o,'x').get.toString()==='get x() { return 1; }';",
+);
 passes("var o={get\nx(){return 1;}};o.x===1;");
-for (const text of ["({get x(v){}});", "({set x(){}});", "({set x(a,b){}});", "({m(a,a){}});", "({get x:1});", "({[x](){}});", "({m(){return super.x;}});", "({async m(){}});", "({*m(){}});", "({x});", "({__proto__:null});"]) {
+for (const text of [
+    "({get x(v){}});",
+    "({set x(){}});",
+    "({set x(a,b){}});",
+    "({m(a,a){}});",
+    "({get x:1});",
+    "({[x](){}});",
+    "({m(){return super.x;}});",
+    "({async m(){}});",
+    "({*m(){}});",
+    "({x});",
+    "({__proto__:null});",
+]) {
     const realm = fresh();
-    const prepared = prepareBoundedScript({ id: "invalid", text: "var untouched=1;" + text }, realm);
-    if (text === "({async m(){}});" || text === "({*m(){}});" || text === "({__proto__:null});" || text === "({x});" || text === "({[x](){}});" || text === "({m(){return super.x;}});") check(prepared.kind === "ready", "supported method preparation is inert");
-    else check(prepared.kind !== "ready", "reject " + text);
+    const prepared = prepareBoundedScript(
+        { id: "invalid", text: "var untouched=1;" + text },
+        realm,
+    );
+    if (
+        text === "({async m(){}});" ||
+        text === "({*m(){}});" ||
+        text === "({__proto__:null});" ||
+        text === "({x});" ||
+        text === "({[x](){}});" ||
+        text === "({m(){return super.x;}});"
+    ) {
+        check(prepared.kind === "ready", "supported method preparation is inert");
+    } else {
+        check(prepared.kind !== "ready", "reject " + text);
+    }
     const result = run("typeof untouched==='undefined';", realm);
-    check(result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }), "inert rejection");
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        "inert rejection",
+    );
 }
 check(run("({[x](){}});", fresh()).type === "throw", "computed method reads its key at runtime");
-check(run("({m(){return super.x;}});", fresh()).type === "normal", "original super property literal executes");
+check(
+    run("({m(){return super.x;}});", fresh()).type === "normal",
+    "original super property literal executes",
+);
 passes("({*m(){}}).m().next().done;");
 passes("({async m(){}}).m() instanceof Promise;");
 check(parse("({m(){}});").error !== null, "legacy method boundary");
-const owner = fresh(), caller = fresh();
+const owner = fresh(),
+    caller = fresh();
 const method = run("({m(){return [];}}).m;", owner);
-if (method.type === "normal") caller.defineScriptGlobal("f", { value: method.value });
+if (method.type === "normal") {
+    caller.defineScriptGlobal("f", { value: method.value });
+}
 const array = run("f();", caller);
-check(array.type === "normal" && array.value.kind === "object" && array.value.object.getPrototypeOf() === owner.arrayPrototype, "method Realm");
+check(
+    array.type === "normal" &&
+        array.value.kind === "object" &&
+        array.value.object.getPrototypeOf() === owner.arrayPrototype,
+    "method Realm",
+);
 const result = run("var o={get x(){return this.x;}};o.x;", fresh(), 100);
-check(result.type === "throw" && result.origin.kind === "resource-limit", "bounded recursive getter");
+check(
+    result.type === "throw" && result.origin.kind === "resource-limit",
+    "bounded recursive getter",
+);
 console.log("Object methods passed");

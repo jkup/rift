@@ -12,31 +12,96 @@ import { normal, UNDEFINED, type GuestObject, type ValueCompletion } from "../ru
 
 export function registerTemporalNow(realm: Realm, namespace: GuestObject): void {
     const now = realm.createObject();
-    now.bootstrapDefine(wellKnownToStringTag, { value: { kind: "string", value: "Temporal.Now" }, writable: false, enumerable: false, configurable: true });
-    realm.registerBuiltin(now, "timeZoneId", 0, (_receiver, _args, _context, _loc): ValueCompletion => normal({ kind: "string", value: "UTC" }));
+    now.bootstrapDefine(wellKnownToStringTag, {
+        value: { kind: "string", value: "Temporal.Now" },
+        writable: false,
+        enumerable: false,
+        configurable: true,
+    });
+    realm.registerBuiltin(
+        now,
+        "timeZoneId",
+        0,
+        (_receiver, _args, _context, _loc): ValueCompletion =>
+            normal({ kind: "string", value: "UTC" }),
+    );
     realm.registerBuiltin(now, "instant", 0, (_receiver, _args, context, loc): ValueCompletion => {
         const nanoseconds = BigInt(currentDateMilliseconds(context.realm)) * 1000000n;
-        return createTemporalInstant(nanoseconds, context.realm.temporalInstantPrototype, context, loc);
+        return createTemporalInstant(
+            nanoseconds,
+            context.realm.temporalInstantPrototype,
+            context,
+            loc,
+        );
     });
     for (const name of ["plainDateTimeISO", "plainDateISO", "plainTimeISO"]) {
         realm.registerBuiltin(now, name, 0, (_receiver, args, context, loc): ValueCompletion => {
             const supplied = args.length === 0 ? UNDEFINED : args[0];
-            const zone = toTemporalTimeZone(supplied.kind === "undefined" ? { kind: "string", value: "UTC" } : supplied, context, loc);
-            if (zone.type === "throw") return zone;
+            const zone = toTemporalTimeZone(
+                supplied.kind === "undefined" ? { kind: "string", value: "UTC" } : supplied,
+                context,
+                loc,
+            );
+            if (zone.type === "throw") {
+                return zone;
+            }
             const epoch = BigInt(currentDateMilliseconds(context.realm)) * 1000000n;
             const value = timeZoneLocalDateTime(zone.value, epoch);
-            if (value === null) throw new Error("Now timezone projection invariant");
-            if (name === "plainDateISO") return createTemporalPlainDate(value.date, context.realm.temporalPlainDatePrototype, context, loc);
-            if (name === "plainTimeISO") return createTemporalPlainTime(value, context.realm.temporalPlainTimePrototype, context, loc);
-            return createTemporalPlainDateTime(value, context.realm.temporalPlainDateTimePrototype, context, loc);
+            if (value === null) {
+                throw new Error("Now timezone projection invariant");
+            }
+            if (name === "plainDateISO") {
+                return createTemporalPlainDate(
+                    value.date,
+                    context.realm.temporalPlainDatePrototype,
+                    context,
+                    loc,
+                );
+            }
+            if (name === "plainTimeISO") {
+                return createTemporalPlainTime(
+                    value,
+                    context.realm.temporalPlainTimePrototype,
+                    context,
+                    loc,
+                );
+            }
+            return createTemporalPlainDateTime(
+                value,
+                context.realm.temporalPlainDateTimePrototype,
+                context,
+                loc,
+            );
         });
     }
-    realm.registerBuiltin(now, "zonedDateTimeISO", 0, (_receiver, args, context, loc): ValueCompletion => {
-        const supplied = args.length === 0 ? UNDEFINED : args[0];
-        const zone = toTemporalTimeZone(supplied.kind === "undefined" ? { kind: "string", value: "UTC" } : supplied, context, loc);
-        if (zone.type === "throw") return zone;
-        const epoch = BigInt(currentDateMilliseconds(context.realm)) * 1000000n;
-        return createTemporalZonedDateTime(epoch, zone.value, context.realm.temporalZonedDateTimePrototype, context, loc);
+    realm.registerBuiltin(
+        now,
+        "zonedDateTimeISO",
+        0,
+        (_receiver, args, context, loc): ValueCompletion => {
+            const supplied = args.length === 0 ? UNDEFINED : args[0];
+            const zone = toTemporalTimeZone(
+                supplied.kind === "undefined" ? { kind: "string", value: "UTC" } : supplied,
+                context,
+                loc,
+            );
+            if (zone.type === "throw") {
+                return zone;
+            }
+            const epoch = BigInt(currentDateMilliseconds(context.realm)) * 1000000n;
+            return createTemporalZonedDateTime(
+                epoch,
+                zone.value,
+                context.realm.temporalZonedDateTimePrototype,
+                context,
+                loc,
+            );
+        },
+    );
+    namespace.bootstrapDefine("Now", {
+        value: { kind: "object", object: now },
+        writable: true,
+        enumerable: false,
+        configurable: true,
     });
-    namespace.bootstrapDefine("Now", { value: { kind: "object", object: now }, writable: true, enumerable: false, configurable: true });
 }

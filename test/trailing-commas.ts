@@ -4,8 +4,14 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { parse } from "../src/parser.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 for (const prefix of ["", "'use strict';"]) {
     for (const source of [
         "var o={a:1,b:2,};Object.keys(o).join(',')==='a,b';",
@@ -24,16 +30,41 @@ for (const prefix of ["", "'use strict';"]) {
         "var n=0;function fail(){throw 7;}var ok=false;try{({a:fail(),b:(n=1),});}catch(e){ok=e===7;}ok&&n===0;",
         "var n=0;function fail(){throw 7;}var ok=false;try{Math.max(fail(),(n=1),);}catch(e){ok=e===7;}ok&&n===0;",
     ]) {
-        const prepared = prepareBoundedScript({id: 'trailing-comma', text: prefix + source}, fresh());
-        check(prepared.kind === 'ready', 'prepare ' + source);
-        if (prepared.kind !== 'ready') throw new Error('ready');
+        const prepared = prepareBoundedScript(
+            { id: "trailing-comma", text: prefix + source },
+            fresh(),
+        );
+        check(prepared.kind === "ready", "prepare " + source);
+        if (prepared.kind !== "ready") {
+            throw new Error("ready");
+        }
         const session = createScriptSession();
         const result = evaluateScript(session, prepared.record).completion;
-        check(result.type === 'normal' && sameValue(result.value, {kind: 'boolean', value: true}), source);
-        check(session.inspect().active === null, 'restored session');
+        check(
+            result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+            source,
+        );
+        check(session.inspect().active === null, "restored session");
     }
 }
-for (const source of ['f(,);','f(1,,);','new C(,);','new C(1,,);','({,});','({a:1,,});','({m(){},,});','function f(a,){}','({m(a,){}});','f(...,);'])
-    check(prepareBoundedScript({id: 'invalid', text: source}, fresh()).kind !== 'ready', 'reject ' + source);
-for (const source of ['f(1,);','({a:1,});']) check(parse(source).error !== null, 'legacy boundary');
-console.log('Trailing commas passed');
+for (const source of [
+    "f(,);",
+    "f(1,,);",
+    "new C(,);",
+    "new C(1,,);",
+    "({,});",
+    "({a:1,,});",
+    "({m(){},,});",
+    "function f(a,){}",
+    "({m(a,){}});",
+    "f(...,);",
+]) {
+    check(
+        prepareBoundedScript({ id: "invalid", text: source }, fresh()).kind !== "ready",
+        "reject " + source,
+    );
+}
+for (const source of ["f(1,);", "({a:1,});"]) {
+    check(parse(source).error !== null, "legacy boundary");
+}
+console.log("Trailing commas passed");

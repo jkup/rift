@@ -1,54 +1,124 @@
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestStringObject } from "../primitive-objects.js";
-import { languageFailure, normal, UNDEFINED, type ThrowCompletion, type Value } from "../runtime.js";
-import { stringLength, stringUnit, stringCodeUnit, stringSlice, stringIndexOf, stringLastIndexOf, stringJoin, isStringWhitespace, stringLowerCase, stringUpperCase, stringRepeat, stringConcat, type GuestString } from "../strings.js";
+import {
+    languageFailure,
+    normal,
+    UNDEFINED,
+    type ThrowCompletion,
+    type Value,
+} from "../runtime.js";
+import {
+    stringLength,
+    stringUnit,
+    stringCodeUnit,
+    stringSlice,
+    stringIndexOf,
+    stringLastIndexOf,
+    stringJoin,
+    isStringWhitespace,
+    stringLowerCase,
+    stringUpperCase,
+    stringRepeat,
+    stringConcat,
+    type GuestString,
+} from "../strings.js";
 import type { Location } from "../syntax.js";
 import { toPrimitive } from "../primitive-conversion.js";
-import { toString, toNumber, toIntegerOrInfinity, toLength, type NumberCompletion } from "../conversion.js";
+import {
+    toString,
+    toNumber,
+    toIntegerOrInfinity,
+    toLength,
+    type NumberCompletion,
+} from "../conversion.js";
 import { symbolDescriptiveString } from "../symbols.js";
 import { registerStringConstruction } from "./string-construction.js";
 import { stringCompare, stringNormalize, type NormalizationForm } from "../strings.js";
 import type { GuestObject, OperationContext, ValueCompletion } from "../runtime.js";
 
 function stringArgument(args: Value[], context: OperationContext, loc: Location): StringCompletion {
-    if (args.length === 0) return { type: "normal", value: "" };
+    if (args.length === 0) {
+        return { type: "normal", value: "" };
+    }
     const primitive = toPrimitive(args[0], "string", context, loc);
-    if (primitive.type === "throw") return primitive;
+    if (primitive.type === "throw") {
+        return primitive;
+    }
     return toString(primitive.value, loc, context.realm);
 }
 
-function constructString(callee: GuestObject, args: Value[], context: OperationContext, loc: Location): ValueCompletion {
+function constructString(
+    callee: GuestObject,
+    args: Value[],
+    context: OperationContext,
+    loc: Location,
+): ValueCompletion {
     const converted = stringArgument(args, context, loc);
-    if (converted.type === "throw") return converted;
+    if (converted.type === "throw") {
+        return converted;
+    }
     // Conversion completes before prototype lookup or any allocation charge.
     const prototype = getPrototypeFromConstructor(callee, "String", context, loc);
-    if (prototype.type === "throw") return prototype;
+    if (prototype.type === "throw") {
+        return prototype;
+    }
     const proto = prototype.value;
     const allocation = context.tick(loc);
-    if (allocation.type === "throw") return allocation;
+    if (allocation.type === "throw") {
+        return allocation;
+    }
     return normal({ kind: "object", object: new GuestStringObject(converted.value, proto) });
 }
 
 export function registerString(realm: Realm): void {
-    const constructor = realm.createBuiltinConstructor("String", 1, (_receiver, args, context, loc) => {
-        // Only the original primitive Symbol has the String-call exception.
-        if (args.length !== 0 && args[0].kind === "symbol")
-            return normal({ kind: "string", value: symbolDescriptiveString(args[0].value) });
-        const converted = stringArgument(args, context, loc);
-        if (converted.type === "throw") return converted;
-        return normal({ kind: "string", value: converted.value });
-    }, (_callee, newTarget, args, context, loc) => constructString(newTarget, args, context, loc));
-    constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.stringPrototype }, writable: false, enumerable: false, configurable: false });
-    realm.stringPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
-    realm.defineScriptGlobal("String", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+    const constructor = realm.createBuiltinConstructor(
+        "String",
+        1,
+        (_receiver, args, context, loc) => {
+            // Only the original primitive Symbol has the String-call exception.
+            if (args.length !== 0 && args[0].kind === "symbol") {
+                return normal({ kind: "string", value: symbolDescriptiveString(args[0].value) });
+            }
+            const converted = stringArgument(args, context, loc);
+            if (converted.type === "throw") {
+                return converted;
+            }
+            return normal({ kind: "string", value: converted.value });
+        },
+        (_callee, newTarget, args, context, loc) => constructString(newTarget, args, context, loc),
+    );
+    constructor.bootstrapDefine("prototype", {
+        value: { kind: "object", object: realm.stringPrototype },
+        writable: false,
+        enumerable: false,
+        configurable: false,
+    });
+    realm.stringPrototype.bootstrapDefine("constructor", {
+        value: { kind: "object", object: constructor },
+        writable: true,
+        enumerable: false,
+        configurable: true,
+    });
+    realm.defineScriptGlobal("String", {
+        value: { kind: "object", object: constructor },
+        writable: true,
+        enumerable: false,
+        configurable: true,
+    });
     registerStringConstruction(realm, constructor);
 }
 
 export type StringCompletion = { type: "normal"; value: GuestString } | ThrowCompletion;
 
-export function thisStringValue(input: Value, loc: Location, realm: Realm | null): StringCompletion {
-    if (input.kind === "string") return { type: "normal", value: input.value };
+export function thisStringValue(
+    input: Value,
+    loc: Location,
+    realm: Realm | null,
+): StringCompletion {
+    if (input.kind === "string") {
+        return { type: "normal", value: input.value };
+    }
     // Genuine slots survive relinking; the String prototype itself has one.
     if (input.kind === "object" && input.object instanceof GuestStringObject) {
         return { type: "normal", value: input.object.stringData };
@@ -59,30 +129,49 @@ export function thisStringValue(input: Value, loc: Location, realm: Realm | null
 export function registerStringConversions(realm: Realm): void {
     realm.registerBuiltin(realm.stringPrototype, "toString", 0, (receiver, _args, context, loc) => {
         const result = thisStringValue(receiver, loc, context.realm);
-        if (result.type === "throw") return result;
+        if (result.type === "throw") {
+            return result;
+        }
         return normal({ kind: "string", value: result.value });
     });
     realm.registerBuiltin(realm.stringPrototype, "valueOf", 0, (receiver, _args, context, loc) => {
         const result = thisStringValue(receiver, loc, context.realm);
-        if (result.type === "throw") return result;
+        if (result.type === "throw") {
+            return result;
+        }
         return normal({ kind: "string", value: result.value });
     });
 }
 
-export function stringReceiver(receiver: Value, context: OperationContext, loc: Location): StringCompletion {
+export function stringReceiver(
+    receiver: Value,
+    context: OperationContext,
+    loc: Location,
+): StringCompletion {
     if (receiver.kind === "null" || receiver.kind === "undefined") {
-        return languageFailure(context.realm, "TypeError", "cannot convert null or undefined to object", loc);
+        return languageFailure(
+            context.realm,
+            "TypeError",
+            "cannot convert null or undefined to object",
+            loc,
+        );
     }
     const tick = context.tick(loc);
-    if (tick.type === "throw") return tick;
+    if (tick.type === "throw") {
+        return tick;
+    }
     const primitive = toPrimitive(receiver, "string", context, loc);
-    if (primitive.type === "throw") return primitive;
+    if (primitive.type === "throw") {
+        return primitive;
+    }
     return toString(primitive.value, loc, context.realm);
 }
 
 function integerArgument(value: Value, context: OperationContext, loc: Location): NumberCompletion {
     const primitive = toPrimitive(value, "number", context, loc);
-    if (primitive.type === "throw") return primitive;
+    if (primitive.type === "throw") {
+        return primitive;
+    }
     return toIntegerOrInfinity(primitive.value, loc, context.realm);
 }
 
@@ -91,239 +180,519 @@ function sliceIndex(index: number, length: number): number {
 }
 
 function registerStringPadding(realm: Realm, name: string, start: boolean): void {
-    realm.registerBuiltin(realm.stringPrototype, name, 1, (receiver, args, context, loc): ValueCompletion => {
-        const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
-        const primitiveLength = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "number", context, loc);
-        if (primitiveLength.type === "throw") return primitiveLength;
-        const length = toLength(primitiveLength.value, loc, context.realm);
-        if (length.type === "throw") return length;
-        if (length.value <= stringLength(text.value)) return normal({ kind: "string", value: text.value });
-        let filler = " ";
-        if (args.length > 1 && args[1].kind !== "undefined") {
-            const primitive = toPrimitive(args[1], "string", context, loc);
-            if (primitive.type === "throw") return primitive;
-            const converted = toString(primitive.value, loc, context.realm);
-            if (converted.type === "throw") return converted;
-            filler = converted.value;
-        }
-        if (stringLength(filler) === 0) return normal({ kind: "string", value: text.value });
-        for (let i = 0; i < length.value; i++) {
-            const tick = context.tick(loc);
-            if (tick.type === "throw") return tick;
-        }
-        const needed = length.value - stringLength(text.value);
-        const padding = stringConcat(stringRepeat(filler, Math.floor(needed / stringLength(filler))),
-            stringSlice(filler, 0, needed % stringLength(filler)));
-        return normal({ kind: "string", value: start ? stringConcat(padding, text.value) : stringConcat(text.value, padding) });
-    });
+    realm.registerBuiltin(
+        realm.stringPrototype,
+        name,
+        1,
+        (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") {
+                return text;
+            }
+            const primitiveLength = toPrimitive(
+                args.length === 0 ? UNDEFINED : args[0],
+                "number",
+                context,
+                loc,
+            );
+            if (primitiveLength.type === "throw") {
+                return primitiveLength;
+            }
+            const length = toLength(primitiveLength.value, loc, context.realm);
+            if (length.type === "throw") {
+                return length;
+            }
+            if (length.value <= stringLength(text.value)) {
+                return normal({ kind: "string", value: text.value });
+            }
+            let filler = " ";
+            if (args.length > 1 && args[1].kind !== "undefined") {
+                const primitive = toPrimitive(args[1], "string", context, loc);
+                if (primitive.type === "throw") {
+                    return primitive;
+                }
+                const converted = toString(primitive.value, loc, context.realm);
+                if (converted.type === "throw") {
+                    return converted;
+                }
+                filler = converted.value;
+            }
+            if (stringLength(filler) === 0) {
+                return normal({ kind: "string", value: text.value });
+            }
+            for (let i = 0; i < length.value; i++) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") {
+                    return tick;
+                }
+            }
+            const needed = length.value - stringLength(text.value);
+            const padding = stringConcat(
+                stringRepeat(filler, Math.floor(needed / stringLength(filler))),
+                stringSlice(filler, 0, needed % stringLength(filler)),
+            );
+            return normal({
+                kind: "string",
+                value: start
+                    ? stringConcat(padding, text.value)
+                    : stringConcat(text.value, padding),
+            });
+        },
+    );
 }
 
 function registerStringTrim(realm: Realm, name: string, where: "start" | "end" | "both"): Value {
-    return realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
-        const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
-        let start = 0;
-        let end = stringLength(text.value);
-        if (where !== "end") {
-            while (start < end && isStringWhitespace(stringCodeUnit(text.value, start))) {
-                const tick = context.tick(loc);
-                if (tick.type === "throw") return tick;
-                start++;
+    return realm.registerBuiltin(
+        realm.stringPrototype,
+        name,
+        0,
+        (receiver, _args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") {
+                return text;
             }
-        }
-        if (where !== "start") {
-            while (end > start && isStringWhitespace(stringCodeUnit(text.value, end - 1))) {
-                const tick = context.tick(loc);
-                if (tick.type === "throw") return tick;
-                end--;
+            let start = 0;
+            let end = stringLength(text.value);
+            if (where !== "end") {
+                while (start < end && isStringWhitespace(stringCodeUnit(text.value, start))) {
+                    const tick = context.tick(loc);
+                    if (tick.type === "throw") {
+                        return tick;
+                    }
+                    start++;
+                }
             }
-        }
-        return normal({ kind: "string", value: stringSlice(text.value, start, end) });
-    });
+            if (where !== "start") {
+                while (end > start && isStringWhitespace(stringCodeUnit(text.value, end - 1))) {
+                    const tick = context.tick(loc);
+                    if (tick.type === "throw") {
+                        return tick;
+                    }
+                    end--;
+                }
+            }
+            return normal({ kind: "string", value: stringSlice(text.value, start, end) });
+        },
+    );
 }
 
 function registerStringRange(realm: Realm, name: "substring" | "substr"): void {
-    realm.registerBuiltin(realm.stringPrototype, name, 2, (receiver, args, context, loc): ValueCompletion => {
-        const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
-        const size = stringLength(text.value);
-        const start = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
-        if (start.type === "throw") return start;
-        const endOrLength: NumberCompletion = args.length < 2 || args[1].kind === "undefined"
-            ? {type: "normal", value: size} : integerArgument(args[1], context, loc);
-        if (endOrLength.type === "throw") return endOrLength;
-        let from = Math.min(Math.max(start.value, 0), size);
-        let to = Math.min(Math.max(endOrLength.value, 0), size);
-        if (name === "substr") {
-            from = sliceIndex(start.value, size);
-            to = Math.min(from + to, size);
-        } else if (from > to) {
-            const saved = from; from = to; to = saved;
-        }
-        for (let i = from; i < to; i++) {
-            const tick = context.tick(loc);
-            if (tick.type === "throw") return tick;
-        }
-        return normal({kind: "string", value: stringSlice(text.value, from, to)});
-    });
+    realm.registerBuiltin(
+        realm.stringPrototype,
+        name,
+        2,
+        (receiver, args, context, loc): ValueCompletion => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") {
+                return text;
+            }
+            const size = stringLength(text.value);
+            const start = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
+            if (start.type === "throw") {
+                return start;
+            }
+            const endOrLength: NumberCompletion =
+                args.length < 2 || args[1].kind === "undefined"
+                    ? { type: "normal", value: size }
+                    : integerArgument(args[1], context, loc);
+            if (endOrLength.type === "throw") {
+                return endOrLength;
+            }
+            let from = Math.min(Math.max(start.value, 0), size);
+            let to = Math.min(Math.max(endOrLength.value, 0), size);
+            if (name === "substr") {
+                from = sliceIndex(start.value, size);
+                to = Math.min(from + to, size);
+            } else if (from > to) {
+                const saved = from;
+                from = to;
+                to = saved;
+            }
+            for (let i = from; i < to; i++) {
+                const tick = context.tick(loc);
+                if (tick.type === "throw") {
+                    return tick;
+                }
+            }
+            return normal({ kind: "string", value: stringSlice(text.value, from, to) });
+        },
+    );
 }
 
 export function registerStringMethods(realm: Realm): void {
     if (realm.profile === "script") {
-        realm.registerBuiltin(realm.stringPrototype, "at", 1, (receiver, args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            if (text.type === "throw") return text;
-            const relative = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
-            if (relative.type === "throw") return relative;
-            const size = stringLength(text.value);
-            const index = relative.value < 0 ? size + relative.value : relative.value;
-            return normal(index < 0 || index >= size ? UNDEFINED : {kind: "string", value: stringUnit(text.value, index)});
-        });
+        realm.registerBuiltin(
+            realm.stringPrototype,
+            "at",
+            1,
+            (receiver, args, context, loc): ValueCompletion => {
+                const text = stringReceiver(receiver, context, loc);
+                if (text.type === "throw") {
+                    return text;
+                }
+                const relative = integerArgument(
+                    args.length === 0 ? UNDEFINED : args[0],
+                    context,
+                    loc,
+                );
+                if (relative.type === "throw") {
+                    return relative;
+                }
+                const size = stringLength(text.value);
+                const index = relative.value < 0 ? size + relative.value : relative.value;
+                return normal(
+                    index < 0 || index >= size
+                        ? UNDEFINED
+                        : { kind: "string", value: stringUnit(text.value, index) },
+                );
+            },
+        );
         registerStringRange(realm, "substring");
         registerStringRange(realm, "substr");
         registerStringPadding(realm, "padStart", true);
         registerStringPadding(realm, "padEnd", false);
-        realm.registerBuiltin(realm.stringPrototype, "repeat", 1, (receiver, args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            if (text.type === "throw") return text;
-            const count = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
-            if (count.type === "throw") return count;
-            if (count.value < 0 || count.value === Infinity)
-                return languageFailure(context.realm, "RangeError", "invalid repeat count", loc);
-            if (count.value === 0 || stringLength(text.value) === 0) return normal({ kind: "string", value: "" });
-            const units = stringLength(text.value) * count.value;
-            for (let i = 0; i < units; i++) {
-                const tick = context.tick(loc);
-                if (tick.type === "throw") return tick;
-            }
-            return normal({ kind: "string", value: stringRepeat(text.value, count.value) });
-        });
-        realm.registerBuiltin(realm.stringPrototype, "codePointAt", 1, (receiver, args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            if (text.type === "throw") return text;
-            const position = integerArgument(args.length === 0 ? UNDEFINED : args[0], context, loc);
-            if (position.type === "throw") return position;
-            const index = position.value;
-            const length = stringLength(text.value);
-            if (index < 0 || index >= length) return normal(UNDEFINED);
-            const first = stringCodeUnit(text.value, index);
-            if (first >= 0xd800 && first <= 0xdbff && index + 1 < length) {
-                const second = stringCodeUnit(text.value, index + 1);
-                if (second >= 0xdc00 && second <= 0xdfff)
-                    return normal({ kind: "number", value: 0x10000 + (first - 0xd800) * 0x400 + second - 0xdc00 });
-            }
-            return normal({ kind: "number", value: first });
-        });
+        realm.registerBuiltin(
+            realm.stringPrototype,
+            "repeat",
+            1,
+            (receiver, args, context, loc): ValueCompletion => {
+                const text = stringReceiver(receiver, context, loc);
+                if (text.type === "throw") {
+                    return text;
+                }
+                const count = integerArgument(
+                    args.length === 0 ? UNDEFINED : args[0],
+                    context,
+                    loc,
+                );
+                if (count.type === "throw") {
+                    return count;
+                }
+                if (count.value < 0 || count.value === Infinity) {
+                    return languageFailure(
+                        context.realm,
+                        "RangeError",
+                        "invalid repeat count",
+                        loc,
+                    );
+                }
+                if (count.value === 0 || stringLength(text.value) === 0) {
+                    return normal({ kind: "string", value: "" });
+                }
+                const units = stringLength(text.value) * count.value;
+                for (let i = 0; i < units; i++) {
+                    const tick = context.tick(loc);
+                    if (tick.type === "throw") {
+                        return tick;
+                    }
+                }
+                return normal({ kind: "string", value: stringRepeat(text.value, count.value) });
+            },
+        );
+        realm.registerBuiltin(
+            realm.stringPrototype,
+            "codePointAt",
+            1,
+            (receiver, args, context, loc): ValueCompletion => {
+                const text = stringReceiver(receiver, context, loc);
+                if (text.type === "throw") {
+                    return text;
+                }
+                const position = integerArgument(
+                    args.length === 0 ? UNDEFINED : args[0],
+                    context,
+                    loc,
+                );
+                if (position.type === "throw") {
+                    return position;
+                }
+                const index = position.value;
+                const length = stringLength(text.value);
+                if (index < 0 || index >= length) {
+                    return normal(UNDEFINED);
+                }
+                const first = stringCodeUnit(text.value, index);
+                if (first >= 0xd800 && first <= 0xdbff && index + 1 < length) {
+                    const second = stringCodeUnit(text.value, index + 1);
+                    if (second >= 0xdc00 && second <= 0xdfff) {
+                        return normal({
+                            kind: "number",
+                            value: 0x10000 + (first - 0xd800) * 0x400 + second - 0xdc00,
+                        });
+                    }
+                }
+                return normal({ kind: "number", value: first });
+            },
+        );
         registerStringTrim(realm, "trim", "both");
         const trimStart = registerStringTrim(realm, "trimStart", "start");
         const trimEnd = registerStringTrim(realm, "trimEnd", "end");
-        realm.stringPrototype.bootstrapDefine("trimLeft", {value: trimStart, writable: true, configurable: true});
-        realm.stringPrototype.bootstrapDefine("trimRight", {value: trimEnd, writable: true, configurable: true});
-        for (const name of ["toLowerCase", "toLocaleLowerCase"]) realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            return text.type === "throw" ? text : normal({ kind: "string", value: stringLowerCase(text.value) });
+        realm.stringPrototype.bootstrapDefine("trimLeft", {
+            value: trimStart,
+            writable: true,
+            configurable: true,
         });
-        for (const name of ["toUpperCase", "toLocaleUpperCase"]) realm.registerBuiltin(realm.stringPrototype, name, 0, (receiver, _args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            return text.type === "throw" ? text : normal({ kind: "string", value: stringUpperCase(text.value) });
+        realm.stringPrototype.bootstrapDefine("trimRight", {
+            value: trimEnd,
+            writable: true,
+            configurable: true,
         });
-        realm.registerBuiltin(realm.stringPrototype, "normalize", 0, (receiver, args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            if (text.type === "throw") return text;
-            let form: NormalizationForm = "NFC";
-            if (args.length !== 0 && args[0].kind !== "undefined") {
-                const primitive = toPrimitive(args[0], "string", context, loc);
-                if (primitive.type === "throw") return primitive;
-                const converted = toString(primitive.value, loc, context.realm);
-                if (converted.type === "throw") return converted;
-                const name = converted.value;
-                if (name !== "NFC" && name !== "NFD" && name !== "NFKC" && name !== "NFKD")
-                    return languageFailure(context.realm, "RangeError", "invalid normalization form", loc);
-                form = name;
-            }
-            return normal({ kind: "string", value: stringNormalize(text.value, form) });
-        });
-        realm.registerBuiltin(realm.stringPrototype, "localeCompare", 1, (receiver, args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            if (text.type === "throw") return text;
-            const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);
-            if (primitive.type === "throw") return primitive;
-            const other = toString(primitive.value, loc, context.realm);
-            if (other.type === "throw") return other;
-            return normal({ kind: "number", value: stringCompare(stringNormalize(text.value, "NFC"), stringNormalize(other.value, "NFC")) });
-        });
-        realm.registerBuiltin(realm.stringPrototype, "concat", 1, (receiver, args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            if (text.type === "throw") return text;
-            const parts: GuestString[] = [text.value];
-            for (const argument of args) {
-                const tick = context.tick(loc);
-                if (tick.type === "throw") return tick;
-                const primitive = toPrimitive(argument, "string", context, loc);
-                if (primitive.type === "throw") return primitive;
-                const converted = toString(primitive.value, loc, context.realm);
-                if (converted.type === "throw") return converted;
-                parts.push(converted.value);
-            }
-            return normal({ kind: "string", value: stringJoin(parts) });
-        });
-        realm.registerBuiltin(realm.stringPrototype, "lastIndexOf", 1, (receiver, args, context, loc): ValueCompletion => {
-            const text = stringReceiver(receiver, context, loc);
-            if (text.type === "throw") return text;
-            const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);
-            if (primitive.type === "throw") return primitive;
-            const search = toString(primitive.value, loc, context.realm);
-            if (search.type === "throw") return search;
-            const positionPrimitive = toPrimitive(args.length < 2 ? UNDEFINED : args[1], "number", context, loc);
-            if (positionPrimitive.type === "throw") return positionPrimitive;
-            const numeric = toNumber(positionPrimitive.value, loc, context.realm);
-            if (numeric.type === "throw") return numeric;
-            const position = toIntegerOrInfinity({ kind: "number", value: Number.isNaN(numeric.value) ? Infinity : numeric.value }, loc, context.realm);
-            if (position.type === "throw") return position;
-            const start = Math.min(Math.max(position.value, 0), stringLength(text.value));
-            return normal({ kind: "number", value: stringLastIndexOf(text.value, search.value, start) });
-        });
+        for (const name of ["toLowerCase", "toLocaleLowerCase"]) {
+            realm.registerBuiltin(
+                realm.stringPrototype,
+                name,
+                0,
+                (receiver, _args, context, loc): ValueCompletion => {
+                    const text = stringReceiver(receiver, context, loc);
+                    return text.type === "throw"
+                        ? text
+                        : normal({ kind: "string", value: stringLowerCase(text.value) });
+                },
+            );
+        }
+        for (const name of ["toUpperCase", "toLocaleUpperCase"]) {
+            realm.registerBuiltin(
+                realm.stringPrototype,
+                name,
+                0,
+                (receiver, _args, context, loc): ValueCompletion => {
+                    const text = stringReceiver(receiver, context, loc);
+                    return text.type === "throw"
+                        ? text
+                        : normal({ kind: "string", value: stringUpperCase(text.value) });
+                },
+            );
+        }
+        realm.registerBuiltin(
+            realm.stringPrototype,
+            "normalize",
+            0,
+            (receiver, args, context, loc): ValueCompletion => {
+                const text = stringReceiver(receiver, context, loc);
+                if (text.type === "throw") {
+                    return text;
+                }
+                let form: NormalizationForm = "NFC";
+                if (args.length !== 0 && args[0].kind !== "undefined") {
+                    const primitive = toPrimitive(args[0], "string", context, loc);
+                    if (primitive.type === "throw") {
+                        return primitive;
+                    }
+                    const converted = toString(primitive.value, loc, context.realm);
+                    if (converted.type === "throw") {
+                        return converted;
+                    }
+                    const name = converted.value;
+                    if (name !== "NFC" && name !== "NFD" && name !== "NFKC" && name !== "NFKD") {
+                        return languageFailure(
+                            context.realm,
+                            "RangeError",
+                            "invalid normalization form",
+                            loc,
+                        );
+                    }
+                    form = name;
+                }
+                return normal({ kind: "string", value: stringNormalize(text.value, form) });
+            },
+        );
+        realm.registerBuiltin(
+            realm.stringPrototype,
+            "localeCompare",
+            1,
+            (receiver, args, context, loc): ValueCompletion => {
+                const text = stringReceiver(receiver, context, loc);
+                if (text.type === "throw") {
+                    return text;
+                }
+                const primitive = toPrimitive(
+                    args.length === 0 ? UNDEFINED : args[0],
+                    "string",
+                    context,
+                    loc,
+                );
+                if (primitive.type === "throw") {
+                    return primitive;
+                }
+                const other = toString(primitive.value, loc, context.realm);
+                if (other.type === "throw") {
+                    return other;
+                }
+                return normal({
+                    kind: "number",
+                    value: stringCompare(
+                        stringNormalize(text.value, "NFC"),
+                        stringNormalize(other.value, "NFC"),
+                    ),
+                });
+            },
+        );
+        realm.registerBuiltin(
+            realm.stringPrototype,
+            "concat",
+            1,
+            (receiver, args, context, loc): ValueCompletion => {
+                const text = stringReceiver(receiver, context, loc);
+                if (text.type === "throw") {
+                    return text;
+                }
+                const parts: GuestString[] = [text.value];
+                for (const argument of args) {
+                    const tick = context.tick(loc);
+                    if (tick.type === "throw") {
+                        return tick;
+                    }
+                    const primitive = toPrimitive(argument, "string", context, loc);
+                    if (primitive.type === "throw") {
+                        return primitive;
+                    }
+                    const converted = toString(primitive.value, loc, context.realm);
+                    if (converted.type === "throw") {
+                        return converted;
+                    }
+                    parts.push(converted.value);
+                }
+                return normal({ kind: "string", value: stringJoin(parts) });
+            },
+        );
+        realm.registerBuiltin(
+            realm.stringPrototype,
+            "lastIndexOf",
+            1,
+            (receiver, args, context, loc): ValueCompletion => {
+                const text = stringReceiver(receiver, context, loc);
+                if (text.type === "throw") {
+                    return text;
+                }
+                const primitive = toPrimitive(
+                    args.length === 0 ? UNDEFINED : args[0],
+                    "string",
+                    context,
+                    loc,
+                );
+                if (primitive.type === "throw") {
+                    return primitive;
+                }
+                const search = toString(primitive.value, loc, context.realm);
+                if (search.type === "throw") {
+                    return search;
+                }
+                const positionPrimitive = toPrimitive(
+                    args.length < 2 ? UNDEFINED : args[1],
+                    "number",
+                    context,
+                    loc,
+                );
+                if (positionPrimitive.type === "throw") {
+                    return positionPrimitive;
+                }
+                const numeric = toNumber(positionPrimitive.value, loc, context.realm);
+                if (numeric.type === "throw") {
+                    return numeric;
+                }
+                const position = toIntegerOrInfinity(
+                    {
+                        kind: "number",
+                        value: Number.isNaN(numeric.value) ? Infinity : numeric.value,
+                    },
+                    loc,
+                    context.realm,
+                );
+                if (position.type === "throw") {
+                    return position;
+                }
+                const start = Math.min(Math.max(position.value, 0), stringLength(text.value));
+                return normal({
+                    kind: "number",
+                    value: stringLastIndexOf(text.value, search.value, start),
+                });
+            },
+        );
     }
     realm.registerBuiltin(realm.stringPrototype, "indexOf", 1, (receiver, args, context, loc) => {
         const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
-        const primitive = toPrimitive(args.length === 0 ? UNDEFINED : args[0], "string", context, loc);
-        if (primitive.type === "throw") return primitive;
+        if (text.type === "throw") {
+            return text;
+        }
+        const primitive = toPrimitive(
+            args.length === 0 ? UNDEFINED : args[0],
+            "string",
+            context,
+            loc,
+        );
+        if (primitive.type === "throw") {
+            return primitive;
+        }
         const search = toString(primitive.value, loc, context.realm);
-        if (search.type === "throw") return search;
+        if (search.type === "throw") {
+            return search;
+        }
         const position = integerArgument(args.length < 2 ? UNDEFINED : args[1], context, loc);
-        if (position.type === "throw") return position;
+        if (position.type === "throw") {
+            return position;
+        }
         const start = Math.min(Math.max(position.value, 0), stringLength(text.value));
         return normal({ kind: "number", value: stringIndexOf(text.value, search.value, start) });
     });
     realm.registerBuiltin(realm.stringPrototype, "charAt", 1, (receiver, args, context, loc) => {
         const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
+        if (text.type === "throw") {
+            return text;
+        }
         const position = integerArgument(args.length > 0 ? args[0] : UNDEFINED, context, loc);
-        if (position.type === "throw") return position;
-        const value = position.value < 0 || position.value >= stringLength(text.value)
-            ? "" : stringUnit(text.value, position.value);
+        if (position.type === "throw") {
+            return position;
+        }
+        const value =
+            position.value < 0 || position.value >= stringLength(text.value)
+                ? ""
+                : stringUnit(text.value, position.value);
         return normal({ kind: "string", value });
     });
-    realm.registerBuiltin(realm.stringPrototype, "charCodeAt", 1, (receiver, args, context, loc) => {
-        const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
-        const position = integerArgument(args.length > 0 ? args[0] : UNDEFINED, context, loc);
-        if (position.type === "throw") return position;
-        const value = position.value < 0 || position.value >= stringLength(text.value)
-            ? NaN : stringCodeUnit(text.value, position.value);
-        return normal({ kind: "number", value });
-    });
+    realm.registerBuiltin(
+        realm.stringPrototype,
+        "charCodeAt",
+        1,
+        (receiver, args, context, loc) => {
+            const text = stringReceiver(receiver, context, loc);
+            if (text.type === "throw") {
+                return text;
+            }
+            const position = integerArgument(args.length > 0 ? args[0] : UNDEFINED, context, loc);
+            if (position.type === "throw") {
+                return position;
+            }
+            const value =
+                position.value < 0 || position.value >= stringLength(text.value)
+                    ? NaN
+                    : stringCodeUnit(text.value, position.value);
+            return normal({ kind: "number", value });
+        },
+    );
     realm.registerBuiltin(realm.stringPrototype, "slice", 2, (receiver, args, context, loc) => {
         const text = stringReceiver(receiver, context, loc);
-        if (text.type === "throw") return text;
+        if (text.type === "throw") {
+            return text;
+        }
         const length = stringLength(text.value);
         const start = integerArgument(args.length > 0 ? args[0] : UNDEFINED, context, loc);
-        if (start.type === "throw") return start;
-        const end: NumberCompletion = args.length < 2 || args[1].kind === "undefined"
-            ? { type: "normal", value: length } : integerArgument(args[1], context, loc);
-        if (end.type === "throw") return end;
-        return normal({ kind: "string", value: stringSlice(text.value, sliceIndex(start.value, length), sliceIndex(end.value, length)) });
+        if (start.type === "throw") {
+            return start;
+        }
+        const end: NumberCompletion =
+            args.length < 2 || args[1].kind === "undefined"
+                ? { type: "normal", value: length }
+                : integerArgument(args[1], context, loc);
+        if (end.type === "throw") {
+            return end;
+        }
+        return normal({
+            kind: "string",
+            value: stringSlice(
+                text.value,
+                sliceIndex(start.value, length),
+                sliceIndex(end.value, length),
+            ),
+        });
     });
 }

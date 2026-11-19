@@ -3,10 +3,14 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { sameValue, type ValueCompletion } from "../src/runtime.js";
 
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function evaluate(text: string, realm: Realm): ValueCompletion {
-    const prepared = prepareBoundedScript({id: "global-this", text}, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    const prepared = prepareBoundedScript({ id: "global-this", text }, realm);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 for (const text of [
@@ -23,14 +27,25 @@ for (const text of [
     "'use strict';Object.defineProperty(this,'globalThis',{writable:false});var caught=false;try{globalThis=1}catch(e){caught=e instanceof TypeError}caught",
 ]) {
     const result = evaluate(text, fresh());
-    if (result.type !== "normal" || !sameValue(result.value, {kind: "boolean", value: true})) throw new Error(text);
+    if (result.type !== "normal" || !sameValue(result.value, { kind: "boolean", value: true })) {
+        throw new Error(text);
+    }
 }
 {
-    const owner = fresh(), caller = fresh();
+    const owner = fresh(),
+        caller = fresh();
     const fn = evaluate("function f(){return globalThis}f", owner);
-    if (fn.type !== "normal") throw new Error("foreign function");
-    caller.defineScriptGlobal("foreign", {value: fn.value});
+    if (fn.type !== "normal") {
+        throw new Error("foreign function");
+    }
+    caller.defineScriptGlobal("foreign", { value: fn.value });
     const result = evaluate("foreign()", caller);
-    if (result.type !== "normal" || !sameValue(result.value, owner.globalThisValue) || sameValue(result.value, caller.globalThisValue)) throw new Error("globalThis Realm");
+    if (
+        result.type !== "normal" ||
+        !sameValue(result.value, owner.globalThisValue) ||
+        sameValue(result.value, caller.globalThisValue)
+    ) {
+        throw new Error("globalThis Realm");
+    }
 }
 console.log("Global this passed");

@@ -10,14 +10,24 @@ import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
 import { Realm } from "../src/realm.js";
 import {
-    GuestObject, UNDEFINED, failure, normal, sameValue,
-    type Builtin, type Completion, type InternalBooleanCompletion,
-    type OperationContext, type Value, type ValueCompletion,
+    GuestObject,
+    UNDEFINED,
+    failure,
+    normal,
+    sameValue,
+    type Builtin,
+    type Completion,
+    type InternalBooleanCompletion,
+    type OperationContext,
+    type Value,
+    type ValueCompletion,
 } from "../src/runtime.js";
 import type { Location } from "../src/syntax.js";
 
 function check(ok: boolean, message: string): void {
-    if (!ok) throw new Error(message);
+    if (!ok) {
+        throw new Error(message);
+    }
 }
 const loc: Location = { line: 71, column: 9 };
 const sentinel = failure("Sentinel", "original", loc);
@@ -30,16 +40,28 @@ function num(value: number): Value {
     return { kind: "number", value };
 }
 function put(object: GuestObject, key: string, value: Value): void {
-    object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true });
+    object.bootstrapDefine(key, {
+        value: value,
+        writable: true,
+        enumerable: true,
+        configurable: true,
+    });
 }
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
+    const object = new GuestObject(null, false, {
+        kind: "builtin",
+        initialName: null,
+        realm,
+        invoke,
+    });
     return obj(object);
 }
 function error(completion: Completion, name: string, at: Location = loc): void {
     check(
-        completion.type === "throw" && completion.diagnostic.phase === "runtime" &&
-        completion.diagnostic.name === name && completion.diagnostic.loc === at,
+        completion.type === "throw" &&
+            completion.diagnostic.phase === "runtime" &&
+            completion.diagnostic.name === name &&
+            completion.diagnostic.loc === at,
         "error phase/name/location " + name,
     );
 }
@@ -50,9 +72,13 @@ function result(completion: Completion, length: number, expectedRealm: Realm = r
     const object = completion.value.object;
     const descriptor = object.getOwnProperty("length");
     check(
-        object instanceof GuestArray && descriptor !== undefined && descriptor.kind === "data" &&
-        sameValue(descriptor.value, num(length)) && descriptor.writable &&
-        !descriptor.enumerable && !descriptor.configurable,
+        object instanceof GuestArray &&
+            descriptor !== undefined &&
+            descriptor.kind === "data" &&
+            sameValue(descriptor.value, num(length)) &&
+            descriptor.writable &&
+            !descriptor.enumerable &&
+            !descriptor.configurable,
         "result array length/flags",
     );
     check(object.getPrototypeOf() === expectedRealm.arrayPrototype, "result Realm array prototype");
@@ -61,8 +87,12 @@ function result(completion: Completion, length: number, expectedRealm: Realm = r
 function element(object: GuestObject, key: string, value: Value): void {
     const descriptor = object.getOwnProperty(key);
     check(
-        descriptor !== undefined && descriptor.kind === "data" && sameValue(descriptor.value, value) &&
-        descriptor.writable && descriptor.enumerable && descriptor.configurable,
+        descriptor !== undefined &&
+            descriptor.kind === "data" &&
+            sameValue(descriptor.value, value) &&
+            descriptor.writable &&
+            descriptor.enumerable &&
+            descriptor.configurable,
         "own element " + formatPropertyKey(key),
     );
 }
@@ -74,9 +104,17 @@ function hole(object: GuestObject, key: string): void {
 class Traced extends GuestObject {
     failGet = "";
     failHas = "";
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         trace.push("Get " + formatPropertyKey(key));
-        check(receiver.kind === "object" && receiver.object === this && at === loc, "Get receiver/location");
+        check(
+            receiver.kind === "object" && receiver.object === this && at === loc,
+            "Get receiver/location",
+        );
         return key === this.failGet ? sentinel : super.internalGet(key, receiver, context, at);
     }
     internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
@@ -87,10 +125,20 @@ class Traced extends GuestObject {
 }
 class TracedArray extends GuestArray {
     failConstructor = false;
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         trace.push("Get " + formatPropertyKey(key));
-        check(receiver.kind === "object" && receiver.object === this && at === loc, "array receiver/location");
-        return key === "constructor" && this.failConstructor ? sentinel : super.internalGet(key, receiver, context, at);
+        check(
+            receiver.kind === "object" && receiver.object === this && at === loc,
+            "array receiver/location",
+        );
+        return key === "constructor" && this.failConstructor
+            ? sentinel
+            : super.internalGet(key, receiver, context, at);
     }
 }
 function traceIs(expected: string): void {
@@ -102,26 +150,40 @@ function traceIs(expected: string): void {
 const fault = new Error("host fault");
 let outputFault = false;
 const realm = new Realm((_line) => {
-    if (outputFault) throw fault;
+    if (outputFault) {
+        throw fault;
+    }
 });
 const host = new GuestObject();
 realm.global.bindings.set("host", { initialized: true, mutable: true, value: obj(host) });
 const contexts: OperationContext[] = [];
-const adapter = realm.registerBuiltin(host, "__testMapObjectDefaultArray", 3, (_receiver, args, context, at) => {
-    const input = args[0] ?? UNDEFINED;
-    if (input.kind !== "object") return failure("TypeError", "object-only test map entry", at);
-    return mapObject(input.object, args[1] ?? UNDEFINED, args[2] ?? UNDEFINED, context, at);
-});
+const adapter = realm.registerBuiltin(
+    host,
+    "__testMapObjectDefaultArray",
+    3,
+    (_receiver, args, context, at) => {
+        const input = args[0] ?? UNDEFINED;
+        if (input.kind !== "object") {
+            return failure("TypeError", "object-only test map entry", at);
+        }
+        return mapObject(input.object, args[1] ?? UNDEFINED, args[2] ?? UNDEFINED, context, at);
+    },
+);
 function program(source: string, evaluator: Evaluator): Completion {
     const parsed = parse(source);
     check(parsed.error === null, "fixture parse");
     return evaluator.block(parsed.body, realm.global, UNDEFINED);
 }
 const setup = new Evaluator(realm);
-check(program(readFileSync("test/fixtures/array-map/callbacks.js", "utf8"), setup).type === "normal", "fixture setup");
+check(
+    program(readFileSync("test/fixtures/array-map/callbacks.js", "utf8"), setup).type === "normal",
+    "fixture setup",
+);
 function binding(name: string): Value {
     const entry = realm.global.bindings.get(name);
-    if (entry === undefined) throw new Error(name);
+    if (entry === undefined) {
+        throw new Error(name);
+    }
     return entry.value;
 }
 const identity = binding("identity");
@@ -141,7 +203,9 @@ function ordinary(length: Value): GuestObject {
 
 // Entry validation rejects every representable primitive, including omission.
 for (const primitive of [
-    UNDEFINED, { kind: "null" } as const, num(1),
+    UNDEFINED,
+    { kind: "null" } as const,
+    num(1),
     { kind: "boolean", value: true } as const,
     { kind: "string", value: "abc" } as const,
 ]) {
@@ -156,7 +220,10 @@ check(map(lengthInput, UNDEFINED) === sentinel, "length exact throw");
 traceIs("Get length");
 lengthInput.failGet = "";
 for (const length of [
-    obj(new GuestObject()), UNDEFINED, num(-1), num(NaN),
+    obj(new GuestObject()),
+    UNDEFINED,
+    num(-1),
+    num(NaN),
     { kind: "string", value: "0" } as const,
 ]) {
     put(lengthInput, "length", length);
@@ -238,9 +305,12 @@ sparse.setPrototypeOf(elementPrototype);
 let visits = 0;
 const observe = builtin(realm, (_receiver, args, _context, at) => {
     check(
-        at === loc && args.length === 3 && args[1].kind === "number" &&
-        args[1].value === (visits === 0 ? 0 : 2) &&
-        args[2].kind === "object" && args[2].object === sparse,
+        at === loc &&
+            args.length === 3 &&
+            args[1].kind === "number" &&
+            args[1].value === (visits === 0 ? 0 : 2) &&
+            args[2].kind === "object" &&
+            args[2].object === sparse,
         "sparse args",
     );
     visits++;
@@ -312,7 +382,8 @@ for (const receiver of [obj(new GuestObject()), num(4), { kind: "null" } as cons
 }
 element(
     result(setup.call(adapter, UNDEFINED, [obj(singleElement), binding("receiver")], loc), 1),
-    "0", UNDEFINED,
+    "0",
+    UNDEFINED,
 );
 
 // Retained lexical state survives runs while callbacks use the current context.
@@ -320,9 +391,12 @@ let observed = 0;
 realm.registerBuiltin(host, "observe", 5, (_receiver, args, context, _at) => {
     observed++;
     check(
-        args[0] === singleElement.get("0", sparseBudget.context, loc) && sameValue(args[1], num(0)) &&
-        args[2].kind === "object" && args[2].object === singleElement &&
-        args[3] === UNDEFINED && sameValue(args[4], num(observed)),
+        args[0] === singleElement.get("0", sparseBudget.context, loc) &&
+            sameValue(args[1], num(0)) &&
+            args[2].kind === "object" &&
+            args[2].object === singleElement &&
+            args[3] === UNDEFINED &&
+            sameValue(args[4], num(observed)),
         "guest retained closure args",
     );
     contexts.push(context);
@@ -334,8 +408,10 @@ const firstResult = result(map(singleElement, binding("saved"), UNDEFINED, first
 const secondResult = result(map(singleElement, binding("saved"), UNDEFINED, secondRun), 1);
 element(firstResult, "0", singleElement.get("0", secondRun.context, loc));
 check(
-    firstResult !== secondResult && observed === 2 &&
-    contexts[0] === firstRun.context && contexts[1] === secondRun.context,
+    firstResult !== secondResult &&
+        observed === 2 &&
+        contexts[0] === firstRun.context &&
+        contexts[1] === secondRun.context,
     "current run retained closure",
 );
 put(firstResult, "0", num(99));
@@ -359,8 +435,10 @@ for (const boundary of ["Has", "Get"]) {
     throwing.failGet = boundary === "Get" ? "1" : "";
     const abrupt = map(throwing, tracedCallback);
     check(
-        abrupt === sentinel && abrupt.value === sentinel.value &&
-        abrupt.diagnostic === sentinel.diagnostic && effects === 1,
+        abrupt === sentinel &&
+            abrupt.value === sentinel.value &&
+            abrupt.diagnostic === sentinel.diagnostic &&
+            effects === 1,
         "exact boundary abrupt",
     );
     traceIs("Get length,Has 0,Get 0,Call,Has 1" + (boundary === "Get" ? ",Get 1" : ""));
@@ -376,9 +454,12 @@ realm.registerBuiltin(host, "effect", 1, (_receiver, args, _context, _at) => {
 });
 const thrown = map(throwing, binding("throwing"));
 check(
-    thrown.type === "throw" && thrown.value === host.get("sentinel", secondRun.context, loc) &&
-    thrown.diagnostic.phase === "runtime" && thrown.diagnostic.name === "Uncaught" &&
-    thrown.diagnostic.loc.line === 50 && thrown.diagnostic.loc.column === 9,
+    thrown.type === "throw" &&
+        thrown.value === host.get("sentinel", secondRun.context, loc) &&
+        thrown.diagnostic.phase === "runtime" &&
+        thrown.diagnostic.name === "Uncaught" &&
+        thrown.diagnostic.loc.line === 50 &&
+        thrown.diagnostic.loc.column === 9,
     "guest throw value/location",
 );
 traceIs("Get length,Has 0,Get 0,Effect 0,Has 1,Get 1,Effect 1");
@@ -397,7 +478,10 @@ for (let i = 0; i < 5; i++) {
 }
 const builtinBudget = new Evaluator(realm, 3);
 error(map(dense, constant, UNDEFINED, builtinBudget), "RangeError");
-check(constants === 3 && builtinBudget.steps === 4 && builtinBudget.calls === 0, "builtin loop bounded");
+check(
+    constants === 3 && builtinBudget.steps === 4 && builtinBudget.calls === 0,
+    "builtin loop bounded",
+);
 
 // Reentrant maps share ticks: outer index 0, inner holes 0/1, then exhaustion.
 const inner = new Traced();
@@ -409,16 +493,21 @@ const reenter = builtin(realm, (_receiver, _args, context, at) => {
 });
 error(map(dense, reenter, UNDEFINED, nestedBudget), "RangeError");
 traceIs("Get length,Has 0,Has 1");
-check(nestedBudget.steps === 4 && nestedBudget.calls === 0 && constants === 3, "nested exact ticks");
+check(
+    nestedBudget.steps === 4 && nestedBudget.calls === 0 && constants === 3,
+    "nested exact ticks",
+);
 
 // Guest reentry also shares the active call-depth limit.
 put(host, "input", obj(singleElement));
 const recursiveBudget = new Evaluator(realm, 1000, 4);
 const recursion = map(singleElement, binding("recursive"), UNDEFINED, recursiveBudget);
 check(
-    recursion.type === "throw" && recursion.diagnostic.phase === "runtime" &&
-    recursion.diagnostic.name === "RangeError" && recursion.diagnostic.loc.line === 56 &&
-    recursiveBudget.calls === 0,
+    recursion.type === "throw" &&
+        recursion.diagnostic.phase === "runtime" &&
+        recursion.diagnostic.name === "RangeError" &&
+        recursion.diagnostic.loc.line === 56 &&
+        recursiveBudget.calls === 0,
     "recursive map call limit",
 );
 
@@ -426,19 +515,30 @@ check(
 for (const kind of ["fault", "return", "break", "continue", "output"]) {
     const faultEvaluator = new Evaluator(realm);
     let escaped = false;
-    const faultCallback = kind === "output" ? binding("output") : builtin(realm, (_receiver, _args, _context, _at): Completion => {
-        if (kind === "fault") throw fault;
-        if (kind === "return") return { type: "return", value: UNDEFINED };
-        if (kind === "break") return { type: "break", value: UNDEFINED };
-        return { type: "continue", value: UNDEFINED };
-    });
+    const faultCallback =
+        kind === "output"
+            ? binding("output")
+            : builtin(realm, (_receiver, _args, _context, _at): Completion => {
+                  if (kind === "fault") {
+                      throw fault;
+                  }
+                  if (kind === "return") {
+                      return { type: "return", value: UNDEFINED };
+                  }
+                  if (kind === "break") {
+                      return { type: "break", value: UNDEFINED };
+                  }
+                  return { type: "continue", value: UNDEFINED };
+              });
     outputFault = kind === "output";
     try {
         map(singleElement, faultCallback, UNDEFINED, faultEvaluator);
     } catch (caught) {
-        escaped = caught instanceof Error && (kind === "fault" || kind === "output"
-            ? caught === fault
-            : caught.message === "invalid completion escaped call boundary: " + kind);
+        escaped =
+            caught instanceof Error &&
+            (kind === "fault" || kind === "output"
+                ? caught === fault
+                : caught.message === "invalid completion escaped call boundary: " + kind);
     }
     check(escaped && faultEvaluator.calls === 0, "map host fault cleanup " + kind);
     outputFault = false;
@@ -456,11 +556,25 @@ const otherCallback = builtin(otherRealm, (_receiver, args, context, _at) => {
 const otherResult = result(map(singleElement, otherCallback, UNDEFINED, otherEvaluator), 1, realm);
 const foreignCallbackEvaluator = new Evaluator(realm);
 expectedOtherContext = foreignCallbackEvaluator.context;
-const foreignCallbackResult = foreignCallbackEvaluator.call(otherCallback, UNDEFINED, [singleElement.get("0", foreignCallbackEvaluator.context, loc)], loc);
-check(foreignCallbackResult.type === "normal" && foreignCallbackResult.value === singleElement.get("0", foreignCallbackEvaluator.context, loc) && foreignCallbackEvaluator.context.realm === realm, "explicit callback owner from foreign evaluator");
+const foreignCallbackResult = foreignCallbackEvaluator.call(
+    otherCallback,
+    UNDEFINED,
+    [singleElement.get("0", foreignCallbackEvaluator.context, loc)],
+    loc,
+);
+check(
+    foreignCallbackResult.type === "normal" &&
+        foreignCallbackResult.value ===
+            singleElement.get("0", foreignCallbackEvaluator.context, loc) &&
+        foreignCallbackEvaluator.context.realm === realm,
+    "explicit callback owner from foreign evaluator",
+);
 put(otherResult, "0", num(8));
 element(secondResult, "0", singleElement.get("0", foreignCallbackEvaluator.context, loc));
-check(!otherRealm.global.bindings.has("host") && firstRun.context !== otherEvaluator.context, "realm independent storage/registration");
+check(
+    !otherRealm.global.bindings.has("host") && firstRun.context !== otherEvaluator.context,
+    "realm independent storage/registration",
+);
 
 // Same-name errors still identify the earlier no-method conversion boundary.
 const absentLength = new Traced();
@@ -469,19 +583,29 @@ traceIs("Get length");
 put(absentLength, "length", obj(new GuestObject()));
 const conversionError = map(absentLength, UNDEFINED);
 check(
-    conversionError.type === "throw" && conversionError.diagnostic.message === "cannot convert object to primitive",
+    conversionError.type === "throw" &&
+        conversionError.diagnostic.message === "cannot convert object to primitive",
     "conversion error precedes callback validation",
 );
 traceIs("Get length");
 const convertibleLength = new GuestObject();
 let lengthHooks = 0;
-put(convertibleLength, "valueOf", builtin(realm, (_receiver, _args, _context, _at) => {
-    lengthHooks++;
-    return normal(num(0));
-}));
+put(
+    convertibleLength,
+    "valueOf",
+    builtin(realm, (_receiver, _args, _context, _at) => {
+        lengthHooks++;
+        return normal(num(0));
+    }),
+);
 put(absentLength, "length", obj(convertibleLength));
 const callbackError = map(absentLength, UNDEFINED);
-check(callbackError.type === "throw" && callbackError.diagnostic.message === "map callback is not callable" && lengthHooks === 1, "successful length conversion precedes callback failure");
+check(
+    callbackError.type === "throw" &&
+        callbackError.diagnostic.message === "map callback is not callable" &&
+        lengthHooks === 1,
+    "successful length conversion precedes callback failure",
+);
 traceIs("Get length");
 const inheritedUndefined = ordinary(num(1));
 const undefinedPrototype = new GuestObject();
@@ -497,8 +621,11 @@ const captureGuest = builtin(realm, (receiver, args, context, at) => {
 });
 const exactGuest = map(throwing, captureGuest);
 check(
-    exactGuest === captured && exactGuest.type === "throw" && captured.type === "throw" &&
-    exactGuest.value === captured.value && exactGuest.diagnostic === captured.diagnostic,
+    exactGuest === captured &&
+        exactGuest.type === "throw" &&
+        captured.type === "throw" &&
+        exactGuest.value === captured.value &&
+        exactGuest.diagnostic === captured.diagnostic,
     "exact guest throw record/diagnostic",
 );
 traceIs("Get length,Has 0,Get 0,Effect 0,Has 1,Get 1,Effect 1");
@@ -535,41 +662,95 @@ put(sourceGeneric, "length", num(3));
 put(sourceGeneric, "0", savedElement);
 put(sourceGeneric, "2", num(12));
 for (const input of [sourceArray, sourceGeneric]) {
-    const mapped = result(mapObject(input, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm);
-    check(mapped.getPrototypeOf() === resultRealm.arrayPrototype, "G12 supplied context result prototype");
-    check(mapped.get("0", resultActive.context, loc) === savedElement && mapped.get("2", resultActive.context, loc) === input.get("2", resultActive.context, loc), "G12 exact returned Values");
+    const mapped = result(
+        mapObject(input, identity, UNDEFINED, resultActive.context, loc),
+        3,
+        resultRealm,
+    );
+    check(
+        mapped.getPrototypeOf() === resultRealm.arrayPrototype,
+        "G12 supplied context result prototype",
+    );
+    check(
+        mapped.get("0", resultActive.context, loc) === savedElement &&
+            mapped.get("2", resultActive.context, loc) ===
+                input.get("2", resultActive.context, loc),
+        "G12 exact returned Values",
+    );
     hole(mapped, "1");
 }
-check(sourceArray.getPrototypeOf() === sourceRealm.arrayPrototype && sourceGeneric.getPrototypeOf() === sourceRealm.objectPrototype, "G12 input chains unchanged");
+check(
+    sourceArray.getPrototypeOf() === sourceRealm.arrayPrototype &&
+        sourceGeneric.getPrototypeOf() === sourceRealm.objectPrototype,
+    "G12 input chains unchanged",
+);
 // G13 extends the existing traced ordering tests to inherited Realm roots.
-for (const constructorValue of [UNDEFINED, { kind: "null" } as const, num(7), obj(sourceRealm.createObject())]) {
+for (const constructorValue of [
+    UNDEFINED,
+    { kind: "null" } as const,
+    num(7),
+    obj(sourceRealm.createObject()),
+]) {
     put(sourceRealm.arrayPrototype, "constructor", constructorValue);
     const mapped = mapObject(sourceArray, identity, UNDEFINED, resultActive.context, loc);
     if (constructorValue.kind === "undefined") {
-        check(result(mapped, 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype, "G13 inherited undefined constructor");
+        check(
+            result(mapped, 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype,
+            "G13 inherited undefined constructor",
+        );
     } else {
-        check(mapped.type === "throw" && mapped.diagnostic.name === "TypeError" && mapped.diagnostic.message === "unsupported map constructor/species" && mapped.diagnostic.loc === loc, "G13 exact inherited species rejection");
+        check(
+            mapped.type === "throw" &&
+                mapped.diagnostic.name === "TypeError" &&
+                mapped.diagnostic.message === "unsupported map constructor/species" &&
+                mapped.diagnostic.loc === loc,
+            "G13 exact inherited species rejection",
+        );
     }
 }
 check(sourceRealm.arrayPrototype.internalDelete("constructor").type === "normal", "G13 cleanup");
 put(sourceGeneric, "constructor", num(7));
-check(result(mapObject(sourceGeneric, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype, "G13 generic ignores constructor");
+check(
+    result(
+        mapObject(sourceGeneric, identity, UNDEFINED, resultActive.context, loc),
+        3,
+        resultRealm,
+    ).getPrototypeOf() === resultRealm.arrayPrototype,
+    "G13 generic ignores constructor",
+);
 const holeProgram = parse("let inheritedHoles = [,,];");
 check(holeProgram.error === null, "G16 literal parse");
 const holeActive = new Evaluator(sourceRealm);
-check(holeActive.block(holeProgram.body, sourceRealm.global, UNDEFINED).type === "normal", "G16 literal execute");
+check(
+    holeActive.block(holeProgram.body, sourceRealm.global, UNDEFINED).type === "normal",
+    "G16 literal execute",
+);
 const holesBinding = sourceRealm.global.bindings.get("inheritedHoles");
-if (holesBinding === undefined || holesBinding.value.kind !== "object") throw new Error("G16 literal binding");
+if (holesBinding === undefined || holesBinding.value.kind !== "object") {
+    throw new Error("G16 literal binding");
+}
 const inheritedHoles = holesBinding.value.object;
 put(sourceRealm.arrayPrototype, "1", num(8));
 hole(inheritedHoles, "0");
 hole(inheritedHoles, "1");
-check(sameValue(inheritedHoles.get("1", holeActive.context, loc), num(8)), "G16 inherited index read");
-const inheritedResult = result(mapObject(inheritedHoles, identity, UNDEFINED, resultActive.context, loc), 2, resultRealm);
+check(
+    sameValue(inheritedHoles.get("1", holeActive.context, loc), num(8)),
+    "G16 inherited index read",
+);
+const inheritedResult = result(
+    mapObject(inheritedHoles, identity, UNDEFINED, resultActive.context, loc),
+    2,
+    resultRealm,
+);
 check(inheritedResult.getPrototypeOf() === resultRealm.arrayPrototype, "G16 result Realm");
 element(inheritedResult, "1", num(8));
 hole(inheritedResult, "0");
-check(sourceRealm.arrayPrototype.internalDelete("1").type === "normal" && inheritedHoles.get("1", resultActive.context, loc).kind === "undefined" && resultRealm.arrayPrototype.get("1", resultActive.context, loc).kind === "undefined", "G16 deletion/isolation");
+check(
+    sourceRealm.arrayPrototype.internalDelete("1").type === "normal" &&
+        inheritedHoles.get("1", resultActive.context, loc).kind === "undefined" &&
+        resultRealm.arrayPrototype.get("1", resultActive.context, loc).kind === "undefined",
+    "G16 deletion/isolation",
+);
 check(resultActive.calls === 0 && holeActive.calls === 0, "G15 map call cleanup");
 
 // R17/R18: helper allocation uses its supplied active Realm; callbacks enter C.
@@ -591,16 +772,41 @@ put(sparseB, "2", lastElement);
 const callbackReceiver = obj(mapA.createObject());
 const callbackIndices: number[] = [];
 const identityC = builtin(mapC, (receiver, args, context, at) => {
-    check(context === mapEntry.context && context.realm === mapC && at === loc, "R17 C callback stable context");
-    check(receiver === callbackReceiver && args.length === 3 && args[2].kind === "object" && args[2].object === sparseB, "R17 exact receiver/input");
-    if (args[1].kind !== "number") throw new Error("R17 index");
+    check(
+        context === mapEntry.context && context.realm === mapC && at === loc,
+        "R17 C callback stable context",
+    );
+    check(
+        receiver === callbackReceiver &&
+            args.length === 3 &&
+            args[2].kind === "object" &&
+            args[2].object === sparseB,
+        "R17 exact receiver/input",
+    );
+    if (args[1].kind !== "number") {
+        throw new Error("R17 index");
+    }
     callbackIndices.push(args[1].value);
     return normal(args[0]);
 });
-const directA = result(mapObject(sparseB, identityC, callbackReceiver, mapEntry.context, loc), 3, mapA);
-check(directA.get("0", mapEntry.context, loc) === firstElement && directA.get("2", mapEntry.context, loc) === lastElement && callbackIndices.join(",") === "0,2", "R17 values and indices");
+const directA = result(
+    mapObject(sparseB, identityC, callbackReceiver, mapEntry.context, loc),
+    3,
+    mapA,
+);
+check(
+    directA.get("0", mapEntry.context, loc) === firstElement &&
+        directA.get("2", mapEntry.context, loc) === lastElement &&
+        callbackIndices.join(",") === "0,2",
+    "R17 values and indices",
+);
 hole(directA, "1");
-check(sparseB.getPrototypeOf() === mapB.arrayPrototype && mapEntry.context.realm === mapA && mapEntry.calls === 0, "R17 input and restoration");
+check(
+    sparseB.getPrototypeOf() === mapB.arrayPrototype &&
+        mapEntry.context.realm === mapA &&
+        mapEntry.calls === 0,
+    "R17 input and restoration",
+);
 class MapInput extends GuestObject {
     override internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
         check(mapEntry.context.realm === mapB, "R18 restored B between callbacks");
@@ -612,16 +818,39 @@ put(genericA, "0", firstElement);
 put(genericA, "1", lastElement);
 const lengthA = mapA.createObject();
 const mapTrace: string[] = [];
-put(lengthA, "valueOf", builtin(mapA, (receiver, args, context, at) => {
-    check(context === mapEntry.context && context.realm === mapA && at === loc && args.length === 0 && receiver.kind === "object" && receiver.object === lengthA, "R18 A length hook");
-    mapTrace.push("A length");
-    return normal(num(2));
-}));
+put(
+    lengthA,
+    "valueOf",
+    builtin(mapA, (receiver, args, context, at) => {
+        check(
+            context === mapEntry.context &&
+                context.realm === mapA &&
+                at === loc &&
+                args.length === 0 &&
+                receiver.kind === "object" &&
+                receiver.object === lengthA,
+            "R18 A length hook",
+        );
+        mapTrace.push("A length");
+        return normal(num(2));
+    }),
+);
 put(genericA, "length", obj(lengthA));
 const callbackResults: Value[] = [];
 const allocateC = builtin(mapC, (receiver, args, context, at) => {
-    check(context === mapEntry.context && context.realm === mapC && at === loc && receiver === callbackReceiver, "R18 C allocation callback");
-    check(args[2].kind === "object" && args[2].object === genericA && sameValue(args[1], num(callbackResults.length)), "R18 input/index");
+    check(
+        context === mapEntry.context &&
+            context.realm === mapC &&
+            at === loc &&
+            receiver === callbackReceiver,
+        "R18 C allocation callback",
+    );
+    check(
+        args[2].kind === "object" &&
+            args[2].object === genericA &&
+            sameValue(args[1], num(callbackResults.length)),
+        "R18 input/index",
+    );
     mapTrace.push("C callback");
     const allocated = obj(context.realm.createObject());
     callbackResults.push(allocated);
@@ -634,18 +863,38 @@ const mapInB = builtin(mapB, (_receiver, _args, context, at) => {
     return mapped;
 });
 const allocatedB = result(mapEntry.call(mapInB, UNDEFINED, [], loc), 2, mapB);
-check(allocatedB.get("0", mapEntry.context, loc) === callbackResults[0] && allocatedB.get("1", mapEntry.context, loc) === callbackResults[1], "R18 exact callback Values");
+check(
+    allocatedB.get("0", mapEntry.context, loc) === callbackResults[0] &&
+        allocatedB.get("1", mapEntry.context, loc) === callbackResults[1],
+    "R18 exact callback Values",
+);
 for (const value of callbackResults) {
-    check(value.kind === "object" && value.object.getPrototypeOf() === mapC.objectPrototype, "R18 C element prototype");
+    check(
+        value.kind === "object" && value.object.getPrototypeOf() === mapC.objectPrototype,
+        "R18 C element prototype",
+    );
 }
-check(mapTrace.join(",") === "A length,C callback,C callback" && mapEntry.context.realm === mapA && mapEntry.calls === 0 && mapEntry.depth === 0, "R18 ordering and restoration");
+check(
+    mapTrace.join(",") === "A length,C callback,C callback" &&
+        mapEntry.context.realm === mapA &&
+        mapEntry.calls === 0 &&
+        mapEntry.depth === 0,
+    "R18 ordering and restoration",
+);
 
 // W16: String objects are explicit array-like inputs, never implicit boxes.
 class ObservedString extends GuestStringObject {
     reads: string[] = [];
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         this.reads.push(formatPropertyKey(key));
-        if (key === "constructor") throw new Error("W16 String constructor read");
+        if (key === "constructor") {
+            throw new Error("W16 String constructor read");
+        }
         return super.internalGet(key, receiver, context, at);
     }
 }
@@ -656,35 +905,88 @@ stringInput.reads = [];
 const stringReceiver = obj(mapC.createObject());
 let stringVisits = 0;
 const stringCallback = builtin(mapC, (receiver, args, context, at) => {
-    check(receiver === stringReceiver && context.realm === mapC && at === loc, "W16 callback receiver/Realm/location");
-    check(args.length === 3 && args[2].kind === "object" && args[2].object === stringInput, "W16 exact input argument");
-    check(sameValue(args[1], num(stringVisits)) && sameValue(args[0], { kind: "string", value: stringVisits === 0 ? "a" : "b" }), "W16 callback unit/index");
+    check(
+        receiver === stringReceiver && context.realm === mapC && at === loc,
+        "W16 callback receiver/Realm/location",
+    );
+    check(
+        args.length === 3 && args[2].kind === "object" && args[2].object === stringInput,
+        "W16 exact input argument",
+    );
+    check(
+        sameValue(args[1], num(stringVisits)) &&
+            sameValue(args[0], { kind: "string", value: stringVisits === 0 ? "a" : "b" }),
+        "W16 callback unit/index",
+    );
     stringVisits++;
     return normal(args[0]);
 });
-const stringMapped = result(mapObject(stringInput, stringCallback, stringReceiver, mapEntry.context, loc), 2, mapA);
+const stringMapped = result(
+    mapObject(stringInput, stringCallback, stringReceiver, mapEntry.context, loc),
+    2,
+    mapA,
+);
 element(stringMapped, "0", { kind: "string", value: "a" });
 element(stringMapped, "1", { kind: "string", value: "b" });
-check(stringVisits === 2 && stringInput.reads.join(",") === "length,0,1" && mapEntry.context.realm === mapA, "W16 visits/read order/restoration");
+check(
+    stringVisits === 2 &&
+        stringInput.reads.join(",") === "length,0,1" &&
+        mapEntry.context.realm === mapA,
+    "W16 visits/read order/restoration",
+);
 
 const symbolElement: Value = { kind: "symbol", value: new GuestSymbol("element") };
 const symbolMapRealm = new Realm((_line) => {});
 const symbolMapEvaluator = new Evaluator(symbolMapRealm);
 const symbolInput = symbolMapRealm.createObject();
 put(symbolInput, "length", symbolElement);
-const symbolBadLength = mapObject(symbolInput, symbolElement, UNDEFINED, symbolMapEvaluator.context, loc);
-check(symbolBadLength.type === "throw" && symbolBadLength.diagnostic.message === "cannot convert symbol to number" && symbolBadLength.diagnostic.loc === loc, "A23 length before callback validation");
+const symbolBadLength = mapObject(
+    symbolInput,
+    symbolElement,
+    UNDEFINED,
+    symbolMapEvaluator.context,
+    loc,
+);
+check(
+    symbolBadLength.type === "throw" &&
+        symbolBadLength.diagnostic.message === "cannot convert symbol to number" &&
+        symbolBadLength.diagnostic.loc === loc,
+    "A23 length before callback validation",
+);
 put(symbolInput, "length", num(1));
 put(symbolInput, "0", symbolElement);
-const symbolBadCallback = mapObject(symbolInput, symbolElement, UNDEFINED, symbolMapEvaluator.context, loc);
-check(symbolBadCallback.type === "throw" && symbolBadCallback.diagnostic.message === "map callback is not callable" && symbolBadCallback.diagnostic.loc === loc, "A23 symbol callback rejected after length");
+const symbolBadCallback = mapObject(
+    symbolInput,
+    symbolElement,
+    UNDEFINED,
+    symbolMapEvaluator.context,
+    loc,
+);
+check(
+    symbolBadCallback.type === "throw" &&
+        symbolBadCallback.diagnostic.message === "map callback is not callable" &&
+        symbolBadCallback.diagnostic.loc === loc,
+    "A23 symbol callback rejected after length",
+);
 let symbolVisits = 0;
 const symbolCallback = builtin(symbolMapRealm, (_receiver, args, _context, _at) => {
     symbolVisits++;
     check(args[0] === symbolElement, "A23 callback exact symbol carrier");
     return normal(args[0]);
 });
-const symbolMapped = mapObject(symbolInput, symbolCallback, UNDEFINED, symbolMapEvaluator.context, loc);
-check(symbolMapped.type === "normal" && symbolMapped.value.kind === "object" && symbolMapped.value.object.get("0", symbolMapEvaluator.context, loc) === symbolElement && symbolVisits === 1, "A23 symbol element preserved");
+const symbolMapped = mapObject(
+    symbolInput,
+    symbolCallback,
+    UNDEFINED,
+    symbolMapEvaluator.context,
+    loc,
+);
+check(
+    symbolMapped.type === "normal" &&
+        symbolMapped.value.kind === "object" &&
+        symbolMapped.value.object.get("0", symbolMapEvaluator.context, loc) === symbolElement &&
+        symbolVisits === 1,
+    "A23 symbol element preserved",
+);
 
 console.log("array map passed");

@@ -2,11 +2,18 @@ import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
 function run(text: string, realm = new Realm((_line: string) => {}, "script")) {
     const p = prepareBoundedScript({ id: "super-properties", text }, realm);
-    if (p.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: 20000, maxCalls: 32 }), p.record).completion;
+    if (p.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: 20000, maxCalls: 32 }), p.record)
+        .completion;
 }
 function truth(text: string, realm = new Realm((_line: string) => {}, "script")): void {
     const r = run(text, realm);
@@ -45,10 +52,17 @@ for (const text of [
     "class B{}class D extends B{m(){return typeof super.x}}new D().m()==='undefined'",
     "var p={C:function(){this.x=7}},o={m(){return new super.C()}};Object.setPrototypeOf(o,p);o.m().x===7",
     "class C{constructor(){this.x=super.toString()}}new C().x==='[object Object]'",
-    "var p={x:7},o={m(){return ()=>eval('super.x')}};Object.setPrototypeOf(o,p);o.m()()===7"
-]) truth(text);
-for (const invalid of ["42=1", "1_", "if(false) let x", 'function f(a,a){"use strict";}'])
-    truth("var o={m(){try{eval('super.x;" + invalid + "')}catch(e){return e instanceof SyntaxError}}};o.m()");
+    "var p={x:7},o={m(){return ()=>eval('super.x')}};Object.setPrototypeOf(o,p);o.m()()===7",
+]) {
+    truth(text);
+}
+for (const invalid of ["42=1", "1_", "if(false) let x", 'function f(a,a){"use strict";}']) {
+    truth(
+        "var o={m(){try{eval('super.x;" +
+            invalid +
+            "')}catch(e){return e instanceof SyntaxError}}};o.m()",
+    );
+}
 for (const text of [
     "var token={},key={toString(){throw token}},o={m(){return super[key]}};var caught=false;try{o.m()}catch(e){caught=e===token}caught",
     "var token={},n=0,key={toString(){n++;return 'x'}},o={m(){super[key]=(function(){throw token})()}};var caught=false;try{o.m()}catch(e){caught=e===token}caught&&n===0",
@@ -57,21 +71,47 @@ for (const text of [
     "var p={x:1},o={m(){'use strict';super.x=7}};Object.setPrototypeOf(o,p);var caught=false;try{o.m.call(3)}catch(e){caught=e instanceof TypeError}caught&&p.x===1",
     "class B{}class D extends B{m(){[...super.x]=[1,2];return this.x.join(',')}}new D().m()==='1,2'",
     "class B{}class D extends B{m(){({...super.x}={a:7});return this.x.a}}new D().m()===7",
-    "class B{m(){return this}}class D extends B{m(){return (super.m)()}}var d=new D();d.m()===d"
-]) truth(text);
-const owner = new Realm((_line: string) => {}, "script"), caller = new Realm((_line: string) => {}, "script");
+    "class B{m(){return this}}class D extends B{m(){return (super.m)()}}var d=new D();d.m()===d",
+]) {
+    truth(text);
+}
+const owner = new Realm((_line: string) => {}, "script"),
+    caller = new Realm((_line: string) => {}, "script");
 for (const [name, text] of [
     ["method", "var o={m(){return super.x}};Object.setPrototypeOf(o,null);o.m"],
-    ["ForeignTypeError", "TypeError"]
+    ["ForeignTypeError", "TypeError"],
 ]) {
     const result = run(text, owner);
-    if (result.type !== "normal") throw new Error("foreign method setup");
+    if (result.type !== "normal") {
+        throw new Error("foreign method setup");
+    }
     caller.defineScriptGlobal(name, { value: result.value });
 }
-truth("var caught=false;try{method()}catch(e){caught=e instanceof ForeignTypeError&&!(e instanceof TypeError)}caught", caller);
-const limited = run("var p={get x(){while(true){}}},o={m(){try{return super.x}catch(e){return 7}}};Object.setPrototypeOf(o,p);o.m()");
-check(limited.type === "throw" && limited.origin.kind === "resource-limit", "fatal inherited getter budget");
-for (const text of ["super.x", "function f(){return super.x}", "class C{m(){function f(){return super.x}}}", "var o={m:function(){return super.x}}", "class C{m(){return super?.x}}", "class C{m(){super()}}"]) {
-    check(prepareBoundedScript({ id: "super-property-boundary", text }, new Realm((_line: string) => {}, "script")).kind !== "ready", text);
+truth(
+    "var caught=false;try{method()}catch(e){caught=e instanceof ForeignTypeError&&!(e instanceof TypeError)}caught",
+    caller,
+);
+const limited = run(
+    "var p={get x(){while(true){}}},o={m(){try{return super.x}catch(e){return 7}}};Object.setPrototypeOf(o,p);o.m()",
+);
+check(
+    limited.type === "throw" && limited.origin.kind === "resource-limit",
+    "fatal inherited getter budget",
+);
+for (const text of [
+    "super.x",
+    "function f(){return super.x}",
+    "class C{m(){function f(){return super.x}}}",
+    "var o={m:function(){return super.x}}",
+    "class C{m(){return super?.x}}",
+    "class C{m(){super()}}",
+]) {
+    check(
+        prepareBoundedScript(
+            { id: "super-property-boundary", text },
+            new Realm((_line: string) => {}, "script"),
+        ).kind !== "ready",
+        text,
+    );
 }
 console.log("Super properties passed");

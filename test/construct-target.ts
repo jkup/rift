@@ -3,11 +3,18 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { normal, type OperationContext, type ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
 function run(text: string, realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
     const p = prepareBoundedScript({ id: "construct-target", text }, realm);
-    if (p.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: 20000, maxCalls: 32 }), p.record).completion;
+    if (p.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: 20000, maxCalls: 32 }), p.record)
+        .completion;
 }
 function truth(text: string, realm = new Realm((_line: string) => {}, "script")): void {
     const r = run(text, realm);
@@ -48,34 +55,71 @@ for (const text of [
     "function F(){}var N=F.bind(null),trace='';Object.defineProperty(N,'prototype',{get(){trace+='P';return {}}});Reflect.construct(Error,[{toString(){trace+='V';return 'x'}}],N);trace==='PV'",
     "function F(){}var N=F.bind(null),n=0;Object.defineProperty(N,'prototype',{get(){n++;return {}}});var caught=false;try{Reflect.construct(Function,['return 1_;'],N)}catch(e){caught=e instanceof SyntaxError}caught&&n===0",
     "var n=0,caught=false;try{Reflect.construct(Symbol,{get length(){n++;return 0}})}catch(e){caught=e instanceof TypeError}caught&&n===1",
-    "var x=Reflect.construct(Array,[],Symbol);Array.isArray(x)&&Object.getPrototypeOf(x)===Symbol.prototype"
-]) truth(text);
-const owner = new Realm((_line: string) => {}, "script"), caller = new Realm((_line: string) => {}, "script");
-for (const [name, source] of [["N", "function N(){}N.prototype=0;N"], ["foreignPrototype", "Object.prototype"], ["foreignArrayPrototype", "Array.prototype"], ["ForeignError", "TypeError"], ["bad", "function bad(){throw new TypeError('bad')}bad"]]) {
+    "var x=Reflect.construct(Array,[],Symbol);Array.isArray(x)&&Object.getPrototypeOf(x)===Symbol.prototype",
+]) {
+    truth(text);
+}
+const owner = new Realm((_line: string) => {}, "script"),
+    caller = new Realm((_line: string) => {}, "script");
+for (const [name, source] of [
+    ["N", "function N(){}N.prototype=0;N"],
+    ["foreignPrototype", "Object.prototype"],
+    ["foreignArrayPrototype", "Array.prototype"],
+    ["ForeignError", "TypeError"],
+    ["bad", "function bad(){throw new TypeError('bad')}bad"],
+]) {
     const value = run(source, owner);
-    if (value.type !== "normal") throw new Error("foreign setup");
+    if (value.type !== "normal") {
+        throw new Error("foreign setup");
+    }
     caller.defineScriptGlobal(name, { value: value.value });
 }
-truth("function F(){this.nt=new.target}var x=Reflect.construct(F,[],N);x.nt===N&&Object.getPrototypeOf(x)===foreignPrototype", caller);
-truth("var x=Reflect.construct(Array,[],N);Array.isArray(x)&&Object.getPrototypeOf(x)===foreignArrayPrototype", caller);
-truth("var B=N.bind(null);function F(){}Object.getPrototypeOf(Reflect.construct(F,[],B))===foreignPrototype", caller);
-truth("var caught=false;try{Reflect.construct(bad,[],N)}catch(e){caught=e instanceof ForeignError&&!(e instanceof TypeError)}caught", caller);
+truth(
+    "function F(){this.nt=new.target}var x=Reflect.construct(F,[],N);x.nt===N&&Object.getPrototypeOf(x)===foreignPrototype",
+    caller,
+);
+truth(
+    "var x=Reflect.construct(Array,[],N);Array.isArray(x)&&Object.getPrototypeOf(x)===foreignArrayPrototype",
+    caller,
+);
+truth(
+    "var B=N.bind(null);function F(){}Object.getPrototypeOf(Reflect.construct(F,[],B))===foreignPrototype",
+    caller,
+);
+truth(
+    "var caught=false;try{Reflect.construct(bad,[],N)}catch(e){caught=e instanceof ForeignError&&!(e instanceof TypeError)}caught",
+    caller,
+);
 const limited = run("function F(){}Reflect.construct(F,{length:Infinity})");
-check(limited.type === "throw" && limited.origin.kind === "resource-limit", "array-like argument budget");
+check(
+    limited.type === "throw" && limited.origin.kind === "resource-limit",
+    "array-like argument budget",
+);
 const captured: OperationContext[] = [];
 const retainedRealm = new Realm((_line: string) => {}, "script");
-const capture = retainedRealm.createBuiltin("capture", 0, (_receiver, _args, context, _loc): ValueCompletion => {
-    captured.push(context);
-    return normal();
-});
+const capture = retainedRealm.createBuiltin(
+    "capture",
+    0,
+    (_receiver, _args, context, _loc): ValueCompletion => {
+        captured.push(context);
+        return normal();
+    },
+);
 retainedRealm.defineScriptGlobal("capture", { value: { kind: "object", object: capture } });
 const retainedTarget = run("capture();function F(){}F", retainedRealm);
-if (retainedTarget.type !== "normal") throw new Error("retained target setup");
+if (retainedTarget.type !== "normal") {
+    throw new Error("retained target setup");
+}
 const construct = captured[0].construct;
-if (construct === undefined) throw new Error("missing construction callback");
+if (construct === undefined) {
+    throw new Error("missing construction callback");
+}
 let denied = false;
-try { construct(retainedTarget.value, [], retainedTarget.value, { line: 1, column: 1 }); }
-catch (error) { denied = error instanceof Error && error.message === "inactive Script session"; }
+try {
+    construct(retainedTarget.value, [], retainedTarget.value, { line: 1, column: 1 });
+} catch (error) {
+    denied = error instanceof Error && error.message === "inactive Script session";
+}
 check(denied, "retained construction requires an active Script session");
 truth("new F() instanceof F", retainedRealm);
 console.log("Distinct constructor targets passed");

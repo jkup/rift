@@ -15,19 +15,32 @@ export class RadixResources {
     // Watching every arithmetic result also watches operands of later products.
     watch(value: bigint): bigint {
         const magnitude = value < 0n ? -value : value;
-        if (magnitude > WIDTH_LIMIT) throw new Error("radix integer width invariant");
-        if (magnitude > this.largest) this.largest = magnitude;
+        if (magnitude > WIDTH_LIMIT) {
+            throw new Error("radix integer width invariant");
+        }
+        if (magnitude > this.largest) {
+            this.largest = magnitude;
+        }
         return value;
     }
     scale(count: number): void {
-        if (count > 1076) throw new Error("radix scale iteration invariant");
-        if (count > this.scaleIterations) this.scaleIterations = count;
+        if (count > 1076) {
+            throw new Error("radix scale iteration invariant");
+        }
+        if (count > this.scaleIterations) {
+            this.scaleIterations = count;
+        }
     }
 }
 
 export class RadixInterval {
-    constructor(public r: bigint, public d: bigint, public minus: bigint,
-        public plus: bigint, public closed: boolean) {}
+    constructor(
+        public r: bigint,
+        public d: bigint,
+        public minus: bigint,
+        public plus: bigint,
+        public closed: boolean,
+    ) {}
 }
 
 export function intervalFor(value: number, stats: RadixResources): RadixInterval {
@@ -41,21 +54,34 @@ export function intervalFor(value: number, stats: RadixResources): RadixInterval
     const unequal = a > 1 && t === 0n;
     const factor = unequal ? 4n : 2n;
     const unit = e >= 0 ? 1n << BigInt(e) : 1n;
-    return new RadixInterval(stats.watch(f * factor * unit),
-        stats.watch(e >= 0 ? factor : factor << BigInt(-e)), unit,
-        stats.watch(unequal ? unit * 2n : unit), f % 2n === 0n);
+    return new RadixInterval(
+        stats.watch(f * factor * unit),
+        stats.watch(e >= 0 ? factor : factor << BigInt(-e)),
+        unit,
+        stats.watch(unequal ? unit * 2n : unit),
+        f % 2n === 0n,
+    );
 }
 
 function power(b: bigint, exponent: number, stats: RadixResources): bigint {
-    if (exponent < 0 || exponent > 1131) throw new Error("radix power invariant");
+    if (exponent < 0 || exponent > 1131) {
+        throw new Error("radix power invariant");
+    }
     let result = 1n;
-    for (let i = 0; i < exponent; i++) result = stats.watch(result * b);
-    if (exponent > stats.powerIterations) stats.powerIterations = exponent;
+    for (let i = 0; i < exponent; i++) {
+        result = stats.watch(result * b);
+    }
+    if (exponent > stats.powerIterations) {
+        stats.powerIterations = exponent;
+    }
     return result;
 }
 
 function minimumDigits(interval: RadixInterval, b: bigint, stats: RadixResources): number {
-    let r = interval.r, d = interval.d, minus = interval.minus, plus = interval.plus;
+    let r = interval.r,
+        d = interval.d,
+        minus = interval.minus,
+        plus = interval.plus;
     let count = 0;
     // Scale the upper endpoint; equality depends on midpoint ownership.
     while (interval.closed ? stats.watch(r + plus) >= d : stats.watch(r + plus) > d) {
@@ -63,7 +89,11 @@ function minimumDigits(interval: RadixInterval, b: bigint, stats: RadixResources
         d = stats.watch(d * b);
     }
     count = 0;
-    while (interval.closed ? stats.watch(stats.watch(r + plus) * b) < d : stats.watch(stats.watch(r + plus) * b) <= d) {
+    while (
+        interval.closed
+            ? stats.watch(stats.watch(r + plus) * b) < d
+            : stats.watch(stats.watch(r + plus) * b) <= d
+    ) {
         stats.scale(++count);
         r = stats.watch(r * b);
         minus = stats.watch(minus * b);
@@ -78,13 +108,20 @@ function minimumDigits(interval: RadixInterval, b: bigint, stats: RadixResources
         r %= d;
         const low = interval.closed ? r <= minus : r < minus;
         const high = interval.closed ? stats.watch(r + plus) >= d : stats.watch(r + plus) > d;
-        if (low || high) { stats.digits = k; return k; }
+        if (low || high) {
+            stats.digits = k;
+            return k;
+        }
     }
     throw new Error("radix digit termination invariant");
 }
 
-export function contains(interval: RadixInterval, numerator: bigint, denominator: bigint,
-    stats: RadixResources): boolean {
+export function contains(
+    interval: RadixInterval,
+    numerator: bigint,
+    denominator: bigint,
+    stats: RadixResources,
+): boolean {
     const value = stats.watch(numerator * interval.d);
     const low = stats.watch(stats.watch(interval.r - interval.minus) * denominator);
     const high = stats.watch(stats.watch(interval.r + interval.plus) * denominator);
@@ -92,26 +129,60 @@ export function contains(interval: RadixInterval, numerator: bigint, denominator
 }
 
 export class RadixCandidate {
-    constructor(public s: bigint, public n: number, public c: bigint, public distance: bigint) {}
+    constructor(
+        public s: bigint,
+        public n: number,
+        public c: bigint,
+        public distance: bigint,
+    ) {}
 }
 
 // Shared by the production selector and synthetic exact tie/parity controls.
-export function prefer(candidate: RadixCandidate, best: RadixCandidate, stats: RadixResources): boolean {
+export function prefer(
+    candidate: RadixCandidate,
+    best: RadixCandidate,
+    stats: RadixResources,
+): boolean {
     const left = stats.watch(candidate.distance * best.c);
     const right = stats.watch(best.distance * candidate.c);
-    if (left !== right) return left < right;
-    if (candidate.s === best.s && candidate.n === best.n) return false;
-    if (candidate.s % 2n === best.s % 2n) throw new Error("radix ambiguous parity invariant");
+    if (left !== right) {
+        return left < right;
+    }
+    if (candidate.s === best.s && candidate.n === best.n) {
+        return false;
+    }
+    if (candidate.s % 2n === best.s % 2n) {
+        throw new Error("radix ambiguous parity invariant");
+    }
     return candidate.s % 2n === 0n;
 }
 
-export function select(interval: RadixInterval, b: bigint, k: number, stats: RadixResources): RadixCandidate {
-    let u = interval.r, v = interval.d, n0 = 0, count = 0;
-    while (u >= v) { stats.scale(++count); v = stats.watch(v * b); n0++; }
+export function select(
+    interval: RadixInterval,
+    b: bigint,
+    k: number,
+    stats: RadixResources,
+): RadixCandidate {
+    let u = interval.r,
+        v = interval.d,
+        n0 = 0,
+        count = 0;
+    while (u >= v) {
+        stats.scale(++count);
+        v = stats.watch(v * b);
+        n0++;
+    }
     count = 0;
-    while (stats.watch(u * b) < v) { stats.scale(++count); u = stats.watch(u * b); n0--; }
-    if (n0 < -1073 || n0 > 1024) throw new Error("radix magnitude invariant");
-    const lo = power(b, k - 1, stats), hi = stats.watch(power(b, k, stats) - 1n);
+    while (stats.watch(u * b) < v) {
+        stats.scale(++count);
+        u = stats.watch(u * b);
+        n0--;
+    }
+    if (n0 < -1073 || n0 > 1024) {
+        throw new Error("radix magnitude invariant");
+    }
+    const lo = power(b, k - 1, stats),
+        hi = stats.watch(power(b, k, stats) - 1n);
     let best: RadixCandidate | null = null;
     for (let n = n0 - 1; n <= n0 + 1; n++) {
         const a = n >= k ? power(b, n - k, stats) : 1n;
@@ -123,14 +194,19 @@ export function select(interval: RadixInterval, b: bigint, k: number, stats: Rad
             const raw = stats.watch(floor + BigInt(side));
             const s = raw < lo ? lo : raw > hi ? hi : raw;
             const numerator = stats.watch(s * a);
-            if (!contains(interval, numerator, c, stats)) continue;
+            if (!contains(interval, numerator, c, stats)) {
+                continue;
+            }
             const delta = stats.watch(stats.watch(numerator * interval.d) - center);
             const candidate = new RadixCandidate(s, n, c, delta < 0n ? -delta : delta);
-            if (best === null || prefer(candidate, best, stats)) best = candidate;
+            if (best === null || prefer(candidate, best, stats)) {
+                best = candidate;
+            }
         }
     }
-    if (best === null || best.s < lo || best.s > hi || best.s % b === 0n)
+    if (best === null || best.s < lo || best.s > hi || best.s % b === 0n) {
         throw new Error("radix selection invariant");
+    }
     return best;
 }
 
@@ -141,21 +217,35 @@ function render(s: bigint, n: number, k: number, radix: number, stats: RadixReso
         digits = DIGITS.charAt(Number(s % b)) + digits;
         s /= b;
     }
-    if (s !== 0n || digits.charAt(0) === "0") throw new Error("radix rendering invariant");
+    if (s !== 0n || digits.charAt(0) === "0") {
+        throw new Error("radix rendering invariant");
+    }
     let result: string;
-    if (n >= k) result = digits + "0".repeat(n - k);
-    else if (n > 0) result = digits.slice(0, n) + "." + digits.slice(n);
-    else result = "0." + "0".repeat(-n) + digits;
-    if (result.length > 1076) throw new Error("radix output length invariant");
+    if (n >= k) {
+        result = digits + "0".repeat(n - k);
+    } else if (n > 0) {
+        result = digits.slice(0, n) + "." + digits.slice(n);
+    } else {
+        result = "0." + "0".repeat(-n) + digits;
+    }
+    if (result.length > 1076) {
+        throw new Error("radix output length invariant");
+    }
     stats.length = result.length;
     return result;
 }
 
 export function formatRadix(value: number, radix: number, stats: RadixResources): string {
-    if (!(value > 0 && value < Infinity) || !(radix >= 2 && radix <= 36) ||
-        radix !== Math.floor(radix) || radix === 10)
+    if (
+        !(value > 0 && value < Infinity) ||
+        !(radix >= 2 && radix <= 36) ||
+        radix !== Math.floor(radix) ||
+        radix === 10
+    ) {
         throw new Error("invalid nondecimal formatter input");
-    const interval = intervalFor(value, stats), b = BigInt(radix);
+    }
+    const interval = intervalFor(value, stats),
+        b = BigInt(radix);
     const k = minimumDigits(interval, b, stats);
     const chosen = select(interval, b, k, stats);
     return render(chosen.s, chosen.n, k, radix, stats);

@@ -3,10 +3,19 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm: Realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm: Realm = new Realm((_line: string) => {}, "script"),
+): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "temporal-zoned-round", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 const cases = [
@@ -25,9 +34,24 @@ for (const text of cases) {
     const result = run(text);
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
-for (const mode of ["ceil", "floor", "expand", "trunc", "halfCeil", "halfFloor", "halfExpand", "halfTrunc", "halfEven"]) {
+for (const mode of [
+    "ceil",
+    "floor",
+    "expand",
+    "trunc",
+    "halfCeil",
+    "halfFloor",
+    "halfExpand",
+    "halfTrunc",
+    "halfEven",
+]) {
     const up = mode === "ceil" || mode === "expand" || mode === "halfCeil" || mode === "halfExpand";
-    const result = run('Temporal.ZonedDateTime.from("1969-12-31T12[UTC]").round({smallestUnit:"day",roundingMode:"'+mode+'"}).epochNanoseconds==='+ (up ? '0n' : '-86400000000000n'));
+    const result = run(
+        'Temporal.ZonedDateTime.from("1969-12-31T12[UTC]").round({smallestUnit:"day",roundingMode:"' +
+            mode +
+            '"}).epochNanoseconds===' +
+            (up ? "0n" : "-86400000000000n"),
+    );
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, mode);
 }
 for (const expression of [
@@ -39,17 +63,36 @@ for (const expression of [
     'new Temporal.ZonedDateTime(0n,"UTC").round({smallestUnit:"minute",roundingIncrement:7})',
     'new Temporal.ZonedDateTime(0n,"UTC").round("month")',
 ]) {
-    const result = run('var ok=false;try{'+expression+'}catch(e){ok=e instanceof RangeError}ok');
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, expression);
+    const result = run(
+        "var ok=false;try{" + expression + "}catch(e){ok=e instanceof RangeError}ok",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        expression,
+    );
 }
-for (const input of ['undefined','null','1','{}']) {
-    const result = run('var ok=false;try{new Temporal.ZonedDateTime(0n,"UTC").round('+input+')}catch(e){ok=e instanceof TypeError}ok');
+for (const input of ["undefined", "null", "1", "{}"]) {
+    const result = run(
+        'var ok=false;try{new Temporal.ZonedDateTime(0n,"UTC").round(' +
+            input +
+            ")}catch(e){ok=e instanceof TypeError}ok",
+    );
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, input);
 }
-const defining = new Realm((_line: string) => {}, "script"), calling = new Realm((_line: string) => {}, "script");
-const method = run("Temporal.ZonedDateTime.prototype.round", defining), prototype = run("Temporal.ZonedDateTime.prototype", defining);
-if (method.type !== "normal" || prototype.type !== "normal") throw new Error("lookup");
+const defining = new Realm((_line: string) => {}, "script"),
+    calling = new Realm((_line: string) => {}, "script");
+const method = run("Temporal.ZonedDateTime.prototype.round", defining),
+    prototype = run("Temporal.ZonedDateTime.prototype", defining);
+if (method.type !== "normal" || prototype.type !== "normal") {
+    throw new Error("lookup");
+}
 calling.defineScriptGlobal("roundZoned", { value: method.value });
 const value = run('roundZoned.call(new Temporal.ZonedDateTime(0n,"UTC"),"hour")', calling);
-check(value.type === "normal" && value.value.kind === "object" && prototype.value.kind === "object" && value.value.object.getPrototypeOf() === prototype.value.object, "intrinsic Realm");
+check(
+    value.type === "normal" &&
+        value.value.kind === "object" &&
+        prototype.value.kind === "object" &&
+        value.value.object.getPrototypeOf() === prototype.value.object,
+    "intrinsic Realm",
+);
 console.log("temporal zoned round passed");

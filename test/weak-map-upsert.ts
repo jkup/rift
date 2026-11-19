@@ -5,9 +5,12 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 
 function run(text: string, steps = 10000): ValueCompletion {
     const realm = new Realm((_line: string) => {}, "script");
-    const prepared = prepareBoundedScript({id: "weak-map-upsert", text}, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare " + text);
-    return evaluateScript(createScriptSession({maxSteps: steps, maxCalls: 64}), prepared.record).completion;
+    const prepared = prepareBoundedScript({ id: "weak-map-upsert", text }, realm);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 for (const text of [
     "let k={},m=new WeakMap();m.getOrInsert(k,1)===1&&m.getOrInsert(k,2)===1&&m.get(k)===1;",
@@ -24,16 +27,37 @@ for (const text of [
     "let k={},m=new WeakMap(),insert=m.getOrInsert;Object.setPrototypeOf(m,null);insert.call(m,k,3)===3;",
 ]) {
     const result = run(text);
-    if (result.type !== "normal" || !sameValue(result.value, {kind: "boolean", value: true})) throw new Error(text);
+    if (result.type !== "normal" || !sameValue(result.value, { kind: "boolean", value: true })) {
+        throw new Error(text);
+    }
 }
 for (const name of ["getOrInsert", "getOrInsertComputed"]) {
-    for (const source of ["WeakMap.prototype." + name + ".call({},{});", "new WeakMap()." + name + "(1,()=>1);", "new WeakMap()." + name + "(Symbol.for('key'),()=>1);"]) {
-        const result = run("let caught=false;try{" + source + "}catch(e){caught=e instanceof TypeError}caught;");
-        if (result.type !== "normal" || !sameValue(result.value, {kind: "boolean", value: true})) throw new Error(source);
+    for (const source of [
+        "WeakMap.prototype." + name + ".call({},{});",
+        "new WeakMap()." + name + "(1,()=>1);",
+        "new WeakMap()." + name + "(Symbol.for('key'),()=>1);",
+    ]) {
+        const result = run(
+            "let caught=false;try{" + source + "}catch(e){caught=e instanceof TypeError}caught;",
+        );
+        if (
+            result.type !== "normal" ||
+            !sameValue(result.value, { kind: "boolean", value: true })
+        ) {
+            throw new Error(source);
+        }
     }
     const symbol = run("new WeakMap()." + name + "(Symbol(),()=>1);");
-    if (symbol.type !== "throw" || symbol.origin.kind !== "unsupported-operation" || symbol.origin.capabilityCode !== "runtime.weak-symbol-key") throw new Error("symbol " + name);
+    if (
+        symbol.type !== "throw" ||
+        symbol.origin.kind !== "unsupported-operation" ||
+        symbol.origin.capabilityCode !== "runtime.weak-symbol-key"
+    ) {
+        throw new Error("symbol " + name);
+    }
 }
 const bounded = run("new WeakMap().getOrInsertComputed({},()=>{while(true){}});", 300);
-if (bounded.type !== "throw" || bounded.origin.kind !== "resource-limit") throw new Error("bounded callback");
+if (bounded.type !== "throw" || bounded.origin.kind !== "resource-limit") {
+    throw new Error("bounded callback");
+}
 console.log("weak-map upsert: 21 checks passed");

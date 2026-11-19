@@ -9,7 +9,9 @@ export class RandomState {
         this.y = y >>> 0;
         this.z = z >>> 0;
         this.w = w >>> 0;
-        if ((this.x | this.y | this.z | this.w) === 0) this.w = 1;
+        if ((this.x | this.y | this.z | this.w) === 0) {
+            this.w = 1;
+        }
     }
 
     nextWord(): number {
@@ -33,6 +35,10 @@ export class RandomState {
 }
 
 export function createRandomState(): RandomState {
-    return new RandomState(Math.floor(Math.random() * 4294967296), Math.floor(Math.random() * 4294967296),
-        Math.floor(Math.random() * 4294967296), Math.floor(Math.random() * 4294967296));
+    return new RandomState(
+        Math.floor(Math.random() * 4294967296),
+        Math.floor(Math.random() * 4294967296),
+        Math.floor(Math.random() * 4294967296),
+        Math.floor(Math.random() * 4294967296),
+    );
 }

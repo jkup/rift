@@ -1,6 +1,11 @@
-import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+import type {
+    DataDescriptor as InspectionDataDescriptor,
+    PropertyDescriptor as InspectionDescriptor,
+} from "../src/runtime.js";
 function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
-    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    if (d !== undefined && d.kind !== "data") {
+        throw new Error("expected data descriptor");
+    }
     return d;
 }
 import { readFileSync } from "node:fs";
@@ -129,7 +134,12 @@ class Observed extends GuestObject {
     lastKey: PropertyKey = "";
     abrupt: ValueCompletion | null = null;
     hostFault: Error | null = null;
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, loc: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        loc: Location,
+    ): ValueCompletion {
         this.reads++;
         this.trace += "G";
         this.lastKey = key;
@@ -226,8 +236,16 @@ for (const foreign of [false, true]) {
     if (consoleValue.kind !== "object" || numberValue.kind !== "object") {
         throw new Error("namespace");
     }
-    add("V12 Builtin log", dataDescriptor(consoleValue.object.getOwnProperty("log"))!.value, "function");
-    add("V12 Builtin finite", dataDescriptor(numberValue.object.getOwnProperty("isFinite"))!.value, "function");
+    add(
+        "V12 Builtin log",
+        dataDescriptor(consoleValue.object.getOwnProperty("log"))!.value,
+        "function",
+    );
+    add(
+        "V12 Builtin finite",
+        dataDescriptor(numberValue.object.getOwnProperty("isFinite"))!.value,
+        "function",
+    );
     add(
         "V12 Builtin unnamed",
         o(
@@ -574,7 +592,13 @@ for (const op of ["typeof", "void"]) {
             }),
         );
         const result = run(e, op + " b()[k()];");
-        check(trace + target.trace === (invalidBase && base.kind !== "null" && base.kind !== "undefined" ? "BKC" : traces[index]), name + " trace");
+        check(
+            trace + target.trace ===
+                (invalidBase && base.kind !== "null" && base.kind !== "undefined"
+                    ? "BKC"
+                    : traces[index]),
+            name + " trace",
+        );
         if (
             name === "BaseAbrupt" ||
             name === "KeyAbrupt" ||
@@ -589,7 +613,13 @@ for (const op of ["typeof", "void"]) {
             expect(result, op === "void" ? U : s("undefined"), "E10 " + name);
             check(target.reads === 0, "E10 no old target read");
         } else if (invalidBase) {
-            error(result, "cannot convert null or undefined to object", column, "E10 " + name, "TypeError");
+            error(
+                result,
+                "cannot convert null or undefined to object",
+                column,
+                "E10 " + name,
+                "TypeError",
+            );
         } else if (name === "InvalidHook") {
             error(result, "symbol toPrimitive method is not callable", column, "E11", "TypeError");
         } else if (name === "ObjectHookResult") {
@@ -684,7 +714,8 @@ for (const op of ["typeof", "void"]) {
             "E17 AssignmentEffects",
         );
         check(
-            target.writes === 1 && sameValue(dataDescriptor(target.getOwnProperty("x"))!.value, n(9)),
+            target.writes === 1 &&
+                sameValue(dataDescriptor(target.getOwnProperty("x"))!.value, n(9)),
             "E17 retained single write",
         );
     }

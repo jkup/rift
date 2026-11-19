@@ -3,16 +3,28 @@ import { sameValue, type ValueCompletion } from "../src/runtime.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
-function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
+function check(ok: boolean, label: string): void {
+    if (!ok) {
+        throw new Error(label);
+    }
+}
+function fresh(): Realm {
+    return new Realm((_line: string) => {}, "script");
+}
 function run(text: string, realm = fresh(), steps = 50000): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "sloppy-block-functions", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
-    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record).completion;
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
+    return evaluateScript(createScriptSession({ maxSteps: steps, maxCalls: 64 }), prepared.record)
+        .completion;
 }
 function passes(text: string, realm = fresh()): void {
     const result = run(text, realm);
-    check(result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }), text);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        text,
+    );
 }
 for (const source of [
     "var before=typeof f;var local;{local=f();function f(){return 7;}}before==='undefined'&&local===7&&f()===7;",
@@ -40,28 +52,44 @@ for (const source of [
     "switch(1){case 1:function f(){return 7;}}f()===7;",
     "{function f(){'use strict';return this;}}f()===undefined;",
     "Function('{function f(){return 7;}}return f();')()===7;",
-]) passes(source);
+]) {
+    passes(source);
+}
 
 for (const source of [
     "var local;{local=f();function f(){return 7;}}local===7&&typeof f==='undefined';",
     "if(false){function f(){return 7;}}typeof f==='undefined'&&!Object.hasOwn(this,'f');",
     "function outer(f){{function f(){return 7;}}return f;}outer(3)===3;",
-]) passes("'use strict';" + source);
+]) {
+    passes("'use strict';" + source);
+}
 
 {
     const realm = fresh();
-    run("var calls=0,saved;Object.defineProperty(this,'f',{configurable:true,set:function(v){calls++;saved=v;}});", realm);
+    run(
+        "var calls=0,saved;Object.defineProperty(this,'f',{configurable:true,set:function(v){calls++;saved=v;}});",
+        realm,
+    );
     passes("{function f(){return 7;}}calls===1&&saved()===7;", realm);
 }
 {
     const realm = fresh();
-    run("var caught=false,later=false;Object.defineProperty(this,'f',{set:function(v){throw v;}});", realm);
-    passes("try{function f(){return 7;}later=true;}catch(e){caught=e()===7;}caught&&!later;", realm);
+    run(
+        "var caught=false,later=false;Object.defineProperty(this,'f',{set:function(v){throw v;}});",
+        realm,
+    );
+    passes(
+        "try{function f(){return 7;}later=true;}catch(e){caught=e()===7;}caught&&!later;",
+        realm,
+    );
 }
 {
     const realm = fresh();
     run("let f=3;", realm);
-    passes("var local;{function f(){return 7;}local=f();}local===7&&f===3&&!Object.hasOwn(this,'f');", realm);
+    passes(
+        "var local;{function f(){return 7;}local=f();}local===7&&f===3&&!Object.hasOwn(this,'f');",
+        realm,
+    );
 }
 {
     const realm = fresh();
@@ -70,44 +98,92 @@ for (const source of [
 }
 {
     const realm = fresh();
-    realm.defineScriptGlobal("f", { value: { kind: "number", value: 3 }, writable: false, configurable: false });
+    realm.defineScriptGlobal("f", {
+        value: { kind: "number", value: 3 },
+        writable: false,
+        configurable: false,
+    });
     passes("var local;{function f(){return 7;}local=f();}local===7&&f===3;", realm);
 }
 {
     const realm = fresh();
-    const prepared = prepareBoundedScript({ id: "detached-plan", text: "{function f(){return 7;}}f();" }, realm);
-    if (prepared.kind !== "ready") throw new Error("legacy plan");
+    const prepared = prepareBoundedScript(
+        { id: "detached-plan", text: "{function f(){return 7;}}f();" },
+        realm,
+    );
+    if (prepared.kind !== "ready") {
+        throw new Error("legacy plan");
+    }
     const inspected = prepared.record.inspect();
     check(inspected.legacyBlockFunctions?.length === 1, "legacy declaration inspection");
-    if (inspected.legacyBlockFunctions !== undefined) (inspected.legacyBlockFunctions as number[])[0] = 99;
+    if (inspected.legacyBlockFunctions !== undefined) {
+        (inspected.legacyBlockFunctions as number[])[0] = 99;
+    }
     const result = evaluateScript(createScriptSession(), prepared.record).completion;
-    check(result.type === "normal" && sameValue(result.value, { kind: "number", value: 7 }), "inspection is detached");
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "number", value: 7 }),
+        "inspection is detached",
+    );
 }
-for (const text of ["{function f(){}function f(){}}", "switch(1){case 1:function f(){}case 2:function f(){}}"] ) {
+for (const text of [
+    "{function f(){}function f(){}}",
+    "switch(1){case 1:function f(){}case 2:function f(){}}",
+]) {
     const prepared = prepareBoundedScript({ id: "duplicate-sloppy", text }, fresh());
-    check(prepared.kind === "blocked" && prepared.rejection.kind === "unsupported-syntax", "duplicate sloppy functions remain unsupported");
+    check(
+        prepared.kind === "blocked" && prepared.rejection.kind === "unsupported-syntax",
+        "duplicate sloppy functions remain unsupported",
+    );
 }
 {
-    const realm = fresh(), other = fresh(), session = createScriptSession();
+    const realm = fresh(),
+        other = fresh(),
+        session = createScriptSession();
     run("let f=3;", other);
     for (const target of [realm, other, realm]) {
-        const prepared = prepareBoundedScript({ id: "session-reuse", text: "{function f(){return 7;}}f;" }, target);
-        if (prepared.kind !== "ready") throw new Error("session reuse prepare");
+        const prepared = prepareBoundedScript(
+            { id: "session-reuse", text: "{function f(){return 7;}}f;" },
+            target,
+        );
+        if (prepared.kind !== "ready") {
+            throw new Error("session reuse prepare");
+        }
         const result = evaluateScript(session, prepared.record).completion;
-        check(result.type === "normal" && (target === other
-            ? sameValue(result.value, { kind: "number", value: 3 })
-            : result.value.kind === "object"), "global eligibility is local to each evaluation");
+        check(
+            result.type === "normal" &&
+                (target === other
+                    ? sameValue(result.value, { kind: "number", value: 3 })
+                    : result.value.kind === "object"),
+            "global eligibility is local to each evaluation",
+        );
     }
 }
 {
-    const realm = fresh(), other = fresh();
-    const result = run("var marker=7;function outer(){{function f(){return marker;}}return f;}outer;", realm);
-    if (result.type !== "normal") throw new Error("cross Realm setup");
+    const realm = fresh(),
+        other = fresh();
+    const result = run(
+        "var marker=7;function outer(){{function f(){return marker;}}return f;}outer;",
+        realm,
+    );
+    if (result.type !== "normal") {
+        throw new Error("cross Realm setup");
+    }
     other.defineScriptGlobal("outer", { value: result.value, writable: true, configurable: true });
-    passes("var marker=3;var f=outer();f()===7&&Object.getPrototypeOf(f)===Object.getPrototypeOf(outer);", other);
+    passes(
+        "var marker=3;var f=outer();f()===7&&Object.getPrototypeOf(f)===Object.getPrototypeOf(outer);",
+        other,
+    );
 }
-for (const text of ["{let f;function f(){}}", "{var f;function f(){}}", "'use strict';{function f(){}function f(){}}"])
-    check(prepareBoundedScript({ id: "restricted-block", text }, fresh()).kind !== "ready", "restricted: " + text);
+for (const text of [
+    "{let f;function f(){}}",
+    "{var f;function f(){}}",
+    "'use strict';{function f(){}function f(){}}",
+]) {
+    check(
+        prepareBoundedScript({ id: "restricted-block", text }, fresh()).kind !== "ready",
+        "restricted: " + text,
+    );
+}
 {
     const realm = fresh();
     const result = run("if(true)function f(){}", realm);
@@ -115,5 +191,8 @@ for (const text of ["{let f;function f(){}}", "{var f;function f(){}}", "'use st
     passes("typeof f==='function'", realm);
 }
 const bounded = run("while(true){function f(){return 7;}}", fresh(), 100);
-check(bounded.type === "throw" && bounded.origin.kind === "resource-limit", "bounded block allocation");
+check(
+    bounded.type === "throw" && bounded.origin.kind === "resource-limit",
+    "bounded block allocation",
+);
 console.log("Sloppy block functions passed");

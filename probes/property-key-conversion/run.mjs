@@ -10,15 +10,29 @@ mkdirSync(out, { recursive: true });
 function run(command, args) {
     const result = spawnSync(command, args, { cwd: root, encoding: "utf8", timeout: 120000 });
     return {
-        command, args, status: result.status, signal: result.signal,
+        command,
+        args,
+        status: result.status,
+        signal: result.signal,
         error: result.error ? String(result.error) : null,
-        stdout: result.stdout ?? "", stderr: result.stderr ?? "",
+        stdout: result.stdout ?? "",
+        stderr: result.stderr ?? "",
     };
 }
 const source = "probes/property-key-conversion/numbers.ts";
 const tsc = run(process.execPath, [
-    "node_modules/typescript/bin/tsc", "--ignoreConfig", "--strict",
-    "--target", "es2024", "--module", "nodenext", "--types", "node", "--outDir", out, source,
+    "node_modules/typescript/bin/tsc",
+    "--ignoreConfig",
+    "--strict",
+    "--target",
+    "es2024",
+    "--module",
+    "nodenext",
+    "--types",
+    "node",
+    "--outDir",
+    out,
+    source,
 ]);
 const node = completed(tsc) ? run(process.execPath, [join(out, "numbers.js")]) : null;
 const compiler = join(root, "node_modules/scriptc/bin/scriptc.exe");
@@ -27,10 +41,18 @@ const build = run(compiler, ["build", source, "--tier", "static-only", "-o", exe
 const coverage = run(compiler, ["coverage", source]);
 const native = completed(build) ? run(exe, []) : null;
 let verdict = probeVerdict({ node, build, coverage, native });
-if (!completed(tsc)) verdict = "TYPECHECK-FAIL";
+if (!completed(tsc)) {
+    verdict = "TYPECHECK-FAIL";
+}
 const report = {
-    nodeVersion: process.version, scriptc: "0.4.7", verdict,
-    tsc, node, build, coverage, native,
+    nodeVersion: process.version,
+    scriptc: "0.4.7",
+    verdict,
+    tsc,
+    node,
+    build,
+    coverage,
+    native,
 };
 writeFileSync(join(out, "results.json"), JSON.stringify(report, null, 2) + "\n");
 console.log(JSON.stringify(report, null, 2));

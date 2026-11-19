@@ -188,7 +188,12 @@ class Observed extends GuestObject {
     onDelete: () => void = () => {};
     refuse = false;
     hostFault: Error | null = null;
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         this.reads++;
         if (this.getFailure !== null) {
             return this.getFailure;
@@ -249,7 +254,10 @@ for (const source of [
             return normal(o(target));
         }),
     );
-    expect(run(e, source), source === "!delete o.x;" ? b(false) : source === "+delete o.x;" ? n(1) : b(true));
+    expect(
+        run(e, source),
+        source === "!delete o.x;" ? b(false) : source === "+delete o.x;" ? n(1) : b(true),
+    );
     const reads = source.includes("?") || source.includes("&&") || source.includes("||");
     check(target.reads === (reads ? 1 : 0), "P reads " + source);
     check(calls === (source === "delete f();" ? 1 : 0), "P calls");
@@ -280,7 +288,10 @@ for (const source of [
     put(target, "x", n(7));
     bind(r, "o", o(parent));
     expect(run(e, "delete o.child.x;"));
-    check(parent.reads === 1 && target.reads === 0 && parent.getOwnProperty("child") !== undefined, "D24");
+    check(
+        parent.reads === 1 && target.reads === 0 && parent.getOwnProperty("child") !== undefined,
+        "D24",
+    );
 }
 
 // D1-D6: complete descriptor/prototype/key snapshots on strict failures.
@@ -298,20 +309,28 @@ for (const writable of [false, true]) {
             const result = run(e, "delete o.x;");
             if (configurable) {
                 expect(result);
-                check(target.getOwnProperty("x") === undefined && sameValue(target.get("x", e.context, loc), n(9)), "D3 reveal");
+                check(
+                    target.getOwnProperty("x") === undefined &&
+                        sameValue(target.get("x", e.context, loc), n(9)),
+                    "D3 reveal",
+                );
                 expect(run(e, "delete o.x;"));
             } else {
                 error(result, "property is not configurable: x");
                 const d = target.getOwnProperty("x");
                 check(
-                    d !== undefined && d.kind === "data" &&
+                    d !== undefined &&
+                        d.kind === "data" &&
                         sameValue(d.value, n(7)) &&
                         d.writable === writable &&
                         d.enumerable === enumerable &&
                         !d.configurable,
                     "D5 descriptor",
                 );
-                check(target.ownPropertyKeys()[0] === "x" && target.ownPropertyKeys()[1] === "z", "D5 order");
+                check(
+                    target.ownPropertyKeys()[0] === "x" && target.ownPropertyKeys()[1] === "z",
+                    "D5 order",
+                );
                 const raw = target.internalDelete("x");
                 check(raw.type === "normal" && !raw.value, "D5 raw false");
             }
@@ -333,7 +352,12 @@ for (const inheritedConfigurable of [false, true]) {
     put(p, "y", n(2));
     const inheritedEvaluator = new Evaluator(r);
     expect(helper(inheritedEvaluator, o(t), s("x")));
-    check(t.getOwnProperty("x") === undefined && sameValue(p.get("x", inheritedEvaluator.context, loc), n(9)) && !t.isExtensible(), "D2/D6 inherited");
+    check(
+        t.getOwnProperty("x") === undefined &&
+            sameValue(p.get("x", inheritedEvaluator.context, loc), n(9)) &&
+            !t.isExtensible(),
+        "D2/D6 inherited",
+    );
     const own = new GuestObject();
     put(own, "x", n(7));
     own.preventExtensions();
@@ -368,7 +392,12 @@ for (const source of [
         nullish || read ? 8 : 1,
     );
 }
-for (const source of ["delete 'ab'[2];", "delete 'ab'['01'];", "delete 'ab'['-0'];", "delete ''[0];"]) {
+for (const source of [
+    "delete 'ab'[2];",
+    "delete 'ab'['01'];",
+    "delete 'ab'['-0'];",
+    "delete ''[0];",
+]) {
     expect(run(new Evaluator(new Realm((_line) => {})), source));
 }
 {
@@ -393,7 +422,11 @@ for (const source of ["delete 'ab'[2];", "delete 'ab'['01'];", "delete 'ab'['-0'
     error(run(e, "delete a.length;"), "property is not configurable: length");
     a.defineOwnProperty("0", { configurable: false }, e.context, loc);
     error(run(e, "delete a[0];"), "property is not configurable: 0");
-    check(sameValue(a.get("length", e.context, loc), n(3)) && sameValue(a.get("0", e.context, loc), n(1)), "D9 D10");
+    check(
+        sameValue(a.get("length", e.context, loc), n(3)) &&
+            sameValue(a.get("0", e.context, loc), n(1)),
+        "D9 D10",
+    );
     const t = r.createObject();
     for (const k of ["9", "2", "a", "b", "c"]) {
         put(t, k, n(1));
@@ -402,7 +435,10 @@ for (const source of ["delete 'ab'[2];", "delete 'ab'['01'];", "delete 'ab'['-0'
     put(t, "b", n(2));
     put(t, "a", n(3));
     const keys = t.ownPropertyKeys();
-    check(keys[0] === "2" && keys[1] === "9" && keys[2] === "a" && keys[3] === "c" && keys[4] === "b", "D11");
+    check(
+        keys[0] === "2" && keys[1] === "9" && keys[2] === "a" && keys[3] === "c" && keys[4] === "b",
+        "D11",
+    );
     const sym = new GuestSymbol("x");
     const other = new GuestSymbol("x");
     put(t, sym, n(4));
@@ -411,10 +447,18 @@ for (const source of ["delete 'ab'[2];", "delete 'ab'['01'];", "delete 'ab'['-0'
     bind(r, "o", o(t));
     bind(r, "s", { kind: "symbol", value: sym });
     expect(run(e, "delete o[s];"));
-    check(t.getOwnProperty(sym) === undefined && sameValue(t.get(other, e.context, loc), n(5)) && sameValue(t.get("x", e.context, loc), n(6)), "D12");
+    check(
+        t.getOwnProperty(sym) === undefined &&
+            sameValue(t.get(other, e.context, loc), n(5)) &&
+            sameValue(t.get("x", e.context, loc), n(6)),
+        "D12",
+    );
     put(t, sym, n(7));
     const reordered = t.ownPropertyKeys();
-    check(reordered[reordered.length - 2] === other && reordered[reordered.length - 1] === sym, "D12 order");
+    check(
+        reordered[reordered.length - 2] === other && reordered[reordered.length - 1] === sym,
+        "D12 order",
+    );
     t.bootstrapDefine(sym, { configurable: false });
     error(run(e, "delete o[s];"), "property is not configurable: Symbol(x)");
 }
@@ -479,7 +523,8 @@ for (const prototypeCase of [
         for (const key of [n(0), n(1), s("length")]) {
             error(
                 helper(e, base, key),
-                "property is not configurable: " + (key.kind === "number" ? String(key.value) : "length"),
+                "property is not configurable: " +
+                    (key.kind === "number" ? String(key.value) : "length"),
                 7,
                 2,
             );
@@ -621,7 +666,10 @@ for (const scenario of [
     put(key, wellKnownToPrimitive, canonical);
     const ordinary = fn(r, (receiver, args, _context, _at) => {
         trace += "T";
-        check(receiver.kind === "object" && receiver.object === key && args.length === 0, "E ordinary receiver");
+        check(
+            receiver.kind === "object" && receiver.object === key && args.length === 0,
+            "E ordinary receiver",
+        );
         if (scenario === EffectCase.ReplaceValueOf) {
             put(key, "valueOf", replacement);
         }
@@ -636,7 +684,9 @@ for (const scenario of [
             key.setPrototypeOf(null);
         }
         return normal(
-            scenario === EffectCase.CanonicalAbsent || scenario === EffectCase.CanonicalNull ? s("x") : o(key),
+            scenario === EffectCase.CanonicalAbsent || scenario === EffectCase.CanonicalNull
+                ? s("x")
+                : o(key),
         );
     });
     const replacement = fn(r, (_receiver, _args, _context, _at) => {
@@ -645,7 +695,10 @@ for (const scenario of [
     });
     const valueOf = fn(r, (receiver, args, _context, _at) => {
         trace += "V";
-        check(receiver.kind === "object" && receiver.object === key && args.length === 0, "E valueOf receiver");
+        check(
+            receiver.kind === "object" && receiver.object === key && args.length === 0,
+            "E valueOf receiver",
+        );
         return normal(scenario === EffectCase.BothOrdinaryMethodsReturnObjects ? o(key) : s("x"));
     });
     if (
@@ -709,7 +762,10 @@ for (const scenario of [
         "key",
         fn(r, (_receiver, _args, _context, _at) => {
             trace += "K";
-            if (scenario === EffectCase.KeyThrows || scenario === EffectCase.KeyThrowsWithNullBase) {
+            if (
+                scenario === EffectCase.KeyThrows ||
+                scenario === EffectCase.KeyThrowsWithNullBase
+            ) {
                 return thrown;
             }
             if (scenario === EffectCase.KeyExpressionRebindsBase) {
@@ -775,22 +831,33 @@ for (const scenario of [
         error(result, "cannot convert object to primitive", 1, 8);
     } else if (scenario === EffectCase.CanonicalNotCallable) {
         error(result, "symbol toPrimitive method is not callable", 1, 8);
-    } else if (scenario === EffectCase.HookFreezesTarget || scenario === EffectCase.DeleteReturnsFalse) {
+    } else if (
+        scenario === EffectCase.HookFreezesTarget ||
+        scenario === EffectCase.DeleteReturnsFalse
+    ) {
         error(result, "property is not configurable: x");
     } else {
         expect(result);
         check(
             t.getOwnProperty(
-                scenario === EffectCase.ReplaceValueOf || scenario === EffectCase.RelinkValueOf ? "y" : "x",
+                scenario === EffectCase.ReplaceValueOf || scenario === EffectCase.RelinkValueOf
+                    ? "y"
+                    : "x",
             ) === undefined,
             "E removed",
         );
     }
-    check(t.reads === 0 && e.calls === 0 && e.depth === 0 && e.context.realm === r, "E no reads/cleanup");
+    check(
+        t.reads === 0 && e.calls === 0 && e.depth === 0 && e.context.realm === r,
+        "E no reads/cleanup",
+    );
     if (scenario === EffectCase.HookThrows) {
         check(t.getOwnProperty("changed") !== undefined, "E mutation survives");
     }
-    if (scenario === EffectCase.KeyExpressionRebindsBase || scenario === EffectCase.HookRebindsBaseAndPrototype) {
+    if (
+        scenario === EffectCase.KeyExpressionRebindsBase ||
+        scenario === EffectCase.HookRebindsBaseAndPrototype
+    ) {
         check(alternate.getOwnProperty("x") !== undefined, "E captured base");
     }
     if (scenario === EffectCase.HookRebindsBaseAndPrototype) {
@@ -810,7 +877,12 @@ class LookupFailure extends GuestObject {
     constructor(readonly thrown: ThrowCompletion) {
         super(null);
     }
-    internalGet(key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        _receiver: Value,
+        context: OperationContext,
+        _at: Location,
+    ): ValueCompletion {
         return key === wellKnownToPrimitive ? normal() : this.thrown;
     }
 }
@@ -819,9 +891,22 @@ class LookupFailure extends GuestObject {
     const e = new Evaluator(r);
     const t = new Observed();
     const thrown = failure("Error", "lookup", loc);
-    check(helper(e, o(t), o(new LookupFailure(thrown))) === thrown && t.deletes === 0, "E ordinary lookup identity");
+    check(
+        helper(e, o(t), o(new LookupFailure(thrown))) === thrown && t.deletes === 0,
+        "E ordinary lookup identity",
+    );
 }
-const primitiveKeys: Value[] = [U, { kind: "null" }, b(true), b(false), n(0), n(-0), n(NaN), n(Infinity), n(-Infinity)];
+const primitiveKeys: Value[] = [
+    U,
+    { kind: "null" },
+    b(true),
+    b(false),
+    n(0),
+    n(-0),
+    n(NaN),
+    n(Infinity),
+    n(-Infinity),
+];
 const keyNames = ["undefined", "null", "true", "false", "0", "0", "NaN", "Infinity", "-Infinity"];
 for (let i = 0; i < primitiveKeys.length; i++) {
     const r = new Realm((_line) => {});
@@ -989,11 +1074,17 @@ for (const outcome of [
             error(result, "call depth limit exceeded", 1, 8);
         }
     } catch (err) {
-        check(err instanceof Error && err === fault && outcome === ForeignOutcome.HostFault, "E25 identity");
+        check(
+            err instanceof Error && err === fault && outcome === ForeignOutcome.HostFault,
+            "E25 identity",
+        );
         caught = true;
     }
     check(
-        caught === (outcome === ForeignOutcome.HostFault) && e.context.realm === a && e.calls === 0 && e.depth === 0,
+        caught === (outcome === ForeignOutcome.HostFault) &&
+            e.context.realm === a &&
+            e.calls === 0 &&
+            e.depth === 0,
         "R21 cleanup",
     );
     const before = e.steps;
@@ -1079,7 +1170,10 @@ for (const keyPath of [
         const result = helper(e, o(t), keyPath === HelperKeyPath.Primitive ? s("x") : o(k));
         // Primitive, canonical, toString, valueOf fallback, missing methods.
         const cost = [0, 1, 2, 3, 3][keyPath];
-        check(e.steps === Math.min(cost, limit + 1) && e.calls === 0 && e.depth === 0, "R helper steps");
+        check(
+            e.steps === Math.min(cost, limit + 1) && e.calls === 0 && e.depth === 0,
+            "R helper steps",
+        );
         if (limit < cost) {
             error(result, "execution step limit exceeded", 7, 9);
         } else if (keyPath === HelperKeyPath.MissingMethods) {
@@ -1165,7 +1259,11 @@ const enum SourceKeyPath {
     ValueOfFallback = 2,
 }
 
-for (const keyPath of [SourceKeyPath.Canonical, SourceKeyPath.ToString, SourceKeyPath.ValueOfFallback]) {
+for (const keyPath of [
+    SourceKeyPath.Canonical,
+    SourceKeyPath.ToString,
+    SourceKeyPath.ValueOfFallback,
+]) {
     for (const budgetCase of [BudgetCase.Ample, BudgetCase.StepLimit, BudgetCase.CallLimit]) {
         const r = new Realm((_line) => {});
         const e = new Evaluator(
@@ -1193,17 +1291,28 @@ for (const keyPath of [SourceKeyPath.Canonical, SourceKeyPath.ToString, SourceKe
         if (budgetCase === BudgetCase.Ample) {
             expect(result);
             // SourceKeyPath values count additional lookups after the canonical path.
-            check(e.steps === 5 + keyPath && calls === (keyPath === SourceKeyPath.ValueOfFallback ? 2 : 1), "R10/R12");
+            check(
+                e.steps === 5 + keyPath &&
+                    calls === (keyPath === SourceKeyPath.ValueOfFallback ? 2 : 1),
+                "R10/R12",
+            );
         } else {
             error(
                 result,
-                budgetCase === BudgetCase.StepLimit ? "execution step limit exceeded" : "call depth limit exceeded",
+                budgetCase === BudgetCase.StepLimit
+                    ? "execution step limit exceeded"
+                    : "call depth limit exceeded",
                 1,
                 8,
             );
             check(
                 calls === 0 &&
-                    e.steps === (budgetCase === BudgetCase.StepLimit ? 5 : keyPath === SourceKeyPath.Canonical ? 5 : 6),
+                    e.steps ===
+                        (budgetCase === BudgetCase.StepLimit
+                            ? 5
+                            : keyPath === SourceKeyPath.Canonical
+                              ? 5
+                              : 6),
                 "R10/R11 guard",
             );
         }
@@ -1256,8 +1365,14 @@ for (const guest of [false, true]) {
         }
         const result = e.statement(operation, r.global, U);
         error(result, "call depth limit exceeded", 1, guest && bound > 0 ? 30 : 8);
-        check(e.steps === (guest ? 5 * bound + 5 : 4 * bound + 5), "R recursion steps " + guest + " " + bound);
-        check(e.calls === 0 && e.depth === 0 && t.deletes === 0 && e.context.realm === r, "R recursion cleanup");
+        check(
+            e.steps === (guest ? 5 * bound + 5 : 4 * bound + 5),
+            "R recursion steps " + guest + " " + bound,
+        );
+        check(
+            e.calls === 0 && e.depth === 0 && t.deletes === 0 && e.context.realm === r,
+            "R recursion cleanup",
+        );
         if (!guest) {
             check(calls === bound, "R invocation count");
         } else {
@@ -1394,7 +1509,11 @@ for (const inherited of [false, true]) {
     check(invariant, "helper binding invariant");
     invariant = false;
     try {
-        e.evaluate({ kind: "unary", op: "delete", loc, operand: { kind: "identifier", name: "x", loc } }, r.global, U);
+        e.evaluate(
+            { kind: "unary", op: "delete", loc, operand: { kind: "identifier", name: "x", loc } },
+            r.global,
+            U,
+        );
     } catch (err) {
         invariant = err instanceof Error && err.message === "delete requires a property reference";
     }
@@ -1417,7 +1536,11 @@ const enum ConversionMethod {
     ValueOf = 2,
 }
 
-for (const method of [ConversionMethod.Canonical, ConversionMethod.ToString, ConversionMethod.ValueOf]) {
+for (const method of [
+    ConversionMethod.Canonical,
+    ConversionMethod.ToString,
+    ConversionMethod.ValueOf,
+]) {
     const r = new Realm((_line) => {});
     const e = new Evaluator(r);
     const parent = new GuestObject(null);
@@ -1444,7 +1567,11 @@ for (const method of [ConversionMethod.Canonical, ConversionMethod.ToString, Con
         }),
     );
     bind(r, "k", o(key));
-    bind(r, "method", typeof methodKey === "string" ? s(methodKey) : { kind: "symbol", value: methodKey });
+    bind(
+        r,
+        "method",
+        typeof methodKey === "string" ? s(methodKey) : { kind: "symbol", value: methodKey },
+    );
     put(target, "x", n(1));
     put(target, "y", n(2));
     bind(r, "o", o(target));
@@ -1453,7 +1580,9 @@ for (const method of [ConversionMethod.Canonical, ConversionMethod.ToString, Con
     expect(run(e, "delete o[k];"));
     expect(e.call(saved, o(key), [], loc), s("x"));
     check(
-        trace === "ABA" && target.getOwnProperty("x") === undefined && target.getOwnProperty("y") === undefined,
+        trace === "ABA" &&
+            target.getOwnProperty("x") === undefined &&
+            target.getOwnProperty("y") === undefined,
         "C4 inherited fresh conversion",
     );
 }
@@ -1476,11 +1605,13 @@ for (const method of [ConversionMethod.Canonical, ConversionMethod.ToString, Con
     e.calls = 1;
     e.depth = 4;
     error(helper(e, o(a.createObject()), o(k)), "call depth limit exceeded", 7, 9);
-    check(e.calls === 1 && e.depth === 4 && e.context.realm === a && e.steps === 1, "R21 previous state restored");
+    check(
+        e.calls === 1 && e.depth === 4 && e.context.realm === a && e.steps === 1,
+        "R21 previous state restored",
+    );
     expect(helper(e, o(a.createObject()), s("x")));
     check(e.steps === 1, "R21 subsequent remaining budget");
 }
-
 
 // TS-026A C5: migrate only P23/P24; instrumentation forwards typeof mode.
 for (const source of ["delete typeof x;", "delete void x;"]) {

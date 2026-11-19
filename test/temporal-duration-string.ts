@@ -3,10 +3,19 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm: Realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm: Realm = new Realm((_line: string) => {}, "script"),
+): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "duration-string", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 function passes(text: string): void {
@@ -34,28 +43,88 @@ for (const text of [
     'var log="";var s=new Temporal.Duration().toString({get fractionalSecondDigits(){log+="f";return "auto"},get roundingMode(){log+="r";return {toString(){log+="R";return "trunc"}}},get smallestUnit(){log+="s";return "second"}});s==="PT0S"&&log==="frRs"',
     'var d=new Temporal.Duration(0,0,0,0,0,0,1);Object.defineProperty(d,"seconds",{get(){throw 1}});d.toString()==="PT1S"',
     'var d=Object.getOwnPropertyDescriptor(Temporal.Duration.prototype,"toString");d.value.name==="toString"&&d.value.length===0&&d.writable&&!d.enumerable&&d.configurable',
-]) passes(text);
-const modes = ['ceil','floor','expand','trunc','halfCeil','halfFloor','halfExpand','halfTrunc','halfEven'];
-const positive = ['2','1','2','1','2','1','2','1','2'];
-const negative = ['1','2','2','1','1','2','2','1','2'];
+]) {
+    passes(text);
+}
+const modes = [
+    "ceil",
+    "floor",
+    "expand",
+    "trunc",
+    "halfCeil",
+    "halfFloor",
+    "halfExpand",
+    "halfTrunc",
+    "halfEven",
+];
+const positive = ["2", "1", "2", "1", "2", "1", "2", "1", "2"];
+const negative = ["1", "2", "2", "1", "1", "2", "2", "1", "2"];
 for (let i = 0; i < modes.length; i++) {
-    passes('Temporal.Duration.from("PT1.5S").toString({smallestUnit:"second",roundingMode:"'+modes[i]+'"})==="PT'+positive[i]+'S"');
-    passes('Temporal.Duration.from("-PT1.5S").toString({smallestUnit:"second",roundingMode:"'+modes[i]+'"})==="-PT'+negative[i]+'S"');
+    passes(
+        'Temporal.Duration.from("PT1.5S").toString({smallestUnit:"second",roundingMode:"' +
+            modes[i] +
+            '"})==="PT' +
+            positive[i] +
+            'S"',
+    );
+    passes(
+        'Temporal.Duration.from("-PT1.5S").toString({smallestUnit:"second",roundingMode:"' +
+            modes[i] +
+            '"})==="-PT' +
+            negative[i] +
+            'S"',
+    );
 }
 for (let digits = 0; digits <= 9; digits++) {
-    const suffix = digits === 0 ? '' : '.'+'123456789'.slice(0,digits);
-    passes('Temporal.Duration.from("PT1.123456789S").toString({fractionalSecondDigits:'+digits+'})==="PT1'+suffix+'S"');
+    const suffix = digits === 0 ? "" : "." + "123456789".slice(0, digits);
+    passes(
+        'Temporal.Duration.from("PT1.123456789S").toString({fractionalSecondDigits:' +
+            digits +
+            '})==="PT1' +
+            suffix +
+            'S"',
+    );
 }
-for (const options of ['null','1','"second"','true'])
-    passes('var ok=false;try{new Temporal.Duration().toString('+options+')}catch(e){ok=e instanceof TypeError}ok');
-for (const options of ['{smallestUnit:"minute"}','{smallestUnit:"hour"}','{smallestUnit:"day"}','{smallestUnit:"auto"}','{fractionalSecondDigits:10}','{fractionalSecondDigits:"3"}','{roundingMode:"bad"}'])
-    passes('var ok=false;try{new Temporal.Duration().toString('+options+')}catch(e){ok=e instanceof RangeError}ok');
-passes('var ok=false;try{new Temporal.Duration(0,0,0,0,0,0,9007199254740991,999,999,999).toString({smallestUnit:"second",roundingMode:"ceil"})}catch(e){ok=e instanceof RangeError}ok');
-passes('var touched=false,ok=false;try{Temporal.Duration.prototype.toString.call({}, {get fractionalSecondDigits(){touched=true}})}catch(e){ok=e instanceof TypeError}ok&&!touched');
-const defining = new Realm((_line: string) => {}, "script"), calling = new Realm((_line: string) => {}, "script");
-const fn = run('Temporal.Duration.prototype.toString', defining);
-if (fn.type !== "normal") throw new Error("method lookup");
+for (const options of ["null", "1", '"second"', "true"]) {
+    passes(
+        "var ok=false;try{new Temporal.Duration().toString(" +
+            options +
+            ")}catch(e){ok=e instanceof TypeError}ok",
+    );
+}
+for (const options of [
+    '{smallestUnit:"minute"}',
+    '{smallestUnit:"hour"}',
+    '{smallestUnit:"day"}',
+    '{smallestUnit:"auto"}',
+    "{fractionalSecondDigits:10}",
+    '{fractionalSecondDigits:"3"}',
+    '{roundingMode:"bad"}',
+]) {
+    passes(
+        "var ok=false;try{new Temporal.Duration().toString(" +
+            options +
+            ")}catch(e){ok=e instanceof RangeError}ok",
+    );
+}
+passes(
+    'var ok=false;try{new Temporal.Duration(0,0,0,0,0,0,9007199254740991,999,999,999).toString({smallestUnit:"second",roundingMode:"ceil"})}catch(e){ok=e instanceof RangeError}ok',
+);
+passes(
+    "var touched=false,ok=false;try{Temporal.Duration.prototype.toString.call({}, {get fractionalSecondDigits(){touched=true}})}catch(e){ok=e instanceof TypeError}ok&&!touched",
+);
+const defining = new Realm((_line: string) => {}, "script"),
+    calling = new Realm((_line: string) => {}, "script");
+const fn = run("Temporal.Duration.prototype.toString", defining);
+if (fn.type !== "normal") {
+    throw new Error("method lookup");
+}
 calling.defineScriptGlobal("stringify", { value: fn.value });
 const failed = run('stringify.call(new Temporal.Duration(), {smallestUnit:"day"})', calling);
-check(failed.type === "throw" && failed.value.kind === "object" && failed.value.object.getPrototypeOf() === defining.getErrorPrototype("RangeError"), "defining Realm error");
+check(
+    failed.type === "throw" &&
+        failed.value.kind === "object" &&
+        failed.value.object.getPrototypeOf() === defining.getErrorPrototype("RangeError"),
+    "defining Realm error",
+);
 console.log("temporal duration string passed");

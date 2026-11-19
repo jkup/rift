@@ -3,13 +3,30 @@ import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
 import { parse } from "../src/parser.js";
-import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "../src/primitive-objects.js";
+import {
+    GuestBoolean,
+    GuestNumber,
+    GuestStringObject,
+    GuestSymbolObject,
+} from "../src/primitive-objects.js";
 import { GuestSymbol, wellKnownToPrimitive } from "../src/symbols.js";
 import { toNumber } from "../src/conversion.js";
 import {
-    GuestObject, Environment, UNDEFINED as U, normal, failure, sameValue, getValue, putValue,
-    type Value, type Completion, type ValueCompletion, type ThrowCompletion,
-    type PropertyKey, type Builtin, type Reference,
+    GuestObject,
+    Environment,
+    UNDEFINED as U,
+    normal,
+    failure,
+    sameValue,
+    getValue,
+    putValue,
+    type Value,
+    type Completion,
+    type ValueCompletion,
+    type ThrowCompletion,
+    type PropertyKey,
+    type Builtin,
+    type Reference,
 } from "../src/runtime.js";
 import type { Expr, Stmt, Location } from "../src/syntax.js";
 
@@ -18,11 +35,21 @@ function check(ok: boolean, name: string): void {
         throw new Error("primitive-reads " + name);
     }
 }
-function s(value: string): Value { return { kind: "string", value }; }
-function n(value: number): Value { return { kind: "number", value }; }
-function b(value: boolean): Value { return { kind: "boolean", value }; }
-function o(object: GuestObject): Value { return { kind: "object", object }; }
-function sym(value: GuestSymbol): Value { return { kind: "symbol", value }; }
+function s(value: string): Value {
+    return { kind: "string", value };
+}
+function n(value: number): Value {
+    return { kind: "number", value };
+}
+function b(value: boolean): Value {
+    return { kind: "boolean", value };
+}
+function o(object: GuestObject): Value {
+    return { kind: "object", object };
+}
+function sym(value: GuestSymbol): Value {
+    return { kind: "symbol", value };
+}
 const nil: Value = { kind: "null" };
 const loc: Location = { line: 1, column: 1 };
 const refLoc: Location = { line: 7, column: 9 };
@@ -71,25 +98,51 @@ function program(e: Evaluator, source: string): Completion {
 function expect(result: Completion, value: Value, name: string): void {
     check(result.type === "normal" && sameValue(result.value, value), name);
 }
-function error(result: Completion, message: string, name: string, column = 1, line = 1, kind = "TypeError"): void {
-    check(result.type === "throw" && result.diagnostic.phase === "runtime" &&
-        result.diagnostic.name === kind && result.diagnostic.message === message &&
-        result.diagnostic.loc.line === line && result.diagnostic.loc.column === column, name);
+function error(
+    result: Completion,
+    message: string,
+    name: string,
+    column = 1,
+    line = 1,
+    kind = "TypeError",
+): void {
+    check(
+        result.type === "throw" &&
+            result.diagnostic.phase === "runtime" &&
+            result.diagnostic.name === kind &&
+            result.diagnostic.message === message &&
+            result.diagnostic.loc.line === line &&
+            result.diagnostic.loc.column === column,
+        name,
+    );
 }
 function exact(result: Completion, name: string): void {
-    check(result === Q && result.value === Q.value && result.type === "throw" && result.diagnostic === Q.diagnostic, name);
+    check(
+        result === Q &&
+            result.value === Q.value &&
+            result.type === "throw" &&
+            result.diagnostic === Q.diagnostic,
+        name,
+    );
 }
 function clean(e: Evaluator, realm: Realm, name: string): void {
     check(e.calls === 0 && e.depth === 0 && e.context.realm === realm, name + " cleanup");
 }
-function fresh(): Realm { return new Realm((_line) => {}); }
+function fresh(): Realm {
+    return new Realm((_line) => {});
+}
 function prototype(realm: Realm, value: Value): GuestObject {
     switch (value.kind) {
-        case "boolean": return realm.booleanPrototype;
-        case "number": return realm.numberPrototype;
-        case "string": return realm.stringPrototype;
-        case "symbol": return realm.symbolPrototype;
-        default: throw new Error("expected primitive");
+        case "boolean":
+            return realm.booleanPrototype;
+        case "number":
+            return realm.numberPrototype;
+        case "string":
+            return realm.stringPrototype;
+        case "symbol":
+            return realm.symbolPrototype;
+        default:
+            throw new Error("expected primitive");
     }
 }
 class Measured extends Evaluator {
@@ -117,7 +170,13 @@ class Observation {
     abrupt: ThrowCompletion | null = null;
     fault: Error | null = null;
     factoryFault: Error | null = null;
-    get(target: GuestObject, key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    get(
+        target: GuestObject,
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         this.trace += "G";
         this.reads++;
         this.receiver = receiver;
@@ -135,32 +194,78 @@ class Observation {
     }
 }
 class BooleanBox extends GuestBoolean {
-    constructor(value: boolean, proto: GuestObject, public observation: Observation) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    constructor(
+        value: boolean,
+        proto: GuestObject,
+        public observation: Observation,
+    ) {
+        super(value, proto);
+    }
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         return this.observation.get(this, key, receiver, context, at);
     }
 }
 class NumberBox extends GuestNumber {
-    constructor(value: number, proto: GuestObject, public observation: Observation) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    constructor(
+        value: number,
+        proto: GuestObject,
+        public observation: Observation,
+    ) {
+        super(value, proto);
+    }
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         return this.observation.get(this, key, receiver, context, at);
     }
 }
 class StringBox extends GuestStringObject {
-    constructor(value: string, proto: GuestObject, public observation: Observation) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    constructor(
+        value: string,
+        proto: GuestObject,
+        public observation: Observation,
+    ) {
+        super(value, proto);
+    }
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         return this.observation.get(this, key, receiver, context, at);
     }
 }
 class SymbolBox extends GuestSymbolObject {
-    constructor(value: GuestSymbol, proto: GuestObject, public observation: Observation) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    constructor(
+        value: GuestSymbol,
+        proto: GuestObject,
+        public observation: Observation,
+    ) {
+        super(value, proto);
+    }
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         return this.observation.get(this, key, receiver, context, at);
     }
 }
 class ObservedRealm extends Realm {
     observation = new Observation();
-    constructor() { super((_line) => {}); }
+    constructor() {
+        super((_line) => {});
+    }
     record(box: GuestObject): void {
         if (this.observation.factoryFault !== null) {
             throw this.observation.factoryFault;
@@ -200,12 +305,32 @@ const valueRows: { name: string; source: string; value: Value; expected: Value }
     { name: "V4 NegativeZero", source: "p.valueOf();", value: n(-0), expected: n(-0) },
     { name: "V5 NaN", source: "p.valueOf();", value: n(NaN), expected: n(NaN) },
     { name: "V5 Infinity", source: "p.valueOf();", value: n(Infinity), expected: n(Infinity) },
-    { name: "V5 NegativeInfinity", source: "p.valueOf();", value: n(-Infinity), expected: n(-Infinity) },
+    {
+        name: "V5 NegativeInfinity",
+        source: "p.valueOf();",
+        value: n(-Infinity),
+        expected: n(-Infinity),
+    },
     { name: "V6 StringValue", source: "'ab'.valueOf();", value: U, expected: s("ab") },
     { name: "V6 StringText", source: "'ab'.toString();", value: U, expected: s("ab") },
-    { name: "V7 SymbolValue", source: "p.valueOf();", value: sym(identity), expected: sym(identity) },
-    { name: "V7 SymbolText", source: "p.toString();", value: sym(identity), expected: s("Symbol(x)") },
-    { name: "V8 SymbolHook", source: "p[h]('ignored');", value: sym(identity), expected: sym(identity) },
+    {
+        name: "V7 SymbolValue",
+        source: "p.valueOf();",
+        value: sym(identity),
+        expected: sym(identity),
+    },
+    {
+        name: "V7 SymbolText",
+        source: "p.toString();",
+        value: sym(identity),
+        expected: s("Symbol(x)"),
+    },
+    {
+        name: "V8 SymbolHook",
+        source: "p[h]('ignored');",
+        value: sym(identity),
+        expected: sym(identity),
+    },
     { name: "V20 NumberToStringBoundary", source: "(2).toString();", value: U, expected: s("2") },
 ];
 for (const row of valueRows) {
@@ -216,7 +341,10 @@ for (const row of valueRows) {
     const result = run(e, row.source);
     expect(result, row.expected, row.name);
     if (row.name === "V4 NegativeZero") {
-        check(result.value.kind === "number" && 1 / result.value.value === -Infinity, row.name + " reciprocal");
+        check(
+            result.value.kind === "number" && 1 / result.value.value === -Infinity,
+            row.name + " reciprocal",
+        );
     }
 }
 for (const value of primitives) {
@@ -241,7 +369,9 @@ for (const value of primitives) {
     put(root, "Symbol(x)", n(29));
     expect(run(e, "p[s];"), U, "V14 SameTextString");
     put(root, "x", n(41));
-    const forbidden = fn(realm, (_r, _a, _c, _l): Completion => { throw F; });
+    const forbidden = fn(realm, (_r, _a, _c, _l): Completion => {
+        throw F;
+    });
     put(root, wellKnownToPrimitive, forbidden);
     put(root, "toString", forbidden);
     put(root, "valueOf", forbidden);
@@ -249,7 +379,12 @@ for (const value of primitives) {
 }
 class ObservedObject extends GuestObject {
     observation = new Observation();
-    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+    internalGet(
+        key: PropertyKey,
+        receiver: Value,
+        context: OperationContext,
+        at: Location,
+    ): ValueCompletion {
         return this.observation.get(this, key, receiver, context, at);
     }
 }
@@ -261,19 +396,33 @@ class ObservedObject extends GuestObject {
     put(target, "x", n(31));
     bind(realm, "p", value);
     expect(run(e, "p.x;"), n(31), "V15 ObjectControl");
-    check(target.observation.receiver === value && realm.observation.boxes.length === 0, "V15 no wrapper");
+    check(
+        target.observation.receiver === value && realm.observation.boxes.length === 0,
+        "V15 no wrapper",
+    );
     const box = realm.createStringObject("ab");
     put(box, "x", n(37));
     const boxed = o(box);
     bind(realm, "p", boxed);
     expect(run(e, "p.x;"), n(37), "V16 BoxControl own");
     expect(run(e, "p[0];"), s("a"), "V16 BoxControl virtual");
-    check(realm.observation.receiver === boxed && realm.observation.boxes.length === 1, "V16 identity");
-    bind(realm, "f", fn(realm, (_r, _a, _c, _l) => normal()));
+    check(
+        realm.observation.receiver === boxed && realm.observation.boxes.length === 1,
+        "V16 identity",
+    );
+    bind(
+        realm,
+        "f",
+        fn(realm, (_r, _a, _c, _l) => normal()),
+    );
     expect(run(e, "f.name;"), s("hook"), "V17 CallableControl");
     error(run(e, "null.x;"), nullish, "V18 Null");
     error(run(e, "undefined.x;"), nullish, "V19 Undefined");
-    expect(run(e, "true.valueOf;"), realm.booleanPrototype.get("valueOf", e.context, loc), "V21 BooleanMethodIdentity");
+    expect(
+        run(e, "true.valueOf;"),
+        realm.booleanPrototype.get("valueOf", e.context, loc),
+        "V21 BooleanMethodIdentity",
+    );
 }
 // S1-S12: literal UTF-16 oracles, independent of host property reads.
 const stringRows: { name: string; payload: string; key: Value; expected: Value }[] = [
@@ -303,7 +452,18 @@ for (const row of stringRows) {
     bind(realm, "k", row.key);
     expect(run(e, "p[k];"), row.expected, row.name);
 }
-for (const key of [s("-0"), s("01"), s("1.0"), s("1e0"), s(""), n(-1), n(0.5), n(2), n(NaN), n(Infinity)]) {
+for (const key of [
+    s("-0"),
+    s("01"),
+    s("1.0"),
+    s("1e0"),
+    s(""),
+    n(-1),
+    n(0.5),
+    n(2),
+    n(NaN),
+    n(Infinity),
+]) {
     const realm = fresh();
     bind(realm, "k", key);
     expect(run(new Evaluator(realm), "'ab'[k];"), U, "S7 Nonindices");
@@ -318,17 +478,43 @@ for (const key of [s("-0"), s("01"), s("1.0"), s("1e0"), s(""), n(-1), n(0.5), n
     expect(run(e, "'ab'[2];"), s("z"), "S10 MissingInherits");
     expect(run(e, "'ab'['-0'];"), s("z"), "S11 NoncanonicalInherits");
     expect(run(e, "'ab'.length;"), n(2), "S12 LengthOwn");
-    check(sameValue(realm.stringPrototype.get("length", e.context, loc), n(0)), "S12 prototype length");
+    check(
+        sameValue(realm.stringPrototype.get("length", e.context, loc), n(0)),
+        "S12 prototype length",
+    );
     const box = realm.observation.boxes[0];
     const index = box.getOwnProperty("0");
     const length = box.getOwnProperty("length");
-    check(index !== undefined && index.kind === "data" && sameValue(index.value, s("a")) && !index.writable && index.enumerable && !index.configurable, "S13 index descriptor");
-    check(length !== undefined && length.kind === "data" && sameValue(length.value, n(2)) && !length.writable && !length.enumerable && !length.configurable, "S13 length descriptor");
+    check(
+        index !== undefined &&
+            index.kind === "data" &&
+            sameValue(index.value, s("a")) &&
+            !index.writable &&
+            index.enumerable &&
+            !index.configurable,
+        "S13 index descriptor",
+    );
+    check(
+        length !== undefined &&
+            length.kind === "data" &&
+            sameValue(length.value, n(2)) &&
+            !length.writable &&
+            !length.enumerable &&
+            !length.configurable,
+        "S13 length descriptor",
+    );
     box.preventExtensions();
     const defined = box.defineOwnProperty("0", { value: s("a") }, e.context, loc);
     const snapshot = box.properties;
     snapshot.delete("0");
-    check(defined.type === "normal" && defined.value && box.ownPropertyKeys().length === 3 && box instanceof GuestStringObject && box.stringData === "ab", "S14 NoMaterialization");
+    check(
+        defined.type === "normal" &&
+            defined.value &&
+            box.ownPropertyKeys().length === 3 &&
+            box instanceof GuestStringObject &&
+            box.stringData === "ab",
+        "S14 NoMaterialization",
+    );
     expect(box.internalGet("0", o(box), e.context, loc), s("a"), "S14 virtual survives");
 }
 // E1-E23/E30 share explicit scenario names and literal trace oracles.
@@ -358,7 +544,10 @@ function effects(name: string, value: Value, expectedTrace: string): void {
     const convert = fn(realm, (receiver, args, _c, _l) => {
         observation.trace += "C";
         conversions++;
-        check(receiver === keyValue && args.length === 1 && sameValue(args[0], s("string")), name + " key receiver/hint");
+        check(
+            receiver === keyValue && args.length === 1 && sameValue(args[0], s("string")),
+            name + " key receiver/hint",
+        );
         if (name === "E6 HookThrow") {
             return Q;
         }
@@ -377,17 +566,29 @@ function effects(name: string, value: Value, expectedTrace: string): void {
     if (name === "E12 HookNoncallable") {
         put(key, wellKnownToPrimitive, n(7));
     }
-    if (name === "E14 OrdinaryFirst" || name === "E15 OrdinaryFallback" || name === "E16 OrdinaryMissing") {
+    if (
+        name === "E14 OrdinaryFirst" ||
+        name === "E15 OrdinaryFallback" ||
+        name === "E16 OrdinaryMissing"
+    ) {
         key.internalDelete(wellKnownToPrimitive);
-        put(key, "toString", fn(realm, (receiver, args, _c, _l) => {
-            observation.trace += "T";
-            check(receiver === keyValue && args.length === 0, name + " ordinary hint");
-            return normal(name === "E15 OrdinaryFallback" ? keyValue : s("m"));
-        }));
-        put(key, "valueOf", fn(realm, (_r, _a, _c, _l) => {
-            observation.trace += "V";
-            return normal(s("m"));
-        }));
+        put(
+            key,
+            "toString",
+            fn(realm, (receiver, args, _c, _l) => {
+                observation.trace += "T";
+                check(receiver === keyValue && args.length === 0, name + " ordinary hint");
+                return normal(name === "E15 OrdinaryFallback" ? keyValue : s("m"));
+            }),
+        );
+        put(
+            key,
+            "valueOf",
+            fn(realm, (_r, _a, _c, _l) => {
+                observation.trace += "V";
+                return normal(s("m"));
+            }),
+        );
         if (name === "E16 OrdinaryMissing") {
             put(key, "toString", n(7));
             put(key, "valueOf", n(7));
@@ -408,30 +609,42 @@ function effects(name: string, value: Value, expectedTrace: string): void {
     if (name === "E7 GetThrow") {
         observation.abrupt = Q;
     }
-    bind(realm, "b", fn(realm, (_r, _a, _c, _l) => {
-        observation.trace += "B";
-        return name === "E3 BaseThrow" ? Q : normal(currentBase);
-    }));
-    bind(realm, "k", fn(realm, (_r, _a, _c, _l) => {
-        observation.trace += "K";
-        const captured = currentKey;
-        if (name === "E19 KeyRebinding") {
-            currentKey = s("other");
-        }
-        if (name === "E20 BaseRebinding") {
-            currentBase = b(false);
-        }
-        return name === "E4 KeyExpressionThrow" ? Q : normal(captured);
-    }));
-    bind(realm, "a", fn(realm, (_r, _a, _c, _l) => {
-        observation.trace += "A";
-        argumentsSeen++;
-        if (name === "E23 ArgumentMutation") {
-            put(root, "m", n(7));
-            currentBase = b(false);
-        }
-        return name === "E8 ArgumentThrow" || name === "E11 ArgumentWins" ? Q : normal(n(1));
-    }));
+    bind(
+        realm,
+        "b",
+        fn(realm, (_r, _a, _c, _l) => {
+            observation.trace += "B";
+            return name === "E3 BaseThrow" ? Q : normal(currentBase);
+        }),
+    );
+    bind(
+        realm,
+        "k",
+        fn(realm, (_r, _a, _c, _l) => {
+            observation.trace += "K";
+            const captured = currentKey;
+            if (name === "E19 KeyRebinding") {
+                currentKey = s("other");
+            }
+            if (name === "E20 BaseRebinding") {
+                currentBase = b(false);
+            }
+            return name === "E4 KeyExpressionThrow" ? Q : normal(captured);
+        }),
+    );
+    bind(
+        realm,
+        "a",
+        fn(realm, (_r, _a, _c, _l) => {
+            observation.trace += "A";
+            argumentsSeen++;
+            if (name === "E23 ArgumentMutation") {
+                put(root, "m", n(7));
+                currentBase = b(false);
+            }
+            return name === "E8 ArgumentThrow" || name === "E11 ArgumentWins" ? Q : normal(n(1));
+        }),
+    );
     if (name === "E4 KeyExpressionThrow" || name === "E5 NullBeforeHook") {
         currentBase = nil;
     }
@@ -440,7 +653,16 @@ function effects(name: string, value: Value, expectedTrace: string): void {
     }
     const result = run(e, source);
     check(observation.trace === expectedTrace, name + " trace: " + observation.trace);
-    if (["E3 BaseThrow", "E4 KeyExpressionThrow", "E6 HookThrow", "E7 GetThrow", "E8 ArgumentThrow", "E11 ArgumentWins"].includes(name)) {
+    if (
+        [
+            "E3 BaseThrow",
+            "E4 KeyExpressionThrow",
+            "E6 HookThrow",
+            "E7 GetThrow",
+            "E8 ArgumentThrow",
+            "E11 ArgumentWins",
+        ].includes(name)
+    ) {
         exact(result, name);
     } else if (name === "E5 NullBeforeHook" || name === "E5 UndefinedBeforeHook") {
         error(result, nullish, name);
@@ -461,7 +683,10 @@ function effects(name: string, value: Value, expectedTrace: string): void {
         check(conversions === 1, name + " one conversion");
     }
     if (expectedTrace.includes("G")) {
-        check(observation.reads === 1 && observation.receiver === value, name + " original receiver");
+        check(
+            observation.reads === 1 && observation.receiver === value,
+            name + " original receiver",
+        );
     }
     if (name === "E17 SymbolResult") {
         check(observation.key === identity, name + " exact symbol");
@@ -469,14 +694,29 @@ function effects(name: string, value: Value, expectedTrace: string): void {
     clean(e, realm, name);
 }
 const effectRows = [
-    ["E1 CallOrder", "BKCGAAM"], ["E2 ReadOrder", "BKCG"], ["E3 BaseThrow", "B"],
-    ["E4 KeyExpressionThrow", "BK"], ["E5 NullBeforeHook", "BK"], ["E5 UndefinedBeforeHook", "BK"],
-    ["E6 HookThrow", "BKC"], ["E7 GetThrow", "BKCG"], ["E8 ArgumentThrow", "BKCGA"],
-    ["E9 Noncallable", "BKCGAA"], ["E10 MissingCall", "BKCGAA"], ["E11 ArgumentWins", "BKCGA"],
-    ["E12 HookNoncallable", "BK"], ["E13 HookObject", "BKC"], ["E14 OrdinaryFirst", "BKTGAAM"],
-    ["E15 OrdinaryFallback", "BKTVGAAM"], ["E16 OrdinaryMissing", "BK"], ["E17 SymbolResult", "BKCGAAM"],
-    ["E19 KeyRebinding", "BKCG"], ["E20 BaseRebinding", "BKCGAAM"],
-    ["E21 PrototypeMutation", "BKCGAAM"], ["E22 PrototypeDeletion", "BKCGAA"], ["E23 ArgumentMutation", "BKCGAAM"],
+    ["E1 CallOrder", "BKCGAAM"],
+    ["E2 ReadOrder", "BKCG"],
+    ["E3 BaseThrow", "B"],
+    ["E4 KeyExpressionThrow", "BK"],
+    ["E5 NullBeforeHook", "BK"],
+    ["E5 UndefinedBeforeHook", "BK"],
+    ["E6 HookThrow", "BKC"],
+    ["E7 GetThrow", "BKCG"],
+    ["E8 ArgumentThrow", "BKCGA"],
+    ["E9 Noncallable", "BKCGAA"],
+    ["E10 MissingCall", "BKCGAA"],
+    ["E11 ArgumentWins", "BKCGA"],
+    ["E12 HookNoncallable", "BK"],
+    ["E13 HookObject", "BKC"],
+    ["E14 OrdinaryFirst", "BKTGAAM"],
+    ["E15 OrdinaryFallback", "BKTVGAAM"],
+    ["E16 OrdinaryMissing", "BK"],
+    ["E17 SymbolResult", "BKCGAAM"],
+    ["E19 KeyRebinding", "BKCG"],
+    ["E20 BaseRebinding", "BKCGAAM"],
+    ["E21 PrototypeMutation", "BKCGAAM"],
+    ["E22 PrototypeDeletion", "BKCGAA"],
+    ["E23 ArgumentMutation", "BKCGAAM"],
 ];
 for (const row of effectRows) {
     effects(row[0], b(true), row[1]);
@@ -495,7 +735,10 @@ for (const value of [n(2), s("ab"), sym(identity)]) {
         const e = new Evaluator(realm);
         bind(realm, "k", keys[index]);
         expect(run(e, "true[k];"), U, "E18 PrimitiveKeys");
-        check(realm.observation.key === expected[index] && e.steps === 4 && e.calls === 0, "E18 exact key/no hook");
+        check(
+            realm.observation.key === expected[index] && e.steps === 4 && e.calls === 0,
+            "E18 exact key/no hook",
+        );
     }
     const realm = fresh();
     const e = new Evaluator(realm);
@@ -526,7 +769,12 @@ for (const value of [b(true), n(-0), s("ab"), sym(identity)]) {
     const e = new Evaluator(realm);
     const parsed = parse("let f = 'x'.valueOf; f();");
     check(parsed.error === null, "M6 parse");
-    error(e.block(parsed.body, realm.global, U), "receiver is not a string", "M6 DetachedBrand", 22);
+    error(
+        e.block(parsed.body, realm.global, U),
+        "receiver is not a string",
+        "M6 DetachedBrand",
+        22,
+    );
     expect(run(e, "'x'.valueOf.call('y');"), s("y"), "M7 BorrowedCall");
 }
 for (const mode of ["normal", "abrupt", "fault"]) {
@@ -570,19 +818,33 @@ for (const mode of ["normal", "abrupt", "fault"]) {
             expect(result, value, "M10 ForeignMethod");
         }
     }
-    check(sameValue(effectsObject.get("changed", foreignEvaluator.context, loc), n(3)), "M17 mutation retained");
+    check(
+        sameValue(effectsObject.get("changed", foreignEvaluator.context, loc), n(3)),
+        "M17 mutation retained",
+    );
     clean(e, a, "M17");
-    expect(program(foreignEvaluator, "function foreignMethod() { return this.x; }"), U, "M11 setup");
+    expect(
+        program(foreignEvaluator, "function foreignMethod() { return this.x; }"),
+        U,
+        "M11 setup",
+    );
     put(a.booleanPrototype, "m", binding(foreign, "foreignMethod"));
     expect(run(e, "p.m();"), n(2), "M11 ForeignGuest");
     const key = a.createObject();
-    put(key, wellKnownToPrimitive, fn(foreign, (_r, _args, context, _at) => {
-        check(context.realm === foreign && a.observation.boxes.length > 0, "M12 wrapper before foreign hook");
-        const wrapper = a.observation.boxes[a.observation.boxes.length - 1];
-        check(wrapper.getPrototypeOf() === a.booleanPrototype, "M12 wrapper active Realm");
-        put(a.booleanPrototype, "x", n(3));
-        return normal(s("x"));
-    }));
+    put(
+        key,
+        wellKnownToPrimitive,
+        fn(foreign, (_r, _args, context, _at) => {
+            check(
+                context.realm === foreign && a.observation.boxes.length > 0,
+                "M12 wrapper before foreign hook",
+            );
+            const wrapper = a.observation.boxes[a.observation.boxes.length - 1];
+            check(wrapper.getPrototypeOf() === a.booleanPrototype, "M12 wrapper active Realm");
+            put(a.booleanPrototype, "x", n(3));
+            return normal(s("x"));
+        }),
+    );
     bind(a, "k", o(key));
     expect(run(e, "p[k];"), n(3), "M12 ForeignKey");
     clean(e, a, "M12");
@@ -590,11 +852,34 @@ for (const mode of ["normal", "abrupt", "fault"]) {
     expect(run(e, "p.x;"), n(3), "M13 first");
     expect(run(e, "p.x;"), n(3), "M13 second");
     const boxes = a.observation.boxes;
-    check(boxes.length === count + 2 && boxes[count] !== boxes[count + 1] && boxes[count].getPrototypeOf() === a.booleanPrototype && boxes[count + 1].getPrototypeOf() === a.booleanPrototype, "M13 SeparateReads");
-    check(a.observation.receiver === value && a.observation.at.line === 1 && a.observation.at.column === 1, "M14 ReceiverObservation");
-    put(a.booleanPrototype, "m", foreign.objectPrototype.get("valueOf", foreignEvaluator.context, loc));
+    check(
+        boxes.length === count + 2 &&
+            boxes[count] !== boxes[count + 1] &&
+            boxes[count].getPrototypeOf() === a.booleanPrototype &&
+            boxes[count + 1].getPrototypeOf() === a.booleanPrototype,
+        "M13 SeparateReads",
+    );
+    check(
+        a.observation.receiver === value &&
+            a.observation.at.line === 1 &&
+            a.observation.at.column === 1,
+        "M14 ReceiverObservation",
+    );
+    put(
+        a.booleanPrototype,
+        "m",
+        foreign.objectPrototype.get("valueOf", foreignEvaluator.context, loc),
+    );
     const boxed = run(e, "p.m();");
-    check(boxed.type === "normal" && boxed.value.kind === "object" && boxed.value.object instanceof GuestBoolean && boxed.value.object.booleanData && boxed.value.object.getPrototypeOf() === foreign.booleanPrototype && boxed.value.object !== boxes[boxes.length - 1], "M15 BoxingInsideMethod");
+    check(
+        boxed.type === "normal" &&
+            boxed.value.kind === "object" &&
+            boxed.value.object instanceof GuestBoolean &&
+            boxed.value.object.booleanData &&
+            boxed.value.object.getPrototypeOf() === foreign.booleanPrototype &&
+            boxed.value.object !== boxes[boxes.length - 1],
+        "M15 BoxingInsideMethod",
+    );
     bind(a, "detached", binding(foreign, "foreignMethod"));
     error(run(e, "detached();"), nullish, "M16 DetachedRead", 35);
     put(a.booleanPrototype, "x", n(1));
@@ -604,9 +889,17 @@ for (const mode of ["normal", "abrupt", "fault"]) {
 }
 // W1-W12/W19: direct reference reuse, success-only publication and retry.
 const reuseNames = [
-    "W1 ReadTwice", "W2 FreshReferences", "W3 ReadThenWrite", "W4 MutationAfterRead",
-    "W5 SymbolCache", "W8 ConversionFailure", "W9 DispatchFailureCache",
-    "W10 HostFailureCache", "W11 ConversionHostFault", "W12 NoValueCache", "W19 LocationSplit",
+    "W1 ReadTwice",
+    "W2 FreshReferences",
+    "W3 ReadThenWrite",
+    "W4 MutationAfterRead",
+    "W5 SymbolCache",
+    "W8 ConversionFailure",
+    "W9 DispatchFailureCache",
+    "W10 HostFailureCache",
+    "W11 ConversionHostFault",
+    "W12 NoValueCache",
+    "W19 LocationSplit",
 ];
 for (const name of reuseNames) {
     const realm = fresh();
@@ -620,22 +913,26 @@ for (const name of reuseNames) {
     put(target, "y", n(2));
     put(target, identity, n(1));
     put(target, otherIdentity, n(2));
-    put(key, wellKnownToPrimitive, fn(realm, (_r, _a, _c, _l) => {
-        hooks++;
-        if (hooks === 1 && name === "W8 ConversionFailure") {
-            return Q;
-        }
-        if (hooks === 1 && name === "W11 ConversionHostFault") {
-            throw F;
-        }
-        if (name === "W5 SymbolCache") {
-            return normal(sym(hooks === 1 ? identity : otherIdentity));
-        }
-        if (name === "W8 ConversionFailure" || name === "W11 ConversionHostFault") {
-            return normal(s("x"));
-        }
-        return normal(s(hooks === 1 ? "x" : "y"));
-    }));
+    put(
+        key,
+        wellKnownToPrimitive,
+        fn(realm, (_r, _a, _c, _l) => {
+            hooks++;
+            if (hooks === 1 && name === "W8 ConversionFailure") {
+                return Q;
+            }
+            if (hooks === 1 && name === "W11 ConversionHostFault") {
+                throw F;
+            }
+            if (name === "W5 SymbolCache") {
+                return normal(sym(hooks === 1 ? identity : otherIdentity));
+            }
+            if (name === "W8 ConversionFailure" || name === "W11 ConversionHostFault") {
+                return normal(s("x"));
+            }
+            return normal(s(hooks === 1 ? "x" : "y"));
+        }),
+    );
     if (name === "W9 DispatchFailureCache" || name === "W19 LocationSplit") {
         target.observation.abrupt = Q;
     }
@@ -652,7 +949,11 @@ for (const name of reuseNames) {
         check(escaped, name + " identity");
     } else {
         const first = getValue(ref, e.context, opLoc);
-        if (name === "W8 ConversionFailure" || name === "W9 DispatchFailureCache" || name === "W19 LocationSplit") {
+        if (
+            name === "W8 ConversionFailure" ||
+            name === "W9 DispatchFailureCache" ||
+            name === "W19 LocationSplit"
+        ) {
             exact(first, name);
         } else {
             expect(first, n(1), name + " first");
@@ -672,22 +973,53 @@ for (const name of reuseNames) {
     target.observation.abrupt = null;
     target.observation.fault = null;
     if (name === "W4 MutationAfterRead") {
-        put(key, wellKnownToPrimitive, fn(realm, (_r, _a, _c, _l): Completion => { throw F; }));
+        put(
+            key,
+            wellKnownToPrimitive,
+            fn(realm, (_r, _a, _c, _l): Completion => {
+                throw F;
+            }),
+        );
     }
-    if (name === "W3 ReadThenWrite" || name === "W4 MutationAfterRead" || name === "W5 SymbolCache") {
+    if (
+        name === "W3 ReadThenWrite" ||
+        name === "W4 MutationAfterRead" ||
+        name === "W5 SymbolCache"
+    ) {
         expect(putValue(ref, n(3), e.context, opLoc), n(3), name + " write");
         const changed: PropertyKey = name === "W5 SymbolCache" ? identity : "x";
         const unchanged: PropertyKey = name === "W5 SymbolCache" ? otherIdentity : "y";
-        check(sameValue(target.get(changed, e.context, loc), n(3)) && sameValue(target.get(unchanged, e.context, loc), n(2)), name + " properties");
+        check(
+            sameValue(target.get(changed, e.context, loc), n(3)) &&
+                sameValue(target.get(unchanged, e.context, loc), n(2)),
+            name + " properties",
+        );
     } else if (name === "W2 FreshReferences") {
-        expect(getValue({ kind: "property", base: ref.base, key: rawKey, loc: refLoc }, e.context, opLoc), n(2), name + " fresh");
+        expect(
+            getValue(
+                { kind: "property", base: ref.base, key: rawKey, loc: refLoc },
+                e.context,
+                opLoc,
+            ),
+            n(2),
+            name + " fresh",
+        );
     } else {
         if (name === "W12 NoValueCache") {
             put(target, "x", n(4));
         }
-        expect(getValue(ref, e.context, opLoc), n(name === "W12 NoValueCache" ? 4 : 1), name + " retry");
+        expect(
+            getValue(ref, e.context, opLoc),
+            n(name === "W12 NoValueCache" ? 4 : 1),
+            name + " retry",
+        );
     }
-    const expectedHooks = name === "W2 FreshReferences" || name === "W8 ConversionFailure" || name === "W11 ConversionHostFault" ? 2 : 1;
+    const expectedHooks =
+        name === "W2 FreshReferences" ||
+        name === "W8 ConversionFailure" ||
+        name === "W11 ConversionHostFault"
+            ? 2
+            : 1;
     check(hooks === expectedHooks, name + " hook count");
 }
 for (const value of [...primitives, nil, U]) {
@@ -695,10 +1027,14 @@ for (const value of [...primitives, nil, U]) {
     const e = new Evaluator(realm);
     const key = realm.createObject();
     let hooks = 0;
-    put(key, wellKnownToPrimitive, fn(realm, (_r, _a, _c, _l) => {
-        hooks++;
-        return normal(s("x"));
-    }));
+    put(
+        key,
+        wellKnownToPrimitive,
+        fn(realm, (_r, _a, _c, _l) => {
+            hooks++;
+            return normal(s("x"));
+        }),
+    );
     const ref: Reference = { kind: "property", base: value, key: o(key), loc: refLoc };
     const isNullish = value.kind === "null" || value.kind === "undefined";
     if (!isNullish) {
@@ -715,11 +1051,18 @@ for (const value of [...primitives, nil, U]) {
         error(writeResult, nullish, "W7 write", 9, 7);
     } else {
         error(writeResult, "property is not writable: x", "W6 write", 4, 8);
-        check(realm.observation.boxes.length === 2 && realm.observation.boxes[0] !== realm.observation.boxes[1], "W6 fresh Put box");
+        check(
+            realm.observation.boxes.length === 2 &&
+                realm.observation.boxes[0] !== realm.observation.boxes[1],
+            "W6 fresh Put box",
+        );
     }
     check(hooks === (isNullish ? 0 : 1), "W6/W7 hook count");
     if (!isNullish) {
-        check(sameValue(prototype(realm, value).get("x", e.context, loc), n(1)), "W6 prototype unchanged");
+        check(
+            sameValue(prototype(realm, value).get("x", e.context, loc), n(1)),
+            "W6 prototype unchanged",
+        );
     }
 }
 for (const name of ["W13 SimplePrimitiveWrite", "W14 RHSAbrupt", "W15 SimpleObjectWrite"]) {
@@ -729,26 +1072,42 @@ for (const name of ["W13 SimplePrimitiveWrite", "W14 RHSAbrupt", "W15 SimpleObje
         const target = realm.createObject();
         const key = realm.createObject();
         let trace = "";
-        put(key, wellKnownToPrimitive, fn(realm, (_r, _a, _c, _l) => {
-            trace += "X";
-            return normal(s("x"));
-        }));
+        put(
+            key,
+            wellKnownToPrimitive,
+            fn(realm, (_r, _a, _c, _l) => {
+                trace += "X";
+                return normal(s("x"));
+            }),
+        );
         bind(realm, "p", name === "W15 SimpleObjectWrite" ? o(target) : value);
         bind(realm, "k", o(key));
-        bind(realm, "rhs", fn(realm, (_r, _a, _c, _l) => {
-            trace += "R";
-            put(key, wellKnownToPrimitive, fn(realm, (_rr, _aa, _cc, _ll) => {
-                trace += "Y";
-                return normal(s("y"));
-            }));
-            return name === "W14 RHSAbrupt" ? Q : normal(n(3));
-        }));
+        bind(
+            realm,
+            "rhs",
+            fn(realm, (_r, _a, _c, _l) => {
+                trace += "R";
+                put(
+                    key,
+                    wellKnownToPrimitive,
+                    fn(realm, (_rr, _aa, _cc, _ll) => {
+                        trace += "Y";
+                        return normal(s("y"));
+                    }),
+                );
+                return name === "W14 RHSAbrupt" ? Q : normal(n(3));
+            }),
+        );
         const result = run(e, "p[k] = rhs();");
         if (name === "W14 RHSAbrupt") {
             exact(result, name);
         } else if (name === "W15 SimpleObjectWrite") {
             expect(result, n(3), name);
-            check(sameValue(target.get("y", e.context, loc), n(3)) && target.getOwnProperty("x") === undefined, name + " deferred key");
+            check(
+                sameValue(target.get("y", e.context, loc), n(3)) &&
+                    target.getOwnProperty("x") === undefined,
+                name + " deferred key",
+            );
         } else {
             error(result, "property is not writable: y", name);
         }
@@ -769,28 +1128,48 @@ const parseRows = [
 ];
 for (const row of parseRows) {
     const parsed = parse(row.source);
-    check(parsed.error !== null && parsed.error.phase === "parse" && parsed.error.name === "SyntaxError" && parsed.error.message === row.message && parsed.error.loc.line === 1 && parsed.error.loc.column === row.column, "W16 ParseBoundary");
+    check(
+        parsed.error !== null &&
+            parsed.error.phase === "parse" &&
+            parsed.error.name === "SyntaxError" &&
+            parsed.error.message === row.message &&
+            parsed.error.loc.line === 1 &&
+            parsed.error.loc.column === row.column,
+        "W16 ParseBoundary",
+    );
 }
 for (const name of ["W17 ReadBeforeNumericFailure", "W18 ReadBeforeRHSFailure"]) {
     const realm = fresh();
     const e = new Evaluator(realm);
     const key = realm.createObject();
     let hooks = 0;
-    put(key, wellKnownToPrimitive, fn(realm, (_r, _a, _c, _l) => {
-        hooks++;
-        return normal(s("x"));
-    }));
+    put(
+        key,
+        wellKnownToPrimitive,
+        fn(realm, (_r, _a, _c, _l) => {
+            hooks++;
+            return normal(s("x"));
+        }),
+    );
     put(realm.booleanPrototype, "x", sym(identity));
     const ref: Reference = { kind: "property", base: b(true), key: o(key), loc: refLoc };
     const read = getValue(ref, e.context, opLoc);
     expect(read, sym(identity), name + " read");
     const next = name === "W17 ReadBeforeNumericFailure" ? toNumber(read.value, opLoc, null) : Q;
     if (name === "W17 ReadBeforeNumericFailure") {
-        check(next.type === "throw" && next.diagnostic.message === "cannot convert symbol to number" && next.diagnostic.loc === opLoc, name);
+        check(
+            next.type === "throw" &&
+                next.diagnostic.message === "cannot convert symbol to number" &&
+                next.diagnostic.loc === opLoc,
+            name,
+        );
     } else {
         check(next === Q, name);
     }
-    check(hooks === 1 && sameValue(realm.booleanPrototype.get("x", e.context, loc), sym(identity)), name + " retained state/no Put");
+    check(
+        hooks === 1 && sameValue(realm.booleanPrototype.get("x", e.context, loc), sym(identity)),
+        name + " retained state/no Put",
+    );
 }
 {
     const e = new Evaluator(fresh());
@@ -803,14 +1182,34 @@ for (const name of ["W17 ReadBeforeNumericFailure", "W18 ReadBeforeRHSFailure"])
     check(key.observation.at === refLoc, "W19 key location");
     put(key, wellKnownToPrimitive, n(7));
     key.observation.abrupt = null;
-    error(getValue(ref, e.context, opLoc), "symbol toPrimitive method is not callable", "W19 conversion location", 9, 7);
+    error(
+        getValue(ref, e.context, opLoc),
+        "symbol toPrimitive method is not callable",
+        "W19 conversion location",
+        9,
+        7,
+    );
 }
 
 // R1-R19: guards use literal counts and locations, with setup uncharged.
 const resourceRows = [
-    "R1 Primitive", "R2 StatementGuard", "R3 MemberGuard", "R4 BaseGuard", "R5 KeyGuard", "R6 Exact",
-    "R7 Nullish", "R8 Canonical", "R9 OrdinaryFirst", "R10 OrdinarySecond", "R11 HookTickGuard",
-    "R12 CallGuard", "R13 SeededDepth", "R14 ChildDepth", "R15 StepWins", "R16 Calls", "R17 CallArguments",
+    "R1 Primitive",
+    "R2 StatementGuard",
+    "R3 MemberGuard",
+    "R4 BaseGuard",
+    "R5 KeyGuard",
+    "R6 Exact",
+    "R7 Nullish",
+    "R8 Canonical",
+    "R9 OrdinaryFirst",
+    "R10 OrdinarySecond",
+    "R11 HookTickGuard",
+    "R12 CallGuard",
+    "R13 SeededDepth",
+    "R14 ChildDepth",
+    "R15 StepWins",
+    "R16 Calls",
+    "R17 CallArguments",
 ];
 for (const name of resourceRows) {
     for (const nullValue of [nil, U]) {
@@ -844,21 +1243,36 @@ for (const name of resourceRows) {
             e.maxSteps = 3;
             expectedColumn = 3;
         }
-        if (name === "R6 Exact" || name === "R7 Nullish") { e.maxSteps = 4; }
+        if (name === "R6 Exact" || name === "R7 Nullish") {
+            e.maxSteps = 4;
+        }
         if (["R2 StatementGuard", "R3 MemberGuard", "R4 BaseGuard", "R5 KeyGuard"].includes(name)) {
             expectedMessage = "execution step limit exceeded";
         }
-        if (["R7 Nullish", "R8 Canonical", "R9 OrdinaryFirst", "R10 OrdinarySecond", "R11 HookTickGuard", "R12 CallGuard"].includes(name)) {
+        if (
+            [
+                "R7 Nullish",
+                "R8 Canonical",
+                "R9 OrdinaryFirst",
+                "R10 OrdinarySecond",
+                "R11 HookTickGuard",
+                "R12 CallGuard",
+            ].includes(name)
+        ) {
             const key = realm.createObject();
             const hook = fn(realm, (_r, _a, _c, _l) => {
                 hooks++;
                 return normal(s("x"));
             });
             if (name === "R9 OrdinaryFirst" || name === "R10 OrdinarySecond") {
-                put(key, "toString", fn(realm, (_r, _a, _c, _l) => {
-                    hooks++;
-                    return normal(name === "R10 OrdinarySecond" ? o(key) : s("x"));
-                }));
+                put(
+                    key,
+                    "toString",
+                    fn(realm, (_r, _a, _c, _l) => {
+                        hooks++;
+                        return normal(name === "R10 OrdinarySecond" ? o(key) : s("x"));
+                    }),
+                );
                 put(key, "valueOf", hook);
                 expectedSteps = name === "R10 OrdinarySecond" ? 7 : 6;
             } else {
@@ -890,10 +1304,14 @@ for (const name of resourceRows) {
             }
         }
         if (name === "R16 Calls" || name === "R17 CallArguments") {
-            put(realm.booleanPrototype, "m", fn(realm, (_r, _a, _c, _l) => {
-                hooks++;
-                return normal(n(7));
-            }));
+            put(
+                realm.booleanPrototype,
+                "m",
+                fn(realm, (_r, _a, _c, _l) => {
+                    hooks++;
+                    return normal(n(7));
+                }),
+            );
             source = name === "R16 Calls" ? "p.m();" : "p.m(1, 2);";
             expectedSteps = name === "R16 Calls" ? 4 : 6;
         }
@@ -902,7 +1320,14 @@ for (const name of resourceRows) {
         if (expectedMessage === "") {
             expect(result, n(7), name);
         } else {
-            error(result, expectedMessage, name, expectedColumn, 1, name === "R7 Nullish" ? "TypeError" : "RangeError");
+            error(
+                result,
+                expectedMessage,
+                name,
+                expectedColumn,
+                1,
+                name === "R7 Nullish" ? "TypeError" : "RangeError",
+            );
         }
         let expectedHooks = 0;
         if (["R8 Canonical", "R9 OrdinaryFirst", "R16 Calls", "R17 CallArguments"].includes(name)) {
@@ -911,8 +1336,18 @@ for (const name of resourceRows) {
         if (name === "R10 OrdinarySecond") {
             expectedHooks = 2;
         }
-        check(e.steps === expectedSteps && hooks === expectedHooks && e.depth === expectedDepth && e.calls === 0 && e.context.realm === realm, name + " counts/cleanup");
-        check(realm.observation.reads === (expectedMessage === "" ? 1 : 0), name + " dispatch count");
+        check(
+            e.steps === expectedSteps &&
+                hooks === expectedHooks &&
+                e.depth === expectedDepth &&
+                e.calls === 0 &&
+                e.context.realm === realm,
+            name + " counts/cleanup",
+        );
+        check(
+            realm.observation.reads === (expectedMessage === "" ? 1 : 0),
+            name + " dispatch count",
+        );
         if (name === "R1 Primitive" || name === "R16 Calls" || name === "R17 CallArguments") {
             check(e.peak === 3, name + " peak");
         }
@@ -926,7 +1361,11 @@ for (const name of resourceRows) {
     expect(getValue(simple, e.context, loc), n(7), "R18 primitive helper");
     check(e.steps === 0, "R18 no charge");
     const key = realm.createObject();
-    put(key, wellKnownToPrimitive, fn(realm, (_r, _a, _c, _l) => normal(s("x"))));
+    put(
+        key,
+        wellKnownToPrimitive,
+        fn(realm, (_r, _a, _c, _l) => normal(s("x"))),
+    );
     const converted: Reference = { kind: "property", base: b(true), key: o(key), loc };
     expect(getValue(converted, e.context, loc), n(7), "R18 object helper");
     expect(getValue(converted, e.context, loc), n(7), "R18 repeat");
@@ -936,9 +1375,23 @@ for (const name of resourceRows) {
     bind(realm, "k", s("x"));
     expect(run(monotonic, "p[k];"), n(7), "R19 first");
     check(monotonic.steps === 4, "R19 first count");
-    error(run(monotonic, "p[k];"), "execution step limit exceeded", "R19 Monotonic", 3, 1, "RangeError");
+    error(
+        run(monotonic, "p[k];"),
+        "execution step limit exceeded",
+        "R19 Monotonic",
+        3,
+        1,
+        "RangeError",
+    );
     check(monotonic.steps === 8, "R19 retained budget");
-    error(run(monotonic, "p[k];"), "execution step limit exceeded", "R19 exhausted", 1, 1, "RangeError");
+    error(
+        run(monotonic, "p[k];"),
+        "execution step limit exceeded",
+        "R19 exhausted",
+        1,
+        1,
+        "RangeError",
+    );
     check(monotonic.steps === 9, "R19 still exhausted");
     expect(run(new Evaluator(realm), "p[k];"), n(7), "R19 fresh success");
 }
@@ -968,10 +1421,14 @@ for (const guest of [false, true]) {
                     expect(program(setup, "function h() { return p[k]; }"), U, "R22 setup");
                     put(key, wellKnownToPrimitive, binding(home, "h"));
                 } else {
-                    put(key, wellKnownToPrimitive, fn(home, (_r, _a, context, _l) => {
-                        check(context.realm === home, "R20/R25 hook Realm");
-                        return e.evaluate(member, home.global, U);
-                    }));
+                    put(
+                        key,
+                        wellKnownToPrimitive,
+                        fn(home, (_r, _a, context, _l) => {
+                            check(context.realm === home, "R20/R25 hook Realm");
+                            return e.evaluate(member, home.global, U);
+                        }),
+                    );
                 }
                 const result = run(e, "p[k];");
                 let ticks = 5;
@@ -1004,14 +1461,28 @@ for (const guest of [false, true]) {
                     }
                 }
                 const name = guest ? "R22/R23 GuestLimits" : "R20/R21 HostLimits";
-                const message = stepFirst ? "execution step limit exceeded" : "call depth limit exceeded";
+                const message = stepFirst
+                    ? "execution step limit exceeded"
+                    : "call depth limit exceeded";
                 const column = guest && limit > 0 ? 23 : 1;
                 error(result, message, name, column, 1, "RangeError");
-                check(e.steps === ticks && e.invocations === limit && e.peak === peak, name + " literal resources");
-                const boxes = a.observation.boxes.length + (foreign ? home.observation.boxes.length : 0);
-                check(boxes === limit + 1 && a.observation.reads === 0 && home.observation.reads === 0, "R30 NoWrapperCache");
+                check(
+                    e.steps === ticks && e.invocations === limit && e.peak === peak,
+                    name + " literal resources",
+                );
+                const boxes =
+                    a.observation.boxes.length + (foreign ? home.observation.boxes.length : 0);
+                check(
+                    boxes === limit + 1 &&
+                        a.observation.reads === 0 &&
+                        home.observation.reads === 0,
+                    "R30 NoWrapperCache",
+                );
                 for (let index = 1; index < home.observation.boxes.length; index++) {
-                    check(home.observation.boxes[index] !== home.observation.boxes[index - 1], "R30 distinct wrappers");
+                    check(
+                        home.observation.boxes[index] !== home.observation.boxes[index - 1],
+                        "R30 distinct wrappers",
+                    );
                 }
                 clean(e, a, "R25 ForeignRecursion");
             }
@@ -1029,23 +1500,31 @@ for (const stage of ["factory", "keyGet", "keyCall", "targetGet", "method"]) {
         const e = new Evaluator(realm);
         const key = new ObservedObject();
         const keyValue = o(key);
-        put(key, wellKnownToPrimitive, fn(home, (_r, _a, context, _l) => {
-            check(context.realm === home, "R26 foreign key Realm");
-            if (stage === "keyCall") {
+        put(
+            key,
+            wellKnownToPrimitive,
+            fn(home, (_r, _a, context, _l) => {
+                check(context.realm === home, "R26 foreign key Realm");
+                if (stage === "keyCall") {
+                    if (hostFault) {
+                        throw F;
+                    }
+                    return Q;
+                }
+                return normal(s("m"));
+            }),
+        );
+        put(
+            realm.booleanPrototype,
+            "m",
+            fn(home, (_r, _a, context, _l) => {
+                check(context.realm === home, "R26 foreign method Realm");
                 if (hostFault) {
                     throw F;
                 }
                 return Q;
-            }
-            return normal(s("m"));
-        }));
-        put(realm.booleanPrototype, "m", fn(home, (_r, _a, context, _l) => {
-            check(context.realm === home, "R26 foreign method Realm");
-            if (hostFault) {
-                throw F;
-            }
-            return Q;
-        }));
+            }),
+        );
         bind(realm, "p", b(true));
         bind(realm, "k", keyValue);
         if (stage === "factory") {
@@ -1122,7 +1601,9 @@ for (const stage of ["factory", "keyGet", "keyCall", "targetGet", "method"]) {
 // C6: a runtime-read injected-symbol fixture, with a literal output oracle.
 {
     let output = "";
-    const realm = new Realm((line) => { output += line + "\n"; });
+    const realm = new Realm((line) => {
+        output += line + "\n";
+    });
     const e = new Evaluator(realm);
     bind(realm, "s", sym(identity));
     const source = readFileSync("test/fixtures/primitive-reads-symbol.js", "utf8");

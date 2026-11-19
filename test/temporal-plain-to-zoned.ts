@@ -3,10 +3,19 @@ import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm: Realm = new Realm((_line: string) => {}, "script")): ValueCompletion {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm: Realm = new Realm((_line: string) => {}, "script"),
+): ValueCompletion {
     const prepared = prepareBoundedScript({ id: "temporal-plain-to-zoned", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession(), prepared.record).completion;
 }
 const cases = [
@@ -30,7 +39,11 @@ for (const text of cases) {
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
 for (const mode of ["compatible", "earlier", "later", "reject"]) {
-    const result = run('new Temporal.PlainDateTime(1970,1,1).toZonedDateTime("UTC",{disambiguation:"'+mode+'"}).epochNanoseconds===0n');
+    const result = run(
+        'new Temporal.PlainDateTime(1970,1,1).toZonedDateTime("UTC",{disambiguation:"' +
+            mode +
+            '"}).epochNanoseconds===0n',
+    );
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, mode);
 }
 for (const expression of [
@@ -38,22 +51,53 @@ for (const expression of [
     'new Temporal.PlainDateTime(275760,9,13,23,59,0,0,0,1).toZonedDateTime("+23:59")',
     'new Temporal.PlainDateTime(1970,1,1).toZonedDateTime("UTC",{disambiguation:"bad"})',
 ]) {
-    const result = run('var ok=false;try{'+expression+'}catch(e){ok=e instanceof RangeError}ok');
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, expression);
+    const result = run(
+        "var ok=false;try{" + expression + "}catch(e){ok=e instanceof RangeError}ok",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        expression,
+    );
 }
 for (const name of ["PlainDate", "PlainDateTime"]) {
-    const receiver = 'new Temporal.'+name+'(1970,1,1)';
-    for (const zone of ['undefined','null','{}','{toString(){return "UTC"}}']) {
-        const result = run('var ok=false;try{'+receiver+'.toZonedDateTime('+zone+')}catch(e){ok=e instanceof TypeError}ok');
-        check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, name + zone);
+    const receiver = "new Temporal." + name + "(1970,1,1)";
+    for (const zone of ["undefined", "null", "{}", '{toString(){return "UTC"}}']) {
+        const result = run(
+            "var ok=false;try{" +
+                receiver +
+                ".toZonedDateTime(" +
+                zone +
+                ")}catch(e){ok=e instanceof TypeError}ok",
+        );
+        check(
+            result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+            name + zone,
+        );
     }
-    const metadata = run('var d=Object.getOwnPropertyDescriptor(Temporal.'+name+'.prototype,"toZonedDateTime");d.writable&&!d.enumerable&&d.configurable&&d.value.length===1');
-    check(metadata.type === "normal" && metadata.value.kind === "boolean" && metadata.value.value, name + " metadata");
-    const defining = new Realm((_line: string) => {}, "script"), calling = new Realm((_line: string) => {}, "script");
-    const method = run('Temporal.'+name+'.prototype.toZonedDateTime', defining), prototype = run('Temporal.ZonedDateTime.prototype', defining);
-    if (method.type !== "normal" || prototype.type !== "normal") throw new Error("lookup");
+    const metadata = run(
+        "var d=Object.getOwnPropertyDescriptor(Temporal." +
+            name +
+            '.prototype,"toZonedDateTime");d.writable&&!d.enumerable&&d.configurable&&d.value.length===1',
+    );
+    check(
+        metadata.type === "normal" && metadata.value.kind === "boolean" && metadata.value.value,
+        name + " metadata",
+    );
+    const defining = new Realm((_line: string) => {}, "script"),
+        calling = new Realm((_line: string) => {}, "script");
+    const method = run("Temporal." + name + ".prototype.toZonedDateTime", defining),
+        prototype = run("Temporal.ZonedDateTime.prototype", defining);
+    if (method.type !== "normal" || prototype.type !== "normal") {
+        throw new Error("lookup");
+    }
     calling.defineScriptGlobal("project", { value: method.value });
-    const value = run('project.call('+receiver+',"UTC")', calling);
-    check(value.type === "normal" && value.value.kind === "object" && prototype.value.kind === "object" && value.value.object.getPrototypeOf() === prototype.value.object, name + " Realm");
+    const value = run("project.call(" + receiver + ',"UTC")', calling);
+    check(
+        value.type === "normal" &&
+            value.value.kind === "object" &&
+            prototype.value.kind === "object" &&
+            value.value.object.getPrototypeOf() === prototype.value.object,
+        name + " Realm",
+    );
 }
 console.log("temporal plain to zoned passed");

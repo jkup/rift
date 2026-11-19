@@ -8,22 +8,32 @@ class Base {
         return { type: "normal", value: true };
     }
     internalSet(key: string, value: number, receiver: Box): Result {
-        if (receiver.kind !== "object") return { type: "normal", value: false };
+        if (receiver.kind !== "object") {
+            return { type: "normal", value: false };
+        }
         return receiver.object.defineOwnProperty(key, value);
     }
-    read(key: string): number | undefined { return this.slots.get(key); }
+    read(key: string): number | undefined {
+        return this.slots.get(key);
+    }
 }
 class Special extends Base {
     calls = 0;
     override defineOwnProperty(key: string, value: number): Result {
         this.calls++;
-        if (key === "throw") return { type: "throw", message: "expected" };
-        if (key === "reject") return { type: "normal", value: false };
+        if (key === "throw") {
+            return { type: "throw", message: "expected" };
+        }
+        if (key === "reject") {
+            return { type: "normal", value: false };
+        }
         return super.defineOwnProperty(key, value + 10);
     }
 }
 function check(condition: boolean, label: string): void {
-    if (!condition) throw new Error(label);
+    if (!condition) {
+        throw new Error(label);
+    }
 }
 const special = new Special();
 const base: Base = special;

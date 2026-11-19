@@ -3,13 +3,28 @@ import { sameValue, type Value, type ValueCompletion } from "../src/runtime.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 
-function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
-function run(text: string, realm = new Realm((_line: string) => {}, "script"), maxSteps = 100000, maxCalls = 64) {
+function check(ok: boolean, message: string): void {
+    if (!ok) {
+        throw new Error(message);
+    }
+}
+function run(
+    text: string,
+    realm = new Realm((_line: string) => {}, "script"),
+    maxSteps = 100000,
+    maxCalls = 64,
+) {
     const prepared = prepareBoundedScript({ id: "eval-caller", text }, realm);
-    if (prepared.kind !== "ready") throw new Error("prepare: " + text);
+    if (prepared.kind !== "ready") {
+        throw new Error("prepare: " + text);
+    }
     return evaluateScript(createScriptSession({ maxSteps, maxCalls }), prepared.record).completion;
 }
-function expect(text: string, expected: Value = { kind: "boolean", value: true }, realm?: Realm): void {
+function expect(
+    text: string,
+    expected: Value = { kind: "boolean", value: true },
+    realm?: Realm,
+): void {
     const result = run(text, realm);
     check(result.type === "normal" && sameValue(result.value, expected), text);
 }
@@ -68,61 +83,154 @@ for (const text of [
     "eval.toString()==='function eval() { [native code] }'",
     "var caught=false;try{new eval('1')}catch(e){caught=e instanceof TypeError}caught",
     "var f=eval('(function(){return 7})');f.toString()==='function(){return 7}'&&f()===7",
-]) expect(text);
+]) {
+    expect(text);
+}
 
-const realm = new Realm((_line: string) => {}, "script"), foreign = new Realm((_line: string) => {}, "script");
-if (foreign.evalIntrinsic === null) throw new Error("missing foreign eval");
-realm.defineScriptGlobal("foreignEval", { value: { kind: "object", object: foreign.evalIntrinsic }, writable: true, configurable: true });
-expect("function f(eval){var privateName=7;return eval('typeof privateName')}f(foreignEval)==='undefined'", undefined, realm);
+const realm = new Realm((_line: string) => {}, "script"),
+    foreign = new Realm((_line: string) => {}, "script");
+if (foreign.evalIntrinsic === null) {
+    throw new Error("missing foreign eval");
+}
+realm.defineScriptGlobal("foreignEval", {
+    value: { kind: "object", object: foreign.evalIntrinsic },
+    writable: true,
+    configurable: true,
+});
+expect(
+    "function f(eval){var privateName=7;return eval('typeof privateName')}f(foreignEval)==='undefined'",
+    undefined,
+    realm,
+);
 expect("foreignEval('this')", foreign.globalThisValue, realm);
 expect("eval('var temporary=7')", { kind: "undefined" }, realm);
 expect("let temporary=8;temporary===8&&this.temporary===7", undefined, realm);
 
-for (const text of ["try{eval('class C{}')}catch(e){true}", "try{eval('return 1')}catch(e){true}", "try{eval('(function f(){return 7})')}catch(e){true}"]) {
+for (const text of [
+    "try{eval('class C{}')}catch(e){true}",
+    "try{eval('return 1')}catch(e){true}",
+    "try{eval('(function f(){return 7})')}catch(e){true}",
+]) {
     const result = run(text);
-    if (text === "try{eval('class C{}')}catch(e){true}")
-        check(result.type === "normal" && result.value.kind === "undefined", "original base class eval executes");
-    else if (text === "try{eval('(function f(){return 7})')}catch(e){true}") {
-        check(result.type === "normal" && result.value.kind === "object" && result.value.object.callable !== null, "named function eval executes");
+    if (text === "try{eval('class C{}')}catch(e){true}") {
+        check(
+            result.type === "normal" && result.value.kind === "undefined",
+            "original base class eval executes",
+        );
+    } else if (text === "try{eval('(function f(){return 7})')}catch(e){true}") {
+        check(
+            result.type === "normal" &&
+                result.value.kind === "object" &&
+                result.value.object.callable !== null,
+            "named function eval executes",
+        );
         expect("eval('(function f(){return 7})')()===7");
+    } else {
+        check(
+            result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+            "original return eval is catchable",
+        );
     }
-    else check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "original return eval is catchable");
 }
 for (const text of [
     "var caught=false;try{eval('return 1')}catch(e){caught=e instanceof SyntaxError}caught",
     "var caught=false;try{(0,eval)('return 1')}catch(e){caught=e instanceof SyntaxError}caught",
     "function f(){try{eval('return 1')}catch(e){return e instanceof SyntaxError}}f()",
     "var marker=0;try{eval('marker=1;return;')}catch(e){}marker===0",
-]) expect(text);
-realm.defineScriptGlobal("ForeignSyntaxError", { value: { kind: "object", object: foreign.getErrorConstructor("SyntaxError") } });
-expect("var caught=false;try{foreignEval('return 1')}catch(e){caught=e instanceof ForeignSyntaxError&&!(e instanceof SyntaxError)}caught", undefined, realm);
+]) {
+    expect(text);
+}
+realm.defineScriptGlobal("ForeignSyntaxError", {
+    value: { kind: "object", object: foreign.getErrorConstructor("SyntaxError") },
+});
+expect(
+    "var caught=false;try{foreignEval('return 1')}catch(e){caught=e instanceof ForeignSyntaxError&&!(e instanceof SyntaxError)}caught",
+    undefined,
+    realm,
+);
 const unsupportedReturnTail = run("try{eval('return; import x from \"x\";')}catch(e){true}");
-check(unsupportedReturnTail.type === "throw" && unsupportedReturnTail.origin.kind === "unsupported-operation" && unsupportedReturnTail.origin.capabilityCode === "runtime.eval-source", "unsupported eval tail stays fatal");
+check(
+    unsupportedReturnTail.type === "throw" &&
+        unsupportedReturnTail.origin.kind === "unsupported-operation" &&
+        unsupportedReturnTail.origin.capabilityCode === "runtime.eval-source",
+    "unsupported eval tail stays fatal",
+);
 const limited = run("eval('while(true){}')", undefined, 100);
 check(limited.type === "throw" && limited.origin.kind === "resource-limit", "shared step limit");
 const recursion = run("function f(){return eval('f()')}f()", undefined, 100000, 8);
-check(recursion.type === "throw" && recursion.origin.kind === "resource-limit", "shared call limit");
+check(
+    recursion.type === "throw" && recursion.origin.kind === "resource-limit",
+    "shared call limit",
+);
 {
-    const session = createScriptSession(), owner = new Realm((_line: string) => {}, "script");
+    const session = createScriptSession(),
+        owner = new Realm((_line: string) => {}, "script");
     const prepared = prepareBoundedScript({ id: "outer", text: "eval('\\nthrow 7')" }, owner);
-    if (prepared.kind !== "ready") throw new Error("throw preparation");
-    const result = evaluateScript(session, prepared.record).completion, state = session.inspect();
-    check(result.type === "throw" && result.value.kind === "number" && result.value.value === 7, "exact eval throw");
-    check(state.active === null && state.calls === 0 && state.lastAbrupt?.unitId === "<eval>" && state.lastAbrupt.loc.line === 2, "eval source snapshot");
-    check(state.lastAbrupt !== null && state.lastAbrupt.record.inspect().unit.text === "\nthrow 7", "original eval source retained");
+    if (prepared.kind !== "ready") {
+        throw new Error("throw preparation");
+    }
+    const result = evaluateScript(session, prepared.record).completion,
+        state = session.inspect();
+    check(
+        result.type === "throw" && result.value.kind === "number" && result.value.value === 7,
+        "exact eval throw",
+    );
+    check(
+        state.active === null &&
+            state.calls === 0 &&
+            state.lastAbrupt?.unitId === "<eval>" &&
+            state.lastAbrupt.loc.line === 2,
+        "eval source snapshot",
+    );
+    check(
+        state.lastAbrupt !== null && state.lastAbrupt.record.inspect().unit.text === "\nthrow 7",
+        "original eval source retained",
+    );
 }
 {
-    const session = createScriptSession(), owner = new Realm((_line: string) => {}, "script"), fault = new Error("eval host fault");
-    owner.defineScriptGlobal("boom", { value: { kind: "object", object: owner.createBuiltin("boom", 0, (_receiver, _args, _context, _loc): ValueCompletion => { throw fault; }) } });
-    const prepared = prepareBoundedScript({ id: "host fault", text: "var caught=false;try{eval('boom()')}catch(e){caught=true}" }, owner);
-    if (prepared.kind !== "ready") throw new Error("host fault preparation");
+    const session = createScriptSession(),
+        owner = new Realm((_line: string) => {}, "script"),
+        fault = new Error("eval host fault");
+    owner.defineScriptGlobal("boom", {
+        value: {
+            kind: "object",
+            object: owner.createBuiltin(
+                "boom",
+                0,
+                (_receiver, _args, _context, _loc): ValueCompletion => {
+                    throw fault;
+                },
+            ),
+        },
+    });
+    const prepared = prepareBoundedScript(
+        { id: "host fault", text: "var caught=false;try{eval('boom()')}catch(e){caught=true}" },
+        owner,
+    );
+    if (prepared.kind !== "ready") {
+        throw new Error("host fault preparation");
+    }
     let seen = false;
-    try { evaluateScript(session, prepared.record); }
-    catch (error) { seen = error instanceof Error && error === fault; }
-    check(seen && session.inspect().active === null && session.inspect().calls === 0, "host fault restoration");
-    const recovery = prepareBoundedScript({ id: "recovery", text: "!caught&&eval('1+2')===3" }, owner);
-    if (recovery.kind !== "ready") throw new Error("recovery preparation");
+    try {
+        evaluateScript(session, prepared.record);
+    } catch (error) {
+        seen = error instanceof Error && error === fault;
+    }
+    check(
+        seen && session.inspect().active === null && session.inspect().calls === 0,
+        "host fault restoration",
+    );
+    const recovery = prepareBoundedScript(
+        { id: "recovery", text: "!caught&&eval('1+2')===3" },
+        owner,
+    );
+    if (recovery.kind !== "ready") {
+        throw new Error("recovery preparation");
+    }
     const result = evaluateScript(session, recovery.record).completion;
-    check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, "same session recovery");
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "same session recovery",
+    );
 }
 console.log("Eval passed");

@@ -34,7 +34,9 @@ function rssMb(): number {
 const iterations = Number(process.argv[2] ?? "200000");
 const before = rssMb();
 let total = 0;
-for (let i = 0; i < iterations; i++) total += makeCycle();
+for (let i = 0; i < iterations; i++) {
+    total += makeCycle();
+}
 const after = rssMb();
 console.log("total:", total);
 // Printed to stderr so the Node/native output diff only compares semantics.
