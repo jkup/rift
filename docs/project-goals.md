@@ -1,6 +1,6 @@
 # Approved project goals and starting decisions
 
-Approved by the owner on 2026-11-01. This is the canonical rationale for the short rules in `../AGENTS.md`.
+These goals explain the contributor rules in [AGENTS.md](../AGENTS.md).
 
 ## Purpose
 
@@ -8,9 +8,9 @@ Build a real JavaScript engine that a TypeScript developer can understand by rea
 
 Readability is the primary design objective. Correctness is a constraint on simplification and full conformance is the long-term completeness ambition. Recognizable engine architecture supports learning. Performance changes require measurement and must justify their complexity.
 
-There are no users or downstream developers to preserve compatibility for. Internal breaking changes are acceptable when they improve the implementation; update all affected code and tests together. The repository now contains only the TypeScript implementation and its scriptc tooling.
+Rift is experimental and does not promise a stable API. Internal breaking changes are acceptable when they improve the implementation; update all affected code, tests and documentation together. The repository contains the TypeScript implementation and its scriptc tooling.
 
-## Development priorities (owner update, 2026-11-19)
+## Development priorities
 
 The bounded Test262 pass-count milestone is complete. Keep evidence used by current tests, compiler workarounds and published results.
 Retire unreferenced migration snapshots to Git history. Present Rift as a TypeScript and scriptc project, with source and package commands at the repository root. Historical comparison records describe the retired implementation; it is no longer maintained or built here.

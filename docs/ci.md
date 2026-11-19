@@ -1,81 +1,50 @@
-# CI scope and cost
+# Continuous integration
 
-Reviewed 2026-11-19. The complete workflow inventory is `.github/workflows/ci.yml`.
-Both jobs remain useful and retain their status names for branch protection:
+The workflow is [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
 
 | Job | Coverage | Timeout |
 | --- | --- | --- |
-| `readability` | Formatting, all lint layers, nine checker regressions | 10 minutes |
-| `node` | Typecheck, runner contracts, full Node guest suite, Test262 runner regressions | 15 minutes |
+| `readability` | Formatting, all four lint layers and custom checker regressions | 10 minutes |
+| `node` | Typecheck, runner contracts, full Node guest suite and focused Test262 runner regressions | 15 minutes |
 
-Pushes to `main`, pull requests and manual dispatch run CI. Feature branches use
-PR checks instead of duplicating push and PR runs; an unsubmitted branch can be
-tested with manual dispatch. New runs cancel obsolete runs for the same event
-and branch/PR. Main pushes still test the integrated result. No path filters
-silently omit tests or leave required workflow checks pending. Draft PRs retain
-coverage. Both jobs use standard Linux runners and the existing npm cache.
-The Node job uses a shallow checkout and emits TypeScript once before its tests.
-No assertions or conformance denominators were removed. Separate jobs preserve
-independent feedback and existing check names at the cost of two npm installs.
+Pushes to `main`, pull requests and manual dispatch run both jobs on Linux with
+Node 24. Feature branches use PR checks; manual dispatch can test a branch before
+it has a PR. Superseded runs for the same event and branch/PR are cancelled.
+There are no path filters. The Node job emits TypeScript once before testing.
 
-## Current failure
+The workflow has read-only repository permissions, pins actions to exact commits,
+and does not persist checkout credentials. When updating an action, verify the
+upstream release commit and update its pin in both jobs. Dependency installation
+uses `npm ci` and the committed lockfile.
 
-The repository is private. Run
-[44625939890](https://github.com/jkup/rift/actions/runs/44625939890) blocked both
-jobs before execution, reporting failed account payments or a spending limit.
-This confirms a billing block, but does not establish the exact balance or prove
-that a particular $5 budget was exhausted. Workflow edits cannot clear that block.
-Check account Billing & plans before increasing a limit. No billing, visibility,
-branch-protection or repository settings were changed by this review.
+## Coverage limits
 
-## Coverage to add as the project grows
+CI does not currently build or execute native Rift, run the complete tooling
+suite, or execute the full Test262 corpus. Focused Test262 runner regressions
+check the harness; they are not a conformance score. Passing Node checks alone
+does not establish native correctness.
 
-The current workflow does not compile or execute native Rift, run all tooling
-tests, or execute the full Test262 corpus. The added runner regression suite is
-ten focused harness tests, not a conformance score.
+Contributors must run relevant fresh native checks for semantic changes and
+`npm run test:compiler` for toolchain/integration changes. See the
+[validation guide](usage.md#validation) and [compiler setup](../toolchain/scriptc/README.md).
+Report the actual scope tested in the pull request.
 
-1. Provision a reproducible Linux compiler distribution from the pinned source
-   and patched runtime described in `toolchain/scriptc/README.md`. Verify its
-   hashes and Zig version; key any compiler cache by source pin, patch, platform
-   and build recipe. Do not rebuild the compiler on every PR or substitute the
-   unpatched npm compiler. A cache miss must build or fetch verified assets.
-2. Add a focused native PR lane: static-only build plus zero-dynamic coverage,
-   expected-result semantic smoke tests and the same runner regressions against
-   the native observation driver. Run compiler probes for toolchain/integration
-   changes. Use hosted isolated runners for outside contributions.
-3. Run the exhaustive native guest matrix and broader tooling checks at release
-   checkpoints and on demand; introduce a weekly schedule once duration is
-   measured. Broader changes can request this lane before merge.
-4. Run a pinned full Test262 corpus periodically using the bounded worker pool.
-   Retain selected counts, failures, explicit skips, unsupported cases, resource
-   limits, timeouts, crashes and harness/input errors separately. Existing known
-   failures require an explicit regression policy, not a blanket green result.
-   Keep ordinary logs briefly (for example seven days); preserve release evidence
-   separately. Add Windows coverage for platform-sensitive changes and releases.
+## Repository setup
 
-These are recommendations, not newly enabled scheduled jobs. Measure clean and
-cached durations before choosing timeouts or expanding an OS/Node matrix.
+Require the `readability` and `node` statuses in branch protection or a repository
+ruleset. Workflow files do not configure merge protection. Verify that both jobs
+actually execute on a clean hosted run before launch; an account restriction can
+prevent jobs from starting regardless of their configuration.
 
-## Hosting recommendation
+## Future coverage
 
-Stay on GitHub Actions. Standard hosted runners in public repositories are free;
-larger runners are billed. When Rift launches publicly, the existing runner class
-is therefore a good fit for contributor PRs. Private repositories consume the
-account's shared included compute allowance; storage is separately metered. See
-[GitHub billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions)
-and [current plan allowances](https://docs.github.com/en/billing/reference/product-usage-included).
+A native CI lane needs a reproducible distribution of the pinned patched compiler
+and Zig version. Cache it by source pin, patch, platform and build recipe; a cache
+miss must build or fetch verified assets. Keep static-only compilation and the
+independent zero-dynamic coverage gate.
 
-For private development, retain a hard budget and measure summed job time across
-all account repositories before raising it. Parallel jobs reduce elapsed time,
-but do not eliminate billed compute. There is no measured savings percentage yet:
-the inspected recent run never started. The changes eliminate one compilation
-per Node job and duplicate feature-branch push runs, plus cancel superseded work.
-
-[CircleCI](https://circleci.com/pricing/) is an alternative with a free tier and
-credit-based compute, but adds migration and another quota without an evident
-advantage over free public GitHub runners. [Buildkite](https://www.buildkite.com/pricing/)
-offers open-source pricing and is worth evaluating if custom native infrastructure
-becomes central; obtain eligibility and compute terms before comparing costs.
-Self-hosting trades runner charges for machines, maintenance and isolation. Do
-not run untrusted public PRs on a persistent personal development machine; use
-ephemeral isolated workers if self-hosting becomes necessary.
+Start with focused native semantic and compiler checks. Measure duration before
+adding the full native matrix, broader tooling tests, Windows coverage or periodic
+Test262 runs. Keep failures, skips, unsupported cases, limits and infrastructure
+errors separate in conformance reports. Use isolated hosted workers for public
+contributions.

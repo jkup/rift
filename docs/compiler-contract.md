@@ -12,7 +12,7 @@ tools use `build/toolchain/<platform>-<arch>/bin/scriptc[.exe]` or the explicit
 The source pin includes the upstream revision, patch/tree hashes and platform
 LLVM helper hashes. Node 24.22.0, pnpm 11.1.3 and Zig 0.16.0 were used for the
 validated Linux and Windows package builds. Both pass relocation and typed weak
-storage consumer checks. TS-565 records canonical integration acceptance.
+storage consumer checks.
 
 ## Commands
 

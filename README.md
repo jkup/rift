@@ -63,4 +63,5 @@ conformance testing (requires native compiler setup).
 Read the [architecture guide](docs/architecture-decisions.md) to explore the code,
 or [CONTRIBUTING.md](CONTRIBUTING.md) to get involved.
 
-Licensed under [MIT](LICENSE).
+Licensed under [MIT](LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md)
+for bundled data, compiler patches and test material.

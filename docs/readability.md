@@ -26,11 +26,7 @@ CI's `readability` job checks formatting, all four lint layers, and the custom
 checker regression tests. The existing `node` job retains typechecking and
 semantic tests. Repository administrators should require both job statuses in
 branch protection. Adding workflow jobs alone does not configure branch protection.
-The 2026-11-19 setup check returned GitHub HTTP 403 for protection and rulesets:
-this private repository needs GitHub Pro or public visibility for those features.
-CI is configured; merge blocking is therefore not enforced by the current plan.
-See [CI scope and cost](ci.md) for triggers, timeouts, the billing diagnosis and
-recommended native/conformance coverage.
+See [CI coverage](ci.md) for the workflow and native/conformance gaps.
 
 ## Tools and scope
 
@@ -55,14 +51,6 @@ excluded. Generators and their surrounding handwritten code remain checked.
 | `npm run lint:policy` | Semantic import boundary, compiler field restriction and suppression policy |
 | `npm run lint:structure` | Function/file size and nesting ratchet |
 | `npm run lint:ratchet` | Remove or lower resolved structural allowances; refuse new/growing violations |
-
-On the Windows development checkout, three local runs including Node process
-startup measured median times of 121 ms for formatting, 106 ms for basic lint,
-468 ms for typed lint, 658 ms for policy and 1,370 ms for structure. These are
-local measurements under concurrent validation load, not CI guarantees. npm's
-wrapper overhead is additional. That measurement covered 919 formatting inputs
-and 911 code files; the final scope also includes the toolchain setup script
-(920 formatting inputs and 912 code files).
 
 ## Rules with a purpose
 
@@ -106,7 +94,7 @@ Files under `test`, tooling `*.test.mjs`/`*.integration.mjs` files and
 Flat `else if` chains do not
 add depth, and callbacks are measured independently.
 
-The initial baseline has 173 measured size/depth exceptions. It records each
+The baseline records existing size/depth exceptions for each
 file/function and exact observed value, rather than ignoring entire modules.
 Existing large interpreter dispatchers remain explicit debt; this cleanup does
 not claim they have all been decomposed. Any new or larger violation fails.

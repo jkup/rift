@@ -1,9 +1,8 @@
 # Supported JavaScript
 
-This overview describes accepted Script behavior through the catch-pattern
-milestone. It groups implemented features; it does not claim complete ECMAScript
-conformance. The [roadmap](development-roadmap.md) records validation counts and
-pending successors.
+This overview groups implemented Script features and known limits; it does not
+claim complete ECMAScript conformance. The [roadmap](development-roadmap.md)
+records known followups and links to validation evidence.
 
 | Area | Implemented behavior and boundaries |
 | --- | --- |

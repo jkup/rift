@@ -1,6 +1,6 @@
 # Development roadmap
 
-Updated 2026-11-19. No next semantic milestone is assigned.
+Known followups as of 2026-11-19.
 
 ## Accepted foundation
 
@@ -10,11 +10,9 @@ over the same 53,751-file selection. The [comparison evidence](validation/test26
 retains primary counts, the metadata-only followup and harness differences.
 This is a pass-count milestone, not full conformance.
 
-Readability gates are installed. The latest accepted cleanup checked 1,003 Node
-guests, 36 runner tests, nine custom checks and ten compiler probes. Focused fresh
-native checks covered 486 CLI cases and seven cases across four host drivers.
-The tooling run passed 298/299 with one subprocess timeout; that unchanged suite
-passed its isolated retry. This is not a full native guest-suite pass.
+Readability gates enforce formatting, lint and measured structural limits.
+See [CI coverage](ci.md) for automated checks and the
+[validation guide](usage.md#validation) for local Node and native checks.
 
 ## Concrete followups
 
@@ -31,7 +29,7 @@ passed its isolated retry. This is not a full native guest-suite pass.
   [readability ratchet](readability.md), without increasing allowances.
 
 See the [feature inventory](feature-inventory.md) for remaining language/API gaps.
-Choose a bounded task and record it in [TASKS.md](../TASKS.md) before implementation.
+Discuss substantial work in a GitHub issue before implementation.
 Use expected-result Node regressions and relevant fresh native checks; retain
 static-only compilation and zero-dynamic coverage. Exhaustive native rebuilds
 are reserved for broad integration/toolchain changes or evidence of wider issues.

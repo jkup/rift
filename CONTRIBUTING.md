@@ -4,6 +4,19 @@ Start with [README.md](README.md), the [project goals](docs/project-goals.md)
 and the [architecture reading guide](docs/architecture-decisions.md).
 [AGENTS.md](AGENTS.md) contains repository instructions for coding agents.
 
+## Issues and pull requests
+
+Report bugs through [GitHub issues](https://github.com/jkup/rift/issues). Include
+a small JavaScript example, expected and actual output, the Rift revision, your
+OS and Node version, and whether you used Node or the native build. For native
+failures, include the compiler version and build/coverage diagnostics.
+
+Discuss substantial features or architecture changes in an issue before starting.
+Keep pull requests focused and explain the behavior changed, checks run, and any
+known failures or untested scope. Update relevant documentation and expected-result
+tests with behavior changes. See the [roadmap](docs/development-roadmap.md) for
+known followups.
+
 ## Development checks
 
 With Node >=24, run from the repository root:
@@ -41,6 +54,5 @@ Keep mutable guest state in a Realm, guest control flow in completion records,
 and I/O outside the semantic core. Never run guest code through host eval,
 Function, vm or a dynamic compiler fallback.
 
-Check [TASKS.md](TASKS.md) and [COORDINATION.md](COORDINATION.md) before starting
-shared-checkout work. Keep these files short: current ownership, scope and final
-acceptance belong here; detailed transcripts belong in validation evidence.
+When sharing a checkout, coordinate one implementation writer at a time and
+preserve unrelated changes. Track work and validation in issues and pull requests.

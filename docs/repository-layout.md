@@ -20,7 +20,7 @@
 | --- | --- |
 | `README.md`, `CONTRIBUTING.md`, `LICENSE` | Entry point, contributor workflow and MIT license. |
 | `AGENTS.md` | Shared coding-agent instructions. |
-| `TASKS.md`, `COORDINATION.md` | Short current task/acceptance and checkout-ownership records. |
+| `THIRD_PARTY_NOTICES.md` | Index of third-party licenses and data provenance. |
 | `package.json`, `package-lock.json`, `tsconfig.json` | Commands, pinned dependencies and TypeScript compilation. |
 | `.editorconfig`, `.gitignore` | Editor defaults and generated/local-file exclusions. |
 | `.oxfmtrc.json`, `.oxlintrc.json`, `.oxlint-typed.json` | Formatter and lint policies. |

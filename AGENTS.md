@@ -1,6 +1,6 @@
 # Rift contributor instructions
 
-Rift is a TypeScript JavaScript interpreter compiled with the pinned scriptc toolchain. Read docs/project-goals.md, docs/compiler-contract.md and TASKS.md before implementation.
+Rift is a TypeScript JavaScript interpreter compiled with the pinned scriptc toolchain. Read CONTRIBUTING.md, docs/project-goals.md and docs/compiler-contract.md before implementation.
 
 - Choose clear implementations a TypeScript developer can follow. Correctness constrains simplification; preserve observable evaluation order.
 - Follow docs/readability.md. Run npm run format, npm run lint and npm run test:readability before handoff, in addition to semantic checks. Fix findings; do not widen ignores, disable rules or raise structural allowances to make a change pass.
@@ -11,5 +11,5 @@ Rift is a TypeScript JavaScript interpreter compiled with the pinned scriptc too
 - Keep static-only native compilation and the zero-dynamic coverage gate. Isolate and explain compiler workarounds; do not change the pinned toolchain for unrelated features.
 - Run typechecking, test:runner, relevant Node and native guest checks, and test:compiler for toolchain/integration changes. Report tested scope and failures honestly.
 - Keep expected-result assertions; report skips, unsupported features, timeouts, crashes and harness failures separately. Do not change conformance denominators to improve claims.
-- Coordinate one implementation writer at a time in the shared checkout. Preserve unrelated work. Record task status and acceptance in TASKS.md and COORDINATION.md.
+- Coordinate one implementation writer at a time when sharing a checkout. Preserve unrelated work. Record scope and validation in the issue or pull request; do not create session-tracking files in the repository.
 - Historical evidence under docs/validation retains original paths and measurements. It is not a current build instruction. The retired implementation is no longer part of this project.

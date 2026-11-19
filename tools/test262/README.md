@@ -64,7 +64,9 @@ Run `npm run build:node && npm run test:test262:runner` for focused runner tests
 The older tools below remain available for historical evidence and specialized
 protocol regression tests; they are not the new command's execution path.
 
-Build the Node and native drivers first; see the [project README](../../README.md#validation)
+## Protocol and historical regression tests
+
+Build the Node and native drivers first; see the [validation guide](../../docs/usage.md#validation)
 for the pinned toolchain and preparation steps. From the repository root:
 
 ```sh
@@ -78,8 +80,8 @@ revision. An existing checkout can be supplied for offline preparation.
 `RIFT_TEST262_ROOT` overrides the default `build/test262-corpus` location;
 `RIFT_TEST_OUTPUT_ROOT` overrides shared test scratch output under
 `build/test262-tests`. Some older tests have separate directories under `build/`.
-Historical fixtures remain read-only inputs. The tooling source is explicitly
-allowed by `.gitignore`; downloaded corpus files remain ignored.
+Historical fixtures remain read-only inputs. Downloaded corpus files under
+`build/` remain ignored.
 
 The ordinary test suite covers planning, decoding, classification, execution
 controls and failure handling. The Script integration command launches the real

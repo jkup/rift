@@ -17,7 +17,7 @@ document that developer process.
 
 This patch preserves the compiler used by the isolated Rift WeakMap/WeakSet
 trial. It adds typed weak storage and ownership tracing, plus the runtime-link
-and test-selection repairs recorded under TS-565 in `../../TASKS.md`.
+and test-selection repairs included in `typed-weak-storage.patch`.
 Rift's weak collections require this patched source. The unmodified npm
 `scriptc@0.4.7` is no longer a native build dependency. This directory preserves
 the source pin and build instructions; compiled distributions stay in `build/`.
@@ -72,7 +72,8 @@ LLVM helper is byte-identical to the pinned helper in the clean source tree.
 The complete clean-source Linux package also builds and passes relocation,
 version, typed WeakMap consumer compilation/execution, and 5/5 static coverage
 with development overrides removed. Node and native consumer output agree.
-Canonical Rift integration acceptance is tracked under TS-565 in `../../TASKS.md`.
+See the [compiler contract](../../docs/compiler-contract.md) for Rift's native
+validation requirements and known compiler constraints.
 
 Windows preparation uses the same pinned Node, pnpm and Zig versions, plus
 the Windows LLVM helper pinned in `source.json`. Frozen dependency installation
