@@ -347,7 +347,7 @@ class ForbiddenKey extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _location: Location,
     ): ValueCompletion {
         throw new Error("object key read");
@@ -610,11 +610,15 @@ for (const object of [new GuestObject(), new GuestArray(), callableKey]) {
             positive.run(path).type === "normal" && calls === before + 1,
             "object key converts once",
         );
-        check(
-            positive.original.trace ===
-                (path === "write" ? "BKRS" : path === "call" ? "BKGAAM" : "BKG"),
-            "object key completes reference",
-        );
+        let expectedTrace: string;
+        if (path === "write") {
+            expectedTrace = "BKRS";
+        } else if (path === "call") {
+            expectedTrace = "BKGAAM";
+        } else {
+            expectedTrace = "BKG";
+        }
+        check(positive.original.trace === expectedTrace, "object key completes reference");
     }
     const abrupt = new Scenario();
     abrupt.keyValue = keyValue;

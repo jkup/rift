@@ -408,19 +408,17 @@ for (const mode of ["OuterBinding", "ShadowTDZ", "ShadowValue", "UndefinedShadow
         if (mode === "ShadowTDZ") {
             error(result, "x is not initialized", op === "typeof" ? 8 : 6, "B9 ShadowTDZ");
         } else {
-            expect(
-                result,
-                op === "void"
-                    ? U
-                    : s(
-                          mode === "ShadowValue"
-                              ? "boolean"
-                              : mode === "Initialized"
-                                ? "undefined"
-                                : "number",
-                      ),
-                "B7-B10/B13 " + mode,
-            );
+            let expected: Value;
+            if (op === "void") {
+                expected = U;
+            } else if (mode === "ShadowValue") {
+                expected = s("boolean");
+            } else if (mode === "Initialized") {
+                expected = s("undefined");
+            } else {
+                expected = s("number");
+            }
+            expect(result, expected, "B7-B10/B13 " + mode);
         }
     }
     check(sameValue(realm.global.bindings.get("x")!.value, n(7)), "outer unchanged");
@@ -631,11 +629,15 @@ for (const op of ["typeof", "void"]) {
                 name,
             );
             check(target.reads === 1 && replacement.reads === 0, name + " captured read once");
-            check(
-                target.lastKey ===
-                    (name === "PrimitiveNumber" ? "1" : name === "PrimitiveSymbol" ? symbol : "x"),
-                name + " exact key",
-            );
+            let expectedKey: PropertyKey;
+            if (name === "PrimitiveNumber") {
+                expectedKey = "1";
+            } else if (name === "PrimitiveSymbol") {
+                expectedKey = symbol;
+            } else {
+                expectedKey = "x";
+            }
+            check(target.lastKey === expectedKey, name + " exact key");
         }
         check(e.calls === 0 && e.depth === 0 && e.context.realm === realm, name + " cleanup");
     }
@@ -759,9 +761,15 @@ for (const op of ["typeof", "void"]) {
                 if (outcome === "abrupt") {
                     return sentinel;
                 }
-                return normal(
-                    route === "key" ? s("x") : outcome === "object" ? o(foreignObject) : n(7),
-                );
+                let convertedValue: Value;
+                if (route === "key") {
+                    convertedValue = s("x");
+                } else if (outcome === "object") {
+                    convertedValue = o(foreignObject);
+                } else {
+                    convertedValue = n(7);
+                }
+                return normal(convertedValue);
             });
             bind(realm.global, "f", method);
             put(key, wellKnownToPrimitive, method);
@@ -778,10 +786,15 @@ for (const op of ["typeof", "void"]) {
             }
             let caught = false;
             try {
-                const result = run(
-                    e,
-                    op + (route === "call" ? " f();" : route === "key" ? " o[k];" : " o.x;"),
-                );
+                let operationSource: string;
+                if (route === "call") {
+                    operationSource = " f();";
+                } else if (route === "key") {
+                    operationSource = " o[k];";
+                } else {
+                    operationSource = " o.x;";
+                }
+                const result = run(e, op + operationSource);
                 if (outcome === "abrupt") {
                     check(result === sentinel, "E21/B20 original abrupt");
                 } else {
@@ -1177,36 +1190,44 @@ for (const op of ["typeof", "void"]) {
             "f",
             fn(r, (_r, _a, _c, _l) => normal(n(7))),
         );
-        const source =
-            op +
-            (mode === "invalidBase"
-                ? " null[k];"
-                : mode === "directCall"
-                  ? " f();"
-                  : mode === "nestedUnary"
-                    ? op === "typeof"
-                        ? " void 0;"
-                        : " typeof 0;"
-                    : " o[k];");
+        let operandSource: string;
+        if (mode === "invalidBase") {
+            operandSource = " null[k];";
+        } else if (mode === "directCall") {
+            operandSource = " f();";
+        } else if (mode === "nestedUnary") {
+            if (op === "typeof") {
+                operandSource = " void 0;";
+            } else {
+                operandSource = " typeof 0;";
+            }
+        } else {
+            operandSource = " o[k];";
+        }
+        const source = op + operandSource;
         const result = run(measured, source);
-        const ticks =
-            mode === "primitive" || mode === "invalidBase"
-                ? 5
-                : mode === "ordinaryOne"
-                  ? 7
-                  : mode === "ordinaryTwo"
-                    ? 8
-                    : mode === "directCall"
-                      ? 3
-                      : mode === "nestedUnary"
-                        ? 4
-                        : 6;
-        const calls =
-            mode === "ordinaryTwo"
-                ? 2
-                : mode === "canonical" || mode === "ordinaryOne" || mode === "directCall"
-                  ? 1
-                  : 0;
+        let ticks: 3 | 4 | 5 | 6 | 7 | 8;
+        if (mode === "primitive" || mode === "invalidBase") {
+            ticks = 5;
+        } else if (mode === "ordinaryOne") {
+            ticks = 7;
+        } else if (mode === "ordinaryTwo") {
+            ticks = 8;
+        } else if (mode === "directCall") {
+            ticks = 3;
+        } else if (mode === "nestedUnary") {
+            ticks = 4;
+        } else {
+            ticks = 6;
+        }
+        let calls: 0 | 1 | 2;
+        if (mode === "ordinaryTwo") {
+            calls = 2;
+        } else if (mode === "canonical" || mode === "ordinaryOne" || mode === "directCall") {
+            calls = 1;
+        } else {
+            calls = 0;
+        }
         check(
             measured.steps === ticks &&
                 measured.invocations === calls &&
@@ -1298,24 +1319,41 @@ for (const op of ["typeof", "void"]) {
                         );
                     }
                     const result = run(e, op + " o[k];");
+                    let expectedColumn: number;
+                    if (guest) {
+                        if (op === "typeof") {
+                            expectedColumn = 30;
+                        } else {
+                            expectedColumn = 28;
+                        }
+                    } else if (op === "typeof") {
+                        expectedColumn = 8;
+                    } else {
+                        expectedColumn = 6;
+                    }
                     error(
                         result,
                         stepGuard ? "execution step limit exceeded" : "call depth limit exceeded",
-                        guest ? (op === "typeof" ? 30 : 28) : op === "typeof" ? 8 : 6,
+                        expectedColumn,
                         "R19-R23 recursion",
                         "RangeError",
                     );
-                    const ticks = guest
-                        ? limit === 64
-                            ? 390
-                            : 18
-                        : limit === 64
-                          ? 326
-                          : limit === 2
-                            ? 16
-                            : limit === 1
-                              ? 11
-                              : 6;
+                    let ticks: 6 | 11 | 16 | 18 | 326 | 390;
+                    if (guest) {
+                        if (limit === 64) {
+                            ticks = 390;
+                        } else {
+                            ticks = 18;
+                        }
+                    } else if (limit === 64) {
+                        ticks = 326;
+                    } else if (limit === 2) {
+                        ticks = 16;
+                    } else if (limit === 1) {
+                        ticks = 11;
+                    } else {
+                        ticks = 6;
+                    }
                     check(
                         e.steps === ticks &&
                             e.invocations === limit &&

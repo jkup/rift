@@ -354,12 +354,15 @@ test("T21 all parent Identity and Inputs fields remain context-bound", () => {
     for (const section of ["identity", "inputs"]) {
         for (const key of Object.keys(good[section])) {
             const changed = structuredClone(good);
-            changed[section][key] =
-                key === "harness"
-                    ? [{ path: "harness/a.js", blob: "a".repeat(40), sha256: "a".repeat(64) }]
-                    : key === "limits"
-                      ? { ...changed.inputs.limits, steps: 1 }
-                      : null;
+            if (key === "harness") {
+                changed[section][key] = [
+                    { path: "harness/a.js", blob: "a".repeat(40), sha256: "a".repeat(64) },
+                ];
+            } else if (key === "limits") {
+                changed[section][key] = { ...changed.inputs.limits, steps: 1 };
+            } else {
+                changed[section][key] = null;
+            }
             if (good[section][key] === null) {
                 changed[section][key] = "a".repeat(64);
             }

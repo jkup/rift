@@ -78,7 +78,7 @@ class NoReads extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         throw new Error("M unexpected receiver/argument read");

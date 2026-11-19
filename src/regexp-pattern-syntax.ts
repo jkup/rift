@@ -495,11 +495,18 @@ class PatternParser {
                 return this.reject("syntax-error", "unterminated group");
             }
             this.take();
-            return lookaround
-                ? { kind: "lookaround", negative, backward, body }
-                : modifiers !== null
-                  ? { kind: "modifiers", add: modifiers.add, remove: modifiers.remove, body }
-                  : { kind: "group", index, body };
+            if (lookaround) {
+                return { kind: "lookaround", negative, backward, body };
+            } else if (modifiers !== null) {
+                return {
+                    kind: "modifiers",
+                    add: modifiers.add,
+                    remove: modifiers.remove,
+                    body,
+                };
+            } else {
+                return { kind: "group", index, body };
+            }
         }
         const value = this.unicode ? this.rawCodePoint(char.charCodeAt(0)) : char.charCodeAt(0);
         return this.failure === null ? { kind: "character", value } : null;
@@ -613,13 +620,21 @@ class PatternParser {
         }
         if ("dDsSwW".includes(char)) {
             const lower = char.toLowerCase();
+            let name: "digit" | "space" | "word";
+            if (lower === "d") {
+                name = "digit";
+            } else if (lower === "s") {
+                name = "space";
+            } else {
+                name = "word";
+            }
             return {
                 kind: "class",
                 inverted: false,
                 parts: [
                     {
                         kind: "builtin",
-                        name: lower === "d" ? "digit" : lower === "s" ? "space" : "word",
+                        name,
                         inverted: char !== lower,
                     },
                 ],

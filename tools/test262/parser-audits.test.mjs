@@ -496,12 +496,14 @@ for (const [driver, directory, count] of [
         }
         for (const lane of ["node", "native"]) {
             for (const row of rows) {
-                const file =
-                    row.id === "R0"
-                        ? `test/fixtures/${driver}/a.js`
-                        : row.id === "R1"
-                          ? `test/fixtures/${driver}/b.js`
-                          : undefined;
+                let file;
+                if (row.id === "R0") {
+                    file = `test/fixtures/${driver}/a.js`;
+                } else if (row.id === "R1") {
+                    file = `test/fixtures/${driver}/b.js`;
+                } else {
+                    file = undefined;
+                }
                 run(driver, lane, { ...row, file }, [], (stdout, label) =>
                     assert.deepEqual(JSON.parse(stdout).audit, expected.get(row.id), label),
                 );

@@ -157,58 +157,70 @@ export function validatePropertyDescriptor(
             }
         }
     }
-    const enumerable =
-        desc.enumerable === undefined
-            ? current === undefined
-                ? false
-                : current.enumerable
-            : desc.enumerable;
-    const configurable =
-        desc.configurable === undefined
-            ? current === undefined
-                ? false
-                : current.configurable
-            : desc.configurable;
+    let enumerable: boolean;
+    if (desc.enumerable === undefined) {
+        if (current === undefined) {
+            enumerable = false;
+        } else {
+            enumerable = current.enumerable;
+        }
+    } else {
+        enumerable = desc.enumerable;
+    }
+    let configurable: boolean;
+    if (desc.configurable === undefined) {
+        if (current === undefined) {
+            configurable = false;
+        } else {
+            configurable = current.configurable;
+        }
+    } else {
+        configurable = desc.configurable;
+    }
     if (accessor || (!data && current !== undefined && current.kind === "accessor")) {
         const previous = current !== undefined && current.kind === "accessor" ? current : undefined;
+        let get: Value;
+        if (desc.get !== undefined) {
+            get = desc.get;
+        } else {
+            get = previous === undefined ? UNDEFINED : previous.get;
+        }
+        let set: Value;
+        if (desc.set !== undefined) {
+            set = desc.set;
+        } else {
+            set = previous === undefined ? UNDEFINED : previous.set;
+        }
         return {
             valid: true,
             descriptor: {
                 kind: "accessor",
-                get:
-                    desc.get === undefined
-                        ? previous === undefined
-                            ? UNDEFINED
-                            : previous.get
-                        : desc.get,
-                set:
-                    desc.set === undefined
-                        ? previous === undefined
-                            ? UNDEFINED
-                            : previous.set
-                        : desc.set,
+                get,
+                set,
                 enumerable,
                 configurable,
             },
         };
     }
     const previous = current !== undefined && current.kind === "data" ? current : undefined;
+    let value: Value;
+    if (desc.value !== undefined) {
+        value = desc.value;
+    } else {
+        value = previous === undefined ? UNDEFINED : previous.value;
+    }
+    let writable: boolean;
+    if (desc.writable !== undefined) {
+        writable = desc.writable;
+    } else {
+        writable = previous === undefined ? false : previous.writable;
+    }
     return {
         valid: true,
         descriptor: {
             kind: "data",
-            value:
-                desc.value === undefined
-                    ? previous === undefined
-                        ? UNDEFINED
-                        : previous.value
-                    : desc.value,
-            writable:
-                desc.writable === undefined
-                    ? previous === undefined
-                        ? false
-                        : previous.writable
-                    : desc.writable,
+            value,
+            writable,
             enumerable,
             configurable,
         },

@@ -210,8 +210,7 @@ for (const text of [
         }
         B.defineScriptGlobal(name, { value: property.value });
     }
-    const before = creator.inspect().steps,
-        session = createScriptSession();
+    const session = createScriptSession();
     run('var out="";p.then(v=>out+=v);c.resolve(7);', B, session);
     string("out", "", A, creator);
     const steps = creator.inspect().steps,

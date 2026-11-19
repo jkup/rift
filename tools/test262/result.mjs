@@ -289,6 +289,16 @@ export function classify(value, expectedNegative = null, blockers = []) {
     return computed;
 }
 
+function observedConstructorName(observation) {
+    if (observation.kind === "throw") {
+        return observation.constructor.name;
+    }
+    if (observation.kind === "syntax-error") {
+        return "SyntaxError";
+    }
+    return null;
+}
+
 function classifyValidated(value, expectedNegative, blockers) {
     const { evidence: e, observation: o } = value;
     const result = (status, reasonCode) => ({
@@ -297,12 +307,7 @@ function classifyValidated(value, expectedNegative, blockers) {
         blockers,
         expectedNegative,
         observedPhase: o.kind === "throw" || o.kind === "syntax-error" ? o.phase : null,
-        observedConstructorName:
-            o.kind === "throw"
-                ? o.constructor.name
-                : o.kind === "syntax-error"
-                  ? "SyntaxError"
-                  : null,
+        observedConstructorName: observedConstructorName(o),
     });
     if (e.process.deadlineExpired || o.kind === "timeout") {
         return result("timeout", "deadline");

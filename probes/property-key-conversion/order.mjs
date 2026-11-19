@@ -33,6 +33,7 @@ assert.equal(trace, "KR"); // Base rejection precedes key conversion, after RHS.
 
 trace = "";
 assert.throws(() => {
+    // oxlint-disable-next-line no-unused-expressions -- The property read itself must throw; its value is intentionally unused.
     null[name()];
 }, TypeError);
 assert.equal(trace, "K");

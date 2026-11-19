@@ -1,4 +1,3 @@
-import type { OperationContext } from "../src/runtime.js";
 import { GuestSymbol } from "../src/symbols.js";
 import { Evaluator } from "../src/evaluator.js";
 import { readFileSync } from "node:fs";

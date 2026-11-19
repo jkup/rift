@@ -259,8 +259,14 @@ for (const depth of [126, 127, 128, 129]) {
     );
 }
 for (const chain of ["+1", ".x", "()"]) {
-    const far =
-        chain === "+1" ? "+function(){}" : chain === ".x" ? "[function(){}]" : "(function(){})";
+    let far: "(function(){})" | "+function(){}" | "[function(){}]";
+    if (chain === "+1") {
+        far = "+function(){}";
+    } else if (chain === ".x") {
+        far = "[function(){}]";
+    } else {
+        far = "(function(){})";
+    }
     const deep = ready(
         '"use strict";(function(){return function(){};})' +
             chain.repeat(15000) +

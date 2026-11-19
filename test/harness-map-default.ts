@@ -479,13 +479,16 @@ for (const cross of [false, true]) {
                         fx = t.effects.slice(0, Math.min(limit, total)).join("");
                         if (failed) {
                             column = t.columns[limit];
-                            realm =
-                                limit < 3
-                                    ? f.b
-                                    : (limit === 3 && ["T07", "N01", "N02"].includes(t.id)) ||
-                                        (limit === 4 && t.id === "N02")
-                                      ? f.c
-                                      : f.a;
+                            if (limit < 3) {
+                                realm = f.b;
+                            } else if (
+                                (limit === 3 && ["T07", "N01", "N02"].includes(t.id)) ||
+                                (limit === 4 && t.id === "N02")
+                            ) {
+                                realm = f.c;
+                            } else {
+                                realm = f.a;
+                            }
                         }
                     } else {
                         fx = t.effects.join("");
@@ -550,15 +553,19 @@ for (const cross of [false, true]) {
                         t.terminal === "callback" ||
                         t.terminal === "range"
                     ) {
+                        let expectedMessage: string;
+                        if (t.terminal === "range") {
+                            expectedMessage = "map result length exceeds array limit";
+                        } else if (t.terminal === "callback") {
+                            expectedMessage = "map callback is not callable";
+                        } else {
+                            expectedMessage = "map species is not a constructor";
+                        }
                         language(
                             v,
                             f.a,
                             t.terminal === "range" ? "RangeError" : "TypeError",
-                            t.terminal === "range"
-                                ? "map result length exceeds array limit"
-                                : t.terminal === "callback"
-                                  ? "map callback is not callable"
-                                  : "map species is not a constructor",
+                            expectedMessage,
                         );
                     } else if (t.terminal === "custom") {
                         errorSpecies(v, f.c, 1);
@@ -885,16 +892,22 @@ for (const cross of [false, true]) {
             );
             const intrinsic = expected === "default" && row === 1 && !cross,
                 customResult = expected === "custom" && row === 14;
-            const suffix =
-                intrinsic || customResult
-                    ? empty
-                        ? ""
-                        : "HEC"
-                    : expected === "default"
-                      ? empty
-                          ? "A"
-                          : "AHECD"
-                      : "";
+            let suffix: "" | "A" | "AHECD" | "HEC";
+            if (intrinsic || customResult) {
+                if (empty) {
+                    suffix = "";
+                } else {
+                    suffix = "HEC";
+                }
+            } else if (expected === "default") {
+                if (empty) {
+                    suffix = "A";
+                } else {
+                    suffix = "AHECD";
+                }
+            } else {
+                suffix = "";
+            }
             check(
                 f.effects.text === selection + suffix,
                 label + " effects " + f.effects.text + " wanted " + selection + suffix,
@@ -922,17 +935,19 @@ for (const cross of [false, true]) {
                     const f = fixture(traces[2], cross),
                         s = createScriptSession({ maxSteps: seed + limit, maxCalls: 64 }),
                         sentinel = new Error("host sentinel");
-                    let abrupt: ThrowCompletion =
-                        mode === "resource"
-                            ? resourceFailure("steps", 23, 22, "substitute", loc)
-                            : mode === "unsupported"
-                              ? unsupportedFailure(
-                                    "runtime.map-species",
-                                    "TypeError",
-                                    "substitute",
-                                    loc,
-                                )
-                              : failure("Sentinel", "substitute", loc);
+                    let abrupt: ThrowCompletion;
+                    if (mode === "resource") {
+                        abrupt = resourceFailure("steps", 23, 22, "substitute", loc);
+                    } else if (mode === "unsupported") {
+                        abrupt = unsupportedFailure(
+                            "runtime.map-species",
+                            "TypeError",
+                            "substitute",
+                            loc,
+                        );
+                    } else {
+                        abrupt = failure("Sentinel", "substitute", loc);
+                    }
                     if (mode === "guest") {
                         abrupt = {
                             type: "throw",
@@ -1005,18 +1020,20 @@ for (const cross of [false, true]) {
                         caught = true;
                     }
                     const reached = limit >= (hook === "G" || hook === "Q" ? 3 : 4);
-                    const expected =
-                        limit < 3
-                            ? ""
-                            : hook === "G"
-                              ? "LKG"
-                              : hook === "Q"
-                                ? "LKGSQ"
-                                : limit < 4
-                                  ? "LKGSQA"
-                                  : hook === "E"
-                                    ? "LKGSQAHE"
-                                    : "LKGSQAHEC";
+                    let expected: "" | "LKG" | "LKGSQ" | "LKGSQA" | "LKGSQAHE" | "LKGSQAHEC";
+                    if (limit < 3) {
+                        expected = "";
+                    } else if (hook === "G") {
+                        expected = "LKG";
+                    } else if (hook === "Q") {
+                        expected = "LKGSQ";
+                    } else if (limit < 4) {
+                        expected = "LKGSQA";
+                    } else if (hook === "E") {
+                        expected = "LKGSQAHE";
+                    } else {
+                        expected = "LKGSQAHEC";
+                    }
                     check(
                         f.effects.text === expected,
                         "abrupt prefix " + hook + " " + mode + " " + limit,
@@ -1040,18 +1057,40 @@ for (const cross of [false, true]) {
                         );
                     }
                     const state = s.inspect();
-                    check(
-                        state.steps ===
-                            seed + (reached ? (hook === "G" || hook === "Q" ? 3 : 4) : limit + 1),
-                        "abrupt literal steps",
-                    );
+                    let expectedStepDelta: number;
+                    if (reached) {
+                        if (hook === "G" || hook === "Q") {
+                            expectedStepDelta = 3;
+                        } else {
+                            expectedStepDelta = 4;
+                        }
+                    } else {
+                        expectedStepDelta = limit + 1;
+                    }
+                    check(state.steps === seed + expectedStepDelta, "abrupt literal steps");
                     if (!caught) {
                         const last = state.lastAbrupt;
+                        let expectedColumn: number;
+                        if (reached) {
+                            expectedColumn = 1;
+                        } else if (limit === 2) {
+                            expectedColumn = 7;
+                        } else {
+                            expectedColumn = 1;
+                        }
+                        let expectedRealm: Realm;
+                        if (reached) {
+                            expectedRealm = f.c;
+                        } else if (limit < 3) {
+                            expectedRealm = f.b;
+                        } else {
+                            expectedRealm = f.a;
+                        }
                         check(
                             last !== null &&
                                 last.unitId === inputId &&
-                                last.realm === (reached ? f.c : limit < 3 ? f.b : f.a) &&
-                                last.loc.column === (reached ? 1 : limit === 2 ? 7 : 1),
+                                last.realm === expectedRealm &&
+                                last.loc.column === expectedColumn,
                             "abrupt literal provenance",
                         );
                     }
@@ -1095,16 +1134,15 @@ for (const cross of [false, true]) {
                             marker = obj(f.c.createObject());
                         define(f.c, "holder", obj(f.holder));
                         define(f.c, "marker", marker);
-                        run(
-                            throwing
-                                ? "function g(){throw marker;}"
-                                : position === "constructor"
-                                  ? "function g(){return holder;}"
-                                  : "function g(){return undefined;}",
-                            f.c,
-                            setup,
-                            "getter",
-                        );
+                        let getterSource: string;
+                        if (throwing) {
+                            getterSource = "function g(){throw marker;}";
+                        } else if (position === "constructor") {
+                            getterSource = "function g(){return holder;}";
+                        } else {
+                            getterSource = "function g(){return undefined;}";
+                        }
+                        run(getterSource, f.c, setup, "getter");
                         const g = own(f.c.globalObject, "g");
                         if (position === "constructor") {
                             f.array.bootstrapDefine("constructor", { get: g, configurable: true });
@@ -1119,9 +1157,25 @@ for (const cross of [false, true]) {
                         }
                         const v = run(input, f.b, s, inputId),
                             snap = s.inspect();
-                        const failed = callMode ? limit < 2 : limit < total,
-                            done = callMode ? (failed ? 3 : total) : Math.min(limit, total);
-                        let fx = done < 3 ? "" : position === "constructor" ? "LK" : "LKS";
+                        const failed = callMode ? limit < 2 : limit < total;
+                        let done: number;
+                        if (callMode) {
+                            if (failed) {
+                                done = 3;
+                            } else {
+                                done = total;
+                            }
+                        } else {
+                            done = Math.min(limit, total);
+                        }
+                        let fx: string;
+                        if (done < 3) {
+                            fx = "";
+                        } else if (position === "constructor") {
+                            fx = "LK";
+                        } else {
+                            fx = "LKS";
+                        }
                         if (callMode && limit === 0) {
                             fx = "";
                         }
@@ -1146,12 +1200,17 @@ for (const cross of [false, true]) {
                             f.effects.text === fx,
                             label + " effects " + f.effects.text + " expected " + fx,
                         );
-                        check(
-                            snap.steps ===
-                                seed +
-                                    (callMode ? (failed ? 3 : total) : Math.min(limit + 1, total)),
-                            label + " steps",
-                        );
+                        let expectedSteps: number;
+                        if (callMode) {
+                            if (failed) {
+                                expectedSteps = 3;
+                            } else {
+                                expectedSteps = total;
+                            }
+                        } else {
+                            expectedSteps = Math.min(limit + 1, total);
+                        }
+                        check(snap.steps === seed + expectedSteps, label + " steps");
                         if (failed) {
                             check(
                                 v.type === "throw" &&
@@ -1175,13 +1234,22 @@ for (const cross of [false, true]) {
                             const getterFailure =
                                 (!callMode && failed && limit >= 3 && limit < 7) ||
                                 (!failed && throwing);
-                            const expectedRealm = getterFailure
-                                ? f.c
-                                : failed && (callMode ? limit === 0 : limit < 3)
-                                  ? f.b
-                                  : f.a;
-                            const expectedColumn =
-                                failed && !callMode ? columns[limit] : !failed && throwing ? 14 : 1;
+                            let expectedRealm: CountRealm;
+                            if (getterFailure) {
+                                expectedRealm = f.c;
+                            } else if (failed && (callMode ? limit === 0 : limit < 3)) {
+                                expectedRealm = f.b;
+                            } else {
+                                expectedRealm = f.a;
+                            }
+                            let expectedColumn: number;
+                            if (failed && !callMode) {
+                                expectedColumn = columns[limit];
+                            } else if (!failed && throwing) {
+                                expectedColumn = 14;
+                            } else {
+                                expectedColumn = 1;
+                            }
                             check(
                                 snap.lastAbrupt !== null &&
                                     snap.lastAbrupt.realm === expectedRealm &&
@@ -1314,6 +1382,7 @@ for (const cross of [false, true]) {
                                 p = before.active,
                                 q = after.active;
                             if (p === null || q === null) {
+                                // oxlint-disable-next-line no-unsafe-finally -- A failed restoration invariant must fail this host test even during unwinding.
                                 throw new Error("frame");
                             }
                             check(
@@ -1352,26 +1421,40 @@ for (const cross of [false, true]) {
                 }
                 const successfulBudget = callMode ? limit >= 2 : limit >= 4,
                     completed = successfulBudget && mode === "normal";
-                const innerFx = callMode
-                    ? limit === 0
-                        ? ""
-                        : limit === 1
-                          ? "lk"
-                          : "lkhec"
-                    : limit < 2
-                      ? ""
-                      : limit < 4
-                        ? "lk"
-                        : "lkhec";
+                let innerFx: "" | "lk" | "lkhec";
+                if (callMode) {
+                    if (limit === 0) {
+                        innerFx = "";
+                    } else if (limit === 1) {
+                        innerFx = "lk";
+                    } else {
+                        innerFx = "lkhec";
+                    }
+                } else if (limit < 2) {
+                    innerFx = "";
+                } else if (limit < 4) {
+                    innerFx = "lk";
+                } else {
+                    innerFx = "lkhec";
+                }
                 const fx = "LKSQ" + innerFx + (completed ? "AHECD" : "");
                 check(
                     f.effects.text === fx,
                     "separate counters effects " + f.effects.text + " expected " + fx,
                 );
+                let expectedInnerSteps: number;
+                if (callMode) {
+                    if (limit < 2) {
+                        expectedInnerSteps = 2;
+                    } else {
+                        expectedInnerSteps = 4;
+                    }
+                } else {
+                    expectedInnerSteps = Math.min(limit + 1, 4);
+                }
                 check(
                     outer.inspect().steps === (completed ? 4 : 3) &&
-                        inner.inspect().steps ===
-                            (callMode ? (limit < 2 ? 2 : 4) : Math.min(limit + 1, 4)),
+                        inner.inspect().steps === expectedInnerSteps,
                     "separate literal steps",
                 );
                 check(
@@ -1931,17 +2014,19 @@ for (const t of traces) {
                         const f = fixture(t, cross),
                             s = createScriptSession({ maxSteps: seed + limit, maxCalls: 64 }),
                             sentinel = new Error("trace host");
-                        let abrupt: ThrowCompletion =
-                            mode === "resource"
-                                ? resourceFailure("steps", 29, 28, "trace substitute", loc)
-                                : mode === "unsupported"
-                                  ? unsupportedFailure(
-                                        "runtime.map-species",
-                                        "TypeError",
-                                        "trace substitute",
-                                        loc,
-                                    )
-                                  : failure("Sentinel", "trace substitute", loc);
+                        let abrupt: ThrowCompletion;
+                        if (mode === "resource") {
+                            abrupt = resourceFailure("steps", 29, 28, "trace substitute", loc);
+                        } else if (mode === "unsupported") {
+                            abrupt = unsupportedFailure(
+                                "runtime.map-species",
+                                "TypeError",
+                                "trace substitute",
+                                loc,
+                            );
+                        } else {
+                            abrupt = failure("Sentinel", "trace substitute", loc);
+                        }
                         if (mode === "guest") {
                             abrupt = {
                                 type: "throw",
@@ -2006,17 +2091,24 @@ for (const t of traces) {
                             );
                         }
                         if (!caught) {
-                            const last = s.inspect().lastAbrupt,
-                                realm = reached
-                                    ? hook === "E"
-                                        ? f.a
-                                        : f.c
-                                    : limit < 3
-                                      ? f.b
-                                      : (limit === 3 && ["T07", "N01", "N02"].includes(t.id)) ||
-                                          (limit === 4 && t.id === "N02")
-                                        ? f.c
-                                        : f.a;
+                            const last = s.inspect().lastAbrupt;
+                            let realm: CountRealm;
+                            if (reached) {
+                                if (hook === "E") {
+                                    realm = f.a;
+                                } else {
+                                    realm = f.c;
+                                }
+                            } else if (limit < 3) {
+                                realm = f.b;
+                            } else if (
+                                (limit === 3 && ["T07", "N01", "N02"].includes(t.id)) ||
+                                (limit === 4 && t.id === "N02")
+                            ) {
+                                realm = f.c;
+                            } else {
+                                realm = f.a;
+                            }
                             check(
                                 last !== null &&
                                     last.unitId === inputId &&
@@ -2072,17 +2164,19 @@ for (const cross of [false, true]) {
             const q = fixture(traces[2], cross);
             q.array.bootstrapDefine("length", { value: num(0) });
             const sentinel = new Error("empty getter host");
-            let abrupt: ThrowCompletion =
-                mode === "resource"
-                    ? resourceFailure("calls", 3, 3, "empty substitute", loc)
-                    : mode === "unsupported"
-                      ? unsupportedFailure(
-                            "runtime.map-species",
-                            "TypeError",
-                            "empty substitute",
-                            loc,
-                        )
-                      : failure("Sentinel", "empty substitute", loc);
+            let abrupt: ThrowCompletion;
+            if (mode === "resource") {
+                abrupt = resourceFailure("calls", 3, 3, "empty substitute", loc);
+            } else if (mode === "unsupported") {
+                abrupt = unsupportedFailure(
+                    "runtime.map-species",
+                    "TypeError",
+                    "empty substitute",
+                    loc,
+                );
+            } else {
+                abrupt = failure("Sentinel", "empty substitute", loc);
+            }
             if (mode === "guest") {
                 abrupt = {
                     type: "throw",

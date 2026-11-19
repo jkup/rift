@@ -90,10 +90,16 @@ export function registerMap(realm: Realm): void {
     registerGroupBy(realm, constructor, "collection");
 
     for (const name of ["get", "set", "has", "delete", "clear"] as const) {
+        let length = 1;
+        if (name === "set") {
+            length = 2;
+        } else if (name === "clear") {
+            length = 0;
+        }
         realm.registerBuiltin(
             realm.mapPrototype,
             name,
-            name === "set" ? 2 : name === "clear" ? 0 : 1,
+            length,
             (receiver, args, context, loc): ValueCompletion => {
                 const map = mapReceiver(receiver, context, loc);
                 if (map.type === "throw") {

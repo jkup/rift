@@ -4,7 +4,6 @@ import { createScriptSession, evaluateScript } from "../src/script-execution.js"
 import {
     auditBoundedScriptNumericAssignments,
     auditBoundedScriptNumericSeparators,
-    parse,
 } from "../src/parser.js";
 
 function check(ok: boolean, message: string): void {

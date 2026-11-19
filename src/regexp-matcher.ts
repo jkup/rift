@@ -413,12 +413,14 @@ class PatternMatcher {
                     ? foldedPropertyContains(part.index, code, part.inverted)
                     : propertyContains(part.index, code) !== part.inverted;
             } else {
-                const member =
-                    part.name === "digit"
-                        ? code >= 48 && code <= 57
-                        : part.name === "word"
-                          ? word(code)
-                          : isStringWhitespace(code);
+                let member: boolean;
+                if (part.name === "digit") {
+                    member = code >= 48 && code <= 57;
+                } else if (part.name === "word") {
+                    member = word(code);
+                } else {
+                    member = isStringWhitespace(code);
+                }
                 found = member !== part.inverted;
             }
         }
@@ -596,11 +598,16 @@ class PatternMatcher {
                 ) {
                     accepted = false;
                 } else {
-                    const position = instruction.backward
-                        ? this.program.unicode
-                            ? this.containingStart(state.position - 1)
-                            : state.position - 1
-                        : state.position;
+                    let position: number;
+                    if (instruction.backward) {
+                        if (this.program.unicode) {
+                            position = this.containingStart(state.position - 1);
+                        } else {
+                            position = state.position - 1;
+                        }
+                    } else {
+                        position = state.position;
+                    }
                     const code = this.program.unicode
                         ? this.codePoint(position)
                         : this.input.charCodeAt(position);

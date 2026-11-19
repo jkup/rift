@@ -6,7 +6,7 @@ import {
     privateMethodOrAccessorAdd,
     privateHas,
 } from "./private-elements.js";
-import type { PrivateElement } from "./runtime.js";
+import type { PrivateElement, PropertyDescriptorUpdate } from "./runtime.js";
 import { toNumeric } from "./numeric.js";
 import { bigintOperation } from "./bigint-arithmetic.js";
 import { appendArrayElement, finishArrayLiteral } from "./array-literal.js";
@@ -140,6 +140,50 @@ function lexicalLoopBindings(
     }
     return null;
 }
+function functionIntrinsicPrototype(realm: Realm, source: FunctionSource): GuestObject {
+    if (source.async === true) {
+        return source.generator === true
+            ? realm.asyncGeneratorFunctionPrototype
+            : realm.asyncFunctionPrototype;
+    }
+    return source.generator === true ? realm.generatorFunctionPrototype : realm.functionPrototype;
+}
+
+function functionInstancePrototype(realm: Realm, source: FunctionSource): GuestObject {
+    if (source.generator !== true) {
+        return realm.objectPrototype;
+    }
+    return source.async === true ? realm.asyncGeneratorPrototype : realm.generatorPrototype;
+}
+
+function functionThisMode(lexical: boolean, strict: boolean): "lexical" | "strict" | "global" {
+    if (lexical) {
+        return "lexical";
+    }
+    return strict ? "strict" : "global";
+}
+
+function definitionDescriptor(
+    kind: string,
+    value: Value,
+    enumerable: boolean,
+): PropertyDescriptorUpdate {
+    if (kind === "get") {
+        return { get: value, enumerable, configurable: true };
+    }
+    if (kind === "set") {
+        return { set: value, enumerable, configurable: true };
+    }
+    return { value, writable: true, enumerable, configurable: true };
+}
+
+function patternInferredName(pattern: DestructuringPattern): string | null {
+    if (pattern.kind === "target") {
+        return pattern.inferredName;
+    }
+    return pattern.kind === "binding" ? pattern.site.name : null;
+}
+
 class ActivationKey {}
 export type { EvalCallable };
 class EvalCallable {
@@ -295,7 +339,13 @@ class ScriptGuestCallable {
         return this.#state.strict;
     }
     get thisMode(): "lexical" | "strict" | "global" {
-        return this.#state.lexicalThis ? "lexical" : this.#state.strict ? "strict" : "global";
+        if (this.#state.lexicalThis) {
+            return "lexical";
+        } else if (this.#state.strict) {
+            return "strict";
+        } else {
+            return "global";
+        }
     }
     get privateEnvironment(): PrivateEnvironment | null {
         return this.#state.privateEnvironment;
@@ -1616,14 +1666,18 @@ class ExecutableScript {
         ) {
             throw new Error("invalid Script inferred name");
         }
-        const name =
-            entry.source.name !== undefined
-                ? entry.source.name.name
-                : entry.fn.declaration === null
-                  ? inferredName === null
-                      ? ""
-                      : inferredName
-                  : state.plan.declarations[entry.fn.declaration].site.name;
+        let name: string;
+        if (entry.source.name !== undefined) {
+            name = entry.source.name.name;
+        } else if (entry.fn.declaration === null) {
+            if (inferredName === null) {
+                name = "";
+            } else {
+                name = inferredName;
+            }
+        } else {
+            name = state.plan.declarations[entry.fn.declaration].site.name;
+        }
         const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
         if (budget.type === "throw") {
             return budget;
@@ -1666,15 +1720,7 @@ class ExecutableScript {
             entry.source.generator !== true &&
             entry.source.async !== true;
         const object = new GuestObject(
-            prototype === null
-                ? entry.source.async === true
-                    ? entry.source.generator === true
-                        ? state.realm.asyncGeneratorFunctionPrototype
-                        : state.realm.asyncFunctionPrototype
-                    : entry.source.generator === true
-                      ? state.realm.generatorFunctionPrototype
-                      : state.realm.functionPrototype
-                : prototype,
+            prototype === null ? functionIntrinsicPrototype(state.realm, entry.source) : prototype,
             false,
             callable,
             constructable ? callable : null,
@@ -1703,11 +1749,7 @@ class ExecutableScript {
         });
         if (constructable || entry.source.generator === true) {
             const prototypeObject = new GuestObject(
-                entry.source.generator === true
-                    ? entry.source.async === true
-                        ? state.realm.asyncGeneratorPrototype
-                        : state.realm.generatorPrototype
-                    : state.realm.objectPrototype,
+                functionInstancePrototype(state.realm, entry.source),
             );
             if (constructable) {
                 prototypeObject.bootstrapDefine("constructor", {
@@ -1764,8 +1806,7 @@ class ExecutableScript {
             metadata.strict !== entry.scope.strict ||
             callable.strict !== metadata.strict ||
             metadata.lexicalThis !== (entry.source.arrow === true) ||
-            callable.thisMode !==
-                (metadata.lexicalThis ? "lexical" : metadata.strict ? "strict" : "global") ||
+            callable.thisMode !== functionThisMode(metadata.lexicalThis, metadata.strict) ||
             callable.privateEnvironment !== metadata.privateEnvironment
         ) {
             throw new Error("invalid Script callable metadata");
@@ -2759,6 +2800,20 @@ export function prepareBoundedScript(unit: ScriptSourceUnit, realm: Realm): Scri
     return ExecutableScript.prepare(unit, realm, true);
 }
 export type DynamicFunctionKind = "ordinary" | "generator" | "async" | "async-generator";
+function dynamicFunctionName(
+    kind: DynamicFunctionKind,
+): "Function" | "GeneratorFunction" | "AsyncFunction" | "AsyncGeneratorFunction" {
+    switch (kind) {
+        case "async-generator":
+            return "AsyncGeneratorFunction";
+        case "async":
+            return "AsyncFunction";
+        case "generator":
+            return "GeneratorFunction";
+        case "ordinary":
+            return "Function";
+    }
+}
 function dynamicFunctionRecord(
     source: string,
     parametersOnly: boolean,
@@ -2774,14 +2829,7 @@ function dynamicFunctionRecord(
     }
     const prepared = prepareBoundedScript(
         {
-            id:
-                kind === "async-generator"
-                    ? "<AsyncGeneratorFunction>"
-                    : kind === "async"
-                      ? "<AsyncFunction>"
-                      : kind === "generator"
-                        ? "<GeneratorFunction>"
-                        : "<Function>",
+            id: "<" + dynamicFunctionName(kind) + ">",
             text: source,
         },
         context.realm,
@@ -2845,16 +2893,18 @@ export function createDynamicFunction(
     newTarget: GuestObject,
     kind: DynamicFunctionKind = "ordinary",
 ): ValueCompletion {
-    const prefix =
-            kind === "async-generator"
-                ? "async function* anonymous("
-                : kind === "async"
-                  ? "async function anonymous("
-                  : kind === "generator"
-                    ? "function* anonymous("
-                    : "function anonymous(",
-        middle = "\n) {\n",
-        suffix = "\n}";
+    let prefix: string;
+    if (kind === "async-generator") {
+        prefix = "async function* anonymous(";
+    } else if (kind === "async") {
+        prefix = "async function anonymous(";
+    } else if (kind === "generator") {
+        prefix = "function* anonymous(";
+    } else {
+        prefix = "function anonymous(";
+    }
+    const middle = "\n) {\n";
+    const suffix = "\n}";
     let length =
         prefix.length +
         middle.length +
@@ -2906,13 +2956,7 @@ export function createDynamicFunction(
     }
     const prototype = getPrototypeFromConstructor(
         newTarget,
-        kind === "async-generator"
-            ? "AsyncGeneratorFunction"
-            : kind === "async"
-              ? "AsyncFunction"
-              : kind === "generator"
-                ? "GeneratorFunction"
-                : "Function",
+        dynamicFunctionName(kind),
         context,
         loc,
     );
@@ -2953,11 +2997,11 @@ import {
     type PromiseCapability,
 } from "./promise.js";
 import { stringConcat } from "./strings.js";
-import { GuestArray } from "./array-object.js";
+import "./array-object.js";
 import { toObject } from "./object-conversion.js";
 import { applyUnaryValueOperator } from "./unary-operator.js";
 import { toPrimitive } from "./primitive-conversion.js";
-import { toNumber, toString, toPropertyKey } from "./conversion.js";
+import { toString, toPropertyKey } from "./conversion.js";
 
 import {
     updateScriptEmpty,
@@ -4191,12 +4235,14 @@ class ExecutionEngine {
         if (key === null) {
             throw new Error("object property without key");
         }
-        const name =
-            typeof key === "string"
-                ? key
-                : key.description === undefined
-                  ? ""
-                  : "[" + key.description + "]";
+        let name: string;
+        if (typeof key === "string") {
+            name = key;
+        } else if (key.description === undefined) {
+            name = "";
+        } else {
+            name = "[" + key.description + "]";
+        }
         return property.kind === "data" ? name : property.kind + " " + name;
     }
     #defineObjectLiteralProperty(
@@ -4236,12 +4282,7 @@ class ExecutionEngine {
         ) {
             ExecutableScript.makeMethod(value, object, executionKey);
         }
-        const descriptor =
-            property.kind === "get"
-                ? { get: value, enumerable: true, configurable: true }
-                : property.kind === "set"
-                  ? { set: value, enumerable: true, configurable: true }
-                  : { value, writable: true, enumerable: true, configurable: true };
+        const descriptor = definitionDescriptor(property.kind, value, true);
         const defined = object.defineOwnProperty(key, descriptor, this.context, loc);
         if (defined.type === "throw") {
             return defined;
@@ -4787,7 +4828,7 @@ class ExecutionEngine {
                     return normal();
                 }
             } else {
-                const unreachable: never = fn;
+                const _unreachable: never = fn;
                 throw new Error("invalid callable");
             }
             if (result.type === "throw") {
@@ -4838,13 +4879,17 @@ class ExecutionEngine {
         const f = this.#frame;
         const a = this.#lastAbrupt;
         const thisEnvironment = f === null ? null : this.#thisEnvironment(f.lexical);
-        const thisValue =
+        let thisValue: Value;
+        if (
             thisEnvironment instanceof FunctionActivation &&
             thisEnvironment.callable.isDerivedClassConstructor
-                ? thisEnvironment.inspectThis()
-                : f === null
-                  ? UNDEFINED
-                  : f.thisValue;
+        ) {
+            thisValue = thisEnvironment.inspectThis();
+        } else if (f === null) {
+            thisValue = UNDEFINED;
+        } else {
+            thisValue = f.thisValue;
+        }
         return {
             steps: this.steps,
             calls: this.calls,
@@ -4893,13 +4938,14 @@ class ExecutionEngine {
             throw new Error("missing inspection source");
         }
         const origin = completion.origin.kind;
+        let kind: "resource-limit" | "unsupported-operation" | "abrupt";
+        if (origin === "resource-limit" || origin === "unsupported-operation") {
+            kind = origin;
+        } else {
+            kind = "abrupt";
+        }
         return {
-            kind:
-                origin === "resource-limit"
-                    ? "resource-limit"
-                    : origin === "unsupported-operation"
-                      ? "unsupported-operation"
-                      : "abrupt",
+            kind,
             completion,
             source,
         };
@@ -5460,14 +5506,7 @@ class ExecutionEngine {
         reference: EvaluationReference | null,
     ): ValueCompletion {
         if (value.kind === "undefined" && initializer !== null) {
-            const evaluated = this.#value(
-                initializer,
-                pattern.kind === "target"
-                    ? pattern.inferredName
-                    : pattern.kind === "binding"
-                      ? pattern.site.name
-                      : null,
-            );
+            const evaluated = this.#value(initializer, patternInferredName(pattern));
             if (evaluated.type === "throw") {
                 return evaluated;
             }
@@ -5608,14 +5647,16 @@ class ExecutionEngine {
             });
             return null;
         }
-        const propertyName =
-            key instanceof PrivateName
-                ? key.description
-                : typeof key === "string"
-                  ? key
-                  : key.description === undefined
-                    ? ""
-                    : "[" + key.description + "]";
+        let propertyName: string;
+        if (key instanceof PrivateName) {
+            propertyName = key.description;
+        } else if (typeof key === "string") {
+            propertyName = key;
+        } else if (key.description === undefined) {
+            propertyName = "";
+        } else {
+            propertyName = "[" + key.description + "]";
+        }
         const name = element.kind === "method" ? propertyName : element.kind + " " + propertyName;
         const method = this.#value(element.value, name);
         if (method.type === "throw") {
@@ -5652,12 +5693,7 @@ class ExecutionEngine {
             }
             return null;
         }
-        const descriptor =
-            element.kind === "get"
-                ? { get: method.value, enumerable: false, configurable: true }
-                : element.kind === "set"
-                  ? { set: method.value, enumerable: false, configurable: true }
-                  : { value: method.value, writable: true, enumerable: false, configurable: true };
+        const descriptor = definitionDescriptor(element.kind, method.value, false);
         const defined = object.defineOwnProperty(key, descriptor, this.context, element.value.loc);
         if (defined.type === "throw") {
             return defined;
@@ -5744,14 +5780,16 @@ class ExecutionEngine {
                     continue;
                 }
                 const fieldKey = field.key;
-                const name =
-                    fieldKey instanceof PrivateName
-                        ? fieldKey.description
-                        : typeof fieldKey === "string"
-                          ? fieldKey
-                          : fieldKey.description === undefined
-                            ? ""
-                            : "[" + fieldKey.description + "]";
+                let name: string;
+                if (fieldKey instanceof PrivateName) {
+                    name = fieldKey.description;
+                } else if (typeof fieldKey === "string") {
+                    name = fieldKey;
+                } else if (fieldKey.description === undefined) {
+                    name = "";
+                } else {
+                    name = "[" + fieldKey.description + "]";
+                }
                 const value =
                     field.initializer === null
                         ? normal()
@@ -6458,14 +6496,22 @@ class ExecutionEngine {
             }
             iterator = acquired.value;
         }
-        const target: Expr | null =
+        let target: Expr | null;
+        if (
             stmt.head.kind === "lexical" ||
             stmt.head.kind === "pattern" ||
             stmt.head.kind === "assignment-pattern"
-                ? null
-                : stmt.head.kind === "var"
-                  ? { kind: "identifier", loc: stmt.head.loc, name: stmt.head.declarations[0].name }
-                  : stmt.head;
+        ) {
+            target = null;
+        } else if (stmt.head.kind === "var") {
+            target = {
+                kind: "identifier",
+                loc: stmt.head.loc,
+                name: stmt.head.declarations[0].name,
+            };
+        } else {
+            target = stmt.head;
+        }
         if (sequences !== null) {
             const depth = sequences[sequences.length - 1].depth + 1;
             if (iterator !== null) {
@@ -7927,20 +7973,25 @@ class ExecutionEngine {
                 privateNames.push(name);
             }
         }
+        let superContext: SuperContext = "none";
+        if (
+            functionEnvironment?.kind === "function" &&
+            functionEnvironment.callable.isDerivedClassConstructor
+        ) {
+            superContext = "derived";
+        } else if (
+            functionEnvironment?.kind === "class-initializer" ||
+            (functionEnvironment !== null && functionEnvironment.callable.homeObject !== null)
+        ) {
+            superContext = "method";
+        }
         const prepared = ExecutableScript.prepare(
             { id: "<eval>", text: input.value },
             realm,
             true,
             direct && saved.strict,
             functionEnvironment !== null,
-            functionEnvironment?.kind === "function" &&
-                functionEnvironment.callable.isDerivedClassConstructor
-                ? "derived"
-                : functionEnvironment?.kind === "class-initializer" ||
-                    (functionEnvironment !== null &&
-                        functionEnvironment.callable.homeObject !== null)
-                  ? "method"
-                  : "none",
+            superContext,
             privateNames,
         );
         if (prepared.kind === "profile-rejected") {
@@ -7985,7 +8036,14 @@ class ExecutionEngine {
         }
         const global: ScriptEnvironment = { kind: "global", record: realm.globalEnvironment };
         const lexical = new ScriptDeclarativeEnvironment(direct ? saved.lexical : global);
-        const variable = state.plan.strictness.strict ? lexical : direct ? saved.variable : global;
+        let variable: ScriptEnvironment;
+        if (state.plan.strictness.strict) {
+            variable = lexical;
+        } else if (direct) {
+            variable = saved.variable;
+        } else {
+            variable = global;
+        }
         const savedLegacy = this.#legacyGlobalFunctions,
             savedInspection = this.#inspectionSource;
         this.#legacyGlobalFunctions = new Set();
@@ -8628,12 +8686,14 @@ class ExecutionEngine {
         while (true) {
             this.depth = baseDepth + frames.length;
             if (this.depth > 256) {
-                const loc =
-                    expression !== null
-                        ? expression.loc
-                        : frames.length !== 0
-                          ? frames[frames.length - 1].expression.loc
-                          : continuation.yieldLoc;
+                let loc: Location | null;
+                if (expression !== null) {
+                    loc = expression.loc;
+                } else if (frames.length !== 0) {
+                    loc = frames[frames.length - 1].expression.loc;
+                } else {
+                    loc = continuation.yieldLoc;
+                }
                 if (loc === null) {
                     throw new Error("expression continuation without source");
                 }
@@ -10083,30 +10143,32 @@ class ExecutionEngine {
                     expression = next.kind === "spread" ? next.expression : next;
                     continue;
                 }
-                const called =
-                    frame.kind === "super-argument"
-                        ? this.#finishSuperCall(
-                              frame.environment,
-                              frame.parent,
-                              frame.values,
-                              frame.expression.loc,
-                          )
-                        : frame.expression.kind === "new"
-                          ? this.#construct(frame.callee, frame.values, frame.expression.loc)
-                          : frame.directEval
-                            ? this.#callScript(
-                                  frame.callee,
-                                  UNDEFINED,
-                                  frame.values,
-                                  frame.expression.loc,
-                                  true,
-                              )
-                            : this.call(
-                                  frame.callee,
-                                  frame.receiver,
-                                  frame.values,
-                                  frame.expression.loc,
-                              );
+                let called: ValueCompletion;
+                if (frame.kind === "super-argument") {
+                    called = this.#finishSuperCall(
+                        frame.environment,
+                        frame.parent,
+                        frame.values,
+                        frame.expression.loc,
+                    );
+                } else if (frame.expression.kind === "new") {
+                    called = this.#construct(frame.callee, frame.values, frame.expression.loc);
+                } else if (frame.directEval) {
+                    called = this.#callScript(
+                        frame.callee,
+                        UNDEFINED,
+                        frame.values,
+                        frame.expression.loc,
+                        true,
+                    );
+                } else {
+                    called = this.call(
+                        frame.callee,
+                        frame.receiver,
+                        frame.values,
+                        frame.expression.loc,
+                    );
+                }
                 if (called.type === "throw") {
                     return called;
                 }
@@ -10429,11 +10491,7 @@ class ExecutionEngine {
                     expression,
                     { kind: "pattern-default" },
                     callerDepth,
-                    pattern.kind === "binding"
-                        ? pattern.site.name
-                        : pattern.kind === "target"
-                          ? pattern.inferredName
-                          : null,
+                    patternInferredName(pattern),
                 );
             }
             sequences.pop();
@@ -11019,22 +11077,24 @@ class ExecutionEngine {
             }
             return null;
         }
-        const written =
-            receiver.kind === "binding"
-                ? putScriptBinding(receiver.reference, value, this.context)
-                : receiver.environment.kind === "global"
-                  ? receiver.environment.record.initializeBinding(
-                        receiver.name,
-                        value,
-                        this.context,
-                        receiver.loc,
-                    )
-                  : receiver.environment.initializeBinding(
-                        receiver.name,
-                        value,
-                        this.context,
-                        receiver.loc,
-                    );
+        let written: ValueCompletion;
+        if (receiver.kind === "binding") {
+            written = putScriptBinding(receiver.reference, value, this.context);
+        } else if (receiver.environment.kind === "global") {
+            written = receiver.environment.record.initializeBinding(
+                receiver.name,
+                value,
+                this.context,
+                receiver.loc,
+            );
+        } else {
+            written = receiver.environment.initializeBinding(
+                receiver.name,
+                value,
+                this.context,
+                receiver.loc,
+            );
+        }
         if (written.type === "throw") {
             this.#capture(written);
             return this.#unwindContinuation(continuation, written, callerDepth);

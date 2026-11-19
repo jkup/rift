@@ -181,12 +181,14 @@ for (const row of sourceRows) {
         text(values[i], expected[2], row.id);
     }
     const first = ast[0];
-    const astSource =
-        first.kind === "function"
-            ? first.source
-            : first.kind === "let" && first.init !== null && first.init.kind === "function"
-              ? first.init.source
-              : null;
+    let astSource: FunctionSource | null;
+    if (first.kind === "function") {
+        astSource = first.source;
+    } else if (first.kind === "let" && first.init !== null && first.init.kind === "function") {
+        astSource = first.init.source;
+    } else {
+        astSource = null;
+    }
     check(astSource === source(values[0]), row.id + " AST range propagated unchanged");
     const tokens = lex(row.input);
     const eof = tokens.tokens[tokens.tokens.length - 1];
@@ -465,7 +467,7 @@ class NoReads extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         throw new Error("unexpected receiver read");

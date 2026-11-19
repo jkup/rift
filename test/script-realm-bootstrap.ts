@@ -455,22 +455,24 @@ function inventory(a: Realm): void {
                         i === 0 || i === 1 || i === 2 || i === 3 || i === 4 || i === 5,
                         "supported prototype constructors",
                     );
-                    const name =
-                            i === 0
-                                ? "Object"
-                                : i === 1
-                                  ? "Function"
-                                  : i === 2
-                                    ? "Array"
-                                    : i === 3
-                                      ? "Boolean"
-                                      : i === 4
-                                        ? "Number"
-                                        : "String",
-                        v = own(p, k),
-                        f = object(v),
-                        callable = f.callable,
-                        slot = f.constructorSlot;
+                    let name: "Array" | "Boolean" | "Function" | "Number" | "Object" | "String";
+                    if (i === 0) {
+                        name = "Object";
+                    } else if (i === 1) {
+                        name = "Function";
+                    } else if (i === 2) {
+                        name = "Array";
+                    } else if (i === 3) {
+                        name = "Boolean";
+                    } else if (i === 4) {
+                        name = "Number";
+                    } else {
+                        name = "String";
+                    }
+                    const v = own(p, k);
+                    const f = object(v);
+                    const callable = f.callable;
+                    const slot = f.constructorSlot;
                     desc(p, k, v, true, false, true);
                     desc(a.globalObject, name, v, true, false, true);
                     if (name === "Number") {
@@ -529,13 +531,15 @@ function inventory(a: Realm): void {
                         "constructor inherited restrictions",
                     );
                 } else {
-                    method(
-                        a,
-                        p,
-                        k,
-                        k === "trimLeft" ? "trimStart" : k === "trimRight" ? "trimEnd" : k,
-                        prototypeMethodLength(k, i === 4),
-                    );
+                    let methodName: string;
+                    if (k === "trimLeft") {
+                        methodName = "trimStart";
+                    } else if (k === "trimRight") {
+                        methodName = "trimEnd";
+                    } else {
+                        methodName = k;
+                    }
+                    method(a, p, k, methodName, prototypeMethodLength(k, i === 4));
                 }
             }
         }
@@ -694,20 +698,17 @@ function row(id: string, name: string, initial: number): void {
                 "same this object",
             );
             for (let i = 0; i < globals.length; i++) {
-                desc(
-                    a.globalObject,
-                    globals[i],
-                    i === 0
-                        ? UNDEFINED
-                        : i === 1
-                          ? n(NaN)
-                          : i === 2
-                            ? n(Infinity)
-                            : own(a.globalObject, globals[i]),
-                    i >= 3,
-                    false,
-                    i >= 3,
-                );
+                let globalValue: Value;
+                if (i === 0) {
+                    globalValue = UNDEFINED;
+                } else if (i === 1) {
+                    globalValue = n(NaN);
+                } else if (i === 2) {
+                    globalValue = n(Infinity);
+                } else {
+                    globalValue = own(a.globalObject, globals[i]);
+                }
+                desc(a.globalObject, globals[i], globalValue, i >= 3, false, i >= 3);
             }
             check(
                 sameValue(own(a.globalObject, "globalThis"), a.globalThisValue),
@@ -833,18 +834,22 @@ function row(id: string, name: string, initial: number): void {
         }
         case "B05":
             error(() => {
+                // oxlint-disable-next-line no-unused-expressions -- The property read itself must throw; its value is intentionally unused.
                 a.global;
             }, legacyError);
             error(() => {
                 a.global = x.global;
             }, legacyError);
             error(() => {
+                // oxlint-disable-next-line no-unused-expressions -- The property read itself must throw; its value is intentionally unused.
                 x.globalObject;
             }, "Script Realm required");
             error(() => {
+                // oxlint-disable-next-line no-unused-expressions -- The property read itself must throw; its value is intentionally unused.
                 x.globalEnvironment;
             }, "Script Realm required");
             error(() => {
+                // oxlint-disable-next-line no-unused-expressions -- The property read itself must throw; its value is intentionally unused.
                 x.globalThisValue;
             }, "Script Realm required");
             break;

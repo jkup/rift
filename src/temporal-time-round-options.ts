@@ -62,8 +62,14 @@ export function temporalTimeRoundSettings(
     if (length === null) {
         return languageFailure(context.realm, "RangeError", "rounding requires a time unit", loc);
     }
-    const maximum =
-        unit.value === "hour" ? 24 : unit.value === "minute" || unit.value === "second" ? 60 : 1000;
+    let maximum: 24 | 60 | 1000;
+    if (unit.value === "hour") {
+        maximum = 24;
+    } else if (unit.value === "minute" || unit.value === "second") {
+        maximum = 60;
+    } else {
+        maximum = 1000;
+    }
     if (
         unit.value === "day"
             ? increment.value !== 1

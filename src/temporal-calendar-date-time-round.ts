@@ -61,8 +61,17 @@ export function roundCalendarDateTimeDifference(
     if (target === null) {
         throw new Error("date-time calendar target invariant");
     }
-    const dateSign = durationSign(difference.date),
-        sign = dateSign === 0 ? (difference.time < 0n ? -1 : 1) : dateSign;
+    const dateSign = durationSign(difference.date);
+    let sign: number;
+    if (dateSign === 0) {
+        if (difference.time < 0n) {
+            sign = -1;
+        } else {
+            sign = 1;
+        }
+    } else {
+        sign = dateSign;
+    }
     let shifted = false,
         window = dateTimeWindow(origin, difference.date, unit, increment, sign, false);
     if (window === null) {

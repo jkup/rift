@@ -78,7 +78,14 @@ for (const source of [
 }
 
 for (const name of ["get", "set", "has", "delete", "clear", "forEach"]) {
-    const length = name === "set" ? 2 : name === "clear" ? 0 : 1;
+    let length: 0 | 1 | 2;
+    if (name === "set") {
+        length = 2;
+    } else if (name === "clear") {
+        length = 0;
+    } else {
+        length = 1;
+    }
     passes(
         "let f=Map.prototype['" +
             name +

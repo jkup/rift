@@ -27,7 +27,14 @@ export function differenceISODateTime(
     }
     let time = lastTime - firstTime,
         adjusted = end.date;
-    const timeSign = time < 0n ? -1 : time > 0n ? 1 : 0;
+    let timeSign: -1 | 0 | 1;
+    if (time < 0n) {
+        timeSign = -1;
+    } else if (time > 0n) {
+        timeSign = 1;
+    } else {
+        timeSign = 0;
+    }
     if (timeSign !== 0 && timeSign === Math.sign(firstDay - lastDay)) {
         const date = epochDayToISODate(lastDay + timeSign);
         if (date === null) {
@@ -38,14 +45,16 @@ export function differenceISODateTime(
     }
     const calendarUnit =
         largest === "years" || largest === "months" || largest === "weeks" || largest === "days";
-    const dateUnit: DateDifferenceUnit =
-        largest === "years"
-            ? "year"
-            : largest === "months"
-              ? "month"
-              : largest === "weeks"
-                ? "week"
-                : "day";
+    let dateUnit: DateDifferenceUnit;
+    if (largest === "years") {
+        dateUnit = "year";
+    } else if (largest === "months") {
+        dateUnit = "month";
+    } else if (largest === "weeks") {
+        dateUnit = "week";
+    } else {
+        dateUnit = "day";
+    }
     const date = differenceISODate(start.date, adjusted, dateUnit);
     if (date === null) {
         throw new Error("date-time calendar difference invariant");

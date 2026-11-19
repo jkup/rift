@@ -371,15 +371,44 @@ for (const host of [false, true]) {
                 e.outer === outer && e.callable === c && e.thisValue.kind === "null",
                 "activation identity",
             );
-            state(b.context, e, "a", limit < 5 ? "absent" : limit < 7 ? "tdz" : "value", input);
-            state(b.context, e, "b", limit < 6 ? "absent" : limit < 8 ? "tdz" : "undefined");
-            state(b.context, e, "x", limit < 11 ? "absent" : limit < 12 ? "tdz" : "undefined");
-            state(
-                b.context,
-                e,
-                "g",
-                limit < 14 ? "absent" : limit < 15 ? "tdz" : limit < 18 ? "undefined" : "closure",
-            );
+            let expectedA: string;
+            if (limit < 5) {
+                expectedA = "absent";
+            } else if (limit < 7) {
+                expectedA = "tdz";
+            } else {
+                expectedA = "value";
+            }
+            state(b.context, e, "a", expectedA, input);
+            let expectedB: string;
+            if (limit < 6) {
+                expectedB = "absent";
+            } else if (limit < 8) {
+                expectedB = "tdz";
+            } else {
+                expectedB = "undefined";
+            }
+            state(b.context, e, "b", expectedB);
+            let expectedX: string;
+            if (limit < 11) {
+                expectedX = "absent";
+            } else if (limit < 12) {
+                expectedX = "tdz";
+            } else {
+                expectedX = "undefined";
+            }
+            state(b.context, e, "x", expectedX);
+            let expectedG: string;
+            if (limit < 14) {
+                expectedG = "absent";
+            } else if (limit < 15) {
+                expectedG = "tdz";
+            } else if (limit < 18) {
+                expectedG = "undefined";
+            } else {
+                expectedG = "closure";
+            }
+            state(b.context, e, "g", expectedG);
             state(b.context, e, "z", limit < 16 ? "absent" : "tdz");
             state(b.context, e, "arguments", "absent");
             if (limit === 18) {
@@ -428,7 +457,15 @@ for (const host of [false, true]) {
             const e: ScriptDeclarativeEnvironment = env;
             check(e.outer === outer, "block outer");
             state(b.context, e, "x", limit < 2 ? "absent" : "tdz");
-            state(b.context, e, "g", limit < 3 ? "absent" : limit < 5 ? "tdz" : "closure");
+            let expectedG: string;
+            if (limit < 3) {
+                expectedG = "absent";
+            } else if (limit < 5) {
+                expectedG = "tdz";
+            } else {
+                expectedG = "closure";
+            }
+            state(b.context, e, "g", expectedG);
             state(b.context, e, "y", limit < 6 ? "absent" : "tdz");
             if (limit >= 5) {
                 closure(b.context, e, "g", R, 2, e);

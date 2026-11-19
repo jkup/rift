@@ -120,12 +120,14 @@ for (const row of literalManifest) {
     const entry = policy.files.find((f) => f.path === "tools/test262/script-ledger.mjs");
     assert.equal(entry.sha256, oldLedger);
     for (const file of policy.files) {
-        const path =
-            file.path === "@node"
-                ? process.execPath
-                : file.path.startsWith("@yaml/")
-                  ? "node_modules/yaml/" + file.path.slice(6)
-                  : file.path;
+        let path;
+        if (file.path === "@node") {
+            path = process.execPath;
+        } else if (file.path.startsWith("@yaml/")) {
+            path = "node_modules/yaml/" + file.path.slice(6);
+        } else {
+            path = file.path;
+        }
         file.sha256 = hash(readFileSync(path));
     }
     policy.closureSha256 = hash(JSON.stringify(policy.files));

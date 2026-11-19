@@ -1,3 +1,4 @@
+import { compareBigInts } from "../numeric.js";
 import {
     timeZoneOffsetNanoseconds,
     timeZoneEquals,
@@ -354,7 +355,7 @@ export function registerTemporalZonedConversion(realm: Realm, constructor: Guest
                 ? right
                 : normal({
                       kind: "number",
-                      value: left.epoch < right.epoch ? -1 : left.epoch > right.epoch ? 1 : 0,
+                      value: compareBigInts(left.epoch, right.epoch),
                   });
         },
     );

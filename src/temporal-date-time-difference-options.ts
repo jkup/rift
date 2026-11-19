@@ -63,8 +63,14 @@ export function dateTimeDifferenceSettings(
         );
     }
     if (smallIndex > 3) {
-        const maximum =
-            smallest === "hour" ? 24 : smallest === "minute" || smallest === "second" ? 60 : 1000;
+        let maximum: 24 | 60 | 1000;
+        if (smallest === "hour") {
+            maximum = 24;
+        } else if (smallest === "minute" || smallest === "second") {
+            maximum = 60;
+        } else {
+            maximum = 1000;
+        }
         if (options.increment >= maximum || maximum % options.increment !== 0) {
             return languageFailure(
                 context.realm,

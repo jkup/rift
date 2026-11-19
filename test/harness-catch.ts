@@ -513,12 +513,14 @@ for (const mode of ["resource", "unsupported", "host", "diagnostic"]) {
         }
         check(caught, "C09 host identity");
     } else {
-        const source =
-            mode === "resource"
-                ? '"use strict";try { while(true){} } catch(e) { out(9); }'
-                : mode === "diagnostic"
-                  ? '"use strict";try{missing;}catch(e){out(e);}'
-                  : '"use strict";try{fault();}catch(e){out(9);}';
+        let source: string;
+        if (mode === "resource") {
+            source = '"use strict";try { while(true){} } catch(e) { out(9); }';
+        } else if (mode === "diagnostic") {
+            source = '"use strict";try{missing;}catch(e){out(e);}';
+        } else {
+            source = '"use strict";try{fault();}catch(e){out(9);}';
+        }
         const c = run(source, r, s);
         if (mode === "resource") {
             check(

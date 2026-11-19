@@ -162,22 +162,28 @@ for (const path of ["read", "write", "call"]) {
         });
         const rhs = obj(new GuestObject());
         for (const stage of ["B", "K", "R", "A"]) {
-            const name =
-                stage === "B"
-                    ? "base"
-                    : stage === "K"
-                      ? "keyExpression"
-                      : stage === "R"
-                        ? "rhs"
-                        : "argument";
+            let name: "argument" | "base" | "keyExpression" | "rhs";
+            if (stage === "B") {
+                name = "base";
+            } else if (stage === "K") {
+                name = "keyExpression";
+            } else if (stage === "R") {
+                name = "rhs";
+            } else {
+                name = "argument";
+            }
             seed(
                 active,
                 name,
                 builtin(active.context.realm, (_receiver, _args, _context, _location) => {
                     target.mark(stage);
-                    return stop === stage
-                        ? sentinel
-                        : normal(stage === "B" ? target.original : stage === "K" ? key : rhs);
+                    if (stop === stage) {
+                        return sentinel;
+                    }
+                    if (stage === "B") {
+                        return normal(target.original);
+                    }
+                    return normal(stage === "K" ? key : rhs);
                 }),
             );
         }
@@ -197,14 +203,23 @@ for (const path of ["read", "write", "call"]) {
             enumerable: true,
             configurable: true,
         });
-        const source =
-            path === "write"
-                ? "let result = base()[keyExpression()] = rhs();"
-                : path === "call"
-                  ? "let result = base()[keyExpression()](argument(), argument());"
-                  : "let result = base()[keyExpression()];";
+        let source: string;
+        if (path === "write") {
+            source = "let result = base()[keyExpression()] = rhs();";
+        } else if (path === "call") {
+            source = "let result = base()[keyExpression()](argument(), argument());";
+        } else {
+            source = "let result = base()[keyExpression()];";
+        }
         const result = run(active, source);
-        const full = path === "write" ? "BKRCS" : path === "call" ? "BKCGAAM" : "BKCG";
+        let full: "BKCG" | "BKCGAAM" | "BKRCS";
+        if (path === "write") {
+            full = "BKRCS";
+        } else if (path === "call") {
+            full = "BKCGAAM";
+        } else {
+            full = "BKCG";
+        }
         check(
             payload(binding(active, "trace")) ===
                 (stop === "" ? full : full.slice(0, full.indexOf(stop) + 1)),
@@ -304,13 +319,16 @@ for (const kind of ["ordinary", "array", "function"]) {
                         return normal(row.value);
                     },
                 );
+                let stringMethod: Value;
+                if (fallback === "first") {
+                    stringMethod = method;
+                } else if (fallback === "noncallable") {
+                    stringMethod = num(8);
+                } else {
+                    stringMethod = builtin(active.context.realm, (_r, _a, _c, _l) => normal(key));
+                }
                 owner.bootstrapDefine("toString", {
-                    value:
-                        fallback === "first"
-                            ? method
-                            : fallback === "noncallable"
-                              ? num(8)
-                              : builtin(active.context.realm, (_r, _a, _c, _l) => normal(key)),
+                    value: stringMethod,
                     writable: true,
                     enumerable: true,
                     configurable: true,

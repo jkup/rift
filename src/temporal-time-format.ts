@@ -104,9 +104,11 @@ export function formatTemporalFraction(nanoseconds: number, precision: "auto" | 
 }
 
 export function formatISOCalendarAnnotation(calendarName: string): string {
-    return calendarName === "always"
-        ? "[u-ca=iso8601]"
-        : calendarName === "critical"
-          ? "[!u-ca=iso8601]"
-          : "";
+    if (calendarName === "always") {
+        return "[u-ca=iso8601]";
+    } else if (calendarName === "critical") {
+        return "[!u-ca=iso8601]";
+    } else {
+        return "";
+    }
 }

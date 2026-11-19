@@ -1,3 +1,4 @@
+import type { ThrowOrigin } from "../src/outcomes.js";
 import { GuestSymbol, wellKnownToPrimitive } from "../src/symbols.js";
 import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
@@ -24,7 +25,7 @@ import {
 import { Evaluator } from "../src/evaluator.js";
 import type { DeclarationNodes } from "../src/script-declarations.js";
 import { parseDeclarationPlan, parse, auditScriptReturns } from "../src/parser.js";
-import type { Location, Stmt } from "../src/syntax.js";
+import type { Stmt } from "../src/syntax.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {
@@ -502,10 +503,15 @@ for (const row of negatives) {
             "new update prepares without effects",
         );
         define(r, "x", { kind: "number", value: 7 });
-        num(
-            run('"use strict";' + row.source, r, session),
-            row.source === "++x;" ? 8 : row.source === "x--;" ? 7 : 6,
-        );
+        let expectedValue: number;
+        if (row.source === "++x;") {
+            expectedValue = 8;
+        } else if (row.source === "x--;") {
+            expectedValue = 7;
+        } else {
+            expectedValue = 6;
+        }
+        num(run('"use strict";' + row.source, r, session), expectedValue);
         check(
             scalar(own(r, "x") ?? UNDEFINED) === (row.source === "++x;" ? "8" : "6"),
             "new update stores result",
@@ -819,17 +825,21 @@ for (const row of prefixes) {
                 row.id === "P09-break-skips-update" ||
                 row.id === "P04-postfix"
             ) {
-                const x = own(r, "x"),
-                    expected =
-                        row.id === "P04-postfix"
-                            ? k < 4
-                                ? 7
-                                : 8
-                            : k < 5
-                              ? 9
-                              : row.id === "P13-continue" && k >= 10
-                                ? 1
-                                : 0;
+                const x = own(r, "x");
+                let expected: 0 | 1 | 7 | 8 | 9;
+                if (row.id === "P04-postfix") {
+                    if (k < 4) {
+                        expected = 7;
+                    } else {
+                        expected = 8;
+                    }
+                } else if (k < 5) {
+                    expected = 9;
+                } else if (row.id === "P13-continue" && k >= 10) {
+                    expected = 1;
+                } else {
+                    expected = 0;
+                }
                 check(
                     x !== null && x.kind === "number" && x.value === expected,
                     row.id + " mutation " + k,
@@ -858,10 +868,15 @@ for (const row of prefixes) {
                 );
             }
             if (row.id === "P08-accessor-hooks") {
-                check(
-                    log.join(",") === (k < 7 ? "" : k < 8 ? "K,G" : "K,G,N,S8"),
-                    "hook prefix " + k,
-                );
+                let expectedHookTrace: string;
+                if (k < 7) {
+                    expectedHookTrace = "";
+                } else if (k < 8) {
+                    expectedHookTrace = "K,G";
+                } else {
+                    expectedHookTrace = "K,G,N,S8";
+                }
+                check(log.join(",") === expectedHookTrace, "hook prefix " + k);
             }
             if (row.id === "P06-update-throw") {
                 check(log.join(",") === (k < 6 ? "" : "F"), "update failure prefix");
@@ -1254,19 +1269,22 @@ for (const mode of ["guest", "diagnostic", "resource", "unsupported"]) {
                 s = createScriptSession(),
                 log: string[] = [];
             recorder(r, log);
+            let origin: ThrowOrigin;
+            if (mode === "diagnostic") {
+                origin = { kind: "engine-diagnostic" };
+            } else if (mode === "resource") {
+                origin = { kind: "resource-limit", guardCode: "steps", count: 10, limit: 9 };
+            } else if (mode === "unsupported") {
+                origin = {
+                    kind: "unsupported-operation",
+                    capabilityCode: "runtime.object-to-string",
+                };
+            } else {
+                origin = { kind: "guest" };
+            }
             const q: ThrowCompletion = {
                 ...sentinel(),
-                origin:
-                    mode === "diagnostic"
-                        ? { kind: "engine-diagnostic" }
-                        : mode === "resource"
-                          ? { kind: "resource-limit", guardCode: "steps", count: 10, limit: 9 }
-                          : mode === "unsupported"
-                            ? {
-                                  kind: "unsupported-operation",
-                                  capabilityCode: "runtime.object-to-string",
-                              }
-                            : { kind: "guest" },
+                origin: origin,
             };
             let calls = 0;
             const source = stageSource(r, stage, (_t, _a, context, _l): ValueCompletion => {
@@ -1285,12 +1303,19 @@ for (const mode of ["guest", "diagnostic", "resource", "unsupported"]) {
                 last = s.inspect().lastAbrupt;
             const caught = wrapped && (mode === "guest" || mode === "diagnostic");
             check(caught ? result.type === "normal" : result === q, "X01 exact " + stage);
-            check(
-                calls === 1 &&
-                    log.join(",") ===
-                        (stage === "update" ? (caught ? "1,true" : "1") : caught ? "true" : ""),
-                "X01 effects " + stage,
-            );
+            let expectedEffects: string;
+            if (stage === "update") {
+                if (caught) {
+                    expectedEffects = "1,true";
+                } else {
+                    expectedEffects = "1";
+                }
+            } else if (caught) {
+                expectedEffects = "true";
+            } else {
+                expectedEffects = "";
+            }
+            check(calls === 1 && log.join(",") === expectedEffects, "X01 effects " + stage);
             check(
                 last !== null &&
                     last.record === record &&

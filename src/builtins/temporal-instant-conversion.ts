@@ -1,3 +1,4 @@
+import { compareBigInts } from "../numeric.js";
 import type { Realm } from "../realm.js";
 import type { BigIntResult } from "../bigint-arithmetic.js";
 import type { Location } from "../syntax.js";
@@ -91,7 +92,7 @@ export function registerTemporalInstantConversion(realm: Realm, constructor: Gue
             }
             return normal({
                 kind: "number",
-                value: left.value < right.value ? -1 : left.value > right.value ? 1 : 0,
+                value: compareBigInts(left.value, right.value),
             });
         },
     );

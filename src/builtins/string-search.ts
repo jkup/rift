@@ -51,12 +51,14 @@ export function registerStringSearch(realm: Realm): void {
                     }
                     position = Math.min(Math.max(integer.value, 0), length);
                 }
-                const found =
-                    name === "includes"
-                        ? stringIndexOf(text.value, needle.value, position) >= 0
-                        : name === "startsWith"
-                          ? stringStartsWith(text.value, needle.value, position)
-                          : stringEndsWith(text.value, needle.value, position);
+                let found: boolean;
+                if (name === "includes") {
+                    found = stringIndexOf(text.value, needle.value, position) >= 0;
+                } else if (name === "startsWith") {
+                    found = stringStartsWith(text.value, needle.value, position);
+                } else {
+                    found = stringEndsWith(text.value, needle.value, position);
+                }
                 return normal({ kind: "boolean", value: found });
             },
         );

@@ -252,14 +252,16 @@ for (const lower of [false, true]) {
         result(run(realm, "[].reverse.call(target);"), obj(target));
         const reads =
             "get:length;has:0;" + (lower ? "get:0;" : "") + "has:2;" + (upper ? "get:2;" : "");
-        const writes =
-            lower && upper
-                ? "set:0;set:2;"
-                : upper
-                  ? "set:0;delete:2;"
-                  : lower
-                    ? "delete:0;set:2;"
-                    : "";
+        let writes: "" | "delete:0;set:2;" | "set:0;delete:2;" | "set:0;set:2;";
+        if (lower && upper) {
+            writes = "set:0;set:2;";
+        } else if (upper) {
+            writes = "set:0;delete:2;";
+        } else if (lower) {
+            writes = "delete:0;set:2;";
+        } else {
+            writes = "";
+        }
         check(target.trace === reads + writes, "reverse presence order");
         if (upper) {
             own(target, "0", 11);

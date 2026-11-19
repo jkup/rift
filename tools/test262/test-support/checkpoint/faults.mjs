@@ -219,10 +219,14 @@ for (const stage of ["lstat", "realpath", "read", "context"]) {
     } else {
         c.fail = stage;
     }
-    await reject(
-        api.reopenScriptLedger(cp),
-        stage === "read" ? "bytes" : stage === "context" ? "context" : "path",
-    );
+    const reopened = api.reopenScriptLedger(cp);
+    let reopenError = "path";
+    if (stage === "read") {
+        reopenError = "bytes";
+    } else if (stage === "context") {
+        reopenError = "context";
+    }
+    await reject(reopened, reopenError);
     reset();
     assert.deepEqual(api.inspectScriptLedger(l), before);
     await api.reopenScriptLedger(cp);
@@ -238,10 +242,14 @@ for (const stage of ["lstat", "realpath", "mkdir", "context"]) {
     } else {
         c.fail = stage;
     }
-    await reject(
-        api.createScriptLedgerStore(join(run, "failed-create-" + stage), l),
-        stage === "context" ? "context" : stage === "mkdir" ? "io" : "path",
-    );
+    const created = api.createScriptLedgerStore(join(run, "failed-create-" + stage), l);
+    let createError = "path";
+    if (stage === "context") {
+        createError = "context";
+    } else if (stage === "mkdir") {
+        createError = "io";
+    }
+    await reject(created, createError);
     reset();
     assert.deepEqual(api.inspectScriptLedger(l), before);
     await api.createScriptLedgerStore(join(run, "recovered-create-" + stage), l);

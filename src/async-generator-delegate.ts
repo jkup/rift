@@ -67,14 +67,10 @@ export function resumeAsyncDelegate(
         if (result.type === "throw") {
             return result;
         }
-        return {
-            type: truthy(done.value)
-                ? state.mode === "return"
-                    ? "return"
-                    : "normal"
-                : "async-delegate-yield",
-            value: result.value,
-        };
+        if (!truthy(done.value)) {
+            return { type: "async-delegate-yield", value: result.value };
+        }
+        return { type: state.mode === "return" ? "return" : "normal", value: result.value };
     }
     const record = state.iterator,
         receiver: Value = { kind: "object", object: record.iterator };

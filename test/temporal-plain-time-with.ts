@@ -73,7 +73,14 @@ for (const value of [
 }
 const names = ["hour", "minute", "second", "millisecond", "microsecond", "nanosecond"];
 for (let i = 0; i < names.length; i++) {
-    const limit = i === 0 ? 24 : i < 3 ? 60 : 1000;
+    let limit: 24 | 60 | 1000;
+    if (i === 0) {
+        limit = 24;
+    } else if (i < 3) {
+        limit = 60;
+    } else {
+        limit = 1000;
+    }
     for (const value of [-1, limit, NaN, Infinity]) {
         passes(
             "var ok=false;try{new Temporal.PlainTime().with({" +

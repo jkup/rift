@@ -2453,6 +2453,21 @@ for (const op of ["==", "!="]) {
     });
 }
 const results = [];
+function matchesExpectedError(stderr, name, expected) {
+    if (expected.error) {
+        return stderr === name + ":" + expected.error + "\n";
+    }
+    if (expected.errorPattern) {
+        const pattern =
+            "^" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ":" + expected.errorPattern + "\n$";
+        return new RegExp(pattern).test(stderr);
+    }
+    if (expected.errorContains) {
+        return stderr.includes(expected.errorContains);
+    }
+    return stderr === (expected.stderr ?? "");
+}
+
 function execute(name, executable, args, expected) {
     const r = spawnSync(executable, args, {
         cwd: root,
@@ -2470,21 +2485,7 @@ function execute(name, executable, args, expected) {
         verdict = "STATUS-FAIL";
     } else if (stdout !== (expected.stdout ?? "")) {
         verdict = "OUTPUT-FAIL";
-    } else if (
-        expected.error
-            ? stderr !== name + ":" + expected.error + "\n"
-            : expected.errorPattern
-              ? !new RegExp(
-                    "^" +
-                        name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
-                        ":" +
-                        expected.errorPattern +
-                        "\n$",
-                ).test(stderr)
-              : expected.errorContains
-                ? !stderr.includes(expected.errorContains)
-                : stderr !== (expected.stderr ?? "")
-    ) {
+    } else if (!matchesExpectedError(stderr, name, expected)) {
         verdict = "ERROR-FAIL";
     }
     const result = {

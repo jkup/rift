@@ -18,7 +18,6 @@ import {
     languageFailure,
     UNDEFINED,
     type GuestObject,
-    type Value,
     type ValueCompletion,
 } from "../runtime.js";
 import { wellKnownSpecies, wellKnownToStringTag } from "../symbols.js";

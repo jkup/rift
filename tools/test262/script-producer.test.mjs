@@ -41,9 +41,15 @@ function assertNegativeSetup(row, setup) {
     }
     assert.deepEqual(
         setup.args,
-        row.argv.map((a) =>
-            a === "RESULT" ? setup.result : tokens.includes(a) ? join(setup.dir, a) : a,
-        ),
+        row.argv.map((a) => {
+            if (a === "RESULT") {
+                return setup.result;
+            } else if (tokens.includes(a)) {
+                return join(setup.dir, a);
+            } else {
+                return a;
+            }
+        }),
     );
     assert.equal(existsSync(setup.result), false);
 }
@@ -57,9 +63,15 @@ function setupNegative(row, dir) {
     const setup = {
         dir,
         result,
-        args: row.argv.map((a) =>
-            a === "RESULT" ? result : row.files.some((f) => f.token === a) ? join(dir, a) : a,
-        ),
+        args: row.argv.map((a) => {
+            if (a === "RESULT") {
+                return result;
+            } else if (row.files.some((f) => f.token === a)) {
+                return join(dir, a);
+            } else {
+                return a;
+            }
+        }),
     };
     assertNegativeSetup(row, setup);
     return setup;

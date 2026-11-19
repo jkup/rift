@@ -321,11 +321,15 @@ for (const mode of ["delete", "replace", "shrink"]) {
         }),
     );
     put(receiver, "0", obj(element));
-    expect(
-        j(obj(receiver)),
-        str(mode === "delete" ? "a,p" : mode === "replace" ? "a,z" : "a,"),
-        "J25-J27",
-    );
+    let expectedString: string;
+    if (mode === "delete") {
+        expectedString = "a,p";
+    } else if (mode === "replace") {
+        expectedString = "a,z";
+    } else {
+        expectedString = "a,";
+    }
+    expect(j(obj(receiver)), str(expectedString), "J25-J27");
 }
 const snapshot = new Observed();
 const lengthHook = a.createObject();
@@ -770,8 +774,15 @@ for (const stage of ["length", "separator", "index", "element", "join", "tag"]) 
             put(receiver, "0", obj(hookObject));
         }
         if (stage === "index" || stage === "join" || stage === "tag") {
-            receiver.failKey =
-                stage === "index" ? "0" : stage === "join" ? "join" : wellKnownToStringTag;
+            let failureKey: PropertyKey;
+            if (stage === "index") {
+                failureKey = "0";
+            } else if (stage === "join") {
+                failureKey = "join";
+            } else {
+                failureKey = wellKnownToStringTag;
+            }
+            receiver.failKey = failureKey;
             receiver.hostFault = mode === "host";
             if (stage !== "index") {
                 method = stringify;

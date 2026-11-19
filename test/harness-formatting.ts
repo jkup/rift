@@ -465,12 +465,14 @@ for (const t of traces) {
                                 : { maxSteps: start + k, maxCalls: 64 },
                         );
                     seed(s, f.b, start);
-                    const source =
-                        t.id === "C01"
-                            ? input
-                            : t.id === "C02"
-                              ? "new String(" + numeric + ");"
-                              : t.source;
+                    let source: string;
+                    if (t.id === "C01") {
+                        source = input;
+                    } else if (t.id === "C02") {
+                        source = "new String(" + numeric + ");";
+                    } else {
+                        source = t.source;
+                    }
                     const v = run(source, f.b, s),
                         n = t.columns.length,
                         failed = callMode ? k < t.calls : k < n;
@@ -479,12 +481,13 @@ for (const t of traces) {
                         column = 1,
                         realm = f.a;
                     if (callMode && failed) {
-                        ticks =
-                            k === 0
-                                ? t.sourceTicks
-                                : t.effects.indexOf("M") >= 0
-                                  ? t.effects.indexOf("M") + 1
-                                  : n;
+                        if (k === 0) {
+                            ticks = t.sourceTicks;
+                        } else if (t.effects.indexOf("M") >= 0) {
+                            ticks = t.effects.indexOf("M") + 1;
+                        } else {
+                            ticks = n;
+                        }
                         fx = "";
                         realm = k === 0 ? f.b : f.a;
                     }
@@ -654,14 +657,19 @@ for (const t of parsed) {
                     const v = run(t.construct ? "new String(m);" : "String(m);", f.b, s),
                         n = t.columns.length,
                         failed = callMode ? k < 2 : k < n;
-                    const ticks = callMode
-                            ? k === 0
-                                ? t.sourceTicks
-                                : k === 1
-                                  ? t.getterStart
-                                  : n
-                            : Math.min(k + 1, n),
-                        method = !t.throwing && (callMode ? k >= 2 : k >= t.getterStart + 4);
+                    let ticks: number;
+                    if (callMode) {
+                        if (k === 0) {
+                            ticks = t.sourceTicks;
+                        } else if (k === 1) {
+                            ticks = t.getterStart;
+                        } else {
+                            ticks = n;
+                        }
+                    } else {
+                        ticks = Math.min(k + 1, n);
+                    }
+                    const method = !t.throwing && (callMode ? k >= 2 : k >= t.getterStart + 4);
                     const label =
                         "parsed " +
                         t.construct +
@@ -701,20 +709,36 @@ for (const t of parsed) {
                     if (v.type === "throw") {
                         const inGetter =
                             !callMode && failed && k >= t.getterStart && k < t.getterStart + 4;
-                        const realm = failed
-                            ? callMode
-                                ? k === 0
-                                    ? f.b
-                                    : f.a
-                                : k < t.sourceTicks
-                                  ? f.b
-                                  : inGetter
-                                    ? f.h
-                                    : f.a
-                            : f.h;
-                        const source = inGetter || !failed ? "getter" : inputId,
-                            column = failed ? (callMode ? 1 : t.columns[k]) : 14,
-                            p = s.inspect().lastAbrupt;
+                        let realm: Realm;
+                        if (failed) {
+                            if (callMode) {
+                                if (k === 0) {
+                                    realm = f.b;
+                                } else {
+                                    realm = f.a;
+                                }
+                            } else if (k < t.sourceTicks) {
+                                realm = f.b;
+                            } else if (inGetter) {
+                                realm = f.h;
+                            } else {
+                                realm = f.a;
+                            }
+                        } else {
+                            realm = f.h;
+                        }
+                        const source = inGetter || !failed ? "getter" : inputId;
+                        let column: number;
+                        if (failed) {
+                            if (callMode) {
+                                column = 1;
+                            } else {
+                                column = t.columns[k];
+                            }
+                        } else {
+                            column = 14;
+                        }
+                        const p = s.inspect().lastAbrupt;
                         check(
                             p !== null &&
                                 p.realm === realm &&
@@ -1110,8 +1134,14 @@ for (const where of ["own", "function", "object"]) {
             ),
             "actual C explicit Object",
         );
-        const target =
-            where === "own" ? ctor : where === "function" ? r.functionPrototype : r.objectPrototype;
+        let target: GuestObject;
+        if (where === "own") {
+            target = ctor;
+        } else if (where === "function") {
+            target = r.functionPrototype;
+        } else {
+            target = r.objectPrototype;
+        }
         const poison = r.createBuiltin("species", 0, (receiver, _args, c, _l): ValueCompletion => {
             getters++;
             check(sameValue(receiver, obj(ctor)) && c.realm === r, "actual species receiver");
@@ -1125,17 +1155,17 @@ for (const where of ["own", "function", "object"]) {
         if (mode === 4) {
             target.bootstrapDefine(wellKnownSpecies, { get: obj(poison), configurable: true });
         } else {
-            data(
-                target,
-                wellKnownSpecies,
-                mode === 0
-                    ? UNDEFINED
-                    : mode === 1
-                      ? { kind: "null" }
-                      : mode === 2
-                        ? num(7)
-                        : obj(r.getErrorConstructor("Error")),
-            );
+            let species: Value;
+            if (mode === 0) {
+                species = UNDEFINED;
+            } else if (mode === 1) {
+                species = { kind: "null" };
+            } else if (mode === 2) {
+                species = num(7);
+            } else {
+                species = obj(r.getErrorConstructor("Error"));
+            }
+            data(target, wellKnownSpecies, species);
         }
         data(target, "Symbol.species", num(7));
         data(target, new GuestSymbol("Symbol.species"), num(7));
@@ -1260,6 +1290,7 @@ for (const constructing of [false, true]) {
                     x = before.active,
                     y = after.active;
                 if (x === null || y === null) {
+                    // oxlint-disable-next-line no-unsafe-finally -- A failed restoration invariant must fail this host test even during unwinding.
                     throw new Error("frame");
                 }
                 check(
@@ -1330,8 +1361,18 @@ for (const constructing of [false, true]) {
                 "inner immutable resource",
             );
         }
+        let expectedOuterSteps: number;
+        if (constructing) {
+            if (mode === 0) {
+                expectedOuterSteps = 7;
+            } else {
+                expectedOuterSteps = 6;
+            }
+        } else {
+            expectedOuterSteps = 5;
+        }
         check(
-            outer.inspect().steps === (constructing ? (mode === 0 ? 7 : 6) : 5) &&
+            outer.inspect().steps === expectedOuterSteps &&
                 inner.inspect().steps === (mode === 5 ? 1 : 2),
             "literal owner steps",
         );
@@ -1340,9 +1381,17 @@ for (const constructing of [false, true]) {
             throw new Error("retained");
         }
         deny(retainedContext);
+        let innerExhausted: number;
+        if (mode === 5) {
+            innerExhausted = 1;
+        } else if (mode === 6) {
+            innerExhausted = 2;
+        } else {
+            innerExhausted = 0;
+        }
         for (const owner of [
             { r: b, s: outer, exhausted: 0 },
-            { r: h, s: inner, exhausted: mode === 5 ? 1 : mode === 6 ? 2 : 0 },
+            { r: h, s: inner, exhausted: innerExhausted },
         ]) {
             const before = owner.s.inspect().steps;
             const result = run("String(7);", owner.r, owner.s, "reuse");

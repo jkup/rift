@@ -521,10 +521,15 @@ for (const strict of [false, true]) {
                 "D02 descriptor",
             );
             if (d !== undefined && d.kind === "data") {
-                check(
-                    scalar(d.value) === (key === "name" ? ["f", "g", "m"][i] : i === 0 ? "1" : "0"),
-                    "D02 metadata",
-                );
+                let expectedMetadata: string;
+                if (key === "name") {
+                    expectedMetadata = ["f", "g", "m"][i];
+                } else if (i === 0) {
+                    expectedMetadata = "1";
+                } else {
+                    expectedMetadata = "0";
+                }
+                check(scalar(d.value) === expectedMetadata, "D02 metadata");
             }
         }
         const p = f.getOwnProperty("prototype");
@@ -1039,7 +1044,15 @@ for (const trace of traces) {
                 check(log.length === 0, "delete getter suppressed");
             }
             if (trace.id === "P06-key-set-abrupt") {
-                check(log.join(",") === (k < 5 ? "" : k < 6 ? "R" : "R,K,S"), "effect prefix");
+                let expectedEffects: string;
+                if (k < 5) {
+                    expectedEffects = "";
+                } else if (k < 6) {
+                    expectedEffects = "R";
+                } else {
+                    expectedEffects = "R,K,S";
+                }
+                check(log.join(",") === expectedEffects, "effect prefix");
             }
             prefixes++;
         }
@@ -1589,12 +1602,15 @@ for (const strict of [false, true]) {
         }
         define(a, "o", obj(o));
         define(a, "k", obj(k));
-        const result = run(
-            (strict ? '"use strict";' : "") +
-                (hook === "key" ? "o[k]=7;" : hook === "get" ? "o.p++;" : "o.p=7;"),
-            a,
-            s,
-        );
+        let operationSource: string;
+        if (hook === "key") {
+            operationSource = "o[k]=7;";
+        } else if (hook === "get") {
+            operationSource = "o.p++;";
+        } else {
+            operationSource = "o.p=7;";
+        }
+        const result = run((strict ? '"use strict";' : "") + operationSource, a, s);
         check(
             result === q &&
                 calls === 1 &&

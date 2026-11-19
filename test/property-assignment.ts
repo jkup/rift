@@ -459,7 +459,7 @@ class Target extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         this.observation.reads++;
@@ -922,11 +922,15 @@ for (const row of conversionRows) {
     const e = new Evaluator(realm);
     const key = new GuestObject();
     let trace = "";
-    seed(
-        key,
-        wellKnownToPrimitive,
-        row.mode === "noncallable" ? n(1) : row.mode === "null" ? nil : U,
-    );
+    let primitiveMethod: Value;
+    if (row.mode === "noncallable") {
+        primitiveMethod = n(1);
+    } else if (row.mode === "null") {
+        primitiveMethod = nil;
+    } else {
+        primitiveMethod = U;
+    }
+    seed(key, wellKnownToPrimitive, primitiveMethod);
     if (row.mode === "object") {
         seed(
             key,
@@ -1552,10 +1556,15 @@ for (const name of [
         wellKnownToPrimitive,
         fn(realm, (_r, _a, _c, _l) => normal(s("length"))),
     );
-    const ref = reference(
-        base,
-        name === "V27 ArrayIndex" ? n(2) : name === "V28 ArrayFrozenLength" ? n(0) : o(key),
-    );
+    let referenceKey: Value;
+    if (name === "V27 ArrayIndex") {
+        referenceKey = n(2);
+    } else if (name === "V28 ArrayFrozenLength") {
+        referenceKey = n(0);
+    } else {
+        referenceKey = o(key);
+    }
+    const ref = reference(base, referenceKey);
     let trace = "";
     const rhsObject = new GuestObject();
     seed(
@@ -1568,18 +1577,18 @@ for (const name of [
             return normal(n(2));
         }),
     );
-    const rhs =
-        name === "V32 ArrayRHSIdentity"
-            ? o(rhsObject)
-            : n(
-                  name === "V27 ArrayIndex"
-                      ? 7
-                      : name === "V30 InvalidLength"
-                        ? 1.5
-                        : name === "V31 ArrayBlockedShrink"
-                          ? 0
-                          : 1,
-              );
+    let rhs: Value;
+    if (name === "V32 ArrayRHSIdentity") {
+        rhs = o(rhsObject);
+    } else if (name === "V27 ArrayIndex") {
+        rhs = n(7);
+    } else if (name === "V30 InvalidLength") {
+        rhs = n(1.5);
+    } else if (name === "V31 ArrayBlockedShrink") {
+        rhs = n(0);
+    } else {
+        rhs = n(1);
+    }
 
     const result = putValue(ref, rhs, e.context, opLoc);
 
@@ -1766,21 +1775,38 @@ for (const name of [
     } else {
         expect(first, name === "K3 GetPut" ? n(1) : c.rhs, name + " first");
     }
-    saved(
-        c.ref,
-        c.base,
-        conversionFailed ? c.raw : name === "K13 SymbolCache" ? sym(s1) : s("x"),
-        name + " first cache",
-    );
+    let cachedKey: Value;
+    if (conversionFailed) {
+        cachedKey = c.raw;
+    } else if (name === "K13 SymbolCache") {
+        cachedKey = sym(s1);
+    } else {
+        cachedKey = s("x");
+    }
+    saved(c.ref, c.base, cachedKey, name + " first cache");
     clean(c.e, c.realm, name);
 
     // Change the original hook result, except when retrying failed conversion.
-    c.next = conversionFailed ? s("x") : name === "K13 SymbolCache" ? sym(s2) : s("y");
+    let nextKey: Value;
+    if (conversionFailed) {
+        nextKey = s("x");
+    } else if (name === "K13 SymbolCache") {
+        nextKey = sym(s2);
+    } else {
+        nextKey = s("y");
+    }
+    c.next = nextKey;
     c.mode = "success";
     c.key.mode = "success";
     observation.setMode = "success";
-    const secondRHS =
-        name === "K1 PutPut" ? n(7) : name === "K18 FreshRHS" ? o(new GuestObject()) : c.rhs;
+    let secondRHS: Value;
+    if (name === "K1 PutPut") {
+        secondRHS = n(7);
+    } else if (name === "K18 FreshRHS") {
+        secondRHS = o(new GuestObject());
+    } else {
+        secondRHS = c.rhs;
+    }
 
     const second = name === "K2 PutGet" ? getValue(c.ref, c.e.context, opLoc) : c.put(secondRHS);
 
@@ -1843,12 +1869,14 @@ for (const name of [
     "K17 NoBoxCache",
 ]) {
     const c = new CacheScenario();
-    const base =
-        name === "K12 NullishRetry null"
-            ? nil
-            : name === "K12 NullishRetry undefined"
-              ? U
-              : b(true);
+    let base: Value;
+    if (name === "K12 NullishRetry null") {
+        base = nil;
+    } else if (name === "K12 NullishRetry undefined") {
+        base = U;
+    } else {
+        base = b(true);
+    }
     const ref = reference(base, c.raw);
     const other = new ObservedRealm();
     const otherEvaluator = new Evaluator(other);
@@ -2013,13 +2041,17 @@ for (const mode of ["mutable", "missing", "uninitialized", "immutable"]) {
         expect(result, c.rhs, "K19 BindingControls mutable");
         check(environment.bindings.get("x")!.value === c.rhs, "K19 assigned identity");
     } else {
+        let expectedMessage: string;
+        if (mode === "missing") {
+            expectedMessage = "z is not defined";
+        } else if (mode === "uninitialized") {
+            expectedMessage = "x is not initialized";
+        } else {
+            expectedMessage = "binding is not mutable: x";
+        }
         error(
             result,
-            mode === "missing"
-                ? "z is not defined"
-                : mode === "uninitialized"
-                  ? "x is not initialized"
-                  : "binding is not mutable: x",
+            expectedMessage,
             "K19 BindingControls",
             opLoc,
             mode === "immutable" ? "TypeError" : "ReferenceError",
@@ -2082,12 +2114,14 @@ for (const name of [
     const raw = o(key);
     const target = new Target(home.observation);
     target.setPrototypeOf(home.objectPrototype);
-    const base =
-        name === "F3 ForeignObject"
-            ? o(target)
-            : name === "F2 ForeignPrimitiveResult"
-              ? n(3)
-              : b(true);
+    let base: Value;
+    if (name === "F3 ForeignObject") {
+        base = o(target);
+    } else if (name === "F2 ForeignPrimitiveResult") {
+        base = n(3);
+    } else {
+        base = b(true);
+    }
     const ref = reference(base, raw);
     const rhs = o(home.createObject());
     let nEffects = 0;
@@ -2165,12 +2199,13 @@ for (const name of [
     let escaped = false;
 
     try {
-        result =
-            name === "F2 ForeignPrimitiveResult"
-                ? run(e, "base()[k] = rhs();")
-                : name === "F11 SideEffectSurvival"
-                  ? run(e, "p[k] = rhs();")
-                  : putValue(ref, rhs, e.context, opLoc);
+        if (name === "F2 ForeignPrimitiveResult") {
+            result = run(e, "base()[k] = rhs();");
+        } else if (name === "F11 SideEffectSurvival") {
+            result = run(e, "p[k] = rhs();");
+        } else {
+            result = putValue(ref, rhs, e.context, opLoc);
+        }
     } catch (fault) {
         escaped = fault instanceof Error && fault === F;
     }
@@ -2596,17 +2631,17 @@ for (const row of resourceRows) {
     } else {
         seed(key, wellKnownToPrimitive, hook);
     }
-    bind(
-        realm,
-        "p",
-        row.mode === "null"
-            ? nil
-            : row.mode === "undefined"
-              ? U
-              : row.mode === "object"
-                ? o(target)
-                : b(true),
-    );
+    let receiver: Value;
+    if (row.mode === "null") {
+        receiver = nil;
+    } else if (row.mode === "undefined") {
+        receiver = U;
+    } else if (row.mode === "object") {
+        receiver = o(target);
+    } else {
+        receiver = b(true);
+    }
+    bind(realm, "p", receiver);
     bind(realm, "k", row.mode === "primitive" || row.mode === "object" ? s("x") : o(key));
     const assignment = expression("p[k] = 7;");
 

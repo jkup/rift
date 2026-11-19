@@ -18,18 +18,26 @@ export type Token = {
     readonly regexp?: { pattern: string; flags: string };
 };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
+function numberTokenKind(invalid: boolean, bigint: boolean): string {
+    if (invalid) {
+        return "invalid-number";
+    }
+    return bigint ? "bigint" : "number";
+}
 function digit(c: string): boolean {
     return c >= "0" && c <= "9";
 }
 function digitValue(c: string): number {
     const code = c.charCodeAt(0);
-    return code >= 48 && code <= 57
-        ? code - 48
-        : code >= 65 && code <= 70
-          ? code - 55
-          : code >= 97 && code <= 102
-            ? code - 87
-            : -1;
+    if (code >= 48 && code <= 57) {
+        return code - 48;
+    } else if (code >= 65 && code <= 70) {
+        return code - 55;
+    } else if (code >= 97 && code <= 102) {
+        return code - 87;
+    } else {
+        return -1;
+    }
 }
 function letter(c: string): boolean {
     return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";
@@ -449,12 +457,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                         );
                     }
                     tokens.push({
-                        kind:
-                            invalidSeparator || error !== null
-                                ? "invalid-number"
-                                : bigint
-                                  ? "bigint"
-                                  : "number",
+                        kind: numberTokenKind(invalidSeparator || error !== null, bigint),
                         text,
                         loc,
                         start,
@@ -537,12 +540,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                     );
                 }
                 tokens.push({
-                    kind:
-                        invalidSeparator || error !== null
-                            ? "invalid-number"
-                            : bigint
-                              ? "bigint"
-                              : "number",
+                    kind: numberTokenKind(invalidSeparator || error !== null, bigint),
                     text,
                     legacyNumeric,
                     loc,

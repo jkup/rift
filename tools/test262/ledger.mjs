@@ -131,6 +131,10 @@ export function report(ledger) {
         files.push({ path: file.path, statuses, passed });
     }
     const complete = inputErrors === 0 && completed === plannedVariants;
+    let exitCode = 2;
+    if (complete) {
+        exitCode = counts.pass === plannedVariants ? 0 : 1;
+    }
     return {
         lane: selection.lane,
         selectedFiles: selection.files.length,
@@ -150,7 +154,7 @@ export function report(ledger) {
             counts.pass + counts.fail
                 ? { numerator: counts.pass, denominator: counts.pass + counts.fail }
                 : null,
-        exitCode: !complete ? 2 : counts.pass === plannedVariants ? 0 : 1,
+        exitCode,
     };
 }
 

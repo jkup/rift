@@ -241,12 +241,14 @@ for (const target of [
     "RegExp.prototype",
     "Object.getPrototypeOf(''.matchAll())",
 ]) {
-    const key =
-        target === "String.prototype"
-            ? "'matchAll'"
-            : target === "RegExp.prototype"
-              ? "Symbol.matchAll"
-              : "'next'";
+    let key: "'matchAll'" | "'next'" | "Symbol.matchAll";
+    if (target === "String.prototype") {
+        key = "'matchAll'";
+    } else if (target === "RegExp.prototype") {
+        key = "Symbol.matchAll";
+    } else {
+        key = "'next'";
+    }
     run(
         "var d=Object.getOwnPropertyDescriptor(" +
             target +

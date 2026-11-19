@@ -32,11 +32,14 @@ function parsedParts(
             return NaN;
         }
     }
-    const isoYear = negative
-        ? "-" + digits.padStart(6, "0")
-        : digits.length === 4
-          ? digits
-          : "+" + digits.padStart(6, "0");
+    let isoYear: string;
+    if (negative) {
+        isoYear = "-" + digits.padStart(6, "0");
+    } else if (digits.length === 4) {
+        isoYear = digits;
+    } else {
+        isoYear = "+" + digits.padStart(6, "0");
+    }
     const fields = parseDateISOFields(
         isoYear + "-" + String(monthIndex + 1).padStart(2, "0") + "-" + day + "T" + time + "Z",
     );

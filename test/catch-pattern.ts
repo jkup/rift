@@ -1,6 +1,6 @@
 import type { ScriptSession } from "../src/script-execution.js";
 import type { ValueCompletion } from "../src/runtime.js";
-import { parseDeclarationPlan } from "../src/parser.js";
+import "../src/parser.js";
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript, drainScriptJobs } from "../src/script-execution.js";

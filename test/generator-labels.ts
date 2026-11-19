@@ -1,4 +1,3 @@
-import type { Location } from "../src/syntax.js";
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import {
@@ -6,7 +5,7 @@ import {
     evaluateScript,
     type ScriptSession,
 } from "../src/script-execution.js";
-import { type Value, type ValueCompletion, type OperationContext } from "../src/runtime.js";
+import { type ValueCompletion } from "../src/runtime.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);
@@ -26,16 +25,7 @@ function run(
     check(state.active === null && state.calls === 0 && state.depth === 0, "caller state restored");
     return result;
 }
-function own(realm: Realm, name: string): Value {
-    const property = realm.globalObject.getOwnProperty(name);
-    if (property === undefined || property.kind !== "data") {
-        throw new Error("missing " + name);
-    }
-    return property.value;
-}
-function define(realm: Realm, name: string, value: Value): void {
-    realm.defineScriptGlobal(name, { value, writable: true, enumerable: true, configurable: true });
-}
+
 const cases: string[] = [
     'function* f(){outer:{yield 1;break outer;yield 2;}yield 3;}Array.from(f()).join(",")==="1,3";',
     'function* f(){var i=0;outer:while(i<3){i++;yield i;continue outer;}yield 9;}Array.from(f()).join(",")==="1,2,3,9";',

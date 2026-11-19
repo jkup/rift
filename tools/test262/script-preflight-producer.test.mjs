@@ -72,9 +72,15 @@ function setup(row) {
         writeFileSync(path, text, { flag: "wx" });
         return path;
     });
-    const argv = row.argv.map((x) =>
-        x === "RESULT" ? result : /^SOURCE-\d+$/.test(x) ? paths[Number(x.slice(7))] : x,
-    );
+    const argv = row.argv.map((x) => {
+        if (x === "RESULT") {
+            return result;
+        } else if (/^SOURCE-\d+$/.test(x)) {
+            return paths[Number(x.slice(7))];
+        } else {
+            return x;
+        }
+    });
     return { directory, result, argv, paths };
 }
 function launch(row, s) {

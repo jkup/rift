@@ -82,12 +82,14 @@ for (const name of [
         const r = fresh();
         seed(r, "input", input);
         const result = run("Object." + name + "(input);", r);
-        const expected: Value =
-            name === "isExtensible"
-                ? { kind: "boolean", value: false }
-                : name === "isSealed" || name === "isFrozen"
-                  ? { kind: "boolean", value: true }
-                  : input;
+        let expected: Value;
+        if (name === "isExtensible") {
+            expected = { kind: "boolean", value: false };
+        } else if (name === "isSealed" || name === "isFrozen") {
+            expected = { kind: "boolean", value: true };
+        } else {
+            expected = input;
+        }
         check(result.type === "normal" && sameValue(result.value, expected), "primitive " + name);
     }
     const result = run(

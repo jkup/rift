@@ -89,12 +89,14 @@ function roundTrip(start: ISODate, end: ISODate, unit: DateDifferenceUnit): void
             start.year * 12 + start.month - 1 + difference.years * 12 + difference.months + sign;
         const nextYear = Math.floor(nextMonths / 12),
             nextMonth = (((nextMonths % 12) + 12) % 12) + 1;
-        const comparison =
-            nextYear !== end.year
-                ? nextYear - end.year
-                : nextMonth !== end.month
-                  ? nextMonth - end.month
-                  : start.day - end.day;
+        let comparison: number;
+        if (nextYear !== end.year) {
+            comparison = nextYear - end.year;
+        } else if (nextMonth !== end.month) {
+            comparison = nextMonth - end.month;
+        } else {
+            comparison = start.day - end.day;
+        }
         check(sign * comparison > 0, "maximal whole calendar months before clamping");
         if (unit === "year") {
             check(Math.abs(difference.months) < 12, "residual months");

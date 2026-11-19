@@ -1402,6 +1402,7 @@ class DeclarationCollector {
                 break;
             }
             case "template-object":
+            case "private-name":
             case "regexp":
             case "bigint":
             case "this":

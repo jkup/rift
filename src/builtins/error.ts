@@ -219,14 +219,15 @@ export function registerErrors(realm: Realm): void {
             if (message.type === "throw") {
                 return message;
             }
+            if (name.value === "") {
+                return normal({ kind: "string", value: message.value });
+            }
+            if (message.value === "") {
+                return normal({ kind: "string", value: name.value });
+            }
             return normal({
                 kind: "string",
-                value:
-                    name.value === ""
-                        ? message.value
-                        : message.value === ""
-                          ? name.value
-                          : name.value + ": " + message.value,
+                value: name.value + ": " + message.value,
             });
         },
     );

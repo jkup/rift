@@ -34,14 +34,16 @@ export function registerURI(realm: Realm): void {
                     }
                 }
                 try {
-                    const value =
-                        name === "encodeURI"
-                            ? encodeURI(text)
-                            : name === "encodeURIComponent"
-                              ? encodeURIComponent(text)
-                              : name === "decodeURI"
-                                ? decodeURI(text)
-                                : decodeURIComponent(text);
+                    let value: string;
+                    if (name === "encodeURI") {
+                        value = encodeURI(text);
+                    } else if (name === "encodeURIComponent") {
+                        value = encodeURIComponent(text);
+                    } else if (name === "decodeURI") {
+                        value = decodeURI(text);
+                    } else {
+                        value = decodeURIComponent(text);
+                    }
                     return normal({ kind: "string", value });
                 } catch (error) {
                     if (error instanceof URIError) {

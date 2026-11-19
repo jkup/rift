@@ -297,16 +297,17 @@ export function blockers(meta, variant, id = null) {
     if (meta.flags.includes("non-deterministic")) {
         add("unsupported-profile", "nondeterministic-policy");
     }
-    add(
-        "unsupported-profile",
-        variant === "strict"
-            ? "strict-script-contract"
-            : variant === "raw"
-              ? "directive-script"
-              : variant === "module"
-                ? "module-profile"
-                : "sloppy-script",
-    );
+    let profile;
+    if (variant === "strict") {
+        profile = "strict-script-contract";
+    } else if (variant === "raw") {
+        profile = "directive-script";
+    } else if (variant === "module") {
+        profile = "module-profile";
+    } else {
+        profile = "sloppy-script";
+    }
+    add("unsupported-profile", profile);
     if (id === "U07") {
         add("unsupported-profile", "global-script");
     }

@@ -120,7 +120,9 @@ check(Number(9007199254740995n) === 9007199254740996, "binary64 round up at midp
 check(Number(-9007199254740995n) === -9007199254740996, "negative binary64 rounding");
 check(Number(1n << 1024n) === Infinity, "binary64 overflow");
 check(BigInt(9007199254740992) === 9007199254740992n, "exact number conversion");
+// oxlint-disable-next-line no-constant-binary-expression -- This compiler regression checks constant operations on both Node and native hosts.
 check(-7n / 3n === -2n && -7n % 3n === -1n, "truncating division and signed remainder");
+// oxlint-disable-next-line no-constant-binary-expression -- This compiler regression checks constant operations on both Node and native hosts.
 check(-7n >> 1n === -4n && 8n << -1n === 4n && 8n >> -1n === 16n, "signed and negative shifts");
 check((1n << 512n) * (1n << 512n) === 1n << 1024n, "large products");
 for (const text of ["123456789", "         ", "1        "]) {

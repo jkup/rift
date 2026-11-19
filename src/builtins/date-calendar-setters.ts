@@ -6,6 +6,7 @@ import {
     dateMakeTime,
     dateMakeDate,
     dateMakeFullYear,
+    type DateFields,
 } from "../date-time.js";
 import { dateMakeDay } from "../date-calendar.js";
 import { dateLocalFields, dateEpochFromLocalTime } from "../date-time-zone.js";
@@ -71,12 +72,14 @@ export function registerDateCalendarSetters(realm: Realm): void {
                         return date;
                     }
                     const original = date.value.dateValue;
-                    const fields =
-                        start === 0 && Number.isNaN(original)
-                            ? dateTimeFields(0)
-                            : prefix === "set"
-                              ? dateLocalFields(original, context.realm.dateTimeZone)
-                              : dateTimeFields(original);
+                    let fields: DateFields | null;
+                    if (start === 0 && Number.isNaN(original)) {
+                        fields = dateTimeFields(0);
+                    } else if (prefix === "set") {
+                        fields = dateLocalFields(original, context.realm.dateTimeZone);
+                    } else {
+                        fields = dateTimeFields(original);
+                    }
                     const values =
                         fields === null ? [NaN, NaN, NaN] : [fields.year, fields.month, fields.day];
                     for (let index = start; index < 3; index++) {

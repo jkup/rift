@@ -192,7 +192,14 @@ export function select(
         for (let side = 0; side < 2; side++) {
             stats.candidates++;
             const raw = stats.watch(floor + BigInt(side));
-            const s = raw < lo ? lo : raw > hi ? hi : raw;
+            let s: bigint;
+            if (raw < lo) {
+                s = lo;
+            } else if (raw > hi) {
+                s = hi;
+            } else {
+                s = raw;
+            }
             const numerator = stats.watch(s * a);
             if (!contains(interval, numerator, c, stats)) {
                 continue;

@@ -45,7 +45,20 @@ function compareBigIntNumber(left: bigint, right: number): number | null {
     if (left > integer) {
         return 1;
     }
-    return right === truncated ? 0 : right > truncated ? -1 : 1;
+    if (right === truncated) {
+        return 0;
+    } else if (right > truncated) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
+export function compareBigInts(left: bigint, right: bigint): number {
+    if (left < right) {
+        return -1;
+    }
+    return left > right ? 1 : 0;
 }
 
 export function compareNumeric(left: NumericValue, right: NumericValue): number | null {
@@ -57,7 +70,13 @@ export function compareNumeric(left: NumericValue, right: NumericValue): number 
         return order === null ? null : -order;
     }
     if (left.kind === "bigint" && right.kind === "bigint") {
-        return left.value < right.value ? -1 : left.value > right.value ? 1 : 0;
+        if (left.value < right.value) {
+            return -1;
+        } else if (left.value > right.value) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
     if (left.kind !== "number" || right.kind !== "number") {
         throw new Error("numeric comparison kind invariant");
@@ -65,7 +84,13 @@ export function compareNumeric(left: NumericValue, right: NumericValue): number 
     if (Number.isNaN(left.value) || Number.isNaN(right.value)) {
         return null;
     }
-    return left.value < right.value ? -1 : left.value > right.value ? 1 : 0;
+    if (left.value < right.value) {
+        return -1;
+    } else if (left.value > right.value) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 export function toBigInt(value: Value, context: OperationContext, loc: Location): BigIntResult {

@@ -44,8 +44,15 @@ export function differenceTemporalZonedDateTime(
     }
     const sign = last < first ? 1 : -1,
         maximumCorrection = sign === -1 ? 2 : 1;
-    const timeDifference = endTime - startTime,
-        timeSign = timeDifference < 0n ? -1 : timeDifference > 0n ? 1 : 0;
+    const timeDifference = endTime - startTime;
+    let timeSign: -1 | 0 | 1;
+    if (timeDifference < 0n) {
+        timeSign = -1;
+    } else if (timeDifference > 0n) {
+        timeSign = 1;
+    } else {
+        timeSign = 0;
+    }
     for (
         let correction = timeSign === sign ? 1 : 0;
         correction <= maximumCorrection;
@@ -63,8 +70,15 @@ export function differenceTemporalZonedDateTime(
         if (intermediate === null) {
             return null;
         }
-        const time = last - intermediate,
-            remainderSign = time < 0n ? -1 : time > 0n ? 1 : 0;
+        const time = last - intermediate;
+        let remainderSign: -1 | 0 | 1;
+        if (time < 0n) {
+            remainderSign = -1;
+        } else if (time > 0n) {
+            remainderSign = 1;
+        } else {
+            remainderSign = 0;
+        }
         if (remainderSign === sign) {
             continue;
         }

@@ -587,16 +587,17 @@ check(
     "whole initializer kinds",
 );
 for (let i = 0; i < 6; i++) {
+    let inferredName: string | null = null;
+    if (i === 0) {
+        inferredName = "x";
+    } else if (i === 1) {
+        inferredName = "y";
+    } else if (i === 2) {
+        inferredName = "k";
+    }
     name(
-        object(
-            n4.materializeFunction(
-                i + 1,
-                global,
-                i === 0 ? "x" : i === 1 ? "y" : i === 2 ? "k" : null,
-                budget.context,
-            ),
-        ),
-        i === 0 ? "x" : i === 1 ? "y" : i === 2 ? "k" : "",
+        object(n4.materializeFunction(i + 1, global, inferredName, budget.context)),
+        inferredName === null ? "" : inferredName,
     );
 }
 const legacyParsed = parse("let x;(x)=function(){};");

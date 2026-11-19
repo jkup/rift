@@ -99,14 +99,17 @@ for (const name of ["defineProperty", "deleteProperty", "preventExtensions", "se
         attrs.bootstrapDefine("value", { value: { kind: "number", value: 7 } });
         realm.defineScriptGlobal("target", { value: { kind: "object", object: target } });
         realm.defineScriptGlobal("attrs", { value: { kind: "object", object: attrs } });
-        const args =
-            name === "defineProperty"
-                ? 'target,"x",attrs'
-                : name === "deleteProperty"
-                  ? 'target,"x"'
-                  : name === "setPrototypeOf"
-                    ? "target,null"
-                    : "target";
+        let argumentSource: string;
+        if (name === "defineProperty") {
+            argumentSource = 'target,"x",attrs';
+        } else if (name === "deleteProperty") {
+            argumentSource = 'target,"x"';
+        } else if (name === "setPrototypeOf") {
+            argumentSource = "target,null";
+        } else {
+            argumentSource = "target";
+        }
+        const args = argumentSource;
         const result = run(realm, "Reflect." + name + "(" + args + ")", steps);
         const property = target.getOwnProperty("x");
         if (result.type === "throw") {

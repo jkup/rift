@@ -642,6 +642,45 @@ export function auditBoundedScriptLexicalStatements(
     );
 }
 
+type StructuralAudit =
+    | "none"
+    | "parameter"
+    | "numeric"
+    | "lexical"
+    | "separator"
+    | "return"
+    | "async-statement";
+type ParserPurpose =
+    | "legacy"
+    | "return-audit"
+    | "declaration-plan"
+    | "bounded-plan"
+    | "bounded-parameter-audit"
+    | "bounded-numeric-assignment-audit"
+    | "bounded-lexical-statement-audit"
+    | "bounded-numeric-separator-audit"
+    | "bounded-return-audit"
+    | "bounded-async-statement-audit";
+
+function structuralParserPurpose(audit: StructuralAudit, bounded: boolean): ParserPurpose {
+    switch (audit) {
+        case "async-statement":
+            return "bounded-async-statement-audit";
+        case "return":
+            return "bounded-return-audit";
+        case "separator":
+            return "bounded-numeric-separator-audit";
+        case "lexical":
+            return "bounded-lexical-statement-audit";
+        case "numeric":
+            return "bounded-numeric-assignment-audit";
+        case "parameter":
+            return "bounded-parameter-audit";
+        case "none":
+            return bounded ? "bounded-plan" : "declaration-plan";
+    }
+}
+
 type StructuralSource =
     | {
           kind: "parsed";
@@ -665,14 +704,7 @@ function parseStructuralSource(
     source: ScriptSourceUnit,
     nodes: DeclarationNodes | null,
     bounded: boolean,
-    audit:
-        | "none"
-        | "parameter"
-        | "numeric"
-        | "lexical"
-        | "separator"
-        | "return"
-        | "async-statement" = "none",
+    audit: StructuralAudit = "none",
     newTargetAllowed = false,
     superContext: SuperContext = "none",
     privateNames: readonly string[] = [],
@@ -680,30 +712,13 @@ function parseStructuralSource(
     if (audit !== "none" && (!bounded || nodes !== null)) {
         throw new Error("invalid structural audit purpose");
     }
-    const parameterAudit = audit === "parameter",
-        numericAudit = audit === "numeric";
-    const lexicalAudit = audit === "lexical",
-        separatorAudit = audit === "separator";
+    const separatorAudit = audit === "separator";
     const lexer = createLexer(source.text, true, separatorAudit);
     const parserSource: SourceText = { text: source.text };
     const parser = new Parser(
         lexer.result().tokens,
         parserSource,
-        audit === "async-statement"
-            ? "bounded-async-statement-audit"
-            : audit === "return"
-              ? "bounded-return-audit"
-              : separatorAudit
-                ? "bounded-numeric-separator-audit"
-                : lexicalAudit
-                  ? "bounded-lexical-statement-audit"
-                  : numericAudit
-                    ? "bounded-numeric-assignment-audit"
-                    : parameterAudit
-                      ? "bounded-parameter-audit"
-                      : bounded
-                        ? "bounded-plan"
-                        : "declaration-plan",
+        structuralParserPurpose(audit, bounded),
         newTargetAllowed,
         superContext,
         lexer,
@@ -839,17 +854,7 @@ class Parser {
     constructor(
         public tokens: Token[],
         readonly source: SourceText,
-        private readonly purpose:
-            | "legacy"
-            | "return-audit"
-            | "declaration-plan"
-            | "bounded-plan"
-            | "bounded-parameter-audit"
-            | "bounded-numeric-assignment-audit"
-            | "bounded-lexical-statement-audit"
-            | "bounded-numeric-separator-audit"
-            | "bounded-return-audit"
-            | "bounded-async-statement-audit" = "legacy",
+        private readonly purpose: ParserPurpose = "legacy",
         private newTargetAllowed = false,
         private superContext: SuperContext = "none",
         private readonly lexer: Lexer | null = null,
@@ -4383,12 +4388,14 @@ class Parser {
             if (this.privateSyntaxEnabled && t.text === "delete") {
                 const last =
                     operand.kind === "chain" ? operand.links[operand.links.length - 1] : null;
-                const key =
-                    operand.kind === "member"
-                        ? operand.key
-                        : last?.kind === "member"
-                          ? last.key
-                          : null;
+                let key: Expr | null;
+                if (operand.kind === "member") {
+                    key = operand.key;
+                } else if (last?.kind === "member") {
+                    key = last.key;
+                } else {
+                    key = null;
+                }
                 if (
                     key?.kind === "private-name" &&
                     (this.privateIssue === null || key.start < this.privateIssue.site.start)

@@ -9,6 +9,7 @@ import { NANOSECONDS_PER_DAY, timeToNanoseconds } from "./temporal-time.js";
 import type { ISODateTimeDifference } from "./iso-date-time-difference.js";
 import type { DurationUnit } from "./temporal-duration-balance.js";
 import type { TemporalTimeZone } from "./temporal-time-zone-parse.js";
+import type { DurationFields } from "./temporal-duration.js";
 
 export function carryZonedCalendarDifference(
     first: bigint,
@@ -44,12 +45,14 @@ export function carryZonedCalendarDifference(
     let result = difference;
     for (const unit of units) {
         const date = result.date;
-        const candidate =
-            unit === "year"
-                ? dateDuration(date.years + sign, 0, 0)
-                : unit === "month"
-                  ? dateDuration(date.years, date.months + sign, 0)
-                  : dateDuration(date.years, date.months, date.weeks + sign);
+        let candidate: DurationFields;
+        if (unit === "year") {
+            candidate = dateDuration(date.years + sign, 0, 0);
+        } else if (unit === "month") {
+            candidate = dateDuration(date.years, date.months + sign, 0);
+        } else {
+            candidate = dateDuration(date.years, date.months, date.weeks + sign);
+        }
         const end = addTemporalDate(origin.date, candidate, false, false);
         if (end === null) {
             return null;

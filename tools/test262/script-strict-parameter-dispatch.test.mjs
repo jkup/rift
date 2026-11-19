@@ -177,20 +177,24 @@ test("D4 fixed source authority across variant and expected-negative metadata on
                 }
                 envelope.observation = child.result;
                 context.expectedNegative = negative;
-                const status =
-                    role === "harness"
-                        ? "harness-error"
-                        : negative?.phase === "parse"
-                          ? "pass"
-                          : "fail";
-                const reasonCode =
-                    role === "harness"
-                        ? "harness"
-                        : negative === null
-                          ? "unexpected-parse-error"
-                          : negative.phase === "parse"
-                            ? "negative-match"
-                            : "phase-mismatch";
+                let status;
+                if (role === "harness") {
+                    status = "harness-error";
+                } else if (negative?.phase === "parse") {
+                    status = "pass";
+                } else {
+                    status = "fail";
+                }
+                let reasonCode;
+                if (role === "harness") {
+                    reasonCode = "harness";
+                } else if (negative === null) {
+                    reasonCode = "unexpected-parse-error";
+                } else if (negative.phase === "parse") {
+                    reasonCode = "negative-match";
+                } else {
+                    reasonCode = "phase-mismatch";
+                }
                 Object.assign(envelope.classification, {
                     expectedNegative: negative,
                     status,

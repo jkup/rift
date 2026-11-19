@@ -113,10 +113,15 @@ for (const source of [
                 return normal(label === "L" ? num(0) : str(label === "R" ? "a,b" : ","));
             },
         );
-        (label === "R" ? receiver : label === "L" ? limit : separator).bootstrapDefine(
-            wellKnownToPrimitive,
-            { value: obj(hook) },
-        );
+        let coercionTarget: GuestObject;
+        if (label === "R") {
+            coercionTarget = receiver;
+        } else if (label === "L") {
+            coercionTarget = limit;
+        } else {
+            coercionTarget = separator;
+        }
+        coercionTarget.bootstrapDefine(wellKnownToPrimitive, { value: obj(hook) });
     }
     separator.bootstrapDefine(wellKnownSplit, {
         get: obj(

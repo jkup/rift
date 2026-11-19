@@ -6,9 +6,15 @@ export function runNativeCommand(command, args, options = {}) {
             command,
             args,
             { encoding: "utf8", timeout: 600000, maxBuffer: 1024 * 1024, ...options },
-            (error, stdout, stderr) =>
+            (error, stdout, stderr) => {
+                let status = null;
+                if (error === null) {
+                    status = 0;
+                } else if (typeof error.code === "number") {
+                    status = error.code;
+                }
                 resolve({
-                    status: error === null ? 0 : typeof error.code === "number" ? error.code : null,
+                    status,
                     signal: error?.signal ?? null,
                     error:
                         error && typeof error.code !== "number"
@@ -16,7 +22,8 @@ export function runNativeCommand(command, args, options = {}) {
                             : null,
                     stdout: stdout ?? "",
                     stderr: stderr ?? "",
-                }),
+                });
+            },
         );
     });
 }

@@ -649,6 +649,7 @@ function classification(v) {
             ? o.phase
             : null,
         observedConstructorName:
+            // oxlint-disable-next-line no-nested-ternary -- The pinned codec source contract preserves this mapping; discriminator mutations are tested.
             o.kind === "throw"
                 ? o.constructor.name
                 : o.kind === "syntax-error"

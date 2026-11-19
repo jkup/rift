@@ -1,5 +1,5 @@
-import { getPrototypeFromConstructor } from "../src/constructor-prototype.js";
-import { normal, type ValueCompletion } from "../src/runtime.js";
+import "../src/constructor-prototype.js";
+import "../src/runtime.js";
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";

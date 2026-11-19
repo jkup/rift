@@ -1,13 +1,11 @@
-import type { Location } from "../src/syntax.js";
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import {
     createScriptSession,
     evaluateScript,
-    drainScriptJobs,
     type ScriptSession,
 } from "../src/script-execution.js";
-import { type Value, type ValueCompletion, type OperationContext } from "../src/runtime.js";
+import { type Value, type ValueCompletion } from "../src/runtime.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);

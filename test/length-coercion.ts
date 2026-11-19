@@ -243,7 +243,15 @@ for (const stop of ["", "get1", "get2", "call1", "call2", "tick1", "tick2"]) {
     const active = setup();
     const hook = new ObservedHook();
     hook.original = obj(hook);
-    hook.stop = stop === "get1" ? "valueOf" : stop === "get2" ? "toString" : "";
+    let stopMethod: string;
+    if (stop === "get1") {
+        stopMethod = "valueOf";
+    } else if (stop === "get2") {
+        stopMethod = "toString";
+    } else {
+        stopMethod = "";
+    }
+    hook.stop = stopMethod;
     let calls = 0;
     let ticks = 0;
     const context: OperationContext = {
@@ -282,17 +290,27 @@ for (const stop of ["", "get1", "get2", "call1", "call2", "tick1", "tick2"]) {
     }
     const second = stop === "" || stop.endsWith("2");
     check(ticks === (second ? 3 : 2) && source.gets === 1, "exact ticks/Get");
-    const ordinaryLookupPrefix =
-        stop === "tick1" ? "" : second && stop !== "tick2" ? ",valueOf,toString" : ",valueOf";
+    let ordinaryLookupPrefix: "" | ",valueOf" | ",valueOf,toString";
+    if (stop === "tick1") {
+        ordinaryLookupPrefix = "";
+    } else if (second && stop !== "tick2") {
+        ordinaryLookupPrefix = ",valueOf,toString";
+    } else {
+        ordinaryLookupPrefix = ",valueOf";
+    }
     check(
         hook.reads.join(",") === "Symbol(Symbol.toPrimitive)" + ordinaryLookupPrefix,
         "lookup prefix",
     );
-    check(
-        calls ===
-            (stop === "tick1" || stop === "get1" ? 0 : stop === "" || stop === "call2" ? 2 : 1),
-        "call prefix",
-    );
+    let expectedCalls: number;
+    if (stop === "tick1" || stop === "get1") {
+        expectedCalls = 0;
+    } else if (stop === "" || stop === "call2") {
+        expectedCalls = 2;
+    } else {
+        expectedCalls = 1;
+    }
+    check(calls === expectedCalls, "call prefix");
     if (calls > 0) {
         check(
             sameValue(dataDescriptor(hook.getOwnProperty("effect"))!.value, num(calls)),
@@ -545,7 +563,7 @@ class ForbiddenHooks extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         this.reads++;

@@ -2,7 +2,6 @@ import { readFileSync } from "node:fs";
 import { GlobalEnvironment } from "../src/global-environment.js";
 import {
     ScriptDeclarativeEnvironment,
-    ScriptFunctionEnvironment,
     resolveScriptBinding,
     getScriptBinding,
     putScriptBinding,

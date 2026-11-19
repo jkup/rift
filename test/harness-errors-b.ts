@@ -6,13 +6,11 @@ import {
     UNDEFINED,
     normal,
     failure,
-    languageFailure,
     resourceFailure,
     unsupportedFailure,
     sameValue,
     display,
     Environment,
-    getValue,
     putValue,
     type Value,
     type ValueCompletion,
@@ -35,7 +33,7 @@ import {
     wellKnownToStringTag,
     wellKnownHasInstance,
 } from "../src/symbols.js";
-import { GlobalEnvironment } from "../src/global-environment.js";
+import "../src/global-environment.js";
 import {
     ScriptDeclarativeEnvironment,
     ScriptFunctionEnvironment,
@@ -296,14 +294,16 @@ console.log("PASS E04 E05");
         data(o, "name", pair[0]);
         data(o, "message", pair[1]);
         define(r, "o", obj(o));
-        const expected =
-            pair[0].kind === "undefined"
-                ? "Error"
-                : pair[0].kind === "string" && pair[0].value === ""
-                  ? "x"
-                  : pair[1].kind === "string" && pair[1].value === ""
-                    ? "X"
-                    : "X: y";
+        let expected: "Error" | "X" | "X: y" | "x";
+        if (pair[0].kind === "undefined") {
+            expected = "Error";
+        } else if (pair[0].kind === "string" && pair[0].value === "") {
+            expected = "x";
+        } else if (pair[1].kind === "string" && pair[1].value === "") {
+            expected = "X";
+        } else {
+            expected = "X: y";
+        }
         check(sameValue(value(run("fmt(o);", r)), str(expected)), "generic format");
     }
     check(
@@ -599,11 +599,15 @@ console.log("PASS E20 E21");
             result = evaluateScript(s, prepare(text, r, "restricted"));
         check(result.phase === "instantiation", "restriction phase");
         error(result.completion, r, text.startsWith("let") ? "SyntaxError" : "TypeError");
-        check(
-            s.inspect().steps ===
-                (text.startsWith("let") ? 1 : text.startsWith("function") ? 2 : 3),
-            "only declaration ticks",
-        );
+        let expectedSteps: number;
+        if (text.startsWith("let")) {
+            expectedSteps = 1;
+        } else if (text.startsWith("function")) {
+            expectedSteps = 2;
+        } else {
+            expectedSteps = 3;
+        }
+        check(s.inspect().steps === expectedSteps, "only declaration ticks");
         idle(s);
     }
 }
@@ -1138,12 +1142,14 @@ function traceRun(
                     t.origin.limit === maxCalls,
                 id + " call guard",
             );
-            const ticks =
-                maxCalls === 0
-                    ? trace.sourceTicks
-                    : id === "T08" || id === "T09" || id === "T21"
-                      ? 3
-                      : trace.effects.findIndex((e) => e !== "") + 1;
+            let ticks: number;
+            if (maxCalls === 0) {
+                ticks = trace.sourceTicks;
+            } else if (id === "T08" || id === "T09" || id === "T21") {
+                ticks = 3;
+            } else {
+                ticks = trace.effects.findIndex((e) => e !== "") + 1;
+            }
             check(s.inspect().steps === ticks && effects === "", id + " call guard ordering");
             return;
         }
@@ -1158,8 +1164,14 @@ function traceRun(
             id + " format result",
         );
     } else {
-        const message =
-            id === "T01" || id === "T02" ? numeric : id === "T03" || id === "T04" ? "x" : payload;
+        let message: "11" | "7" | "eleven" | "seven" | "x";
+        if (id === "T01" || id === "T02") {
+            message = numeric;
+        } else if (id === "T03" || id === "T04") {
+            message = "x";
+        } else {
+            message = payload;
+        }
         const e = instance(result, a, "Error", message);
         const cause = id === "T03" || id === "T06" || id === "T07" || id === "T10" || id === "T11";
         keys(e, cause ? ["message", "cause"] : ["message"]);
@@ -1407,12 +1419,15 @@ for (const constructing of [false, true]) {
                 "outer hook checkpoint",
             );
             try {
-                const result = run(
-                    mode === 0 ? "0;" : mode === 1 ? "throw q;" : "h();",
-                    b,
-                    inner,
-                    "inner",
-                );
+                let innerSource: string;
+                if (mode === 0) {
+                    innerSource = "0;";
+                } else if (mode === 1) {
+                    innerSource = "throw q;";
+                } else {
+                    innerSource = "h();";
+                }
+                const result = run(innerSource, b, inner, "inner");
                 if (result.type === "throw") {
                     return result;
                 }
@@ -1423,6 +1438,7 @@ for (const constructing of [false, true]) {
                     prior = before.active,
                     current = after.active;
                 if (prior === null || current === null) {
+                    // oxlint-disable-next-line no-unsafe-finally -- A failed restoration invariant must fail this host test even during unwinding.
                     throw new Error("missing restored outer frame");
                 }
                 check(
@@ -1488,10 +1504,19 @@ for (const constructing of [false, true]) {
             inner.inspect().steps === 2 && effects === (mode === 0 ? "MC" : "M"),
             "inner ticks and outer continuation",
         );
-        check(
-            outer.inspect().steps === (constructing ? (mode === 0 ? 9 : 7) : mode === 0 ? 8 : 6),
-            "outer cutoff",
-        );
+        let expectedOuterSteps: number;
+        if (constructing) {
+            if (mode === 0) {
+                expectedOuterSteps = 9;
+            } else {
+                expectedOuterSteps = 7;
+            }
+        } else if (mode === 0) {
+            expectedOuterSteps = 8;
+        } else {
+            expectedOuterSteps = 6;
+        }
+        check(outer.inspect().steps === expectedOuterSteps, "outer cutoff");
         idle(inner);
         idle(outer);
         check(sameValue(value(run("7;", a)), num(7)), "session works after exit");

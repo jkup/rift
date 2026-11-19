@@ -20,7 +20,7 @@ import {
     type PropertyKey,
     type OperationContext,
 } from "../src/runtime.js";
-import { GuestSymbol, wellKnownToPrimitive, wellKnownToStringTag } from "../src/symbols.js";
+import { GuestSymbol, wellKnownToPrimitive } from "../src/symbols.js";
 import type { Location } from "../src/syntax.js";
 
 const loc: Location = { line: 91, column: 7 };
@@ -77,7 +77,7 @@ class NoReads extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         throw new Error("N unexpected receiver/argument read");
@@ -225,18 +225,20 @@ export function testNumberConversions(): void {
                 num(payload),
                 "N1-N4/N8 exact payload",
             );
-            const expected =
-                payload === 0
-                    ? "0"
-                    : Number.isNaN(payload)
-                      ? "NaN"
-                      : payload === Infinity
-                        ? "Infinity"
-                        : payload === -Infinity
-                          ? "-Infinity"
-                          : payload === 10.5
-                            ? "10.5"
-                            : "-255";
+            let expected: "-255" | "-Infinity" | "0" | "10.5" | "Infinity" | "NaN";
+            if (payload === 0) {
+                expected = "0";
+            } else if (Number.isNaN(payload)) {
+                expected = "NaN";
+            } else if (payload === Infinity) {
+                expected = "Infinity";
+            } else if (payload === -Infinity) {
+                expected = "-Infinity";
+            } else if (payload === 10.5) {
+                expected = "10.5";
+            } else {
+                expected = "-255";
+            }
             expect(
                 evaluator.call(
                     b.numberPrototype.get("toString", evaluator.context, loc),
@@ -992,17 +994,19 @@ function testNumberToString(): void {
     for (const payload of [NaN, Infinity, -Infinity, -0, 0]) {
         error(e.call(method, num(payload), [num(1)], loc), range, loc, "RangeError");
         error(e.call(method, num(payload), [symbol], loc), "cannot convert symbol to number");
+        let expectedString: string;
+        if (Number.isNaN(payload)) {
+            expectedString = "NaN";
+        } else if (payload === Infinity) {
+            expectedString = "Infinity";
+        } else if (payload === -Infinity) {
+            expectedString = "-Infinity";
+        } else {
+            expectedString = "0";
+        }
         expect(
             e.call(method, num(payload), [num(2)], loc),
-            str(
-                Number.isNaN(payload)
-                    ? "NaN"
-                    : payload === Infinity
-                      ? "Infinity"
-                      : payload === -Infinity
-                        ? "-Infinity"
-                        : "0",
-            ),
+            str(expectedString),
             "R15 valid special",
         );
     }
@@ -1094,19 +1098,32 @@ function testNumberToString(): void {
         }
         const ordinary = mode === "absent" || mode === "null";
         const fallback = mode === "fallback" || mode === "bothObjects" || mode === "empty";
-        keys(
-            radix.reads,
-            fallback
-                ? [wellKnownToPrimitive, "valueOf", "toString"]
-                : ordinary
-                  ? [wellKnownToPrimitive, "valueOf"]
-                  : [wellKnownToPrimitive],
-        );
-        check(
-            active.steps === (fallback ? 3 : ordinary ? 2 : 1) &&
-                calls === (mode === "empty" || mode === "noncallable" ? 0 : fallback ? 2 : 1),
-            "R exact budgets",
-        );
+        let expectedKeys: PropertyKey[];
+        if (fallback) {
+            expectedKeys = [wellKnownToPrimitive, "valueOf", "toString"];
+        } else if (ordinary) {
+            expectedKeys = [wellKnownToPrimitive, "valueOf"];
+        } else {
+            expectedKeys = [wellKnownToPrimitive];
+        }
+        keys(radix.reads, expectedKeys);
+        let expectedSteps: number;
+        if (fallback) {
+            expectedSteps = 3;
+        } else if (ordinary) {
+            expectedSteps = 2;
+        } else {
+            expectedSteps = 1;
+        }
+        let expectedCalls: number;
+        if (mode === "empty" || mode === "noncallable") {
+            expectedCalls = 0;
+        } else if (fallback) {
+            expectedCalls = 2;
+        } else {
+            expectedCalls = 1;
+        }
+        check(active.steps === expectedSteps && calls === expectedCalls, "R exact budgets");
         check(active.context.realm === a && active.calls === 0 && active.depth === 0, "R cleanup");
     }
     testRadixAbrupt(a, b, c, d);

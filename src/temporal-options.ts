@@ -175,11 +175,13 @@ export function temporalUnitOption(
 }
 
 export function temporalPrecisionNanoseconds(precision: TemporalTimePrecision): bigint {
-    return typeof precision === "number"
-        ? BigInt(Math.pow(10, 9 - precision))
-        : precision === "minute"
-          ? 60000000000n
-          : 1n;
+    if (typeof precision === "number") {
+        return BigInt(Math.pow(10, 9 - precision));
+    } else if (precision === "minute") {
+        return 60000000000n;
+    } else {
+        return 1n;
+    }
 }
 
 export function temporalStringPrecision(

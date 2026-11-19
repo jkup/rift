@@ -26,8 +26,17 @@ export function roundZonedTimeDifference(
     if (origin === null) {
         return null;
     }
-    const dateSign = durationSign(difference.date),
-        sign = dateSign === 0 ? (difference.time < 0n ? -1 : 1) : dateSign;
+    const dateSign = durationSign(difference.date);
+    let sign: number;
+    if (dateSign === 0) {
+        if (difference.time < 0n) {
+            sign = -1;
+        } else {
+            sign = 1;
+        }
+    } else {
+        sign = dateSign;
+    }
     const startDate = addTemporalDate(origin.date, difference.date, false, false);
     const time = timeToNanoseconds(origin);
     if (startDate === null || time === null) {

@@ -365,7 +365,15 @@ for (const kind of ["ordinary", "array", "function"]) {
 for (const stage of ["get1", "get2", "call1", "call2", "tick1", "tick2"]) {
     const object = observed();
     let mutations = 0;
-    object.failAt = stage === "get1" ? 1 : stage === "get2" ? 2 : 0;
+    let failureIndex: number;
+    if (stage === "get1") {
+        failureIndex = 1;
+    } else if (stage === "get2") {
+        failureIndex = 2;
+    } else {
+        failureIndex = 0;
+    }
+    object.failAt = failureIndex;
     define(
         object,
         "valueOf",
@@ -379,12 +387,15 @@ for (const stage of ["get1", "get2", "call1", "call2", "tick1", "tick2"]) {
         "toString",
         builtin(realm, (_r, _a, _c, _l) => sentinel),
     );
-    const result = toPrimitive(
-        object.expected,
-        "number",
-        tracedContext(object, stage === "tick1" ? 2 : stage === "tick2" ? 3 : 0),
-        loc,
-    );
+    let failureTick: number;
+    if (stage === "tick1") {
+        failureTick = 2;
+    } else if (stage === "tick2") {
+        failureTick = 3;
+    } else {
+        failureTick = 0;
+    }
+    const result = toPrimitive(object.expected, "number", tracedContext(object, failureTick), loc);
     check(
         result === sentinel &&
             result.value === sentinel.value &&
@@ -392,18 +403,20 @@ for (const stage of ["get1", "get2", "call1", "call2", "tick1", "tick2"]) {
             result.diagnostic.loc === sentinel.diagnostic.loc,
         "exact abrupt " + stage,
     );
-    const expected =
-        stage === "tick1"
-            ? "tick;"
-            : stage === "get1"
-              ? "tick;Get valueOf;"
-              : stage === "call1"
-                ? "tick;Get valueOf;Call;"
-                : stage === "tick2"
-                  ? "tick;Get valueOf;Call;tick;"
-                  : stage === "get2"
-                    ? "tick;Get valueOf;Call;tick;Get toString;"
-                    : "tick;Get valueOf;Call;tick;Get toString;Call;";
+    let expected: string;
+    if (stage === "tick1") {
+        expected = "tick;";
+    } else if (stage === "get1") {
+        expected = "tick;Get valueOf;";
+    } else if (stage === "call1") {
+        expected = "tick;Get valueOf;Call;";
+    } else if (stage === "tick2") {
+        expected = "tick;Get valueOf;Call;tick;";
+    } else if (stage === "get2") {
+        expected = "tick;Get valueOf;Call;tick;Get toString;";
+    } else {
+        expected = "tick;Get valueOf;Call;tick;Get toString;Call;";
+    }
     check(
         object.trace === "tick;" + expected &&
             mutations === (stage === "tick1" || stage === "get1" ? 0 : 1),
@@ -442,10 +455,15 @@ for (const mode of ["finite", "steps", "calls"]) {
             "bounded builtin nesting",
         );
     }
-    check(
-        active.calls === 0 && active.steps === (mode === "finite" ? 6 : mode === "steps" ? 4 : 10),
-        "shared steps and cleanup",
-    );
+    let expectedSteps: number;
+    if (mode === "finite") {
+        expectedSteps = 6;
+    } else if (mode === "steps") {
+        expectedSteps = 4;
+    } else {
+        expectedSteps = 10;
+    }
+    check(active.calls === 0 && active.steps === expectedSteps, "shared steps and cleanup");
 }
 function seed(target: Realm, name: string, value: Value): void {
     target.global.bindings.set(name, { initialized: true, mutable: true, value });
@@ -1003,10 +1021,15 @@ for (const stage of ["object", "get", "call", "tick"]) {
             "P5 exact abrupt identity",
         );
     }
-    check(
-        source.events === (stage === "tick" ? "" : stage === "get" ? "Get;" : "Get;Call;"),
-        "P4/P5 no later work",
-    );
+    let expectedEvents: string;
+    if (stage === "tick") {
+        expectedEvents = "";
+    } else if (stage === "get") {
+        expectedEvents = "Get;";
+    } else {
+        expectedEvents = "Get;Call;";
+    }
+    check(source.events === expectedEvents, "P4/P5 no later work");
 }
 // P7: the direct ordinary helper does not even read the canonical key.
 const ordinaryOnly = observed();

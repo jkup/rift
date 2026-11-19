@@ -13,7 +13,6 @@ import { Realm } from "../src/realm.js";
 import {
     GuestObject,
     normal,
-    failure,
     resourceFailure,
     sameValue,
     UNDEFINED,

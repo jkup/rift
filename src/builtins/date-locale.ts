@@ -14,12 +14,14 @@ export function registerDateLocale(realm: Realm): void {
                 if (date.type === "throw") {
                     return date;
                 }
-                const style =
-                    name === "toLocaleString"
-                        ? "display"
-                        : name === "toLocaleDateString"
-                          ? "date"
-                          : "time";
+                let style: "date" | "display" | "time";
+                if (name === "toLocaleString") {
+                    style = "display";
+                } else if (name === "toLocaleDateString") {
+                    style = "date";
+                } else {
+                    style = "time";
+                }
                 return normal({
                     kind: "string",
                     value: formatDateString(

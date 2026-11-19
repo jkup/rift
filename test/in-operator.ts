@@ -147,7 +147,7 @@ class Target extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         throw new Error("target Get forbidden");
@@ -174,7 +174,7 @@ class ArrayTarget extends GuestArray {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         throw new Error("array target Get forbidden");
@@ -189,7 +189,7 @@ class StringTarget extends GuestStringObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         throw new Error("string target Get forbidden");
@@ -211,7 +211,15 @@ class Key extends GuestObject {
         context: OperationContext,
         at: Location,
     ): ValueCompletion {
-        this.trace.text += key === wellKnownToPrimitive ? "K" : key === "toString" ? "S" : "V";
+        let event: string;
+        if (key === wellKnownToPrimitive) {
+            event = "K";
+        } else if (key === "toString") {
+            event = "S";
+        } else {
+            event = "V";
+        }
+        this.trace.text += event;
         check(receiver.kind === "object" && receiver.object === this, "key receiver");
         if (this.fault !== null) {
             throw this.fault;
@@ -886,10 +894,15 @@ for (const mode of ["E26 HasHostFault", "E27 KeyHostFault lookup", "E27 KeyHostF
         caught = fault instanceof Error && fault === t.fault;
     }
     check(caught, mode + " same host fault");
-    t.finish(
-        mode === "E26 HasHostFault" ? "KCH" : mode === "E27 KeyHostFault lookup" ? "K" : "KC",
-        mode,
-    );
+    let expectedTrace: string;
+    if (mode === "E26 HasHostFault") {
+        expectedTrace = "KCH";
+    } else if (mode === "E27 KeyHostFault lookup") {
+        expectedTrace = "K";
+    } else {
+        expectedTrace = "KC";
+    }
+    t.finish(expectedTrace, mode);
 }
 class Member extends GuestObject {
     reads = 0;
@@ -899,7 +912,7 @@ class Member extends GuestObject {
     internalGet(
         key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         this.reads++;
@@ -1379,14 +1392,12 @@ for (const foreign of [false, true]) {
                     } else if (limit === 2) {
                         ticks = 15;
                     }
-                } else {
-                    if (limit === 64) {
-                        ticks = 261;
-                    } else if (limit === 2) {
-                        ticks = 13;
-                    } else if (limit === 1) {
-                        ticks = 9;
-                    }
+                } else if (limit === 64) {
+                    ticks = 261;
+                } else if (limit === 2) {
+                    ticks = 13;
+                } else if (limit === 1) {
+                    ticks = 9;
                 }
                 check(
                     e.steps === ticks &&

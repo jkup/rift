@@ -585,8 +585,14 @@ checkGraph(firstFresh !== secondFresh, "G8 fresh outer arrays");
 for (const key of ["0", "1", "2"]) {
     const left = graphObject(firstFresh.get(key, active.context, at));
     const right = graphObject(secondFresh.get(key, active.context, at));
-    const expected =
-        key === "0" ? r1.objectPrototype : key === "1" ? r1.arrayPrototype : r1.functionPrototype;
+    let expected: GuestObject;
+    if (key === "0") {
+        expected = r1.objectPrototype;
+    } else if (key === "1") {
+        expected = r1.arrayPrototype;
+    } else {
+        expected = r1.functionPrototype;
+    }
     checkGraph(
         left !== right && left.getPrototypeOf() === expected && right.getPrototypeOf() === expected,
         "G8 repeated nested allocations",
@@ -694,11 +700,14 @@ for (const name of [
         if (completion.type !== "normal") {
             throw new Error("G14 completion");
         }
-        const tag = name.endsWith("Object")
-            ? "Object"
-            : name.endsWith("Array")
-              ? "Array"
-              : "Function";
+        let tag: "Array" | "Function" | "Object";
+        if (name.endsWith("Object")) {
+            tag = "Object";
+        } else if (name.endsWith("Array")) {
+            tag = "Array";
+        } else {
+            tag = "Function";
+        }
         if (name.startsWith("numeric")) {
             checkGraph(
                 completion.value.kind === "number" &&
@@ -709,14 +718,16 @@ for (const name of [
             );
         }
         if (name.startsWith("addition")) {
+            let expectedString: string;
+            if (tag === "Array") {
+                expectedString = "1";
+            } else if (tag === "Function") {
+                expectedString = "function () { return {}; }1";
+            } else {
+                expectedString = "[object " + tag + "]1";
+            }
             checkGraph(
-                completion.value.kind === "string" &&
-                    completion.value.value ===
-                        (tag === "Array"
-                            ? "1"
-                            : tag === "Function"
-                              ? "function () { return {}; }1"
-                              : "[object " + tag + "]1"),
+                completion.value.kind === "string" && completion.value.value === expectedString,
                 "G14 addition default",
             );
         }
@@ -874,7 +885,7 @@ class NoBoxReads extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _loc: { line: number; column: number },
     ): ValueCompletion {
         throw new Error("W3 boxing read an object");
@@ -938,12 +949,14 @@ for (const wrapper of [
 ]) {
     const value: Value = { kind: "object", object: wrapper };
     const missing = toPrimitive(value, "number", boxEvaluator.context, at);
-    const expected: Value =
-        wrapper instanceof GuestBoolean
-            ? { kind: "boolean", value: false }
-            : wrapper instanceof GuestNumber
-              ? numberValue(0)
-              : { kind: "string", value: "ab" };
+    let expected: Value;
+    if (wrapper instanceof GuestBoolean) {
+        expected = { kind: "boolean", value: false };
+    } else if (wrapper instanceof GuestNumber) {
+        expected = numberValue(0);
+    } else {
+        expected = { kind: "string", value: "ab" };
+    }
     checkGraph(
         missing.type === "normal" && sameValue(missing.value, expected),
         "N numeric hints extract primitive slots",

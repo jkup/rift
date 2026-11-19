@@ -168,7 +168,15 @@ async function closure() {
         }
     }
     await walk(yaml);
-    files.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+    files.sort((a, b) => {
+        if (a.path < b.path) {
+            return -1;
+        } else if (a.path > b.path) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
     return {
         id: "rift-script-blocked-v4",
         closureSha256: sha256(JSON.stringify(files)),

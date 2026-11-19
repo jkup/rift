@@ -240,10 +240,15 @@ for (const method of ["indexOf", "lastIndexOf"]) {
                     return normal(label === "P" ? num(1) : str(label === "R" ? "abca" : "a"));
                 },
             );
-            (label === "R" ? target : label === "S" ? search : position).bootstrapDefine(
-                wellKnownToPrimitive,
-                { value: obj(hook) },
-            );
+            let coercionTarget: GuestObject;
+            if (label === "R") {
+                coercionTarget = target;
+            } else if (label === "S") {
+                coercionTarget = search;
+            } else {
+                coercionTarget = position;
+            }
+            coercionTarget.bootstrapDefine(wellKnownToPrimitive, { value: obj(hook) });
         }
         define(realm, "target", obj(target));
         define(realm, "search", obj(search));
@@ -257,10 +262,15 @@ for (const method of ["indexOf", "lastIndexOf"]) {
                 actual.type === "throw" && actual.diagnostic.message === "search " + failure,
                 "search conversion failure",
             );
-            check(
-                trace === (failure === "R" ? "R" : failure === "S" ? "RS" : "RSP"),
-                "search stops at failed coercion",
-            );
+            let expectedSearchTrace: string;
+            if (failure === "R") {
+                expectedSearchTrace = "R";
+            } else if (failure === "S") {
+                expectedSearchTrace = "RS";
+            } else {
+                expectedSearchTrace = "RSP";
+            }
+            check(trace === expectedSearchTrace, "search stops at failed coercion");
         }
     }
 }
@@ -352,7 +362,15 @@ for (const failure of ["", "R", "A", "B"]) {
                 return normal(str(label));
             },
         );
-        (label === "R" ? target : label === "A" ? a : b).bootstrapDefine(wellKnownToPrimitive, {
+        let coercionTarget: GuestObject;
+        if (label === "R") {
+            coercionTarget = target;
+        } else if (label === "A") {
+            coercionTarget = a;
+        } else {
+            coercionTarget = b;
+        }
+        coercionTarget.bootstrapDefine(wellKnownToPrimitive, {
             value: obj(hook),
         });
     }
@@ -364,10 +382,18 @@ for (const failure of ["", "R", "A", "B"]) {
         result(actual, str("RAB"));
         check(trace === "RAB", "concat order");
     } else {
+        let expectedConcatTrace: string;
+        if (failure === "R") {
+            expectedConcatTrace = "R";
+        } else if (failure === "A") {
+            expectedConcatTrace = "RA";
+        } else {
+            expectedConcatTrace = "RAB";
+        }
         check(
             actual.type === "throw" &&
                 actual.diagnostic.message === "concat " + failure &&
-                trace === (failure === "R" ? "R" : failure === "A" ? "RA" : "RAB"),
+                trace === expectedConcatTrace,
             "concat stops on failed conversion",
         );
     }
@@ -477,7 +503,15 @@ for (const method of ["trim", "trimStart", "trimEnd"]) {
         ),
     });
     define(realm, "target", obj(target));
-    result(run(realm, method), str(method === "trim" ? "x" : method === "trimStart" ? "x " : " x"));
+    let expectedTrimmed: string;
+    if (method === "trim") {
+        expectedTrimmed = "x";
+    } else if (method === "trimStart") {
+        expectedTrimmed = "x ";
+    } else {
+        expectedTrimmed = " x";
+    }
+    result(run(realm, method), str(expectedTrimmed));
     check(calls === 1, "trim converts receiver once");
     const spaces = " ".repeat(200);
     const bounded = run(fixture(str(spaces)), method, "", 40);

@@ -121,13 +121,15 @@ for (const row of inventory.binarySources) {
 }
 for (const row of inventory.categories) {
     const bitmap = new Uint8Array(size),
-        members = categoryNames.map((name) =>
-            row.short === "LC"
-                ? ["Lu", "Ll", "Lt"].includes(name)
-                : row.short.length === 1
-                  ? name.startsWith(row.short)
-                  : name === row.short,
-        );
+        members = categoryNames.map((name) => {
+            if (row.short === "LC") {
+                return ["Lu", "Ll", "Lt"].includes(name);
+            } else if (row.short.length === 1) {
+                return name.startsWith(row.short);
+            } else {
+                return name === row.short;
+            }
+        });
     for (let code = 0; code < size; code++) {
         bitmap[code] = members[categories[code]] ? 1 : 0;
     }
@@ -199,7 +201,15 @@ for (const key of foldKeys) {
     foldValues.push(...groups.get(key));
     foldOffsets.push(foldValues.length);
 }
-const aliasEntries = [...aliases].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+const aliasEntries = [...aliases].sort((a, b) => {
+    if (a[0] < b[0]) {
+        return -1;
+    } else if (a[0] > b[0]) {
+        return 1;
+    } else {
+        return 0;
+    }
+});
 const source = `// Generated from Unicode 17.0.0 by tools/generate-unicode-properties.mjs.
 // Source hashes and license: docs/unicode-properties-provenance.json and unicode-properties-license.txt.
 const tables: number[][] = ${JSON.stringify(tables.map((row) => row.ranges))};

@@ -452,8 +452,16 @@ for (const line of lines) {
                     result = e.createGlobalFunctionBinding(name, number(8), context, loc);
                 }
                 check(result === obj.abrupt, "original abrupt identity");
-                const expected =
-                    mode === "H" ? "H" : mode === "G" ? "HG" : mode === "S" ? "HS" : "D";
+                let expected: "D" | "H" | "HG" | "HS";
+                if (mode === "H") {
+                    expected = "H";
+                } else if (mode === "G") {
+                    expected = "HG";
+                } else if (mode === "S") {
+                    expected = "HS";
+                } else {
+                    expected = "D";
+                }
                 check(obj.trace === expected, "abrupt operation order");
                 check(
                     obj.abrupt.diagnostic.loc.line === 91 &&

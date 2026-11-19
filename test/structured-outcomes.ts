@@ -20,7 +20,6 @@ import {
     GuestObject,
     UNDEFINED,
     normal,
-    failure,
     resourceFailure,
     type Binding,
     type Builtin,

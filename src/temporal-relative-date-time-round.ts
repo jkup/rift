@@ -33,7 +33,14 @@ export function roundDateTimeDifference(
     }
     let duration: ISODateTimeDifference, nudged: bigint, expanded: boolean;
     if (smallest === "years" || smallest === "months" || smallest === "weeks") {
-        const unit = smallest === "years" ? "year" : smallest === "months" ? "month" : "week";
+        let unit: "month" | "week" | "year";
+        if (smallest === "years") {
+            unit = "year";
+        } else if (smallest === "months") {
+            unit = "month";
+        } else {
+            unit = "week";
+        }
         const rounded = roundCalendarDateTimeDifference(
             origin,
             destination,

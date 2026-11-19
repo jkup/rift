@@ -17,8 +17,14 @@ export function runFixture(command, args, timeoutMs = 5000) {
             { encoding: "utf8", windowsHide: true, maxBuffer: 1024 * 1024 },
             (error, stdout, stderr) => {
                 clearTimeout(timer);
+                let status = null;
+                if (error === null) {
+                    status = 0;
+                } else if (typeof error.code === "number") {
+                    status = error.code;
+                }
                 resolveResult({
-                    status: error === null ? 0 : typeof error.code === "number" ? error.code : null,
+                    status,
                     signal: error?.signal ?? null,
                     error: error ? { code: error.code ?? null, message: error.message } : null,
                     deadlineExpired,

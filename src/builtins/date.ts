@@ -224,14 +224,16 @@ export function registerDate(realm: Realm): void {
                 if (date.type === "throw") {
                     return date;
                 }
-                const style =
-                    name === "toString"
-                        ? "display"
-                        : name === "toDateString"
-                          ? "date"
-                          : name === "toTimeString"
-                            ? "time"
-                            : "utc";
+                let style: "date" | "display" | "time" | "utc";
+                if (name === "toString") {
+                    style = "display";
+                } else if (name === "toDateString") {
+                    style = "date";
+                } else if (name === "toTimeString") {
+                    style = "time";
+                } else {
+                    style = "utc";
+                }
                 return normal({
                     kind: "string",
                     value: formatDateString(

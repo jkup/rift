@@ -273,15 +273,18 @@ function validateSelection(selection) {
             );
             metadata(slot.metadata);
             const f = slot.metadata.flags;
-            const variants = f.includes("module")
-                ? ["module"]
-                : f.includes("raw")
-                  ? ["raw"]
-                  : f.includes("onlyStrict")
-                    ? ["strict"]
-                    : f.includes("noStrict")
-                      ? ["non-strict"]
-                      : ["non-strict", "strict"];
+            let variants;
+            if (f.includes("module")) {
+                variants = ["module"];
+            } else if (f.includes("raw")) {
+                variants = ["raw"];
+            } else if (f.includes("onlyStrict")) {
+                variants = ["strict"];
+            } else if (f.includes("noStrict")) {
+                variants = ["non-strict"];
+            } else {
+                variants = ["non-strict", "strict"];
+            }
             expectedVariants ??= variants;
             first ??= slot;
             check(

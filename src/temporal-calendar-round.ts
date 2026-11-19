@@ -56,18 +56,22 @@ export function calendarWindow(
     }
     const inner = Math.trunc(count / increment) * increment + (shifted ? increment * sign : 0);
     const outer = inner + increment * sign;
-    const start =
-        unit === "year"
-            ? dateDuration(inner, 0, 0)
-            : unit === "month"
-              ? dateDuration(duration.years, inner, 0)
-              : dateDuration(duration.years, duration.months, inner);
-    const end =
-        unit === "year"
-            ? dateDuration(outer, 0, 0)
-            : unit === "month"
-              ? dateDuration(duration.years, outer, 0)
-              : dateDuration(duration.years, duration.months, outer);
+    let start: DurationFields;
+    if (unit === "year") {
+        start = dateDuration(inner, 0, 0);
+    } else if (unit === "month") {
+        start = dateDuration(duration.years, inner, 0);
+    } else {
+        start = dateDuration(duration.years, duration.months, inner);
+    }
+    let end: DurationFields;
+    if (unit === "year") {
+        end = dateDuration(outer, 0, 0);
+    } else if (unit === "month") {
+        end = dateDuration(duration.years, outer, 0);
+    } else {
+        end = dateDuration(duration.years, duration.months, outer);
+    }
     const startDate = addTemporalDate(origin, start, false, false),
         endDate = addTemporalDate(origin, end, false, false);
     if (startDate === null || endDate === null) {

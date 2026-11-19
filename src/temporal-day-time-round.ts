@@ -32,8 +32,22 @@ export function roundDayTimeDifference(
     const wholeDays = total / NANOSECONDS_PER_DAY,
         roundedDays = rounded / NANOSECONDS_PER_DAY;
     const delta = roundedDays - wholeDays;
-    const deltaSign = delta < 0n ? -1 : delta > 0n ? 1 : 0,
-        sign = total < 0n ? -1 : total > 0n ? 1 : 0;
+    let deltaSign: -1 | 0 | 1;
+    if (delta < 0n) {
+        deltaSign = -1;
+    } else if (delta > 0n) {
+        deltaSign = 1;
+    } else {
+        deltaSign = 0;
+    }
+    let sign: -1 | 0 | 1;
+    if (total < 0n) {
+        sign = -1;
+    } else if (total > 0n) {
+        sign = 1;
+    } else {
+        sign = 0;
+    }
     const dateUnit =
         largest === "years" || largest === "months" || largest === "weeks" || largest === "days";
     const days = dateUnit ? roundedDays : 0n;

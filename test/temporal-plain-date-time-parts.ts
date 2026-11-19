@@ -1,7 +1,7 @@
 import { Realm } from "../src/realm.js";
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
-import type { ValueCompletion } from "../src/runtime.js";
+import type { GuestObject, ValueCompletion } from "../src/runtime.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {
@@ -76,12 +76,14 @@ for (const method of ["toPlainDate", "toPlainTime", "withPlainTime", "withCalend
             ")",
         calling,
     );
-    const prototype =
-        method === "toPlainDate"
-            ? defining.temporalPlainDatePrototype
-            : method === "toPlainTime"
-              ? defining.temporalPlainTimePrototype
-              : defining.temporalPlainDateTimePrototype;
+    let prototype: GuestObject;
+    if (method === "toPlainDate") {
+        prototype = defining.temporalPlainDatePrototype;
+    } else if (method === "toPlainTime") {
+        prototype = defining.temporalPlainTimePrototype;
+    } else {
+        prototype = defining.temporalPlainDateTimePrototype;
+    }
     check(
         result.type === "normal" &&
             result.value.kind === "object" &&

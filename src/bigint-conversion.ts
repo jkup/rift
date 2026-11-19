@@ -59,14 +59,16 @@ export function stringToBigInt(
             return tick;
         }
         const code = text.charCodeAt(i);
-        const digit =
-            code >= 48 && code <= 57
-                ? code - 48
-                : code >= 65 && code <= 70
-                  ? code - 55
-                  : code >= 97 && code <= 102
-                    ? code - 87
-                    : -1;
+        let digit: number;
+        if (code >= 48 && code <= 57) {
+            digit = code - 48;
+        } else if (code >= 65 && code <= 70) {
+            digit = code - 55;
+        } else if (code >= 97 && code <= 102) {
+            digit = code - 87;
+        } else {
+            digit = -1;
+        }
         if (digit < 0 || digit >= radix) {
             return { type: "normal", value: null };
         }

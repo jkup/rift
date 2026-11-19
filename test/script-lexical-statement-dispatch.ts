@@ -218,14 +218,17 @@ function controls(): void {
                                 "copied history locations",
                             );
                         }
+                        let historyId: string;
+                        if (source === sources[0]) {
+                            historyId = "R0";
+                        } else if (source === sources[1]) {
+                            historyId = "R1";
+                        } else {
+                            historyId = "effects";
+                        }
                         histories.push(
                             JSON.stringify({
-                                id:
-                                    source === sources[0]
-                                        ? "R0"
-                                        : source === sources[1]
-                                          ? "R1"
-                                          : "effects",
+                                id: historyId,
                                 realmId: realmLabel,
                                 seeded,
                                 prefixCount: prefixLength,

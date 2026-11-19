@@ -198,18 +198,19 @@ function escapedSource(source: string, context: OperationContext, loc: Location)
         } else if (char === "]") {
             inClass = false;
         }
-        result +=
-            char === "\n"
-                ? "\\n"
-                : char === "\r"
-                  ? "\\r"
-                  : char === "\u2028"
-                    ? "\\u2028"
-                    : char === "\u2029"
-                      ? "\\u2029"
-                      : char === "/" && !inClass
-                        ? "\\/"
-                        : char;
+        if (char === "\n") {
+            result += "\\n";
+        } else if (char === "\r") {
+            result += "\\r";
+        } else if (char === "\u2028") {
+            result += "\\u2028";
+        } else if (char === "\u2029") {
+            result += "\\u2029";
+        } else if (char === "/" && !inClass) {
+            result += "\\/";
+        } else {
+            result += char;
+        }
     }
     return { type: "normal", value: result };
 }

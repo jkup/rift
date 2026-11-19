@@ -1,3 +1,4 @@
+import { compareBigInts } from "../numeric.js";
 import type { Realm } from "../realm.js";
 import { toTemporalDurationFields } from "../temporal-duration-fields.js";
 import { durationTimeNanoseconds, type DurationFields } from "../temporal-duration.js";
@@ -117,7 +118,7 @@ export function registerTemporalDurationCompare(realm: Realm, constructor: Guest
                           "relative duration target overflows",
                           loc,
                       )
-                    : normal({ kind: "number", value: first < last ? -1 : first > last ? 1 : 0 });
+                    : normal({ kind: "number", value: compareBigInts(first, last) });
             }
             const plain =
                 relative.value !== null && relative.value.kind === "plain"
@@ -165,7 +166,7 @@ export function registerTemporalDurationCompare(realm: Realm, constructor: Guest
             }
             return normal({
                 kind: "number",
-                value: leftTime < rightTime ? -1 : leftTime > rightTime ? 1 : 0,
+                value: compareBigInts(leftTime, rightTime),
             });
         },
     );

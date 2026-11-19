@@ -1,3 +1,4 @@
+import type { ThrowOrigin } from "../src/outcomes.js";
 import { GuestSymbol, wellKnownToPrimitive } from "../src/symbols.js";
 import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
@@ -23,7 +24,7 @@ import {
 } from "../src/runtime.js";
 import { Evaluator } from "../src/evaluator.js";
 import { parse, auditScriptReturns } from "../src/parser.js";
-import type { Location, Stmt } from "../src/syntax.js";
+import type { Stmt } from "../src/syntax.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {
@@ -839,14 +840,16 @@ for (const row of prefixes) {
                     num(run('"use strict";saved();', target), 7);
                 }
             } else {
+                let expectedScalar: string;
+                if (row.result === "normal number7") {
+                    expectedScalar = "7";
+                } else if (row.result === "normal number33") {
+                    expectedScalar = "33";
+                } else {
+                    expectedScalar = "undefined";
+                }
                 check(
-                    c.type === "normal" &&
-                        scalar(c.value) ===
-                            (row.result === "normal number7"
-                                ? "7"
-                                : row.result === "normal number33"
-                                  ? "33"
-                                  : "undefined"),
+                    c.type === "normal" && scalar(c.value) === expectedScalar,
                     "full prefix endpoint",
                 );
             }
@@ -863,19 +866,22 @@ for (const mode of ["guest", "diagnostic", "resource", "unsupported"]) {
                 s = createScriptSession(),
                 log: string[] = [];
             recorder(r, log);
+            let origin: ThrowOrigin;
+            if (mode === "diagnostic") {
+                origin = { kind: "engine-diagnostic" };
+            } else if (mode === "resource") {
+                origin = { kind: "resource-limit", guardCode: "steps", count: 10, limit: 9 };
+            } else if (mode === "unsupported") {
+                origin = {
+                    kind: "unsupported-operation",
+                    capabilityCode: "runtime.object-to-string",
+                };
+            } else {
+                origin = { kind: "guest" };
+            }
             const q: ThrowCompletion = {
                 type: "throw",
-                origin:
-                    mode === "diagnostic"
-                        ? { kind: "engine-diagnostic" }
-                        : mode === "resource"
-                          ? { kind: "resource-limit", guardCode: "steps", count: 10, limit: 9 }
-                          : mode === "unsupported"
-                            ? {
-                                  kind: "unsupported-operation",
-                                  capabilityCode: "runtime.object-to-string",
-                              }
-                            : { kind: "guest" },
+                origin: origin,
                 value: { kind: "object", object: new GuestObject() },
                 diagnostic: {
                     phase: "runtime",
@@ -894,12 +900,14 @@ for (const mode of ["guest", "diagnostic", "resource", "unsupported"]) {
                 }),
             });
             define(r, "original", q.value);
-            const source =
-                stage === "discriminant"
-                    ? "switch(fail()){case 1:out(9);}"
-                    : stage === "selector"
-                      ? "switch(1){case fail():out(9);default:out(8);}"
-                      : "switch(1){case 1:fail();out(9);default:out(8);}";
+            let source: string;
+            if (stage === "discriminant") {
+                source = "switch(fail()){case 1:out(9);}";
+            } else if (stage === "selector") {
+                source = "switch(1){case fail():out(9);default:out(8);}";
+            } else {
+                source = "switch(1){case 1:fail();out(9);default:out(8);}";
+            }
             const record = prepare(
                 '"use strict";' +
                     (wrapped ? "try{" + source + "}catch(e){out(e===original);}" : source),
@@ -1069,12 +1077,14 @@ for (const stage of ["discriminant", "selector", "body"]) {
             throw sentinel;
         }),
     });
-    const source =
-        stage === "discriminant"
-            ? "switch(fail()){case 1:this.bad=1;}"
-            : stage === "selector"
-              ? "switch(1){case fail():this.bad=1;}"
-              : "switch(1){case 1:fail();this.bad=1;}";
+    let source: string;
+    if (stage === "discriminant") {
+        source = "switch(fail()){case 1:this.bad=1;}";
+    } else if (stage === "selector") {
+        source = "switch(1){case fail():this.bad=1;}";
+    } else {
+        source = "switch(1){case 1:fail();this.bad=1;}";
+    }
     const br = prepare('"use strict";try{' + source + "}catch(e){this.caught=1;}", b, "X03 B");
     define(a, "enter", {
         kind: "object",

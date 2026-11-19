@@ -62,13 +62,15 @@ export function roundTemporalInteger(
 }
 
 export function negateTemporalRoundingMode(mode: TemporalRoundingMode): TemporalRoundingMode {
-    return mode === "ceil"
-        ? "floor"
-        : mode === "floor"
-          ? "ceil"
-          : mode === "halfCeil"
-            ? "halfFloor"
-            : mode === "halfFloor"
-              ? "halfCeil"
-              : mode;
+    if (mode === "ceil") {
+        return "floor";
+    } else if (mode === "floor") {
+        return "ceil";
+    } else if (mode === "halfCeil") {
+        return "halfFloor";
+    } else if (mode === "halfFloor") {
+        return "halfCeil";
+    } else {
+        return mode;
+    }
 }

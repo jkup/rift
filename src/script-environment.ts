@@ -67,7 +67,7 @@ class ScriptLocalBindings {
     initializeBinding(
         name: string,
         value: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _loc: Location,
     ): ValueCompletion {
         const binding = this.bindings.get(name);

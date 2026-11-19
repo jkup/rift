@@ -22,7 +22,7 @@ export class GlobalEnvironment {
     > = new Map();
     constructor(
         readonly globalObject: GuestObject,
-        private readonly globalThis: GuestObject,
+        private readonly globalThisObject: GuestObject,
     ) {}
 
     hasLexicalDeclaration(name: string): boolean {
@@ -186,7 +186,7 @@ export class GlobalEnvironment {
         return this.setObjectProperty(name, value, false, context, loc);
     }
     getThisBinding(): Value {
-        return { kind: "object", object: this.globalThis };
+        return { kind: "object", object: this.globalThisObject };
     }
     withBaseObject(): Value {
         return UNDEFINED;

@@ -178,12 +178,14 @@ export function registerMath(realm: Realm): void {
             if (right.type === "throw") {
                 return right;
             }
-            const value =
-                name === "atan2"
-                    ? Math.atan2(left.value, right.value)
-                    : name === "pow"
-                      ? Math.pow(left.value, right.value)
-                      : Math.imul(left.value, right.value);
+            let value: number;
+            if (name === "atan2") {
+                value = Math.atan2(left.value, right.value);
+            } else if (name === "pow") {
+                value = Math.pow(left.value, right.value);
+            } else {
+                value = Math.imul(left.value, right.value);
+            }
             return normal({ kind: "number", value });
         });
     }

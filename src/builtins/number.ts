@@ -74,14 +74,14 @@ export function registerNumber(realm: Realm): void {
         enumerable: false,
         configurable: false,
     });
-    registerPredicate(realm, namespace, "isNaN", (_receiver, args, context, _loc) => {
+    registerPredicate(realm, namespace, "isNaN", (_receiver, args, _context, _loc) => {
         const value = args.length === 0 ? UNDEFINED : args[0];
         return normal({
             kind: "boolean",
             value: value.kind === "number" && Number.isNaN(value.value),
         });
     });
-    registerPredicate(realm, namespace, "isFinite", (_receiver, args, context, _loc) => {
+    registerPredicate(realm, namespace, "isFinite", (_receiver, args, _context, _loc) => {
         const value = args.length === 0 ? UNDEFINED : args[0];
         return normal({
             kind: "boolean",

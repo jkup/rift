@@ -149,12 +149,14 @@ function migrate(value) {
                 "0921bc26ea39f6cb6c4583387553480a996ac4fd2f78a2f303c0a7a7c89e65dd",
             );
             for (const file of p.files) {
-                const path =
-                    file.path === "@node"
-                        ? process.execPath
-                        : file.path.startsWith("@yaml/")
-                          ? "node_modules/yaml/" + file.path.slice(6)
-                          : file.path;
+                let path;
+                if (file.path === "@node") {
+                    path = process.execPath;
+                } else if (file.path.startsWith("@yaml/")) {
+                    path = "node_modules/yaml/" + file.path.slice(6);
+                } else {
+                    path = file.path;
+                }
                 file.sha256 = createHash("sha256").update(readFileSync(path)).digest("hex");
             }
             p.id = "rift-script-blocked-v4";

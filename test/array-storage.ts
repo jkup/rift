@@ -408,14 +408,16 @@ for (const mode of ["invalid", "readonly", "partial", "object"]) {
     if (mode === "readonly") {
         bool(defineLength(a, { writable: false }), true);
     }
-    const rhs =
-        mode === "invalid"
-            ? num(NaN)
-            : mode === "readonly"
-              ? num(3)
-              : mode === "partial"
-                ? num(1)
-                : obj(coercible);
+    let rhs: Value;
+    if (mode === "invalid") {
+        rhs = num(NaN);
+    } else if (mode === "readonly") {
+        rhs = num(3);
+    } else if (mode === "partial") {
+        rhs = num(1);
+    } else {
+        rhs = obj(coercible);
+    }
     r.global.bindings.set("a", { initialized: true, mutable: true, value: obj(a) });
     r.global.bindings.set("rhs", { initialized: true, mutable: true, value: rhs });
     hookCalls = 0;
@@ -554,7 +556,7 @@ class BootstrapValue extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         this.reads++;

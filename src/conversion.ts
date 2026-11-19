@@ -148,9 +148,12 @@ export function toUint32(value: Value, loc: Location, realm: Realm | null): Numb
     }
     const integer = Math.trunc(number);
     const remainder = integer % 4294967296;
+    if (remainder === 0) {
+        return { type: "normal", value: 0 };
+    }
     return {
         type: "normal",
-        value: remainder === 0 ? 0 : remainder < 0 ? remainder + 4294967296 : remainder,
+        value: remainder < 0 ? remainder + 4294967296 : remainder,
     };
 }
 

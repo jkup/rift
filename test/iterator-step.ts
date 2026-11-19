@@ -38,11 +38,13 @@ function run(text: string, done: boolean, valueStep = false): void {
                 return result.type === "throw" ? result : normal(result.value);
             }
             const result = iteratorStep(acquired.value, context, loc);
-            return result.type === "throw"
-                ? result
-                : result.value === null
-                  ? normal()
-                  : normal({ kind: "object", object: result.value });
+            if (result.type === "throw") {
+                return result;
+            } else if (result.value === null) {
+                return normal();
+            } else {
+                return normal({ kind: "object", object: result.value });
+            }
         },
     );
     realm.defineScriptGlobal("step", { value: { kind: "object", object: step } });

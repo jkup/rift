@@ -41,7 +41,14 @@ export function registerTemporalPlainTime(realm: Realm, namespace: GuestObject):
                 fields.push(converted.value);
             }
             for (let i = 0; i < fields.length; i++) {
-                const limit = i === 0 ? 24 : i < 3 ? 60 : 1000;
+                let limit: 24 | 60 | 1000;
+                if (i === 0) {
+                    limit = 24;
+                } else if (i < 3) {
+                    limit = 60;
+                } else {
+                    limit = 1000;
+                }
                 if (fields[i] < 0 || fields[i] >= limit) {
                     return languageFailure(
                         context.realm,

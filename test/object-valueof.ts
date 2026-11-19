@@ -18,7 +18,6 @@ import {
     GuestObject,
     UNDEFINED,
     failure,
-    normal,
     sameValue,
     type Completion,
     type Value,
@@ -116,7 +115,7 @@ class NoReads extends GuestObject {
     internalGet(
         _key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         throw new Error("unexpected receiver Get");
@@ -419,15 +418,16 @@ for (const source of ["{}", "[]", "function() {}"]) {
         },
         call: (callee, receiver, args, at) => {
             const first = callee === local.objectPrototype.get("valueOf", context, loc);
+            let prototype: GuestObject;
+            if (source === "[]") {
+                prototype = local.arrayPrototype;
+            } else if (source === "{}") {
+                prototype = local.objectPrototype;
+            } else {
+                prototype = local.functionPrototype;
+            }
             check(
-                (first ||
-                    callee ===
-                        (source === "[]"
-                            ? local.arrayPrototype
-                            : source === "{}"
-                              ? local.objectPrototype
-                              : local.functionPrototype
-                        ).get("toString", context, loc)) &&
+                (first || callee === prototype.get("toString", context, loc)) &&
                     receiver === operand &&
                     args.length === 0,
                 "real inherited method call",
@@ -444,17 +444,37 @@ for (const source of ["{}", "[]", "function() {}"]) {
         },
     };
     const converted = result(toPrimitive(operand, "number", context, loc));
-    const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
+    let tag: "Array" | "Function" | "Object";
+    if (source === "{}") {
+        tag = "Object";
+    } else if (source === "[]") {
+        tag = "Array";
+    } else {
+        tag = "Function";
+    }
+    let expectedString: string;
+    if (source === "[]") {
+        expectedString = "";
+    } else if (source === "{}") {
+        expectedString = "[object " + tag + "]";
+    } else {
+        expectedString = "function() {}";
+    }
     check(
-        converted.kind === "string" &&
-            converted.value ===
-                (source === "[]" ? "" : source === "{}" ? "[object " + tag + "]" : "function() {}"),
+        converted.kind === "string" && converted.value === expectedString,
         "inherited default result",
     );
     // The method body uses the active evaluator context, not this observer adapter.
+    let expectedSteps: number;
+    if (source === "[]") {
+        expectedSteps = 5;
+    } else if (source === "{}") {
+        expectedSteps = 4;
+    } else {
+        expectedSteps = 3;
+    }
     check(
-        events === "tick;tick;valueOf;tick;toString;" &&
-            active.steps === (source === "[]" ? 5 : source === "{}" ? 4 : 3),
+        events === "tick;tick;valueOf;tick;toString;" && active.steps === expectedSteps,
         "inherited conversion trace",
     );
     const tight = new Evaluator(a, 2, 0);

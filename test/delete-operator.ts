@@ -254,10 +254,15 @@ for (const source of [
             return normal(o(target));
         }),
     );
-    expect(
-        run(e, source),
-        source === "!delete o.x;" ? b(false) : source === "+delete o.x;" ? n(1) : b(true),
-    );
+    let expectedValue: Value;
+    if (source === "!delete o.x;") {
+        expectedValue = b(false);
+    } else if (source === "+delete o.x;") {
+        expectedValue = n(1);
+    } else {
+        expectedValue = b(true);
+    }
+    expect(run(e, source), expectedValue);
     const reads = source.includes("?") || source.includes("&&") || source.includes("||");
     check(target.reads === (reads ? 1 : 0), "P reads " + source);
     check(calls === (source === "delete f();" ? 1 : 0), "P calls");
@@ -380,17 +385,23 @@ for (const source of [
     const e = new Evaluator(r);
     const nullish = source.includes("null") || source.includes("undefined");
     const read = source.includes(".x.y");
-    const key = source.includes("NaN") ? "NaN" : source.includes("length") ? "length" : "0";
-    error(
-        run(e, source),
-        nullish
-            ? "cannot convert null or undefined to object"
-            : read
-              ? "cannot convert null or undefined to object"
-              : "property is not configurable: " + key,
-        1,
-        nullish || read ? 8 : 1,
-    );
+    let key: "0" | "NaN" | "length";
+    if (source.includes("NaN")) {
+        key = "NaN";
+    } else if (source.includes("length")) {
+        key = "length";
+    } else {
+        key = "0";
+    }
+    let expectedMessage: string;
+    if (nullish) {
+        expectedMessage = "cannot convert null or undefined to object";
+    } else if (read) {
+        expectedMessage = "cannot convert null or undefined to object";
+    } else {
+        expectedMessage = "property is not configurable: " + key;
+    }
+    error(run(e, source), expectedMessage, 1, nullish || read ? 8 : 1);
 }
 for (const source of [
     "delete 'ab'[2];",
@@ -880,7 +891,7 @@ class LookupFailure extends GuestObject {
     internalGet(
         key: PropertyKey,
         _receiver: Value,
-        context: OperationContext,
+        _context: OperationContext,
         _at: Location,
     ): ValueCompletion {
         return key === wellKnownToPrimitive ? normal() : this.thrown;
@@ -1305,16 +1316,15 @@ for (const keyPath of [
                 1,
                 8,
             );
-            check(
-                calls === 0 &&
-                    e.steps ===
-                        (budgetCase === BudgetCase.StepLimit
-                            ? 5
-                            : keyPath === SourceKeyPath.Canonical
-                              ? 5
-                              : 6),
-                "R10/R11 guard",
-            );
+            let expectedSteps: number;
+            if (budgetCase === BudgetCase.StepLimit) {
+                expectedSteps = 5;
+            } else if (keyPath === SourceKeyPath.Canonical) {
+                expectedSteps = 5;
+            } else {
+                expectedSteps = 6;
+            }
+            check(calls === 0 && e.steps === expectedSteps, "R10/R11 guard");
         }
     }
 }
@@ -1546,12 +1556,14 @@ for (const method of [
     const parent = new GuestObject(null);
     const key = new GuestObject(parent);
     const target = r.createObject();
-    const methodKey: PropertyKey =
-        method === ConversionMethod.Canonical
-            ? wellKnownToPrimitive
-            : method === ConversionMethod.ToString
-              ? "toString"
-              : "valueOf";
+    let methodKey: PropertyKey;
+    if (method === ConversionMethod.Canonical) {
+        methodKey = wellKnownToPrimitive;
+    } else if (method === ConversionMethod.ToString) {
+        methodKey = "toString";
+    } else {
+        methodKey = "valueOf";
+    }
     let trace = "";
     const saved = fn(r, (_receiver, _args, _context, _at) => {
         trace += "A";

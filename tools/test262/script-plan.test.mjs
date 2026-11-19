@@ -53,15 +53,25 @@ async function ledgerPolicyLiteral(selection) {
     assert(!policy.files.some((f) => f.path === "tools/test262/script-ledger.mjs"));
     policy.files.push({ path: "tools/test262/script-ledger.mjs", sha256: "" });
     for (const file of policy.files) {
-        const path =
-            file.path === "@node"
-                ? process.execPath
-                : file.path.startsWith("@yaml/")
-                  ? "node_modules/yaml/" + file.path.slice(6)
-                  : file.path;
+        let path;
+        if (file.path === "@node") {
+            path = process.execPath;
+        } else if (file.path.startsWith("@yaml/")) {
+            path = "node_modules/yaml/" + file.path.slice(6);
+        } else {
+            path = file.path;
+        }
         file.sha256 = sha256(await readFile(path));
     }
-    policy.files.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+    policy.files.sort((a, b) => {
+        if (a.path < b.path) {
+            return -1;
+        } else if (a.path > b.path) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
     assert.equal(policy.files.length, 242);
     policy.id = "rift-script-blocked-v4";
     policy.closureSha256 = sha256(JSON.stringify(policy.files));
@@ -153,12 +163,14 @@ test("complete literal both-lane projections, revision preservation and independ
             sha256(await readFile("tools/test262/script-capabilities.json")),
         );
         for (const file of actual.policy.files) {
-            const path =
-                file.path === "@node"
-                    ? process.execPath
-                    : file.path.startsWith("@yaml/")
-                      ? "node_modules/yaml/" + file.path.slice(6)
-                      : file.path;
+            let path;
+            if (file.path === "@node") {
+                path = process.execPath;
+            } else if (file.path.startsWith("@yaml/")) {
+                path = "node_modules/yaml/" + file.path.slice(6);
+            } else {
+                path = file.path;
+            }
             assert.equal(file.sha256, sha256(await readFile(path)), file.path);
         }
         observed.push(actual);

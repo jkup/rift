@@ -131,7 +131,13 @@ function hostFault(action: () => void, message: string): void {
 }
 function own(r: Realm, name: string): Value | null {
     const descriptor = r.globalEnvironment.globalObject.getOwnProperty(name);
-    return descriptor === undefined ? null : descriptor.kind === "data" ? descriptor.value : null;
+    if (descriptor === undefined) {
+        return null;
+    } else if (descriptor.kind === "data") {
+        return descriptor.value;
+    } else {
+        return null;
+    }
 }
 const cases: { id: string; source: string; expected: number | string | undefined }[] = [
     { id: "H3-empty", source: '"use strict";for(;;)break;', expected: undefined },
@@ -1052,13 +1058,15 @@ for (const mode of ["accessor", "coercion", "body"]) {
     }
     define(r, "target", { kind: "object", object: target });
     define(r, "fail", { kind: "object", object: fail });
-    run(
-        '"use strict";function f(){ {' +
-            (mode === "accessor" ? "target.x;" : mode === "coercion" ? "+target;" : "fail();") +
-            "} }",
-        r,
-        s,
-    );
+    let failureSource: string;
+    if (mode === "accessor") {
+        failureSource = "target.x;";
+    } else if (mode === "coercion") {
+        failureSource = "+target;";
+    } else {
+        failureSource = "fail();";
+    }
+    run('"use strict";function f(){ {' + failureSource + "} }", r, s);
     const f = own(r, "f");
     if (f === null) {
         throw new Error("f");

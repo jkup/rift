@@ -76,7 +76,14 @@ for (let i = 0; i < units.length; i++) {
             lengths[i] +
             ':trunc"',
     );
-    const maximum = i === 0 ? 24 : i < 3 ? 60 : 1000;
+    let maximum: 24 | 60 | 1000;
+    if (i === 0) {
+        maximum = 24;
+    } else if (i < 3) {
+        maximum = 60;
+    } else {
+        maximum = 1000;
+    }
     passes(
         'var ok=false;try{second({smallestUnit:"' +
             units[i] +

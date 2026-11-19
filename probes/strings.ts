@@ -22,6 +22,7 @@ console.log("split pair:", codeUnits(pair.slice(0, 1)), "|", codeUnits(pair.slic
 console.log("rejoined equals:", pair.slice(0, 1) + pair.slice(1) === pair);
 console.log("nul:", withNul.length, codeUnits(withNul));
 console.log("fromCharCode lone:", codeUnits(String.fromCharCode(0xd800, 0x41)));
+// oxlint-disable-next-line no-constant-binary-expression -- This compiler regression checks constant operations on both Node and native hosts.
 console.log("compare units:", "￿" > pair, "a" < "b", "B" < "a");
 console.log("indexOf lone low in pair:", pair.indexOf(loneLow));
 console.log("concat lone halves:", (loneHigh + loneLow).length, loneHigh + loneLow === pair);

@@ -164,17 +164,17 @@ for (const op of operators) {
             });
         }
         check(run(active, "left() " + op + " right();") === sentinel, op + " exact " + phase);
-        expect(
-            active,
-            "trace",
-            phase === "L"
-                ? "L"
-                : phase === "R" || phase === "GetP"
-                  ? "LR"
-                  : phase === "P" || phase === "GetQ"
-                    ? "LRP"
-                    : "LRPQ",
-        );
+        let expectedTrace: string;
+        if (phase === "L") {
+            expectedTrace = "L";
+        } else if (phase === "R" || phase === "GetP") {
+            expectedTrace = "LR";
+        } else if (phase === "P" || phase === "GetQ") {
+            expectedTrace = "LRP";
+        } else {
+            expectedTrace = "LRPQ";
+        }
+        expect(active, "trace", expectedTrace);
         check(active.calls === 0, "abrupt cleanup");
         if (phase === "GetP" || phase === "GetQ") {
             check(trap.reads === 1, "one failing Get");
@@ -238,13 +238,23 @@ for (const kind of ["ordinary", "array", "function"]) {
             configurable: true,
         });
         seed(active, "operand", input);
-        const index =
-            expression === "+operand"
-                ? -2
-                : expression === "-operand"
-                  ? -1
-                  : operators.indexOf(expression.split(" ")[1]);
-        expect(active, expression, index === -2 ? 6 : index === -1 ? -6 : expected[index]);
+        let index: number;
+        if (expression === "+operand") {
+            index = -2;
+        } else if (expression === "-operand") {
+            index = -1;
+        } else {
+            index = operators.indexOf(expression.split(" ")[1]);
+        }
+        let expectedValue: number | boolean;
+        if (index === -2) {
+            expectedValue = 6;
+        } else if (index === -1) {
+            expectedValue = -6;
+        } else {
+            expectedValue = expected[index];
+        }
+        expect(active, expression, expectedValue);
         check(calls === 1, "one inherited call");
     }
 }
@@ -277,21 +287,30 @@ for (const row of primitiveRows) {
 for (const source of ["{}", "function() {}"]) {
     const active = setup();
     run(active, "let operand = " + source + ";");
-    const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
+    let tag: "Array" | "Function" | "Object";
+    if (source === "{}") {
+        tag = "Object";
+    } else if (source === "[]") {
+        tag = "Array";
+    } else {
+        tag = "Function";
+    }
     expect(active, "+operand", NaN);
     expect(active, "-operand", NaN);
     for (const op of operators) {
-        expect(
-            active,
-            "operand " + op + " 2",
-            op === "+"
-                ? source === "{}"
-                    ? "[object " + tag + "]2"
-                    : "function() {}2"
-                : ["<", ">", "<=", ">="].includes(op)
-                  ? false
-                  : NaN,
-        );
+        let expectedValue: number | boolean | string;
+        if (op === "+") {
+            if (source === "{}") {
+                expectedValue = "[object " + tag + "]2";
+            } else {
+                expectedValue = "function() {}2";
+            }
+        } else if (["<", ">", "<=", ">="].includes(op)) {
+            expectedValue = false;
+        } else {
+            expectedValue = NaN;
+        }
+        expect(active, "operand " + op + " 2", expectedValue);
     }
 }
 const emptyArray = setup();

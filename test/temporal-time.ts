@@ -92,8 +92,15 @@ const names: (keyof TimeFields)[] = [
     "nanosecond",
 ];
 for (let i = 0; i < names.length; i++) {
-    const name = names[i],
-        limit = i === 0 ? 24 : i < 3 ? 60 : 1000;
+    const name = names[i];
+    let limit: 24 | 60 | 1000;
+    if (i === 0) {
+        limit = 24;
+    } else if (i < 3) {
+        limit = 60;
+    } else {
+        limit = 1000;
+    }
     for (const value of [-1, limit, NaN, Infinity, 0.5]) {
         const time = {
             hour: i === 0 ? value : 0,

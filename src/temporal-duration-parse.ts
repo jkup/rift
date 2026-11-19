@@ -106,7 +106,14 @@ export function parseTemporalDuration(text: string): DurationFields | null {
             if (index !== text.length) {
                 return null;
             }
-            fractionNanoseconds = BigInt(fraction) * (unit === 4 ? 3600n : unit === 5 ? 60n : 1n);
+            const fractionValue = BigInt(fraction);
+            let secondsPerUnit = 1n;
+            if (unit === 4) {
+                secondsPerUnit = 3600n;
+            } else if (unit === 5) {
+                secondsPerUnit = 60n;
+            }
+            fractionNanoseconds = fractionValue * secondsPerUnit;
         }
     }
     if (count === 0 || (time && timeCount === 0)) {

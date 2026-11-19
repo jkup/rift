@@ -27,14 +27,12 @@ for (let index = 0; index < lines.length; index++) {
         if (ianaOffsetSeconds(zone, seconds) !== expected) {
             throw new Error("public offset " + index);
         }
-    } else {
-        if (
-            ianaOffsetSeconds(zone, seconds) !== null ||
-            transitionTableOffset(zone, seconds) !== null ||
-            recurrenceOffsetSeconds(zone.recurrence, seconds) !== null
-        ) {
-            throw new Error("public range widened " + index);
-        }
+    } else if (
+        ianaOffsetSeconds(zone, seconds) !== null ||
+        transitionTableOffset(zone, seconds) !== null ||
+        recurrenceOffsetSeconds(zone.recurrence, seconds) !== null
+    ) {
+        throw new Error("public range widened " + index);
     }
 }
 for (const zone of ianaZones) {

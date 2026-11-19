@@ -28,18 +28,9 @@ import {
     type PropertyKey,
     type PropertyDescriptorUpdate,
 } from "../src/runtime.js";
-import {
-    GuestNumber,
-    GuestBoolean,
-    GuestStringObject,
-    GuestSymbolObject,
-} from "../src/primitive-objects.js";
-import { GuestSymbol, wellKnownToPrimitive, wellKnownHasInstance } from "../src/symbols.js";
-import {
-    ScriptDeclarativeEnvironment,
-    resolveScriptBinding,
-    getScriptBinding,
-} from "../src/script-environment.js";
+import { GuestNumber } from "../src/primitive-objects.js";
+import { GuestSymbol, wellKnownHasInstance } from "../src/symbols.js";
+import "../src/script-environment.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);
@@ -119,9 +110,7 @@ function property(r: Realm, o: GuestObject, key: PropertyKey, d: PropertyDescrip
     const c = o.defineOwnProperty(key, d, context(r), loc);
     check(c.type === "normal" && c.value, "define property");
 }
-function frozen(o: GuestObject, key: string, v: Value): void {
-    o.bootstrapDefine(key, { value: v, writable: false, enumerable: true, configurable: false });
-}
+
 function logCase(id: string, source: string, expected: string): void {
     const r = fresh(),
         out: Value[] = [];
@@ -504,8 +493,8 @@ console.log("PASS I01-I10 I12");
 {
     const a = fresh(),
         b = fresh(),
-        ca = constructor(a),
-        cb = constructor(b);
+        ca = constructor(a);
+    constructor(b);
     define(b, "A", ca);
     define(b, "a", (run("new C();", a) as { type: "normal"; value: Value }).value);
     logCase("I11 grammar", "function C(){}out(new C instanceof C);", "true");
@@ -1287,7 +1276,14 @@ for (const row of [5, 6, 11]) {
         );
         define(r, "o", obj(new GuestObject()));
         define(r, "x", obj(new GuestObject()));
-        const source = row === 6 ? "new C(o);" : row === 11 ? "x instanceof C;" : "new C();";
+        let source: string;
+        if (row === 6) {
+            source = "new C(o);";
+        } else if (row === 11) {
+            source = "x instanceof C;";
+        } else {
+            source = "new C();";
+        }
         const limit = (row === 6 ? 7 : 4) + (caught ? 2 : 0),
             s = createScriptSession({ maxSteps: limit, maxCalls: 64 });
         const c = run(caught ? "try{" + source + "}catch(e){out(e);}" : source, r, s);
@@ -1450,11 +1446,15 @@ for (const site of [0, 1, 2]) {
     property(r, o, wellKnownHasInstance, { value: builtin(r, "hook", callback) });
     define(r, "K", obj(k));
     define(r, "o", obj(o));
-    check(
-        run(site === 0 ? "new K();" : site === 1 ? "new C();" : "7 instanceof o;", r, s).type ===
-            "normal",
-        "X04 outer success",
-    );
+    let source: string;
+    if (site === 0) {
+        source = "new K();";
+    } else if (site === 1) {
+        source = "new C();";
+    } else {
+        source = "7 instanceof o;";
+    }
+    check(run(source, r, s).type === "normal", "X04 outer success");
     check(side === 0 && calls === (site === 0 ? 2 : 1), "X04 no nested effects");
     const other = fresh(),
         os = createScriptSession();

@@ -20,7 +20,6 @@ import {
     type Value,
     type ValueCompletion,
     type InternalBooleanCompletion,
-    type DataDescriptor,
     type DataDescriptorUpdate,
     type OperationContext,
 } from "../src/runtime.js";
@@ -542,7 +541,15 @@ for (const mode of ["same", "different", "invalid", "throw"]) {
     );
     hits(active, 0, "");
     seed(active, "first", num(mode === "same" ? 3 : 2));
-    seed(active, "second", num(mode === "same" ? 3 : mode === "invalid" ? 2.9 : 2));
+    let secondLength: number;
+    if (mode === "same") {
+        secondLength = 3;
+    } else if (mode === "invalid") {
+        secondLength = 2.9;
+    } else {
+        secondLength = 2;
+    }
+    seed(active, "second", num(secondLength));
     if (mode === "throw") {
         effect(active, (_receiver, _args, _context, _at) => sentinel);
     }
@@ -585,10 +592,25 @@ for (const mode of ["partial", "success", "enumerable", "configurable"]) {
         }
         bool(define(active, desc), mode === "success");
         const invalidFlags = mode === "enumerable" || mode === "configurable";
-        length(target, invalidFlags ? 6 : mode === "partial" ? 4 : 1, invalidFlags || !freeze);
+        let expectedLength: number;
+        if (invalidFlags) {
+            expectedLength = 6;
+        } else if (mode === "partial") {
+            expectedLength = 4;
+        } else {
+            expectedLength = 1;
+        }
+        length(target, expectedLength, invalidFlags || !freeze);
+        let expectedKeys: string;
+        if (invalidFlags) {
+            expectedKeys = "1,3,5,length";
+        } else if (mode === "partial") {
+            expectedKeys = "1,3,length";
+        } else {
+            expectedKeys = "length";
+        }
         check(
-            stringKeys(target.ownPropertyKeys()).join(",") ===
-                (invalidFlags ? "1,3,5,length" : mode === "partial" ? "1,3,length" : "length"),
+            stringKeys(target.ownPropertyKeys()).join(",") === expectedKeys,
             "sparse descending deletion/rollback",
         );
         hits(active, 2, "vv");

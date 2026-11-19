@@ -320,27 +320,34 @@ for (const mode of [
         other = fresh(),
         legacy = new Realm((_line: string) => {}),
         session = createScriptSession();
-    const target = new GuestObject(),
-        owner = mode === "other" ? other : mode === "legacy" ? legacy : realm;
+    const target = new GuestObject();
+    let owner: Realm;
+    if (mode === "other") {
+        owner = other;
+    } else if (mode === "legacy") {
+        owner = legacy;
+    } else {
+        owner = realm;
+    }
     const ctor = owner.createBuiltin("constructor", 0, (_r, _a, _c, _l) => normal());
     let reads = 0;
     accessor(ctor, "name", realm, (_r, _a, _c, _l) => {
         reads++;
         return normal(mode === "non-string" ? num(7) : str(""));
     });
-    data(
-        target,
-        "constructor",
-        mode === "null"
-            ? { kind: "null" }
-            : mode === "undefined"
-              ? UNDEFINED
-              : mode === "number"
-                ? num(7)
-                : mode === "object"
-                  ? obj(new GuestObject())
-                  : obj(ctor),
-    );
+    let constructorValue: Value;
+    if (mode === "null") {
+        constructorValue = { kind: "null" };
+    } else if (mode === "undefined") {
+        constructorValue = UNDEFINED;
+    } else if (mode === "number") {
+        constructorValue = num(7);
+    } else if (mode === "object") {
+        constructorValue = obj(new GuestObject());
+    } else {
+        constructorValue = obj(ctor);
+    }
+    data(target, "constructor", constructorValue);
     define(realm, "target", obj(target));
     const result = observe(session, realm, "throw target;", "X03-X05");
     if (mode === "null" || mode === "undefined") {
@@ -553,15 +560,15 @@ for (const at of ["constructor", "name"]) {
                     inspection.kind === "resource-limit" ||
                     inspection.kind === "unsupported-operation")
             ) {
-                check(
-                    inspection.kind ===
-                        (mode === "resource"
-                            ? "resource-limit"
-                            : mode === "unsupported"
-                              ? "unsupported-operation"
-                              : "abrupt"),
-                    "exact secondary tag",
-                );
+                let expectedKind: string;
+                if (mode === "resource") {
+                    expectedKind = "resource-limit";
+                } else if (mode === "unsupported") {
+                    expectedKind = "unsupported-operation";
+                } else {
+                    expectedKind = "abrupt";
+                }
+                check(inspection.kind === expectedKind, "exact secondary tag");
                 if (mode === "same" || mode === "throw") {
                     check(
                         inspection.completion === (mode === "same" ? original : secondary),
@@ -724,12 +731,14 @@ for (const mode of ["species", "unsupported", "resource"]) {
         "fault",
         obj(
             realm.createBuiltin("fault", 0, (_r, _a, c, l): ValueCompletion => {
-                const result =
-                    mode === "resource"
-                        ? resourceFailure("steps", 101, 100, "fault", l)
-                        : mode === "species"
-                          ? mapSpecies(realm, c, l)
-                          : unsupportedRegExp(realm, c, l);
+                let result: ValueCompletion;
+                if (mode === "resource") {
+                    result = resourceFailure("steps", 101, 100, "fault", l);
+                } else if (mode === "species") {
+                    result = mapSpecies(realm, c, l);
+                } else {
+                    result = unsupportedRegExp(realm, c, l);
+                }
                 if (mode === "species") {
                     return result;
                 }
@@ -983,15 +992,15 @@ for (const seed of [0, 7]) {
                                 inspection.source.realm === getterRealm,
                             "P exact synthetic fallback identity",
                         );
-                        check(
-                            inspection.kind ===
-                                (mode === "resource"
-                                    ? "resource-limit"
-                                    : mode === "unsupported"
-                                      ? "unsupported-operation"
-                                      : "abrupt"),
-                            "P outcome priority",
-                        );
+                        let expectedKind: string;
+                        if (mode === "resource") {
+                            expectedKind = "resource-limit";
+                        } else if (mode === "unsupported") {
+                            expectedKind = "unsupported-operation";
+                        } else {
+                            expectedKind = "abrupt";
+                        }
+                        check(inspection.kind === expectedKind, "P outcome priority");
                     }
                     retained(session, result);
                 }

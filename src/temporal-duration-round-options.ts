@@ -103,16 +103,20 @@ export function durationRoundSettings(
             loc,
         );
     }
-    const maximum =
-        smallest === "hours"
-            ? 24
-            : smallest === "minutes" || smallest === "seconds"
-              ? 60
-              : smallest === "milliseconds" ||
-                  smallest === "microseconds" ||
-                  smallest === "nanoseconds"
-                ? 1000
-                : 0;
+    let maximum: 0 | 24 | 60 | 1000;
+    if (smallest === "hours") {
+        maximum = 24;
+    } else if (smallest === "minutes" || smallest === "seconds") {
+        maximum = 60;
+    } else if (
+        smallest === "milliseconds" ||
+        smallest === "microseconds" ||
+        smallest === "nanoseconds"
+    ) {
+        maximum = 1000;
+    } else {
+        maximum = 0;
+    }
     if (maximum !== 0 && (increment.value >= maximum || maximum % increment.value !== 0)) {
         return languageFailure(
             context.realm,

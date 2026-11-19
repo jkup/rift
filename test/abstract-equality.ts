@@ -501,7 +501,14 @@ for (const [x, y, answer] of [
 for (const kind of ["protocol", "ordinary", "fallback"]) {
     for (const reverse of [false, true]) {
         for (const mode of [0, 1, 2]) {
-            const cost = kind === "protocol" ? 1 : kind === "ordinary" ? 2 : 3;
+            let cost: 1 | 2 | 3;
+            if (kind === "protocol") {
+                cost = 1;
+            } else if (kind === "ordinary") {
+                cost = 2;
+            } else {
+                cost = 3;
+            }
             for (const maxSteps of [cost - 1, cost]) {
                 for (const maxCalls of [0, 64]) {
                     const r = new Realm((_line) => {});
@@ -700,17 +707,29 @@ for (const stage of ["left", "right", "protocol"]) {
                     result.diagnostic.loc === loc,
                 "O3/O4/O5 original record",
             );
-            check(
-                trace === (stage === "left" ? "L;" : stage === "right" ? "L;R;" : "L;R;P:default;"),
-                "O abrupt trace",
-            );
+            let expectedTrace: string;
+            if (stage === "left") {
+                expectedTrace = "L;";
+            } else if (stage === "right") {
+                expectedTrace = "L;R;";
+            } else {
+                expectedTrace = "L;R;P:default;";
+            }
+            check(trace === expectedTrace, "O abrupt trace");
         }
     }
 }
 // R15-R17 statements have one more tick than direct evaluate.
 for (const kind of ["primitive", "protocol", "ordinary"]) {
     for (const op of ["==", "!="]) {
-        const cost = kind === "primitive" ? 4 : kind === "protocol" ? 5 : 6;
+        let cost: 4 | 5 | 6;
+        if (kind === "primitive") {
+            cost = 4;
+        } else if (kind === "protocol") {
+            cost = 5;
+        } else {
+            cost = 6;
+        }
         for (const budget of [cost - 1, cost]) {
             const r = new Realm((_line) => {});
             const e = new Evaluator(r, budget);

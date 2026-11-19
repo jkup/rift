@@ -222,6 +222,17 @@ class MetadataCollector {
             case "break":
             case "continue":
                 break;
+            // These Script-only productions are outside this legacy parser's
+            // admission boundary; their metadata is owned by the Script planner.
+            case "class-declaration":
+            case "for":
+            case "for-in":
+            case "for-lexical":
+            case "for-of":
+            case "switch":
+            case "try-catch":
+            case "try-finally":
+                break;
         }
     }
     visitExpression(expr: Expr, strict: boolean, parent: number | null): void {
@@ -300,6 +311,17 @@ class MetadataCollector {
             case "literal":
             case "identifier":
             case "this":
+                break;
+            // Script-only expressions do not enter this legacy collector.
+            case "class":
+            case "new":
+            case "new-target":
+            case "private-in":
+            case "private-name":
+            case "super-call":
+            case "super-member":
+            case "template-object":
+            case "update":
                 break;
         }
     }

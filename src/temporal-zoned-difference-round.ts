@@ -40,14 +40,16 @@ export function roundZonedDateTimeDifference(
                   time: roundTemporalInteger(last - first, BigInt(increment) * length, mode),
               };
     }
-    const largestDate =
-        largest === "years"
-            ? "year"
-            : largest === "months"
-              ? "month"
-              : largest === "weeks"
-                ? "week"
-                : "day";
+    let largestDate: "day" | "month" | "week" | "year";
+    if (largest === "years") {
+        largestDate = "year";
+    } else if (largest === "months") {
+        largestDate = "month";
+    } else if (largest === "weeks") {
+        largestDate = "week";
+    } else {
+        largestDate = "day";
+    }
     const difference = differenceTemporalZonedDateTime(first, last, zone, largestDate);
     if (difference === null || (smallest === "nanoseconds" && increment === 1)) {
         return difference;
@@ -59,14 +61,16 @@ export function roundZonedDateTimeDifference(
         smallest === "weeks" ||
         smallest === "days"
     ) {
-        const unit =
-            smallest === "years"
-                ? "year"
-                : smallest === "months"
-                  ? "month"
-                  : smallest === "weeks"
-                    ? "week"
-                    : "day";
+        let unit: "day" | "month" | "week" | "year";
+        if (smallest === "years") {
+            unit = "year";
+        } else if (smallest === "months") {
+            unit = "month";
+        } else if (smallest === "weeks") {
+            unit = "week";
+        } else {
+            unit = "day";
+        }
         rounded = roundZonedCalendarDifference(
             first,
             last,

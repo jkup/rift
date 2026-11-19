@@ -21,13 +21,15 @@ function identifierContinue(code: number): boolean {
     );
 }
 function hex(code: number): number {
-    return code >= 48 && code <= 57
-        ? code - 48
-        : code >= 65 && code <= 70
-          ? code - 55
-          : code >= 97 && code <= 102
-            ? code - 87
-            : -1;
+    if (code >= 48 && code <= 57) {
+        return code - 48;
+    } else if (code >= 65 && code <= 70) {
+        return code - 55;
+    } else if (code >= 97 && code <= 102) {
+        return code - 87;
+    } else {
+        return -1;
+    }
 }
 function escape(source: string, start: number): { code: number; end: number } | null {
     if (source.charAt(start + 1) !== "u") {

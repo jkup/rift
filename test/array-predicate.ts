@@ -124,7 +124,7 @@ for (const method of ["every", "some"]) {
         check(target.trace === "get:length;has:0;get:0;", "short circuit before next HasProperty");
     }
     {
-        const { realm, target } = fixture();
+        const { realm } = fixture();
         data(realm.objectPrototype, "1", 13);
         let values = "";
         const callback = realm.createBuiltin("callback", 3, (_receiver, args, _context, _loc) => {
@@ -193,12 +193,14 @@ for (const method of ["every", "some"]) {
         target.failGet = failure;
         target.failHas = failure === "has";
         const actual = run(realm, method);
-        const expected =
-            failure === "has"
-                ? "has sentinel"
-                : failure === "callback"
-                  ? "callback sentinel"
-                  : "get sentinel";
+        let expected: "callback sentinel" | "get sentinel" | "has sentinel";
+        if (failure === "has") {
+            expected = "has sentinel";
+        } else if (failure === "callback") {
+            expected = "callback sentinel";
+        } else {
+            expected = "get sentinel";
+        }
         check(
             actual.type === "throw" && actual.diagnostic.message === expected,
             "abrupt completion",
@@ -298,9 +300,16 @@ for (const method of ["find", "findIndex", "findLast", "findLastIndex"]) {
         );
         realm.defineScriptGlobal("callback", { value: obj(callback) });
         const actual = run(realm, method);
+        let expectedResult: number;
+        if (returnsIndex) {
+            expectedResult = first;
+        } else if (reverse) {
+            expectedResult = 17;
+        } else {
+            expectedResult = 11;
+        }
         check(
-            actual.type === "normal" &&
-                sameValue(actual.value, num(returnsIndex ? first : reverse ? 17 : 11)),
+            actual.type === "normal" && sameValue(actual.value, num(expectedResult)),
             "search saves value before truthy callback",
         );
         check(target.trace === "get:length;get:" + first + ";", "search stops immediately");

@@ -36,7 +36,7 @@ for (const strict of [false, true]) {
         "var ok=false;try{throw 1}catch(e){for(var e=0;e<7;e++){}ok=e===7}ok&&e===undefined",
         "var ok=false;try{throw 1}catch(e){try{throw 2}catch(e){var e=7;ok=e===7}ok=ok&&e===1}ok&&e===undefined",
     ]) {
-        const text = (strict ? '\"use strict\";' : "") + body,
+        const text = (strict ? '"use strict";' : "") + body,
             result = run(text);
         check(
             result.type === "normal" && result.value.kind === "boolean" && result.value.value,
@@ -69,7 +69,7 @@ for (const text of [
     );
 }
 check(
-    parseDeclarationPlan({ id: "legacy", text: '\"use strict\";try{}catch(e){var e}' }).kind ===
+    parseDeclarationPlan({ id: "legacy", text: '"use strict";try{}catch(e){var e}' }).kind ===
         "blocked",
     "legacy declaration boundary",
 );
