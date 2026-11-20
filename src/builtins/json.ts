@@ -1,6 +1,7 @@
 import { JSONSerializer } from "../json-stringify.js";
 import type { Realm } from "../realm.js";
-import { UNDEFINED, type ValueCompletion } from "../runtime.js";
+import { UNDEFINED, normal, type ValueCompletion } from "../runtime.js";
+import { createRawJSON, GuestRawJSON } from "../raw-json.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toString } from "../conversion.js";
 import { wellKnownToStringTag } from "../symbols.js";
@@ -47,6 +48,22 @@ export function registerJSON(realm: Realm): void {
                 args.length > 1 ? args[1] : UNDEFINED,
                 args.length > 2 ? args[2] : UNDEFINED,
             ),
+    );
+    realm.registerBuiltin(object, "rawJSON", 1, (_receiver, args, context, loc): ValueCompletion =>
+        createRawJSON(args.length > 0 ? args[0] : UNDEFINED, context, loc),
+    );
+    realm.registerBuiltin(
+        object,
+        "isRawJSON",
+        1,
+        (_receiver, args, _context, _loc): ValueCompletion =>
+            normal({
+                kind: "boolean",
+                value:
+                    args.length > 0 &&
+                    args[0].kind === "object" &&
+                    args[0].object instanceof GuestRawJSON,
+            }),
     );
     realm.defineScriptGlobal("JSON", {
         value: { kind: "object", object },

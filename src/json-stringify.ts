@@ -1,4 +1,5 @@
 import { toObject } from "./object-conversion.js";
+import { GuestRawJSON } from "./raw-json.js";
 import { GuestArray } from "./array-object.js";
 import { lengthOfArrayLike } from "./array-like.js";
 import { GuestBoolean, GuestNumber, GuestBigInt, GuestStringObject } from "./primitive-objects.js";
@@ -290,6 +291,9 @@ export class JSONSerializer {
             return this.append("null");
         }
         const object = value.object;
+        if (object instanceof GuestRawJSON) {
+            return this.append(object.rawText);
+        }
         if (this.active.has(object)) {
             return languageFailure(this.context.realm, "TypeError", "cyclic JSON value", this.loc);
         }

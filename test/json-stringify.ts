@@ -20,6 +20,23 @@ function run(realm: Realm, text: string, maxSteps = 100000): ValueCompletion {
         .completion;
 }
 const cases = [
+    [
+        "JSON.stringify([JSON.rawJSON('9007199254740993'),JSON.rawJSON('-0'),JSON.rawJSON('1e400')])",
+        "[9007199254740993,-0,1e400]",
+    ],
+    ["JSON.stringify({x:JSON.rawJSON('true')},['x'],2)", '{\n  "x": true\n}'],
+    ["JSON.stringify(JSON.rawJSON('1'),function(k,v){return 2})", "2"],
+    ["JSON.stringify(1,function(k,v){return JSON.rawJSON('3')})", "3"],
+    ["JSON.stringify({toJSON(){return JSON.rawJSON('null')}})", "null"],
+    ["JSON.stringify({rawJSON:'1'})", '{"rawJSON":"1"}'],
+    [
+        "var r=JSON.rawJSON('1');JSON.stringify([Object.getPrototypeOf(r)===null,Object.isFrozen(r),Object.keys(r),JSON.isRawJSON(r),JSON.isRawJSON(Object.create(r)),JSON.isRawJSON({rawJSON:'1'}),JSON.isRawJSON(),JSON.rawJSON.length,JSON.isRawJSON.length])",
+        '[true,true,["rawJSON"],true,false,false,false,1,1]',
+    ],
+    [
+        "var log='';var r=JSON.rawJSON({toString(){log+='s';return '1'},valueOf(){throw 9}});log+':'+r.rawJSON",
+        "s:1",
+    ],
     ["JSON.stringify(null)", "null"],
     ["JSON.stringify(-0)", "0"],
     ["JSON.stringify([true,false,NaN,Infinity,-Infinity])", "[true,false,null,null,null]"],
@@ -184,6 +201,53 @@ function own(object: GuestObject, key: string): Value {
     check(
         result.type === "throw" && result.origin.kind === "resource-limit",
         "bounded output expansion",
+    );
+}
+for (const text of [
+    "",
+    " 1",
+    "1 ",
+    "\nnull",
+    "true\t",
+    "{}",
+    "[]",
+    "NaN",
+    "Infinity",
+    "01",
+    "+1",
+    "1.",
+    "undefined",
+    '"bad\nstring"',
+]) {
+    const realm = fresh();
+    realm.defineScriptGlobal("input", { value: { kind: "string", value: text } });
+    const result = run(realm, "try{JSON.rawJSON(input);false}catch(e){e instanceof SyntaxError}");
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "reject invalid raw JSON: " + text,
+    );
+}
+for (const text of ['"a\\u0062"', "null", "false", "1E+09"]) {
+    const realm = fresh();
+    realm.defineScriptGlobal("input", { value: { kind: "string", value: text } });
+    const result = run(realm, "JSON.stringify(JSON.rawJSON(input))");
+    check(
+        result.type === "normal" && result.value.kind === "string" && result.value.value === text,
+        "preserve raw spelling",
+    );
+}
+{
+    const owner = fresh(),
+        caller = fresh();
+    const raw = run(owner, "JSON.rawJSON('42')");
+    check(raw.type === "normal", "create foreign raw JSON");
+    if (raw.type === "normal") {
+        caller.defineScriptGlobal("raw", { value: raw.value });
+    }
+    const result = run(caller, "JSON.isRawJSON(raw)&&JSON.stringify(raw)==='42'");
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "foreign raw JSON brand",
     );
 }
 console.log("JSON stringify passed");
