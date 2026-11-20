@@ -31,6 +31,17 @@ function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
         .completion;
 }
 for (const source of [
+    "[1,2,3].values().includes(2)&&![1,2,3].values().includes(2,2)&&[1,2,2].values().includes(2,2)&&![1].values().includes(1,Infinity);",
+    "[NaN].values().includes(NaN)&&[-0].values().includes(0)&&[undefined].values().includes()&&![1].values().includes('1');",
+    "let o={},s=Symbol();[o].values().includes(o)&&![o].values().includes({})&&[s].values().includes(s)&&![s].values().includes(Symbol());",
+    "let closed=0;function* g(){try{yield 1;yield 2}finally{closed++}}g().includes(1)&&closed===1;",
+    "let closed=0;let i={next(){return {done:true}},return(){closed++;return {}}};!Iterator.prototype.includes.call(i,1)&&closed===0;",
+    "let log='';let marker={};let i={get next(){log+='n';throw marker},return(){log+='r';return {}}};let ok=false;try{Iterator.prototype.includes.call(i,1)}catch(e){ok=e===marker}ok&&log==='n';",
+    "let log='';let i={get next(){log+='n';throw 1},return(){log+='r';throw 2}};let ok=false;try{Iterator.prototype.includes.call(i,1,{valueOf(){log+='v';return 0}})}catch(e){ok=e instanceof TypeError}ok&&log==='r';",
+    "let marker={},closed=0;let i={next(){return {get value(){throw marker}}},return(){closed++;return {}}};let ok=false;try{Iterator.prototype.includes.call(i,1,2)}catch(e){ok=e===marker}ok&&closed===0;",
+    "let marker={};let i={next(){return {value:1}},return(){throw marker}};let ok=false;try{Iterator.prototype.includes.call(i,1)}catch(e){ok=e===marker}ok;",
+    "let i={next(){return {value:1}},return(){return 0}};let ok=false;try{Iterator.prototype.includes.call(i,1)}catch(e){ok=e instanceof TypeError}ok;",
+    "Iterator.prototype.includes.length===1&&Iterator.prototype.includes.name==='includes'&&[1].values().includes(1,-0);",
     "let d=Object.getOwnPropertyDescriptor(Iterator.prototype,Symbol.toStringTag);d.get.name==='get [Symbol.toStringTag]'&&d.set.name==='set [Symbol.toStringTag]'&&Function.prototype.toString.call(d.get)==='function get [Symbol.toStringTag]() { [native code] }';",
     "class I extends Iterator{};let i=new I; i instanceof Iterator&&Object.getPrototypeOf(Iterator.prototype)===Object.prototype&&i[Symbol.iterator]()===i;",
     "let n=0;try{Iterator()}catch(e){if(e instanceof TypeError)n++}try{new Iterator}catch(e){if(e instanceof TypeError)n++}n===2;",
@@ -88,7 +99,7 @@ for (const source of [
     "let i=[7].values();let identity=i[Symbol.iterator];identity.call(7)===7&&identity.call(null)===null&&identity.name==='[Symbol.iterator]'&&identity.length===0;",
     "Array.prototype.keys.name==='keys'&&Array.prototype.keys.length===0&&Array.prototype.values.name==='values'&&Array.prototype.values.length===0&&Array.prototype.entries.name==='entries'&&Array.prototype.entries.length===0;",
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
-    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray'&&Object.getOwnPropertySymbols(root).length===2&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&d.writable&&!d.enumerable&&d.configurable;",
+    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes'&&Object.getOwnPropertySymbols(root).length===2&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
     "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {
@@ -175,6 +186,45 @@ for (const source of [
     );
 }
 const legacy = new Realm((_line: string) => {});
+for (const argument of [
+    "NaN",
+    "1.5",
+    "null",
+    "'0'",
+    "0n",
+    "true",
+    "Symbol()",
+    "-1",
+    "-Infinity",
+    "9007199254740992",
+]) {
+    const errorName =
+        argument === "-1" || argument === "-Infinity" || argument === "9007199254740992"
+            ? "RangeError"
+            : "TypeError";
+    const result = run(
+        "let closed=0;let i={get next(){throw 7},return(){closed++;return {}}};let ok=false;try{Iterator.prototype.includes.call(i,0," +
+            argument +
+            ")}catch(e){ok=e instanceof " +
+            errorName +
+            "}ok&&closed===1;",
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "includes validates " + argument,
+    );
+}
+{
+    const result = run(
+        "Iterator.prototype.includes.call({next(){return {value:1}}},2,Infinity)",
+        fresh(),
+        1000,
+    );
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "bounded includes with infinite skip",
+    );
+}
 {
     const result = run(
         "Iterator.prototype.toArray.call({next(){return {value:1}}})",

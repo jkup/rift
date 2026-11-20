@@ -13,6 +13,7 @@ import {
     languageFailure,
     normal,
     truthy,
+    sameValueZero,
     UNDEFINED,
     type OperationContext,
     type Value,
@@ -174,6 +175,77 @@ function toArray(receiver: Value, context: OperationContext, loc: Location): Val
     }
 }
 
+// https://tc39.es/proposal-iterator-includes/
+function includes(
+    receiver: Value,
+    args: Value[],
+    context: OperationContext,
+    loc: Location,
+): ValueCompletion {
+    if (receiver.kind !== "object") {
+        return languageFailure(
+            context.realm,
+            "TypeError",
+            "iterator receiver must be an object",
+            loc,
+        );
+    }
+    const record: IteratorRecord = {
+        iterator: receiver.object,
+        nextMethod: UNDEFINED,
+        done: false,
+    };
+    const skipped = args.length > 1 ? args[1] : UNDEFINED;
+    let toSkip = 0;
+    if (skipped.kind !== "undefined") {
+        // This parameter is validated without coercion, before reading next.
+        if (
+            skipped.kind !== "number" ||
+            Number.isNaN(skipped.value) ||
+            (Number.isFinite(skipped.value) && !Number.isInteger(skipped.value))
+        ) {
+            const error = languageFailure(
+                context.realm,
+                "TypeError",
+                "skippedElements must be an integer Number",
+                loc,
+            );
+            return iteratorCloseOnThrow(record, error, context, loc);
+        }
+        toSkip = skipped.value;
+        if (toSkip < 0 || (Number.isFinite(toSkip) && toSkip > 9007199254740991)) {
+            const error = languageFailure(
+                context.realm,
+                "RangeError",
+                "skippedElements is out of range",
+                loc,
+            );
+            return iteratorCloseOnThrow(record, error, context, loc);
+        }
+    }
+    const opened = getIteratorDirect(receiver.object, context, loc);
+    if (opened.type === "throw") {
+        return opened;
+    }
+    const search = args.length > 0 ? args[0] : UNDEFINED;
+    let count = 0;
+    while (true) {
+        const step = iteratorStepValue(opened.value, context, loc);
+        if (step.type === "throw") {
+            return step;
+        }
+        if (step.done) {
+            return normal({ kind: "boolean", value: false });
+        }
+        if (count < toSkip) {
+            count++;
+        } else if (sameValueZero(step.value, search)) {
+            const closed = iteratorCloseNormally(opened.value, context, loc);
+            return closed.type === "throw" ? closed : normal({ kind: "boolean", value: true });
+        }
+    }
+}
+
 export function registerEagerIteratorMethods(realm: Realm): void {
     const methods: PredicateMethod[] = ["forEach", "some", "every", "find"];
     for (const method of methods) {
@@ -186,5 +258,8 @@ export function registerEagerIteratorMethods(realm: Realm): void {
     );
     realm.registerBuiltin(realm.iteratorPrototype, "toArray", 0, (receiver, _args, context, loc) =>
         toArray(receiver, context, loc),
+    );
+    realm.registerBuiltin(realm.iteratorPrototype, "includes", 1, (receiver, args, context, loc) =>
+        includes(receiver, args, context, loc),
     );
 }
