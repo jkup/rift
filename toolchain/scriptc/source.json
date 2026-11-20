@@ -22,6 +22,20 @@
       "integrity": "sha512-pNTo1d/tarCiN40PYbYoREc84NiaPEY6IghWsiE1/cKySdGzqC1Oi9ItHEQRTkEKayuj0eVngOYy+HvNJUAolw==",
       "archiveSha256": "75942b9b33a559275f16578651248093a5d28d482577410844de1b19b7f12715",
       "helperSha256": "f074804b1d87b42117ed45b5f6909219150cbe0d2716b5c238246b104169e3b9"
+    },
+    "macosArm64LLVMHelper": {
+      "name": "@scriptc/llvm-darwin-arm64",
+      "version": "0.4.7",
+      "integrity": "sha512-7ebKccmgGlddOCLfWbNPO27KwyaVswRr45+Faaf9lsZDgSC2jEpJYvcz1izrFITp+MyrhYQb2bZiEivv3RPfvQ==",
+      "archiveSha256": "26be0d728bd01a56bec1d89f3454c3db920f289947dc0614f0029496270a72e1",
+      "helperSha256": "a8da847d9e195edf29037a0b795b5e67c775dcd85a1b747d2ea5eddcb79ef268"
+    },
+    "macosX64LLVMHelper": {
+      "name": "@scriptc/llvm-darwin-x64",
+      "version": "0.4.7",
+      "integrity": "sha512-IqvvyXn4quKxYwHXsY2jk/hyEzmxDw1n2dqkCAQEncKGRuUdlo/6wqlU79EAkwb5c7otPhTXt5XoMUYYG6JPTw==",
+      "archiveSha256": "b4fa1ff8ceb3a38291a55b92c87c14d04cf8c8e454c7def5cc3c126e1a459397",
+      "helperSha256": "4f7a412d30264b8852b0dd482d8ef6923d9c5b169ba45f64f6b98e29838de5f6"
     }
   }
 }

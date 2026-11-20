@@ -1,7 +1,12 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
+
+// Git Bash's GNU tar treats drive letters as remote hosts and cannot create ZIPs.
+// Windows ships bsdtar, which handles both native paths and ZIP archives.
+export const nativeTar =
+    process.platform === "win32" ? join(process.env.SystemRoot, "System32", "tar.exe") : "tar";
 
 export function sha256(bytes) {
     return createHash("sha256").update(bytes).digest("hex");
@@ -47,8 +52,12 @@ export async function downloadVerified(url, destination, expected, integrity) {
 }
 
 export function releaseTarget(platform = process.platform, arch = process.arch) {
-    if (arch !== "x64" || !["linux", "win32"].includes(platform)) {
-        throw new Error(`Native releases support linux-x64 and win32-x64, not ${platform}-${arch}`);
+    const supported =
+        platform === "darwin"
+            ? ["arm64", "x64"].includes(arch)
+            : arch === "x64" && ["linux", "win32"].includes(platform);
+    if (!supported) {
+        throw new Error(`Unsupported native release target: ${platform}-${arch}`);
     }
     return `${platform}-${arch}`;
 }

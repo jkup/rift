@@ -80,8 +80,8 @@ focused Test262 runner and release-tooling regressions. They do not run native
 builds, the complete tooling suite or the full Test262 corpus. Require both statuses in repository
 settings; the workflow does not configure merge protection.
 
-The manually dispatched `Native release` workflow builds Windows x64 and Linux
-x64 packages and creates a draft preview after both pass. See
+The manually dispatched `Native release` workflow builds Windows x64, Linux x64,
+and macOS arm64/x64 packages and creates a draft preview after all four pass. See
 [native releases](docs/native-releases.md) for its checks and validation scope.
 
 Actions are pinned to commits and have read-only repository permissions. When

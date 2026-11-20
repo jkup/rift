@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { test } from "node:test";
 import {
     checkedCommand,
     nativeBuildEnvironment,
+    nativeTar,
     releaseName,
     releaseTarget,
     requireNativeLinker,
@@ -13,6 +17,26 @@ import {
     verifyGlibcBaseline,
 } from "./native-release-support.mjs";
 import { smokeVerdict } from "./native-release-smoke.mjs";
+
+test("release archiver preserves bytes through absolute paths containing spaces", () => {
+    const work = mkdtempSync(join(tmpdir(), "rift archive "));
+    try {
+        const source = join(work, "source");
+        const extracted = join(work, "extracted");
+        mkdirSync(source);
+        mkdirSync(extracted);
+        const bytes = Buffer.from([0, 10, 13, 255, 42]);
+        writeFileSync(join(source, "fixture"), bytes);
+        const windows = process.platform === "win32";
+        const archive = join(work, windows ? "package.zip" : "package.tar.gz");
+        const options = windows ? ["-a", "-cf"] : ["-czf"];
+        checkedCommand(nativeTar, [...options, archive, "-C", source, "fixture"]);
+        checkedCommand(nativeTar, ["-xf", archive, "-C", extracted]);
+        assert.deepEqual(readFileSync(join(extracted, "fixture")), bytes);
+    } finally {
+        rmSync(work, { recursive: true, force: true });
+    }
+});
 
 test("Linux archives reject a host-dependent or unknown glibc requirement", () => {
     assert.deepEqual(verifyGlibcBaseline("Name: GLIBC_2.2.5 Name: GLIBC_2.34 GLIBC_2.34"), [
@@ -75,7 +99,9 @@ test("release names cannot escape output directories or become shell options", (
         assert.throws(() => releaseName(version, "linux-x64"));
     }
     assert.equal(releaseName("v0.1.0-preview.1", "linux-x64"), "rift-v0.1.0-preview.1-linux-x64");
-    assert.throws(() => releaseTarget("darwin", "x64"));
+    assert.equal(releaseTarget("darwin", "x64"), "darwin-x64");
+    assert.equal(releaseTarget("darwin", "arm64"), "darwin-arm64");
+    assert.throws(() => releaseTarget("darwin", "ia32"));
     assert.throws(() => releaseTarget("linux", "arm64"));
     assert.equal(releaseTarget("win32", "x64"), "win32-x64");
 });

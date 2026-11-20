@@ -1,15 +1,16 @@
 # Native release packages
 
-Native packaging targets Windows x64 and Linux x64. The release workflow creates
-a draft preview only after both platforms succeed. Published downloads, when
-available, are on [GitHub Releases](https://github.com/jkup/rift/releases).
-Drafts are visible only to repository collaborators. macOS and ARM packages are
-not provided by this workflow.
+Native packaging targets Windows x64, Linux x64, and macOS Apple Silicon (arm64)
+and Intel (x64). The release workflow creates a draft preview only after all four
+targets succeed. Published downloads are on
+[GitHub Releases](https://github.com/jkup/rift/releases); each release lists its
+available platforms. Drafts are visible only to repository collaborators.
 
 ## Download and run
 
 Choose `rift-<version>-win32-x64.zip` for Windows or
-`rift-<version>-linux-x64.tar.gz` for Linux, and download its `.sha256` file too.
+`rift-<version>-linux-x64.tar.gz` for Linux. macOS archives use `darwin-arm64`
+for Apple Silicon or `darwin-x64` for Intel. Download the matching `.sha256` file too.
 Verify the archive before extracting it:
 
 ```powershell
@@ -31,7 +32,7 @@ open a terminal inside the extracted directory. On Windows:
 .\rift.exe --help
 ```
 
-On Linux:
+On Linux or macOS:
 
 ```sh
 ./rift examples/counter.js
@@ -44,7 +45,10 @@ program prints `42`. Node.js, npm, ScriptC and Zig are not required to run the
 executable. These are unsigned preview binaries. Windows builds target x64;
 Linux packages target glibc 2.34 or later rather than musl (Alpine). The workflow uses Windows
 Server 2022 and Ubuntu 22.04; compatibility with other OS versions is not
-established by those jobs.
+established by those jobs. macOS builds target macOS 14 or later and are tested
+on macOS 15 runners. They are not Developer ID signed or notarized; macOS may
+require approval in Privacy & Security when running a downloaded preview.
+On macOS, verify downloads with `shasum -a 256 -c <archive>.sha256`.
 
 Rift runs scripts, with the [same feature limits](architecture.md#supported-features-and-limits)
 as the Node-hosted interpreter. It does not provide Node or browser APIs.
@@ -93,12 +97,12 @@ unknown version markers. The manifest records the actual requirements.
 ## Maintainer workflow
 
 Run **Native release** in GitHub Actions against the intended source revision,
-with a new version/tag such as `v0.1.0-preview.1`. Both jobs build the pinned patched
+with a new version/tag such as `v0.1.0-preview.1`. All four jobs build the pinned patched
 compiler from source, verify downloaded Zig and LLVM assets, run the Node checks,
 and package their native CLI. Only the final draft job has repository write
 permission; all build jobs use read-only permissions.
 
-After both jobs succeed, inspect the draft's archives and validation reports.
+After all four jobs succeed, inspect the draft's archives and validation reports.
 The workflow marks it as a prerelease and leaves publication to a maintainer.
 The draft job first creates a new tag at the build's exact source commit and
 refuses an existing tag. If uploading the draft fails after tag creation, inspect
@@ -109,4 +113,4 @@ billing/quota.
 The local packaging command produces the same asset layout when hosted runners
 are unavailable. Publish only packages from the same source commit and retain
 their reports and checksums. Avoid presenting a one-platform local build as a
-successful two-platform workflow run.
+successful four-platform workflow run.
