@@ -21,11 +21,19 @@ jobs:
             target: linux-x64
           - os: windows-2022
             target: win32-x64
+          - os: macos-15
+            target: darwin-arm64
+          - os: macos-15-intel
+            target: darwin-x64
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
     env:
       RELEASE_VERSION: ${{ inputs.version }}
     steps:
+      # Preserve repository bytes, including pinned fixtures, on Windows too.
+      - name: Preserve checkout line endings
+        shell: bash
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
@@ -90,9 +98,9 @@ jobs:
         run: |
           sha256sum --check *.sha256
           cat > notes.txt <<'EOF'
-          Native preview for Windows x64 and Linux x64. Download and extract the archive for your platform, then follow README.txt. No Node.js, npm, ScriptC or Zig is needed to run it.
+          Native preview for Windows x64, Linux x64, and macOS (Apple Silicon and Intel). Download and extract the archive for your platform, then follow README.txt. No Node.js, npm, ScriptC or Zig is needed to run it.
 
-          Both packages passed ten compiler probes, static-only compilation, zero-dynamic coverage, and CLI checks against the extracted executable without build tools on PATH. The build jobs also run the Node regression suite. These are not full native guest-suite or Test262 conformance results.
+          All four packages passed ten compiler probes, static-only compilation, zero-dynamic coverage, and CLI checks against the extracted executable without build tools on PATH. The build jobs also run the Node regression suite. These are not full native guest-suite or Test262 conformance results.
 
           Archives include licenses and a source manifest. Separate SHA-256 checksum files and validation reports accompany each archive. Binaries are unsigned. See docs/native-releases.md in the source repository for verification and platform details.
           EOF

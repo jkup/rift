@@ -16,6 +16,19 @@ for supported JavaScript features and known gaps.
 
 ## Try Rift
 
+Download a native preview and run it without installing Node.js or build tools:
+
+| Platform | Download |
+| --- | --- |
+| Windows x64 | [ZIP](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.1/rift-native-preview-2026-11-20.1-win32-x64.zip) |
+| Linux x64 (glibc 2.34+) | [tar.gz](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.1/rift-native-preview-2026-11-20.1-linux-x64.tar.gz) |
+
+See [download verification and run instructions](docs/native-releases.md), or
+[all releases and checksums](https://github.com/jkup/rift/releases). These are
+unsigned preview binaries.
+
+### Run from source
+
 Install Git and Node.js 24 or later, then run these commands in your terminal
 (PowerShell on Windows, or a shell on macOS/Linux):
 
@@ -65,8 +78,8 @@ In both cases, Rift parses and interprets your program. ScriptC compiles the
 interpreter itself; it does not compile the JavaScript files you give Rift.
 
 The Node route above is all you need to explore Rift. See
-[native release packages](docs/native-releases.md) for downloadable previews,
-when available, and checksum verification. Building native executables from source
+[native release packages](docs/native-releases.md) for downloadable previews
+and checksum verification. Building native executables from source
 requires a specific, patched ScriptC compiler and Zig; the
 [native setup guide](docs/usage.md#native-builds-optional) covers that separate
 developer setup.

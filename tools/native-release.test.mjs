@@ -75,7 +75,9 @@ test("release names cannot escape output directories or become shell options", (
         assert.throws(() => releaseName(version, "linux-x64"));
     }
     assert.equal(releaseName("v0.1.0-preview.1", "linux-x64"), "rift-v0.1.0-preview.1-linux-x64");
-    assert.throws(() => releaseTarget("darwin", "x64"));
+    assert.equal(releaseTarget("darwin", "x64"), "darwin-x64");
+    assert.equal(releaseTarget("darwin", "arm64"), "darwin-arm64");
+    assert.throws(() => releaseTarget("darwin", "ia32"));
     assert.throws(() => releaseTarget("linux", "arm64"));
     assert.equal(releaseTarget("win32", "x64"), "win32-x64");
 });

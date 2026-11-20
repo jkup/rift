@@ -54,8 +54,13 @@ async function installZig() {
 }
 
 async function installHelper(source) {
-    const windows = process.platform === "win32";
-    const helper = pin.buildDependencies[windows ? "windowsLLVMHelper" : "linuxLLVMHelper"];
+    const helpers = {
+        "win32-x64": "windowsLLVMHelper",
+        "linux-x64": "linuxLLVMHelper",
+        "darwin-arm64": "macosArm64LLVMHelper",
+        "darwin-x64": "macosX64LLVMHelper",
+    };
+    const helper = pin.buildDependencies[helpers[target]];
     const packageName = helper.name.slice("@scriptc/".length);
     const archive = join(work, "llvm.tgz");
     await downloadVerified(
@@ -104,7 +109,13 @@ const pnpm = [npm, "exec", "--yes", `--package=pnpm@${pin.buildDependencies.pnpm
 run(process.execPath, [...pnpm, "install", "--frozen-lockfile"], source);
 run(process.execPath, [...pnpm, "-r", "--filter", "./packages/*", "run", "build"], source);
 await installHelper(source);
-const runtime = process.platform === "win32" ? "win32-x64-msvc" : "linux-x64-gnu";
+const runtimes = {
+    "win32-x64": "win32-x64-msvc",
+    "linux-x64": "linux-x64-gnu",
+    "darwin-arm64": "darwin-arm64",
+    "darwin-x64": "darwin-x64",
+};
+const runtime = runtimes[target];
 run(process.execPath, [`packages/runtime-${runtime}/scripts/build.mjs`], source);
 run(process.execPath, [`packages/runtime-${runtime}/scripts/verify.mjs`], source);
 run(

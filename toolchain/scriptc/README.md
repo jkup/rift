@@ -22,6 +22,8 @@ npm run setup:native -- /path/to/scriptc
 Linux also requires Clang and system C development tools. On Ubuntu, install them
 first with `sudo apt-get install clang build-essential`. The helper checks for
 Clang before starting downloads or builds. Windows uses the downloaded Zig linker.
+macOS setup supports Apple Silicon and Intel and requires Xcode Command Line Tools
+(`xcode-select --install`). Hosted release builds use macOS 15 runners.
 
 The helper verifies the source tree and patch using `prepare.mjs`, downloads
 hash-pinned Zig and LLVM packages, installs the pinned pnpm version through npm,
@@ -67,7 +69,8 @@ pnpm -r --filter './packages/*' run build
 
 Install the published LLVM helper identified in `source.json`. Verify its archive
 integrity and executable hash, then put its `bin` directory under
-`packages/llvm-<target>/`. Use `linux-x64-gnu` or `win32-x64-msvc` for `<target>`.
+`packages/llvm-<target>/`. Use `linux-x64-gnu`, `win32-x64-msvc`, `darwin-arm64`,
+or `darwin-x64` for `<target>`.
 This reuses the unchanged LLVM helper; the patched native runtime must be rebuilt.
 
 With Zig 0.16.0 on PATH, run from the prepared source directory:

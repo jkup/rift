@@ -47,8 +47,12 @@ export async function downloadVerified(url, destination, expected, integrity) {
 }
 
 export function releaseTarget(platform = process.platform, arch = process.arch) {
-    if (arch !== "x64" || !["linux", "win32"].includes(platform)) {
-        throw new Error(`Native releases support linux-x64 and win32-x64, not ${platform}-${arch}`);
+    const supported =
+        platform === "darwin"
+            ? ["arm64", "x64"].includes(arch)
+            : arch === "x64" && ["linux", "win32"].includes(platform);
+    if (!supported) {
+        throw new Error(`Unsupported native release target: ${platform}-${arch}`);
     }
     return `${platform}-${arch}`;
 }
