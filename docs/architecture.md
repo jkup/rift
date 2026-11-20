@@ -55,21 +55,24 @@ For a small builtin, read
 
 ## Supported features and limits
 
-Rift supports strict and sloppy scripts, lexical scopes, loops, exceptions,
-destructuring, spread, optional chaining, functions, closures and bounded eval
-and Function construction. Classes include inheritance, private fields and
-methods, static blocks, super and new.target. Generators, async functions,
-async generators and for-await-of are implemented.
+Rift implements the areas below, with incomplete ECMAScript conformance. See the
+[Test262 results by API and language area](test262.md) for measured passes and gaps.
+“Implemented” describes available functionality, not a claim that every test passes.
 
-Builtins include ordinary objects, arrays, Number, BigInt, strings, symbols,
-Map, Set, iterators, JSON, Reflect, Date and ISO-calendar Temporal operations.
-RegExp supports Unicode mode, property escapes, backreferences, lookaround and
-scoped modifiers. Date defaults to UTC; callers can select a pinned IANA zone.
-WeakMap and WeakSet use the patched native compiler's typed weak storage.
+| Area | Availability | Scope and limits |
+| --- | --- | --- |
+| Scripts and functions | Implemented | Strict/sloppy scripts, lexical scopes, loops, exceptions, destructuring, spread, optional chaining, closures, bounded eval and Function construction. |
+| Classes | Implemented | Inheritance, private fields/methods, static blocks, super and new.target. |
+| Generators and async | Implemented; async Test262 profile skipped | Generators, async functions, async generators and for-await-of. The corpus runner does not provide Test262 async completion or agents. |
+| Core builtins | Implemented | Objects, arrays, Number, BigInt, strings, symbols, Map, Set, iterators, JSON and Reflect. |
+| Date and Temporal | Implemented within scope | Date defaults to UTC with selectable pinned IANA zones; Temporal supports ISO-calendar operations. |
+| RegExp | Partial | Unicode mode, property escapes, backreferences, lookaround and scoped modifiers; no Unicode sets. |
+| WeakMap and WeakSet | Partial | Patched native compiler typed weak storage; no weak symbol keys. |
+| Modules and Intl | Unsupported | Explicitly skipped by the corpus runner. |
+| WeakRef and FinalizationRegistry | Unsupported | Explicit feature skips in the corpus runner. |
+| Shared memory and Atomics | Unsupported | Explicit feature skips; no agent/shared-memory services. |
+| Browser and Node host APIs | Unavailable to guests | No DOM, browser event loop, filesystem, network or Node API. |
 
-This is incomplete ECMAScript support. Modules, Intl, RegExp Unicode sets,
-WeakRef, FinalizationRegistry and weak symbol keys are unsupported. There is no
-DOM, browser event loop, filesystem, network or Node API available to guests.
 Source size, recursion, execution steps and some operations have explicit limits.
 An unsupported operation or resource stop is distinct from a guest exception.
 

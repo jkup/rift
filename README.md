@@ -13,6 +13,8 @@ source runs under Node.js or compiles to a native executable with ScriptC.
 
 Rift is a work in progress. See [supported features and limits](docs/architecture.md#supported-features-and-limits)
 for supported JavaScript features and known gaps.
+The [Test262 support tables](docs/test262.md) show measured results by API and
+language area, including failures, skips and execution limits.
 
 ## Try Rift
 

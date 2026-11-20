@@ -1,0 +1,1948 @@
+{
+  "date": "2026-11-20",
+  "riftRevision": "2c1bb3dbe60102035bb3a848fecfe27565452e40",
+  "corpusRevision": "2e58f87d8350ad51224617a041c6e041d52f8444",
+  "reportSha256": "a01b28b0ea58b9c93d95e84ab4bd2e192818abc67532206a57401a7fecb9e21d",
+  "selectionSha256": "d0b9688722639a8c11dadcbac943da928e3cd7b91819efbb286ca72f340e80ce",
+  "environment": {
+    "os": "Windows 11 x64 (10.0.26200)",
+    "cpu": "Intel Core i7-13700K",
+    "logicalCPUs": 24,
+    "node": "v26.13.0"
+  },
+  "command": "npm run test262",
+  "jobs": 8,
+  "limits": {
+    "sourceUnits": 100000,
+    "parseDepth": 128,
+    "steps": 100000,
+    "calls": 64,
+    "evaluationDepth": 256,
+    "wallMs": 10000,
+    "outputBytes": 1048576
+  },
+  "policy": {
+    "features": {
+      "SharedArrayBuffer": "shared memory is not implemented",
+      "Atomics": "agent and shared-memory services are not implemented",
+      "WeakRef": "weak-reference host jobs are not implemented",
+      "FinalizationRegistry": "finalization host jobs are not implemented",
+      "IsHTMLDDA": "the host does not provide IsHTMLDDA"
+    }
+  },
+  "timing": {
+    "totalMs": 1091802.0301,
+    "buildMs": 51259.60539999999,
+    "executionMs": 992390.8640999999
+  },
+  "discoveredFiles": 53795,
+  "selectedFiles": 53795,
+  "knownVariants": 103352,
+  "unknownVariantFiles": 0,
+  "counts": {
+    "skip": 21413,
+    "pass": 62209,
+    "unsupported": 8164,
+    "resource-limit": 1172,
+    "fail": 6468,
+    "harness-error": 3902,
+    "crash": 24
+  },
+  "exitCode": 2,
+  "skips": {
+    "feature:IsHTMLDDA: the host does not provide IsHTMLDDA": 82,
+    "profile:test262-host-services": 1635,
+    "profile:async": 10815,
+    "profile:module": 843,
+    "feature:SharedArrayBuffer: shared memory is not implemented": 480,
+    "feature:Atomics: agent and shared-memory services are not implemented": 588,
+    "profile:CanBlockIsFalse": 4,
+    "profile:CanBlockIsTrue": 14,
+    "feature:FinalizationRegistry: finalization host jobs are not implemented": 96,
+    "feature:WeakRef: weak-reference host jobs are not implemented": 68,
+    "profile:Intl": 6788
+  },
+  "groups": [
+    {
+      "area": "annexB/built-ins",
+      "total": 482,
+      "counts": {
+        "skip": 32,
+        "pass": 348,
+        "unsupported": 12,
+        "resource-limit": 6,
+        "fail": 84
+      }
+    },
+    {
+      "area": "annexB/language",
+      "total": 895,
+      "counts": {
+        "unsupported": 42,
+        "pass": 780,
+        "skip": 71,
+        "fail": 2
+      }
+    },
+    {
+      "area": "built-ins/AbstractModuleSource",
+      "total": 8,
+      "counts": {
+        "skip": 8
+      }
+    },
+    {
+      "area": "built-ins/AggregateError",
+      "total": 50,
+      "counts": {
+        "pass": 44,
+        "fail": 4,
+        "skip": 2
+      }
+    },
+    {
+      "area": "built-ins/Array",
+      "total": 6119,
+      "counts": {
+        "pass": 5645,
+        "fail": 84,
+        "skip": 208,
+        "harness-error": 164,
+        "resource-limit": 18
+      }
+    },
+    {
+      "area": "built-ins/ArrayBuffer",
+      "total": 442,
+      "counts": {
+        "fail": 376,
+        "harness-error": 10,
+        "skip": 56
+      }
+    },
+    {
+      "area": "built-ins/ArrayIteratorPrototype",
+      "total": 46,
+      "counts": {
+        "pass": 26,
+        "fail": 18,
+        "skip": 2
+      }
+    },
+    {
+      "area": "built-ins/AsyncDisposableStack",
+      "total": 208,
+      "counts": {
+        "fail": 148,
+        "skip": 60
+      }
+    },
+    {
+      "area": "built-ins/AsyncFromSyncIteratorPrototype",
+      "total": 76,
+      "counts": {
+        "skip": 74,
+        "pass": 2
+      }
+    },
+    {
+      "area": "built-ins/AsyncFunction",
+      "total": 36,
+      "counts": {
+        "pass": 34,
+        "skip": 2
+      }
+    },
+    {
+      "area": "built-ins/AsyncGeneratorFunction",
+      "total": 46,
+      "counts": {
+        "pass": 30,
+        "skip": 16
+      }
+    },
+    {
+      "area": "built-ins/AsyncGeneratorPrototype",
+      "total": 96,
+      "counts": {
+        "pass": 26,
+        "skip": 70
+      }
+    },
+    {
+      "area": "built-ins/AsyncIteratorPrototype",
+      "total": 26,
+      "counts": {
+        "skip": 8,
+        "fail": 10,
+        "pass": 8
+      }
+    },
+    {
+      "area": "built-ins/Atomics",
+      "total": 778,
+      "counts": {
+        "skip": 768,
+        "fail": 10
+      }
+    },
+    {
+      "area": "built-ins/BigInt",
+      "total": 154,
+      "counts": {
+        "resource-limit": 4,
+        "pass": 144,
+        "fail": 4,
+        "skip": 2
+      }
+    },
+    {
+      "area": "built-ins/Boolean",
+      "total": 101,
+      "counts": {
+        "pass": 99,
+        "skip": 2
+      }
+    },
+    {
+      "area": "built-ins/DataView",
+      "total": 1120,
+      "counts": {
+        "skip": 236,
+        "fail": 884
+      }
+    },
+    {
+      "area": "built-ins/Date",
+      "total": 1220,
+      "counts": {
+        "pass": 1214,
+        "skip": 6
+      }
+    },
+    {
+      "area": "built-ins/decodeURI",
+      "total": 110,
+      "counts": {
+        "resource-limit": 32,
+        "pass": 78
+      }
+    },
+    {
+      "area": "built-ins/decodeURIComponent",
+      "total": 112,
+      "counts": {
+        "resource-limit": 32,
+        "pass": 80
+      }
+    },
+    {
+      "area": "built-ins/DisposableStack",
+      "total": 186,
+      "counts": {
+        "fail": 184,
+        "skip": 2
+      }
+    },
+    {
+      "area": "built-ins/encodeURI",
+      "total": 62,
+      "counts": {
+        "pass": 48,
+        "resource-limit": 14
+      }
+    },
+    {
+      "area": "built-ins/encodeURIComponent",
+      "total": 62,
+      "counts": {
+        "pass": 50,
+        "resource-limit": 12
+      }
+    },
+    {
+      "area": "built-ins/Error",
+      "total": 186,
+      "counts": {
+        "fail": 66,
+        "pass": 110,
+        "skip": 10
+      }
+    },
+    {
+      "area": "built-ins/eval",
+      "total": 20,
+      "counts": {
+        "pass": 20
+      }
+    },
+    {
+      "area": "built-ins/FinalizationRegistry",
+      "total": 94,
+      "counts": {
+        "skip": 94
+      }
+    },
+    {
+      "area": "built-ins/Function",
+      "total": 893,
+      "counts": {
+        "pass": 795,
+        "unsupported": 17,
+        "fail": 51,
+        "skip": 26,
+        "harness-error": 2,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "built-ins/GeneratorFunction",
+      "total": 46,
+      "counts": {
+        "pass": 40,
+        "unsupported": 2,
+        "skip": 4
+      }
+    },
+    {
+      "area": "built-ins/GeneratorPrototype",
+      "total": 122,
+      "counts": {
+        "pass": 122
+      }
+    },
+    {
+      "area": "built-ins/global",
+      "total": 56,
+      "counts": {
+        "pass": 56
+      }
+    },
+    {
+      "area": "built-ins/Infinity",
+      "total": 10,
+      "counts": {
+        "pass": 10
+      }
+    },
+    {
+      "area": "built-ins/isFinite",
+      "total": 30,
+      "counts": {
+        "pass": 30
+      }
+    },
+    {
+      "area": "built-ins/isNaN",
+      "total": 30,
+      "counts": {
+        "pass": 30
+      }
+    },
+    {
+      "area": "built-ins/Iterator",
+      "total": 1368,
+      "counts": {
+        "fail": 1330,
+        "skip": 2,
+        "pass": 36
+      }
+    },
+    {
+      "area": "built-ins/JSON",
+      "total": 332,
+      "counts": {
+        "pass": 250,
+        "fail": 78,
+        "skip": 4
+      }
+    },
+    {
+      "area": "built-ins/Map",
+      "total": 405,
+      "counts": {
+        "pass": 401,
+        "skip": 4
+      }
+    },
+    {
+      "area": "built-ins/MapIteratorPrototype",
+      "total": 22,
+      "counts": {
+        "pass": 22
+      }
+    },
+    {
+      "area": "built-ins/Math",
+      "total": 654,
+      "counts": {
+        "pass": 618,
+        "resource-limit": 6,
+        "fail": 30
+      }
+    },
+    {
+      "area": "built-ins/NaN",
+      "total": 10,
+      "counts": {
+        "pass": 10
+      }
+    },
+    {
+      "area": "built-ins/NativeErrors",
+      "total": 188,
+      "counts": {
+        "pass": 176,
+        "skip": 12
+      }
+    },
+    {
+      "area": "built-ins/Number",
+      "total": 680,
+      "counts": {
+        "pass": 676,
+        "skip": 2,
+        "fail": 2
+      }
+    },
+    {
+      "area": "built-ins/Object",
+      "total": 6802,
+      "counts": {
+        "pass": 6520,
+        "fail": 264,
+        "harness-error": 10,
+        "skip": 8
+      }
+    },
+    {
+      "area": "built-ins/parseFloat",
+      "total": 108,
+      "counts": {
+        "pass": 106,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "built-ins/parseInt",
+      "total": 110,
+      "counts": {
+        "pass": 104,
+        "resource-limit": 6
+      }
+    },
+    {
+      "area": "built-ins/Promise",
+      "total": 1458,
+      "counts": {
+        "pass": 546,
+        "skip": 828,
+        "fail": 84
+      }
+    },
+    {
+      "area": "built-ins/Proxy",
+      "total": 607,
+      "counts": {
+        "skip": 74,
+        "fail": 524,
+        "unsupported": 9
+      }
+    },
+    {
+      "area": "built-ins/Reflect",
+      "total": 306,
+      "counts": {
+        "pass": 286,
+        "fail": 20
+      }
+    },
+    {
+      "area": "built-ins/RegExp",
+      "total": 3756,
+      "counts": {
+        "pass": 2440,
+        "unsupported": 358,
+        "harness-error": 4,
+        "resource-limit": 890,
+        "skip": 24,
+        "fail": 40
+      }
+    },
+    {
+      "area": "built-ins/RegExpStringIteratorPrototype",
+      "total": 34,
+      "counts": {
+        "pass": 34
+      }
+    },
+    {
+      "area": "built-ins/Set",
+      "total": 764,
+      "counts": {
+        "pass": 458,
+        "skip": 4,
+        "fail": 302
+      }
+    },
+    {
+      "area": "built-ins/SetIteratorPrototype",
+      "total": 22,
+      "counts": {
+        "pass": 22
+      }
+    },
+    {
+      "area": "built-ins/ShadowRealm",
+      "total": 124,
+      "counts": {
+        "fail": 114,
+        "skip": 10
+      }
+    },
+    {
+      "area": "built-ins/SharedArrayBuffer",
+      "total": 208,
+      "counts": {
+        "skip": 208
+      }
+    },
+    {
+      "area": "built-ins/String",
+      "total": 2443,
+      "counts": {
+        "pass": 2376,
+        "unsupported": 13,
+        "skip": 6,
+        "fail": 46,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "built-ins/StringIteratorPrototype",
+      "total": 14,
+      "counts": {
+        "pass": 14
+      }
+    },
+    {
+      "area": "built-ins/SuppressedError",
+      "total": 44,
+      "counts": {
+        "fail": 42,
+        "skip": 2
+      }
+    },
+    {
+      "area": "built-ins/Symbol",
+      "total": 192,
+      "counts": {
+        "skip": 34,
+        "pass": 156,
+        "fail": 2
+      }
+    },
+    {
+      "area": "built-ins/Temporal",
+      "total": 9232,
+      "counts": {
+        "pass": 8938,
+        "fail": 276,
+        "resource-limit": 18
+      }
+    },
+    {
+      "area": "built-ins/ThrowTypeError",
+      "total": 28,
+      "counts": {
+        "skip": 2,
+        "pass": 24,
+        "fail": 2
+      }
+    },
+    {
+      "area": "built-ins/TypedArray",
+      "total": 2890,
+      "counts": {
+        "harness-error": 2578,
+        "skip": 280,
+        "fail": 32
+      }
+    },
+    {
+      "area": "built-ins/TypedArrayConstructors",
+      "total": 1446,
+      "counts": {
+        "fail": 222,
+        "harness-error": 970,
+        "skip": 254
+      }
+    },
+    {
+      "area": "built-ins/Uint8Array",
+      "total": 140,
+      "counts": {
+        "fail": 124,
+        "skip": 8,
+        "harness-error": 8
+      }
+    },
+    {
+      "area": "built-ins/undefined",
+      "total": 12,
+      "counts": {
+        "pass": 12
+      }
+    },
+    {
+      "area": "built-ins/WeakMap",
+      "total": 281,
+      "counts": {
+        "pass": 246,
+        "harness-error": 33,
+        "skip": 2
+      }
+    },
+    {
+      "area": "built-ins/WeakRef",
+      "total": 58,
+      "counts": {
+        "skip": 58
+      }
+    },
+    {
+      "area": "built-ins/WeakSet",
+      "total": 170,
+      "counts": {
+        "pass": 154,
+        "harness-error": 14,
+        "skip": 2
+      }
+    },
+    {
+      "area": "harness",
+      "total": 234,
+      "counts": {
+        "pass": 178,
+        "skip": 48,
+        "resource-limit": 2,
+        "harness-error": 6
+      }
+    },
+    {
+      "area": "intl402",
+      "total": 44,
+      "counts": {
+        "skip": 44
+      }
+    },
+    {
+      "area": "intl402/Array",
+      "total": 4,
+      "counts": {
+        "skip": 4
+      }
+    },
+    {
+      "area": "intl402/BigInt",
+      "total": 22,
+      "counts": {
+        "skip": 22
+      }
+    },
+    {
+      "area": "intl402/Collator",
+      "total": 130,
+      "counts": {
+        "skip": 130
+      }
+    },
+    {
+      "area": "intl402/Date",
+      "total": 24,
+      "counts": {
+        "skip": 24
+      }
+    },
+    {
+      "area": "intl402/DateTimeFormat",
+      "total": 492,
+      "counts": {
+        "skip": 492
+      }
+    },
+    {
+      "area": "intl402/DisplayNames",
+      "total": 114,
+      "counts": {
+        "skip": 114
+      }
+    },
+    {
+      "area": "intl402/DurationFormat",
+      "total": 220,
+      "counts": {
+        "skip": 220
+      }
+    },
+    {
+      "area": "intl402/FallbackSymbol",
+      "total": 4,
+      "counts": {
+        "skip": 4
+      }
+    },
+    {
+      "area": "intl402/Intl",
+      "total": 132,
+      "counts": {
+        "skip": 132
+      }
+    },
+    {
+      "area": "intl402/ListFormat",
+      "total": 162,
+      "counts": {
+        "skip": 162
+      }
+    },
+    {
+      "area": "intl402/Locale",
+      "total": 380,
+      "counts": {
+        "skip": 380
+      }
+    },
+    {
+      "area": "intl402/Number",
+      "total": 14,
+      "counts": {
+        "skip": 14
+      }
+    },
+    {
+      "area": "intl402/NumberFormat",
+      "total": 502,
+      "counts": {
+        "skip": 502
+      }
+    },
+    {
+      "area": "intl402/PluralRules",
+      "total": 106,
+      "counts": {
+        "skip": 106
+      }
+    },
+    {
+      "area": "intl402/RelativeTimeFormat",
+      "total": 160,
+      "counts": {
+        "skip": 160
+      }
+    },
+    {
+      "area": "intl402/Segmenter",
+      "total": 158,
+      "counts": {
+        "skip": 158
+      }
+    },
+    {
+      "area": "intl402/String",
+      "total": 38,
+      "counts": {
+        "skip": 38
+      }
+    },
+    {
+      "area": "intl402/Temporal",
+      "total": 4080,
+      "counts": {
+        "skip": 4080
+      }
+    },
+    {
+      "area": "intl402/TypedArray",
+      "total": 2,
+      "counts": {
+        "skip": 2
+      }
+    },
+    {
+      "area": "language/arguments-object",
+      "total": 460,
+      "counts": {
+        "unsupported": 3,
+        "pass": 335,
+        "fail": 2,
+        "skip": 120
+      }
+    },
+    {
+      "area": "language/asi",
+      "total": 204,
+      "counts": {
+        "unsupported": 70,
+        "pass": 134
+      }
+    },
+    {
+      "area": "language/block-scope",
+      "total": 287,
+      "counts": {
+        "pass": 102,
+        "unsupported": 185
+      }
+    },
+    {
+      "area": "language/comments",
+      "total": 81,
+      "counts": {
+        "pass": 30,
+        "unsupported": 46,
+        "resource-limit": 4,
+        "skip": 1
+      }
+    },
+    {
+      "area": "language/computed-property-names",
+      "total": 96,
+      "counts": {
+        "pass": 96
+      }
+    },
+    {
+      "area": "language/destructuring",
+      "total": 37,
+      "counts": {
+        "pass": 34,
+        "unsupported": 1,
+        "harness-error": 2
+      }
+    },
+    {
+      "area": "language/directive-prologue",
+      "total": 62,
+      "counts": {
+        "pass": 60,
+        "unsupported": 2
+      }
+    },
+    {
+      "area": "language/eval-code",
+      "total": 454,
+      "counts": {
+        "fail": 136,
+        "pass": 212,
+        "skip": 54,
+        "unsupported": 51,
+        "crash": 1
+      }
+    },
+    {
+      "area": "language/export",
+      "total": 3,
+      "counts": {
+        "skip": 3
+      }
+    },
+    {
+      "area": "language/expressions",
+      "total": 1,
+      "counts": {
+        "resource-limit": 1
+      }
+    },
+    {
+      "area": "language/expressions/addition",
+      "total": 95,
+      "counts": {
+        "pass": 95
+      }
+    },
+    {
+      "area": "language/expressions/array",
+      "total": 104,
+      "counts": {
+        "pass": 104
+      }
+    },
+    {
+      "area": "language/expressions/arrow-function",
+      "total": 643,
+      "counts": {
+        "pass": 481,
+        "unsupported": 161,
+        "fail": 1
+      }
+    },
+    {
+      "area": "language/expressions/assignment",
+      "total": 850,
+      "counts": {
+        "pass": 716,
+        "unsupported": 134
+      }
+    },
+    {
+      "area": "language/expressions/assignmenttargettype",
+      "total": 627,
+      "counts": {
+        "unsupported": 604,
+        "skip": 6,
+        "pass": 17
+      }
+    },
+    {
+      "area": "language/expressions/async-arrow-function",
+      "total": 110,
+      "counts": {
+        "unsupported": 56,
+        "skip": 46,
+        "pass": 8
+      }
+    },
+    {
+      "area": "language/expressions/async-function",
+      "total": 161,
+      "counts": {
+        "unsupported": 67,
+        "pass": 6,
+        "skip": 88
+      }
+    },
+    {
+      "area": "language/expressions/async-generator",
+      "total": 1212,
+      "counts": {
+        "unsupported": 112,
+        "pass": 230,
+        "skip": 868,
+        "fail": 2
+      }
+    },
+    {
+      "area": "language/expressions/await",
+      "total": 44,
+      "counts": {
+        "skip": 26,
+        "pass": 12,
+        "unsupported": 6
+      }
+    },
+    {
+      "area": "language/expressions/bitwise-and",
+      "total": 59,
+      "counts": {
+        "pass": 59
+      }
+    },
+    {
+      "area": "language/expressions/bitwise-not",
+      "total": 32,
+      "counts": {
+        "pass": 32
+      }
+    },
+    {
+      "area": "language/expressions/bitwise-or",
+      "total": 59,
+      "counts": {
+        "pass": 59
+      }
+    },
+    {
+      "area": "language/expressions/bitwise-xor",
+      "total": 59,
+      "counts": {
+        "pass": 59
+      }
+    },
+    {
+      "area": "language/expressions/call",
+      "total": 171,
+      "counts": {
+        "pass": 159,
+        "unsupported": 6,
+        "skip": 1,
+        "resource-limit": 5
+      }
+    },
+    {
+      "area": "language/expressions/class",
+      "total": 8127,
+      "counts": {
+        "pass": 4972,
+        "unsupported": 939,
+        "skip": 2176,
+        "crash": 2,
+        "fail": 38
+      }
+    },
+    {
+      "area": "language/expressions/coalesce",
+      "total": 46,
+      "counts": {
+        "pass": 36,
+        "unsupported": 8,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "language/expressions/comma",
+      "total": 11,
+      "counts": {
+        "pass": 10,
+        "resource-limit": 1
+      }
+    },
+    {
+      "area": "language/expressions/compound-assignment",
+      "total": 788,
+      "counts": {
+        "pass": 721,
+        "unsupported": 67
+      }
+    },
+    {
+      "area": "language/expressions/concatenation",
+      "total": 10,
+      "counts": {
+        "pass": 10
+      }
+    },
+    {
+      "area": "language/expressions/conditional",
+      "total": 42,
+      "counts": {
+        "pass": 36,
+        "unsupported": 4,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "language/expressions/delete",
+      "total": 103,
+      "counts": {
+        "pass": 99,
+        "unsupported": 4
+      }
+    },
+    {
+      "area": "language/expressions/division",
+      "total": 89,
+      "counts": {
+        "pass": 87,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "language/expressions/does-not-equals",
+      "total": 75,
+      "counts": {
+        "pass": 75
+      }
+    },
+    {
+      "area": "language/expressions/dynamic-import",
+      "total": 1900,
+      "counts": {
+        "unsupported": 1099,
+        "skip": 801
+      }
+    },
+    {
+      "area": "language/expressions/equals",
+      "total": 93,
+      "counts": {
+        "pass": 93
+      }
+    },
+    {
+      "area": "language/expressions/exponentiation",
+      "total": 88,
+      "counts": {
+        "pass": 74,
+        "unsupported": 14
+      }
+    },
+    {
+      "area": "language/expressions/function",
+      "total": 484,
+      "counts": {
+        "pass": 422,
+        "unsupported": 61,
+        "fail": 1
+      }
+    },
+    {
+      "area": "language/expressions/generators",
+      "total": 546,
+      "counts": {
+        "pass": 462,
+        "unsupported": 81,
+        "skip": 2,
+        "fail": 1
+      }
+    },
+    {
+      "area": "language/expressions/greater-than",
+      "total": 97,
+      "counts": {
+        "pass": 97
+      }
+    },
+    {
+      "area": "language/expressions/greater-than-or-equal",
+      "total": 85,
+      "counts": {
+        "pass": 85
+      }
+    },
+    {
+      "area": "language/expressions/grouping",
+      "total": 16,
+      "counts": {
+        "pass": 16
+      }
+    },
+    {
+      "area": "language/expressions/import.meta",
+      "total": 27,
+      "counts": {
+        "skip": 17,
+        "unsupported": 10
+      }
+    },
+    {
+      "area": "language/expressions/in",
+      "total": 69,
+      "counts": {
+        "pass": 57,
+        "unsupported": 10,
+        "skip": 2
+      }
+    },
+    {
+      "area": "language/expressions/instanceof",
+      "total": 85,
+      "counts": {
+        "pass": 85
+      }
+    },
+    {
+      "area": "language/expressions/left-shift",
+      "total": 89,
+      "counts": {
+        "pass": 89
+      }
+    },
+    {
+      "area": "language/expressions/less-than",
+      "total": 89,
+      "counts": {
+        "pass": 89
+      }
+    },
+    {
+      "area": "language/expressions/less-than-or-equal",
+      "total": 93,
+      "counts": {
+        "pass": 93
+      }
+    },
+    {
+      "area": "language/expressions/logical-and",
+      "total": 34,
+      "counts": {
+        "pass": 33,
+        "resource-limit": 1
+      }
+    },
+    {
+      "area": "language/expressions/logical-assignment",
+      "total": 138,
+      "counts": {
+        "pass": 126,
+        "unsupported": 12
+      }
+    },
+    {
+      "area": "language/expressions/logical-not",
+      "total": 38,
+      "counts": {
+        "pass": 38
+      }
+    },
+    {
+      "area": "language/expressions/logical-or",
+      "total": 34,
+      "counts": {
+        "pass": 33,
+        "resource-limit": 1
+      }
+    },
+    {
+      "area": "language/expressions/member-expression",
+      "total": 2,
+      "counts": {
+        "pass": 2
+      }
+    },
+    {
+      "area": "language/expressions/modulus",
+      "total": 79,
+      "counts": {
+        "pass": 77,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "language/expressions/multiplication",
+      "total": 79,
+      "counts": {
+        "pass": 77,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "language/expressions/new",
+      "total": 118,
+      "counts": {
+        "pass": 108,
+        "unsupported": 8,
+        "skip": 2
+      }
+    },
+    {
+      "area": "language/expressions/new.target",
+      "total": 28,
+      "counts": {
+        "pass": 22,
+        "unsupported": 4,
+        "skip": 2
+      }
+    },
+    {
+      "area": "language/expressions/object",
+      "total": 2252,
+      "counts": {
+        "pass": 1502,
+        "unsupported": 277,
+        "skip": 458,
+        "fail": 15
+      }
+    },
+    {
+      "area": "language/expressions/optional-chaining",
+      "total": 76,
+      "counts": {
+        "unsupported": 24,
+        "pass": 40,
+        "skip": 12
+      }
+    },
+    {
+      "area": "language/expressions/postfix-decrement",
+      "total": 65,
+      "counts": {
+        "pass": 43,
+        "unsupported": 22
+      }
+    },
+    {
+      "area": "language/expressions/postfix-increment",
+      "total": 66,
+      "counts": {
+        "unsupported": 23,
+        "pass": 43
+      }
+    },
+    {
+      "area": "language/expressions/prefix-decrement",
+      "total": 58,
+      "counts": {
+        "unsupported": 15,
+        "pass": 43
+      }
+    },
+    {
+      "area": "language/expressions/prefix-increment",
+      "total": 57,
+      "counts": {
+        "pass": 43,
+        "unsupported": 14
+      }
+    },
+    {
+      "area": "language/expressions/property-accessors",
+      "total": 42,
+      "counts": {
+        "pass": 40,
+        "unsupported": 2
+      }
+    },
+    {
+      "area": "language/expressions/relational",
+      "total": 2,
+      "counts": {
+        "pass": 2
+      }
+    },
+    {
+      "area": "language/expressions/right-shift",
+      "total": 73,
+      "counts": {
+        "pass": 73
+      }
+    },
+    {
+      "area": "language/expressions/strict-does-not-equals",
+      "total": 59,
+      "counts": {
+        "pass": 59
+      }
+    },
+    {
+      "area": "language/expressions/strict-equals",
+      "total": 59,
+      "counts": {
+        "pass": 59
+      }
+    },
+    {
+      "area": "language/expressions/subtraction",
+      "total": 75,
+      "counts": {
+        "pass": 75
+      }
+    },
+    {
+      "area": "language/expressions/super",
+      "total": 184,
+      "counts": {
+        "pass": 182,
+        "skip": 2
+      }
+    },
+    {
+      "area": "language/expressions/tagged-template",
+      "total": 48,
+      "counts": {
+        "pass": 44,
+        "skip": 2,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "language/expressions/template-literal",
+      "total": 114,
+      "counts": {
+        "pass": 82,
+        "unsupported": 32
+      }
+    },
+    {
+      "area": "language/expressions/this",
+      "total": 11,
+      "counts": {
+        "pass": 9,
+        "unsupported": 2
+      }
+    },
+    {
+      "area": "language/expressions/typeof",
+      "total": 32,
+      "counts": {
+        "pass": 30,
+        "fail": 2
+      }
+    },
+    {
+      "area": "language/expressions/unary-minus",
+      "total": 28,
+      "counts": {
+        "pass": 28
+      }
+    },
+    {
+      "area": "language/expressions/unary-plus",
+      "total": 34,
+      "counts": {
+        "pass": 34
+      }
+    },
+    {
+      "area": "language/expressions/unsigned-right-shift",
+      "total": 89,
+      "counts": {
+        "pass": 89
+      }
+    },
+    {
+      "area": "language/expressions/void",
+      "total": 18,
+      "counts": {
+        "pass": 18
+      }
+    },
+    {
+      "area": "language/expressions/yield",
+      "total": 123,
+      "counts": {
+        "pass": 110,
+        "unsupported": 9,
+        "fail": 4
+      }
+    },
+    {
+      "area": "language/function-code",
+      "total": 281,
+      "counts": {
+        "pass": 281
+      }
+    },
+    {
+      "area": "language/future-reserved-words",
+      "total": 85,
+      "counts": {
+        "pass": 69,
+        "unsupported": 16
+      }
+    },
+    {
+      "area": "language/global-code",
+      "total": 75,
+      "counts": {
+        "pass": 34,
+        "unsupported": 16,
+        "skip": 25
+      }
+    },
+    {
+      "area": "language/identifier-resolution",
+      "total": 22,
+      "counts": {
+        "pass": 15,
+        "unsupported": 7
+      }
+    },
+    {
+      "area": "language/identifiers",
+      "total": 535,
+      "counts": {
+        "pass": 295,
+        "resource-limit": 10,
+        "unsupported": 230
+      }
+    },
+    {
+      "area": "language/import",
+      "total": 135,
+      "counts": {
+        "skip": 123,
+        "unsupported": 12
+      }
+    },
+    {
+      "area": "language/keywords",
+      "total": 50,
+      "counts": {
+        "unsupported": 50
+      }
+    },
+    {
+      "area": "language/line-terminators",
+      "total": 82,
+      "counts": {
+        "pass": 48,
+        "unsupported": 34
+      }
+    },
+    {
+      "area": "language/literals",
+      "total": 1041,
+      "counts": {
+        "unsupported": 200,
+        "pass": 833,
+        "resource-limit": 6,
+        "crash": 2
+      }
+    },
+    {
+      "area": "language/module-code",
+      "total": 602,
+      "counts": {
+        "skip": 600,
+        "pass": 2
+      }
+    },
+    {
+      "area": "language/punctuators",
+      "total": 22,
+      "counts": {
+        "pass": 2,
+        "unsupported": 20
+      }
+    },
+    {
+      "area": "language/reserved-words",
+      "total": 53,
+      "counts": {
+        "skip": 1,
+        "pass": 28,
+        "unsupported": 24
+      }
+    },
+    {
+      "area": "language/rest-parameters",
+      "total": 22,
+      "counts": {
+        "pass": 20,
+        "unsupported": 2
+      }
+    },
+    {
+      "area": "language/source-text",
+      "total": 2,
+      "counts": {
+        "pass": 2
+      }
+    },
+    {
+      "area": "language/statementList",
+      "total": 160,
+      "counts": {
+        "pass": 160
+      }
+    },
+    {
+      "area": "language/statements/async-function",
+      "total": 133,
+      "counts": {
+        "unsupported": 46,
+        "pass": 12,
+        "skip": 74,
+        "fail": 1
+      }
+    },
+    {
+      "area": "language/statements/async-generator",
+      "total": 590,
+      "counts": {
+        "unsupported": 38,
+        "pass": 114,
+        "skip": 437,
+        "fail": 1
+      }
+    },
+    {
+      "area": "language/statements/await-using",
+      "total": 188,
+      "counts": {
+        "skip": 133,
+        "unsupported": 55
+      }
+    },
+    {
+      "area": "language/statements/block",
+      "total": 40,
+      "counts": {
+        "unsupported": 20,
+        "pass": 18,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "language/statements/break",
+      "total": 40,
+      "counts": {
+        "pass": 16,
+        "unsupported": 24
+      }
+    },
+    {
+      "area": "language/statements/class",
+      "total": 8766,
+      "counts": {
+        "pass": 5523,
+        "unsupported": 1007,
+        "skip": 2166,
+        "crash": 2,
+        "fail": 64,
+        "harness-error": 4
+      }
+    },
+    {
+      "area": "language/statements/const",
+      "total": 271,
+      "counts": {
+        "pass": 220,
+        "unsupported": 51
+      }
+    },
+    {
+      "area": "language/statements/continue",
+      "total": 48,
+      "counts": {
+        "pass": 22,
+        "unsupported": 26
+      }
+    },
+    {
+      "area": "language/statements/debugger",
+      "total": 4,
+      "counts": {
+        "unsupported": 4
+      }
+    },
+    {
+      "area": "language/statements/do-while",
+      "total": 70,
+      "counts": {
+        "pass": 40,
+        "unsupported": 29,
+        "resource-limit": 1
+      }
+    },
+    {
+      "area": "language/statements/empty",
+      "total": 4,
+      "counts": {
+        "pass": 4
+      }
+    },
+    {
+      "area": "language/statements/expression",
+      "total": 6,
+      "counts": {
+        "unsupported": 2,
+        "pass": 4
+      }
+    },
+    {
+      "area": "language/statements/for",
+      "total": 758,
+      "counts": {
+        "pass": 659,
+        "unsupported": 94,
+        "fail": 1,
+        "resource-limit": 4
+      }
+    },
+    {
+      "area": "language/statements/for-await-of",
+      "total": 2431,
+      "counts": {
+        "skip": 2395,
+        "pass": 4,
+        "unsupported": 32
+      }
+    },
+    {
+      "area": "language/statements/for-in",
+      "total": 206,
+      "counts": {
+        "pass": 121,
+        "unsupported": 83,
+        "harness-error": 2
+      }
+    },
+    {
+      "area": "language/statements/for-of",
+      "total": 1442,
+      "counts": {
+        "pass": 1235,
+        "unsupported": 151,
+        "fail": 42,
+        "skip": 4,
+        "harness-error": 10
+      }
+    },
+    {
+      "area": "language/statements/function",
+      "total": 783,
+      "counts": {
+        "pass": 668,
+        "crash": 1,
+        "unsupported": 113,
+        "fail": 1
+      }
+    },
+    {
+      "area": "language/statements/generators",
+      "total": 510,
+      "counts": {
+        "pass": 441,
+        "unsupported": 68,
+        "fail": 1
+      }
+    },
+    {
+      "area": "language/statements/if",
+      "total": 125,
+      "counts": {
+        "pass": 66,
+        "unsupported": 56,
+        "fail": 1,
+        "resource-limit": 2
+      }
+    },
+    {
+      "area": "language/statements/labeled",
+      "total": 37,
+      "counts": {
+        "pass": 16,
+        "unsupported": 18,
+        "resource-limit": 1,
+        "skip": 2
+      }
+    },
+    {
+      "area": "language/statements/let",
+      "total": 287,
+      "counts": {
+        "pass": 257,
+        "unsupported": 29,
+        "fail": 1
+      }
+    },
+    {
+      "area": "language/statements/return",
+      "total": 31,
+      "counts": {
+        "pass": 30,
+        "resource-limit": 1
+      }
+    },
+    {
+      "area": "language/statements/switch",
+      "total": 216,
+      "counts": {
+        "pass": 76,
+        "unsupported": 137,
+        "resource-limit": 3
+      }
+    },
+    {
+      "area": "language/statements/throw",
+      "total": 28,
+      "counts": {
+        "pass": 28
+      }
+    },
+    {
+      "area": "language/statements/try",
+      "total": 388,
+      "counts": {
+        "pass": 330,
+        "unsupported": 55,
+        "resource-limit": 3
+      }
+    },
+    {
+      "area": "language/statements/using",
+      "total": 154,
+      "counts": {
+        "unsupported": 141,
+        "skip": 8,
+        "pass": 5
+      }
+    },
+    {
+      "area": "language/statements/variable",
+      "total": 309,
+      "counts": {
+        "pass": 234,
+        "unsupported": 75
+      }
+    },
+    {
+      "area": "language/statements/while",
+      "total": 72,
+      "counts": {
+        "pass": 42,
+        "unsupported": 28,
+        "fail": 1,
+        "resource-limit": 1
+      }
+    },
+    {
+      "area": "language/statements/with",
+      "total": 182,
+      "counts": {
+        "unsupported": 181,
+        "pass": 1
+      }
+    },
+    {
+      "area": "language/types",
+      "total": 211,
+      "counts": {
+        "pass": 185,
+        "unsupported": 20,
+        "skip": 4,
+        "fail": 2
+      }
+    },
+    {
+      "area": "language/white-space",
+      "total": 134,
+      "counts": {
+        "pass": 86,
+        "unsupported": 48
+      }
+    },
+    {
+      "area": "staging",
+      "total": 8,
+      "counts": {
+        "fail": 8
+      }
+    },
+    {
+      "area": "staging/built-ins",
+      "total": 16,
+      "counts": {
+        "pass": 8,
+        "skip": 6,
+        "fail": 2
+      }
+    },
+    {
+      "area": "staging/decorators",
+      "total": 14,
+      "counts": {
+        "pass": 2,
+        "unsupported": 12
+      }
+    },
+    {
+      "area": "staging/explicit-resource-management",
+      "total": 105,
+      "counts": {
+        "skip": 75,
+        "pass": 2,
+        "fail": 22,
+        "unsupported": 6
+      }
+    },
+    {
+      "area": "staging/set-methods",
+      "total": 6,
+      "counts": {
+        "fail": 6
+      }
+    },
+    {
+      "area": "staging/sm",
+      "total": 2631,
+      "counts": {
+        "pass": 1363,
+        "skip": 243,
+        "fail": 651,
+        "resource-limit": 67,
+        "unsupported": 206,
+        "harness-error": 85,
+        "crash": 16
+      }
+    },
+    {
+      "area": "staging/source-phase-imports",
+      "total": 4,
+      "counts": {
+        "skip": 4
+      }
+    },
+    {
+      "area": "staging/Temporal",
+      "total": 4,
+      "counts": {
+        "pass": 4
+      }
+    },
+    {
+      "area": "staging/top-level-await",
+      "total": 1,
+      "counts": {
+        "skip": 1
+      }
+    },
+    {
+      "area": "staging/Uint8Array",
+      "total": 2,
+      "counts": {
+        "fail": 2
+      }
+    }
+  ],
+  "sections": [
+    {
+      "area": "annexB",
+      "total": 1377,
+      "counts": {
+        "skip": 103,
+        "pass": 1128,
+        "unsupported": 54,
+        "resource-limit": 6,
+        "fail": 86
+      }
+    },
+    {
+      "area": "built-ins",
+      "total": 47453,
+      "counts": {
+        "skip": 3484,
+        "pass": 33366,
+        "fail": 5373,
+        "harness-error": 3793,
+        "resource-limit": 1038,
+        "unsupported": 399
+      }
+    },
+    {
+      "area": "harness",
+      "total": 234,
+      "counts": {
+        "pass": 178,
+        "skip": 48,
+        "resource-limit": 2,
+        "harness-error": 6
+      }
+    },
+    {
+      "area": "intl402",
+      "total": 6788,
+      "counts": {
+        "skip": 6788
+      }
+    },
+    {
+      "area": "language",
+      "total": 44709,
+      "counts": {
+        "unsupported": 7487,
+        "pass": 26158,
+        "fail": 318,
+        "skip": 10661,
+        "resource-limit": 59,
+        "harness-error": 18,
+        "crash": 8
+      }
+    },
+    {
+      "area": "staging",
+      "total": 2791,
+      "counts": {
+        "fail": 691,
+        "pass": 1379,
+        "skip": 329,
+        "unsupported": 224,
+        "resource-limit": 67,
+        "harness-error": 85,
+        "crash": 16
+      }
+    }
+  ]
+}
