@@ -41,7 +41,7 @@ jobs:
       - run: npm test
       - name: Install Linux host linker
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y clang build-essential
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y clang build-essential binutils
       - name: Prepare upstream source
         shell: bash
         run: |

@@ -10,8 +10,25 @@ import {
     requireNativeLinker,
     sha256,
     verifyDownload,
+    verifyGlibcBaseline,
 } from "./native-release-support.mjs";
 import { smokeVerdict } from "./native-release-smoke.mjs";
+
+test("Linux archives reject a host-dependent or unknown glibc requirement", () => {
+    assert.deepEqual(verifyGlibcBaseline("Name: GLIBC_2.2.5 Name: GLIBC_2.34 GLIBC_2.34"), [
+        "GLIBC_2.2.5",
+        "GLIBC_2.34",
+    ]);
+    for (const report of [
+        "",
+        "Name: GLIBC_2.38",
+        "Name: GLIBC_3.0",
+        "Name: GLIBC_ABI_DT_RELR",
+        "Name: GLIBC_PRIVATE",
+    ]) {
+        assert.throws(() => verifyGlibcBaseline(report));
+    }
+});
 
 test("Linux setup explains a missing host linker before expensive builds", () => {
     assert.throws(

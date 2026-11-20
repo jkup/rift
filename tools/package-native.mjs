@@ -16,9 +16,10 @@ import { probeVerdict } from "./probe-verdict.mjs";
 import {
     checkedCommand,
     fileHash,
+    nativeBuildEnvironment,
     releaseName,
     releaseTarget,
-    requireNativeLinker,
+    verifyGlibcBaseline,
 } from "./native-release-support.mjs";
 import { smokeNativeRelease } from "./native-release-smoke.mjs";
 
@@ -49,18 +50,32 @@ function requireCleanRevision() {
 }
 requireCleanRevision();
 const compiler = scriptcPath(root);
+const env = nativeBuildEnvironment();
+// Linking against a newer host libc can raise the binary's glibc requirement
+// (for example fmod@GLIBC_2.38). The pinned compiler supports a Zig 2.34 target.
+if (process.platform === "linux") {
+    env.SCRIPTC_TARGET = "x86_64-linux-gnu.2.34";
+    checkedCommand("readelf", ["--version"], { env });
+}
 const pin = JSON.parse(readFileSync(join(root, "toolchain/scriptc/source.json"), "utf8"));
 const zig = checkedCommand("zig", ["version"]);
 if (zig !== pin.buildDependencies.zig) {
     throw new Error(`Release builds require Zig ${pin.buildDependencies.zig}, found ${zig}`);
 }
-requireNativeLinker();
 mkdirSync(destination, { recursive: true });
 const work = mkdtempSync(join(destination, ".native-release-"));
 const bundle = join(work, name);
 mkdirSync(bundle);
 const executable = join(bundle, process.platform === "win32" ? "rift.exe" : "rift");
-const report = { version, revision, target, compilerSha256: fileHash(compiler), zig, pin };
+const report = {
+    version,
+    revision,
+    target,
+    codegenTarget: env.SCRIPTC_TARGET ?? target,
+    compilerSha256: fileHash(compiler),
+    zig,
+    pin,
+};
 const reportPath = join(work, "validation.json");
 function saveReport() {
     writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
@@ -104,7 +119,7 @@ function stageDocumentation() {
     for (const path of ["src/scr_musl.c", "src/scr_ieee754.c"]) {
         copyFile(join(runtime, path), join("licenses/scriptc-runtime", path));
     }
-    const zigEnv = checkedCommand("zig", ["env"]);
+    const zigEnv = checkedCommand("zig", ["env"], { env });
     const match = /\.lib_dir\s*=\s*("(?:[^"\\]|\\.)*")/.exec(zigEnv);
     if (!match) {
         throw new Error("Cannot locate Zig runtime notices");
@@ -163,14 +178,18 @@ try {
     checkedCommand(process.execPath, [join(root, "tools/test-compiler.mjs")], {
         cwd: root,
         stdio: "inherit",
+        env,
     });
     report.probes = JSON.parse(readFileSync(join(root, "build/probe-results.json"), "utf8"));
     report.build = await runNativeCommand(
         compiler,
         ["build", "src/cli.ts", "--tier", "static-only", "--no-keep-llvm", "-o", executable],
-        { cwd: root },
+        { cwd: root, env },
     );
-    report.coverage = await runNativeCommand(compiler, ["coverage", "src/cli.ts"], { cwd: root });
+    report.coverage = await runNativeCommand(compiler, ["coverage", "src/cli.ts"], {
+        cwd: root,
+        env,
+    });
     const success = { status: 0, signal: null, error: null, stdout: "" };
     report.verdict = probeVerdict({
         build: report.build,
@@ -182,6 +201,11 @@ try {
     if (report.verdict !== "PASS") {
         throw new Error(`Native CLI ${report.verdict}; inspect ${reportPath}`);
     }
+    if (process.platform === "linux") {
+        report.glibcRequirements = verifyGlibcBaseline(
+            checkedCommand("readelf", ["--version-info", "--wide", executable], { env }),
+        );
+    }
     stageDocumentation();
     report.executableSha256 = fileHash(executable);
     writeFileSync(
@@ -191,6 +215,8 @@ try {
                 version,
                 revision,
                 target,
+                codegenTarget: report.codegenTarget,
+                glibcRequirements: report.glibcRequirements,
                 executableSha256: report.executableSha256,
                 compilerSha256: report.compilerSha256,
                 compilerSource: pin,

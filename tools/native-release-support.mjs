@@ -94,3 +94,17 @@ export function requireNativeLinker(platform = process.platform, run = checkedCo
         );
     }
 }
+
+export function verifyGlibcBaseline(output) {
+    const requirements = [...new Set(output.match(/\bGLIBC_[A-Za-z0-9_.]+/g) ?? [])];
+    if (requirements.length === 0) {
+        throw new Error("Unknown glibc version report");
+    }
+    for (const requirement of requirements) {
+        const match = /^GLIBC_(\d+)\.(\d+)(?:\.\d+)?$/.exec(requirement);
+        if (!match || Number(match[1]) > 2 || (Number(match[1]) === 2 && Number(match[2]) > 34)) {
+            throw new Error(`Linux release exceeds glibc 2.34 baseline: ${requirement}`);
+        }
+    }
+    return requirements.sort();
+}

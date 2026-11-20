@@ -42,7 +42,7 @@ On Linux:
 The counter prints `total 36`, `next 14`, and `same object true`; the inline
 program prints `42`. Node.js, npm, ScriptC and Zig are not required to run the
 executable. These are unsigned preview binaries. Windows builds target x64;
-Linux builds use glibc rather than musl (Alpine). The workflow uses Windows
+Linux packages target glibc 2.34 or later rather than musl (Alpine). The workflow uses Windows
 Server 2022 and Ubuntu 22.04; compatibility with other OS versions is not
 established by those jobs.
 
@@ -53,8 +53,9 @@ as the Node-hosted interpreter. It does not provide Node or browser APIs.
 
 Use a clean checkout with Node 24 or later, dependencies installed with `npm ci`,
 the [patched compiler](../toolchain/scriptc/README.md) and Zig 0.16.0 on PATH.
-Linux also needs Clang and system C development tools (`sudo apt-get install
-clang build-essential` on Ubuntu). Then run:
+Linux setup also needs Clang and system C development tools; packaging needs
+`readelf` from binutils (`sudo apt-get install clang build-essential binutils`
+on Ubuntu). Then run:
 
 ```sh
 npm run package:native -- v0.1.0-preview.1
@@ -82,6 +83,12 @@ The source commit must remain clean and unchanged throughout packaging. Do not
 run another build or guest suite concurrently: compiler probes emit `build/node`
 and native probe executables. This command does not replace the complete native
 guest suite or Test262. It records its narrower validation scope in the manifest.
+
+Release builds discard ambient compiler/linker overrides. Linux probes and the
+CLI use the pinned compiler's `x86_64-linux-gnu.2.34` target through Zig, avoiding
+accidental dependencies on the build host's newer glibc. The package gate inspects
+ELF symbol versions with `readelf` and rejects requirements newer than 2.34 or
+unknown version markers. The manifest records the actual requirements.
 
 ## Maintainer workflow
 
