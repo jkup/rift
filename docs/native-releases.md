@@ -91,8 +91,11 @@ permission; all build jobs use read-only permissions.
 
 After both jobs succeed, inspect the draft's archives and validation reports.
 The workflow marks it as a prerelease and leaves publication to a maintainer.
-An existing release/tag name should not be reused. Failed jobs do not create a
-draft. This workflow requires available GitHub Actions billing/quota.
+The draft job first creates a new tag at the build's exact source commit and
+refuses an existing tag. If uploading the draft fails after tag creation, inspect
+that tag and the retained artifacts before retrying with a new version. Failed
+build jobs do not create a draft. This workflow requires available GitHub Actions
+billing/quota.
 
 The local packaging command produces the same asset layout when hosted runners
 are unavailable. Publish only packages from the same source commit and retain

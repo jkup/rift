@@ -43,6 +43,7 @@ jobs:
         shell: bash
         run: |
           node --input-type=module -e 'import { releaseName } from "./tools/native-release-support.mjs"; releaseName(process.env.RELEASE_VERSION, "check");'
+          git check-ref-format "refs/tags/$RELEASE_VERSION"
           git -c core.autocrlf=false clone https://github.com/vercel-labs/scriptc.git "$RUNNER_TEMP/scriptc"
       - name: Build pinned compiler and runtime
         shell: bash
@@ -92,4 +93,7 @@ jobs:
 
           Archives include licenses and a source manifest. Separate SHA-256 checksum files and validation reports accompany each archive. Binaries are unsigned. See docs/native-releases.md in the source repository for verification and platform details.
           EOF
-          gh release create "$RELEASE_VERSION" --draft --prerelease --target "$RELEASE_COMMIT" --title "Rift $RELEASE_VERSION" --notes-file notes.txt -- *.zip *.tar.gz *.sha256 *.json
+          # Creating the ref fails if it already exists, so an old tag cannot
+          # silently label binaries built from a different source commit.
+          gh api --method POST "repos/$GH_REPO/git/refs" -f "ref=refs/tags/$RELEASE_VERSION" -f "sha=$RELEASE_COMMIT"
+          gh release create "$RELEASE_VERSION" --draft --prerelease --verify-tag --title "Rift $RELEASE_VERSION" --notes-file notes.txt -- *.zip *.tar.gz *.sha256 *.json
