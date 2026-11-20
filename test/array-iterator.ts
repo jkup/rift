@@ -31,6 +31,16 @@ function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
         .completion;
 }
 for (const source of [
+    "[1,null,undefined,'x',2n].values().join()==='1,,,x,2'&&[].values().join()===''&&[1,2].values().join('')==='12'&&[1,2].values().join(null)==='1null2';",
+    "let log='';let sep={toString(){log+='s';return '-'}};let i={get next(){log+='n';return ()=>({done:true})}};Iterator.prototype.join.call(i,sep)===''&&log==='sn';",
+    "let log='';let marker={};let i={get next(){log+='n';throw 1},return(){log+='r';throw 2}};let ok=false;try{Iterator.prototype.join.call(i,{toString(){log+='s';throw marker}})}catch(e){ok=e===marker}ok&&log==='sr';",
+    "let closed=0;let marker={};function* g(){try{yield {toString(){throw marker}}}finally{closed++}}let ok=false;try{g().join()}catch(e){ok=e===marker}ok&&closed===1;",
+    "let closed=0;let i={next(){return {value:Symbol()}},return(){closed++;throw 2}};let ok=false;try{Iterator.prototype.join.call(i)}catch(e){ok=e instanceof TypeError}ok&&closed===1;",
+    "let closed=0;let i={next(){return {done:true}},return(){closed++;return {}}};Iterator.prototype.join.call(i)===''&&closed===0;",
+    "let closed=0;let marker={};let i={next(){return {get value(){throw marker}}},return(){closed++;return {}}};let ok=false;try{Iterator.prototype.join.call(i)}catch(e){ok=e===marker}ok&&closed===0;",
+    "let log='';let i={get next(){log+='n';throw 1},return(){log+='r';return {}}};let ok=false;try{Iterator.prototype.join.call(i)}catch(e){ok=e===1}ok&&log==='n';",
+    "let log='';let a=[{toString(){log+='a';return 'A'}},{toString(){log+='b';return 'B'}}];a.values().join({toString(){log+='s';return ':'}})==='A:B'&&log==='sab';",
+    "let d=Object.getOwnPropertyDescriptor(Iterator.prototype,'join');d.value.length===1&&d.value.name==='join'&&d.writable&&!d.enumerable&&d.configurable;",
     "[1,2,3].values().includes(2)&&![1,2,3].values().includes(2,2)&&[1,2,2].values().includes(2,2)&&![1].values().includes(1,Infinity);",
     "[NaN].values().includes(NaN)&&[-0].values().includes(0)&&[undefined].values().includes()&&![1].values().includes('1');",
     "let o={},s=Symbol();[o].values().includes(o)&&![o].values().includes({})&&[s].values().includes(s)&&![s].values().includes(Symbol());",
@@ -99,7 +109,7 @@ for (const source of [
     "let i=[7].values();let identity=i[Symbol.iterator];identity.call(7)===7&&identity.call(null)===null&&identity.name==='[Symbol.iterator]'&&identity.length===0;",
     "Array.prototype.keys.name==='keys'&&Array.prototype.keys.length===0&&Array.prototype.values.name==='values'&&Array.prototype.values.length===0&&Array.prototype.entries.name==='entries'&&Array.prototype.entries.length===0;",
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
-    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes'&&Object.getOwnPropertySymbols(root).length===2&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&d.writable&&!d.enumerable&&d.configurable;",
+    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join'&&Object.getOwnPropertySymbols(root).length===2&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
     "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {
@@ -186,6 +196,24 @@ for (const source of [
     );
 }
 const legacy = new Realm((_line: string) => {});
+{
+    const realm = fresh();
+    seed(realm, "large", { kind: "string", value: "x".repeat(10000) });
+    const result = run(
+        "let closed=0;let i={next(){return {value:null}},return(){closed++;return {}}};Iterator.prototype.join.call(i,large)",
+        realm,
+        1000,
+    );
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "bounded repeated join separator",
+    );
+    const closed = run("closed", realm);
+    check(
+        closed.type === "normal" && closed.value.kind === "number" && closed.value.value === 0,
+        "join budget does not resume cleanup",
+    );
+}
 for (const argument of [
     "NaN",
     "1.5",

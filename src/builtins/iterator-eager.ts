@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { registerIteratorJoin } from "./iterator-join.js";
 import type { Location } from "../syntax.js";
 import {
     getIteratorDirect,
@@ -262,4 +263,5 @@ export function registerEagerIteratorMethods(realm: Realm): void {
     realm.registerBuiltin(realm.iteratorPrototype, "includes", 1, (receiver, args, context, loc) =>
         includes(receiver, args, context, loc),
     );
+    registerIteratorJoin(realm);
 }
