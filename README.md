@@ -16,12 +16,15 @@ for supported JavaScript features and known gaps.
 
 ## Try Rift
 
-The easiest way to try Rift is with Node.js 24 or later. From the repository root:
+Install Git and Node.js 24 or later, then run these commands in your terminal
+(PowerShell on Windows, or a shell on macOS/Linux):
 
 ```sh
+git clone https://github.com/jkup/rift.git
+cd rift
 npm ci
 npm run build:node
-node build/node/src/cli.js examples/counter.js
+npm start -- examples/counter.js
 ```
 
 You should see:
@@ -35,8 +38,19 @@ same object true
 Replace `examples/counter.js` with your own JavaScript file, or run a short program:
 
 ```sh
-node build/node/src/cli.js -e 'console.log(6 * 7);'
+npm start -- -e "console.log(6 * 7);"
 ```
+
+This prints `42`. Use `npm start -- --help` for CLI options. The `--` passes
+arguments through npm to Rift. Run these commands from the checkout; if you
+already have it, skip the clone and change into that directory. After changing
+Rift's TypeScript source or pulling updates, run `npm ci` and `npm run build:node`
+again before running it.
+
+Next, [experiment with the counter](examples/counter.js),
+[follow the code](docs/architecture.md#where-to-start-reading), or
+[make a contribution](CONTRIBUTING.md). The [usage guide](docs/usage.md)
+also shows how to embed Rift in your own host.
 
 ## Node and native builds
 

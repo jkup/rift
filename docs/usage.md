@@ -1,15 +1,20 @@
 # Running and testing Rift
 
+Follow the [quick start](../README.md#try-rift) to clone the repository.
 With Node 24 or later, run from the repository root:
 
 ```sh
 npm ci
 npm run build:node
-node build/node/src/cli.js examples/counter.js
-node build/node/src/cli.js -e 'console.log(6 * 7);'
+npm start -- examples/counter.js
+npm start -- -e "console.log(6 * 7);"
 ```
 
 The counter prints `total 36`, `next 14`, and `same object true` on separate lines.
+The inline program prints `42`. Use `npm start -- --help` to see CLI help.
+`npm start` runs the emitted Node build; rebuild after changing Rift's TypeScript
+source. You can also invoke `node build/node/src/cli.js` directly with the same
+arguments, without npm's command banner.
 
 ## Native builds (optional)
 

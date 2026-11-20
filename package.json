@@ -15,6 +15,7 @@
         "yaml": "2.8.3"
     },
     "scripts": {
+        "start": "node build/node/src/cli.js",
         "test262": "node tools/test262/run.mjs",
         "test:test262:runner": "node --test tools/test262/runner.test.mjs",
         "test:observations": "node tools/test262/observation.integration.mjs",
