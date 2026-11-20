@@ -39,6 +39,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run test:runner
+      - run: npm run test:release
       # typecheck already emitted build/node; do not compile it a second time.
       - run: node tools/run-guests.mjs node
       - run: npm run test:test262:runner

@@ -1,6 +1,8 @@
 # Repository tools
 
 - `build-native.mjs`: compile the interpreter and test drivers with the pinned ScriptC.
+- `setup-native-toolchain.mjs`: prepare and build the hash-pinned native compiler and runtime.
+- `package-native.mjs`: build, check, archive and smoke-test a relocatable native CLI release.
 - `run-guests.mjs`: run guest regression cases and check expected results.
 - `test-compiler.mjs`: compare the ten compiler checks under Node and native execution.
 - `test262/`: corpus preparation, execution, result accounting and runner tests.

@@ -18,6 +18,9 @@ arguments, without npm's command banner.
 
 ## Native builds (optional)
 
+For downloadable packages and checksum verification, see
+[native releases](native-releases.md). To build from source, continue below.
+
 Prepare the [patched compiler](../toolchain/scriptc/README.md) and put Zig 0.16.0
 on PATH. `npm ci` does not install either. Then run:
 

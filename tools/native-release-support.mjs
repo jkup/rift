@@ -35,6 +35,7 @@ export function verifyDownload(bytes, expected, integrity) {
 }
 
 export async function downloadVerified(url, destination, expected, integrity) {
+    console.log(`Downloading ${url}`);
     const response = await fetch(url, { signal: AbortSignal.timeout(300000) });
     if (!response.ok) {
         throw new Error(`Download failed: ${response.status} ${url}`);
@@ -61,4 +62,21 @@ export function releaseName(version, target) {
 
 export function fileHash(path) {
     return sha256(readFileSync(path));
+}
+
+export function nativeBuildEnvironment(source = process.env) {
+    const env = {};
+    for (const [name, value] of Object.entries(source)) {
+        const upper = name.toUpperCase();
+        if (upper === "PATH") {
+            env.PATH = value;
+        } else if (
+            !upper.startsWith("SCRIPTC_") &&
+            !upper.startsWith("ZIG_") &&
+            !["CC", "AR"].includes(upper)
+        ) {
+            env[name] = value;
+        }
+    }
+    return env;
 }

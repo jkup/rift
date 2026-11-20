@@ -77,10 +77,15 @@ function copyNotices(directory, prefix) {
 function stageDocumentation() {
     for (const path of [
         "LICENSE",
+        "README.md",
+        "CONTRIBUTING.md",
         "THIRD_PARTY_NOTICES.md",
         "examples/counter.js",
         "toolchain/scriptc/LICENSE",
         "toolchain/scriptc/source.json",
+        "toolchain/scriptc/README.md",
+        "tools/test262/README.md",
+        "test/fixtures/harness-bundle/LICENSE",
     ]) {
         copyFile(join(root, path), path);
     }

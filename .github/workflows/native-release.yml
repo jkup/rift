@@ -1,0 +1,95 @@
+name: Native release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "New preview tag, for example v0.1.0-preview.1"
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: native-release-${{ inputs.version }}
+  cancel-in-progress: false
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: linux-x64
+          - os: windows-2022
+            target: win32-x64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.22.0
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run test:readability
+      - run: npm run test:release
+      - run: npm test
+      - name: Prepare upstream source
+        shell: bash
+        run: |
+          node --input-type=module -e 'import { releaseName } from "./tools/native-release-support.mjs"; releaseName(process.env.RELEASE_VERSION, "check");'
+          git -c core.autocrlf=false clone https://github.com/vercel-labs/scriptc.git "$RUNNER_TEMP/scriptc"
+      - name: Build pinned compiler and runtime
+        shell: bash
+        run: npm run setup:native -- "$RUNNER_TEMP/scriptc"
+      - name: Select pinned Zig
+        shell: bash
+        run: |
+          node --input-type=module -e 'import { readFileSync, appendFileSync } from "node:fs"; const manifest = JSON.parse(readFileSync(`build/toolchain/${process.platform}-${process.arch}/rift-toolchain.json`, "utf8")); appendFileSync(process.env.GITHUB_PATH, manifest.zigDirectory + "\n");'
+      - name: Package and verify extracted executable
+        shell: bash
+        run: npm run package:native -- "$RELEASE_VERSION"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-${{ matrix.target }}
+          if-no-files-found: error
+          path: |
+            build/releases/*.zip
+            build/releases/*.tar.gz
+            build/releases/*.sha256
+            build/releases/*.json
+  draft:
+    needs: build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_VERSION: ${{ inputs.version }}
+      RELEASE_COMMIT: ${{ github.sha }}
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: native-*
+          path: release
+          merge-multiple: true
+      - name: Verify assets and create draft preview
+        shell: bash
+        working-directory: release
+        run: |
+          sha256sum --check *.sha256
+          cat > notes.txt <<'EOF'
+          Native preview for Windows x64 and Linux x64. Download and extract the archive for your platform, then follow README.txt. No Node.js, npm, ScriptC or Zig is needed to run it.
+
+          Both packages passed ten compiler probes, static-only compilation, zero-dynamic coverage, and CLI checks against the extracted executable without build tools on PATH. The build jobs also run the Node regression suite. These are not full native guest-suite or Test262 conformance results.
+
+          Archives include licenses and a source manifest. Separate SHA-256 checksum files and validation reports accompany each archive. Binaries are unsigned. See docs/native-releases.md in the source repository for verification and platform details.
+          EOF
+          gh release create "$RELEASE_VERSION" --draft --prerelease --target "$RELEASE_COMMIT" --title "Rift $RELEASE_VERSION" --notes-file notes.txt -- *.zip *.tar.gz *.sha256 *.json

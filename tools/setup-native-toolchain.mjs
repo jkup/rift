@@ -5,6 +5,7 @@ import {
     checkedCommand,
     downloadVerified,
     fileHash,
+    nativeBuildEnvironment,
     releaseTarget,
 } from "./native-release-support.mjs";
 
@@ -28,12 +29,7 @@ if (Number(process.versions.node.split(".")[0]) < 24 || !process.env.npm_execpat
     throw new Error("Run through npm with Node 24 or later");
 }
 mkdirSync(work, { recursive: true });
-const env = { ...process.env };
-for (const name of Object.keys(env)) {
-    if (name.startsWith("SCRIPTC_") || ["CC", "AR"].includes(name)) {
-        delete env[name];
-    }
-}
+const env = nativeBuildEnvironment();
 function run(command, args, cwd = work) {
     console.log(`Running ${basename(command)} ${args.join(" ")}`);
     return checkedCommand(command, args, { cwd, env, stdio: "inherit" });
@@ -84,7 +80,15 @@ const source = join(work, "source");
 mkdirSync(source);
 // Extract only build inputs. Upstream test symlinks need Windows developer mode
 // and are irrelevant to this compiler build; the verified archive retains them.
-run("tar", ["-xf", archive, "-C", source, "--exclude=tests", "--exclude=docs"]);
+run("tar", [
+    "-xf",
+    archive,
+    "-C",
+    source,
+    "--exclude=tests",
+    "--exclude=docs",
+    "--exclude=.claude",
+]);
 if (process.platform === "win32") {
     const git = checkedCommand("where.exe", ["git"]).split(/\r?\n/)[0];
     const unixTools = resolve(dirname(git), "../usr/bin");

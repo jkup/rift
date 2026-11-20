@@ -64,10 +64,12 @@ Both builds run the same Rift interpreter:
 In both cases, Rift parses and interprets your program. ScriptC compiles the
 interpreter itself; it does not compile the JavaScript files you give Rift.
 
-The Node route above is all you need to explore Rift. Native builds currently
-require building a specific, patched version of the ScriptC compiler and setting
-up Zig. That is a separate developer setup, not part of the quick start. See
-[native setup](docs/usage.md#native-builds-optional) if you want to work on it.
+The Node route above is all you need to explore Rift. See
+[native release packages](docs/native-releases.md) for downloadable previews,
+when available, and checksum verification. Building native executables from source
+requires a specific, patched ScriptC compiler and Zig; the
+[native setup guide](docs/usage.md#native-builds-optional) covers that separate
+developer setup.
 
 ## Explore further
 

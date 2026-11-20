@@ -4,12 +4,28 @@ import { spawnSync } from "node:child_process";
 import { test } from "node:test";
 import {
     checkedCommand,
+    nativeBuildEnvironment,
     releaseName,
     releaseTarget,
     sha256,
     verifyDownload,
 } from "./native-release-support.mjs";
 import { smokeVerdict } from "./native-release-smoke.mjs";
+
+test("native setup keeps Windows PATH and discards ambient compiler overrides", () => {
+    assert.deepEqual(
+        nativeBuildEnvironment({
+            Path: "tools",
+            SCRIPTC_CC: "other",
+            CC: "other",
+            AR: "other",
+            ZIG_LIB_DIR: "other",
+            RIFT_SCRIPTC: "selected",
+            HOME: "home",
+        }),
+        { PATH: "tools", RIFT_SCRIPTC: "selected", HOME: "home" },
+    );
+});
 
 test("release names cannot escape output directories or become shell options", () => {
     for (const version of [
