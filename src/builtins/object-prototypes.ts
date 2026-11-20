@@ -1,3 +1,4 @@
+import { registerLegacyAccessors } from "./object-legacy-accessors.js";
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
 import {
@@ -83,6 +84,11 @@ export function registerObjectPrototypes(realm: Realm, constructor: GuestObject)
             return normal(target);
         },
     );
+    registerIsPrototypeOf(realm);
+    registerLegacyAccessors(realm);
+}
+
+function registerIsPrototypeOf(realm: Realm): void {
     realm.registerBuiltin(
         realm.objectPrototype,
         "isPrototypeOf",

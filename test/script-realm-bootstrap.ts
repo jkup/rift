@@ -243,6 +243,10 @@ function inventory(a: Realm): void {
             "hasOwnProperty",
             "propertyIsEnumerable",
             "isPrototypeOf",
+            "__defineGetter__",
+            "__defineSetter__",
+            "__lookupGetter__",
+            "__lookupSetter__",
             "toLocaleString",
         ],
         [

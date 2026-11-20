@@ -175,4 +175,75 @@ check(
     new Realm((_line: string) => {}).objectPrototype.getOwnProperty("isPrototypeOf") === undefined,
     "legacy prototype retained",
 );
+for (const source of [
+    "let o={};let get=function(){return this.y;};let set=function(v){this.y=v;};o.__defineGetter__('x',get)===undefined&&o.__defineSetter__('x',set)===undefined&&o.__lookupGetter__('x')===get&&o.__lookupSetter__('x')===set&&(o.x=7)===7&&o.x===7;",
+    "let o={x:1};let get=function(){return 2;};o.__defineGetter__('x',get);let d=Object.getOwnPropertyDescriptor(o,'x');d.get===get&&d.set===undefined&&d.enumerable&&d.configurable&&!Object.hasOwn(d,'value')&&!Object.hasOwn(d,'writable');",
+    "let o={};let a=function(){};let b=function(){};let c=function(){};o.__defineSetter__('x',a);o.__defineGetter__('x',b);o.__defineGetter__('x',c);o.__lookupGetter__('x')===c&&o.__lookupSetter__('x')===a;",
+    "let key=Symbol();let get=function(){throw 1;};let p={};p.__defineGetter__(key,get);let o=Object.create(p);o.__lookupGetter__(key)===get&&o.__lookupSetter__(key)===undefined;",
+    "let get=function(){throw 1;};let p={};p.__defineGetter__('x',get);let o=Object.create(p);Object.defineProperty(o,'x',{value:3});o.__lookupGetter__('x')===undefined;",
+    "let get=function(){throw 1;};let p={};p.__defineGetter__('x',get);let o=Object.create(p);o.__defineSetter__('x',function(){});o.__lookupGetter__('x')===undefined;",
+    "let o=Object.create(null);Object.prototype.__lookupGetter__.call(o,'missing')===undefined&&Object.prototype.__lookupSetter__.call(o,'missing')===undefined;",
+    "let trace='';let key={toString(){trace+='K';return 'x';}};let caught=false;try{Object.prototype.__defineGetter__.call(null,key,function(){});}catch(e){caught=e instanceof TypeError;}caught&&trace==='';",
+    "let trace='';let key={toString(){trace+='K';return 'x';}};let caught=false;try{({}).__defineGetter__(key,1);}catch(e){caught=e instanceof TypeError;}caught&&trace==='';",
+    "let marker={};let caught=false;try{({}).__defineSetter__({toString(){throw marker;}},function(){});}catch(e){caught=e===marker;}caught;",
+    "let trace='';let key={toString(){trace+='K';return 'x';}};let caught=false;try{Object.prototype.__lookupGetter__.call(undefined,key);}catch(e){caught=e instanceof TypeError;}caught&&trace==='';",
+    "let o={};let get=function(){};let key={toString(){o.__defineGetter__('x',get);return 'x';}};o.__lookupGetter__(key)===get;",
+    "let o={};Object.preventExtensions(o);let caught=false;try{o.__defineGetter__('x',function(){});}catch(e){caught=e instanceof TypeError;}caught&&!Object.hasOwn(o,'x');",
+    "let o={};Object.defineProperty(o,'x',{value:1,configurable:false});let caught=false;try{o.__defineSetter__('x',function(){});}catch(e){caught=e instanceof TypeError;}caught&&o.x===1;",
+    "let a=[];let get=function(){return 7;};a.__defineGetter__('2',get);a.length===3&&a[2]===7&&a.__lookupGetter__('2')===get;",
+    "let caught=false;try{Object.prototype.__defineGetter__.call('x','0',function(){});}catch(e){caught=e instanceof TypeError;}caught;",
+    "let get=function(){};Number.prototype.__defineGetter__('x',get);Object.prototype.__lookupGetter__.call(1,'x')===get&&Object.prototype.__defineGetter__.call(1,'y',get)===undefined;",
+    "let o={};let get=function(){};o.__defineGetter__(undefined,get);o.__lookupGetter__()===get;",
+]) {
+    const result = run(source);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        source,
+    );
+}
+for (const name of [
+    "__defineGetter__",
+    "__defineSetter__",
+    "__lookupGetter__",
+    "__lookupSetter__",
+]) {
+    const arity = name === "__defineGetter__" || name === "__defineSetter__" ? 2 : 1;
+    const source =
+        "let d=Object.getOwnPropertyDescriptor(Object.prototype,'" +
+        name +
+        "');d.value.name==='" +
+        name +
+        "'&&d.value.length===" +
+        arity +
+        "&&d.writable&&!d.enumerable&&d.configurable&&!Object.hasOwn(d.value,'prototype');";
+    const result = run(source);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        source,
+    );
+}
+{
+    const owner = fresh(),
+        caller = fresh();
+    seed(caller, "foreignDefine", own(owner.objectPrototype, "__defineGetter__"));
+    const result = run("foreignDefine.call(null,'x',function(){});", caller);
+    check(
+        result.type === "throw" &&
+            result.value.kind === "object" &&
+            result.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+        "legacy accessor error Realm",
+    );
+    const lookupRealm = fresh();
+    let chain: GuestObject = lookupRealm.objectPrototype;
+    for (let index = 0; index < 400; index++) {
+        chain = new GuestObject(chain);
+    }
+    seed(lookupRealm, "deep", { kind: "object", object: chain });
+    // Construct outside the guest budget so only lookup can exhaust it.
+    const bounded = run("deep.__lookupGetter__('x');", lookupRealm, 100);
+    check(
+        bounded.type === "throw" && bounded.origin.kind === "resource-limit",
+        "bounded prototype lookup",
+    );
+}
 console.log("Object prototype methods passed");

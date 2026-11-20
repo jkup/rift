@@ -1035,6 +1035,10 @@ for (const r of [fresh(), fresh()]) {
         "hasOwnProperty",
         "propertyIsEnumerable",
         "isPrototypeOf",
+        "__defineGetter__",
+        "__defineSetter__",
+        "__lookupGetter__",
+        "__lookupSetter__",
         "toLocaleString",
     ]);
     for (const name of ["String", "Object"]) {

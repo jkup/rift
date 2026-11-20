@@ -96,6 +96,8 @@ export function prototypeMethodLength(name: string, numberPrototype: boolean): n
             "slice",
             "apply",
             "splice",
+            "__defineGetter__",
+            "__defineSetter__",
         ].includes(name)
     ) {
         return 2;
@@ -121,6 +123,8 @@ export function prototypeMethodLength(name: string, numberPrototype: boolean): n
             "propertyIsEnumerable",
             "isPrototypeOf",
             "hasOwnProperty",
+            "__lookupGetter__",
+            "__lookupSetter__",
             "call",
             "bind",
             "join",

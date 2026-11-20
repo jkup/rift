@@ -122,12 +122,6 @@
             "value": 140
         },
         {
-            "filename": "src/builtins/object-prototypes.ts",
-            "name": "registerObjectPrototypes",
-            "rule": "functionLines",
-            "value": 102
-        },
-        {
             "filename": "src/builtins/object.ts",
             "name": "registerObject",
             "rule": "functionLines",
