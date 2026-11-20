@@ -1,3 +1,4 @@
+import { registerRegExpEscape } from "./regexp-escape.js";
 import { registerRegExpMatchAll } from "./regexp-match-all.js";
 import type { Realm } from "../../realm.js";
 import { registerRegExpExecution } from "./regexp-execution.js";
@@ -215,6 +216,35 @@ function escapedSource(source: string, context: OperationContext, loc: Location)
     return { type: "normal", value: result };
 }
 
+function registerRegExpToString(realm: Realm): void {
+    realm.registerBuiltin(realm.regexpPrototype, "toString", 0, (receiver, _args, context, loc) => {
+        if (receiver.kind !== "object") {
+            return languageFailure(
+                context.realm,
+                "TypeError",
+                "RegExp toString receiver is not an object",
+                loc,
+            );
+        }
+        const source = receiver.object.internalGet("source", receiver, context, loc);
+        if (source.type === "throw") {
+            return source;
+        }
+        const text = regExpString(source.value, context, loc);
+        if (text.type === "throw") {
+            return text;
+        }
+        const flags = receiver.object.internalGet("flags", receiver, context, loc);
+        if (flags.type === "throw") {
+            return flags;
+        }
+        const options = regExpString(flags.value, context, loc);
+        return options.type === "throw"
+            ? options
+            : normal({ kind: "string", value: "/" + text.value + "/" + options.value });
+    });
+}
+
 export function registerRegExp(realm: Realm): void {
     const proto = realm.regexpPrototype;
     const constructor = realm.createBuiltinConstructor(
@@ -346,32 +376,8 @@ export function registerRegExp(realm: Realm): void {
         enumerable: false,
         configurable: true,
     });
-    realm.registerBuiltin(proto, "toString", 0, (receiver, _args, context, loc) => {
-        if (receiver.kind !== "object") {
-            return languageFailure(
-                context.realm,
-                "TypeError",
-                "RegExp toString receiver is not an object",
-                loc,
-            );
-        }
-        const source = receiver.object.internalGet("source", receiver, context, loc);
-        if (source.type === "throw") {
-            return source;
-        }
-        const text = regExpString(source.value, context, loc);
-        if (text.type === "throw") {
-            return text;
-        }
-        const flags = receiver.object.internalGet("flags", receiver, context, loc);
-        if (flags.type === "throw") {
-            return flags;
-        }
-        const options = regExpString(flags.value, context, loc);
-        return options.type === "throw"
-            ? options
-            : normal({ kind: "string", value: "/" + text.value + "/" + options.value });
-    });
+    registerRegExpToString(realm);
+    registerRegExpEscape(realm, constructor);
     registerRegExpExecution(realm);
     registerRegExpMatchSearch(realm);
     registerRegExpReplace(realm);

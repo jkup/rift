@@ -200,4 +200,89 @@ string("RegExp('\\\\/').source", "\\/");
 string("RegExp('\\\\\\n').source", "\\n");
 
 string("RegExp('(a)\\\\1').source", "(a)\\1");
+for (const [input, expected] of [
+    ["", ""],
+    ["abc", "\\x61bc"],
+    ["1ab", "\\x31ab"],
+    ["Ab", "\\x41b"],
+    ["_abc", "_abc"],
+    ["^$\\.*+?()[]{}|/", "\\^\\$\\\\\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|\\/"],
+    [
+        ",-=<>#&!%:;@~'\"`",
+        "\\x2c\\x2d\\x3d\\x3c\\x3e\\x23\\x26\\x21\\x25\\x3a\\x3b\\x40\\x7e\\x27\\x22\\x60",
+    ],
+    ["\t\n\v\f\r", "\\t\\n\\v\\f\\r"],
+    [" \u00a0\u2028\u2029\ufeff", "\\x20\\xa0\\u2028\\u2029\\ufeff"],
+    ["\ud800x\udc00", "\\ud800x\\udc00"],
+    ["\ud83d\ude00", "\ud83d\ude00"],
+    ["\0\u0085\u180eé", "\0\u0085\u180eé"],
+]) {
+    const realm = fresh();
+    realm.defineScriptGlobal("input", { value: { kind: "string", value: input } });
+    string("RegExp.escape(input)", expected, realm);
+}
+string(
+    "let d=Object.getOwnPropertyDescriptor(RegExp,'escape');[RegExp.escape.name,RegExp.escape.length,d.writable,d.enumerable,d.configurable].join(',')",
+    "escape,1,true,false,true",
+);
+string(
+    "let n=0;for(let x of [undefined,null,1,true,1n,Symbol(),{},new String('x')]){try{RegExp.escape(x)}catch(e){if(e instanceof TypeError)n++}}String(n)",
+    "8",
+);
+string(
+    "let called=false;try{RegExp.escape({toString(){called=true;return 'a'}})}catch(e){}String(called)",
+    "false",
+);
+string(
+    "let ok=false;try{new RegExp.escape('a')}catch(e){ok=e instanceof TypeError}String(ok)",
+    "true",
+);
+string(
+    "let text='a.b[c]- /';String(new RegExp('^'+RegExp.escape(text)+'$','u').test(text))",
+    "true",
+);
+{
+    const owner = fresh(),
+        caller = fresh();
+    const constructor = owner.globalObject.getOwnProperty("RegExp");
+    if (
+        constructor === undefined ||
+        constructor.kind !== "data" ||
+        constructor.value.kind !== "object"
+    ) {
+        throw new Error("RegExp constructor");
+    }
+    const escape = constructor.value.object.getOwnProperty("escape");
+    if (escape === undefined || escape.kind !== "data") {
+        throw new Error("RegExp.escape");
+    }
+    caller.defineScriptGlobal("escape", { value: escape.value });
+    caller.defineScriptGlobal("ownerTypeError", {
+        value: { kind: "object", object: owner.getErrorPrototype("TypeError") },
+    });
+    string(
+        "try{escape(1)}catch(e){String(Object.getPrototypeOf(e)===ownerTypeError)}",
+        "true",
+        caller,
+    );
+}
+{
+    const realm = fresh();
+    realm.defineScriptGlobal("input", { value: { kind: "string", value: "-".repeat(10000) } });
+    const prepared = prepareBoundedScript(
+        { id: "escape-budget", text: "try{RegExp.escape(input)}catch(e){'caught'}" },
+        realm,
+    );
+    if (prepared.kind !== "ready") {
+        throw new Error("escape budget prepare");
+    }
+    const result = evaluateScript(
+        createScriptSession({ maxSteps: 1000, maxCalls: 32 }),
+        prepared.record,
+    ).completion;
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "bounded escape output",
+    );
+}
 console.log("RegExp construction passed");
