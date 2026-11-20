@@ -10,6 +10,39 @@ covered by the accompanying [Apache-2.0 license](LICENSE).
 
 ## Prepare the source
 
+### Automated setup
+
+With Git, tar and Node 24 or later installed, an existing upstream ScriptC checkout
+containing the pinned revision can be prepared and built with one command:
+
+```sh
+npm run setup:native -- /path/to/scriptc
+```
+
+Linux also requires Clang and system C development tools. On Ubuntu, install them
+first with `sudo apt-get install clang build-essential`. The helper checks for
+Clang before starting downloads or builds. Windows uses the downloaded Zig linker.
+
+The helper verifies the source tree and patch using `prepare.mjs`, downloads
+hash-pinned Zig and LLVM packages, installs the pinned pnpm version through npm,
+and builds and verifies the patched runtime and compiler. It uses a fresh build
+directory and refuses to overwrite an existing compiler or previous build.
+Pass a new output directory as a second argument if the default is already used.
+It requires network access and can take substantial time and disk space.
+
+The resulting `rift-toolchain.json` records the compiler pin and downloaded Zig
+location. Add that Zig directory to PATH, then run `npm run test:compiler` before
+use. The helper prints the location when it finishes. A custom compiler output
+also needs `RIFT_SCRIPTC` pointing to its `bin/scriptc` (or `bin/scriptc.exe`).
+On Windows, Git for Windows is required for upstream build scripts.
+
+The verified source archive is retained beside the output in `<output>-build/`.
+Only build inputs are extracted; the upstream test and documentation trees are
+not needed for this compiler build. For a full upstream development checkout or
+manual setup, follow the steps below.
+
+### Manual setup
+
 From the Rift repository root, use an upstream ScriptC checkout containing the
 pinned base revision:
 
