@@ -20,12 +20,15 @@ Download a native preview and run it without installing Node.js or build tools:
 
 | Platform | Download |
 | --- | --- |
-| Windows x64 | [ZIP](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.1/rift-native-preview-2026-11-20.1-win32-x64.zip) |
-| Linux x64 (glibc 2.34+) | [tar.gz](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.1/rift-native-preview-2026-11-20.1-linux-x64.tar.gz) |
+| Windows x64 | [ZIP](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.4/rift-native-preview-2026-11-20.4-win32-x64.zip) |
+| Linux x64 (glibc 2.34+) | [tar.gz](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.4/rift-native-preview-2026-11-20.4-linux-x64.tar.gz) |
+| macOS Apple Silicon | [tar.gz](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.4/rift-native-preview-2026-11-20.4-darwin-arm64.tar.gz) |
+| macOS Intel | [tar.gz](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.4/rift-native-preview-2026-11-20.4-darwin-x64.tar.gz) |
 
 See [download verification and run instructions](docs/native-releases.md), or
 [all releases and checksums](https://github.com/jkup/rift/releases). These are
-unsigned preview binaries.
+preview binaries without publisher signing or macOS notarization. See the
+[platform requirements](docs/native-releases.md#download-and-run) before downloading.
 
 ### Run from source
 
