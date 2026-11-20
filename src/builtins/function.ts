@@ -28,6 +28,7 @@ export function nativeFunctionString(initialName: string | null): GuestString {
         propertyName !== "[Symbol.iterator]" &&
         propertyName !== "[Symbol.asyncIterator]" &&
         propertyName !== "[Symbol.species]" &&
+        propertyName !== "[Symbol.toStringTag]" &&
         propertyName !== "[Symbol.matchAll]" &&
         propertyName !== "[Symbol.match]" &&
         propertyName !== "[Symbol.search]" &&

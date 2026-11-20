@@ -3,6 +3,7 @@ import type { ObjectCompletion } from "./object-conversion.js";
 import type { Location } from "./syntax.js";
 
 export type ConstructorPrototype =
+    | "Iterator"
     | "Temporal.ZonedDateTime"
     | "Date"
     | "Temporal.PlainMonthDay"
@@ -59,6 +60,8 @@ export function getPrototypeFromConstructor(
     // Bound callable metadata retains its target's Realm; proxies are unsupported.
     const realm = callable.realm;
     switch (intrinsic) {
+        case "Iterator":
+            return { type: "normal", value: realm.iteratorPrototype };
         case "Temporal.ZonedDateTime":
             return { type: "normal", value: realm.temporalZonedDateTimePrototype };
         case "Date":

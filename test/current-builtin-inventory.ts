@@ -38,6 +38,7 @@ export const scriptGlobalKeys = [
     "decodeURIComponent",
     "JSON",
     "Symbol",
+    "Iterator",
     "Map",
     "WeakMap",
     "WeakSet",

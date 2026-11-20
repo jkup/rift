@@ -14,7 +14,7 @@ import { wellKnownIterator } from "./symbols.js";
 import type { Location } from "./syntax.js";
 
 export type IteratorRecord = { iterator: GuestObject; nextMethod: Value; done: boolean };
-type IteratorCompletion = { type: "normal"; value: IteratorRecord } | ThrowCompletion;
+export type IteratorCompletion = { type: "normal"; value: IteratorRecord } | ThrowCompletion;
 type IteratorResultCompletion = { type: "normal"; value: GuestObject | null } | ThrowCompletion;
 type IteratorStepCompletion = { type: "normal"; done: boolean; value: Value } | ThrowCompletion;
 
@@ -50,8 +50,15 @@ export function getIteratorFromMethod(
     if (called.value.kind !== "object") {
         return languageFailure(context.realm, "TypeError", "iterator must be an object", loc);
     }
-    const iterator = called.value.object;
-    const next = iterator.internalGet("next", called.value, context, loc);
+    return getIteratorDirect(called.value.object, context, loc);
+}
+
+export function getIteratorDirect(
+    iterator: GuestObject,
+    context: OperationContext,
+    loc: Location,
+): IteratorCompletion {
+    const next = iterator.internalGet("next", { kind: "object", object: iterator }, context, loc);
     if (next.type === "throw") {
         return next;
     }

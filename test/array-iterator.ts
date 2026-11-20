@@ -31,6 +31,35 @@ function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
         .completion;
 }
 for (const source of [
+    "let d=Object.getOwnPropertyDescriptor(Iterator.prototype,Symbol.toStringTag);d.get.name==='get [Symbol.toStringTag]'&&d.set.name==='set [Symbol.toStringTag]'&&Function.prototype.toString.call(d.get)==='function get [Symbol.toStringTag]() { [native code] }';",
+    "class I extends Iterator{};let i=new I; i instanceof Iterator&&Object.getPrototypeOf(Iterator.prototype)===Object.prototype&&i[Symbol.iterator]()===i;",
+    "let n=0;try{Iterator()}catch(e){if(e instanceof TypeError)n++}try{new Iterator}catch(e){if(e instanceof TypeError)n++}n===2;",
+    "Iterator.from([1,2]).toArray().join(',')==='1,2'&&Iterator.from('ab').toArray().join(',')==='a,b';",
+    "let i=[1].values();Iterator.from(i)===i;",
+    "let calls=0;let i={next(){calls++;return {value:calls,done:calls>2}}};Iterator.from(i).reduce((a,b)=>a+b,10)===13;",
+    "[1,2,3].values().reduce((a,b,i)=>a+b+i)===9&&[].values().reduce(()=>0,undefined)===undefined;",
+    "let ok=false;try{[].values().reduce(()=>0)}catch(e){ok=e instanceof TypeError}ok;",
+    "let log='';let r=[4,5].values().forEach(function(v,i){'use strict';log+=v+':'+i+':'+(this===undefined)+':'+arguments.length+';'});r===undefined&&log==='4:0:true:2;5:1:true:2;';",
+    "[].values().every(()=>false)&&![].values().some(()=>true)&&[].values().find(()=>true)===undefined;",
+    "[1,2,3].values().find(x=>x>1)===2&&[1,2].values().every(x=>x>0)&&[1,2].values().some(x=>x===2);",
+    "let done=0;function* g(){try{yield 1;yield 2}finally{done++}}let i=g();i.some(x=>true)&&done===1&&i.next().done;",
+    "let done=0;function* g(){try{yield 1;yield 2}finally{done++}}g().every(x=>false)===false&&done===1;",
+    "let done=0;function* g(){try{yield 8;yield 9}finally{done++}}g().find(x=>true)===8&&done===1;",
+    "let log='';let i={get next(){log+='n';throw 1},return(){log+='r';throw 2}};let ok=false;try{Iterator.prototype.some.call(i,null)}catch(e){ok=e instanceof TypeError}ok&&log==='r';",
+    "let log='';let marker={};let i={get next(){log+='n';throw marker},return(){log+='r';return {}}};let ok=false;try{Iterator.prototype.some.call(i,()=>true)}catch(e){ok=e===marker}ok&&log==='n';",
+    "let log='';let marker={};let i={next(){throw marker},return(){log+='r';return {}}};let ok=false;try{Iterator.prototype.forEach.call(i,()=>{})}catch(e){ok=e===marker}ok&&log==='';",
+    "let closed=0;let marker={};let i={next(){return {value:1,done:false}},return(){closed++;throw 2}};let ok=false;try{Iterator.prototype.reduce.call(i,()=>{throw marker},0)}catch(e){ok=e===marker}ok&&closed===1;",
+    "let marker={};let i={next(){return {value:1}},return(){throw marker}};let ok=false;try{Iterator.prototype.find.call(i,()=>true)}catch(e){ok=e===marker}ok;",
+    "let i={next(){return {value:1}},return(){return 1}};let ok=false;try{Iterator.prototype.some.call(i,()=>true)}catch(e){ok=e instanceof TypeError}ok;",
+    "let reads=0;let i={get next(){reads++;return function(){return {done:true}}}};Iterator.prototype.toArray.call(i).length===0&&reads===1;",
+    "let obj={next(){return 7},return(){return 8}};let i=Iterator.from(obj);i.next(1)===7&&i.return(2)===8;",
+    "let obj={next(){return arguments.length},return(){return arguments.length}};let i=Iterator.from(obj);i.next(1)===0&&i.return(2)===0;",
+    "let i=Iterator.from({next(){return {done:true}}});let r=i.return();r.done&&r.value===undefined;",
+    "let log='';let obj={get [Symbol.iterator](){log+='i';return undefined},get next(){log+='n';return ()=>({done:true})}};Iterator.from(obj);log==='in';",
+    "let i=Object.create(Iterator.prototype);i.constructor=7;i[Symbol.toStringTag]='Custom';Object.keys(i).join(',')==='constructor'&&i.constructor===7&&Object.prototype.toString.call(i)==='[object Custom]';",
+    "let d=Object.getOwnPropertyDescriptor(Iterator.prototype,'constructor');let n=0;try{d.set.call(Iterator.prototype,1)}catch(e){if(e instanceof TypeError)n++}try{d.set.call(null,1)}catch(e){if(e instanceof TypeError)n++}n===2&&d.get()===Iterator&&!d.enumerable&&d.configurable;",
+    "let i=Object.create(Iterator.prototype);Object.preventExtensions(i);let ok=false;try{i.constructor=1}catch(e){ok=e instanceof TypeError}ok;",
+    "Iterator.length===0&&Iterator.from.length===1&&Iterator.prototype.reduce.length===1&&Iterator.prototype.toArray.length===0&&Object.prototype.toString.call(Iterator.prototype)==='[object Iterator]';",
     "let i=[7,8].values();let a=i.next();let b=i.next();let c=i.next();a.value===7&&!a.done&&b.value===8&&!b.done&&c.value===undefined&&c.done;",
     "let i=[7,8].keys();i.next().value===0&&i.next().value===1&&i.next().done;",
     "let i=[7,8].entries();let a=i.next();let b=i.next();Array.isArray(a.value)&&a.value.join(',')==='0,7'&&b.value.join(',')==='1,8'&&a.value!==b.value&&i.next().done;",
@@ -59,7 +88,7 @@ for (const source of [
     "let i=[7].values();let identity=i[Symbol.iterator];identity.call(7)===7&&identity.call(null)===null&&identity.name==='[Symbol.iterator]'&&identity.length===0;",
     "Array.prototype.keys.name==='keys'&&Array.prototype.keys.length===0&&Array.prototype.values.name==='values'&&Array.prototype.values.length===0&&Array.prototype.entries.name==='entries'&&Array.prototype.entries.length===0;",
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
-    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).length===0&&Object.getOwnPropertySymbols(root)[0]===Symbol.iterator&&d.writable&&!d.enumerable&&d.configurable;",
+    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray'&&Object.getOwnPropertySymbols(root).length===2&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
     "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {
@@ -146,6 +175,31 @@ for (const source of [
     );
 }
 const legacy = new Realm((_line: string) => {});
+{
+    const result = run(
+        "Iterator.prototype.toArray.call({next(){return {value:1}}})",
+        fresh(),
+        1000,
+    );
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "bounded eager iterator",
+    );
+}
+{
+    const owner = fresh(),
+        caller = fresh();
+    seed(caller, "foreignIterator", own(owner.globalObject, "Iterator"));
+    seed(caller, "foreignArrayPrototype", { kind: "object", object: owner.arrayPrototype });
+    const result = run(
+        "let i=[1,2].values();let w=foreignIterator.from(i);w!==i&&Object.getPrototypeOf(w.toArray())===foreignArrayPrototype;",
+        caller,
+    );
+    check(
+        result.type === "normal" && result.value.kind === "boolean" && result.value.value,
+        "foreign iterator wrapping and result Realm",
+    );
+}
 check(
     legacy.arrayPrototype.getOwnProperty("values") === undefined &&
         legacy.arrayPrototype.getOwnProperty(wellKnownIterator) === undefined,

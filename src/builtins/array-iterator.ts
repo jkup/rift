@@ -1,4 +1,5 @@
 import type { Realm } from "../realm.js";
+import { registerIterator } from "./iterator.js";
 import { GuestArrayIterator, type ArrayIterationKind } from "../array-iterator.js";
 import { toObject } from "../object-conversion.js";
 import { languageFailure, normal, UNDEFINED, type Value } from "../runtime.js";
@@ -6,17 +7,7 @@ import { wellKnownIterator, wellKnownToStringTag } from "../symbols.js";
 
 export function registerArrayIterators(realm: Realm): Value {
     let values: Value = UNDEFINED;
-    const identity = realm.createBuiltin(
-        "[Symbol.iterator]",
-        0,
-        (receiver, _args, _context, _loc) => normal(receiver),
-    );
-    realm.iteratorPrototype.bootstrapDefine(wellKnownIterator, {
-        value: { kind: "object", object: identity },
-        writable: true,
-        enumerable: false,
-        configurable: true,
-    });
+    registerIterator(realm);
     realm.registerBuiltin(
         realm.arrayIteratorPrototype,
         "next",
