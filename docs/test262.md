@@ -7,7 +7,7 @@ ECMAScript support or a measurement of the Node execution lane.
 
 ## At a glance
 
-**62,209 / 103,352 records passed (60.19%).**
+**63,328 / 103,352 records passed (61.27%).**
 All 53,795 discovered test files were selected; ordinary tests
 can produce strict and sloppy variants. Skips stay in the denominator.
 Unknown-variant input files: **0**.
@@ -15,11 +15,11 @@ Unknown-variant input files: **0**.
 | Corpus area | Passing share (all variants) | Passed / total |
 | --- | --- | ---: |
 | annexB | ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱ 81.9% | 1,128 / 1,377 |
-| built-ins | ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱ 70.3% | 33,366 / 47,453 |
+| built-ins | ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱ 72.3% | 34,300 / 47,453 |
 | harness | ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱ 76.1% | 178 / 234 |
 | intl402 | ▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱ 0.0% | 0 / 6,788 |
-| language | ▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱ 58.5% | 26,158 / 44,709 |
-| staging | ▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱▱▱ 49.4% | 1,379 / 2,791 |
+| language | ▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱ 58.5% | 26,166 / 44,709 |
+| staging | ▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱▱ 55.8% | 1,556 / 2,791 |
 
 Bars show the passing fraction, rounded to 5% steps; labels show exact counts.
 Unfilled portions include all non-pass outcomes, including skips. The corpus also
@@ -29,12 +29,12 @@ a particular ECMAScript edition.
 | Outcome | Records | Share of all records |
 | --- | ---: | ---: |
 | skip | 21,413 | 20.72% |
-| pass | 62,209 | 60.19% |
+| pass | 63,328 | 61.27% |
 | unsupported | 8,164 | 7.90% |
-| resource-limit | 1,172 | 1.13% |
-| fail | 6,468 | 6.26% |
+| resource-limit | 1,174 | 1.14% |
+| fail | 5,348 | 5.17% |
 | harness-error | 3,902 | 3.78% |
-| crash | 24 | 0.02% |
+| crash | 23 | 0.02% |
 
 Pass means the expected result was met, including expected negative-test errors.
 Fail means an attempted test did not meet its expectation. Unsupported means
@@ -44,20 +44,19 @@ they do not establish either support or a semantic failure.
 The report's exit code is **2**: infrastructure/driver errors occurred.
 All selected records completed, but this is not a clean conformance run.
 There were no input errors, timeouts, output-limit results or cancelled records.
-Of the harness errors, 3,847 reported a throw before the test stage and 55 reported
-a protocol result. All 24 crash-classified records exited with code 70; this
+Harness errors and crashes remain separate from semantic failures. Crash
 classification includes unexpected driver exits, not only operating-system crashes.
 
 ## Time and reproducibility
 
 | Measurement | Wall time |
 | --- | --- |
-| Total runner time, including discovery, preparation, build and execution | 1091.8 seconds (18.20 minutes) |
-| Native driver build and coverage check | 51.3 seconds (0.85 minutes) |
-| Variant execution | 992.4 seconds (16.54 minutes) |
-| Other setup and harness checks | 48.2 seconds (0.80 minutes) |
+| Total runner time, including discovery, preparation, build and execution | 979.8 seconds (16.33 minutes) |
+| Native driver build and coverage check | 127.4 seconds (2.12 minutes) |
+| Variant execution | 814.2 seconds (13.57 minutes) |
+| Other setup and harness checks | 38.1 seconds (0.64 minutes) |
 
-- Rift: [`2c1bb3db`](https://github.com/jkup/rift/commit/2c1bb3dbe60102035bb3a848fecfe27565452e40), latest fetched main at run start.
+- Rift: [`5ede3955`](https://github.com/jkup/rift/commit/5ede39555a42db8ef7d54e1292933012889d62af), runtime source revision committed after validation.
 - Test262: [`2e58f87d`](https://github.com/tc39/test262/commit/2e58f87d8350ad51224617a041c6e041d52f8444), existing clean corpus checkout.
 - Windows 11 x64, Intel Core i7-13700K, 24 logical CPUs, Node v26.13.0; **8 workers**.
 - Command: `npm run test262`; no filter; default feature skips; 10000 ms per-test deadline.
@@ -68,7 +67,7 @@ it excludes dependency/toolchain installation, Git fetch and final report serial
 Machine load, filesystem and compiler setup affect repeat runs.
 The [machine-readable snapshot](data/test262-summary.json) preserves exact counts,
 limits, skip policy, revisions and the raw report hash. Full observations remain
-in the local `build/test262-runs/run-pKfIEP/report.json` (not committed).
+in the local `build/test262-runs/run-YHJfL6/report.json` (not committed).
 
 ## Results by API
 
@@ -111,15 +110,15 @@ Groups follow Test262 directory names, not a hand-curated list of supported APIs
 | Infinity | 100.0% | 10 | 0 | 0 | 0 | 0 | 0 |
 | isFinite | 100.0% | 30 | 0 | 0 | 0 | 0 | 0 |
 | isNaN | 100.0% | 30 | 0 | 0 | 0 | 0 | 0 |
-| Iterator | 2.6% | 36 | 1,330 | 2 | 0 | 0 | 0 |
-| JSON | 75.3% | 250 | 78 | 4 | 0 | 0 | 0 |
+| Iterator | 36.8% | 504 | 862 | 2 | 0 | 0 | 0 |
+| JSON | 84.3% | 280 | 48 | 4 | 0 | 0 | 0 |
 | Map | 99.0% | 401 | 0 | 4 | 0 | 0 | 0 |
 | MapIteratorPrototype | 100.0% | 22 | 0 | 0 | 0 | 0 | 0 |
 | Math | 94.5% | 618 | 30 | 0 | 0 | 6 | 0 |
 | NaN | 100.0% | 10 | 0 | 0 | 0 | 0 | 0 |
 | NativeErrors | 93.6% | 176 | 0 | 12 | 0 | 0 | 0 |
 | Number | 99.4% | 676 | 2 | 2 | 0 | 0 | 0 |
-| Object | 95.9% | 6,520 | 264 | 8 | 0 | 0 | 10 |
+| Object | 97.3% | 6,616 | 168 | 8 | 0 | 0 | 10 |
 | parseFloat | 98.1% | 106 | 0 | 0 | 0 | 2 | 0 |
 | parseInt | 94.5% | 104 | 0 | 0 | 0 | 6 | 0 |
 | Promise | 37.4% | 546 | 84 | 828 | 0 | 0 | 0 |
@@ -127,13 +126,13 @@ Groups follow Test262 directory names, not a hand-curated list of supported APIs
 | Reflect | 93.5% | 286 | 20 | 0 | 0 | 0 | 0 |
 | RegExp | 65.0% | 2,440 | 40 | 24 | 358 | 890 | 4 |
 | RegExpStringIteratorPrototype | 100.0% | 34 | 0 | 0 | 0 | 0 | 0 |
-| Set | 59.9% | 458 | 302 | 4 | 0 | 0 | 0 |
+| Set | 99.5% | 760 | 0 | 4 | 0 | 0 | 0 |
 | SetIteratorPrototype | 100.0% | 22 | 0 | 0 | 0 | 0 | 0 |
 | ShadowRealm | 0.0% | 0 | 114 | 10 | 0 | 0 | 0 |
 | SharedArrayBuffer | 0.0% | 0 | 0 | 208 | 0 | 0 | 0 |
 | String | 97.3% | 2,376 | 46 | 6 | 13 | 2 | 0 |
 | StringIteratorPrototype | 100.0% | 14 | 0 | 0 | 0 | 0 | 0 |
-| SuppressedError | 0.0% | 0 | 42 | 2 | 0 | 0 | 0 |
+| SuppressedError | 86.4% | 38 | 4 | 2 | 0 | 0 | 0 |
 | Symbol | 81.3% | 156 | 2 | 34 | 0 | 0 | 0 |
 | Temporal | 96.8% | 8,938 | 276 | 0 | 0 | 18 | 0 |
 | ThrowTypeError | 85.7% | 24 | 2 | 2 | 0 | 0 | 0 |
@@ -199,7 +198,7 @@ Groups follow Test262 directory names, not a hand-curated list of supported APIs
 | expressions/bitwise-or | 100.0% | 59 | 0 | 0 | 0 | 0 | 0 |
 | expressions/bitwise-xor | 100.0% | 59 | 0 | 0 | 0 | 0 | 0 |
 | expressions/call | 93.0% | 159 | 0 | 1 | 6 | 5 | 0 |
-| expressions/class | 61.2% | 4,972 | 38 | 2,176 | 939 | 0 | 2 |
+| expressions/class | 61.2% | 4,976 | 34 | 2,176 | 939 | 0 | 2 |
 | expressions/coalesce | 78.3% | 36 | 0 | 0 | 8 | 2 | 0 |
 | expressions/comma | 90.9% | 10 | 0 | 0 | 0 | 1 | 0 |
 | expressions/compound-assignment | 91.5% | 721 | 0 | 0 | 67 | 0 | 0 |
@@ -273,7 +272,7 @@ Groups follow Test262 directory names, not a hand-curated list of supported APIs
 | statements/await-using | 0.0% | 0 | 0 | 133 | 55 | 0 | 0 |
 | statements/block | 45.0% | 18 | 0 | 0 | 20 | 2 | 0 |
 | statements/break | 40.0% | 16 | 0 | 0 | 24 | 0 | 0 |
-| statements/class | 63.0% | 5,523 | 64 | 2,166 | 1,007 | 0 | 6 |
+| statements/class | 63.1% | 5,527 | 60 | 2,166 | 1,007 | 0 | 6 |
 | statements/const | 81.2% | 220 | 0 | 0 | 51 | 0 | 0 |
 | statements/continue | 45.8% | 22 | 0 | 0 | 26 | 0 | 0 |
 | statements/debugger | 0.0% | 0 | 0 | 0 | 4 | 0 | 0 |
@@ -299,12 +298,12 @@ Groups follow Test262 directory names, not a hand-curated list of supported APIs
 | statements/with | 0.5% | 1 | 0 | 0 | 181 | 0 | 0 |
 | types | 87.7% | 185 | 2 | 4 | 20 | 0 | 0 |
 | white-space | 64.2% | 86 | 0 | 0 | 48 | 0 | 0 |
-| staging | 0.0% | 0 | 8 | 0 | 0 | 0 | 0 |
+| staging | 100.0% | 8 | 0 | 0 | 0 | 0 | 0 |
 | staging/built-ins | 50.0% | 8 | 2 | 6 | 0 | 0 | 0 |
 | staging/decorators | 14.3% | 2 | 0 | 0 | 12 | 0 | 0 |
 | staging/explicit-resource-management | 1.9% | 2 | 22 | 75 | 6 | 0 | 0 |
-| staging/set-methods | 0.0% | 0 | 6 | 0 | 0 | 0 | 0 |
-| staging/sm | 51.8% | 1,363 | 651 | 243 | 206 | 67 | 101 |
+| staging/set-methods | 100.0% | 6 | 0 | 0 | 0 | 0 | 0 |
+| staging/sm | 58.0% | 1,526 | 487 | 243 | 206 | 69 | 100 |
 | staging/source-phase-imports | 0.0% | 0 | 0 | 4 | 0 | 0 | 0 |
 | staging/Temporal | 100.0% | 4 | 0 | 0 | 0 | 0 | 0 |
 | staging/top-level-await | 0.0% | 0 | 0 | 1 | 0 | 0 | 0 |

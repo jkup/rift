@@ -1,8 +1,8 @@
 {
   "date": "2026-11-20",
-  "riftRevision": "2c1bb3dbe60102035bb3a848fecfe27565452e40",
+  "riftRevision": "5ede39555a42db8ef7d54e1292933012889d62af",
   "corpusRevision": "2e58f87d8350ad51224617a041c6e041d52f8444",
-  "reportSha256": "a01b28b0ea58b9c93d95e84ab4bd2e192818abc67532206a57401a7fecb9e21d",
+  "reportSha256": "be30f0d7411953bd636276f40355ad8ce550b4551b5a1fe67e602bb43e75c610",
   "selectionSha256": "d0b9688722639a8c11dadcbac943da928e3cd7b91819efbb286ca72f340e80ce",
   "environment": {
     "os": "Windows 11 x64 (10.0.26200)",
@@ -31,9 +31,9 @@
     }
   },
   "timing": {
-    "totalMs": 1091802.0301,
-    "buildMs": 51259.60539999999,
-    "executionMs": 992390.8640999999
+    "totalMs": 979758.9967,
+    "buildMs": 127400.01379999999,
+    "executionMs": 814234.0109
   },
   "discoveredFiles": 53795,
   "selectedFiles": 53795,
@@ -41,12 +41,12 @@
   "unknownVariantFiles": 0,
   "counts": {
     "skip": 21413,
-    "pass": 62209,
+    "pass": 63328,
     "unsupported": 8164,
-    "resource-limit": 1172,
-    "fail": 6468,
+    "resource-limit": 1174,
+    "fail": 5348,
     "harness-error": 3902,
-    "crash": 24
+    "crash": 23
   },
   "exitCode": 2,
   "skips": {
@@ -343,17 +343,17 @@
       "area": "built-ins/Iterator",
       "total": 1368,
       "counts": {
-        "fail": 1330,
-        "skip": 2,
-        "pass": 36
+        "fail": 862,
+        "pass": 504,
+        "skip": 2
       }
     },
     {
       "area": "built-ins/JSON",
       "total": 332,
       "counts": {
-        "pass": 250,
-        "fail": 78,
+        "pass": 280,
+        "fail": 48,
         "skip": 4
       }
     },
@@ -409,8 +409,8 @@
       "area": "built-ins/Object",
       "total": 6802,
       "counts": {
-        "pass": 6520,
-        "fail": 264,
+        "pass": 6616,
+        "fail": 168,
         "harness-error": 10,
         "skip": 8
       }
@@ -480,9 +480,8 @@
       "area": "built-ins/Set",
       "total": 764,
       "counts": {
-        "pass": 458,
-        "skip": 4,
-        "fail": 302
+        "pass": 760,
+        "skip": 4
       }
     },
     {
@@ -529,7 +528,8 @@
       "area": "built-ins/SuppressedError",
       "total": 44,
       "counts": {
-        "fail": 42,
+        "pass": 38,
+        "fail": 4,
         "skip": 2
       }
     },
@@ -973,11 +973,11 @@
       "area": "language/expressions/class",
       "total": 8127,
       "counts": {
-        "pass": 4972,
+        "pass": 4976,
         "unsupported": 939,
         "skip": 2176,
         "crash": 2,
-        "fail": 38
+        "fail": 34
       }
     },
     {
@@ -1566,11 +1566,11 @@
       "area": "language/statements/class",
       "total": 8766,
       "counts": {
-        "pass": 5523,
+        "pass": 5527,
         "unsupported": 1007,
         "skip": 2166,
         "crash": 2,
-        "fail": 64,
+        "fail": 60,
         "harness-error": 4
       }
     },
@@ -1798,7 +1798,7 @@
       "area": "staging",
       "total": 8,
       "counts": {
-        "fail": 8
+        "pass": 8
       }
     },
     {
@@ -1832,20 +1832,20 @@
       "area": "staging/set-methods",
       "total": 6,
       "counts": {
-        "fail": 6
+        "pass": 6
       }
     },
     {
       "area": "staging/sm",
       "total": 2631,
       "counts": {
-        "pass": 1363,
+        "pass": 1526,
         "skip": 243,
-        "fail": 651,
-        "resource-limit": 67,
+        "fail": 487,
+        "resource-limit": 69,
         "unsupported": 206,
         "harness-error": 85,
-        "crash": 16
+        "crash": 15
       }
     },
     {
@@ -1894,8 +1894,8 @@
       "total": 47453,
       "counts": {
         "skip": 3484,
-        "pass": 33366,
-        "fail": 5373,
+        "pass": 34300,
+        "fail": 4439,
         "harness-error": 3793,
         "resource-limit": 1038,
         "unsupported": 399
@@ -1923,8 +1923,8 @@
       "total": 44709,
       "counts": {
         "unsupported": 7487,
-        "pass": 26158,
-        "fail": 318,
+        "pass": 26166,
+        "fail": 310,
         "skip": 10661,
         "resource-limit": 59,
         "harness-error": 18,
@@ -1935,13 +1935,13 @@
       "area": "staging",
       "total": 2791,
       "counts": {
-        "fail": 691,
-        "pass": 1379,
+        "pass": 1556,
         "skip": 329,
+        "fail": 513,
         "unsupported": 224,
-        "resource-limit": 67,
+        "resource-limit": 69,
         "harness-error": 85,
-        "crash": 16
+        "crash": 15
       }
     }
   ]
