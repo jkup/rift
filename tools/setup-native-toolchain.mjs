@@ -6,6 +6,7 @@ import {
     downloadVerified,
     fileHash,
     nativeBuildEnvironment,
+    nativeTar,
     releaseTarget,
     requireNativeLinker,
 } from "./native-release-support.mjs";
@@ -41,7 +42,7 @@ async function installZig() {
     const asset = downloads.zig[target];
     const archive = join(work, basename(new URL(asset.url).pathname));
     await downloadVerified(asset.url, archive, asset.sha256);
-    run("tar", ["-xf", archive, "-C", work]);
+    run(nativeTar, ["-xf", archive, "-C", work]);
     const directory = join(work, basename(archive).replace(/\.(zip|tar\.xz)$/, ""));
     const executable = join(directory, process.platform === "win32" ? "zig.exe" : "zig");
     if (checkedCommand(executable, ["version"]) !== pin.buildDependencies.zig) {
@@ -71,7 +72,7 @@ async function installHelper(source) {
     );
     const unpack = join(work, "llvm");
     mkdirSync(unpack);
-    run("tar", ["-xf", archive, "-C", unpack]);
+    run(nativeTar, ["-xf", archive, "-C", unpack]);
     const bin = join(unpack, "package/bin");
     const files = readdirSync(bin).filter((name) => !name.endsWith(".json"));
     if (!files.some((name) => fileHash(join(bin, name)) === helper.helperSha256)) {
@@ -87,7 +88,7 @@ const source = join(work, "source");
 mkdirSync(source);
 // Extract only build inputs. Upstream test symlinks need Windows developer mode
 // and are irrelevant to this compiler build; the verified archive retains them.
-run("tar", [
+run(nativeTar, [
     "-xf",
     archive,
     "-C",
@@ -98,8 +99,11 @@ run("tar", [
 ]);
 if (process.platform === "win32") {
     const git = checkedCommand("where.exe", ["git"]).split(/\r?\n/)[0];
-    const unixTools = resolve(dirname(git), "../usr/bin");
-    if (!existsSync(join(unixTools, "true.exe"))) {
+    // PowerShell finds cmd/git.exe; Git Bash finds mingw64/bin or ucrt64/bin/git.exe.
+    const unixTools = ["../usr/bin", "../../usr/bin"]
+        .map((path) => resolve(dirname(git), path))
+        .find((path) => existsSync(join(path, "true.exe")));
+    if (!unixTools) {
         throw new Error("Git for Windows usr/bin/true.exe is required by upstream build scripts");
     }
     env.PATH += delimiter + unixTools;

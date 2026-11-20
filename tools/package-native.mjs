@@ -17,6 +17,7 @@ import {
     checkedCommand,
     fileHash,
     nativeBuildEnvironment,
+    nativeTar,
     releaseName,
     releaseTarget,
     verifyGlibcBaseline,
@@ -147,9 +148,9 @@ function stageDocumentation() {
 function archiveAndVerify() {
     const temporary = join(work, name + extension);
     const options = process.platform === "win32" ? ["-a", "-cf"] : ["-czf"];
-    checkedCommand("tar", [...options, temporary, "-C", work, name]);
+    checkedCommand(nativeTar, [...options, temporary, "-C", work, name]);
     const unpack = mkdtempSync(join(work, "relocated package "));
-    checkedCommand("tar", ["-xf", temporary, "-C", unpack]);
+    checkedCommand(nativeTar, ["-xf", temporary, "-C", unpack]);
     const extracted = join(unpack, name);
     const relocated = join(extracted, basename(executable));
     if (fileHash(relocated) !== report.executableSha256) {

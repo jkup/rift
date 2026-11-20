@@ -1,7 +1,12 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
+
+// Git Bash's GNU tar treats drive letters as remote hosts and cannot create ZIPs.
+// Windows ships bsdtar, which handles both native paths and ZIP archives.
+export const nativeTar =
+    process.platform === "win32" ? join(process.env.SystemRoot, "System32", "tar.exe") : "tar";
 
 export function sha256(bytes) {
     return createHash("sha256").update(bytes).digest("hex");
