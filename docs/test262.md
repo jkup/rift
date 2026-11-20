@@ -7,7 +7,7 @@ ECMAScript support or a measurement of the Node execution lane.
 
 ## At a glance
 
-**63,328 / 103,352 records passed (61.27%).**
+**63,480 / 103,352 records passed (61.42%).**
 All 53,795 discovered test files were selected; ordinary tests
 can produce strict and sloppy variants. Skips stay in the denominator.
 Unknown-variant input files: **0**.
@@ -15,11 +15,11 @@ Unknown-variant input files: **0**.
 | Corpus area | Passing share (all variants) | Passed / total |
 | --- | --- | ---: |
 | annexB | ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱ 81.9% | 1,128 / 1,377 |
-| built-ins | ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱ 72.3% | 34,300 / 47,453 |
+| built-ins | ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱ 72.6% | 34,450 / 47,453 |
 | harness | ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱ 76.1% | 178 / 234 |
 | intl402 | ▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱ 0.0% | 0 / 6,788 |
 | language | ▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱ 58.5% | 26,166 / 44,709 |
-| staging | ▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱▱ 55.8% | 1,556 / 2,791 |
+| staging | ▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱▱ 55.8% | 1,558 / 2,791 |
 
 Bars show the passing fraction, rounded to 5% steps; labels show exact counts.
 Unfilled portions include all non-pass outcomes, including skips. The corpus also
@@ -29,10 +29,10 @@ a particular ECMAScript edition.
 | Outcome | Records | Share of all records |
 | --- | ---: | ---: |
 | skip | 21,413 | 20.72% |
-| pass | 63,328 | 61.27% |
+| pass | 63,480 | 61.42% |
 | unsupported | 8,164 | 7.90% |
 | resource-limit | 1,174 | 1.14% |
-| fail | 5,348 | 5.17% |
+| fail | 5,196 | 5.03% |
 | harness-error | 3,902 | 3.78% |
 | crash | 23 | 0.02% |
 
@@ -51,12 +51,12 @@ classification includes unexpected driver exits, not only operating-system crash
 
 | Measurement | Wall time |
 | --- | --- |
-| Total runner time, including discovery, preparation, build and execution | 979.8 seconds (16.33 minutes) |
-| Native driver build and coverage check | 127.4 seconds (2.12 minutes) |
-| Variant execution | 814.2 seconds (13.57 minutes) |
-| Other setup and harness checks | 38.1 seconds (0.64 minutes) |
+| Total runner time, including discovery, preparation, build and execution | 976.0 seconds (16.27 minutes) |
+| Native driver build and coverage check | 134.7 seconds (2.24 minutes) |
+| Variant execution | 805.5 seconds (13.43 minutes) |
+| Other setup and harness checks | 35.8 seconds (0.60 minutes) |
 
-- Rift: [`5ede3955`](https://github.com/jkup/rift/commit/5ede39555a42db8ef7d54e1292933012889d62af), runtime source revision committed after validation.
+- Rift: [`3a81907d`](https://github.com/jkup/rift/commit/3a81907d26bdae9414551bff9d7bc9752ebf5ed4), runtime source revision committed after validation.
 - Test262: [`2e58f87d`](https://github.com/tc39/test262/commit/2e58f87d8350ad51224617a041c6e041d52f8444), existing clean corpus checkout.
 - Windows 11 x64, Intel Core i7-13700K, 24 logical CPUs, Node v26.13.0; **8 workers**.
 - Command: `npm run test262`; no filter; default feature skips; 10000 ms per-test deadline.
@@ -67,7 +67,7 @@ it excludes dependency/toolchain installation, Git fetch and final report serial
 Machine load, filesystem and compiler setup affect repeat runs.
 The [machine-readable snapshot](data/test262-summary.json) preserves exact counts,
 limits, skip policy, revisions and the raw report hash. Full observations remain
-in the local `build/test262-runs/run-YHJfL6/report.json` (not committed).
+in the local `build/test262-runs/run-RG7XBV/report.json` (not committed).
 
 ## Results by API
 
@@ -110,7 +110,7 @@ Groups follow Test262 directory names, not a hand-curated list of supported APIs
 | Infinity | 100.0% | 10 | 0 | 0 | 0 | 0 | 0 |
 | isFinite | 100.0% | 30 | 0 | 0 | 0 | 0 | 0 |
 | isNaN | 100.0% | 30 | 0 | 0 | 0 | 0 | 0 |
-| Iterator | 36.8% | 504 | 862 | 2 | 0 | 0 | 0 |
+| Iterator | 45.0% | 616 | 750 | 2 | 0 | 0 | 0 |
 | JSON | 84.3% | 280 | 48 | 4 | 0 | 0 | 0 |
 | Map | 99.0% | 401 | 0 | 4 | 0 | 0 | 0 |
 | MapIteratorPrototype | 100.0% | 22 | 0 | 0 | 0 | 0 | 0 |
@@ -124,7 +124,7 @@ Groups follow Test262 directory names, not a hand-curated list of supported APIs
 | Promise | 37.4% | 546 | 84 | 828 | 0 | 0 | 0 |
 | Proxy | 0.0% | 0 | 524 | 74 | 9 | 0 | 0 |
 | Reflect | 93.5% | 286 | 20 | 0 | 0 | 0 | 0 |
-| RegExp | 65.0% | 2,440 | 40 | 24 | 358 | 890 | 4 |
+| RegExp | 66.0% | 2,478 | 2 | 24 | 358 | 890 | 4 |
 | RegExpStringIteratorPrototype | 100.0% | 34 | 0 | 0 | 0 | 0 | 0 |
 | Set | 99.5% | 760 | 0 | 4 | 0 | 0 | 0 |
 | SetIteratorPrototype | 100.0% | 22 | 0 | 0 | 0 | 0 | 0 |
@@ -299,7 +299,7 @@ Groups follow Test262 directory names, not a hand-curated list of supported APIs
 | types | 87.7% | 185 | 2 | 4 | 20 | 0 | 0 |
 | white-space | 64.2% | 86 | 0 | 0 | 48 | 0 | 0 |
 | staging | 100.0% | 8 | 0 | 0 | 0 | 0 | 0 |
-| staging/built-ins | 50.0% | 8 | 2 | 6 | 0 | 0 | 0 |
+| staging/built-ins | 62.5% | 10 | 0 | 6 | 0 | 0 | 0 |
 | staging/decorators | 14.3% | 2 | 0 | 0 | 12 | 0 | 0 |
 | staging/explicit-resource-management | 1.9% | 2 | 22 | 75 | 6 | 0 | 0 |
 | staging/set-methods | 100.0% | 6 | 0 | 0 | 0 | 0 | 0 |
