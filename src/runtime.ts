@@ -1,4 +1,6 @@
 import type { Guard, RuntimeCapability, ThrowOrigin } from "./outcomes.js";
+import type { ErrorName } from "./error-names.js";
+export type { ErrorName } from "./error-names.js";
 import { GuestSymbol, formatPropertyKey, symbolDescriptiveString } from "./symbols.js";
 import { toObject } from "./object-conversion.js";
 import { toPropertyKey } from "./conversion.js";
@@ -30,15 +32,6 @@ export type PrivateElement =
     | { kind: "field"; value: Value }
     | { kind: "method"; value: Value }
     | { kind: "accessor"; get: Value; set: Value };
-export type ErrorName =
-    | "Error"
-    | "TypeError"
-    | "ReferenceError"
-    | "RangeError"
-    | "SyntaxError"
-    | "EvalError"
-    | "URIError"
-    | "AggregateError";
 // Host undefined means absent; guest undefined is the present Value UNDEFINED.
 export type DataDescriptorUpdate = {
     value?: Value;

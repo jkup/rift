@@ -215,4 +215,58 @@ check(
     bounded.type === "throw" && bounded.origin.kind === "resource-limit",
     "predicate call budget",
 );
+for (const source of [
+    "let first={},prior={};let e=new SuppressedError(first,prior,'failure');e.error===first&&e.suppressed===prior&&e.message==='failure'&&e.toString()==='SuppressedError: failure'&&e instanceof Error&&e instanceof SuppressedError&&Error.isError(e);",
+    "let e=SuppressedError();e.error===undefined&&e.suppressed===undefined&&!Object.hasOwn(e,'message')&&Object.getOwnPropertyNames(e).join(',')==='error,suppressed'&&Object.keys(e).length===0;",
+    "let e=SuppressedError(1,2,null);e.message==='null'&&Object.getOwnPropertyNames(e).join(',')==='message,error,suppressed';",
+    "let e=SuppressedError(1,2,undefined,{get cause(){throw 1;}});!Object.hasOwn(e,'message')&&!Object.hasOwn(e,'cause');",
+    "let poison={toString(){throw 1;},valueOf(){throw 2;}};let e=SuppressedError(poison,poison);e.error===poison&&e.suppressed===poison;",
+    "let receiver={};let e=SuppressedError.call(receiver,1,2);e!==receiver&&e.error===1&&e.suppressed===2;",
+    "let e=SuppressedError(1,2);let a=Object.getOwnPropertyDescriptor(e,'error');let b=Object.getOwnPropertyDescriptor(e,'suppressed');a.writable&&!a.enumerable&&a.configurable&&b.writable&&!b.enumerable&&b.configurable;",
+    "let e=SuppressedError(1,2);e.error=3;delete e.suppressed;e.error===3&&!Object.hasOwn(e,'suppressed');",
+    "SuppressedError.length===3&&SuppressedError.name==='SuppressedError'&&Object.getPrototypeOf(SuppressedError)===Error&&Object.getPrototypeOf(SuppressedError.prototype)===Error.prototype&&SuppressedError.prototype.constructor===SuppressedError;",
+    "let d=Object.getOwnPropertyDescriptor(SuppressedError,'prototype');!d.writable&&!d.enumerable&&!d.configurable&&SuppressedError.prototype.name==='SuppressedError'&&SuppressedError.prototype.message==='';",
+    "!Error.isError(SuppressedError.prototype)&&!Error.isError(Object.create(SuppressedError.prototype))&&!Object.hasOwn(SuppressedError.prototype,'error')&&!Object.hasOwn(SuppressedError.prototype,'suppressed')&&Object.prototype.toString.call(SuppressedError())==='[object Error]';",
+    "class E extends SuppressedError{}let e=new E(1,2,'x');e instanceof E&&e instanceof SuppressedError&&e.error===1&&e.suppressed===2&&e.message==='x';",
+    "let trace='';function C(){}let target=C.bind(null);Object.defineProperty(target,'prototype',{get(){trace+='p';return C.prototype;}});let e=Reflect.construct(SuppressedError,[1,2,{toString(){trace+='m';return 'x';}}],target);trace==='pm'&&Object.getPrototypeOf(e)===C.prototype&&Error.isError(e);",
+    "let marker={};let caught=false;try{SuppressedError(1,2,{toString(){throw marker;}});}catch(e){caught=e===marker;}caught;",
+]) {
+    passes(source);
+}
+{
+    const owner = fresh(),
+        caller = fresh();
+    caller.defineScriptGlobal("ForeignSuppressed", {
+        value: own(owner.globalObject, "SuppressedError"),
+    });
+    const e = resultObject(run("ForeignSuppressed(1,2);", caller));
+    check(
+        e.getPrototypeOf() === owner.getErrorPrototype("SuppressedError"),
+        "SuppressedError allocation Realm",
+    );
+    const failure = run("ForeignSuppressed(1,2,Symbol());", caller);
+    check(
+        failure.type === "throw" &&
+            failure.value.kind === "object" &&
+            failure.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+        "SuppressedError coercion Realm",
+    );
+    const foreignTarget = resultObject(
+        run("function C(){}let target=C.bind(null);target.prototype=0;target;", owner),
+    );
+    caller.defineScriptGlobal("ForeignTarget", {
+        value: { kind: "object", object: foreignTarget },
+    });
+    const fallback = resultObject(
+        run("Reflect.construct(SuppressedError,[1,2],ForeignTarget);", caller),
+    );
+    check(
+        fallback.getPrototypeOf() === owner.getErrorPrototype("SuppressedError"),
+        "SuppressedError fallback uses newTarget Realm",
+    );
+}
+check(
+    new Realm((_line: string) => {}).global.bindings.get("SuppressedError") === undefined,
+    "legacy SuppressedError absent",
+);
 console.log("Error family and brand predicate passed");

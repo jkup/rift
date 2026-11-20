@@ -65,6 +65,7 @@ Rift implements the areas below, with incomplete ECMAScript conformance. See the
 | Classes | Implemented | Inheritance, private fields/methods, static blocks, super and new.target. |
 | Generators and async | Implemented; async Test262 profile skipped | Generators, async functions, async generators and for-await-of. The corpus runner does not provide Test262 async completion or agents. |
 | Core builtins | Implemented | Objects, arrays, Number, BigInt, strings, symbols, Map, Set (including algebra and relationship methods), iterators, JSON and Reflect. |
+| Error objects | Implemented | Standard error constructors, AggregateError and SuppressedError. SuppressedError does not imply support for disposal syntax or disposal stacks. |
 | Date and Temporal | Implemented within scope | Date defaults to UTC with selectable pinned IANA zones; Temporal supports ISO-calendar operations. |
 | RegExp | Partial | Unicode mode, property escapes, backreferences, lookaround and scoped modifiers; no Unicode sets. |
 | WeakMap and WeakSet | Partial | Patched native compiler typed weak storage; no weak symbol keys. |

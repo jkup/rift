@@ -86,12 +86,6 @@
             "value": 259
         },
         {
-            "filename": "src/builtins/error.ts",
-            "name": "registerErrors",
-            "rule": "functionLines",
-            "value": 107
-        },
-        {
             "filename": "src/builtins/map.ts",
             "name": "registerMap",
             "rule": "functionLines",
@@ -491,13 +485,13 @@
             "filename": "src/realm.ts",
             "name": "<module>",
             "rule": "fileLines",
-            "value": 653
+            "value": 634
         },
         {
             "filename": "src/realm.ts",
             "name": "Realm.constructor.callback",
             "rule": "functionLines",
-            "value": 204
+            "value": 184
         },
         {
             "filename": "src/regexp/regexp-matcher.ts",
@@ -551,7 +545,7 @@
             "filename": "src/runtime.ts",
             "name": "<module>",
             "rule": "fileLines",
-            "value": 814
+            "value": 807
         },
         {
             "filename": "src/runtime.ts",

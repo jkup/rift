@@ -22,6 +22,7 @@ export const scriptGlobalKeys = [
     "EvalError",
     "URIError",
     "AggregateError",
+    "SuppressedError",
     "String",
     "Boolean",
     "Object",

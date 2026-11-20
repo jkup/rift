@@ -1,4 +1,6 @@
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
+import { errorNames } from "../error-names.js";
+import { createSuppressedErrorConstructor } from "./suppressed-error.js";
 import { getIterator, iteratorStepValue } from "../iterator.js";
 import { arrayFromList } from "../array-create.js";
 import type { Realm } from "../realm.js";
@@ -115,6 +117,9 @@ function createPublicError(
 
 // Trusted bootstrap creates intrinsic objects before publishing mutable globals.
 export function createErrorConstructor(realm: Realm, name: ErrorName): GuestObject {
+    if (name === "SuppressedError") {
+        return createSuppressedErrorConstructor(realm);
+    }
     const constructor = realm.createBuiltinConstructor(
         name,
         name === "AggregateError" ? 2 : 1,
@@ -126,18 +131,8 @@ export function createErrorConstructor(realm: Realm, name: ErrorName): GuestObje
 }
 
 export function registerErrors(realm: Realm): void {
-    const names: ErrorName[] = [
-        "Error",
-        "TypeError",
-        "ReferenceError",
-        "RangeError",
-        "SyntaxError",
-        "EvalError",
-        "URIError",
-        "AggregateError",
-    ];
     let errorConstructor: GuestObject | null = null;
-    for (const name of names) {
+    for (const name of errorNames) {
         const constructor = realm.getErrorConstructor(name);
         if (errorConstructor === null) {
             errorConstructor = constructor;

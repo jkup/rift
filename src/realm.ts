@@ -1,3 +1,4 @@
+import { errorNames } from "./error-names.js";
 import { registerDate } from "./builtins/date.js";
 import { registerTemporal } from "./builtins/temporal/temporal.js";
 import { registerBigInt } from "./builtins/bigint.js";
@@ -220,17 +221,7 @@ export class Realm {
         this.objectPrototype = new GuestObject(null, true);
         if (profile === "script") {
             const errorPrototype = new GuestObject(this.objectPrototype);
-            const names: ErrorName[] = [
-                "Error",
-                "TypeError",
-                "ReferenceError",
-                "RangeError",
-                "SyntaxError",
-                "EvalError",
-                "URIError",
-                "AggregateError",
-            ];
-            for (const name of names) {
+            for (const name of errorNames) {
                 const proto = name === "Error" ? errorPrototype : new GuestObject(errorPrototype);
                 proto.bootstrapDefine("name", {
                     value: { kind: "string", value: name },
@@ -371,17 +362,7 @@ export class Realm {
             registerBigInt(this);
         }
         if (profile === "script") {
-            const names: ErrorName[] = [
-                "Error",
-                "TypeError",
-                "ReferenceError",
-                "RangeError",
-                "SyntaxError",
-                "EvalError",
-                "URIError",
-                "AggregateError",
-            ];
-            for (const name of names) {
+            for (const name of errorNames) {
                 this.errorConstructors.set(name, createErrorConstructor(this, name));
             }
             registerErrors(this);
