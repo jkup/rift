@@ -7,10 +7,27 @@ import {
     nativeBuildEnvironment,
     releaseName,
     releaseTarget,
+    requireNativeLinker,
     sha256,
     verifyDownload,
 } from "./native-release-support.mjs";
 import { smokeVerdict } from "./native-release-smoke.mjs";
+
+test("Linux setup explains a missing host linker before expensive builds", () => {
+    assert.throws(
+        () =>
+            requireNativeLinker("linux", () => {
+                throw new Error("ENOENT");
+            }),
+        /apt-get install clang build-essential/,
+    );
+    const calls = [];
+    const run = (command, args) => calls.push([command, args]);
+    requireNativeLinker("win32", run);
+    assert.deepEqual(calls, []);
+    requireNativeLinker("linux", run);
+    assert.deepEqual(calls, [["clang", ["--version"]]]);
+});
 
 test("native setup keeps Windows PATH and discards ambient compiler overrides", () => {
     assert.deepEqual(

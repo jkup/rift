@@ -19,6 +19,10 @@ containing the pinned revision can be prepared and built with one command:
 npm run setup:native -- /path/to/scriptc
 ```
 
+Linux also requires Clang and system C development tools. On Ubuntu, install them
+first with `sudo apt-get install clang build-essential`. The helper checks for
+Clang before starting downloads or builds. Windows uses the downloaded Zig linker.
+
 The helper verifies the source tree and patch using `prepare.mjs`, downloads
 hash-pinned Zig and LLVM packages, installs the pinned pnpm version through npm,
 and builds and verifies the patched runtime and compiler. It uses a fresh build

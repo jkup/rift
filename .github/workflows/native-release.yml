@@ -39,6 +39,9 @@ jobs:
       - run: npm run test:readability
       - run: npm run test:release
       - run: npm test
+      - name: Install Linux host linker
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y clang build-essential
       - name: Prepare upstream source
         shell: bash
         run: |

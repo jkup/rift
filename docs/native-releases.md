@@ -52,7 +52,9 @@ as the Node-hosted interpreter. It does not provide Node or browser APIs.
 ## Build a package locally
 
 Use a clean checkout with Node 24 or later, dependencies installed with `npm ci`,
-the [patched compiler](../toolchain/scriptc/README.md) and Zig 0.16.0 on PATH:
+the [patched compiler](../toolchain/scriptc/README.md) and Zig 0.16.0 on PATH.
+Linux also needs Clang and system C development tools (`sudo apt-get install
+clang build-essential` on Ubuntu). Then run:
 
 ```sh
 npm run package:native -- v0.1.0-preview.1

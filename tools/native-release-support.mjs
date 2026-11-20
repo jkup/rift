@@ -80,3 +80,17 @@ export function nativeBuildEnvironment(source = process.env) {
     }
     return env;
 }
+
+export function requireNativeLinker(platform = process.platform, run = checkedCommand) {
+    if (platform !== "linux") {
+        return;
+    }
+    try {
+        run("clang", ["--version"]);
+    } catch (cause) {
+        throw new Error(
+            "Linux native builds need Clang and C development tools. On Ubuntu: sudo apt-get install clang build-essential",
+            { cause },
+        );
+    }
+}

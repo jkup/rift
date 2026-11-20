@@ -13,7 +13,13 @@ import { fileURLToPath } from "node:url";
 import { scriptcPath } from "./scriptc-path.mjs";
 import { runNativeCommand } from "./native-build-runner.mjs";
 import { probeVerdict } from "./probe-verdict.mjs";
-import { checkedCommand, fileHash, releaseName, releaseTarget } from "./native-release-support.mjs";
+import {
+    checkedCommand,
+    fileHash,
+    releaseName,
+    releaseTarget,
+    requireNativeLinker,
+} from "./native-release-support.mjs";
 import { smokeNativeRelease } from "./native-release-smoke.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -48,6 +54,7 @@ const zig = checkedCommand("zig", ["version"]);
 if (zig !== pin.buildDependencies.zig) {
     throw new Error(`Release builds require Zig ${pin.buildDependencies.zig}, found ${zig}`);
 }
+requireNativeLinker();
 mkdirSync(destination, { recursive: true });
 const work = mkdtempSync(join(destination, ".native-release-"));
 const bundle = join(work, name);

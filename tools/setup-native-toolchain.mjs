@@ -7,6 +7,7 @@ import {
     fileHash,
     nativeBuildEnvironment,
     releaseTarget,
+    requireNativeLinker,
 } from "./native-release-support.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -28,6 +29,7 @@ if (existsSync(output) || existsSync(work)) {
 if (Number(process.versions.node.split(".")[0]) < 24 || !process.env.npm_execpath) {
     throw new Error("Run through npm with Node 24 or later");
 }
+requireNativeLinker();
 mkdirSync(work, { recursive: true });
 const env = nativeBuildEnvironment();
 function run(command, args, cwd = work) {
