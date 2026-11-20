@@ -161,6 +161,67 @@ for (const source of [
         "bounded Set traversal",
     );
 }
+// Independent expectations for set-like arguments, ordering, mutation and cleanup.
+for (const source of [
+    "let a=new Set([3,1,2]);let b=new Set([2,4]);Array.from(a.union(b)).join(',')==='3,1,2,4'&&Array.from(a.intersection(b)).join(',')==='2'&&Array.from(a.difference(b)).join(',')==='3,1'&&Array.from(a.symmetricDifference(b)).join(',')==='3,1,4';",
+    "let a=new Set([1,2]);a.isSubsetOf(new Set([1,2,3]))&&a.isSupersetOf(new Set([2]))&&a.isDisjointFrom(new Set([3]))&&!a.isSubsetOf(new Set([1]))&&!a.isSupersetOf(new Set([3]))&&!a.isDisjointFrom(new Set([2]));",
+    "let trace='';let other={get size(){trace+='S';return {valueOf(){trace+='N';return 0;}};},get has(){trace+='H';return function(){throw 1;};},get keys(){trace+='K';return function(){trace+='C';return {get next(){trace+='X';return function(){trace+='D';return {done:true};};}};};}};new Set().union(other);trace==='SNHKCXD';",
+    "let touched=false;let other={get size(){touched=true;throw 1;}};let ok=false;try{Set.prototype.union.call({},other);}catch(e){ok=e instanceof TypeError;}ok&&!touched;",
+    "let a=new Set([1]);let other={size:0,has(){throw 1;},keys(){a.add(2);return [3].values();}};Array.from(a.union(other)).join(',')==='1,2,3';",
+    "let a=new Set([1,2]);let other={size:0,has(){throw 1;},keys(){a.add(3);return [1].values();}};Array.from(a.difference(other)).join(',')==='2';",
+    "let a=new Set([1,2]);let trace='';let other={size:10,has(v){trace+=v;if(v===1){a.clear();a.add(3);}return false;},keys(){throw 1;}};Array.from(a.difference(other)).join(',')==='1,2'&&trace==='12';",
+    "let a=new Set([1,2]);let trace='';let other={size:10,has(v){trace+=v;if(v===1){a.delete(2);a.add(3);}return true;},keys(){throw 1;}};Array.from(a.intersection(other)).join(',')==='1,3'&&trace==='13';",
+    "let a=new Set([1,2,3]);let other={size:2,has(){throw 1;},keys(){return [3,1,3].values();}};Array.from(a.intersection(other)).join(',')==='3,1';",
+    "let a=new Set([1]);let other={size:2,has(){throw 1;},keys(){return [1,1,2,2].values();}};Array.from(a.symmetricDifference(other)).join(',')==='2';",
+    "let a=new Set([1]);let other={size:1,has(){throw 1;},keys(){a.add(2);return [1,2,3].values();}};Array.from(a.symmetricDifference(other)).join(',')==='3';",
+    "let closed=0;let other={size:1,has(){throw 1;},keys(){return {next(){return {value:9,done:false};},return(){closed++;return {};}};}};!new Set([1]).isSupersetOf(other)&&closed===1;",
+    "let marker={};let other={size:1,has(){throw 1;},keys(){return {next(){return {value:1,done:false};},return(){throw marker;}};}};let caught=false;try{new Set([1,2]).isDisjointFrom(other);}catch(e){caught=e===marker;}caught;",
+    "let closed=0;let marker={};let other={size:0,has(){throw 1;},keys(){return {next(){throw marker;},return(){closed++;return {};}};}};let caught=false;try{new Set().union(other);}catch(e){caught=e===marker;}caught&&closed===0;",
+    "let a=new Set([NaN,-0]);let r=a.union(new Set([NaN,0]));r.size===2&&r.has(NaN)&&1/Array.from(r)[1]===Infinity;",
+    "class S extends Set{}let a=new S([1]);Object.defineProperty(a,'constructor',{get(){throw 1;}});Set.prototype.add=function(){throw 1;};let other={size:0,has(){return false;},keys(){return [].values();}};Object.getPrototypeOf(a.union(other))===Set.prototype;",
+    "let other={size:-0.5,has(){return false;},keys(){return [].values();}};new Set().union(other).size===0;",
+]) {
+    passes(source);
+}
+for (const name of [
+    "union",
+    "intersection",
+    "difference",
+    "symmetricDifference",
+    "isSubsetOf",
+    "isSupersetOf",
+    "isDisjointFrom",
+]) {
+    passes(
+        "let d=Object.getOwnPropertyDescriptor(Set.prototype,'" +
+            name +
+            "');d.value.length===1&&d.value.name==='" +
+            name +
+            "'&&d.writable&&!d.enumerable&&d.configurable&&!Object.hasOwn(d.value,'prototype');",
+    );
+    for (const size of ["NaN", "undefined", "-1", "-Infinity", "1n", "Symbol()"]) {
+        const expected = size === "-1" || size === "-Infinity" ? "RangeError" : "TypeError";
+        passes(
+            "let trace='';let o={size:" +
+                size +
+                ",get has(){trace+='H';throw 1;}};let caught=false;try{new Set()." +
+                name +
+                "(o);}catch(e){caught=e instanceof " +
+                expected +
+                ";}caught&&trace==='';",
+        );
+    }
+}
+for (const source of [
+    "new Set().union({size:Infinity,has(){return false;},keys(){return {next(){return {value:1,done:false};}};}});",
+    "let s=new Set([1]);s.intersection({size:Infinity,has(v){s.delete(v);s.add(v);return true;},keys(){throw 1;}});",
+]) {
+    const result = run(source, fresh(), 300);
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "bounded Set algebra",
+    );
+}
 check(
     new Realm((_line: string) => {}).global.bindings.get("Set") === undefined,
     "legacy Set absent",

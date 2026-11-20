@@ -185,7 +185,7 @@
             "filename": "src/builtins/set.ts",
             "name": "registerSet",
             "rule": "functionLines",
-            "value": 168
+            "value": 130
         },
         {
             "filename": "src/builtins/string-split.ts",

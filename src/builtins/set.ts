@@ -1,3 +1,4 @@
+import { registerSetMethods } from "./set-methods.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
 import type { Realm } from "../realm.js";
 import { GuestSet } from "../set-object.js";
@@ -147,6 +148,17 @@ export function registerSet(realm: Realm): void {
         enumerable: false,
         configurable: true,
     });
+    registerSetForEach(realm);
+    registerSetMethods(realm);
+    realm.defineScriptGlobal("Set", {
+        value: { kind: "object", object: constructor },
+        writable: true,
+        enumerable: false,
+        configurable: true,
+    });
+}
+
+function registerSetForEach(realm: Realm): void {
     realm.registerBuiltin(
         realm.setPrototype,
         "forEach",
@@ -187,10 +199,4 @@ export function registerSet(realm: Realm): void {
             }
         },
     );
-    realm.defineScriptGlobal("Set", {
-        value: { kind: "object", object: constructor },
-        writable: true,
-        enumerable: false,
-        configurable: true,
-    });
 }
