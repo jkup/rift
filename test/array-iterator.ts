@@ -31,6 +31,15 @@ function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
         .completion;
 }
 for (const source of [
+    "let d=Object.getOwnPropertyDescriptor(Iterator.prototype,Symbol.dispose);d.writable&&!d.enumerable&&d.configurable&&d.value.name==='[Symbol.dispose]'&&d.value.length===0;",
+    "let log='';let i={get return(){log+='g';return function(){log+=this===i?'r':'x';log+=arguments.length;return 1}}};Iterator.prototype[Symbol.dispose].call(i)===undefined&&log==='gr0';",
+    "let d=Iterator.prototype[Symbol.dispose];d.call({})===undefined&&d.call({return:null})===undefined&&d.call(1)===undefined;",
+    "let marker={};let ok=false;try{Iterator.prototype[Symbol.dispose].call({get return(){throw marker}})}catch(e){ok=e===marker}ok;",
+    "let marker={};let ok=false;try{Iterator.prototype[Symbol.dispose].call({return(){throw marker}})}catch(e){ok=e===marker}ok;",
+    "let count=0;for(let x of [null,undefined,{return:1}]){try{Iterator.prototype[Symbol.dispose].call(x)}catch(e){if(e instanceof TypeError)count++}}count===3;",
+    "let closed=0;function* g(){try{yield 1}finally{closed++}}let i=g();i.next();i[Symbol.dispose]()===undefined&&closed===1&&i.next().done;",
+    "let log='';Object.defineProperty(Number.prototype,'return',{get(){'use strict';log+=typeof this;return function(){'use strict';log+=':'+this;return null}}});Iterator.prototype[Symbol.dispose].call(7);log==='number:7';",
+    "let d=Iterator.prototype[Symbol.dispose];let ok=false;try{new d()}catch(e){ok=e instanceof TypeError}ok&&d.toString()==='function [Symbol.dispose]() { [native code] }';",
     "[1,null,undefined,'x',2n].values().join()==='1,,,x,2'&&[].values().join()===''&&[1,2].values().join('')==='12'&&[1,2].values().join(null)==='1null2';",
     "let log='';let sep={toString(){log+='s';return '-'}};let i={get next(){log+='n';return ()=>({done:true})}};Iterator.prototype.join.call(i,sep)===''&&log==='sn';",
     "let log='';let marker={};let i={get next(){log+='n';throw 1},return(){log+='r';throw 2}};let ok=false;try{Iterator.prototype.join.call(i,{toString(){log+='s';throw marker}})}catch(e){ok=e===marker}ok&&log==='sr';",
@@ -109,7 +118,7 @@ for (const source of [
     "let i=[7].values();let identity=i[Symbol.iterator];identity.call(7)===7&&identity.call(null)===null&&identity.name==='[Symbol.iterator]'&&identity.length===0;",
     "Array.prototype.keys.name==='keys'&&Array.prototype.keys.length===0&&Array.prototype.values.name==='values'&&Array.prototype.values.length===0&&Array.prototype.entries.name==='entries'&&Array.prototype.entries.length===0;",
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
-    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join'&&Object.getOwnPropertySymbols(root).length===2&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&d.writable&&!d.enumerable&&d.configurable;",
+    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
     "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {

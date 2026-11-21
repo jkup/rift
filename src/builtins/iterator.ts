@@ -11,9 +11,32 @@ import {
     type ValueCompletion,
 } from "../runtime.js";
 import { getPrototypeFromConstructor } from "../constructor-prototype.js";
-import { wellKnownIterator, wellKnownToStringTag } from "../symbols.js";
+import { wellKnownDispose, wellKnownIterator, wellKnownToStringTag } from "../symbols.js";
+import { toObject } from "../object-conversion.js";
 import { registerEagerIteratorMethods } from "./iterator-eager.js";
 import { registerIteratorFrom } from "./iterator-from.js";
+
+function disposeIterator(
+    receiver: Value,
+    context: OperationContext,
+    loc: Location,
+): ValueCompletion {
+    const object = toObject(receiver, context, loc);
+    if (object.type === "throw") {
+        return object;
+    }
+    const method = object.value.internalGet("return", receiver, context, loc);
+    if (method.type === "throw") {
+        return method;
+    }
+    if (method.value.kind === "undefined" || method.value.kind === "null") {
+        return normal();
+    }
+    // ECMA-262 %IteratorPrototype%[@@dispose] ignores the return value,
+    // including primitives; IteratorClose's object-result check does not apply.
+    const result = context.call(method.value, receiver, [], loc);
+    return result.type === "throw" ? result : normal();
+}
 
 function setInheritedProperty(
     receiver: Value,
@@ -118,6 +141,14 @@ export function registerIterator(realm: Realm): void {
     );
     realm.iteratorPrototype.bootstrapDefine(wellKnownIterator, {
         value: { kind: "object", object: identity },
+        writable: true,
+        configurable: true,
+    });
+    const dispose = realm.createBuiltin("[Symbol.dispose]", 0, (receiver, _args, context, loc) =>
+        disposeIterator(receiver, context, loc),
+    );
+    realm.iteratorPrototype.bootstrapDefine(wellKnownDispose, {
+        value: { kind: "object", object: dispose },
         writable: true,
         configurable: true,
     });

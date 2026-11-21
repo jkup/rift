@@ -26,6 +26,7 @@ export function nativeFunctionString(initialName: string | null): GuestString {
         propertyName !== "[Symbol.toPrimitive]" &&
         propertyName !== "[Symbol.hasInstance]" &&
         propertyName !== "[Symbol.iterator]" &&
+        propertyName !== "[Symbol.dispose]" &&
         propertyName !== "[Symbol.asyncIterator]" &&
         propertyName !== "[Symbol.species]" &&
         propertyName !== "[Symbol.toStringTag]" &&
