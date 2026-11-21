@@ -20,7 +20,61 @@ function run(realm: Realm, text: string, maxSteps = 100000): ValueCompletion {
         .completion;
 }
 const cases = [
-    ["JSON.parse('2',function(k,v){return k+':'+v+':'+arguments.length})", ":2:2"],
+    ["JSON.parse('2',function(k,v){return k+':'+v+':'+arguments.length})", ":2:3"],
+    ["JSON.parse('  1.20e+3  ',function(k,v,c){return c.source})", "1.20e+3"],
+    [
+        "JSON.parse('9007199254740993',function(k,v,c){return BigInt(c.source)+''})",
+        "9007199254740993",
+    ],
+    [String.raw`JSON.parse('"\\u0061"',function(k,v,c){return c.source})`, '"\\u0061"'],
+    [
+        "JSON.parse('null',function(k,v,c){let d=Object.getOwnPropertyDescriptor(c,'source');return [Object.getPrototypeOf(c)===Object.prototype,Object.keys(c).join(','),d.writable,d.enumerable,d.configurable,d.value].join(':')})",
+        "true:source:true:true:true:null",
+    ],
+    [
+        "var contexts=[];var log='';JSON.parse('[1,{},true]',function(k,v,c){log+=String(c.source)+',';contexts.push(c);return v});log+':'+(new Set(contexts).size===contexts.length)",
+        "1,undefined,true,undefined,:true",
+    ],
+    [
+        'var log="";JSON.parse(\'{"x":1,"x":2.0,"__proto__":3e0}\',function(k,v,c){if(k)log+=k+":"+c.source+",";return v});log',
+        "x:2.0,__proto__:3e0,",
+    ],
+    [
+        "var log='';JSON.parse('[1,2.0]',function(k,v,c){if(k==='0')this[1]=3;if(k!=='')log+=String(c.source)+',';return v});log",
+        "1,undefined,",
+    ],
+    [
+        "var log='';JSON.parse('[1,2.0]',function(k,v,c){if(k==='0')this[1]=2;if(k!=='')log+=String(c.source)+',';return v});log",
+        "1,2.0,",
+    ],
+    [
+        "var log='';JSON.parse('[1,-0]',function(k,v,c){if(k==='0')this[1]=0;if(k!=='')log+=String(c.source)+',';return v});log",
+        "1,undefined,",
+    ],
+    [
+        "var log='';JSON.parse('[1,[2.0]]',function(k,v,c){if(k==='0'&&v===1)this[1]=[2];log+=String(c.source)+',';return v});log",
+        "1,undefined,undefined,undefined,",
+    ],
+    [
+        "var log='';JSON.parse('[1,[2.0]]',function(k,v,c){if(k==='0'&&v===1)this[1].push(3);log+=String(c.source)+',';return v});log",
+        "1,2.0,undefined,undefined,undefined,",
+    ],
+    [
+        "var log='';JSON.parse('[1,2.0]',function(k,v,c){if(k==='0')Object.defineProperty(this,'1',{get(){log+='get,';return 2},configurable:true});log+=String(c.source)+',';return v});log",
+        "1,get,2.0,undefined,",
+    ],
+    [
+        "var log='';JSON.parse('[1,2.0]',function(k,v,c){if(k==='0'){delete this[1];Object.setPrototypeOf(this,{1:2})}log+=String(c.source)+',';return v});log",
+        "1,2.0,undefined,",
+    ],
+    [
+        "JSON.parse('1.0',function(k,v,c){return JSON.parse('2.0',function(k,w,d){return c.source+':'+d.source})})",
+        "1.0:2.0",
+    ],
+    [
+        "var log='';JSON.parse('[1,{\"x\":2},{\"x\":3}]',function(k,v,c){if(k==='0')this[2]=this[1];log+=String(c.source)+',';return v});log",
+        "1,2,undefined,undefined,undefined,undefined,",
+    ],
     [
         "JSON.parse('2',function(k,v){return Object.keys(this).join(',')+':'+(this[k]===v)+':'+(Object.getPrototypeOf(this)===Object.prototype)})",
         ":true:true",
@@ -131,7 +185,7 @@ function own(object: GuestObject, key: string): Value {
     });
     const result = run(
         caller,
-        "parse('1',function(k,v){return Object.getPrototypeOf(this)===ownerPrototype})",
+        "parse('1',function(k,v,c){return Object.getPrototypeOf(this)===ownerPrototype&&Object.getPrototypeOf(c)===ownerPrototype&&c.source==='1'})",
     );
     check(
         result.type === "normal" && result.value.kind === "boolean" && result.value.value,

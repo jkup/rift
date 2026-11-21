@@ -28,13 +28,15 @@ export function registerJSON(realm: Realm): void {
         if (text.type === "throw") {
             return text;
         }
-        const result = new JSONParser(text.value, context, loc).parse();
+        const reviver = args.length > 1 ? args[1] : UNDEFINED;
+        const callableReviver = reviver.kind === "object" && reviver.object.callable !== null;
+        const parser = new JSONParser(text.value, context, loc, callableReviver);
+        const result = parser.parse();
         if (result.type === "throw") {
             return result;
         }
-        const reviver = args.length > 1 ? args[1] : UNDEFINED;
-        if (reviver.kind === "object" && reviver.object.callable !== null) {
-            return reviveJSON(result.value, reviver, context, loc);
+        if (callableReviver) {
+            return reviveJSON(result.value, reviver, context, loc, parser.rootRecord);
         }
         return result;
     });

@@ -8,6 +8,7 @@ import {
 } from "./runtime.js";
 import type { StringCompletion } from "./conversion.js";
 import type { Location } from "./syntax.js";
+import type { JSONParseRecord } from "./json-parse-record.js";
 
 type JSONFrame = {
     object: GuestObject;
@@ -15,6 +16,7 @@ type JSONFrame = {
     state: "first" | "key" | "value" | "separator";
     key: string;
     index: number;
+    record: JSONParseRecord | null;
 };
 
 function digit(char: string): boolean {
@@ -38,10 +40,13 @@ function hex(char: string): number {
 export class JSONParser {
     private position = 0;
     private frames: JSONFrame[] = [];
+    private lastRecord: JSONParseRecord | null = null;
+    rootRecord: JSONParseRecord | null = null;
     constructor(
         private text: string,
         private context: OperationContext,
         private loc: Location,
+        private captureSource = false,
     ) {}
 
     private invalid(): ThrowCompletion {
@@ -165,6 +170,26 @@ export class JSONParser {
         return this.invalid();
     }
     private value(): ValueCompletion {
+        const start = this.position;
+        const result = this.parseValue();
+        if (result.type === "throw") {
+            return result;
+        }
+        if (this.captureSource) {
+            const record: JSONParseRecord = {
+                value: result.value,
+                source: result.value.kind === "object" ? "" : this.text.slice(start, this.position),
+                children: new Map<string, JSONParseRecord>(),
+            };
+            this.lastRecord = record;
+            if (result.value.kind === "object") {
+                const frame = this.frames[this.frames.length - 1];
+                frame.record = record;
+            }
+        }
+        return result;
+    }
+    private parseValue(): ValueCompletion {
         const tick = this.context.tick(this.loc);
         if (tick.type === "throw") {
             return tick;
@@ -176,7 +201,7 @@ export class JSONParser {
             const object = array
                 ? this.context.realm.createArray()
                 : this.context.realm.createObject();
-            this.frames.push({ object, array, state: "first", key: "", index: 0 });
+            this.frames.push({ object, array, state: "first", key: "", index: 0, record: null });
             return normal({ kind: "object", object });
         }
         if (char === '"') {
@@ -211,6 +236,7 @@ export class JSONParser {
         if (root.type === "throw") {
             return root;
         }
+        this.rootRecord = this.lastRecord;
         while (this.frames.length > 0) {
             const tick = this.context.tick(this.loc);
             if (tick.type === "throw") {
@@ -263,6 +289,9 @@ export class JSONParser {
                 return value;
             }
             const key = frame.array ? String(frame.index++) : frame.key;
+            if (frame.record !== null && this.lastRecord !== null) {
+                frame.record.children.set(key, this.lastRecord);
+            }
             // Define data directly, including __proto__ and duplicate keys.
             const defined = frame.object.defineOwnProperty(
                 key,

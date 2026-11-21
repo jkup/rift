@@ -344,12 +344,6 @@
             "value": 156
         },
         {
-            "filename": "src/json-reviver.ts",
-            "name": "reviveJSON",
-            "rule": "depth",
-            "value": 6
-        },
-        {
             "filename": "src/json-stringify.ts",
             "name": "JSONSerializer.configure.callback",
             "rule": "depth",
