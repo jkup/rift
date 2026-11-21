@@ -95,7 +95,7 @@
             "filename": "src/builtins/math.ts",
             "name": "registerMath",
             "rule": "functionLines",
-            "value": 251
+            "value": 238
         },
         {
             "filename": "src/builtins/number-parse.ts",

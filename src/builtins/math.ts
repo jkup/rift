@@ -7,10 +7,12 @@ import {
     type Value,
     type OperationContext,
     type ValueCompletion,
+    type GuestObject,
 } from "../runtime.js";
 import type { Location } from "../syntax.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import { createRandomState } from "../random.js";
+import { roundToFloat16 } from "./math-f16.js";
 
 function numericArgument(value: Value, context: OperationContext, loc: Location): NumberCompletion {
     const tick = context.tick(loc);
@@ -24,7 +26,7 @@ function numericArgument(value: Value, context: OperationContext, loc: Location)
     return toNumber(primitive.value, loc, context.realm);
 }
 
-export function registerMath(realm: Realm): void {
+function createMathObject(realm: Realm): GuestObject {
     const object = realm.createObject();
     const constants = [
         { name: "E", value: Math.E },
@@ -43,6 +45,11 @@ export function registerMath(realm: Realm): void {
         value: { kind: "string", value: "Math" },
         configurable: true,
     });
+    return object;
+}
+
+export function registerMath(realm: Realm): void {
+    const object = createMathObject(realm);
     for (const name of [
         "abs",
         "ceil",
@@ -52,6 +59,7 @@ export function registerMath(realm: Realm): void {
         "trunc",
         "clz32",
         "fround",
+        "f16round",
         "acos",
         "asin",
         "atan",
@@ -103,6 +111,9 @@ export function registerMath(realm: Realm): void {
                     break;
                 case "fround":
                     value = Math.fround(value);
+                    break;
+                case "f16round":
+                    value = roundToFloat16(value);
                     break;
                 case "acos":
                     value = Math.acos(value);

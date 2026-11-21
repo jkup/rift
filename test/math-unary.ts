@@ -9,6 +9,7 @@ import {
 import { prepareBoundedScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript } from "../src/script-execution.js";
 import { wellKnownToPrimitive, wellKnownToStringTag, wellKnownSpecies } from "../src/symbols.js";
+import { roundToFloat16 } from "../src/builtins/math-f16.js";
 
 function check(ok: boolean, message: string): void {
     if (!ok) {
@@ -71,7 +72,7 @@ const transcendental = [
     "sqrt",
     "cbrt",
 ];
-const unaryMethods = methods.concat(transcendental, ["clz32", "fround"]);
+const unaryMethods = methods.concat(transcendental, ["clz32", "fround", "f16round"]);
 const inputs = [
     -Infinity,
     -2.7,
@@ -557,5 +558,56 @@ for (const exponent of [300, -300]) {
         }
     }
     check(interrupted && completed, "hypot budget boundary");
+}
+// Independently decode the binary16 exponent/significand and check every finite
+// value and adjacent midpoint, including values on either side of each tie.
+function halfValue(bits: number): number {
+    const exponent = Math.floor(bits / 1024);
+    const fraction = bits % 1024;
+    return exponent === 0 ? fraction * 2 ** -24 : (1024 + fraction) * 2 ** (exponent - 25);
+}
+for (let bits = 0; bits < 31744; bits++) {
+    const lower = halfValue(bits);
+    check(Object.is(roundToFloat16(lower), lower), "positive binary16 round trip");
+    check(Object.is(roundToFloat16(-lower), -lower), "negative binary16 round trip");
+    const upper = halfValue(bits + 1);
+    const midpoint = (lower + upper) / 2;
+    const offset = (upper - lower) / 2 ** 40;
+    const roundedUpper = bits === 31743 ? Infinity : upper;
+    const tie = bits % 2 === 0 ? lower : roundedUpper;
+    for (const sign of [1, -1]) {
+        check(Object.is(roundToFloat16(sign * midpoint), sign * tie), "binary16 ties to even");
+        check(
+            Object.is(roundToFloat16(sign * (midpoint - offset)), sign * lower),
+            "binary16 below midpoint",
+        );
+        check(
+            Object.is(roundToFloat16(sign * (midpoint + offset)), sign * roundedUpper),
+            "binary16 above midpoint",
+        );
+    }
+}
+for (const row of [
+    { input: NaN, expected: NaN },
+    { input: Infinity, expected: Infinity },
+    { input: -Infinity, expected: -Infinity },
+    { input: 1.0004882812500002, expected: 1.0009765625 },
+    { input: 1.0014648437499998, expected: 1.0009765625 },
+    { input: Number.MIN_VALUE, expected: 0 },
+    { input: -Number.MIN_VALUE, expected: -0 },
+    { input: Number.MAX_VALUE, expected: Infinity },
+    { input: -Number.MAX_VALUE, expected: -Infinity },
+    { input: 65504, expected: 65504 },
+    { input: 65520, expected: Infinity },
+    { input: -65520, expected: -Infinity },
+]) {
+    const realm = fresh();
+    realm.defineScriptGlobal("input", { value: { kind: "number", value: row.input } });
+    const result = run(realm, "Math.f16round(input)");
+    check(
+        result.type === "normal" &&
+            sameValue(result.value, { kind: "number", value: row.expected }),
+        "f16round guest numerical edge",
+    );
 }
 console.log("Math unary passed");
