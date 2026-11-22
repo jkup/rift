@@ -20,6 +20,41 @@ import {
 const rows = serialized();
 const parse = (v, b) => parseScriptEnvelope(JSON.stringify(v), b);
 
+test("weak-symbol capability is unsupported at both boundaries and unknown codes stay rejected", () => {
+    const cases = rows.filter((r) => r.child.result.kind === "unsupported-operation");
+    assert.ok(cases.length > 0);
+    for (const r of cases) {
+        const child = copy(r.child);
+        child.result.capabilityCode = "runtime.weak-symbol-key";
+        assert.deepEqual(childParse(Buffer.from(JSON.stringify(child)), r.binding), child);
+        const result = envelope(child, r);
+        result.classification.reasonCode = "runtime.weak-symbol-key";
+        assert.equal(result.classification.status, "unsupported-feature");
+        assert.deepEqual(parse(result, r.binding), result);
+        for (const capabilityCode of [
+            "runtime.weak-symbol-keys",
+            "runtime.weak-symbol-key ",
+            "runtime.unknown",
+            "parse.weak-symbol-key",
+            null,
+        ]) {
+            const bad = copy(child);
+            bad.result.capabilityCode = capabilityCode;
+            assert.throws(() => childParse(Buffer.from(JSON.stringify(bad)), r.binding));
+            const badEnvelope = copy(result);
+            badEnvelope.observation.capabilityCode = capabilityCode;
+            badEnvelope.classification.reasonCode = capabilityCode;
+            assert.throws(() => parse(badEnvelope, r.binding));
+        }
+        const syntax = copy(child);
+        syntax.result = { kind: "unsupported-syntax", capabilityCode: "runtime.weak-symbol-key" };
+        assert.throws(() => childParse(Buffer.from(JSON.stringify(syntax)), r.binding));
+        const syntaxEnvelope = copy(result);
+        syntaxEnvelope.observation = syntax.result;
+        assert.throws(() => parse(syntaxEnvelope, r.binding));
+    }
+});
+
 test("numeric separator certification is admitted only by its exact parse rule", () => {
     for (const r of rows.filter((r) => r.id.endsWith("/syntax"))) {
         const child = copy(r.child);

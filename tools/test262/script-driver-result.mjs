@@ -1,3 +1,4 @@
+import { runtimeCodes } from "./runtime-capability-codes.mjs";
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual as equal } from "node:util";
 import { parseDocument } from "yaml";
@@ -71,22 +72,6 @@ const syntaxCodes = [
     "parse.prototype-literal",
     "parse.unexpected",
     "script.uncertified-conflict",
-];
-const runtimeCodes = [
-    "runtime.object-to-number",
-    "runtime.object-to-string",
-    "runtime.map-species",
-    "runtime.splice-species",
-    "runtime.json-reviver",
-    "runtime.slice-species",
-    "runtime.concat-species",
-    "runtime.filter-species",
-    "runtime.flat-species",
-    "runtime.flatmap-species",
-    "runtime.dynamic-function-source",
-    "runtime.eval-source",
-    "runtime.regexp-pattern",
-    "runtime.temporal-time-zone",
 ];
 const limitsShape = (x) =>
     record(
