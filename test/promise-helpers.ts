@@ -33,6 +33,41 @@ function string(text: string, expected: string, realm: Realm, session: ScriptSes
     );
 }
 const cases: { source: string; before: string; after: string }[] = [
+    {
+        source: "var n=0;class P extends Promise{constructor(e){n++;super(e)}}var p=P.resolve(3);out+=(P.try(()=>p)===p)+':'+n",
+        before: "true:1",
+        after: "true:1",
+    },
+    {
+        source: "class P extends Promise{}var p=Promise.resolve(3),q=P.try(()=>p);out+=(q!==p)+':'+(q instanceof P);q.then(v=>out+=v)",
+        before: "true:true",
+        after: "true:true3",
+    },
+    {
+        source: "var p=Promise.resolve(3);Object.defineProperty(p,'constructor',{get(){out+='g';return Promise}});var q=Promise.try(()=>{out+='f';return p});out+=q===p",
+        before: "fgtrue",
+        after: "fgtrue",
+    },
+    {
+        source: "var marker={},p=Promise.resolve(3);Object.defineProperty(p,'constructor',{get(){throw marker}});try{Promise.try(()=>p)}catch(e){out+=e===marker}",
+        before: "true",
+        after: "true",
+    },
+    {
+        source: "var fake={constructor:Promise,then(r){r(4)}},p=Promise.try(()=>fake);out+=p!==fake;p.then(v=>out+=v)",
+        before: "true",
+        after: "true4",
+    },
+    {
+        source: "try{Promise.try.call(null,()=>out+='wrong')}catch(e){out+=e instanceof TypeError}",
+        before: "true",
+        after: "true",
+    },
+    {
+        source: "function C(e){out+='c';throw 8}try{Promise.try.call(C,()=>{out+='f';throw 7})}catch(e){out+=e}",
+        before: "fc8",
+        after: "fc8",
+    },
     { source: "Promise.try(()=>{out+='s';return 3}).then(v=>out+=v)", before: "s", after: "s3" },
     { source: "Promise.try(()=>{throw 4}).catch(v=>out+=v)", before: "", after: "4" },
     {
@@ -52,7 +87,7 @@ const cases: { source: string; before: string; after: string }[] = [
         after: "t7",
     },
     {
-        source: "var p=Promise.resolve(8);var q=Promise.try(()=>p);out+=q!==p;q.then(v=>out+=v)",
+        source: "var p=Promise.resolve(8);var q=Promise.try(()=>p);out+=q===p;q.then(v=>out+=v)",
         before: "true",
         after: "true8",
     },
@@ -83,23 +118,23 @@ const cases: { source: string; before: string; after: string }[] = [
     },
     {
         source: "function C(e){out+='c';e(v=>out+='r'+v,v=>out+='j'+v)}Promise.try.call(C,()=>{out+='f';return 4})",
-        before: "cfr4",
-        after: "cfr4",
+        before: "fcr4",
+        after: "fcr4",
     },
     {
         source: "function C(e){out+='c';e(v=>out+='r'+v,v=>out+='j'+v)}Promise.try.call(C,()=>{out+='f';throw 4})",
-        before: "cfj4",
-        after: "cfj4",
+        before: "fcj4",
+        after: "fcj4",
     },
     {
-        source: "function C(e){out+='c';throw 7}try{Promise.try.call(C,()=>out+='wrong')}catch(e){out+=e}",
-        before: "c7",
-        after: "c7",
+        source: "function C(e){out+='c';throw 7}try{Promise.try.call(C,()=>out+='f')}catch(e){out+=e}",
+        before: "fc7",
+        after: "fc7",
     },
     {
-        source: "try{Promise.try.call({},()=>out+='wrong')}catch(e){out+=e instanceof TypeError}",
-        before: "true",
-        after: "true",
+        source: "try{Promise.try.call({},()=>out+='f')}catch(e){out+=e instanceof TypeError}",
+        before: "ftrue",
+        after: "ftrue",
     },
     {
         source: "function C(e){e(()=>{throw 6},()=>{})}try{Promise.try.call(C,()=>4)}catch(e){out+=e}",
@@ -197,14 +232,32 @@ for (const source of [
     );
     check(drainScriptJobs(session).failures.length === 0, "foreign try drain");
     string("out", "true", realm, session);
+    string(
+        "var p=Promise.resolve(3);String(ForeignPromise.try.call(Promise,()=>p)===p)",
+        "true",
+        realm,
+        session,
+    );
 }
 {
     const realm = fresh(),
         session = createScriptSession({ maxSteps: 200, maxCalls: 32 });
-    const result = run("Promise.try(()=>{while(true){}})", realm, session);
+    const result = run(
+        "var allocations=0;function C(e){allocations++;e(()=>{},()=>{})}Promise.try.call(C,()=>{while(true){}})",
+        realm,
+        session,
+    );
     check(
         result.type === "throw" && result.origin.kind === "resource-limit",
         "try callback budget remains fatal",
+    );
+    const allocations = realm.globalObject.getOwnProperty("allocations");
+    check(
+        allocations !== undefined &&
+            allocations.kind === "data" &&
+            allocations.value.kind === "number" &&
+            allocations.value.value === 0,
+        "fatal callback does not allocate a rejection capability",
     );
 }
 {

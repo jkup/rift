@@ -1,5 +1,5 @@
 import type { Realm } from "../realm.js";
-import { newPromiseCapability, fatalPromiseCompletion } from "../promise.js";
+import { newPromiseCapability, fatalPromiseCompletion, promiseResolve } from "../promise.js";
 import {
     UNDEFINED,
     normal,
@@ -22,25 +22,25 @@ export function registerPromiseHelpers(realm: Realm, constructor: GuestObject): 
                     loc,
                 );
             }
-            const capability = newPromiseCapability(receiver, context, loc);
-            if (capability.type === "throw") {
-                return capability;
-            }
+            // Promise.try calls the callback before allocating a capability. On success,
+            // PromiseResolve preserves promises whose constructor matches the receiver.
             const result = context.call(
                 args.length === 0 ? UNDEFINED : args[0],
                 UNDEFINED,
                 args.slice(1),
                 loc,
             );
-            if (result.type === "throw" && fatalPromiseCompletion(result)) {
+            if (result.type === "normal") {
+                return promiseResolve(receiver, result.value, context, loc);
+            }
+            if (fatalPromiseCompletion(result)) {
                 return result;
             }
-            const settled = context.call(
-                result.type === "throw" ? capability.value.reject : capability.value.resolve,
-                UNDEFINED,
-                [result.value],
-                loc,
-            );
+            const capability = newPromiseCapability(receiver, context, loc);
+            if (capability.type === "throw") {
+                return capability;
+            }
+            const settled = context.call(capability.value.reject, UNDEFINED, [result.value], loc);
             return settled.type === "throw" ? settled : normal(capability.value.promise);
         },
     );
