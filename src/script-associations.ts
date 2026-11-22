@@ -5,6 +5,7 @@ import type {
 } from "./script-declarations.js";
 import type { Expr, Stmt, ClassInitializer } from "./syntax.js";
 import { lexicalLoopBindings } from "./script-loop-bindings.js";
+import { scanIdentifier } from "./identifier-scan.js";
 type ScopeIndex = Map<Expr | Stmt | ClassInitializer, number>;
 type ScopeEntry = { node: Expr | Stmt | ClassInitializer | null; body: Stmt[] };
 
@@ -144,12 +145,23 @@ function validateClassScope(
         throw new Error("invalid class scope association");
     }
     const parent = plan.scopes[scope.parent];
+    if (node.name !== null) {
+        // Name text is decoded, while its source range retains Unicode escapes.
+        const name = scanIdentifier(node.source.text, node.name.start);
+        if (
+            node.name.start < node.start ||
+            node.name.end > node.end ||
+            name.kind !== "ready" ||
+            name.end !== node.name.end ||
+            name.text !== node.name.name
+        ) {
+            throw new Error("invalid class name source range");
+        }
+    }
     if (
         scope.parent >= scope.id ||
         scope.start < parent.start ||
         scope.end > parent.end ||
-        (node.name !== null &&
-            node.source.text.slice(node.name.start, node.name.end) !== node.name.name) ||
         (node.constructorMethod !== null &&
             node.elements.filter(
                 (element) =>

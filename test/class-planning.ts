@@ -1,4 +1,7 @@
 import { parseBoundedScriptDeclarationPlan, parse } from "../src/parser.js";
+import { validateScriptAssociations } from "../src/script-associations.js";
+import type { DeclarationNodes } from "../src/script-declarations.js";
+import type { ClassExpr } from "../src/syntax.js";
 function check(ok: boolean, message: string): void {
     if (!ok) {
         throw new Error(message);
@@ -73,4 +76,43 @@ for (const source of [
     }
 }
 check(parse(text).error !== null, "legacy class boundary");
+function validateName(edit: (node: ClassExpr) => void, rejected: boolean): void {
+    const nodes: DeclarationNodes = {
+        assignmentNameEligible: new Map(),
+        source: { text: "" },
+        body: [],
+        scopes: new Map(),
+        declarations: new Map(),
+    };
+    const result = parseBoundedScriptDeclarationPlan(
+        { id: "escaped-name", text: "class aw\\u0061it{}" },
+        nodes,
+    );
+    const entry = nodes.scopes.get(1);
+    if (result.kind !== "complete" || entry?.node?.kind !== "class") {
+        throw new Error("class name setup");
+    }
+    edit(entry.node);
+    let failed = false;
+    try {
+        validateScriptAssociations(result, nodes);
+    } catch {
+        failed = true;
+    }
+    check(failed === rejected, "class name source validation");
+}
+validateName((_node: ClassExpr) => {}, false);
+validateName((node: ClassExpr) => {
+    if (node.name !== null) {
+        node.name = { ...node.name, end: node.name.end - 1 };
+    }
+}, true);
+validateName((node: ClassExpr) => {
+    if (node.name !== null) {
+        node.name = { ...node.name, start: node.name.start + 1 };
+    }
+}, true);
+validateName((node: ClassExpr) => {
+    node.source = { text: "class aw\\u0062it{}" };
+}, true);
 console.log("Class planning passed");
