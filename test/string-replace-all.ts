@@ -62,10 +62,7 @@ for (const [text, expected] of [
         "TypeError",
     ],
     ["var r=/a/;r[Symbol.match]=false;'aba'.replaceAll(r,'x')", "xba"],
-    [
-        "Number.prototype[Symbol.replace]=function(s,r){'use strict';return this===1&&s==='a'&&r===2?'same':'bad'};'a'.replaceAll(1,2)",
-        "same",
-    ],
+    ["Number.prototype[Symbol.replace]=function(){throw 99};'a1a'.replaceAll(1,2)", "a2a"],
     [
         "var marker={};try{'aa'.replaceAll('a',function(){throw marker})}catch(e){e===marker?'same':'bad'}",
         "same",
@@ -121,5 +118,51 @@ for (const text of [
     ) {
         throw new Error("position collection budget precedes callbacks");
     }
+}
+// Primitive patterns skip symbol protocols; boxed patterns still dispatch before coercion.
+for (const method of ["match", "matchAll", "search", "replace", "replaceAll", "split"]) {
+    const symbol = method === "replaceAll" ? "replace" : method;
+    let expression = "r",
+        expected = "axb";
+    if (method === "match") {
+        expression = "String(r.index)";
+        expected = "1";
+    }
+    if (method === "matchAll") {
+        expression = "String(r.next().value.index)";
+        expected = "1";
+    }
+    if (method === "search") {
+        expression = "String(r)";
+        expected = "1";
+    }
+    if (method === "split") {
+        expression = "r.join(':')";
+        expected = "a:b";
+    }
+    const secondArgument = method === "split" ? "undefined" : "'x'";
+    for (const primitive of ["1", "1n", "true", "'1'"]) {
+        run(
+            "var p=" +
+                primitive +
+                ";Object.defineProperty(Object.getPrototypeOf(Object(p)),Symbol." +
+                symbol +
+                ",{get(){throw 99}});var s='a'+String(p)+'b';var r=s." +
+                method +
+                "(p," +
+                secondArgument +
+                ");" +
+                expression,
+            expected,
+        );
+    }
+    run(
+        "var p=Object(1);Object.defineProperty(p,Symbol." +
+            symbol +
+            ",{get(){return function(s){return String(this===p)}}});String.prototype." +
+            method +
+            ".call({toString(){throw 99}},p,'x')",
+        "true",
+    );
 }
 console.log("String replaceAll passed");

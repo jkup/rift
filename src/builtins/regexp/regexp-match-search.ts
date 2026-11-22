@@ -8,7 +8,6 @@ import {
     type ValueCompletion,
     type OperationContext,
 } from "../../runtime.js";
-import { toObject } from "../../object-conversion.js";
 import { toPrimitive } from "../../primitive-conversion.js";
 import { numberToString, toLength } from "../../conversion.js";
 import { wellKnownMatch, wellKnownSearch } from "../../symbols.js";
@@ -216,12 +215,8 @@ export function registerRegExpMatchSearch(realm: Realm): void {
                 );
             }
             const pattern = args.length === 0 ? UNDEFINED : args[0];
-            if (pattern.kind !== "null" && pattern.kind !== "undefined") {
-                const boxed = toObject(pattern, context, loc);
-                if (boxed.type === "throw") {
-                    return boxed;
-                }
-                const method = boxed.value.internalGet(symbol, pattern, context, loc);
+            if (pattern.kind === "object") {
+                const method = pattern.object.internalGet(symbol, pattern, context, loc);
                 if (method.type === "throw") {
                     return method;
                 }

@@ -343,18 +343,14 @@ function replaceString(
     }
     const search = args.length === 0 ? UNDEFINED : args[0],
         replacementValue = args.length < 2 ? UNDEFINED : args[1];
-    if (search.kind !== "null" && search.kind !== "undefined") {
+    if (search.kind === "object") {
         if (all) {
             const checked = requireGlobalRegExp(search, "replaceAll", context, loc);
             if (checked.type === "throw") {
                 return checked;
             }
         }
-        const boxed = toObject(search, context, loc);
-        if (boxed.type === "throw") {
-            return boxed;
-        }
-        const method = boxed.value.internalGet(wellKnownReplace, search, context, loc);
+        const method = search.object.internalGet(wellKnownReplace, search, context, loc);
         if (method.type === "throw") {
             return method;
         }

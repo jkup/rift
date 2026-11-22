@@ -229,8 +229,8 @@ for (const source of [
     });
     const result = array(run(realm, "'a,b'.split(',');"));
     check(
-        called && sameValue(own(result, "length"), num(2)),
-        "primitive inherited protocol and null fallback",
+        !called && sameValue(own(result, "length"), num(2)),
+        "primitive separator ignores inherited protocol",
     );
 }
 {

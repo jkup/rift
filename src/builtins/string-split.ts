@@ -1,7 +1,6 @@
 import type { Realm } from "../realm.js";
 import type { GuestArray } from "../array-object.js";
 import type { Location } from "../syntax.js";
-import { toObject } from "../object-conversion.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { numberToString, toString, toUint32 } from "../conversion.js";
 import {
@@ -71,12 +70,9 @@ export function registerStringSplit(realm: Realm): void {
             }
             const separator = args.length === 0 ? UNDEFINED : args[0];
             const limit = args.length < 2 ? UNDEFINED : args[1];
-            if (separator.kind !== "undefined" && separator.kind !== "null") {
-                const boxed = toObject(separator, context, loc);
-                if (boxed.type === "throw") {
-                    return boxed;
-                }
-                const method = boxed.value.internalGet(wellKnownSplit, separator, context, loc);
+            if (separator.kind === "object") {
+                const object = separator.object;
+                const method = object.internalGet(wellKnownSplit, separator, context, loc);
                 if (method.type === "throw") {
                     return method;
                 }

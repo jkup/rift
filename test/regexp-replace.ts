@@ -97,8 +97,8 @@ const cases: { source: string; expected: string }[] = [
         expected: "true:true:true:2",
     },
     {
-        source: "String.prototype[Symbol.replace]=function(s,r){'use strict';return typeof this+':'+this+':'+s+':'+r};'abc'.replace('b','X')",
-        expected: "string:b:abc:X",
+        source: "String.prototype[Symbol.replace]=function(s,r){'use strict';return typeof this+':'+this+':'+s+':'+r};'abc'.replace(Object('b'),'X')",
+        expected: "object:b:abc:X",
     },
     {
         source: "var count=0,n=0,r={flags:'g',exec(){return n++<2?{0:'ab',index:0,length:1}:null}};RegExp.prototype[Symbol.replace].call(r,'abc',()=>{count++;return 'X'})+':'+count",

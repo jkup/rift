@@ -12,7 +12,6 @@ import { GuestRegExpStringIterator } from "../../regexp/regexp-string-iterator.j
 import { regExpSpecies } from "../../regexp/regexp-species.js";
 import { requireGlobalRegExp } from "../../regexp/regexp-global-check.js";
 import { toPrimitive } from "../../primitive-conversion.js";
-import { toObject } from "../../object-conversion.js";
 import { toLength } from "../../conversion.js";
 import { regExpString, regExpCreate } from "./regexp.js";
 import { wellKnownMatchAll, wellKnownToStringTag } from "../../symbols.js";
@@ -117,16 +116,12 @@ function stringMatchAll(
         );
     }
     const pattern = args.length === 0 ? UNDEFINED : args[0];
-    if (pattern.kind !== "null" && pattern.kind !== "undefined") {
+    if (pattern.kind === "object") {
         const checked = requireGlobalRegExp(pattern, "matchAll", context, loc);
         if (checked.type === "throw") {
             return checked;
         }
-        const boxed = toObject(pattern, context, loc);
-        if (boxed.type === "throw") {
-            return boxed;
-        }
-        const method = boxed.value.internalGet(wellKnownMatchAll, pattern, context, loc);
+        const method = pattern.object.internalGet(wellKnownMatchAll, pattern, context, loc);
         if (method.type === "throw") {
             return method;
         }

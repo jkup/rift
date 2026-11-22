@@ -179,13 +179,13 @@
             "filename": "src/builtins/string-split.ts",
             "name": "registerStringSplit",
             "rule": "functionLines",
-            "value": 117
+            "value": 114
         },
         {
             "filename": "src/builtins/string-split.ts",
             "name": "registerStringSplit.callback",
             "rule": "functionLines",
-            "value": 110
+            "value": 107
         },
         {
             "filename": "src/builtins/string.ts",

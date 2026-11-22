@@ -91,8 +91,8 @@ const cases: { source: string; expected: string }[] = [
         expected: "true",
     },
     {
-        source: "String.prototype[Symbol.match]=function(s){'use strict';return typeof this+':'+this+':'+s};'input'.match('pattern')",
-        expected: "string:pattern:input",
+        source: "String.prototype[Symbol.match]=function(s){'use strict';return typeof this+':'+this+':'+s};'input'.match(Object('pattern'))",
+        expected: "object:pattern:input",
     },
     {
         source: "var order='',p={toString(){order+='p';return 'a'}};Object.defineProperty(p,Symbol.match,{get(){order+='m';return null}});var input={toString(){order+='s';return 'a'}};String.prototype.match.call(input,p)[0]+':'+order",
