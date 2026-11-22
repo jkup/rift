@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-20",
-  "riftRevision": "3a81907d26bdae9414551bff9d7bc9752ebf5ed4",
+  "date": "2026-11-22",
+  "riftRevision": "2109e90c4bc772a0e9d1810b80f165cc4c3ea67b",
   "corpusRevision": "2e58f87d8350ad51224617a041c6e041d52f8444",
-  "reportSha256": "ee63042b6e05318fa86ce2293399b73d56bb28d209d7db18727c3e1158570064",
+  "reportSha256": "8d1180b451faff3c75d9f47f7b76fcfd8565d0cba232bafb966749818003517f",
   "selectionSha256": "d0b9688722639a8c11dadcbac943da928e3cd7b91819efbb286ca72f340e80ce",
   "environment": {
     "os": "Windows 11 x64 (10.0.26200)",
@@ -31,9 +31,9 @@
     }
   },
   "timing": {
-    "totalMs": 975985.584,
-    "buildMs": 134696.1973,
-    "executionMs": 805517.8226
+    "totalMs": 595588.7115,
+    "buildMs": 69180.5462,
+    "executionMs": 493415.7414
   },
   "discoveredFiles": 53795,
   "selectedFiles": 53795,
@@ -41,10 +41,10 @@
   "unknownVariantFiles": 0,
   "counts": {
     "skip": 21413,
-    "pass": 63480,
+    "pass": 63641,
     "unsupported": 8164,
     "resource-limit": 1174,
-    "fail": 5196,
+    "fail": 5035,
     "harness-error": 3902,
     "crash": 23
   },
@@ -287,9 +287,9 @@
       "area": "built-ins/Function",
       "total": 893,
       "counts": {
-        "pass": 795,
+        "pass": 799,
         "unsupported": 17,
-        "fail": 51,
+        "fail": 47,
         "skip": 26,
         "harness-error": 2,
         "resource-limit": 2
@@ -343,8 +343,8 @@
       "area": "built-ins/Iterator",
       "total": 1368,
       "counts": {
-        "fail": 750,
-        "pass": 616,
+        "fail": 738,
+        "pass": 628,
         "skip": 2
       }
     },
@@ -352,8 +352,8 @@
       "area": "built-ins/JSON",
       "total": 332,
       "counts": {
-        "pass": 280,
-        "fail": 48,
+        "pass": 292,
+        "fail": 36,
         "skip": 4
       }
     },
@@ -376,9 +376,9 @@
       "area": "built-ins/Math",
       "total": 654,
       "counts": {
-        "pass": 618,
+        "pass": 628,
         "resource-limit": 6,
-        "fail": 30
+        "fail": 20
       }
     },
     {
@@ -409,8 +409,8 @@
       "area": "built-ins/Object",
       "total": 6802,
       "counts": {
-        "pass": 6616,
-        "fail": 168,
+        "pass": 6642,
+        "fail": 142,
         "harness-error": 10,
         "skip": 8
       }
@@ -435,9 +435,9 @@
       "area": "built-ins/Promise",
       "total": 1458,
       "counts": {
-        "pass": 546,
+        "pass": 566,
         "skip": 828,
-        "fail": 84
+        "fail": 64
       }
     },
     {
@@ -510,10 +510,9 @@
       "area": "built-ins/String",
       "total": 2443,
       "counts": {
-        "pass": 2376,
+        "pass": 2422,
         "unsupported": 13,
         "skip": 6,
-        "fail": 46,
         "resource-limit": 2
       }
     },
@@ -556,8 +555,7 @@
       "total": 28,
       "counts": {
         "skip": 2,
-        "pass": 24,
-        "fail": 2
+        "pass": 26
       }
     },
     {
@@ -1838,9 +1836,9 @@
       "area": "staging/sm",
       "total": 2631,
       "counts": {
-        "pass": 1526,
+        "pass": 1555,
         "skip": 243,
-        "fail": 487,
+        "fail": 458,
         "resource-limit": 69,
         "unsupported": 206,
         "harness-error": 85,
@@ -1893,8 +1891,8 @@
       "total": 47453,
       "counts": {
         "skip": 3484,
-        "pass": 34450,
-        "fail": 4289,
+        "pass": 34582,
+        "fail": 4157,
         "harness-error": 3793,
         "resource-limit": 1038,
         "unsupported": 399
@@ -1934,10 +1932,10 @@
       "area": "staging",
       "total": 2791,
       "counts": {
-        "pass": 1558,
+        "pass": 1587,
+        "fail": 482,
         "skip": 329,
         "unsupported": 224,
-        "fail": 511,
         "resource-limit": 69,
         "harness-error": 85,
         "crash": 15
