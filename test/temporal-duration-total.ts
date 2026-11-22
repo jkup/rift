@@ -20,6 +20,9 @@ function passes(text: string): void {
     }
 }
 for (const text of [
+    "var log='',ok=false;try{new Temporal.Duration().total({get relativeTo(){log+='r'},get unit(){log+='u'}})}catch(e){ok=e instanceof RangeError}ok&&log==='ru'",
+    "var ok=false;try{new Temporal.Duration().total({get unit(){throw 42}})}catch(e){ok=e===42}ok",
+
     'Temporal.Duration.from("P1DT12H").total("hour")===36',
     'Temporal.Duration.from("-P1DT12H").total("days")===-1.5',
     'Temporal.Duration.from("PT0.000000001S").total("seconds")===1e-9',
@@ -47,7 +50,7 @@ for (const text of [
 ]) {
     passes(text);
 }
-for (const options of ["undefined", "null", "1", "true", "{}", "{unit:undefined}"]) {
+for (const options of ["undefined", "null", "1", "true"]) {
     passes(
         "var ok=false;try{new Temporal.Duration().total(" +
             options +
@@ -55,6 +58,10 @@ for (const options of ["undefined", "null", "1", "true", "{}", "{unit:undefined}
     );
 }
 for (const options of [
+    "{}",
+    "{unit:undefined}",
+    "()=>{}",
+    '{roundingMode:"ceil"}',
     '"auto"',
     '"bad"',
     '"year"',
@@ -87,5 +94,12 @@ const cross = run(
 );
 if (cross.kind !== "boolean" || !cross.value) {
     throw new Error("total error Realm");
+}
+const missing = run(
+    "var ok=false;try{total.call(new Temporal.Duration(),{})}catch(e){ok=e instanceof OwnerRangeError&&!(e instanceof RangeError)}ok",
+    caller,
+);
+if (missing.kind !== "boolean" || !missing.value) {
+    throw new Error("missing total unit error Realm");
 }
 console.log("temporal duration total passed");

@@ -60,7 +60,7 @@ export function registerTemporalDurationTotal(realm: Realm): void {
             const unit = read.value,
                 fields = duration.value;
             if (unit === "") {
-                return languageFailure(context.realm, "TypeError", "total requires a unit", loc);
+                return languageFailure(context.realm, "RangeError", "total requires a unit", loc);
             }
             if (unit === "auto") {
                 return languageFailure(
