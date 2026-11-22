@@ -24,6 +24,10 @@ function expect(text: string): void {
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, text);
 }
 for (const text of [
+    "class aw\\u0061it{m(){return await}}new await().m()===await&&await.name==='await'",
+    "var C=class aw\\u{61}it{m(){return await}};new C().m()===C&&C.name==='await'&&typeof await==='undefined'",
+    "'use strict';class \\u0043{};C.name==='C'&&new C() instanceof C",
+    "var C=class \\u{10400}{};C.name==='\\u{10400}'&&C.toString()==='class \\\\u{10400}{}'",
     "class C{};var c=new C();c instanceof C&&Object.getPrototypeOf(C)===Function.prototype&&Object.getPrototypeOf(C.prototype)===Object.prototype",
     "class C{constructor(x){this.x=x}get value(){return this.x}set value(x){this.x=x*2}static make(){return new C(7)}}var c=C.make();c.value=4;c.value===8",
     "var C=class Named{read(){return Named}};var D=C;C=7;new D().read()===D&&typeof Named==='undefined'",
