@@ -77,7 +77,7 @@ check(
     "per-Realm method and prototype",
 );
 check(
-    stringKeys(callObject.ownPropertyKeys()).join(",") === "name,length",
+    stringKeys(callObject.ownPropertyKeys()).join(",") === "length,name",
     "method own metadata only",
 );
 for (const key of ["name", "length"]) {

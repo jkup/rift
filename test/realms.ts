@@ -366,7 +366,7 @@ for (const realm of [r1, r2]) {
     checkGraph(f.callable !== null && f.callable.realm === realm, "R1 root owner");
     checkGraph(
         stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" &&
-            stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call,apply,toString" &&
+            stringKeys(f.ownPropertyKeys()).join(",") === "length,name,call,apply,toString" &&
             stringKeys(ar.ownPropertyKeys()).join(",") ===
                 "length,join,toString,push,pop,shift,unshift,reverse,at,indexOf,includes,lastIndexOf,every,some,find,findIndex,findLast,findLastIndex,reduce,reduceRight",
         "G17 exact initial keys",
@@ -818,7 +818,7 @@ for (const realm of [boxA, boxB]) {
     checkGraph(
         stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" &&
             stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") ===
-                "name,length,call,apply,toString" &&
+                "length,name,call,apply,toString" &&
             stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") ===
                 "length,join,toString,push,pop,shift,unshift,reverse,at,indexOf,includes,lastIndexOf,every,some,find,findIndex,findLast,findLastIndex,reduce,reduceRight",
         "W1 original root keys",

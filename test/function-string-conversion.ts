@@ -351,8 +351,8 @@ for (const realm of [a, b]) {
     const keys = realm.functionPrototype.ownPropertyKeys();
     check(
         keys.length === 5 &&
-            keys[0] === "name" &&
-            keys[1] === "length" &&
+            keys[0] === "length" &&
+            keys[1] === "name" &&
             keys[2] === "call" &&
             keys[3] === "apply" &&
             keys[4] === "toString",

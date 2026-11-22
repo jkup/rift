@@ -220,7 +220,7 @@ export function testObjectToString(): void {
         if (realm !== b) {
             check(!sameValue(own, method), "fresh method");
         }
-        keys(own.object.ownPropertyKeys(), ["name", "length"], "metadata keys");
+        keys(own.object.ownPropertyKeys(), ["length", "name"], "metadata keys");
         check(
             sameValue(own.object.get("name", evaluator.context, loc), str("toString")) &&
                 sameValue(own.object.get("length", evaluator.context, loc), num(0)),

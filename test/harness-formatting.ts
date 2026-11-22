@@ -1054,7 +1054,7 @@ for (const r of [fresh(), fresh()]) {
             ctor,
             name === "Object"
                 ? objectConstructorKeys()
-                : ["name", "length", "prototype", "fromCharCode", "fromCodePoint", "raw"],
+                : ["length", "name", "prototype", "fromCharCode", "fromCodePoint", "raw"],
         );
         check(ctor.getPrototypeOf() === r.functionPrototype, "F10 Function link");
         const c = ctor.callable,

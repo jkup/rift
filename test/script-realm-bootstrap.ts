@@ -169,7 +169,7 @@ function method(
         f.getPrototypeOf() === a.functionPrototype && f.callable !== null && f.callable.realm === a,
         "builtin owner",
     );
-    keys(f, ["name", "length"]);
+    keys(f, ["length", "name"]);
     desc(f, "name", { kind: "string", value: name }, false, false, true);
     desc(f, "length", n(length), false, false, true);
 }
@@ -207,8 +207,8 @@ function inventory(a: Realm): void {
         -9007199254740991,
     ];
     const numberKeys = [
-        "name",
         "length",
+        "name",
         "prototype",
         ...names,
         "isNaN",
@@ -250,8 +250,8 @@ function inventory(a: Realm): void {
             "toLocaleString",
         ],
         [
-            "name",
             "length",
+            "name",
             "caller",
             "arguments",
             "bind",
@@ -420,8 +420,8 @@ function inventory(a: Realm): void {
                     desc(f, "name", { kind: "string", value: "Symbol" }, false, false, true);
                     desc(f, "length", n(0), false, false, true);
                     keys(f, [
-                        "name",
                         "length",
+                        "name",
                         "prototype",
                         "for",
                         "keyFor",
@@ -483,8 +483,8 @@ function inventory(a: Realm): void {
                         keys(f, numberKeys);
                     } else if (name === "Array") {
                         keys(f, [
-                            "name",
                             "length",
+                            "name",
                             "prototype",
                             "isArray",
                             "of",
@@ -495,15 +495,15 @@ function inventory(a: Realm): void {
                         keys(f, objectConstructorKeys());
                     } else if (name === "String") {
                         keys(f, [
-                            "name",
                             "length",
+                            "name",
                             "prototype",
                             "fromCharCode",
                             "fromCodePoint",
                             "raw",
                         ]);
                     } else {
-                        keys(f, ["name", "length", "prototype"]);
+                        keys(f, ["length", "name", "prototype"]);
                     }
                     if (name === "Array") {
                         method(a, f, "isArray", "isArray", 1);
@@ -565,7 +565,7 @@ function inventory(a: Realm): void {
             hasInstanceFunction.getOwnProperty("prototype") === undefined,
         "hasInstance owner and slots",
     );
-    keys(hasInstanceFunction, ["name", "length"]);
+    keys(hasInstanceFunction, ["length", "name"]);
     desc(
         hasInstanceFunction,
         "name",

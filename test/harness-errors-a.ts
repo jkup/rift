@@ -233,8 +233,8 @@ console.log("PASS A02");
             keysEqual(
                 ctor,
                 name === "Error"
-                    ? ["name", "length", "prototype", "isError"]
-                    : ["name", "length", "prototype"],
+                    ? ["length", "name", "prototype", "isError"]
+                    : ["length", "name", "prototype"],
             ),
             "constructor keys",
         );
@@ -295,7 +295,7 @@ console.log("PASS A02");
                 mn = method.getOwnProperty("name"),
                 ml = method.getOwnProperty("length");
             check(
-                keysEqual(method, ["name", "length"]) &&
+                keysEqual(method, ["length", "name"]) &&
                     method.getPrototypeOf() === r.functionPrototype &&
                     method.callable !== null &&
                     method.callable.realm === r &&

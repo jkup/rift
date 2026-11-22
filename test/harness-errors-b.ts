@@ -372,8 +372,8 @@ console.log("PASS E08 E09 E11");
         keys(
             ctor,
             n === "Error"
-                ? ["name", "length", "prototype", "isError"]
-                : ["name", "length", "prototype"],
+                ? ["length", "name", "prototype", "isError"]
+                : ["length", "name", "prototype"],
         );
         const d = ctor.getOwnProperty("prototype");
         check(

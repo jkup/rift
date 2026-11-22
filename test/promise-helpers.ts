@@ -207,4 +207,25 @@ for (const source of [
         "try callback budget remains fatal",
     );
 }
+{
+    const realm = fresh(),
+        session = createScriptSession();
+    string(
+        "var c=Promise.withResolvers(),out='';" +
+            "for(var f of [Object,Function,Function.prototype,Promise,Promise.try,c.resolve,c.reject]){" +
+            "var keys=Object.getOwnPropertyNames(f);out+=keys.slice(0,2).join(',')+';';" +
+            "for(var k of ['length','name']){var d=Object.getOwnPropertyDescriptor(f,k);" +
+            "if(d.writable||d.enumerable||!d.configurable)throw 99}}out",
+        "length,name;length,name;length,name;length,name;length,name;length,name;length,name;",
+        realm,
+        session,
+    );
+    string(
+        "var out='';function C(executor){out+=Object.getOwnPropertyNames(executor).slice(0,2).join(',');executor(()=>{},()=>{})}" +
+            "Promise.withResolvers.call(C);out",
+        "length,name",
+        realm,
+        session,
+    );
+}
 console.log("Promise helpers passed");

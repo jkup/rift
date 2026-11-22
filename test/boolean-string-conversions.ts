@@ -179,7 +179,7 @@ export function testBooleanStringConversions(): void {
                         method.object.getPrototypeOf() === realms[r].functionPrototype,
                     "M1 owner/prototype",
                 );
-                keys(method.object.ownPropertyKeys(), ["name", "length"]);
+                keys(method.object.ownPropertyKeys(), ["length", "name"]);
                 check(
                     sameValue(method.object.get("name", evaluator.context, loc), str(name)) &&
                         sameValue(method.object.get("length", evaluator.context, loc), num(0)),

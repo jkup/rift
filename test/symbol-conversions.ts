@@ -159,7 +159,7 @@ export function testSymbolConversions(): void {
             if (realm !== b) {
                 check(!sameValue(method, methods[i]), "fresh methods");
             }
-            keys(method.object.ownPropertyKeys(), ["name", "length"], "function metadata keys");
+            keys(method.object.ownPropertyKeys(), ["length", "name"], "function metadata keys");
             check(
                 sameValue(method.object.get("name", evaluator.context, loc), str(names[i])) &&
                     sameValue(method.object.get("length", evaluator.context, loc), {

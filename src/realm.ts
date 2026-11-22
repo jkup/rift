@@ -630,14 +630,15 @@ function setBuiltinMetadata(object: GuestObject, name: string, length: number): 
     if (!Number.isFinite(length) || !Number.isInteger(length) || length < 0) {
         throw new Error("invalid builtin length");
     }
-    object.bootstrapDefine("name", {
-        value: { kind: "string", value: name },
+    // CreateBuiltinFunction installs length before name; own-key order is observable.
+    object.bootstrapDefine("length", {
+        value: { kind: "number", value: length === 0 ? 0 : length },
         writable: false,
         enumerable: false,
         configurable: true,
     });
-    object.bootstrapDefine("length", {
-        value: { kind: "number", value: length === 0 ? 0 : length },
+    object.bootstrapDefine("name", {
+        value: { kind: "string", value: name },
         writable: false,
         enumerable: false,
         configurable: true,

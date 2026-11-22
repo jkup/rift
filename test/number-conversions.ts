@@ -133,7 +133,7 @@ export function testNumberConversions(): void {
                 value.object.getPrototypeOf() === realm.functionPrototype,
             "owner/function root",
         );
-        keys(value.object.ownPropertyKeys(), ["name", "length"]);
+        keys(value.object.ownPropertyKeys(), ["length", "name"]);
         check(
             sameValue(value.object.get("name", evaluator.context, loc), str("valueOf")) &&
                 sameValue(value.object.get("length", evaluator.context, loc), num(0)),
@@ -176,7 +176,7 @@ export function testNumberConversions(): void {
                 text.object.getPrototypeOf() === realm.functionPrototype,
             "toString owner",
         );
-        keys(text.object.ownPropertyKeys(), ["name", "length"]);
+        keys(text.object.ownPropertyKeys(), ["length", "name"]);
         check(
             sameValue(text.object.get("name", evaluator.context, loc), str("toString")) &&
                 sameValue(text.object.get("length", evaluator.context, loc), num(1)),

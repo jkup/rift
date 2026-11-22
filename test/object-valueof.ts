@@ -86,7 +86,7 @@ check(
     "fresh method/defining prototype",
 );
 check(fn.callable !== null && fn.callable.realm === b, "defining Realm");
-check(stringKeys(fn.ownPropertyKeys()).join(",") === "name,length", "only metadata");
+check(stringKeys(fn.ownPropertyKeys()).join(",") === "length,name", "only metadata");
 for (const key of ["name", "length"]) {
     const d = fn.getOwnProperty(key);
     check(

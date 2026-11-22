@@ -119,7 +119,7 @@ check(
         !thrower.isExtensible(),
     "thrower identity",
 );
-check(exactKeys(thrower, ["name", "length"]), "exact keys");
+check(exactKeys(thrower, ["length", "name"]), "exact keys");
 for (const key of ["name", "length"]) {
     const d = thrower.getOwnProperty(key);
     check(
@@ -319,7 +319,7 @@ check(
         !added.value &&
         !thrower.setPrototypeOf(a.objectPrototype).value &&
         thrower.setPrototypeOf(a.functionPrototype).value &&
-        exactKeys(thrower, ["name", "length"]),
+        exactKeys(thrower, ["length", "name"]),
     "frozen shape",
 );
 a.functionPrototype.bootstrapDefine("arguments", { get: t, set: t });
@@ -373,7 +373,7 @@ check(
     "guards before effects",
 );
 check(
-    exactKeys(legacy.functionPrototype, ["name", "length", "call", "apply", "toString"]) &&
+    exactKeys(legacy.functionPrototype, ["length", "name", "call", "apply", "toString"]) &&
         legacy.functionPrototype.getOwnProperty("caller") === undefined &&
         legacy.functionPrototype.getOwnProperty("arguments") === undefined,
     "legacy exact surface",

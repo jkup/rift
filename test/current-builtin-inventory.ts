@@ -74,7 +74,7 @@ export const objectMethods = [
 ];
 
 export function objectConstructorKeys(): string[] {
-    const keys = ["name", "length", "prototype"];
+    const keys = ["length", "name", "prototype"];
     for (const method of objectMethods) {
         keys.push(method.name);
     }
