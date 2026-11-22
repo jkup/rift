@@ -53,7 +53,7 @@ export function temporalTimeRoundSettings(
         return unit;
     }
     if (unit.value === "") {
-        return languageFailure(context.realm, "TypeError", "smallestUnit is required", loc);
+        return languageFailure(context.realm, "RangeError", "smallestUnit required", loc);
     }
     const length =
         allowDay && unit.value === "day"

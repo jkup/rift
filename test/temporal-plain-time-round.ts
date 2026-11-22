@@ -90,13 +90,16 @@ for (let i = 0; i < modes.length; i++) {
 passes(
     'new Temporal.PlainTime(1,2,3,500).round({smallestUnit:"second",roundingMode:"halfEven"}).second===4',
 );
-for (const argument of ["undefined", "null", "true", "1", "1n", "Symbol()", "{}"]) {
+for (const argument of ["undefined", "null", "true", "1", "1n", "Symbol()"]) {
     passes(
         "var ok=false;try{new Temporal.PlainTime().round(" +
             argument +
             ")}catch(e){ok=e instanceof TypeError}ok",
     );
 }
+passes(
+    "var ok=false;try{new Temporal.PlainTime().round({})}catch(e){ok=e instanceof RangeError}ok",
+);
 for (const unit of ["day", "week", "year", "auto", "unknown"]) {
     passes(
         'var ok=false;try{new Temporal.PlainTime().round("' +

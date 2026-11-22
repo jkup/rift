@@ -61,7 +61,7 @@ const cases = [
     "var ok=false;try{new Temporal.Instant(0n).round(undefined)}catch(e){ok=e instanceof TypeError}ok",
     "var ok=false;try{new Temporal.Instant(0n).round(null)}catch(e){ok=e instanceof TypeError}ok",
     "var ok=false;try{new Temporal.Instant(0n).round(1)}catch(e){ok=e instanceof TypeError}ok",
-    "var ok=false;try{new Temporal.Instant(0n).round({})}catch(e){ok=e instanceof TypeError}ok",
+    "var ok=false;try{new Temporal.Instant(0n).round({})}catch(e){ok=e instanceof RangeError}ok",
     'var ok=false;try{new Temporal.Instant(0n).round("day")}catch(e){ok=e instanceof RangeError}ok',
     'var ok=false;try{new Temporal.Instant(0n).round("auto")}catch(e){ok=e instanceof RangeError}ok',
     'var ok=false;try{new Temporal.Instant(0n).round({smallestUnit:"second",roundingIncrement:7})}catch(e){ok=e instanceof RangeError}ok',
@@ -76,6 +76,21 @@ const cases = [
     "var ok=false;try{Temporal.Instant.prototype.toJSON.call({})}catch(e){ok=e instanceof TypeError}ok",
     "var ok=false;try{Temporal.Instant.prototype.toLocaleString.call({})}catch(e){ok=e instanceof TypeError}ok",
 ];
+for (const receiver of [
+    "new Temporal.Instant(0n)",
+    "new Temporal.PlainTime()",
+    "new Temporal.PlainDateTime(2024,1,1)",
+    'new Temporal.ZonedDateTime(0n,"UTC")',
+]) {
+    cases.push(
+        "var log='';var ok=false;try{" +
+            receiver +
+            ".round({get roundingIncrement(){log+='i';return 1},get roundingMode(){log+='m';return 'ceil'},get smallestUnit(){log+='u';return undefined}})}catch(e){ok=e instanceof RangeError}ok&&log==='imu'",
+        "var sentinel={};var ok=false;try{" +
+            receiver +
+            ".round({get smallestUnit(){throw sentinel}})}catch(e){ok=e===sentinel}ok",
+    );
+}
 for (let i = 0; i < cases.length; i++) {
     const result = run(cases[i], new Realm((_line: string) => {}, "script"));
     check(

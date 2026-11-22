@@ -87,7 +87,7 @@ export function registerTemporalInstantMethods(realm: Realm): void {
                 return read;
             }
             if (read.value.kind === "undefined") {
-                return languageFailure(context.realm, "TypeError", "smallestUnit is required", loc);
+                return languageFailure(context.realm, "RangeError", "smallestUnit required", loc);
             }
             const unit = temporalOptionString(read.value, context, loc);
             if (unit.type === "throw") {

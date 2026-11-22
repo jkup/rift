@@ -55,6 +55,7 @@ for (const mode of [
     check(result.type === "normal" && result.value.kind === "boolean" && result.value.value, mode);
 }
 for (const expression of [
+    'new Temporal.ZonedDateTime(0n,"UTC").round({})',
     'new Temporal.ZonedDateTime(8640000000000000000000n,"UTC").round("day")',
     'new Temporal.ZonedDateTime(-8640000000000000000000n,"-23:59").round("second")',
     'new Temporal.ZonedDateTime(-8640000000000000000000n,"-23:59").round("day")',
@@ -71,7 +72,7 @@ for (const expression of [
         expression,
     );
 }
-for (const input of ["undefined", "null", "1", "{}"]) {
+for (const input of ["undefined", "null", "1"]) {
     const result = run(
         'var ok=false;try{new Temporal.ZonedDateTime(0n,"UTC").round(' +
             input +

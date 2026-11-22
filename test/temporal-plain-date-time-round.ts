@@ -61,7 +61,7 @@ for (let i = 0; i < modes.length; i++) {
             (up[i] ? 3 : 2),
     );
 }
-for (const options of ["undefined", "null", "1", "true", "{}"]) {
+for (const options of ["undefined", "null", "1", "true"]) {
     passes(
         "var ok=false;try{new Temporal.PlainDateTime(2024,1,1).round(" +
             options +
@@ -69,6 +69,7 @@ for (const options of ["undefined", "null", "1", "true", "{}"]) {
     );
 }
 for (const options of [
+    "{}",
     '"year"',
     '"month"',
     '"week"',
