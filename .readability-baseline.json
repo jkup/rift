@@ -1013,7 +1013,7 @@
             "filename": "tools/test262/script-result.mjs",
             "name": "<module>",
             "rule": "fileLines",
-            "value": 861
+            "value": 846
         }
     ]
 }

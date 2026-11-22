@@ -7,12 +7,16 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import { parseScriptEnvelope } from "./script-result.mjs";
+import { runtimeCodes } from "./runtime-capability-codes.mjs";
 const original = JSON.parse(
     readFileSync(
         new URL("../../test/fixtures/tooling/ts-035c/parse-only-review.json", import.meta.url),
     ),
 ).results.find((r) => r.action === "parse-only");
 const copy = () => structuredClone(original);
+test("shared runtime vocabulary cannot be extended by a caller", () => {
+    assert.throws(() => runtimeCodes.push("runtime.unknown"), TypeError);
+});
 function rebind(r) {
     const b = r.binding;
     b.requestSha256 = createHash("sha256")
@@ -110,6 +114,11 @@ test("approved closure: parse-only harness secondary steps/calls/unsupported ret
             phase: "runtime",
             capabilityCode: "runtime.temporal-time-zone",
         },
+        {
+            kind: "unsupported-operation",
+            phase: "runtime",
+            capabilityCode: "runtime.weak-symbol-key",
+        },
     ]) {
         const r = copy();
         r.child.result = result;
@@ -155,7 +164,12 @@ test("approved closure: exactly the reviewed C predicates and D2/D4 rules and ar
         "ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target','lexical-declaration-statement','numeric-separator','regexp-literal','private-name','async-function-statement','strict-reserved-identifier','strict-legacy-number','strict-legacy-escape'])";
     const runtimeFrom = "'runtime.map-species']",
         runtimeTo =
-            "'runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species','runtime.flat-species','runtime.flatmap-species','runtime.dynamic-function-source','runtime.eval-source','runtime.regexp-pattern','runtime.temporal-time-zone']";
+            "'runtime.map-species','runtime.splice-species','runtime.json-reviver','runtime.slice-species','runtime.concat-species','runtime.filter-species','runtime.flat-species','runtime.flatmap-species','runtime.dynamic-function-source','runtime.eval-source','runtime.regexp-pattern','runtime.temporal-time-zone','runtime.weak-symbol-key']";
+    const vocabulary = readFileSync(
+        new URL("runtime-capability-codes.mjs", import.meta.url),
+        "utf8",
+    );
+    const declaration = vocabulary.replace("export ", "");
     for (const name of ["script-driver-result.mjs", "script-result.mjs"]) {
         const old = execFileSync("git", ["show", "e66876d:typescript/tools/test262/" + name], {
             encoding: "utf8",
@@ -163,10 +177,10 @@ test("approved closure: exactly the reviewed C predicates and D2/D4 rules and ar
         assert.equal(old.split(from).length, 2);
         assert.equal(old.split(ruleFrom).length, 2);
         assert.equal(old.split(runtimeFrom).length, 2);
-        const actual = readFileSync(new URL(name, import.meta.url), "utf8").replaceAll(
-                "\r\n",
-                "\n",
-            ),
+        const imported = readFileSync(new URL(name, import.meta.url), "utf8");
+        const importLine = 'import { runtimeCodes } from "./runtime-capability-codes.mjs";';
+        assert.equal(imported.split(importLine).length, 2);
+        const actual = imported.replace(importLine, "").replaceAll("\r\n", "\n"),
             expected = old
                 .replace(from, to)
                 .replace(ruleFrom, ruleTo)
@@ -181,7 +195,15 @@ test("approved closure: exactly the reviewed C predicates and D2/D4 rules and ar
             name === "script-result.mjs"
                 ? "\n// Construct data only; callers must separately authenticate parent transport.\n// Context and binding have the same trusted-host contract as assertScriptContext.\nexport function composeScriptEnvelope(json,context,binding) {\n  need(arguments.length===3);\n  need(record(context,{identity:identityShape,inputs:inputsShape,expectedNegative:negativeShape,blockers:array(blockerShape)}));\n  const value=decode(json);\n  need(record(value,{identity:identityShape,inputs:inputsShape,evidence:evidenceShape,observation:x=>resultShape(x,true)}));\n  need(value.identity.mode==='conformance');\n  value.classification={status:'host-fault',reasonCode:'protocol',\n    blockers:structuredClone(context.blockers),expectedNegative:structuredClone(context.expectedNegative),\n    observedPhase:null,observedConstructorName:null};\n  checkCore(value,binding);\n  value.classification=classification(value);\n  // Classification adds bytes: enforce the final wire limit as well as draft.\n  return assertScriptContext(parseScriptEnvelope(JSON.stringify(value),binding),context,binding);\n}\n"
                 : "";
-        assert.deepEqual(sourceStructure(actual), sourceStructure(expected + suffix));
+        const expectedDeclaration = expected.match(/const runtimeCodes\s*=\s*\[[\s\S]*?\];/)[0];
+        const frozenDeclaration = expectedDeclaration
+            .replace(/=\s*\[/, "=Object.freeze([")
+            .replace(/\];$/, "]);");
+        assert.deepEqual(sourceStructure(declaration), sourceStructure(frozenDeclaration));
+        assert.deepEqual(
+            sourceStructure(actual),
+            sourceStructure(expected.replace(expectedDeclaration, "") + suffix),
+        );
         assert.equal(
             createHash("sha256").update(suffix).digest("hex"),
             name === "script-result.mjs"
