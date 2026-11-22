@@ -8,6 +8,7 @@ import { createHash } from "node:crypto";
 import { parseScriptDriverResult } from "./script-driver-result.mjs";
 import { parseScriptEnvelope } from "./script-result.mjs";
 import { runtimeCodes } from "./runtime-capability-codes.mjs";
+import { guards, guardPhaseAllowed } from "./script-resource-guards.mjs";
 const original = JSON.parse(
     readFileSync(
         new URL("../../test/fixtures/tooling/ts-035c/parse-only-review.json", import.meta.url),
@@ -16,6 +17,28 @@ const original = JSON.parse(
 const copy = () => structuredClone(original);
 test("shared runtime vocabulary cannot be extended by a caller", () => {
     assert.throws(() => runtimeCodes.push("runtime.unknown"), TypeError);
+});
+test("resource guard vocabulary and phase matrix stay closed", () => {
+    assert.deepEqual(guards, {
+        "source-units": "sourceUnits",
+        "parse-depth": "parseDepth",
+        steps: "steps",
+        calls: "calls",
+        "evaluation-depth": "evaluationDepth",
+    });
+    assert.ok(Object.isFrozen(guards));
+    for (const [code, allowed] of [
+        ["source-units", ["parse", "body"]],
+        ["parse-depth", ["parse", "body"]],
+        ["steps", ["instantiation", "body"]],
+        ["calls", ["instantiation", "body"]],
+        ["evaluation-depth", ["instantiation", "body"]],
+        ["unknown", []],
+    ]) {
+        for (const phase of ["parse", "instantiation", "body", "unknown"]) {
+            assert.equal(guardPhaseAllowed(code, phase), allowed.includes(phase));
+        }
+    }
 });
 function rebind(r) {
     const b = r.binding;
@@ -179,8 +202,14 @@ test("approved closure: exactly the reviewed C predicates and D2/D4 rules and ar
         assert.equal(old.split(runtimeFrom).length, 2);
         const imported = readFileSync(new URL(name, import.meta.url), "utf8");
         const importLine = 'import { runtimeCodes } from "./runtime-capability-codes.mjs";';
+        const guardImport =
+            'import { guards, guardPhaseAllowed } from "./script-resource-guards.mjs";';
         assert.equal(imported.split(importLine).length, 2);
-        const actual = imported.replace(importLine, "").replaceAll("\r\n", "\n"),
+        assert.equal(imported.split(guardImport).length, 2);
+        const actual = imported
+                .replace(importLine, "")
+                .replace(guardImport, "")
+                .replaceAll("\r\n", "\n"),
             expected = old
                 .replace(from, to)
                 .replace(ruleFrom, ruleTo)
@@ -200,9 +229,18 @@ test("approved closure: exactly the reviewed C predicates and D2/D4 rules and ar
             .replace(/=\s*\[/, "=Object.freeze([")
             .replace(/\];$/, "]);");
         assert.deepEqual(sourceStructure(declaration), sourceStructure(frozenDeclaration));
+        const guardDeclaration = expected.match(/const guards\s*=\s*\{[\s\S]*?\};/)[0];
+        const phaseFrom =
+            "need(['source-units','parse-depth'].includes(o.guardCode)===(op.phase==='parse'));";
+        assert.equal(expected.split(phaseFrom).length, 2);
         assert.deepEqual(
             sourceStructure(actual),
-            sourceStructure(expected.replace(expectedDeclaration, "") + suffix),
+            sourceStructure(
+                expected
+                    .replace(expectedDeclaration, "")
+                    .replace(guardDeclaration, "")
+                    .replace(phaseFrom, "need(guardPhaseAllowed(o.guardCode,op.phase));") + suffix,
+            ),
         );
         assert.equal(
             createHash("sha256").update(suffix).digest("hex"),

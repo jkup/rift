@@ -20,6 +20,68 @@ import {
 const rows = serialized();
 const parse = (v, b) => parseScriptEnvelope(JSON.stringify(v), b);
 
+test("runtime parsing limits retain body provenance and exact bounds at both boundaries", () => {
+    const cases = rows.filter(
+        (r) =>
+            r.child.result.kind === "resource-limit" &&
+            r.child.operation.phase === "body" &&
+            r.child.inspection === null,
+    );
+    assert.ok(cases.length > 0);
+    for (const r of cases) {
+        for (const [guardCode, limit] of [
+            ["source-units", 100000],
+            ["parse-depth", 128],
+        ]) {
+            const child = copy(r.child);
+            child.result = { kind: "resource-limit", guardCode, count: limit + 1, limit };
+            assert.deepEqual(childParse(Buffer.from(JSON.stringify(child)), r.binding), child);
+            const result = envelope(child, r);
+            result.classification.reasonCode = guardCode;
+            assert.equal(result.classification.status, "resource-limit");
+            assert.deepEqual(parse(result, r.binding), result);
+            for (const edit of [
+                (v) => {
+                    v.result.limit++;
+                },
+                (v) => {
+                    v.result.count = limit;
+                },
+                (v) => {
+                    v.result.guardCode = "unknown";
+                },
+                (v) => {
+                    v.source.unitId = "missing";
+                },
+                (v) => {
+                    v.testBodyEvaluated = false;
+                },
+                (v) => {
+                    v.operation.phase = "instantiation";
+                    v.testBodyEvaluated = false;
+                },
+            ]) {
+                const bad = copy(child);
+                edit(bad);
+                assert.throws(() => childParse(Buffer.from(JSON.stringify(bad)), r.binding));
+                const badEnvelope = envelope(bad, r);
+                badEnvelope.classification.reasonCode = guardCode;
+                assert.throws(() => parse(badEnvelope, r.binding));
+            }
+            const binding = copy(r.binding);
+            binding.action = "parse-only";
+            rebind(binding);
+            const bad = copy(child);
+            bad.requestSha256 = binding.requestSha256;
+            assert.throws(() => childParse(Buffer.from(JSON.stringify(bad)), binding));
+            const badEnvelope = envelope(bad, r);
+            badEnvelope.inputs.requestSha256 = binding.requestSha256;
+            badEnvelope.classification.reasonCode = guardCode;
+            assert.throws(() => parse(badEnvelope, binding));
+        }
+    }
+});
+
 test("weak-symbol capability is unsupported at both boundaries and unknown codes stay rejected", () => {
     const cases = rows.filter((r) => r.child.result.kind === "unsupported-operation");
     assert.ok(cases.length > 0);

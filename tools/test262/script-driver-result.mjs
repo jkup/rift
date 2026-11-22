@@ -1,3 +1,4 @@
+import { guards, guardPhaseAllowed } from "./script-resource-guards.mjs";
 import { runtimeCodes } from "./runtime-capability-codes.mjs";
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual as equal } from "node:util";
@@ -37,13 +38,6 @@ const need = (condition) => {
 const digest = (x) => createHash("sha256").update(x).digest("hex");
 const modes = one(["script-observation", "conformance"]);
 const variants = one(["strict", "non-strict", "raw"]);
-const guards = {
-    "source-units": "sourceUnits",
-    "parse-depth": "parseDepth",
-    steps: "steps",
-    calls: "calls",
-    "evaluation-depth": "evaluationDepth",
-};
 const syntaxCodes = [
     "lex.indeterminate-comment",
     "lex.leading-zero",
@@ -402,7 +396,7 @@ function checkOperation(v, b, s) {
     }
     if (o.kind === "resource-limit") {
         need(o.limit === b.limits[guards[o.guardCode]]);
-        need(["source-units", "parse-depth"].includes(o.guardCode) === (op.phase === "parse"));
+        need(guardPhaseAllowed(o.guardCode, op.phase));
     }
     if (v.inspection !== null) {
         need(
