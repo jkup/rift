@@ -75,6 +75,32 @@ for (const text of [
             ")}catch(e){ok=e instanceof RangeError}ok",
     );
 }
+for (const expression of [
+    "Temporal.Instant.from(z).epochNanoseconds===9007199254740993n",
+    "Temporal.Instant.compare(z,new Temporal.Instant(9007199254740992n))===1",
+    "Temporal.Instant.compare(new Temporal.Instant(9007199254740994n),z)===1",
+    "new Temporal.Instant(9007199254740993n).equals(z)",
+    "new Temporal.Instant(9007199254740994n).since(z).nanoseconds===1",
+    "new Temporal.Instant(9007199254740992n).until(z).nanoseconds===1",
+]) {
+    cases.push(
+        'var z=new Temporal.ZonedDateTime(9007199254740993n,"+01:00");for(var key of [Symbol.toPrimitive,"toString","valueOf","epochNanoseconds"]){Object.defineProperty(z,key,{get(){throw 42}})}' +
+            expression,
+    );
+}
+for (const epoch of ["-8640000000000000000000n", "8640000000000000000000n"]) {
+    cases.push(
+        "Temporal.Instant.from(new Temporal.ZonedDateTime(" +
+            epoch +
+            ',"UTC")).epochNanoseconds===' +
+            epoch,
+    );
+}
+cases.push(
+    'class Child extends Temporal.ZonedDateTime{}var z=new Child(1n,"UTC");var a=Temporal.Instant.from(z),b=Temporal.Instant.from(z);a!==b&&a!==z&&a.epochNanoseconds===1n&&Object.getPrototypeOf(a)===Temporal.Instant.prototype',
+    'var fake=Object.create(Temporal.ZonedDateTime.prototype);fake.toString=function(){return "1970-01-01T00:00:00.000000007Z"};fake.epochNanoseconds=42n;Temporal.Instant.from(fake).epochNanoseconds===7n',
+    "var ok=false;try{Temporal.Instant.from(Object.create(Temporal.ZonedDateTime.prototype))}catch(e){ok=e instanceof TypeError}ok",
+);
 for (let i = 0; i < cases.length; i++) {
     const result = run(cases[i], new Realm((_line: string) => {}, "script"));
     check(
@@ -93,6 +119,13 @@ check(
         cloned.value.kind === "object" &&
         cloned.value.object.getPrototypeOf() === defining.temporalInstantPrototype,
     "defining Realm allocation",
+);
+const zonedClone = run('from(new Temporal.ZonedDateTime(1n,"UTC"))', calling);
+check(
+    zonedClone.type === "normal" &&
+        zonedClone.value.kind === "object" &&
+        zonedClone.value.object.getPrototypeOf() === defining.temporalInstantPrototype,
+    "cross-Realm ZonedDateTime allocation",
 );
 const equal = run('equals.call(new Temporal.Instant(0n),"1970-01-01T00Z")', calling);
 check(

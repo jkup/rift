@@ -1,3 +1,4 @@
+import { GuestTemporalZonedDateTime } from "../../temporal/temporal-zoned-date-time-object.js";
 import { compareBigInts } from "../../numeric.js";
 import type { Realm } from "../../realm.js";
 import type { BigIntResult } from "../../bigint-arithmetic.js";
@@ -25,6 +26,9 @@ export function toInstantNanoseconds(
     loc: Location,
 ): BigIntResult {
     if (value.kind === "object" && value.object instanceof GuestTemporalInstant) {
+        return { type: "normal", value: value.object.epochNanoseconds };
+    }
+    if (value.kind === "object" && value.object instanceof GuestTemporalZonedDateTime) {
         return { type: "normal", value: value.object.epochNanoseconds };
     }
     const primitive = toPrimitive(value, "string", context, loc);
