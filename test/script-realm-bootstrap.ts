@@ -247,6 +247,7 @@ function inventory(a: Realm): void {
             "__defineSetter__",
             "__lookupGetter__",
             "__lookupSetter__",
+            "__proto__",
             "toLocaleString",
         ],
         [
@@ -399,6 +400,17 @@ function inventory(a: Realm): void {
                             other.kind === "accessor" &&
                             d.get === other.get,
                         "restricted descriptors",
+                    );
+                } else if (i === 0 && k === "__proto__") {
+                    const d = p.getOwnProperty(k);
+                    check(
+                        d !== undefined &&
+                            d.kind === "accessor" &&
+                            d.get.kind === "object" &&
+                            d.set.kind === "object" &&
+                            !d.enumerable &&
+                            d.configurable,
+                        "legacy prototype descriptor",
                     );
                 } else if (i === 6 && k === "description") {
                     const d = p.getOwnProperty(k);
@@ -775,6 +787,24 @@ function row(id: string, name: string, initial: number): void {
                     const ld = left[i].getOwnProperty(key),
                         rd = right[i].getOwnProperty(key);
                     if (ld !== undefined && ld.kind === "accessor") {
+                        if (i === 0 && key === "__proto__") {
+                            check(
+                                rd !== undefined &&
+                                    rd.kind === "accessor" &&
+                                    ld.get.kind === "object" &&
+                                    rd.get.kind === "object" &&
+                                    ld.set.kind === "object" &&
+                                    rd.set.kind === "object" &&
+                                    ld.get.object !== rd.get.object &&
+                                    ld.set.object !== rd.set.object &&
+                                    !ld.enumerable &&
+                                    !rd.enumerable &&
+                                    ld.configurable &&
+                                    rd.configurable,
+                                "fresh legacy prototype accessors",
+                            );
+                            continue;
+                        }
                         if (i === 6 && key === "description") {
                             check(
                                 rd !== undefined &&

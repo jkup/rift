@@ -1039,6 +1039,7 @@ for (const r of [fresh(), fresh()]) {
         "__defineSetter__",
         "__lookupGetter__",
         "__lookupSetter__",
+        "__proto__",
         "toLocaleString",
     ]);
     for (const name of ["String", "Object"]) {

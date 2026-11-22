@@ -246,4 +246,84 @@ for (const name of [
         "bounded prototype lookup",
     );
 }
+for (const source of [
+    "let p={},o={};o.__proto__=p;o.__proto__===p&&Object.getPrototypeOf(o)===p&&!Object.hasOwn(o,'__proto__');",
+    "let s=Object.getOwnPropertyDescriptor(Object.prototype,'__proto__').set,o={};s.call(o,null)===undefined&&Object.getPrototypeOf(o)===null;",
+    "let d=Object.getOwnPropertyDescriptor(Object.prototype,'__proto__');!d.enumerable&&d.configurable&&d.get.name==='get __proto__'&&d.get.length===0&&d.set.name==='set __proto__'&&d.set.length===1&&!Object.hasOwn(d.get,'prototype')&&!Object.hasOwn(d.set,'prototype');",
+    "let g=Object.getOwnPropertyDescriptor(Object.prototype,'__proto__').get;g.call(1)===Number.prototype&&g.call('x')===String.prototype&&g.call(true)===Boolean.prototype&&g.call(1n)===BigInt.prototype&&g.call(Symbol())===Symbol.prototype;",
+    "let s=Object.getOwnPropertyDescriptor(Object.prototype,'__proto__').set,o={},p=Object.getPrototypeOf(o);for(let v of [undefined,true,1,'x',1n,Symbol()]){if(s.call(o,v)!==undefined)throw 99}Object.getPrototypeOf(o)===p;",
+    "let s=Object.getOwnPropertyDescriptor(Object.prototype,'__proto__').set;for(let v of [true,1,'x',1n,Symbol()]){if(s.call(v,{})!==undefined||s.call(v,null)!==undefined)throw 99}true;",
+    "let s=Object.getOwnPropertyDescriptor(Object.prototype,'__proto__').set;let n=0;for(let v of [null,undefined]){try{s.call(v,1)}catch(e){if(e instanceof TypeError)n++}}n===2;",
+    "let g=Object.getOwnPropertyDescriptor(Object.prototype,'__proto__').get;let n=0;for(let v of [null,undefined]){try{g.call(v)}catch(e){if(e instanceof TypeError)n++}}n===2;",
+    "let o={};try{o.__proto__=o}catch(e){e instanceof TypeError&&Object.getPrototypeOf(o)===Object.prototype;}",
+    "let a={},b=Object.create(a);try{a.__proto__=b}catch(e){e instanceof TypeError&&Object.getPrototypeOf(a)===Object.prototype;}",
+    "let p={},o=Object.create(p);Object.preventExtensions(o);o.__proto__=p;try{o.__proto__={}}catch(e){e instanceof TypeError&&Object.getPrototypeOf(o)===p;}",
+    "Object.prototype.__proto__=null;try{Object.prototype.__proto__={}}catch(e){e instanceof TypeError&&Object.getPrototypeOf(Object.prototype)===null;}",
+    "let o={};Object.defineProperty(o,'__proto__',{value:1,writable:true});o.__proto__=2;o.__proto__===2&&Object.getPrototypeOf(o)===Object.prototype;",
+    "let o=JSON.parse('{\"__proto__\":7}');Object.hasOwn(o,'__proto__')&&o.__proto__===7&&Object.getPrototypeOf(o)===Object.prototype;",
+    "let d=Object.getOwnPropertyDescriptor(Object.prototype,'__proto__');let n=0;for(let f of [d.get,d.set]){try{new f()}catch(e){if(e instanceof TypeError)n++}}n===2;",
+]) {
+    const result = run(source);
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        source,
+    );
+}
+{
+    const owner = fresh(),
+        caller = fresh();
+    const descriptor = owner.objectPrototype.getOwnProperty("__proto__");
+    if (descriptor === undefined || descriptor.kind !== "accessor") {
+        throw new Error("legacy prototype accessor");
+    }
+    seed(caller, "foreignGet", descriptor.get);
+    seed(caller, "foreignSet", descriptor.set);
+    const boxed = run("foreignGet.call(1)", caller);
+    check(
+        boxed.type === "normal" &&
+            boxed.value.kind === "object" &&
+            boxed.value.object === owner.numberPrototype,
+        "getter boxes in builtin Realm",
+    );
+    for (const source of [
+        "foreignGet.call(null)",
+        "foreignSet.call(null,1)",
+        "foreignSet.call(Object.prototype,{})",
+    ]) {
+        const result = run(source, caller);
+        check(
+            result.type === "throw" &&
+                result.value.kind === "object" &&
+                result.value.object.getPrototypeOf() === owner.getErrorPrototype("TypeError"),
+            "accessor error Realm",
+        );
+    }
+    run("delete Object.prototype.__proto__", caller);
+    const retained = owner.objectPrototype.getOwnProperty("__proto__");
+    check(
+        caller.objectPrototype.getOwnProperty("__proto__") === undefined &&
+            retained !== undefined &&
+            retained.kind === "accessor" &&
+            sameValue(retained.get, descriptor.get) &&
+            sameValue(retained.set, descriptor.set),
+        "accessor Realm isolation",
+    );
+}
+{
+    const realm = fresh(),
+        target = realm.createObject();
+    let chain: GuestObject = realm.objectPrototype;
+    for (let i = 0; i < 400; i++) {
+        chain = new GuestObject(chain);
+    }
+    seed(realm, "target", { kind: "object", object: target });
+    seed(realm, "deep", { kind: "object", object: chain });
+    const result = run("target.__proto__=deep", realm, 100);
+    check(
+        result.type === "throw" &&
+            result.origin.kind === "resource-limit" &&
+            target.getPrototypeOf() === realm.objectPrototype,
+        "bounded setter preserves original prototype",
+    );
+}
 console.log("Object prototype methods passed");
