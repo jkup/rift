@@ -47,6 +47,66 @@ function string(expected: string, realm: Realm, session: ScriptSession): void {
 }
 const cases: { source: string; before: string; after: string }[] = [
     {
+        source: "var p=Object.getPrototypeOf(Object.getPrototypeOf(adapt([])));var d=Object.getOwnPropertyDescriptor(p,Symbol.asyncDispose);out+=d.writable&&!d.enumerable&&d.configurable&&d.value.name==='[Symbol.asyncDispose]'&&d.value.length===0;try{new d.value()}catch(e){out+=':'+(e instanceof TypeError)}",
+        before: "true:true",
+        after: "true:true",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];var a=d.call({}),b=d.call({return:null});out+=a instanceof Promise&&b instanceof Promise&&a!==b;a.then(v=>out+=':'+v);b.then(v=>out+=':'+v)",
+        before: "true",
+        after: "true:undefined:undefined",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];d.call(null).catch(e=>out+=e instanceof TypeError);out+='s'",
+        before: "s",
+        after: "strue",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];var o={get return(){out+='g';return function(){out+='c'+(this===o)+arguments.length;return {then(resolve){out+='t';resolve(7)}}}}};var p=d.call(o,8);out+='s';p.then(v=>out+=':'+v)",
+        before: "gctrue0s",
+        after: "gctrue0st:undefined",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];var marker={};d.call({get return(){throw marker}}).catch(e=>out+=e===marker);out+='s'",
+        before: "s",
+        after: "strue",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];var marker={};d.call({return(){throw marker}}).catch(e=>out+=e===marker);out+='s'",
+        before: "s",
+        after: "strue",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];d.call({return:7}).catch(e=>out+=e instanceof TypeError);out+='s'",
+        before: "s",
+        after: "strue",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];var marker={};d.call({return(){return Promise.reject(marker)}}).catch(e=>out+=e===marker);out+='s'",
+        before: "s",
+        after: "strue",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];var marker={},p=Promise.resolve(1);Object.defineProperty(p,'constructor',{get(){out+='c';throw marker}});d.call({return(){return p}}).catch(e=>out+=e===marker);out+='s'",
+        before: "cs",
+        after: "cstrue",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];var p=Promise.resolve(7);p.then=()=>{throw 1};var result=d.call({return(){return p}});result.then(v=>out+=v);Object.defineProperty(Promise,Symbol.species,{get(){throw 2}});Promise=function(){throw 3}",
+        before: "",
+        after: "undefined",
+    },
+    {
+        source: "var d=adapt([])[Symbol.asyncDispose];d.call({return(){return 7}}).then(v=>out+=v);out+='s'",
+        before: "s",
+        after: "sundefined",
+    },
+    {
+        source: "async function* g(){try{yield 1}finally{out+='f'}}var i=g();i.next().then(()=>i[Symbol.asyncDispose]()).then(v=>out+=':'+v)",
+        before: "",
+        after: "f:undefined",
+    },
+    {
         source: "var i=adapt([Promise.resolve(7)]);out+=i[Symbol.asyncIterator]()===i;i.next().then(r=>out+=':'+r.value+':'+r.done);i.next().then(r=>out+=':'+r.value+':'+r.done)",
         before: "true",
         after: "true:7:false:undefined:true",
@@ -227,6 +287,49 @@ for (const test of cases) {
             drained.failures.length === 1 &&
             drained.failures[0].completion.origin.kind === "resource-limit",
         "close budget bypasses rejection",
+    );
+    string("", realm, createScriptSession());
+}
+{
+    const owner = fresh(),
+        caller = fresh();
+    const setup = run("var dispose=adapt([])[Symbol.asyncDispose]", owner, createScriptSession());
+    check(setup.type === "normal", "disposal method setup");
+    const method = owner.globalObject.getOwnProperty("dispose");
+    if (method === undefined || method.kind !== "data") {
+        throw new Error("missing disposal method");
+    }
+    caller.defineScriptGlobal("dispose", { value: method.value });
+    caller.defineScriptGlobal("ownerPromisePrototype", {
+        value: { kind: "object", object: owner.promisePrototype },
+    });
+    caller.defineScriptGlobal("ownerErrorPrototype", {
+        value: { kind: "object", object: owner.getErrorPrototype("TypeError") },
+    });
+    const session = createScriptSession();
+    check(
+        run(
+            "var out='';var p=dispose.call(null);out+=Object.getPrototypeOf(p)===ownerPromisePrototype;p.catch(e=>out+=':'+(Object.getPrototypeOf(e)===ownerErrorPrototype))",
+            caller,
+            session,
+        ).type === "normal",
+        "foreign disposal setup",
+    );
+    const drained = drainScriptJobs(session);
+    check(!drained.fatal && drained.failures.length === 0, "foreign disposal jobs");
+    string("true:true", caller, session);
+}
+{
+    const realm = fresh(),
+        session = createScriptSession({ maxSteps: 200, maxCalls: 16 });
+    const result = run(
+        "var out='';adapt([])[Symbol.asyncDispose].call({return(){while(true){}}}).catch(()=>out+='bad')",
+        realm,
+        session,
+    );
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "disposal budget bypasses rejection",
     );
     string("", realm, createScriptSession());
 }

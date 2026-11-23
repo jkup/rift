@@ -27,7 +27,7 @@ import {
 } from "./runtime.js";
 import type { Realm } from "./realm.js";
 import type { Location } from "./syntax.js";
-import { wellKnownAsyncIterator } from "./symbols.js";
+import { wellKnownAsyncDispose, wellKnownAsyncIterator } from "./symbols.js";
 
 class AsyncFromSyncIterator extends GuestObject {
     constructor(
@@ -169,7 +169,69 @@ function continueSync(
     );
 }
 
+function disposeAsyncIterator(
+    receiver: Value,
+    context: OperationContext,
+    loc: Location,
+): ValueCompletion {
+    const capability = intrinsicPromiseCapability(context.realm);
+    const object = toObject(receiver, context, loc);
+    if (object.type === "throw") {
+        return reject(capability, object, context, loc);
+    }
+    const method = object.value.internalGet("return", receiver, context, loc);
+    if (method.type === "throw") {
+        return reject(capability, method, context, loc);
+    }
+    if (method.value.kind === "undefined" || method.value.kind === "null") {
+        const settled = context.call(capability.resolve, UNDEFINED, [UNDEFINED], loc);
+        return settled.type === "throw" ? settled : normal(capability.promise);
+    }
+    const result = context.call(method.value, receiver, [], loc);
+    if (result.type === "throw") {
+        return reject(capability, result, context, loc);
+    }
+    const constructor = context.realm.promiseConstructor;
+    if (constructor === null) {
+        throw new Error("Promise intrinsic unavailable");
+    }
+    const wrapped = promiseResolve(
+        { kind: "object", object: constructor },
+        result.value,
+        context,
+        loc,
+    );
+    if (wrapped.type === "throw") {
+        return reject(capability, wrapped, context, loc);
+    }
+    if (wrapped.value.kind !== "object" || !(wrapped.value.object instanceof GuestPromise)) {
+        throw new Error("intrinsic Promise required");
+    }
+    // ECMA-262 async iterator disposal awaits return(), then discards its result.
+    // Use the internal reaction operation, not an observable .then/species lookup.
+    const fulfilled = context.realm.createBuiltin("", 1, (_receiver, _args, _context, _loc) =>
+        normal(),
+    );
+    return wrapped.value.object.then(
+        capability,
+        { kind: "object", object: fulfilled },
+        UNDEFINED,
+        context,
+        loc,
+    );
+}
+
 export function registerAsyncIterators(realm: Realm): void {
+    const dispose = realm.createBuiltin(
+        "[Symbol.asyncDispose]",
+        0,
+        (receiver, _args, context, loc) => disposeAsyncIterator(receiver, context, loc),
+    );
+    realm.asyncIteratorPrototype.bootstrapDefine(wellKnownAsyncDispose, {
+        value: { kind: "object", object: dispose },
+        writable: true,
+        configurable: true,
+    });
     const identity = realm.createBuiltin(
         "[Symbol.asyncIterator]",
         0,
