@@ -12,18 +12,28 @@ covered by the accompanying [Apache-2.0 license](LICENSE).
 
 ### Automated setup
 
-With Git, tar and Node 24 or later installed, an existing upstream ScriptC checkout
-containing the pinned revision can be prepared and built with one command:
-
-```sh
-npm run setup:native -- /path/to/scriptc
-```
-
+Install Git, tar and Node 24 or later. Windows requires Git for Windows for
+upstream build scripts and uses the downloaded Zig linker.
 Linux also requires Clang and system C development tools. On Ubuntu, install them
 first with `sudo apt-get install clang build-essential`. The helper checks for
-Clang before starting downloads or builds. Windows uses the downloaded Zig linker.
+Clang before starting downloads or builds.
 macOS setup supports Apple Silicon and Intel and requires Xcode Command Line Tools
 (`xcode-select --install`). Hosted release builds use macOS 15 runners.
+
+From the Rift repository root, install dependencies and clone ScriptC beside
+Rift, then build the pinned compiler:
+
+```sh
+npm ci
+git -c core.autocrlf=false clone https://github.com/vercel-labs/scriptc.git ../scriptc
+npm run setup:native -- ../scriptc
+```
+
+If `../scriptc` already exists, reuse it instead of cloning over it. It must be
+an upstream ScriptC checkout containing the revision in `source.json`; run
+`git -C ../scriptc fetch origin` if that revision is missing. If your checkout is
+elsewhere, replace `../scriptc` with its path. The helper selects the pinned
+revision without changing that checkout's working tree.
 
 The helper verifies the source tree and patch using `prepare.mjs`, downloads
 hash-pinned Zig and LLVM packages, installs the pinned pnpm version through npm,
@@ -33,10 +43,31 @@ Pass a new output directory as a second argument if the default is already used.
 It requires network access and can take substantial time and disk space.
 
 The resulting `rift-toolchain.json` records the compiler pin and downloaded Zig
-location. Add that Zig directory to PATH, then run `npm run test:compiler` before
-use. The helper prints the location when it finishes. A custom compiler output
-also needs `RIFT_SCRIPTC` pointing to its `bin/scriptc` (or `bin/scriptc.exe`).
-On Windows, Git for Windows is required for upstream build scripts.
+location. Add that Zig directory to PATH in the current terminal. With the default
+output directory, use PowerShell on Windows x64:
+
+```powershell
+$riftToolchain = Get-Content ./build/toolchain/win32-x64/rift-toolchain.json -Raw | ConvertFrom-Json
+$env:PATH = $riftToolchain.zigDirectory + [IO.Path]::PathSeparator + $env:PATH
+npm run test:compiler
+npm run build:native
+.\build\native\rift.exe examples/counter.js
+```
+
+On Linux or macOS, use a POSIX shell:
+
+```sh
+RIFT_ZIG_DIRECTORY=$(node -p "require('./build/toolchain/' + process.platform + '-' + process.arch + '/rift-toolchain.json').zigDirectory")
+export PATH="$RIFT_ZIG_DIRECTORY:$PATH"
+npm run test:compiler
+npm run build:native
+./build/native/rift examples/counter.js
+```
+
+The counter prints `total 36`, `next 14`, and `same object true`. The native build
+also compiles the test drivers. Repeat the PATH setup in each new terminal.
+For a custom compiler output, read its manifest instead and set `RIFT_SCRIPTC`
+to its `bin/scriptc` (or `bin/scriptc.exe`).
 
 The verified source archive is retained beside the output in `<output>-build/`.
 Only build inputs are extracted; the upstream test and documentation trees are
@@ -78,10 +109,19 @@ With Zig 0.16.0 on PATH, run from the prepared source directory:
 ```sh
 node packages/runtime-<target>/scripts/build.mjs
 node packages/runtime-<target>/scripts/verify.mjs
-node --max-old-space-size=8192 --import tsx scripts/build-native-cli.mts /absolute/path/to/rift/build/toolchain/<platform>-x64
+node --max-old-space-size=8192 --import tsx scripts/build-native-cli.mts /absolute/path/to/rift/build/toolchain/<platform>-<arch>
 ```
 
-Use `linux` or `win32` for `<platform>` and a new output directory. Leave
+Choose the package target and output directory suffix for the host:
+
+| Host | `<target>` | `<platform>-<arch>` |
+| --- | --- | --- |
+| Windows x64 | `win32-x64-msvc` | `win32-x64` |
+| Linux x64 | `linux-x64-gnu` | `linux-x64` |
+| macOS Apple Silicon | `darwin-arm64` | `darwin-arm64` |
+| macOS Intel | `darwin-x64` | `darwin-x64` |
+
+Use a new output directory. These instructions build for the host platform. Leave
 development `SCRIPTC_*`, `CC` and `AR` overrides unset so the build uses the local
 helper and patched runtime. The resulting package still needs the host linker.
 
@@ -101,6 +141,8 @@ From Rift, validate the compiler before use:
 npm run test:compiler
 ```
 
-Linux x64 and Windows x64 packages have been exercised. Other targets are not
-established by those checks. See the [compiler constraints](../../docs/compiler-contract.md)
-for required coverage checks and workarounds.
+The native release workflow builds Windows x64, Linux x64, macOS arm64 and macOS
+x64 packages. See [native releases](../../docs/native-releases.md) for platform
+requirements and the scope of release validation, and the
+[compiler constraints](../../docs/compiler-contract.md) for required coverage
+checks and workarounds.
