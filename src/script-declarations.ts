@@ -1874,7 +1874,7 @@ class DeclarationCollector {
                 }
                 for (const id of enclosing.lexicalDeclarations) {
                     const other = this.declarations[id];
-                    if (other.site.name === name && other.kind !== "function") {
+                    if (other.site.name === name) {
                         eligible = false;
                     }
                 }
