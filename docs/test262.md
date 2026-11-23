@@ -74,8 +74,20 @@ This is one run, not a benchmark average. Total is the runner's monotonic timer;
 it excludes dependency/toolchain installation, Git fetch and final report serialization.
 Machine load, filesystem and compiler setup affect repeat runs.
 The [machine-readable snapshot](data/test262-summary.json) preserves exact counts,
-limits, skip policy, revisions and the raw report hash. Full observations remain
-in the local `build/test262-runs/run-VBAdnU/report.json` (not committed).
+limits, skip policy, revisions and the raw report hash. The original report is
+available in the [2026-11-22 evidence release](https://github.com/jkup/rift/releases/tag/test262-snapshot-2026-11-22):
+
+- [Full report (gzip, about 9 MB)](https://github.com/jkup/rift/releases/download/test262-snapshot-2026-11-22/rift-test262-2026-11-22-report.json.gz), containing all 103,352 result records and their recorded observations.
+- [Archive SHA-256 checksum](https://github.com/jkup/rift/releases/download/test262-snapshot-2026-11-22/rift-test262-2026-11-22-report.json.gz.sha256).
+- [Summary JSON](https://github.com/jkup/rift/releases/download/test262-snapshot-2026-11-22/rift-test262-2026-11-22-summary.json), matching the snapshot in this repository.
+
+Verify the downloaded archive against its checksum, then decompress it with a
+gzip-compatible tool to inspect the JSON (about 105 MB). The decompressed file's
+SHA-256 must match `reportSha256` in the summary. Compression preserves the original
+report bytes, including local run paths and diagnostics; no results were removed
+or reclassified. The evidence release is tied to the tested Rift revision above.
+It contains no executable and does not describe the older native preview binaries
+linked from the README or establish conformance for later source revisions.
 
 ## Results by API
 

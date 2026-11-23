@@ -70,6 +70,7 @@ Rift implements the areas below, with incomplete ECMAScript conformance. See the
 | Date and Temporal | Implemented within scope | Date defaults to UTC with selectable pinned IANA zones; Temporal supports ISO-calendar operations. |
 | RegExp | Partial | Unicode mode, property escapes, backreferences, lookaround, scoped modifiers and RegExp.escape; no Unicode sets. |
 | WeakMap and WeakSet | Partial | Patched native compiler typed weak storage; no weak symbol keys. |
+| Typed arrays, ArrayBuffer and DataView | Unsupported | Constructors and binary-buffer APIs are unavailable. Test262 cases remain in the results; some fail while loading harness helpers that require these constructors. |
 | Modules and Intl | Unsupported | Explicitly skipped by the corpus runner. |
 | WeakRef and FinalizationRegistry | Unsupported | Explicit feature skips in the corpus runner. |
 | Shared memory and Atomics | Unsupported | Explicit feature skips; no agent/shared-memory services. |
