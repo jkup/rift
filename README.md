@@ -11,8 +11,10 @@ Rift parses JavaScript into a syntax tree and walks that tree to execute it. It
 implements its own values, objects, scopes and control flow. The same TypeScript
 source runs under Node.js or compiles to a native executable with ScriptC.
 
-Rift is a work in progress. See [supported features and limits](docs/architecture.md#supported-features-and-limits)
-for supported JavaScript features and known gaps.
+Rift is a work in progress. It runs JavaScript scripts, but does not support
+modules (`import`/`export`) or provide Node.js or browser APIs such as filesystem
+access, networking or the DOM. See [supported features and limits](docs/architecture.md#supported-features-and-limits)
+for supported JavaScript features and other known gaps.
 The [Test262 support tables](docs/test262.md) show measured results by API and
 language area, including failures, skips and execution limits.
 
@@ -26,6 +28,22 @@ Download a native preview and run it without installing Node.js or build tools:
 | Linux x64 (glibc 2.34+) | [tar.gz](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.4/rift-native-preview-2026-11-20.4-linux-x64.tar.gz) |
 | macOS Apple Silicon | [tar.gz](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.4/rift-native-preview-2026-11-20.4-darwin-arm64.tar.gz) |
 | macOS Intel | [tar.gz](https://github.com/jkup/rift/releases/download/native-preview-2026-11-20.4/rift-native-preview-2026-11-20.4-darwin-x64.tar.gz) |
+
+Extract the entire archive and open a terminal in the extracted directory.
+On Windows (PowerShell):
+
+```powershell
+.\rift.exe -e "console.log(6 * 7);"
+```
+
+On macOS or Linux:
+
+```sh
+./rift -e 'console.log(6 * 7);'
+```
+
+Both print `42`. To run the bundled example, replace `-e` and its source with
+`examples/counter.js`; use `--help` for CLI options.
 
 See [download verification and run instructions](docs/native-releases.md), or
 [all releases and checksums](https://github.com/jkup/rift/releases). These are
