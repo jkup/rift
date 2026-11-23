@@ -8,6 +8,7 @@ import {
     languageFailure,
     normal,
     UNDEFINED,
+    type GuestObject,
     type OperationContext,
     type Value,
     type ValueCompletion,
@@ -31,8 +32,8 @@ function thisBigIntValue(value: Value, context: OperationContext, loc: Location)
     );
 }
 
-export function registerBigInt(realm: Realm): void {
-    const constructor = realm.createBuiltin(
+function createBigIntConstructor(realm: Realm): GuestObject {
+    return realm.createBuiltinConstructor(
         "BigInt",
         1,
         (_receiver, args, context, loc): ValueCompletion => {
@@ -62,7 +63,13 @@ export function registerBigInt(realm: Realm): void {
                 ? converted
                 : normal({ kind: "bigint", value: converted.value });
         },
+        (_callee, _newTarget, _args, context, loc) =>
+            languageFailure(context.realm, "TypeError", "BigInt cannot be constructed", loc),
     );
+}
+
+export function registerBigInt(realm: Realm): void {
+    const constructor = createBigIntConstructor(realm);
     for (const name of ["asIntN", "asUintN"]) {
         realm.registerBuiltin(
             constructor,
@@ -120,7 +127,7 @@ export function registerBigInt(realm: Realm): void {
     realm.registerBuiltin(
         realm.bigintPrototype,
         "toString",
-        1,
+        0,
         (receiver, args, context, loc): ValueCompletion => {
             const value = thisBigIntValue(receiver, context, loc);
             if (value.type === "throw") {

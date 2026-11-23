@@ -71,7 +71,7 @@
             "filename": "src/builtins/bigint.ts",
             "name": "registerBigInt",
             "rule": "functionLines",
-            "value": 136
+            "value": 106
         },
         {
             "filename": "src/builtins/date-calendar-setters.ts",
