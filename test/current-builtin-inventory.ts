@@ -42,6 +42,7 @@ export const scriptGlobalKeys = [
     "Map",
     "WeakMap",
     "WeakSet",
+    "DisposableStack",
     "Set",
     "Temporal",
     "Date",

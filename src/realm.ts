@@ -2,6 +2,8 @@ import { errorNames } from "./error-names.js";
 import { registerDate } from "./builtins/date.js";
 import { registerTemporal } from "./builtins/temporal/temporal.js";
 import { registerBigInt } from "./builtins/bigint.js";
+import { registerDisposableStack } from "./builtins/disposable-stack.js";
+import { registerConsole } from "./builtins/console.js";
 import type { TemplateObjectExpr } from "./syntax.js";
 import { registerAsyncIterators } from "./async-iterator.js";
 import { registerPromise } from "./builtins/promise.js";
@@ -43,7 +45,6 @@ import {
     GuestObject,
     GuestError,
     UNDEFINED,
-    display,
     normal,
     type ErrorName,
     type Builtin,
@@ -182,6 +183,7 @@ export class Realm {
     readonly mapPrototype: GuestObject;
     readonly weakMapPrototype: GuestObject;
     readonly weakSetPrototype: GuestObject;
+    readonly disposableStackPrototype: GuestObject;
     readonly mapIteratorPrototype: GuestObject;
     readonly setPrototype: GuestObject;
     readonly setIteratorPrototype: GuestObject;
@@ -265,6 +267,7 @@ export class Realm {
         this.mapPrototype = new GuestObject(this.objectPrototype);
         this.weakMapPrototype = new GuestObject(this.objectPrototype);
         this.weakSetPrototype = new GuestObject(this.objectPrototype);
+        this.disposableStackPrototype = new GuestObject(this.objectPrototype);
         this.mapIteratorPrototype = new GuestObject(this.iteratorPrototype);
         this.setPrototype = new GuestObject(this.objectPrototype);
         this.setIteratorPrototype = new GuestObject(this.iteratorPrototype);
@@ -321,19 +324,7 @@ export class Realm {
         this.installGlobal("undefined", UNDEFINED, false);
         this.installGlobal("NaN", { kind: "number", value: NaN }, false);
         this.installGlobal("Infinity", { kind: "number", value: Infinity }, false);
-        const consoleObject = this.createObject();
-        this.registerBuiltin(consoleObject, "log", 0, (_receiver, args, _context, _loc) => {
-            let line = "";
-            for (let i = 0; i < args.length; i++) {
-                if (i > 0) {
-                    line += " ";
-                }
-                line += display(args[i]);
-            }
-            output(line);
-            return normal();
-        });
-        this.installGlobal("console", { kind: "object", object: consoleObject }, true);
+        registerConsole(this, output);
         if (profile === "script") {
             registerFunctionConstructor(this);
             registerGeneratorFunctionConstructor(this);
@@ -382,6 +373,7 @@ export class Realm {
             registerMap(this);
             registerWeakMap(this);
             registerWeakSet(this);
+            registerDisposableStack(this);
             registerMapIterators(this);
             registerSet(this);
             registerSetIterators(this);

@@ -122,6 +122,7 @@ const entries = [
     ["test/async-await.ts", "async-await"],
     ["test/async-methods.ts", "async-methods"],
     ["test/async-iterator.ts", "async-iterator"],
+    ["test/disposable-stack.ts", "disposable-stack"],
     ["test/for-await.ts", "for-await"],
     ["test/async-arrow.ts", "async-arrow"],
     ["test/async-lexical-conflicts.ts", "async-lexical-conflicts"],

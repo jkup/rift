@@ -2706,6 +2706,7 @@ executeDriver("async-function", { stdout: "async function passed\n" });
 executeDriver("async-await", { stdout: "async await passed\n" });
 executeDriver("async-methods", { stdout: "async methods passed\n" });
 executeDriver("async-iterator", { stdout: "async iterator passed\n" });
+executeDriver("disposable-stack", { stdout: "DisposableStack passed\n" });
 executeDriver("for-await", { stdout: "for await passed\n" });
 executeDriver("async-arrow", { stdout: "async arrow passed\n" });
 executeDriver("async-lexical-conflicts", { stdout: "async lexical conflicts passed\n" });
@@ -3122,7 +3123,6 @@ for (const { driver, variant, fixture, stdout, source } of scriptHostCases) {
     executeDriver(driver, { stdout, timeoutMs }, [fixture], driver + "/" + variant);
 }
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
-console.log(
-    `${results.filter((r) => r.verdict === "PASS").length}/${results.length} passed; no skips`,
-);
-process.exitCode = results.every((r) => r.verdict === "PASS") ? 0 : 1;
+const passed = results.filter((r) => r.verdict === "PASS").length;
+console.log(`${passed}/${results.length} passed; no skips`);
+process.exitCode = passed === results.length ? 0 : 1;
