@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    versioning-strategy: increase
+    groups:
+      oxc-tooling:
+        patterns:
+          - oxc-parser
+          - oxfmt
+          - oxlint
+          - oxlint-tsgolint
+    ignore:
+      # Match the minimum supported Node runtime until that baseline changes.
+      - dependency-name: "@types/node"
+        versions: [">=25"]
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+# ScriptC and its native build dependencies stay manually pinned in toolchain/scriptc/.
