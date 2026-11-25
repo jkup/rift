@@ -15,6 +15,7 @@ import { wellKnownDispose, wellKnownIterator, wellKnownToStringTag } from "../sy
 import { toObject } from "../object-conversion.js";
 import { registerEagerIteratorMethods } from "./iterator-eager.js";
 import { registerIteratorFrom } from "./iterator-from.js";
+import { registerLazyIteratorMethods } from "./iterator-lazy.js";
 
 function disposeIterator(
     receiver: Value,
@@ -153,6 +154,7 @@ export function registerIterator(realm: Realm): void {
         configurable: true,
     });
     registerEagerIteratorMethods(realm);
+    registerLazyIteratorMethods(realm);
     registerIteratorFrom(realm, constructor);
     realm.defineScriptGlobal("Iterator", {
         value: { kind: "object", object: constructor },

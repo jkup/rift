@@ -23,7 +23,7 @@ import {
 
 type PredicateMethod = "forEach" | "some" | "every" | "find";
 
-function callbackIterator(
+export function callbackIterator(
     receiver: Value,
     callback: Value,
     context: OperationContext,

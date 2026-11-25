@@ -31,6 +31,17 @@ function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
         .completion;
 }
 for (const source of [
+    "let calls=0;let i=[4,5].values().map(function(v,k){'use strict';calls++;return [v,k,this===undefined,arguments.length].join(':')});calls===0&&i.next(99).value==='4:0:true:2'&&i.next().value==='5:1:true:2'&&i.next().done&&calls===2;",
+    "let reads=0,calls=0;let o={get next(){reads++;return function(){calls++;return {value:arguments.length}}}};let i=Iterator.prototype.map.call(o,x=>x);o.next=()=>{throw 1};reads===1&&calls===0&&i.next(9).value===0&&calls===1;",
+    "let log='';let o={get next(){log+='n';throw 1},return(){log+='r';throw 2}};let ok=false;try{Iterator.prototype.map.call(o,null)}catch(e){ok=e instanceof TypeError}ok&&log==='r';",
+    "let closed=0;let i=Iterator.prototype.map.call({next(){throw 1},return(){closed++;return {}}},x=>x);let ok=false;try{i.next()}catch(e){ok=e===1}ok&&i.next().done&&i.return().done&&closed===0;",
+    "let closed=0;let i=Iterator.prototype.map.call({next(){return {value:1}},return(){closed++;throw 2}},()=>{throw 1});let ok=false;try{i.next()}catch(e){ok=e===1}ok&&closed===1&&i.next().done&&i.return().done&&closed===1;",
+    "let i,closed=0;let o={next(){return {value:1}},return(){closed++;return {}}};i=Iterator.prototype.map.call(o,()=>i.next());let ok=false;try{i.next()}catch(e){ok=e instanceof TypeError}ok&&closed===1&&i.next().done;",
+    "let i,seen=false;let o={next(){throw 1},return(){seen=i.next().done;return {}}};i=Iterator.prototype.map.call(o,x=>x);i.return(99).value===undefined&&seen&&i.next().done;",
+    "let i,seen=false;let o={next(){return {value:1}},return(){try{i.next()}catch(e){seen=e instanceof TypeError}return {}}};i=Iterator.prototype.map.call(o,x=>x);i.next();i.return().done&&seen&&i.next().done;",
+    "let i=Iterator.prototype.map.call({next(){return {done:true,get value(){throw 1}}},return(){throw 2}},()=>{throw 3});i.next().done&&i.return().done;",
+    "let i=[1].values().map(x=>x);let p=Object.getPrototypeOf(i);let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);Object.getPrototypeOf(p)===Iterator.prototype&&Object.getOwnPropertyNames(p).join(',')==='next,return'&&Object.getOwnPropertyNames(i).length===0&&d.value==='Iterator Helper'&&!d.writable&&!d.enumerable&&d.configurable&&i[Symbol.iterator]()===i;",
+    "let i=[1].values().map(x=>x);Object.freeze(i);i.next().value===1&&i.next().done;",
     "let d=Object.getOwnPropertyDescriptor(Iterator.prototype,Symbol.dispose);d.writable&&!d.enumerable&&d.configurable&&d.value.name==='[Symbol.dispose]'&&d.value.length===0;",
     "let log='';let i={get return(){log+='g';return function(){log+=this===i?'r':'x';log+=arguments.length;return 1}}};Iterator.prototype[Symbol.dispose].call(i)===undefined&&log==='gr0';",
     "let d=Iterator.prototype[Symbol.dispose];d.call({})===undefined&&d.call({return:null})===undefined&&d.call(1)===undefined;",
@@ -126,7 +137,7 @@ for (const source of [
     "let i=[7].values();let identity=i[Symbol.iterator];identity.call(7)===7&&identity.call(null)===null&&identity.name==='[Symbol.iterator]'&&identity.length===0;",
     "Array.prototype.keys.name==='keys'&&Array.prototype.keys.length===0&&Array.prototype.values.name==='values'&&Array.prototype.values.length===0&&Array.prototype.entries.name==='entries'&&Array.prototype.entries.length===0;",
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
-    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
+    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join,map'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
     "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {
@@ -137,6 +148,9 @@ for (const source of [
     );
 }
 for (const source of [
+    "let i=[].values().map(x=>x);i.next.call({});",
+    "let i=[].values().map(x=>x);i.return.call({});",
+    "new Iterator.prototype.map(x=>x);",
     "Array.prototype.values.call(null);",
     "Array.prototype.keys.call(undefined);",
     "Array.prototype.entries.call(null);",
@@ -293,6 +307,25 @@ for (const argument of [
     check(
         result.type === "normal" && result.value.kind === "boolean" && result.value.value,
         "foreign iterator wrapping and result Realm",
+    );
+}
+{
+    const owner = fresh(),
+        caller = fresh();
+    const mapped = run("[7].values().map(x=>x)", owner);
+    const invalid = run("Iterator.prototype.map.call({next(){return 0}},x=>x)", owner);
+    check(mapped.type === "normal" && invalid.type === "normal", "foreign map creation");
+    seed(caller, "mapped", mapped.value);
+    seed(caller, "invalid", invalid.value);
+    seed(caller, "ownerObjectPrototype", { kind: "object", object: owner.objectPrototype });
+    seed(caller, "ownerTypeError", own(owner.globalObject, "TypeError"));
+    const result = run(
+        "let next=[].values().map(x=>x).next;let a=next.call(mapped),b=next.call(mapped),c=next.call(mapped);let ok=false;try{next.call(invalid)}catch(e){ok=e instanceof ownerTypeError}a.value===7&&Object.getPrototypeOf(a)===ownerObjectPrototype&&b.done&&Object.getPrototypeOf(b)===ownerObjectPrototype&&c.done&&Object.getPrototypeOf(c)===Object.prototype&&ok;",
+        caller,
+    );
+    check(
+        result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
+        "helper closure Realm",
     );
 }
 check(
