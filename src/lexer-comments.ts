@@ -17,6 +17,7 @@ export function commentEnd(
     }
     const singleLine =
         source.startsWith("//", start) ||
+        (script && start === 0 && source.startsWith("#!", start)) ||
         (script && source.startsWith("<!--", start)) ||
         (script && !lineHasToken && source.startsWith("-->", start));
     if (!singleLine) {

@@ -151,4 +151,20 @@ for (const source of ["x-->y", "x/**/-->y", "`a\nb`-->y", "'a\\\nb'-->y"]) {
     check(unfinished.error?.message === "unterminated comment", "unterminated block diagnostic");
     token(unfinished.tokens[0], "eof", "<eof>", 9, 9, 1, 10);
 }
+for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"]) {
+    const source = "#!/usr/bin/env js" + separator + "next";
+    const result = lex(source, true);
+    check(result.error === null && result.tokens.length === 2, "initial hashbang is a comment");
+    const start = source.indexOf("next");
+    token(result.tokens[0], "word", "next", start, start + 4, 2, 1);
+}
+for (const prefix of [" ", "\ufeff", "\n", "/* comment */", ";", "{", "function f(){"]) {
+    const result = lex(prefix + "#! ignored\n}", true);
+    check(result.error !== null, "hashbang is rejected outside the start of source");
+}
+{
+    const result = lex("#! no newline", true);
+    check(result.error === null && result.tokens.length === 1, "hashbang can run through EOF");
+    check(lex("#! legacy", false).error !== null, "legacy hashbang remains unsupported");
+}
 console.log("Incremental lexer passed");
