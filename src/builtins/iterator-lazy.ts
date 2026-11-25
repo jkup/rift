@@ -25,15 +25,18 @@ import { callbackIterator } from "./iterator-eager.js";
 import { getIteratorFlattenable } from "./iterator-from.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toNumber } from "../conversion.js";
+import { arrayFromList } from "../array-create.js";
 
 type CallbackHelperKind = "map" | "filter" | "flatMap";
 type LimitHelperKind = "take" | "drop";
-type HelperKind = CallbackHelperKind | LimitHelperKind;
+type BufferHelperKind = "chunks" | "windows";
+type HelperKind = CallbackHelperKind | LimitHelperKind | BufferHelperKind;
 
 class GuestIteratorHelper extends GuestObject {
     state: "start" | "yield" | "executing" | "done" = "start";
     index = 0;
     inner: IteratorRecord | null = null;
+    buffer: Value[] = [];
 
     constructor(
         proto: GuestObject,
@@ -42,6 +45,7 @@ class GuestIteratorHelper extends GuestObject {
         readonly resume: GuestObject,
         readonly kind: HelperKind,
         public remaining = 0,
+        readonly allowPartial = false,
     ) {
         super(proto);
     }
@@ -153,7 +157,53 @@ function closeHelper(
             return iteratorCloseOnThrow(helper.iterated, closed, context, loc);
         }
     }
-    return iteratorCloseNormally(helper.iterated, context, loc);
+    // A final partial chunk/window yields after the source is already exhausted.
+    return helper.iterated.done ? normal() : iteratorCloseNormally(helper.iterated, context, loc);
+}
+
+function advanceBuffer(
+    helper: GuestIteratorHelper,
+    context: OperationContext,
+    loc: Location,
+): ValueCompletion {
+    if (helper.iterated.done) {
+        helper.state = "done";
+        return iteratorResult(UNDEFINED, true, context, loc);
+    }
+    if (helper.kind === "chunks") {
+        helper.buffer = [];
+    }
+    while (true) {
+        const step = iteratorStepValue(helper.iterated, context, loc);
+        if (step.type === "throw") {
+            helper.state = "done";
+            return step;
+        }
+        if (step.done) {
+            if (
+                !helper.allowPartial ||
+                helper.buffer.length === 0 ||
+                helper.buffer.length === helper.remaining
+            ) {
+                helper.state = "done";
+                return iteratorResult(UNDEFINED, true, context, loc);
+            }
+            break;
+        }
+        if (helper.buffer.length === helper.remaining) {
+            helper.buffer.shift();
+        }
+        helper.buffer.push(step.value);
+        if (helper.buffer.length === helper.remaining) {
+            break;
+        }
+    }
+    // Copy the buffer into a fresh guest array; yielded arrays never alias it.
+    const array = arrayFromList(helper.buffer, context, loc);
+    const result =
+        array.type === "throw" ? array : iteratorResult(array.value, false, context, loc);
+    helper.state = result.type === "throw" ? "done" : "yield";
+    return result;
 }
 
 function advanceLimit(
@@ -307,6 +357,77 @@ function helperCall(
     return result;
 }
 
+function registerBufferMethods(realm: Realm, proto: GuestObject, resume: GuestObject): void {
+    const methods: BufferHelperKind[] = ["chunks", "windows"];
+    for (const kind of methods) {
+        realm.registerBuiltin(realm.iteratorPrototype, kind, 1, (receiver, args, context, loc) => {
+            if (receiver.kind !== "object") {
+                return languageFailure(context.realm, "TypeError", "expected an iterator", loc);
+            }
+            const record: IteratorRecord = {
+                iterator: receiver.object,
+                nextMethod: UNDEFINED,
+                done: false,
+            };
+            const size = args.length === 0 ? UNDEFINED : args[0];
+            if (size.kind !== "number" || !Number.isInteger(size.value)) {
+                const error = languageFailure(
+                    context.realm,
+                    "TypeError",
+                    "expected integral size",
+                    loc,
+                );
+                return iteratorCloseOnThrow(record, error, context, loc);
+            }
+            if (size.value < 1 || size.value > 4294967295) {
+                const error = languageFailure(
+                    context.realm,
+                    "RangeError",
+                    "invalid buffer size",
+                    loc,
+                );
+                return iteratorCloseOnThrow(record, error, context, loc);
+            }
+            const undersized = args.length < 2 ? UNDEFINED : args[1];
+            let allowPartial = kind === "chunks";
+            if (kind === "windows" && undersized.kind !== "undefined") {
+                if (
+                    undersized.kind !== "string" ||
+                    (undersized.value !== "only-full" && undersized.value !== "allow-partial")
+                ) {
+                    const error = languageFailure(
+                        context.realm,
+                        "TypeError",
+                        "invalid undersized option",
+                        loc,
+                    );
+                    return iteratorCloseOnThrow(record, error, context, loc);
+                }
+                allowPartial = undersized.value === "allow-partial";
+            }
+            const opened = getIteratorDirect(receiver.object, context, loc);
+            if (opened.type === "throw") {
+                return opened;
+            }
+            const allocation = context.tick(loc);
+            return allocation.type === "throw"
+                ? allocation
+                : normal({
+                      kind: "object",
+                      object: new GuestIteratorHelper(
+                          proto,
+                          opened.value,
+                          UNDEFINED,
+                          resume,
+                          kind,
+                          size.value,
+                          allowPartial,
+                      ),
+                  });
+        });
+    }
+}
+
 export function registerLazyIteratorMethods(realm: Realm): void {
     const proto = new GuestObject(realm.iteratorPrototype);
     const resume = realm.createBuiltin("", 0, (receiver, args, context, loc) => {
@@ -321,6 +442,9 @@ export function registerLazyIteratorMethods(realm: Realm): void {
         }
         if (helper.kind === "flatMap") {
             return advanceFlatMap(helper, context, loc);
+        }
+        if (helper.kind === "chunks" || helper.kind === "windows") {
+            return advanceBuffer(helper, context, loc);
         }
         return helper.kind === "map" || helper.kind === "filter"
             ? advanceCallback(helper, context, loc)
@@ -354,4 +478,5 @@ export function registerLazyIteratorMethods(realm: Realm): void {
         });
     }
     registerLimitMethods(realm, proto, resume);
+    registerBufferMethods(realm, proto, resume);
 }

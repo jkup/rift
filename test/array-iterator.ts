@@ -31,6 +31,16 @@ function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
         .completion;
 }
 for (const source of [
+    "let i=[1,2,3,4,5].values().chunks(2);let a=i.next().value,b=i.next().value,c=i.next().value;a.join(',')==='1,2'&&b.join(',')==='3,4'&&c.join(',')==='5'&&a!==b&&i.next().done;",
+    "let i=[1,2,3,4].values().windows(2);let a=i.next().value;a[1]=99;let b=i.next().value,c=i.next().value;a.join(',')==='1,99'&&b.join(',')==='2,3'&&c.join(',')==='3,4'&&i.next().done;",
+    "[1,2].values().windows(3).next().done&&[1,2].values().windows(3,'allow-partial').toArray()[0].join(',')==='1,2'&&[1,2,3].values().windows(2,'allow-partial').toArray().length===2&&[].values().windows(3,'allow-partial').next().done;",
+    "let n=0,closed=0;let o={next(){return {done:++n>1,value:n}},return(){closed++;throw 1}};let i=Iterator.prototype.chunks.call(o,3);n===0&&i.next().value[0]===1&&n===2&&i.return().done&&closed===0&&i.next().done&&n===2;",
+    "let n=0,closed=0;let o={next(){return {done:++n>1,value:n}},return(){closed++;throw 1}};let i=Iterator.prototype.windows.call(o,3,'allow-partial');i.next().value[0]===1&&i.return().done&&closed===0&&i.next().done&&n===2;",
+    "let n=0,closed=0;let i=Iterator.prototype.chunks.call({next(){return {value:++n}},return(){closed++;return {}}},2);n===0&&i.next().value.join(',')==='1,2'&&i.return().done&&n===2&&closed===1&&i.return().done&&closed===1;",
+    "let log='',ok=false;try{Iterator.prototype.chunks.call({get next(){log+='n';throw 1},return(){log+='r';throw 2}},{valueOf(){log+='v';return 2}})}catch(e){ok=e instanceof TypeError}ok&&log==='r';",
+    "let log='',ok=false;try{Iterator.prototype.windows.call({get next(){log+='n';throw 1},return(){log+='r';throw 2}},2,{toString(){log+='s';return 'allow-partial'}})}catch(e){ok=e instanceof TypeError}ok&&log==='r';",
+    "let i;let seen=0;let n=0;i=Iterator.prototype.windows.call({next(){try{i.return()}catch(e){if(e instanceof TypeError)seen++}return {value:++n}}},2);i.next().value.join(',')==='1,2'&&seen===2;",
+    "[7].values().chunks(4294967295).next().value[0]===7&&[8].values().windows(4294967295,'allow-partial').next().value[0]===8;",
     "let calls=0;let i=[1,2].values().flatMap((v,k)=>{calls++;return [v,k]});calls===0&&i.toArray().join(',')==='1,0,2,1'&&calls===2;",
     "let nested=[1];[0].values().flatMap(()=>[nested]).next().value===nested&&[0].values().flatMap(()=>new String('ab')).toArray().join(',')==='a,b';",
     "let log='';let inner={next(){return {value:2}},return(){log+='i';throw 1}};let outer={next(){return {value:1}},return(){log+='o';throw 2}};let i=Iterator.prototype.flatMap.call(outer,()=>inner);i.next();let ok=false;try{i.return()}catch(e){ok=e===1}ok&&log==='io'&&i.next().done&&i.return().done&&log==='io';",
@@ -156,7 +166,7 @@ for (const source of [
     "let i=[7].values();let identity=i[Symbol.iterator];identity.call(7)===7&&identity.call(null)===null&&identity.name==='[Symbol.iterator]'&&identity.length===0;",
     "Array.prototype.keys.name==='keys'&&Array.prototype.keys.length===0&&Array.prototype.values.name==='values'&&Array.prototype.values.length===0&&Array.prototype.entries.name==='entries'&&Array.prototype.entries.length===0;",
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
-    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join,map,filter,flatMap,take,drop'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
+    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join,map,filter,flatMap,take,drop,chunks,windows'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
     "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {
@@ -360,6 +370,30 @@ for (const argument of [
         result.type === "throw" && result.origin.kind === "resource-limit",
         "bounded lazy filter",
     );
+}
+{
+    const owner = fresh(),
+        caller = fresh();
+    const result = run("[1,2].values().chunks(3).windows(2,'allow-partial')", owner);
+    check(result.type === "normal", "buffered helper creation");
+    seed(caller, "helper", result.value);
+    seed(caller, "ownerArrayPrototype", { kind: "object", object: owner.arrayPrototype });
+    const borrowed = run(
+        "let r=[].values().map(x=>x).next.call(helper);r.value[0].join(',')==='1,2'&&Object.getPrototypeOf(r.value)===ownerArrayPrototype&&Object.getPrototypeOf(r.value[0])===ownerArrayPrototype&&helper.next().done;",
+        caller,
+    );
+    check(
+        borrowed.type === "normal" && sameValue(borrowed.value, { kind: "boolean", value: true }),
+        "buffered helper array Realm",
+    );
+}
+for (const method of ["chunks", "windows"]) {
+    const result = run(
+        "Iterator.prototype." + method + ".call({next(){return {value:1}}},4294967295).next()",
+        fresh(),
+        1000,
+    );
+    check(result.type === "throw" && result.origin.kind === "resource-limit", "bounded " + method);
 }
 check(
     legacy.arrayPrototype.getOwnProperty("values") === undefined &&
