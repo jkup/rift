@@ -9,6 +9,7 @@ import {
     type OperationContext,
     type Value,
     type ValueCompletion,
+    type ThrowCompletion,
 } from "../runtime.js";
 import {
     iteratorStepValue,
@@ -21,16 +22,18 @@ import {
 import { iteratorResult } from "../iterator-result.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import { callbackIterator } from "./iterator-eager.js";
+import { getIteratorFlattenable } from "./iterator-from.js";
 import { toPrimitive } from "../primitive-conversion.js";
 import { toNumber } from "../conversion.js";
 
-type CallbackHelperKind = "map" | "filter";
+type CallbackHelperKind = "map" | "filter" | "flatMap";
 type LimitHelperKind = "take" | "drop";
 type HelperKind = CallbackHelperKind | LimitHelperKind;
 
 class GuestIteratorHelper extends GuestObject {
     state: "start" | "yield" | "executing" | "done" = "start";
     index = 0;
+    inner: IteratorRecord | null = null;
 
     constructor(
         proto: GuestObject,
@@ -79,6 +82,78 @@ function advanceCallback(
         helper.state = result.type === "throw" ? "done" : "yield";
         return result;
     }
+}
+
+function failFlatMap(
+    helper: GuestIteratorHelper,
+    error: ThrowCompletion,
+    context: OperationContext,
+    loc: Location,
+): ThrowCompletion {
+    // Abrupt inner acquisition/stepping closes the outer, not the inner iterator.
+    const closed = iteratorCloseOnThrow(helper.iterated, error, context, loc);
+    helper.state = "done";
+    return closed;
+}
+
+function advanceFlatMap(
+    helper: GuestIteratorHelper,
+    context: OperationContext,
+    loc: Location,
+): ValueCompletion {
+    while (true) {
+        const inner = helper.inner;
+        if (inner !== null) {
+            const step = iteratorStepValue(inner, context, loc);
+            if (step.type === "throw") {
+                return failFlatMap(helper, step, context, loc);
+            }
+            if (!step.done) {
+                const result = iteratorResult(step.value, false, context, loc);
+                helper.state = result.type === "throw" ? "done" : "yield";
+                return result;
+            }
+            helper.inner = null;
+        }
+        const step = iteratorStepValue(helper.iterated, context, loc);
+        if (step.type === "throw") {
+            helper.state = "done";
+            return step;
+        }
+        if (step.done) {
+            helper.state = "done";
+            return iteratorResult(UNDEFINED, true, context, loc);
+        }
+        const mapped = context.call(
+            helper.callback,
+            UNDEFINED,
+            [step.value, { kind: "number", value: helper.index++ }],
+            loc,
+        );
+        if (mapped.type === "throw") {
+            return failFlatMap(helper, mapped, context, loc);
+        }
+        const opened = getIteratorFlattenable(mapped.value, context, loc, false);
+        if (opened.type === "throw") {
+            return failFlatMap(helper, opened, context, loc);
+        }
+        helper.inner = opened.value;
+    }
+}
+
+function closeHelper(
+    helper: GuestIteratorHelper,
+    context: OperationContext,
+    loc: Location,
+): ValueCompletion {
+    const inner = helper.inner;
+    if (inner !== null) {
+        const closed = iteratorCloseNormally(inner, context, loc);
+        if (closed.type === "throw") {
+            return iteratorCloseOnThrow(helper.iterated, closed, context, loc);
+        }
+    }
+    return iteratorCloseNormally(helper.iterated, context, loc);
 }
 
 function advanceLimit(
@@ -240,9 +315,12 @@ export function registerLazyIteratorMethods(realm: Realm): void {
         }
         const helper = receiver.object;
         if (args[0].kind === "boolean" && args[0].value) {
-            const closed = iteratorCloseNormally(helper.iterated, context, loc);
+            const closed = closeHelper(helper, context, loc);
             helper.state = "done";
             return closed.type === "throw" ? closed : iteratorResult(UNDEFINED, true, context, loc);
+        }
+        if (helper.kind === "flatMap") {
+            return advanceFlatMap(helper, context, loc);
         }
         return helper.kind === "map" || helper.kind === "filter"
             ? advanceCallback(helper, context, loc)
@@ -258,7 +336,7 @@ export function registerLazyIteratorMethods(realm: Realm): void {
         value: { kind: "string", value: "Iterator Helper" },
         configurable: true,
     });
-    const methods: CallbackHelperKind[] = ["map", "filter"];
+    const methods: CallbackHelperKind[] = ["map", "filter", "flatMap"];
     for (const kind of methods) {
         realm.registerBuiltin(realm.iteratorPrototype, kind, 1, (receiver, args, context, loc) => {
             const callback = args.length === 0 ? UNDEFINED : args[0];

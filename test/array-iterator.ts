@@ -31,6 +31,12 @@ function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
         .completion;
 }
 for (const source of [
+    "let calls=0;let i=[1,2].values().flatMap((v,k)=>{calls++;return [v,k]});calls===0&&i.toArray().join(',')==='1,0,2,1'&&calls===2;",
+    "let nested=[1];[0].values().flatMap(()=>[nested]).next().value===nested&&[0].values().flatMap(()=>new String('ab')).toArray().join(',')==='a,b';",
+    "let log='';let inner={next(){return {value:2}},return(){log+='i';throw 1}};let outer={next(){return {value:1}},return(){log+='o';throw 2}};let i=Iterator.prototype.flatMap.call(outer,()=>inner);i.next();let ok=false;try{i.return()}catch(e){ok=e===1}ok&&log==='io'&&i.next().done&&i.return().done&&log==='io';",
+    "let log='';let inner={next(){throw 1},return(){log+='i';return {}}};let outer={next(){return {value:1}},return(){log+='o';return {}}};let i=Iterator.prototype.flatMap.call(outer,()=>inner);let ok=false;try{i.next()}catch(e){ok=e===1}ok&&log==='o'&&i.next().done;",
+    "let closed=0;let i=Iterator.prototype.flatMap.call({next(){throw 1},return(){closed++;return {}}},()=>{throw 2});i.return().done&&closed===1&&i.next().done;",
+    "let closed=0;let i=Iterator.prototype.flatMap.call({next(){return {value:1}},return(){closed++;return {}}},()=> 'ab');let ok=false;try{i.next()}catch(e){ok=e instanceof TypeError}ok&&closed===1&&i.next().done;",
     "[1,2,3,4].values().drop(1.9).take('2.8').toArray().join(',')==='2,3'&&[1,2].values().take(Infinity).toArray().join(',')==='1,2'&&[1,2].values().drop(Infinity).next().done;",
     "let calls=0,closed=0;let i=Iterator.prototype.take.call({next(){calls++;return {value:1}},return(){closed++;return {}}},-0.5);calls===0&&closed===0&&i.next().done&&calls===0&&closed===1&&i.return().done&&closed===1;",
     "let n=0,closed=0;let i=Iterator.prototype.take.call({next(){return {value:++n}},return(){closed++;return {}}},1);i.next().value===1&&closed===0&&i.next().done&&n===1&&closed===1;",
@@ -150,7 +156,7 @@ for (const source of [
     "let i=[7].values();let identity=i[Symbol.iterator];identity.call(7)===7&&identity.call(null)===null&&identity.name==='[Symbol.iterator]'&&identity.length===0;",
     "Array.prototype.keys.name==='keys'&&Array.prototype.keys.length===0&&Array.prototype.values.name==='values'&&Array.prototype.values.length===0&&Array.prototype.entries.name==='entries'&&Array.prototype.entries.length===0;",
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
-    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join,map,filter,take,drop'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
+    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join,map,filter,flatMap,take,drop'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
     "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {
@@ -325,7 +331,10 @@ for (const argument of [
 {
     const owner = fresh(),
         caller = fresh();
-    const mapped = run("[7].values().map(x=>x).filter(x=>x).drop(0).take(2)", owner);
+    const mapped = run(
+        "[7].values().map(x=>x).filter(x=>x).flatMap(x=>[x]).drop(0).take(2)",
+        owner,
+    );
     const invalid = run("Iterator.prototype.map.call({next(){return 0}},x=>x)", owner);
     check(mapped.type === "normal" && invalid.type === "normal", "foreign map creation");
     seed(caller, "mapped", mapped.value);

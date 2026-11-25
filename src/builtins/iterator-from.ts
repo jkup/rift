@@ -29,8 +29,13 @@ class GuestIteratorWrapper extends GuestObject {
     }
 }
 
-function flattenable(input: Value, context: OperationContext, loc: Location): IteratorCompletion {
-    if (input.kind !== "object" && input.kind !== "string") {
+export function getIteratorFlattenable(
+    input: Value,
+    context: OperationContext,
+    loc: Location,
+    allowStrings = true,
+): IteratorCompletion {
+    if (input.kind !== "object" && (!allowStrings || input.kind !== "string")) {
         return languageFailure(context.realm, "TypeError", "expected iterator or iterable", loc);
     }
     const boxed = toObject(input, context, loc);
@@ -92,7 +97,7 @@ export function registerIteratorFrom(realm: Realm, constructor: GuestObject): vo
         wrapperCall(receiver, true, context, loc),
     );
     realm.registerBuiltin(constructor, "from", 1, (_receiver, args, context, loc) => {
-        const record = flattenable(args.length > 0 ? args[0] : UNDEFINED, context, loc);
+        const record = getIteratorFlattenable(args.length > 0 ? args[0] : UNDEFINED, context, loc);
         if (record.type === "throw") {
             return record;
         }
