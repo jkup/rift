@@ -9,6 +9,7 @@ import {
     type Callable,
     type OperationContext,
     type ValueCompletion,
+    type GuestObject,
     truthy,
 } from "../runtime.js";
 import { stringSlice, type GuestString } from "../strings.js";
@@ -22,7 +23,9 @@ export function nativeFunctionString(initialName: string | null): GuestString {
     if (accessor && propertyName.length === 0) {
         throw new Error("invalid builtin initial name");
     }
+    const legacyRegExpAccessor = accessor && ["$&", "$+", "$`", "$'"].includes(propertyName);
     if (
+        !legacyRegExpAccessor &&
         propertyName !== "[Symbol.toPrimitive]" &&
         propertyName !== "[Symbol.hasInstance]" &&
         propertyName !== "[Symbol.iterator]" &&
@@ -47,6 +50,26 @@ export function nativeFunctionString(initialName: string | null): GuestString {
         }
     }
     return "function " + name + "() { [native code] }";
+}
+
+// Trusted metadata uses validated storage and never calls guest code.
+export function setBuiltinMetadata(object: GuestObject, name: string, length: number): void {
+    if (!Number.isFinite(length) || !Number.isInteger(length) || length < 0) {
+        throw new Error("invalid builtin length");
+    }
+    // CreateBuiltinFunction installs length before name; own-key order is observable.
+    object.bootstrapDefine("length", {
+        value: { kind: "number", value: length === 0 ? 0 : length },
+        writable: false,
+        enumerable: false,
+        configurable: true,
+    });
+    object.bootstrapDefine("name", {
+        value: { kind: "string", value: name },
+        writable: false,
+        enumerable: false,
+        configurable: true,
+    });
 }
 
 export function functionSourceString(callable: Callable): string {

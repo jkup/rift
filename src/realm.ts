@@ -58,7 +58,7 @@ import {
     registerNumberConversions,
     registerGlobalNumericPredicates,
 } from "./builtins/number.js";
-import { registerFunction, nativeFunctionString } from "./builtins/function.js";
+import { registerFunction, nativeFunctionString, setBuiltinMetadata } from "./builtins/function.js";
 import { registerRestrictedFunctionProperties } from "./builtins/restricted-function.js";
 import {
     registerObject,
@@ -180,6 +180,7 @@ export class Realm {
     readonly promisePrototype: GuestObject;
     readonly promiseConstructor: GuestObject | null = null;
     readonly regexpPrototype: GuestObject;
+    readonly regexpLegacy = new Map<string, string | null>();
     readonly mapPrototype: GuestObject;
     readonly weakMapPrototype: GuestObject;
     readonly weakSetPrototype: GuestObject;
@@ -615,24 +616,4 @@ export class Realm {
         });
         return value;
     }
-}
-
-// Trusted metadata uses validated storage and never calls guest code.
-function setBuiltinMetadata(object: GuestObject, name: string, length: number): void {
-    if (!Number.isFinite(length) || !Number.isInteger(length) || length < 0) {
-        throw new Error("invalid builtin length");
-    }
-    // CreateBuiltinFunction installs length before name; own-key order is observable.
-    object.bootstrapDefine("length", {
-        value: { kind: "number", value: length === 0 ? 0 : length },
-        writable: false,
-        enumerable: false,
-        configurable: true,
-    });
-    object.bootstrapDefine("name", {
-        value: { kind: "string", value: name },
-        writable: false,
-        enumerable: false,
-        configurable: true,
-    });
 }

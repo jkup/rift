@@ -143,7 +143,7 @@
             "filename": "src/builtins/regexp/regexp-execution.ts",
             "name": "regExpBuiltinExec",
             "rule": "functionLines",
-            "value": 160
+            "value": 152
         },
         {
             "filename": "src/builtins/regexp/regexp-match-search.ts",
@@ -167,7 +167,7 @@
             "filename": "src/builtins/regexp/regexp.ts",
             "name": "registerRegExp",
             "rule": "functionLines",
-            "value": 139
+            "value": 133
         },
         {
             "filename": "src/builtins/set.ts",
@@ -479,7 +479,7 @@
             "filename": "src/realm.ts",
             "name": "<module>",
             "rule": "fileLines",
-            "value": 626
+            "value": 610
         },
         {
             "filename": "src/realm.ts",

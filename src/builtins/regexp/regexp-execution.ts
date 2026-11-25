@@ -11,18 +11,18 @@ import {
 import { GuestRegExp } from "../../regexp/regexp-object.js";
 import { matchRegExp } from "../../regexp/regexp-matcher.js";
 import { toPrimitive } from "../../primitive-conversion.js";
-import { toLength } from "../../conversion.js";
+import { toLength, type NumberCompletion } from "../../conversion.js";
 import { arrayFromList } from "../../array-create.js";
 import { regExpString } from "./regexp.js";
 import { registerRegExpCompile } from "./regexp-compile.js";
+import { updateRegExpStatics } from "./regexp-statics.js";
 import type { Location } from "../../syntax.js";
 
-export function regExpBuiltinExec(
+function regExpLastIndex(
     regexp: GuestRegExp,
-    input: string,
     context: OperationContext,
     loc: Location,
-): ValueCompletion {
+): NumberCompletion {
     const receiver: Value = { kind: "object", object: regexp };
     const lastIndex = regexp.internalGet("lastIndex", receiver, context, loc);
     if (lastIndex.type === "throw") {
@@ -32,7 +32,16 @@ export function regExpBuiltinExec(
     if (primitive.type === "throw") {
         return primitive;
     }
-    const length = toLength(primitive.value, loc, context.realm);
+    return toLength(primitive.value, loc, context.realm);
+}
+
+export function regExpBuiltinExec(
+    regexp: GuestRegExp,
+    input: string,
+    context: OperationContext,
+    loc: Location,
+): ValueCompletion {
+    const length = regExpLastIndex(regexp, context, loc);
     if (length.type === "throw") {
         return length;
     }
@@ -175,6 +184,7 @@ export function regExpBuiltinExec(
             configurable: true,
         });
     }
+    updateRegExpStatics(regexp, input, result.start, result.end, captures, context.realm);
     return array;
 }
 

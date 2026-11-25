@@ -69,7 +69,7 @@ Rift implements the areas below, with incomplete ECMAScript conformance. See the
 | Error objects | Implemented | Standard error constructors, AggregateError and SuppressedError. |
 | Explicit resource management | Partial | Synchronous DisposableStack, including use, adopt, defer, move and disposal with suppressed errors. No using/await using declarations or AsyncDisposableStack. |
 | Date and Temporal | Implemented within scope | Date defaults to UTC with selectable pinned IANA zones; Temporal supports ISO-calendar operations. |
-| RegExp | Partial | Unicode mode, property escapes, backreferences, lookaround, scoped modifiers and RegExp.escape; no Unicode sets. |
+| RegExp | Partial | Unicode mode, property escapes, backreferences, lookaround, scoped modifiers, RegExp.escape and legacy compile/static accessors; no Unicode sets. |
 | WeakMap and WeakSet | Partial | Patched native compiler typed weak storage; no weak symbol keys. |
 | Typed arrays, ArrayBuffer and DataView | Unsupported | Constructors and binary-buffer APIs are unavailable. Test262 cases remain in the results; some fail while loading harness helpers that require these constructors. |
 | Modules and Intl | Unsupported | Explicitly skipped by the corpus runner. |

@@ -5,6 +5,7 @@ import { registerRegExpExecution } from "./regexp-execution.js";
 import { registerRegExpMatchSearch } from "./regexp-match-search.js";
 import { registerRegExpReplace } from "./regexp-replace.js";
 import { registerRegExpSplit } from "./regexp-split.js";
+import { registerRegExpStatics } from "./regexp-statics.js";
 import {
     GuestObject,
     normal,
@@ -263,18 +264,19 @@ function createRegExpConstructor(realm: Realm): GuestObject {
         (_callee, newTarget, args, context, loc) =>
             constructRegExp(newTarget, args, false, context, loc, newTarget === constructor),
     );
+    constructor.bootstrapDefine("prototype", {
+        value: { kind: "object", object: realm.regexpPrototype },
+        writable: false,
+        enumerable: false,
+        configurable: false,
+    });
+    registerRegExpStatics(realm, constructor);
     return constructor;
 }
 
 export function registerRegExp(realm: Realm): void {
     const proto = realm.regexpPrototype;
     const constructor = createRegExpConstructor(realm);
-    constructor.bootstrapDefine("prototype", {
-        value: { kind: "object", object: proto },
-        writable: false,
-        enumerable: false,
-        configurable: false,
-    });
     proto.bootstrapDefine("constructor", {
         value: { kind: "object", object: constructor },
         writable: true,

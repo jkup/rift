@@ -25,6 +25,54 @@ function string(text: string, expected: string, realm: Realm = fresh()): void {
 }
 const cases: { source: string; expected: string }[] = [
     {
+        source: "[RegExp.input,RegExp.lastMatch,RegExp.lastParen,RegExp.leftContext,RegExp.rightContext,RegExp.$1,RegExp.$9].join(':')",
+        expected: "::::::",
+    },
+    {
+        source: "'zabq'.match(/(a)(b)/);[RegExp.input,RegExp.$_,RegExp.lastMatch,RegExp['$&'],RegExp.lastParen,RegExp['$+'],RegExp.leftContext,RegExp['$`'],RegExp.rightContext,RegExp[\"$'\"],RegExp.$1,RegExp.$2,RegExp.$3].join(':')",
+        expected: "zabq:zabq:ab:ab:b:b:z:z:q:q:a:b:",
+    },
+    {
+        source: "'ab'.match(/(a)(b)?(c)?/);[RegExp.$1,RegExp.$2,RegExp.$3,RegExp.lastParen].join(':')",
+        expected: "a:b::",
+    },
+    {
+        source: "'abcdefghij'.match(/(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)/);[RegExp.$1,RegExp.$9,RegExp.lastParen].join(':')",
+        expected: "a:i:j",
+    },
+    {
+        source: "'cat'.match(/(a)/);/z/.test('dog');[RegExp.input,RegExp.lastMatch,RegExp.$1].join(':')",
+        expected: "cat:a:a",
+    },
+    {
+        source: "'cat'.match(/(a)/);let r=/b/g;Object.defineProperty(r,'lastIndex',{writable:false});try{r.exec('bat')}catch(e){}[RegExp.input,RegExp.$1].join(':')",
+        expected: "cat:a",
+    },
+    {
+        source: "RegExp.input={toString(){/(b)/.test('bat');return 'new'}};[RegExp.input,RegExp.$_,RegExp.lastMatch,RegExp.$1].join(':')",
+        expected: "new:new:b:b",
+    },
+    {
+        source: "RegExp.$_=123;let ok=false;try{RegExp.input=Symbol()}catch(e){ok=e instanceof TypeError}[RegExp.input,ok].join(':')",
+        expected: "123:true",
+    },
+    {
+        source: "let setter=Object.getOwnPropertyDescriptor(RegExp,'input').set;let seen=false,ok=false;try{setter.call({}, {toString(){seen=true;return 'x'}})}catch(e){ok=e instanceof TypeError}[ok,seen,setter.call(RegExp)].join(':')",
+        expected: "true:false:",
+    },
+    {
+        source: "class R extends RegExp{};(new R('(x)')).test('x');let count=0;for(let key of ['input','lastMatch','lastParen','leftContext','rightContext','$1','$9']){try{RegExp[key]}catch(e){if(e instanceof TypeError)count++}}RegExp.input='reset';let bad=false;try{RegExp.lastMatch}catch(e){bad=e instanceof TypeError}let input=RegExp.input;/(a)/.test('cat');[count,bad,input,RegExp.$1,RegExp.lastMatch].join(':')",
+        expected: "7:true:reset:a:a",
+    },
+    {
+        source: "let getter=Object.getOwnPropertyDescriptor(RegExp,'lastMatch').get;delete RegExp.lastMatch;/(a)/.test('cat');[RegExp.lastMatch,getter.call(RegExp),RegExp['$&']].join(':')",
+        expected: ":a:a",
+    },
+    {
+        source: "let d=Object.getOwnPropertyDescriptor(RegExp,'$&');[d.get.name,d.get.length,d.get.toString(),d.set===undefined].join(':')",
+        expected: "get $&:0:function get $&() { [native code] }:true",
+    },
+    {
         source: "var r=RegExp();r.toString()+':'+r.source+':'+r.flags+':'+r.lastIndex",
         expected: "/(?:)/:(?:)::0",
     },
@@ -331,6 +379,11 @@ string(
     string(
         "let r=new OtherRegExp('a');let own=false,foreign=false;try{RegExp.prototype.compile.call(r)}catch(e){own=e instanceof TypeError}try{OtherRegExp.prototype.compile.call(/a/)}catch(e){foreign=Object.getPrototypeOf(e)===ownerTypeError}[own,foreign,r.compile('b')===r,r.source].join(':')",
         "true:true:true:b",
+        caller,
+    );
+    string(
+        "let localRegex=/local/;localRegex.test('local');let other=new OtherRegExp('foreign');other.test('foreign');RegExp.prototype.exec.call(other,'foreign');OtherRegExp.prototype.exec.call(localRegex,'local');let get=Object.getOwnPropertyDescriptor(OtherRegExp,'lastMatch').get;let bad=false;try{get.call(RegExp)}catch(e){bad=Object.getPrototypeOf(e)===ownerTypeError}[RegExp.lastMatch,OtherRegExp.lastMatch,get.call(OtherRegExp),bad].join(':')",
+        "local:foreign:foreign:true",
         caller,
     );
 }

@@ -161,7 +161,15 @@ check(
         legacy.symbolPrototype.getOwnProperty("description") === undefined,
     "legacy unchanged",
 );
-for (const name of ["get x", "set x", "get [Symbol.toPrimitive]"]) {
+for (const name of [
+    "get x",
+    "set x",
+    "get [Symbol.toPrimitive]",
+    "get $&",
+    "get $+",
+    "get $`",
+    "get $'",
+]) {
     check(
         nativeFunctionString(name) === "function " + name + "() { [native code] }",
         "accessor native text",
