@@ -119,4 +119,36 @@ for (const source of [
     );
     token(lexer.next(), "eof", "<eof>", 0, 0, 1, 1);
 }
+for (const prefix of ["", " \t", "/**/ /**/", "0/*\r\n*/", "0\u2028", "0\u2029"]) {
+    const source = prefix + "--> ignored\nnext";
+    const result = lex(source, true);
+    check(result.error === null, "HTML close comment is accepted after line trivia");
+    const next = result.tokens[result.tokens.length - 2];
+    check(next.text === "next" && next.start === source.indexOf("next"), "comment end offset");
+    check(
+        result.tokens.length === (prefix.startsWith("0") ? 3 : 2),
+        "HTML comment contents are discarded",
+    );
+}
+{
+    const result = lex("x<!-- ignored\r\ny", true);
+    token(result.tokens[0], "word", "x", 0, 1, 1, 1);
+    token(result.tokens[1], "word", "y", 15, 16, 2, 1);
+    check(result.tokens.length === 3 && result.error === null, "HTML open comment after token");
+}
+for (const source of ["x-->y", "x/**/-->y", "`a\nb`-->y", "'a\\\nb'-->y"]) {
+    const result = lex(source, true);
+    check(result.tokens[result.tokens.length - 2].text === "y", "same-line decrement is retained");
+    check(
+        result.tokens.some((value: Token, _index: number, _tokens: Token[]) => value.text === "--"),
+        "decrement token is retained",
+    );
+}
+{
+    const result = lex("<!-- text", false);
+    check(result.tokens[0].text === "<", "legacy lexer profile is unchanged");
+    const unfinished = lex("/* no end", true);
+    check(unfinished.error?.message === "unterminated comment", "unterminated block diagnostic");
+    token(unfinished.tokens[0], "eof", "<eof>", 9, 9, 1, 10);
+}
 console.log("Incremental lexer passed");

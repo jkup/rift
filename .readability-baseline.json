@@ -353,13 +353,13 @@
             "filename": "src/lexer.ts",
             "name": "<module>",
             "rule": "fileLines",
-            "value": 753
+            "value": 742
         },
         {
             "filename": "src/lexer.ts",
             "name": "createLexer",
             "rule": "functionLines",
-            "value": 690
+            "value": 681
         },
         {
             "filename": "src/lexer.ts",
@@ -371,7 +371,7 @@
             "filename": "src/lexer.ts",
             "name": "createLexer.next",
             "rule": "functionLines",
-            "value": 398
+            "value": 387
         },
         {
             "filename": "src/lexer.ts",

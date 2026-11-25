@@ -1,4 +1,5 @@
 import { scanRegExpLiteral } from "./regexp/regexp-literal.js";
+import { commentEnd, lineTerminator } from "./lexer-comments.js";
 import { isStringWhitespace } from "./strings.js";
 import { identifierStart, scanIdentifier } from "./identifier-scan.js";
 import { scanPrivateIdentifier } from "./private-identifier.js";
@@ -42,9 +43,6 @@ function digitValue(c: string): number {
 function letter(c: string): boolean {
     return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";
 }
-function lineTerminator(c: string): boolean {
-    return c === "\r" || c === "\n" || c === "\u2028" || c === "\u2029";
-}
 export function lex(source: string, script = false): LexResult {
     return lexSource(source, script, false);
 }
@@ -69,6 +67,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
     let i = 0;
     let line = 1;
     let column = 1;
+    let lineHasToken = false;
     let error: Diagnostic | null = null;
     let rejection: Rejection | null = null;
     const templates: number[] = [];
@@ -76,6 +75,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
     function advance(): string {
         const c = source.charAt(i++);
         if (lineTerminator(c)) {
+            lineHasToken = false;
             // CRLF is one line boundary, including inside block comments.
             if (c !== "\n" || i < 2 || source.charAt(i - 2) !== "\r") {
                 line++;
@@ -339,30 +339,18 @@ export function createLexer(source: string, script = false, separatorAudit = fal
                 advance();
                 continue;
             }
-            if (c === "/" && source.charAt(i + 1) === "/") {
-                while (i < source.length && !lineTerminator(source.charAt(i))) {
+            const comment = commentEnd(source, i, script, lineHasToken);
+            if (comment !== i) {
+                const end = comment === -1 ? source.length : comment;
+                while (i < end) {
                     advance();
                 }
-                continue;
-            }
-            if (c === "/" && source.charAt(i + 1) === "*") {
-                advance();
-                advance();
-                while (
-                    i < source.length &&
-                    !(source.charAt(i) === "*" && source.charAt(i + 1) === "/")
-                ) {
-                    advance();
-                }
-                if (i === source.length) {
+                if (comment === -1) {
                     fail(
                         { kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-comment" },
                         "unterminated comment",
                         loc,
                     );
-                } else {
-                    advance();
-                    advance();
                 }
                 continue;
             }
@@ -700,6 +688,7 @@ export function createLexer(source: string, script = false, separatorAudit = fal
             }
         }
         if (tokens.length > count) {
+            lineHasToken = true;
             return tokens[count];
         }
         if (error === null && templates.length > 0) {
