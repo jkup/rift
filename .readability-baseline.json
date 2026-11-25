@@ -167,7 +167,7 @@
             "filename": "src/builtins/regexp/regexp.ts",
             "name": "registerRegExp",
             "rule": "functionLines",
-            "value": 145
+            "value": 139
         },
         {
             "filename": "src/builtins/set.ts",

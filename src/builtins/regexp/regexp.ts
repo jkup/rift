@@ -40,6 +40,7 @@ function constructRegExp(
     called: boolean,
     context: OperationContext,
     loc: Location,
+    legacyFeaturesEnabled: boolean,
 ): ValueCompletion {
     const pattern = args.length === 0 ? UNDEFINED : args[0];
     let flags = args.length < 2 ? UNDEFINED : args[1];
@@ -80,7 +81,7 @@ function constructRegExp(
     if (prototype.type === "throw") {
         return prototype;
     }
-    return initializeRegExp(prototype.value, source, flags, context, loc);
+    return initializeRegExp(prototype.value, source, flags, context, loc, legacyFeaturesEnabled);
 }
 
 export function regExpCreate(
@@ -98,6 +99,7 @@ function initializeRegExp(
     flags: Value,
     context: OperationContext,
     loc: Location,
+    legacyFeaturesEnabled = true,
 ): ValueCompletion {
     const allocation = context.tick(loc);
     if (allocation.type === "throw") {
@@ -171,7 +173,14 @@ function initializeRegExp(
     }
     return normal({
         kind: "object",
-        object: new GuestRegExp(prototype, text.value, options.value, compiled.program),
+        object: new GuestRegExp(
+            context.realm,
+            prototype,
+            text.value,
+            options.value,
+            compiled.program,
+            legacyFeaturesEnabled,
+        ),
     });
 }
 
@@ -245,15 +254,21 @@ function registerRegExpToString(realm: Realm): void {
     });
 }
 
-export function registerRegExp(realm: Realm): void {
-    const proto = realm.regexpPrototype;
+function createRegExpConstructor(realm: Realm): GuestObject {
     const constructor = realm.createBuiltinConstructor(
         "RegExp",
         2,
-        (_receiver, args, context, loc) => constructRegExp(constructor, args, true, context, loc),
+        (_receiver, args, context, loc) =>
+            constructRegExp(constructor, args, true, context, loc, true),
         (_callee, newTarget, args, context, loc) =>
-            constructRegExp(newTarget, args, false, context, loc),
+            constructRegExp(newTarget, args, false, context, loc, newTarget === constructor),
     );
+    return constructor;
+}
+
+export function registerRegExp(realm: Realm): void {
+    const proto = realm.regexpPrototype;
+    const constructor = createRegExpConstructor(realm);
     constructor.bootstrapDefine("prototype", {
         value: { kind: "object", object: proto },
         writable: false,

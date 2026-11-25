@@ -309,4 +309,29 @@ string(
     "let r=/old/;let order='';r.compile({get [Symbol.match](){throw 1},toString(){order+='p';return 'new'}},{toString(){order+='f';return 'i'}});order+':'+r.source+':'+r.flags",
     "pf:new:i",
 );
+string(
+    "class R extends RegExp{}let r=new R('a');Object.setPrototypeOf(r,RegExp.prototype);let touched=false;try{r.compile({toString(){touched=true;return 'b'}})}catch(e){String(e instanceof TypeError)+':'+touched+':'+r.source}",
+    "true:false:a",
+);
+string(
+    "let r=/a/;Object.setPrototypeOf(r,null);let compile=RegExp.prototype.compile;RegExp=function(){};String(compile.call(r,'b')===r)",
+    "true",
+);
+{
+    const owner = fresh(),
+        caller = fresh();
+    const constructor = owner.globalObject.getOwnProperty("RegExp");
+    if (constructor === undefined || constructor.kind !== "data") {
+        throw new Error("RegExp constructor");
+    }
+    caller.defineScriptGlobal("OtherRegExp", { value: constructor.value });
+    caller.defineScriptGlobal("ownerTypeError", {
+        value: { kind: "object", object: owner.getErrorPrototype("TypeError") },
+    });
+    string(
+        "let r=new OtherRegExp('a');let own=false,foreign=false;try{RegExp.prototype.compile.call(r)}catch(e){own=e instanceof TypeError}try{OtherRegExp.prototype.compile.call(/a/)}catch(e){foreign=Object.getPrototypeOf(e)===ownerTypeError}[own,foreign,r.compile('b')===r,r.source].join(':')",
+        "true:true:true:b",
+        caller,
+    );
+}
 console.log("RegExp construction passed");

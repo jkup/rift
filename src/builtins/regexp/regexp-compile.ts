@@ -13,6 +13,14 @@ export function registerRegExpCompile(realm: Realm): void {
                 loc,
             );
         }
+        if (receiver.object.realm !== realm || !receiver.object.legacyFeaturesEnabled) {
+            return languageFailure(
+                context.realm,
+                "TypeError",
+                "RegExp compile requires a direct instance from its own Realm",
+                loc,
+            );
+        }
         let pattern = args.length === 0 ? UNDEFINED : args[0];
         let flags = args.length < 2 ? UNDEFINED : args[1];
         if (pattern.kind === "object" && pattern.object instanceof GuestRegExp) {

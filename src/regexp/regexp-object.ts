@@ -8,13 +8,16 @@ import {
 import type { RegExpProgram } from "./regexp-matcher.js";
 import { wellKnownMatch } from "../symbols.js";
 import type { Location } from "../syntax.js";
+import type { Realm } from "../realm.js";
 
 export class GuestRegExp extends GuestObject {
     constructor(
+        readonly realm: Realm,
         proto: GuestObject,
         public originalSource: string,
         public originalFlags: string,
         public program: RegExpProgram,
+        readonly legacyFeaturesEnabled: boolean,
     ) {
         super(proto);
         this.bootstrapDefine("lastIndex", {
