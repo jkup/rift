@@ -31,6 +31,11 @@ function run(text: string, realm = fresh(), steps = 10000): ValueCompletion {
         .completion;
 }
 for (const source of [
+    "let log='';let i=[4,5,6].values().filter(function(v,k){'use strict';log+=k+':'+(this===undefined)+':'+arguments.length+';';return v===5});log===''&&i.next(9).value===5&&log==='0:true:2;1:true:2;'&&i.next().done&&log==='0:true:2;1:true:2;2:true:2;';",
+    "let calls=0;let i=[1,2,3].values().map(x=>x*2).filter(x=>{calls++;return x>2}).map(x=>x+1);calls===0&&i.toArray().join(',')==='5,7'&&calls===3;",
+    "let i=[1].values().filter(()=>({valueOf(){throw 1}}));i.next().value===1&&i.next().done;",
+    "let i,seen=0;i=[1,2].values().filter(x=>{try{i.next()}catch(e){if(e instanceof TypeError)seen++}return true});i.toArray().join(',')==='1,2'&&seen===2;",
+    "Object.getPrototypeOf([].values().map(x=>x))===Object.getPrototypeOf([].values().filter(x=>x));",
     "let calls=0;let i=[4,5].values().map(function(v,k){'use strict';calls++;return [v,k,this===undefined,arguments.length].join(':')});calls===0&&i.next(99).value==='4:0:true:2'&&i.next().value==='5:1:true:2'&&i.next().done&&calls===2;",
     "let reads=0,calls=0;let o={get next(){reads++;return function(){calls++;return {value:arguments.length}}}};let i=Iterator.prototype.map.call(o,x=>x);o.next=()=>{throw 1};reads===1&&calls===0&&i.next(9).value===0&&calls===1;",
     "let log='';let o={get next(){log+='n';throw 1},return(){log+='r';throw 2}};let ok=false;try{Iterator.prototype.map.call(o,null)}catch(e){ok=e instanceof TypeError}ok&&log==='r';",
@@ -137,7 +142,7 @@ for (const source of [
     "let i=[7].values();let identity=i[Symbol.iterator];identity.call(7)===7&&identity.call(null)===null&&identity.name==='[Symbol.iterator]'&&identity.length===0;",
     "Array.prototype.keys.name==='keys'&&Array.prototype.keys.length===0&&Array.prototype.values.name==='values'&&Array.prototype.values.length===0&&Array.prototype.entries.name==='entries'&&Array.prototype.entries.length===0;",
     "let i=[].values();let p=Object.getPrototypeOf(i);let root=Object.getPrototypeOf(p);Object.getPrototypeOf(root)===Object.prototype&&p.next.name==='next'&&p.next.length===0;",
-    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join,map'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
+    "let p=Object.getPrototypeOf([].values());let root=Object.getPrototypeOf(p);let d=Object.getOwnPropertyDescriptor(root,Symbol.iterator);Object.getOwnPropertyNames(p).join(',')==='next'&&Object.getOwnPropertySymbols(p)[0]===Symbol.toStringTag&&Object.getOwnPropertyNames(root).join(',')==='constructor,forEach,some,every,find,reduce,toArray,includes,join,map,filter'&&Object.getOwnPropertySymbols(root).length===3&&Object.getOwnPropertySymbols(root)[0]===Symbol.toStringTag&&Object.getOwnPropertySymbols(root)[1]===Symbol.iterator&&Object.getOwnPropertySymbols(root)[2]===Symbol.dispose&&d.writable&&!d.enumerable&&d.configurable;",
     "let d=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator);d.value===Array.prototype.values&&d.writable&&!d.enumerable&&d.configurable;",
     "let p=Object.getPrototypeOf([].values());let d=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag);d.value==='Array Iterator'&&!d.writable&&!d.enumerable&&d.configurable;",
 ]) {
@@ -312,7 +317,7 @@ for (const argument of [
 {
     const owner = fresh(),
         caller = fresh();
-    const mapped = run("[7].values().map(x=>x)", owner);
+    const mapped = run("[7].values().map(x=>x).filter(x=>x)", owner);
     const invalid = run("Iterator.prototype.map.call({next(){return 0}},x=>x)", owner);
     check(mapped.type === "normal" && invalid.type === "normal", "foreign map creation");
     seed(caller, "mapped", mapped.value);
@@ -326,6 +331,17 @@ for (const argument of [
     check(
         result.type === "normal" && sameValue(result.value, { kind: "boolean", value: true }),
         "helper closure Realm",
+    );
+}
+{
+    const result = run(
+        "let closed=false;let i=Iterator.prototype.filter.call({next(){return {value:1}},return(){closed=true;return {}}},()=>false);try{i.next()}catch(e){'caught'}",
+        fresh(),
+        1000,
+    );
+    check(
+        result.type === "throw" && result.origin.kind === "resource-limit",
+        "bounded lazy filter",
     );
 }
 check(

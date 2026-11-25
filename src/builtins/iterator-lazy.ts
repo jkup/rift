@@ -4,6 +4,7 @@ import {
     GuestObject,
     languageFailure,
     normal,
+    truthy,
     UNDEFINED,
     type OperationContext,
     type Value,
@@ -19,6 +20,8 @@ import { iteratorResult } from "../iterator-result.js";
 import { wellKnownToStringTag } from "../symbols.js";
 import { callbackIterator } from "./iterator-eager.js";
 
+type CallbackHelperKind = "map" | "filter";
+
 class GuestIteratorHelper extends GuestObject {
     state: "start" | "yield" | "executing" | "done" = "start";
     index = 0;
@@ -26,42 +29,49 @@ class GuestIteratorHelper extends GuestObject {
     constructor(
         proto: GuestObject,
         readonly iterated: IteratorRecord,
-        readonly mapper: Value,
+        readonly callback: Value,
         readonly resume: GuestObject,
+        readonly kind: CallbackHelperKind,
     ) {
         super(proto);
     }
 }
 
-function advanceMap(
+function advanceCallback(
     helper: GuestIteratorHelper,
     context: OperationContext,
     loc: Location,
 ): ValueCompletion {
-    const step = iteratorStepValue(helper.iterated, context, loc);
-    if (step.type === "throw") {
-        helper.state = "done";
-        return step;
+    while (true) {
+        const step = iteratorStepValue(helper.iterated, context, loc);
+        if (step.type === "throw") {
+            helper.state = "done";
+            return step;
+        }
+        if (step.done) {
+            helper.state = "done";
+            return iteratorResult(UNDEFINED, true, context, loc);
+        }
+        const selected = context.call(
+            helper.callback,
+            UNDEFINED,
+            [step.value, { kind: "number", value: helper.index++ }],
+            loc,
+        );
+        if (selected.type === "throw") {
+            // Cleanup runs while executing, so recursive next/return calls still fail.
+            const closed = iteratorCloseOnThrow(helper.iterated, selected, context, loc);
+            helper.state = "done";
+            return closed;
+        }
+        if (helper.kind === "filter" && !truthy(selected.value)) {
+            continue;
+        }
+        const value = helper.kind === "map" ? selected.value : step.value;
+        const result = iteratorResult(value, false, context, loc);
+        helper.state = result.type === "throw" ? "done" : "yield";
+        return result;
     }
-    if (step.done) {
-        helper.state = "done";
-        return iteratorResult(UNDEFINED, true, context, loc);
-    }
-    const mapped = context.call(
-        helper.mapper,
-        UNDEFINED,
-        [step.value, { kind: "number", value: helper.index++ }],
-        loc,
-    );
-    if (mapped.type === "throw") {
-        // Cleanup runs while executing, so recursive next/return calls still fail.
-        const closed = iteratorCloseOnThrow(helper.iterated, mapped, context, loc);
-        helper.state = "done";
-        return closed;
-    }
-    const result = iteratorResult(mapped.value, false, context, loc);
-    helper.state = result.type === "throw" ? "done" : "yield";
-    return result;
 }
 
 function helperCall(
@@ -124,7 +134,7 @@ export function registerLazyIteratorMethods(realm: Realm): void {
             helper.state = "done";
             return closed.type === "throw" ? closed : iteratorResult(UNDEFINED, true, context, loc);
         }
-        return advanceMap(helper, context, loc);
+        return advanceCallback(helper, context, loc);
     });
     realm.registerBuiltin(proto, "next", 0, (receiver, _args, context, loc) =>
         helperCall(receiver, false, context, loc),
@@ -136,18 +146,21 @@ export function registerLazyIteratorMethods(realm: Realm): void {
         value: { kind: "string", value: "Iterator Helper" },
         configurable: true,
     });
-    realm.registerBuiltin(realm.iteratorPrototype, "map", 1, (receiver, args, context, loc) => {
-        const mapper = args.length === 0 ? UNDEFINED : args[0];
-        const opened = callbackIterator(receiver, mapper, context, loc);
-        if (opened.type === "throw") {
-            return opened;
-        }
-        const allocation = context.tick(loc);
-        return allocation.type === "throw"
-            ? allocation
-            : normal({
-                  kind: "object",
-                  object: new GuestIteratorHelper(proto, opened.value, mapper, resume),
-              });
-    });
+    const methods: CallbackHelperKind[] = ["map", "filter"];
+    for (const kind of methods) {
+        realm.registerBuiltin(realm.iteratorPrototype, kind, 1, (receiver, args, context, loc) => {
+            const callback = args.length === 0 ? UNDEFINED : args[0];
+            const opened = callbackIterator(receiver, callback, context, loc);
+            if (opened.type === "throw") {
+                return opened;
+            }
+            const allocation = context.tick(loc);
+            return allocation.type === "throw"
+                ? allocation
+                : normal({
+                      kind: "object",
+                      object: new GuestIteratorHelper(proto, opened.value, callback, resume, kind),
+                  });
+        });
+    }
 }
