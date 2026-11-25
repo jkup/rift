@@ -285,4 +285,28 @@ string(
         "bounded escape output",
     );
 }
+string(
+    "let r=/old/g;r.lastIndex=9;let same=r.compile('new','i')===r;[same,r.source,r.flags,r.lastIndex,r.test('NEW')].join(':')",
+    "true:new:i:0:true",
+);
+string(
+    "let r=/a/g;r.lastIndex=3;Object.defineProperty(r,Symbol.match,{get(){throw 1}});Object.defineProperty(r,'flags',{get(){throw 2}});String(r.compile(r)===r)+':'+r.lastIndex+':'+r.test('a')",
+    "true:0:true",
+);
+string(
+    "let r=/old/g;r.lastIndex=9;let order='';try{r.compile({toString(){order+='p';return '['}},{toString(){order+='f';return 'i'}})}catch(e){order+=':'+(e instanceof SyntaxError)}[order,r.source,r.flags,r.lastIndex].join(':')",
+    "pf:true:old:g:9",
+);
+string(
+    "let r=/old/;Object.defineProperty(r,'lastIndex',{value:9,writable:false});let caught=false;try{r.compile('new','i')}catch(e){caught=e instanceof TypeError}[caught,r.source,r.flags,r.lastIndex,r.test('NEW')].join(':')",
+    "true:new:i:9:true",
+);
+string(
+    "let r=/old/;let touched=false;let caught=false;try{r.compile(/new/,{toString(){touched=true;return ''}})}catch(e){caught=e instanceof TypeError}[caught,touched,r.source].join(':')",
+    "true:false:old",
+);
+string(
+    "let r=/old/;let order='';r.compile({get [Symbol.match](){throw 1},toString(){order+='p';return 'new'}},{toString(){order+='f';return 'i'}});order+':'+r.source+':'+r.flags",
+    "pf:new:i",
+);
 console.log("RegExp construction passed");

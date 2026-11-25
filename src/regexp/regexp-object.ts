@@ -12,9 +12,9 @@ import type { Location } from "../syntax.js";
 export class GuestRegExp extends GuestObject {
     constructor(
         proto: GuestObject,
-        readonly originalSource: string,
-        readonly originalFlags: string,
-        readonly program: RegExpProgram,
+        public originalSource: string,
+        public originalFlags: string,
+        public program: RegExpProgram,
     ) {
         super(proto);
         this.bootstrapDefine("lastIndex", {

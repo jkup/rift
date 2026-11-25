@@ -14,6 +14,7 @@ import { toPrimitive } from "../../primitive-conversion.js";
 import { toLength } from "../../conversion.js";
 import { arrayFromList } from "../../array-create.js";
 import { regExpString } from "./regexp.js";
+import { registerRegExpCompile } from "./regexp-compile.js";
 import type { Location } from "../../syntax.js";
 
 export function regExpBuiltinExec(
@@ -215,6 +216,7 @@ export function regExpExec(
 }
 
 export function registerRegExpExecution(realm: Realm): void {
+    registerRegExpCompile(realm);
     realm.registerBuiltin(realm.regexpPrototype, "exec", 1, (receiver, args, context, loc) => {
         if (receiver.kind !== "object" || !(receiver.object instanceof GuestRegExp)) {
             return languageFailure(
