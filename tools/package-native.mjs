@@ -20,6 +20,7 @@ import {
     nativeTar,
     releaseName,
     releaseTarget,
+    requireZigVersion,
     verifyGlibcBaseline,
 } from "./native-release-support.mjs";
 import { smokeNativeRelease } from "./native-release-smoke.mjs";
@@ -59,10 +60,7 @@ if (process.platform === "linux") {
     checkedCommand("readelf", ["--version"], { env });
 }
 const pin = JSON.parse(readFileSync(join(root, "toolchain/scriptc/source.json"), "utf8"));
-const zig = checkedCommand("zig", ["version"]);
-if (zig !== pin.buildDependencies.zig) {
-    throw new Error(`Release builds require Zig ${pin.buildDependencies.zig}, found ${zig}`);
-}
+const zig = requireZigVersion(pin.buildDependencies.zig);
 mkdirSync(destination, { recursive: true });
 const work = mkdtempSync(join(destination, ".native-release-"));
 const bundle = join(work, name);

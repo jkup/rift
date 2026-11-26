@@ -1,10 +1,11 @@
 import { validateNativeEntries } from "./native-entry-manifest.mjs";
 import { scriptcPath } from "./scriptc-path.mjs";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { completed, probeVerdict } from "./probe-verdict.mjs";
 import { runNativeCommand, mapConcurrent } from "./native-build-runner.mjs";
+import { requireZigVersion } from "./native-release-support.mjs";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const scriptc = scriptcPath(root);
 const suffix = process.platform === "win32" ? ".exe" : "";
@@ -12,6 +13,8 @@ const jobs = Number(process.env.RIFT_NATIVE_JOBS ?? 2);
 if (!Number.isSafeInteger(jobs) || jobs < 1) {
     throw new Error("RIFT_NATIVE_JOBS must be a positive safe integer");
 }
+const pin = JSON.parse(readFileSync(join(root, "toolchain/scriptc/source.json"), "utf8"));
+requireZigVersion(pin.buildDependencies.zig);
 mkdirSync(join(root, "build/native"), { recursive: true });
 const run = (args) => runNativeCommand(scriptc, args, { cwd: root });
 const entries = [

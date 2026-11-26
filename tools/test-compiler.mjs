@@ -7,11 +7,12 @@
 // Usage: node tools/test-compiler.mjs [probe-name...]
 
 import { spawnSync } from "node:child_process";
-import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { completed, probeVerdict } from "./probe-verdict.mjs";
 import { scriptcPath } from "./scriptc-path.mjs";
+import { requireZigVersion } from "./native-release-support.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const EXE = process.platform === "win32" ? ".exe" : "";
@@ -52,6 +53,8 @@ if (probes.length === 0) {
     process.exit(1);
 }
 
+const pin = JSON.parse(readFileSync(join(ROOT, "toolchain/scriptc/source.json"), "utf8"));
+requireZigVersion(pin.buildDependencies.zig);
 const typecheck = run(process.execPath, [tscJs, "-p", "tsconfig.json"]);
 if (!completed(typecheck)) {
     console.error(typecheck);

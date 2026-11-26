@@ -104,6 +104,26 @@ export function requireNativeLinker(platform = process.platform, run = checkedCo
     }
 }
 
+export function requireZigVersion(expected, run = checkedCommand) {
+    const hint = "Select the pinned Zig directory; see toolchain/scriptc/README.md.";
+    let version;
+    try {
+        version = run("zig", ["version"], {
+            timeout: 10000,
+            killSignal: "SIGKILL",
+            windowsHide: true,
+        });
+    } catch (cause) {
+        throw new Error(`Cannot run Zig ${expected} from PATH. ${hint}`, { cause });
+    }
+    if (version !== expected) {
+        throw new Error(
+            `Native builds require Zig ${expected} on PATH; found ${version || "empty version output"}. ${hint}`,
+        );
+    }
+    return version;
+}
+
 export function verifyGlibcBaseline(output) {
     const requirements = [...new Set(output.match(/\bGLIBC_[A-Za-z0-9_.]+/g) ?? [])];
     if (requirements.length === 0) {

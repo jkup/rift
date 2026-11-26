@@ -1,7 +1,15 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+    cpSync,
+    existsSync,
+    mkdtempSync,
+    mkdirSync,
+    readFileSync,
+    rmSync,
+    writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -12,6 +20,7 @@ import {
     releaseName,
     releaseTarget,
     requireNativeLinker,
+    requireZigVersion,
     sha256,
     verifyDownload,
     verifyGlibcBaseline,
@@ -83,6 +92,83 @@ test("native setup keeps Windows PATH and discards ambient compiler overrides", 
         }),
         { PATH: "tools", RIFT_SCRIPTC: "selected", HOME: "home" },
     );
+});
+
+test("Zig preflight accepts only the requested pin and explains command failures", () => {
+    assert.equal(
+        requireZigVersion("0.16.0", () => "0.16.0"),
+        "0.16.0",
+    );
+    for (const version of ["0.17.0", "0.16.0-dev.1", ""]) {
+        assert.throws(
+            () => requireZigVersion("0.16.0", () => version),
+            /require Zig 0\.16\.0 on PATH; found/,
+        );
+    }
+    assert.throws(
+        () => requireZigVersion("0.17.0", () => "0.16.0"),
+        /require Zig 0\.17\.0 on PATH; found 0\.16\.0/,
+    );
+    for (const code of ["ENOENT", "ETIMEDOUT"]) {
+        const cause = new Error(code);
+        assert.throws(
+            () =>
+                requireZigVersion("0.16.0", () => {
+                    throw cause;
+                }),
+            (error) => {
+                assert.equal(error.cause, cause);
+                assert.match(error.message, /Cannot run Zig 0\.16\.0 from PATH/);
+                assert.match(error.message, /toolchain\/scriptc\/README\.md/);
+                return true;
+            },
+        );
+    }
+});
+
+test("native entry points reject a missing Zig before emitting or building", () => {
+    const work = mkdtempSync(join(tmpdir(), "rift missing zig "));
+    try {
+        mkdirSync(join(work, "tools"));
+        mkdirSync(join(work, "toolchain/scriptc"), { recursive: true });
+        mkdirSync(join(work, "test/compiler"), { recursive: true });
+        for (const name of [
+            "test-compiler.mjs",
+            "build-native.mjs",
+            "native-release-support.mjs",
+            "native-build-runner.mjs",
+            "native-entry-manifest.mjs",
+            "probe-verdict.mjs",
+            "scriptc-path.mjs",
+        ]) {
+            cpSync(new URL(name, import.meta.url), join(work, "tools", name));
+        }
+        writeFileSync(
+            join(work, "toolchain/scriptc/source.json"),
+            JSON.stringify({ buildDependencies: { zig: "0.16.0" } }),
+        );
+        writeFileSync(join(work, "test/compiler/example.ts"), "");
+        const compiler = join(work, "scriptc.exe");
+        writeFileSync(compiler, "must not execute");
+        const env = { ...nativeBuildEnvironment(), PATH: work, RIFT_SCRIPTC: compiler };
+        for (const name of ["test-compiler.mjs", "build-native.mjs"]) {
+            const result = spawnSync(process.execPath, [join(work, "tools", name)], {
+                cwd: work,
+                env,
+                encoding: "utf8",
+                timeout: 10000,
+                killSignal: "SIGKILL",
+                windowsHide: true,
+            });
+            assert.equal(result.error, undefined, name);
+            assert.equal(result.status, 1, name);
+            assert.match(result.stderr, /Zig 0\.16\.0.*PATH/, name);
+            assert.equal(result.stdout, "", name);
+            assert.equal(existsSync(join(work, "build")), false, name);
+        }
+    } finally {
+        rmSync(work, { recursive: true, force: true });
+    }
 });
 
 test("release names cannot escape output directories or become shell options", () => {

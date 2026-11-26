@@ -22,7 +22,9 @@ For downloadable packages and checksum verification, see
 [native releases](native-releases.md). To build from source, continue below.
 
 Prepare the [patched compiler](../toolchain/scriptc/README.md) and put Zig 0.16.0
-on PATH. `npm ci` does not install either. Then run:
+on PATH. `npm ci` does not install either. Native builds and compiler probes check
+the selected Zig version before compiling; if the check fails, follow the setup
+guide's PATH instructions in your current terminal. Then run:
 
 ```sh
 npm run build:native
