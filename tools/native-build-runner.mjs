@@ -5,7 +5,15 @@ export function runNativeCommand(command, args, options = {}) {
         execFile(
             command,
             args,
-            { encoding: "utf8", timeout: 600000, maxBuffer: 1024 * 1024, ...options },
+            {
+                encoding: "utf8",
+                timeout: 600000,
+                maxBuffer: 1024 * 1024,
+                windowsHide: true,
+                // Deadlines and output caps must also stop tools that ignore SIGTERM.
+                killSignal: "SIGKILL",
+                ...options,
+            },
             (error, stdout, stderr) => {
                 let status = null;
                 if (error === null) {
@@ -34,12 +42,26 @@ export async function mapConcurrent(items, jobs, work) {
     }
     const results = new Array(items.length);
     let next = 0;
+    let failed = false;
+    let failure;
     async function worker() {
-        while (next < items.length) {
+        while (!failed && next < items.length) {
             const index = next++;
-            results[index] = await work(items[index], index);
+            try {
+                results[index] = await work(items[index], index);
+            } catch (error) {
+                if (!failed) {
+                    failed = true;
+                    failure = error;
+                }
+            }
         }
     }
+    // Drain active work before reporting failure, so callers can safely clean up
+    // or retry without workers still writing to the previous run's files.
     await Promise.all(Array.from({ length: Math.min(jobs, items.length) }, worker));
+    if (failed) {
+        throw failure;
+    }
     return results;
 }

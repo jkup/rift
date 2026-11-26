@@ -37,6 +37,20 @@ test("native command timeout cannot be accepted as success", async () => {
     assert.ok(result.error !== null || result.signal !== null);
 });
 
+test("native command deadlines stop children that ignore graceful termination", async () => {
+    const result = await runNativeCommand(
+        process.execPath,
+        [
+            "-e",
+            "process.on('SIGTERM', () => {}); setTimeout(() => process.stdout.write('survived'), 1500);",
+        ],
+        { timeout: 500 },
+    );
+    assert.equal(completed(result), false);
+    assert.notEqual(result.status, 0);
+    assert.equal(result.stdout, "");
+});
+
 test("native command output overflow cannot be accepted as success", async () => {
     const result = await runNativeCommand(
         process.execPath,
@@ -75,6 +89,49 @@ test("invalid worker bounds reject before starting work", async () => {
             /positive safe integer/,
         );
     }
+});
+
+test("worker failure stops queued work and waits for active work before rejecting", async () => {
+    const first = Promise.withResolvers();
+    const second = Promise.withResolvers();
+    const failure = new Error("first worker failed");
+    const seen = [];
+    let settled = false;
+    const result = mapConcurrent([0, 1, 2, 3], 2, async (item) => {
+        seen.push(item);
+        await (item === 0 ? first.promise : second.promise);
+        return item;
+    }).then(
+        () => {
+            settled = true;
+            assert.fail("worker failure must reject");
+        },
+        (error) => {
+            settled = true;
+            return error;
+        },
+    );
+    first.reject(failure);
+    await setImmediate();
+    const settledBeforeDrain = settled;
+    second.resolve();
+    assert.equal(await result, failure);
+    await setImmediate();
+    assert.equal(settledBeforeDrain, false);
+    assert.deepEqual(seen, [0, 1]);
+});
+
+test("worker pool preserves falsy synchronous failures", async () => {
+    const seen = [];
+    const result = await mapConcurrent([0, 1], 2, (item) => {
+        seen.push(item);
+        throw undefined;
+    }).then(
+        () => ({ rejected: false }),
+        (error) => ({ rejected: true, error }),
+    );
+    assert.deepEqual(result, { rejected: true, error: undefined });
+    assert.deepEqual(seen, [0]);
 });
 
 test("empty and oversized worker pools preserve the item set", async () => {

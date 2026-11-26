@@ -14,7 +14,12 @@ export function runFixture(command, args, timeoutMs = 5000) {
         const child = execFile(
             command,
             args,
-            { encoding: "utf8", windowsHide: true, maxBuffer: 1024 * 1024 },
+            {
+                encoding: "utf8",
+                windowsHide: true,
+                maxBuffer: 1024 * 1024,
+                killSignal: "SIGKILL",
+            },
             (error, stdout, stderr) => {
                 clearTimeout(timer);
                 let status = null;
@@ -35,7 +40,8 @@ export function runFixture(command, args, timeoutMs = 5000) {
         );
         const timer = setTimeout(() => {
             deadlineExpired = true;
-            child.kill();
+            // Guest deadlines cannot depend on cooperative signal handling.
+            child.kill("SIGKILL");
         }, timeoutMs);
     });
 }

@@ -39,6 +39,20 @@ test("launch failure, deadline and bounded output remain distinct", async () => 
     );
 });
 
+test("legacy deadlines stop children that ignore graceful termination", async () => {
+    const result = await runFixture(
+        process.execPath,
+        [
+            "-e",
+            "process.on('SIGTERM', () => {}); setTimeout(() => console.log('PASS: survived'), 1500);",
+        ],
+        500,
+    );
+    assert.equal(classifyFixture(result).outcome, "timeout");
+    assert.notEqual(result.status, 0);
+    assert.equal(result.stdout, "");
+});
+
 test("explicit summary counts retain failures without double counting markers", () => {
     const result = (stdout) => ({
         stdout,
