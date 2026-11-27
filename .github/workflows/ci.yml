@@ -43,3 +43,25 @@ jobs:
       # typecheck already emitted build/node; do not compile it a second time.
       - run: node tools/run-guests.mjs node
       - run: npm run test:test262:runner
+  node-windows:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      # Pinned fixtures must retain their repository bytes on Windows too.
+      - name: Preserve checkout line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test:readability
+      - run: npm run test:runner
+      - run: npm run test:release
+      # typecheck already emitted build/node; do not compile it a second time.
+      - run: node tools/run-guests.mjs node
+      - run: npm run test:test262:runner

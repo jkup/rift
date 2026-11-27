@@ -74,15 +74,17 @@ target.value;
 
 ## CI
 
-The `readability` and `node` jobs run on main pushes, PRs and manual dispatch.
-They check formatting, lint, checker regressions, TypeScript, Node guests and
-focused Test262 runner and release-tooling regressions. They do not run native
-builds, the complete tooling suite or the full Test262 corpus. Require both statuses in repository
-settings; the workflow does not configure merge protection.
+The `readability`, `node` and `node-windows` jobs run on main pushes, PRs and manual
+dispatch. Formatting and lint run on Ubuntu; Node guest and focused tooling checks
+run on both Ubuntu and Windows with Node 24. Windows checkout preserves the
+repository's fixture bytes. The jobs check TypeScript, readability regressions,
+guest results, the Test262 runner and release tooling. They do not run native
+builds, the complete tooling suite or the full Test262 corpus. Require all three
+statuses in repository settings; the workflow does not configure merge protection.
 
 The manually dispatched `Native release` workflow builds Windows x64, Linux x64,
 and macOS arm64/x64 packages and creates a draft preview after all four pass. See
 [native releases](docs/native-releases.md) for its checks and validation scope.
 
 Actions are pinned to commits and have read-only repository permissions. When
-updating an action, verify its upstream release commit and update both jobs.
+updating an action, verify its upstream release commit and update every job that uses it.
