@@ -2,8 +2,7 @@
 
 ## Native corpus runner
 
-With the [pinned compiler](../../toolchain/scriptc/README.md) installed and Zig
-0.16.0 on PATH:
+With the [pinned compiler](../../toolchain/scriptc/README.md) installed:
 
 ```sh
 # One-time setup beside Rift. Reuse an existing checkout if you have one.
@@ -17,9 +16,12 @@ npm run test262 -- --help
 ```
 
 `--corpus` overrides `RIFT_TEST262_ROOT`, which overrides `../test262`. The runner
-records the actual input hashes; it accepts any local corpus revision. On Windows,
-it uses the pinned Zig bundle under `build/windows-toolchains/zig/` when available.
-Otherwise it checks Zig on PATH.
+records the actual input hashes; it accepts any local corpus revision. The runner
+uses `zigDirectory` from the selected compiler installation's `rift-toolchain.json`
+(one directory above `bin/`), including installations selected with `RIFT_SCRIPTC`.
+Manual installations without a manifest use Zig on PATH. In both cases, the
+version must match `toolchain/scriptc/source.json`. A malformed manifest or an
+unavailable manifest-selected Zig is an error; repair the installation before retrying.
 
 The command builds one execution driver, checks static-only compilation and zero
 dynamic coverage, checks the assertion harness, then runs each variant in a fresh

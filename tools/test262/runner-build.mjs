@@ -1,32 +1,58 @@
-import { join, dirname, delimiter } from "node:path";
-import { existsSync } from "node:fs";
+import { join, dirname, delimiter, resolve } from "node:path";
 import { writeFile, readFile } from "node:fs/promises";
 import { scriptcPath } from "../scriptc-path.mjs";
 import { runNativeCommand } from "../native-build-runner.mjs";
-import { completed, probeVerdict } from "../probe-verdict.mjs";
+import { probeVerdict } from "../probe-verdict.mjs";
+import { checkedCommand, requireZigVersion } from "../native-release-support.mjs";
 import { sha256 } from "./input.mjs";
 
-async function linkerEnvironment(root) {
-    const local = join(root, "build/windows-toolchains/zig/zig-x86_64-windows-0.16.0/zig.exe");
-    const env = { ...process.env };
+async function toolchainZigDirectory(compiler) {
+    const path = resolve(dirname(compiler), "../rift-toolchain.json");
+    let manifest;
+    try {
+        manifest = JSON.parse(await readFile(path, "utf8"));
+    } catch (cause) {
+        if (cause.code === "ENOENT") {
+            return null;
+        }
+        throw new Error(`Cannot read toolchain manifest: ${path}`, { cause });
+    }
+    if (typeof manifest?.zigDirectory !== "string" || !manifest.zigDirectory.trim()) {
+        throw new Error(`Invalid Zig directory in toolchain manifest: ${path}`);
+    }
+    return resolve(dirname(path), manifest.zigDirectory);
+}
+
+export async function linkerEnvironment(
+    root,
+    compiler,
+    source = process.env,
+    run = checkedCommand,
+) {
+    const pin = JSON.parse(await readFile(join(root, "toolchain/scriptc/source.json"), "utf8"));
+    const directory = await toolchainZigDirectory(compiler);
+    const env = { ...source };
     let zig = "zig";
-    if (process.platform === "win32" && process.arch === "x64" && existsSync(local)) {
-        zig = local;
-        const pathKey = Object.keys(env).find((key) => key.toUpperCase() === "PATH") ?? "PATH";
-        env[pathKey] = dirname(local) + delimiter + (env[pathKey] ?? "");
-    }
-    const version = await runNativeCommand(zig, ["version"], { env, windowsHide: true });
-    if (!completed(version) || version.stdout.trim() !== "0.16.0") {
-        throw new Error(
-            "The pinned compiler needs Zig 0.16.0. Put it on PATH; see toolchain/scriptc/README.md.",
+    if (directory !== null) {
+        zig = join(directory, process.platform === "win32" ? "zig.exe" : "zig");
+        const pathKeys = Object.keys(env).filter((key) =>
+            process.platform === "win32" ? key.toUpperCase() === "PATH" : key === "PATH",
         );
+        const previousPath = env[pathKeys[0]] ?? "";
+        for (const key of pathKeys) {
+            delete env[key];
+        }
+        env.PATH = previousPath ? directory + delimiter + previousPath : directory;
     }
+    requireZigVersion(pin.buildDependencies.zig, (_command, args, options) =>
+        run(zig, args, { ...options, env }),
+    );
     return { env, zig };
 }
 
 export async function buildDriver(root, directory) {
     const compiler = scriptcPath(root);
-    const { env, zig } = await linkerEnvironment(root);
+    const { env, zig } = await linkerEnvironment(root, compiler);
     const command = join(
         directory,
         process.platform === "win32" ? "rift-test262.exe" : "rift-test262",
