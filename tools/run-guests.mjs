@@ -1,5 +1,5 @@
 import { cliCases } from "./cli-cases.mjs";
-import { spawnSync } from "node:child_process";
+import { runNativeCommandSync } from "./native-build-runner.mjs";
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -2470,7 +2470,7 @@ function matchesExpectedError(stderr, name, expected) {
 }
 
 function execute(name, executable, args, expected) {
-    const r = spawnSync(executable, args, {
+    const r = runNativeCommandSync(executable, args, {
         cwd: root,
         encoding: "utf8",
         timeout: expected.timeoutMs ?? 10000,

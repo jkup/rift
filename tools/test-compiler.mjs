@@ -6,7 +6,7 @@
 //
 // Usage: node tools/test-compiler.mjs [probe-name...]
 
-import { spawnSync } from "node:child_process";
+import { runNativeCommandSync } from "./native-build-runner.mjs";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -27,7 +27,7 @@ const ARGS = {
 
 function run(command, args) {
     const started = performance.now();
-    const r = spawnSync(command, args, { cwd: ROOT, encoding: "utf8", timeout: 600_000 });
+    const r = runNativeCommandSync(command, args, { cwd: ROOT, timeout: 600_000 });
     return {
         status: r.status,
         signal: r.signal,

@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { runNativeCommandSync } from "./native-build-runner.mjs";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -13,7 +13,7 @@ export function sha256(bytes) {
 }
 
 export function checkedCommand(command, args, options = {}) {
-    const result = spawnSync(command, args, {
+    const result = runNativeCommandSync(command, args, {
         encoding: "utf8",
         timeout: 60 * 60 * 1000,
         maxBuffer: 16 * 1024 * 1024,

@@ -1,7 +1,7 @@
 import { readFixtureFileSync as readFileSync } from "./test262/test-support/fixture-files.mjs";
 import assert from "node:assert/strict";
 import { writeFileSync, mkdirSync } from "node:fs";
-import { spawnSync } from "node:child_process";
+import { runNativeCommandSync } from "./native-build-runner.mjs";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import {
@@ -19,7 +19,7 @@ const evidence = new URL(
 mkdirSync(evidence, { recursive: true });
 if (process.argv.includes("--build")) {
     const invoke = (command, args) => {
-        const r = spawnSync(command, args, { cwd: root, encoding: "utf8", timeout: 600000 });
+        const r = runNativeCommandSync(command, args, { cwd: root, timeout: 600000 });
         return {
             command,
             args,
@@ -103,7 +103,7 @@ function run(lane, argument) {
     const args =
         lane === "node" ? [root + "build/node/test/number-radix.js", argument] : [argument];
     const start = performance.now();
-    const r = spawnSync(command, args, {
+    const r = runNativeCommandSync(command, args, {
         cwd: root,
         encoding: "utf8",
         timeout: 600000,

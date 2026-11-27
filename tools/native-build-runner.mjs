@@ -1,4 +1,16 @@
-import { execFile } from "node:child_process";
+import { execFile, spawnSync } from "node:child_process";
+
+export function runNativeCommandSync(command, args, options = {}) {
+    return spawnSync(command, args, {
+        encoding: "utf8",
+        timeout: 600000,
+        maxBuffer: 1024 * 1024,
+        windowsHide: true,
+        // spawnSync waits for exit even after its timeout; SIGTERM can be ignored.
+        killSignal: "SIGKILL",
+        ...options,
+    });
+}
 
 export function runNativeCommand(command, args, options = {}) {
     return new Promise((resolve) => {

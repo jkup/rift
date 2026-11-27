@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { runNativeCommandSync } from "./native-build-runner.mjs";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { cliCases } from "./cli-cases.mjs";
@@ -49,7 +49,7 @@ export function smokeNativeRelease(executable, cwd) {
     ];
     return cases.map(({ name, args, expected }) => {
         // The extracted binary must run without Node, ScriptC or Zig on PATH.
-        const result = spawnSync(executable, args, {
+        const result = runNativeCommandSync(executable, args, {
             cwd,
             env: { ...process.env, PATH: "" },
             encoding: "utf8",

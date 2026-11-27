@@ -5,7 +5,48 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setImmediate } from "node:timers/promises";
 import { completed } from "./probe-verdict.mjs";
-import { runNativeCommand, mapConcurrent } from "./native-build-runner.mjs";
+import { runNativeCommand, runNativeCommandSync, mapConcurrent } from "./native-build-runner.mjs";
+
+test("synchronous commands preserve status, output and launch failures", () => {
+    const result = runNativeCommandSync(process.execPath, [
+        "-e",
+        "process.stdout.write('out');process.stderr.write('err');process.exitCode=7;",
+    ]);
+    assert.equal(result.status, 7);
+    assert.equal(result.stdout, "out");
+    assert.equal(result.stderr, "err");
+    assert.equal(completed(result, 7), true);
+    const absent = runNativeCommandSync(join(tmpdir(), "rift-missing-" + randomUUID()), []);
+    assert.equal(absent.error.code, "ENOENT");
+    assert.equal(completed(absent), false);
+});
+
+test("synchronous deadlines kill children that ignore graceful termination", () => {
+    const result = runNativeCommandSync(
+        process.execPath,
+        [
+            "-e",
+            "process.on('SIGTERM', () => {}); setTimeout(() => process.stdout.write('survived'), 1500);",
+        ],
+        { timeout: 500 },
+    );
+    assert.equal(result.error.code, "ETIMEDOUT");
+    assert.notEqual(result.status, 0);
+    assert.equal(result.stdout, "");
+});
+
+test("synchronous output limits kill children that ignore graceful termination", () => {
+    const result = runNativeCommandSync(
+        process.execPath,
+        [
+            "-e",
+            "process.on('SIGTERM', () => {}); process.stdout.write('x'.repeat(2048)); setTimeout(() => {}, 1500);",
+        ],
+        { maxBuffer: 64 },
+    );
+    assert.equal(result.error.code, "ENOBUFS");
+    assert.notEqual(result.status, 0);
+});
 
 test("native command retains exact output and nonzero exit status", async () => {
     const result = await runNativeCommand(process.execPath, [
