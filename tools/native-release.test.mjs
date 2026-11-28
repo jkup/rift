@@ -134,6 +134,7 @@ test("native entry points reject a missing Zig before emitting or building", () 
         mkdirSync(join(work, "test/compiler"), { recursive: true });
         for (const name of [
             "test-compiler.mjs",
+            "compiler-expectations.mjs",
             "build-native.mjs",
             "native-release-support.mjs",
             "native-build-runner.mjs",

@@ -2,7 +2,7 @@
 //   node:   tsc output executed by Node
 //   native: scriptc --tier static-only executable
 // A probe passes only with verified static coverage, expected exit statuses,
-// and matching stdout. stderr is retained but not compared.
+// and independently expected stdout in both lanes. stderr is retained but not compared.
 //
 // Usage: node tools/test-compiler.mjs [probe-name...]
 
@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import { completed, probeVerdict } from "./probe-verdict.mjs";
 import { scriptcPath } from "./scriptc-path.mjs";
 import { requireZigVersion } from "./native-release-support.mjs";
+import { expectedProbeOutput } from "./compiler-expectations.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const EXE = process.platform === "win32" ? ".exe" : "";
@@ -55,6 +56,7 @@ if (probes.length === 0) {
 
 const pin = JSON.parse(readFileSync(join(ROOT, "toolchain/scriptc/source.json"), "utf8"));
 requireZigVersion(pin.buildDependencies.zig);
+const expectations = probes.map((name) => ({ name, stdout: expectedProbeOutput(name) }));
 const typecheck = run(process.execPath, [tscJs, "-p", "tsconfig.json"]);
 if (!completed(typecheck)) {
     console.error(typecheck);
@@ -63,7 +65,7 @@ if (!completed(typecheck)) {
 
 mkdirSync(join(ROOT, "build", "native"), { recursive: true });
 const results = [];
-for (const name of probes) {
+for (const { name, stdout: expectedStdout } of expectations) {
     const args = ARGS[name] ?? [];
     const node = run(process.execPath, [
         join(ROOT, "build", "node", "test", "compiler", name + ".js"),
@@ -83,13 +85,14 @@ for (const name of probes) {
     // values ("dynamic tier"); the coverage report is the stricter gate.
     const coverage = run(scriptc, ["coverage", join("test", "compiler", name + ".ts")]);
     const expectedStatus = name === "host" ? 3 : 0;
-    const verdict = probeVerdict({ build, coverage, node, native, expectedStatus });
+    const verdict = probeVerdict({ build, coverage, node, native, expectedStatus, expectedStdout });
 
     results.push({
         name,
         compiler: scriptc,
         verdict,
         expectedStatus,
+        expectedStdout,
         node,
         build,
         coverage,
@@ -106,6 +109,7 @@ for (const r of results) {
     }
     console.log(`\n=== ${r.name}: ${r.verdict}`);
     console.log(`  expected execution status: ${r.expectedStatus}`);
+    console.log(`  expected stdout: ${JSON.stringify(r.expectedStdout)}`);
     for (const lane of ["build", "coverage", "node", "native"]) {
         const result = r[lane];
         if (!result) {

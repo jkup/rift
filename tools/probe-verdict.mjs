@@ -9,7 +9,14 @@ export function completed(result, expectedStatus = 0) {
     );
 }
 
-export function probeVerdict({ build, coverage, node, native, expectedStatus = 0 }) {
+export function probeVerdict({
+    build,
+    coverage,
+    node,
+    native,
+    expectedStatus = 0,
+    expectedStdout,
+}) {
     if (!completed(build)) {
         return "BUILD-FAIL";
     }
@@ -41,6 +48,12 @@ export function probeVerdict({ build, coverage, node, native, expectedStatus = 0
     }
     if (!completed(native, expectedStatus)) {
         return "NATIVE-FAIL";
+    }
+    if (expectedStdout !== undefined && node.stdout !== expectedStdout) {
+        return "NODE-OUTPUT-FAIL";
+    }
+    if (expectedStdout !== undefined && native.stdout !== expectedStdout) {
+        return "NATIVE-OUTPUT-FAIL";
     }
     if (native.stdout !== node.stdout) {
         return "OUTPUT-DIFF";

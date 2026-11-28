@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { probeVerdict } from "./probe-verdict.mjs";
+import { expectedProbeOutput } from "./compiler-expectations.mjs";
+import { readdirSync } from "node:fs";
 
 const staticReport = `scriptc coverage values.ts
   statements analyzed   39
@@ -33,6 +35,41 @@ test("matching unexpected exits cannot pass", () => {
     f.node.status = f.native.status = 1;
     f.node.stdout = f.native.stdout = "";
     assert.equal(probeVerdict(f), "NODE-FAIL");
+});
+
+test("matching incorrect or empty output cannot satisfy an independent expectation", () => {
+    for (const stdout of ["", "wrong\n"]) {
+        const f = fixture();
+        f.expectedStdout = "result\n";
+        f.node.stdout = f.native.stdout = stdout;
+        assert.equal(probeVerdict(f), "NODE-OUTPUT-FAIL");
+    }
+});
+
+test("expected stdout is enforced in both lanes without weakening transport or coverage gates", () => {
+    const f = fixture();
+    f.expectedStdout = "result\n";
+    assert.equal(probeVerdict(f), "PASS");
+    f.native.stdout = "wrong\n";
+    assert.equal(probeVerdict(f), "NATIVE-OUTPUT-FAIL");
+    f.native.status = 1;
+    assert.equal(probeVerdict(f), "NATIVE-FAIL");
+    f.coverage.stdout = "unknown coverage";
+    assert.equal(probeVerdict(f), "COVERAGE-UNKNOWN");
+});
+
+test("every compiler probe has a nonempty expectation and unknown probes fail closed", () => {
+    const names = readdirSync(new URL("../test/compiler/", import.meta.url))
+        .filter((file) => file.endsWith(".ts"))
+        .map((file) => file.slice(0, -3));
+    assert.ok(names.length > 0);
+    for (const name of names) {
+        const stdout = expectedProbeOutput(name);
+        assert.ok(stdout.length > 1 && stdout.endsWith("\n"), name);
+    }
+    for (const name of ["missing-probe", "toString", "__proto__"]) {
+        assert.throws(() => expectedProbeOutput(name), /Missing expected output/);
+    }
 });
 
 for (const lane of ["build", "coverage", "node", "native"]) {

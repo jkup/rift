@@ -13,7 +13,10 @@ native build must pass `--tier static-only` and a separate `scriptc coverage`
 check with zero dynamic statements. Static-only compilation can still allow
 runtime-typed operations; coverage catches those. Unknown coverage formats,
 timeouts, crashes, unexpected exits and incorrect output fail the check.
-Reports go to `build/probe-results.json`.
+Each lane must also match the literal stdout expectations in
+`tools/compiler-expectations.mjs`; agreement between two incorrect outputs is not
+a pass. New probes need reviewed expectations. Variable memory diagnostics stay
+on stderr. Reports include the expected stdout and go to `build/probe-results.json`.
 
 These checks do not prove native correctness. Some compiler bugs produce fully
 static code with wrong behavior, so semantic changes also need expected-result
