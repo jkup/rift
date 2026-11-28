@@ -97,8 +97,10 @@ unknown version markers. The manifest records the actual requirements.
 ## Maintainer workflow
 
 Run **Native release** in GitHub Actions against the intended source revision,
-with a new version/tag such as `v0.1.0-preview.1`. All four jobs build the pinned patched
-compiler from source, verify downloaded Zig and LLVM assets, run the Node checks,
+with a new version/tag such as `v0.1.0-preview.1`. Each build job checks that the
+version is filename-safe and a valid Git tag before installing dependencies or
+running tests. All four jobs build the pinned patched compiler from source,
+verify downloaded Zig and LLVM assets, run the Node checks,
 and package their native CLI. Only the final draft job has repository write
 permission; all build jobs use read-only permissions.
 

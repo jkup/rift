@@ -41,6 +41,11 @@ jobs:
         with:
           node-version: 24.22.0
           cache: npm
+      - name: Validate release tag
+        shell: bash
+        run: |
+          node --input-type=module -e 'import { releaseName } from "./tools/native-release-support.mjs"; releaseName(process.env.RELEASE_VERSION, "check");'
+          git check-ref-format "refs/tags/$RELEASE_VERSION"
       - run: npm ci
       - run: npm run format:check
       - run: npm run lint
@@ -53,8 +58,6 @@ jobs:
       - name: Prepare upstream source
         shell: bash
         run: |
-          node --input-type=module -e 'import { releaseName } from "./tools/native-release-support.mjs"; releaseName(process.env.RELEASE_VERSION, "check");'
-          git check-ref-format "refs/tags/$RELEASE_VERSION"
           git -c core.autocrlf=false clone https://github.com/vercel-labs/scriptc.git "$RUNNER_TEMP/scriptc"
       - name: Build pinned compiler and runtime
         shell: bash
