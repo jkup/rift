@@ -1,5 +1,5 @@
 import { spawn, execFileSync } from "node:child_process";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { readFile, writeFile, mkdir, lstat, realpath, readdir } from "node:fs/promises";
 import { resolve, dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -30,6 +30,38 @@ export function countOutput(facts, chunk) {
     }
     facts.capCount = facts.outputBytes;
     return true;
+}
+
+// Keep a combined prefix of the two pipes, but hash and count every received
+// byte, including buffered output delivered after the termination request.
+export function createOutputCapture(facts) {
+    const streams = {
+        stdout: { chunks: [], hash: createHash("sha256") },
+        stderr: { chunks: [], hash: createHash("sha256") },
+    };
+    let retained = 0;
+    return {
+        capture(name, chunk) {
+            const stream = streams[name];
+            stream.hash.update(chunk);
+            const length = Math.min(chunk.length, facts.outputLimit - retained);
+            if (length > 0) {
+                // Copy the prefix so a tiny retained slice cannot keep a large
+                // incoming buffer's backing allocation alive.
+                stream.chunks.push(Buffer.from(chunk.subarray(0, length)));
+                retained += length;
+            }
+            return countOutput(facts, chunk);
+        },
+        finish() {
+            return {
+                stdout: Buffer.concat(streams.stdout.chunks),
+                stderr: Buffer.concat(streams.stderr.chunks),
+                stdoutSha256: streams.stdout.hash.digest("hex"),
+                stderrSha256: streams.stderr.hash.digest("hex"),
+            };
+        },
+    };
 }
 
 async function noAlias(path) {
@@ -258,8 +290,6 @@ export async function launchObservation(plan, { signal } = {}) {
         return { state: "unfinished", directory };
     }
     const started = performance.now();
-    const stdout = [],
-        stderr = [];
     const limits = context.inputs.limits;
     const facts = {
         process: { exitCode: null, signal: null, deadlineExpired: false },
@@ -272,6 +302,7 @@ export async function launchObservation(plan, { signal } = {}) {
         stdoutSha256: null,
         stderrSha256: null,
     };
+    const output = createOutputCapture(facts);
     let cancelled = false,
         spawnError = null;
     await new Promise((resolveClose) => {
@@ -298,9 +329,8 @@ export async function launchObservation(plan, { signal } = {}) {
             facts.process.deadlineExpired = true;
             child.kill();
         }, limits.wallMs);
-        const capture = (chunks, chunk) => {
-            chunks.push(chunk);
-            if (countOutput(facts, chunk)) {
+        const capture = (name, chunk) => {
+            if (output.capture(name, chunk)) {
                 facts.crashBeforeCap =
                     (child.exitCode !== null && child.exitCode !== 0) || child.signalCode !== null;
                 if (!facts.crashBeforeCap) {
@@ -308,8 +338,8 @@ export async function launchObservation(plan, { signal } = {}) {
                 }
             }
         };
-        child.stdout.on("data", (chunk) => capture(stdout, chunk));
-        child.stderr.on("data", (chunk) => capture(stderr, chunk));
+        child.stdout.on("data", (chunk) => capture("stdout", chunk));
+        child.stderr.on("data", (chunk) => capture("stderr", chunk));
         child.on("error", (error) => {
             spawnError = { code: error.code, message: error.message };
         });
@@ -327,12 +357,11 @@ export async function launchObservation(plan, { signal } = {}) {
         });
     });
     facts.elapsedMs = performance.now() - started;
-    const out = Buffer.concat(stdout),
-        err = Buffer.concat(stderr);
-    facts.stdoutSha256 = sha256(out);
-    facts.stderrSha256 = sha256(err);
-    await writeFile(join(directory, "stdout.bin"), out, { flag: "wx" });
-    await writeFile(join(directory, "stderr.bin"), err, { flag: "wx" });
+    const captured = output.finish();
+    facts.stdoutSha256 = captured.stdoutSha256;
+    facts.stderrSha256 = captured.stderrSha256;
+    await writeFile(join(directory, "stdout.bin"), captured.stdout, { flag: "wx" });
+    await writeFile(join(directory, "stderr.bin"), captured.stderr, { flag: "wx" });
     await persist(join(directory, "transport.json"), { ...facts, spawnError, cancelled });
     if (cancelled) {
         return { state: "unfinished", directory };

@@ -46,6 +46,10 @@ has an unknown variant count. Failures, skips, unsupported execution, limits,
 timeouts, crashes and input/harness errors remain separate. Filtered runs are not
 full-suite conformance claims.
 
+The older observation runner bounds `stdout.bin` and `stderr.bin` to one combined
+output-byte cap. When capped, these files contain diagnostic prefixes; transport
+byte counts and SHA-256 hashes still cover every byte received on both pipes.
+
 Exit 0 means all attempted variants passed; explicit skips may remain. Exit 1
 means semantic failures, unsupported execution or resource limits. Exit 2 means
 an infrastructure/input failure or interruption.

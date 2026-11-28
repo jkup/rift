@@ -17,7 +17,7 @@
     "scripts": {
         "start": "node build/node/src/cli.js",
         "test262": "node tools/test262/run.mjs",
-        "test:test262:runner": "node --test tools/test262/runner.test.mjs tools/test262/runner-build.test.mjs",
+        "test:test262:runner": "node --test tools/test262/runner.test.mjs tools/test262/runner-build.test.mjs tools/test262/observation-output.test.mjs",
         "test:observations": "node tools/test262/observation.integration.mjs",
         "test:test262": "node --test tools/test262/*.test.mjs",
         "test:runner": "node --test tools/probe-verdict.test.mjs tools/native-entry-manifest.test.mjs tools/native-build-runner.test.mjs tools/legacy-suite.test.mjs tools/scriptc-path.test.mjs",

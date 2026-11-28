@@ -413,6 +413,9 @@ for (const lane of ["node", "native"]) {
         assert.ok(capped.facts.outputBytes >= capped.facts.capCount);
         assert.equal(capped.facts.capKilled, true);
         assert.deepEqual(capped.record.evidence.process, capped.facts.process);
+        const stdout = await readFile(join(capped.directory, "stdout.bin"));
+        const stderr = await readFile(join(capped.directory, "stderr.bin"));
+        assert.equal(stdout.length + stderr.length, 100);
     });
     test(`${lane} T30 prelaunch cancellation with an already-aborted signal spawns nothing`, async () => {
         const plan = await prepareObservation(
